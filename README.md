@@ -20,7 +20,7 @@ OnShowBegin(System.Action = null)<br />
 OnShowEnd<br />
 OnHideBegin(System.Action = null)<br />
 OnHideEnd<br />
-OnParametersPass(T param, T2 param, ...) - pass parameters of any type to init your window<br />
+OnParametersPass(T param, T2 param, ...) - pass parameters of any type to init your window
 <br /><br />
 - Extensible
 You can extend any kind of component you want.
