@@ -14,7 +14,7 @@ Each window links to a some layout which can store any of containers and animati
 Any component, layout container or module can be animated.
 
 - Events
-OnInit - fire once on first window initialize
+OnInit - fire once on first window initialize<br>
 OnDeinit - fire once on destroy
 OnShowBegin(System.Action = null)
 OnShowEnd
