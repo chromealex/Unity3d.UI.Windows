@@ -1,0 +1,590 @@
+
+using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ME {
+
+	public class Tweener: MonoBehaviour {
+		public interface ITransition {
+			float interpolate(float start, float distance, float elapsedTime, float duration);
+		}
+	
+		public interface ITween {
+			bool isCompleted();
+
+			void RaiseCancel();
+
+			void RaiseComplete();
+
+			object getTag();
+
+			void update(float dt, bool debug);
+
+			bool isDirty { get; set; }
+		}
+	
+		public class Tween<T>: ITween {
+
+			public bool isDirty {
+				get;
+				set;
+			}
+
+			private static int INFINITE_LOOPS = -1;
+			private T _obj;
+			private float _duration;
+			private float _start;
+			
+			private class Target {
+				public float start;
+				public float value;
+				public float duration;
+				public ITransition transition;
+				public bool inverse = false;
+			}
+			
+			private List<Target> _targets = new List<Target>();
+			int _currentTarget = 0;
+			private float _elapsed = 0.0f;
+			private bool _completed = false;
+			private object _tag;
+			private int _loops = 1;
+			private System.Action<T, float> _update = null;
+			private System.Action<T> _complete = null;
+			private System.Action<T> _cancel = null;
+	
+			public Tween(T obj, float duration, float start, float end) {
+				_obj = obj;
+				Target target = new Target();
+				target.start = start;
+				target.value = end;
+				target.duration = duration;
+				target.transition = Ease.Linear;
+				
+				_completed = false;
+				
+				_targets.Add(target);
+
+				isDirty = false;
+			}
+			
+			public void RaiseComplete() {
+				
+				if (_complete != null)
+					_complete(_obj);
+				
+			}
+			
+			public void RaiseCancel() {
+				
+				if (_cancel != null)
+					_cancel(_obj);
+				
+			}
+	
+			public bool isCompleted() {
+				return _completed;
+			}
+	
+			public object getTag() {
+				return _tag;
+			}
+			
+			public void update(float dt, bool debug = false) {
+				_elapsed += dt;
+				
+				var target = _targets[_currentTarget];
+				//if (debug == true) Debug.Log(_currentTarget + " " + _elapsed + " " + target.duration);
+				
+				if (_elapsed >= target.duration) {
+					if ((_currentTarget + 1) == _targets.Count) {
+						if (_update != null)
+							_update(_obj, target.inverse ? target.start : target.value);
+						
+						if (_loops != INFINITE_LOOPS) {
+							
+							_completed = (--_loops == 0);
+							
+						}
+						
+						if (!_completed) {
+							
+							_elapsed = 0f;
+							_currentTarget = 0;
+							
+						}
+						
+						if (_loops == INFINITE_LOOPS || _loops == 0) {
+							
+							RaiseComplete();
+							
+						}
+						
+						return;
+					}
+	
+					_elapsed = _elapsed - target.duration;
+					target = _targets[++_currentTarget];
+				}
+	
+				if (_update != null) {
+					float t = target.inverse ? target.duration - _elapsed : _elapsed;
+					float v = target.transition.interpolate(target.start, target.value - target.start, t, target.duration);
+					_update(_obj, v);
+				}
+	
+				return;
+			}
+	
+			public Tween<T> ease(ITransition value) {
+				_targets[0].transition = value;
+	
+				return this;
+			}
+	
+			public Tween<T> onUpdate(System.Action<T, float> func) {
+				_update += func;
+				return this;
+			}
+			
+			public Tween<T> onComplete(System.Action<T> func) {
+				_complete += func;
+				return this;
+			}
+
+			public Tween<T> onComplete(System.Action func) {
+				_complete += self => func();
+				return this;
+			}
+			
+			public Tween<T> onCancel(System.Action<T> func) {
+				_cancel += func;
+				return this;
+			}
+	
+			public Tween<T> tag(object value) {
+				_tag = value;
+				return this;
+			}
+	
+			public Tween<T> repeat() {
+				_loops = INFINITE_LOOPS;
+				return this;
+			}
+	
+			public Tween<T> repeat(int loops) {
+				
+				_loops = loops;
+				return this;
+				
+			}
+	
+			public Tween<T> addTarget(float duration, float end) {
+				
+				var target = new Target();
+				target.start = _targets[_targets.Count - 1].value;
+				target.value = end;
+				target.duration = duration;
+				target.transition = _targets[0].transition;
+				_targets.Add(target);
+				
+				return this;
+				
+			}
+	
+			public Tween<T> addTarget(float duration, float end, ITransition transition) {
+				
+				var target = new Target();
+				target.start = _targets[_targets.Count - 1].value;
+				target.value = end;
+				target.duration = duration;
+				target.transition = transition;
+				_targets.Add(target);
+				
+				return this;
+				
+			}
+	
+			public Tween<T> reflect() {
+				
+				var reflectedTargets = new List<Target>(capacity: _targets.Count);
+
+				foreach (var target in _targets) {
+
+					var reflected = new Target();
+					reflected.start = target.start;
+					reflected.value = target.value;
+					reflected.transition = target.transition;
+					reflected.duration = target.duration;
+					reflected.inverse = !target.inverse;
+					reflectedTargets.Add(reflected);
+				}
+
+				_targets.AddRange(reflectedTargets);
+
+				return this;
+				
+			}
+			
+		}
+		
+		public enum TimerType {
+			Fixed,
+			Game,
+			Battle,
+		}
+		public TimerType timerType = TimerType.Game;
+		public bool repeatByDefault = false;
+		public bool debug = false;
+		private LinkedList<ITween> _tweens = new LinkedList<ITween>();
+		
+		public Tween<T> addTween<T>(T obj, float duration, float start, float end) {
+			
+			var tween = new Tween<T>(obj, duration, start, end);
+			if (repeatByDefault)
+				tween.repeat();
+			
+			_tweens.AddLast(tween);
+			return tween;
+			
+		}
+		
+		public bool hasTag(object tag) {
+			
+			return _tweens.FirstOrDefault((tween) => tween.getTag() == tag) != null;
+			
+		}
+		
+		public void removeTweens(object tweenerTag) {
+			
+			Mark(tween => tween.getTag() == tweenerTag);
+			
+		}
+		
+		void Update() {
+
+			_update((this.timerType == TimerType.Fixed) ? Time.unscaledDeltaTime : Time.deltaTime, this.debug);
+			
+		}
+		
+		void OnDestroy() {
+
+			foreach (var each in _tweens) {
+
+				each.RaiseCancel();
+				
+			}
+			
+		}
+		
+		void _update(float dt, bool debug = false) {
+			
+			for (var node = _tweens.First; node != null;) {
+
+				var next = node.Next;
+				var each = node.Value;
+
+				if (each.isCompleted() || each.isDirty == true) {
+
+					if (each.isDirty == true && each.isCompleted() == false) each.RaiseCancel();
+
+					_tweens.Remove(node);
+
+				} else {
+
+					each.update(dt, debug);
+					
+				}
+
+				node = next;
+				
+			}
+
+		}
+
+		void Mark(System.Func<ITween, bool> predicate) {
+
+			foreach (var each in _tweens.Where( predicate )) {
+
+				each.isDirty = true;
+				
+			}
+
+		}
+	
+	}
+	
+	public class EaseTransition: Tweener.ITransition {
+		private System.Func<float, float, float, float, float> _func;
+	
+		public EaseTransition(System.Func<float, float, float, float, float> func) {
+			_func = func;
+		}
+		
+		public float interpolate(float start, float distance, float elapsedTime, float duration) {
+			return _func(start, distance, elapsedTime, duration);
+		}
+	}
+	
+	public class CurveTransition: Tweener.ITransition {
+		AnimationCurve _curve;
+	
+		public CurveTransition(AnimationCurve curve) {
+			_curve = curve;
+		}
+		
+		public float interpolate(float start, float distance, float elapsedTime, float duration) {
+			float curveDuration = 0.0f;
+			if (_curve.length > 0)
+				curveDuration = _curve.keys[_curve.length - 1].time;
+			
+			float t = _curve.Evaluate(curveDuration * elapsedTime / duration);
+	
+			return start + t * distance;
+		}
+	}
+	
+	public class Ease {
+		public static EaseTransition Linear = new EaseTransition(_linear);
+		public static EaseTransition InQuad = new EaseTransition(_inQuad);
+		public static EaseTransition OutQuad = new EaseTransition(_outQuad);
+		public static EaseTransition InOutQuad = new EaseTransition(_inOutQuad);
+		public static EaseTransition InCubic = new EaseTransition(_inCubic);
+		public static EaseTransition OutCubic = new EaseTransition(_outCubic);
+		public static EaseTransition InOutCubic = new EaseTransition(_inOutCubic);
+		public static EaseTransition InQuart = new EaseTransition(_inQuart);
+		public static EaseTransition OutQuart = new EaseTransition(_outQuart);
+		public static EaseTransition InOutQuart = new EaseTransition(_inOutQuart);
+		public static EaseTransition InQuint = new EaseTransition(_inQuint);
+		public static EaseTransition OutQuint = new EaseTransition(_outQuint);
+		public static EaseTransition InOutQuint = new EaseTransition(_inOutQuint);
+		public static EaseTransition InSine = new EaseTransition(_inSine);
+		public static EaseTransition OutSine = new EaseTransition(_outSine);
+		public static EaseTransition InOutSine = new EaseTransition(_inOutSine);
+		public static EaseTransition InExpo = new EaseTransition(_inExpo);
+		public static EaseTransition OutExpo = new EaseTransition(_outExpo);
+		public static EaseTransition InOutExpo = new EaseTransition(_inOutExpo);
+		public static EaseTransition InCirc = new EaseTransition(_inCirc);
+		public static EaseTransition OutCirc = new EaseTransition(_outCirc);
+		public static EaseTransition InOutCirc = new EaseTransition(_inOutCirc);
+	
+		// TODO: implement
+		public static EaseTransition InElastic = new EaseTransition(_inExpo);
+		public static EaseTransition OutElastic = new EaseTransition(_outExpo);
+		public static EaseTransition InOutElastic = new EaseTransition(_inOutExpo);
+		public static EaseTransition InBack = new EaseTransition(_inExpo);
+		public static EaseTransition OutBack = new EaseTransition(_outExpo);
+		public static EaseTransition InOutBack = new EaseTransition(_inOutExpo);
+		public static EaseTransition InBounce = new EaseTransition(_inBounce);
+		public static EaseTransition OutBounce = new EaseTransition(_outBounce);
+		public static EaseTransition InOutBounce = new EaseTransition(_inOutBounce);
+		
+		static float _inBounce(float startValue, float changeValue, float time, float duration) {
+			return changeValue - _outBounce(duration - time, changeValue, 0f, duration) + startValue;
+		}
+
+		static float _outBounce(float startValue, float changeValue, float time, float duration) {
+			if ((time /= duration) < (1 / 2.75f)) {
+				return changeValue * (7.5625f * time * time) + startValue;
+			}
+			if (time < (2 / 2.75f)) {
+				return changeValue * (7.5625f * (time -= (1.5f / 2.75f)) * time + 0.75f) + startValue;
+			}
+			if (time < (2.5f / 2.75f)) {
+				return changeValue * (7.5625f * (time -= (2.25f / 2.75f)) * time + 0.9375f) + startValue;
+			}
+			return changeValue * (7.5625f * (time -= (2.625f / 2.75f)) * time + 0.984375f) + startValue;
+		}
+
+		static float _inOutBounce(float startValue, float changeValue, float time, float duration) {
+			if (time < duration * 0.5f) {
+				return _inBounce(time * 2, changeValue, 0f, duration) * 0.5f + startValue;
+			}
+			return _outBounce(time * 2 - duration, changeValue, 0f, duration) * 0.5f + changeValue * 0.5f + startValue;
+		}
+		
+		static float _linear(float start, float distance, float elapsedTime, float duration) {
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+			return distance * (elapsedTime / duration) + start;
+		}
+	
+		static float _inQuad(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			return distance * elapsedTime * elapsedTime + start;
+		}
+	
+		static float _outQuad(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			return -distance * elapsedTime * (elapsedTime - 2.0f) + start;
+		}
+	
+		static float _inOutQuad(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 2.0f : elapsedTime / (duration / 2);
+			if (elapsedTime < 1)
+				return distance / 2.0f * elapsedTime * elapsedTime + start;
+			elapsedTime--;
+			return -distance / 2.0f * (elapsedTime * (elapsedTime - 2.0f) - 1.0f) + start;
+		}
+	
+		static float _inCubic(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			return distance * elapsedTime * elapsedTime * elapsedTime + start;
+		}
+	
+		static float _outCubic(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			elapsedTime--;
+			return distance * (elapsedTime * elapsedTime * elapsedTime + 1) + start;
+		}
+	 
+		static float _inOutCubic(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 2.0f : elapsedTime / (duration / 2);
+			if (elapsedTime < 1)
+				return distance / 2 * elapsedTime * elapsedTime * elapsedTime + start;
+			elapsedTime -= 2;
+			return distance / 2 * (elapsedTime * elapsedTime * elapsedTime + 2) + start;
+		}
+	 
+		static float _inQuart(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			return distance * elapsedTime * elapsedTime * elapsedTime * elapsedTime + start;
+		}
+	
+		static float _outQuart(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			elapsedTime--;
+			return -distance * (elapsedTime * elapsedTime * elapsedTime * elapsedTime - 1) + start;
+		}
+	
+		static float _inOutQuart(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 2.0f : elapsedTime / (duration / 2);
+			if (elapsedTime < 1)
+				return distance / 2 * elapsedTime * elapsedTime * elapsedTime * elapsedTime + start;
+			elapsedTime -= 2;
+			return -distance / 2 * (elapsedTime * elapsedTime * elapsedTime * elapsedTime - 2) + start;
+		}
+	
+		static float _inQuint(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			return distance * elapsedTime * elapsedTime * elapsedTime * elapsedTime * elapsedTime + start;
+		}
+	 
+		static float _outQuint(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			elapsedTime--;
+			return distance * (elapsedTime * elapsedTime * elapsedTime * elapsedTime * elapsedTime + 1) + start;
+		}
+	
+		static float _inOutQuint(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 2.0f : elapsedTime / (duration / 2);
+			if (elapsedTime < 1)
+				return distance / 2 * elapsedTime * elapsedTime * elapsedTime * elapsedTime * elapsedTime + start;
+			elapsedTime -= 2;
+			return distance / 2 * (elapsedTime * elapsedTime * elapsedTime * elapsedTime * elapsedTime + 2) + start;
+		}
+	
+		static float _inSine(float start, float distance, float elapsedTime, float duration) {
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+			return -distance * Mathf.Cos(elapsedTime / duration * (Mathf.PI / 2)) + distance + start;
+		}
+	
+		static float _outSine(float start, float distance, float elapsedTime, float duration) {
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+			return distance * Mathf.Sin(elapsedTime / duration * (Mathf.PI / 2)) + start;
+		}
+	
+		static float _inOutSine(float start, float distance, float elapsedTime, float duration) {
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+			return -distance / 2 * (Mathf.Cos(Mathf.PI * elapsedTime / duration) - 1) + start;
+		}
+	
+		static float _inExpo(float start, float distance, float elapsedTime, float duration) {
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+			return distance * Mathf.Pow(2, 10 * (elapsedTime / duration - 1)) + start;
+		}
+	 
+		static float _outExpo(float start, float distance, float elapsedTime, float duration) {
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+			return distance * (-Mathf.Pow(2, -10 * elapsedTime / duration) + 1) + start;
+		}
+		 
+		static float _inOutExpo(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 2.0f : elapsedTime / (duration / 2);
+			if (elapsedTime < 1)
+				return distance / 2 * Mathf.Pow(2, 10 * (elapsedTime - 1)) + start;
+			elapsedTime--;
+			return distance / 2 * (-Mathf.Pow(2, -10 * elapsedTime) + 2) + start;
+		}
+	
+		static float _inCirc(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			return -distance * (Mathf.Sqrt(1 - elapsedTime * elapsedTime) - 1) + start;
+		}
+	
+		static float _outCirc(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 1.0f : elapsedTime / duration;
+			elapsedTime--;
+			return distance * Mathf.Sqrt(1 - elapsedTime * elapsedTime) + start;
+		}
+	
+		static float _inOutCirc(float start, float distance, float elapsedTime, float duration) {
+			elapsedTime = (elapsedTime > duration) ? 2.0f : elapsedTime / (duration / 2);
+			if (elapsedTime < 1)
+				return -distance / 2 * (Mathf.Sqrt(1 - elapsedTime * elapsedTime) - 1) + start;
+			elapsedTime -= 2;
+			return distance / 2 * (Mathf.Sqrt(1 - elapsedTime * elapsedTime) + 1) + start;
+		}
+	
+		/*static float _inElastic(float start, float distance, float elapsedTime, float duration)
+		{
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+	
+			if (elapsedTime == 0.0f)
+				return start;
+	
+			if ((elapsedTime /= duration) == 1.0f)
+			        return start + distance;
+	
+	        float p = duration * 0.3f;
+	        float a = distance;
+	        float s = p / 4.0f;
+	        float postFix = a * Mathf.Pow(2.0f, 10.0 * (elapsedTime -= 1.0f));
+	
+	        return -(postFix * Mathf.Sin((elapsedTime * duration - s) * (2.0 * Mathf.PI) / p)) + start;
+		}
+	
+		static float _outElastic(float start, float distance, float elapsedTime, float duration)
+		{
+			if (elapsedTime > duration)
+				elapsedTime = duration;
+	
+			if (elapsedTime == 0.0f)
+				return start;
+	
+			if ((elapsedTime /= duration) == 1.0f)
+			        return start + distance;
+	
+	        float p = duration * 0.3f;
+	        float a = distance;
+	        float s = p / 4.0f;
+	
+	        return a * Mathf.Pow(2.0, -10.0 * elapsedTime) * Mathf.Sin((elapsedTime * duration - s) * (2.0 * Mathf.PI) / p) + distance + start;
+		}
+	
+		static float _inOutElastic(float start, float distance, float elapsedTime, float duration)
+		{
+			// TODO: implement
+			return 0.0f;
+		}*/
+		
+	}
+	
+}
