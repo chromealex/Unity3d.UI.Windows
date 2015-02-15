@@ -1,18 +1,24 @@
 # Version 0.2b
 
-<b>Windows behavior:</b><br />
-- added window iteration states (such as Initializing, Initialized, Showing, Hiding etc.)<br />
-- added 3D->UI component (useful for tooltips window type)<br />
-<br />
-<b>Core:</b><br />
-- all settings from window system moved to settings file<br />
-- improved layouts drawer behavior (fixes)<br />
-<br />
-<b>Examples:</b><br />
-- added alert message<br />
-- added modules (BackgroundCloseable, BackgroundLock)<br />
-- added 3D->UI HUD<br />
-- split button components (Default button, Button with tooltip)<br />
+<b>Windows Behavior:</b>
+<ul>
+<li>added window iteration states (such as Initializing, Initialized, Showing, Hiding etc.)</li>
+<li>added 3D->UI component (useful for tooltips window type)</li>
+</ul>
+
+<b>Core:</b>
+<ul>
+<li>all settings from window system moved to settings file</li>
+<li>improved layouts drawer behavior (fixes)</li>
+</ul>
+
+<b>Examples:</b>
+<ul>
+<li>added alert message</li>
+<li>added modules (BackgroundCloseable, BackgroundLock)</li>
+<li>added 3D->UI HUD</li>
+<li>split button components (Default button, Button with tooltip)</li>
+</ul>
 
 # Unity3d UI Windows Extension
 
