@@ -4,7 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace UnityEngine.UI.Windows {
-	
+
+	public enum WindowState : byte {
+
+		NotInitialized = 0,
+		Initializing,
+		Initialized,
+
+		Showing,
+		Shown,
+
+		Hiding,
+		Hided,
+
+	}
+
 	[System.Serializable]
 	public class Modules : IWindowEventsAsync {
 		
@@ -224,22 +238,31 @@ namespace UnityEngine.UI.Windows {
 	[RequireComponent(typeof(Camera))]
 	public class WindowBase : WindowObject, IWindowEvents {
 
-		[HideInInspector][SerializeField]
+		[HideInInspector]
 		public Camera workCamera;
-		[HideInInspector][SerializeField]
+		[HideInInspector]
 		public bool initialized = false;
 
 		public Preferences preferences;
 		public Modules modules;
 		public Events events;
-
+		
+		[HideInInspector]
 		private bool setup = false;
+		[HideInInspector]
 		private bool passParams = false;
+		[HideInInspector]
 		private object[] parameters;
 
+		private WindowState currentState = WindowState.NotInitialized;
+
 		internal void Init(float depth, int raycastPriority, int orderInLayer) {
+			
+			this.currentState = WindowState.Initializing;
 
 			if (this.initialized == false) {
+				
+				this.currentState = WindowState.NotInitialized;
 
 				Debug.LogError("Can't initialize window instance because of some components was not installed properly.");
 				return;
@@ -274,6 +297,8 @@ namespace UnityEngine.UI.Windows {
 				this.OnEmptyPass();
 				
 			}
+			
+			this.currentState = WindowState.Initialized;
 
 		}
 		
@@ -333,6 +358,9 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public void Show() {
+			
+			if (this.currentState == WindowState.Showing || this.currentState == WindowState.Shown) return;
+			this.currentState = WindowState.Showing;
 
 			System.Action callback = () => {
 				
@@ -351,6 +379,8 @@ namespace UnityEngine.UI.Windows {
 			this.OnShowBegin();
 
 			this.gameObject.SetActive(true);
+			
+			this.currentState = WindowState.Shown;
 
 		}
 		
@@ -361,6 +391,9 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public void Hide(System.Action onHideEnd) {
+
+			if (this.currentState == WindowState.Hided || this.currentState == WindowState.Hiding) return;
+			this.currentState = WindowState.Hiding;
 
 			System.Action callback = () => {
 				
@@ -382,6 +415,8 @@ namespace UnityEngine.UI.Windows {
 			this.modules.OnHideBegin(layoutCallback == false ? callback : null);
 			this.events.OnHideBegin();
 			this.OnHideBegin();
+			
+			this.currentState = WindowState.Hided;
 
 		}
 
@@ -440,14 +475,9 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			if (this.workCamera != null) {
-				
+
 				// Camera
-				this.workCamera.orthographic = true;
-				this.workCamera.orthographicSize = 5f;
-				this.workCamera.nearClipPlane = -100f;
-				this.workCamera.farClipPlane = 100f;
-				this.workCamera.useOcclusionCulling = false;
-				this.workCamera.hdr = false;
+				WindowSystem.ApplyToSettings(this.workCamera);
 				
 				this.workCamera.cullingMask = 0x0;
 				this.workCamera.cullingMask |= 1 << this.gameObject.layer;

@@ -1,4 +1,4 @@
-﻿#if UNITY_IPHONE || UNITY_ANDROID
+﻿#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 #define UNITY_MOBILE
 #endif
 
@@ -13,10 +13,37 @@ namespace UnityEngine.UI.Windows {
 
 		[System.Serializable]
 		public class Settings {
+
+			public WindowSystemSettings file;
 			
-			public float minDepth = 90f;
-			public float maxDepth = 98f;
-			public int poolSize = 100;
+			public float minDepth {
+
+				get {
+
+					return this.file != null ? this.file.baseInfo.minDepth : 90f;
+
+				}
+
+			}
+
+			public float maxDepth {
+				
+				get {
+					
+					return this.file != null ? this.file.baseInfo.maxDepth : 98f;
+					
+				}
+				
+			}
+			public int poolSize {
+				
+				get {
+					
+					return this.file != null ? this.file.baseInfo.poolSize : 100;
+					
+				}
+				
+			}
 
 		}
 
@@ -37,14 +64,39 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR || UNITY_STANDALONE
 		public List<WindowBase> standaloneOnly = new List<WindowBase>();
 		#endif
+
+		[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 
+		[HideInInspector]
 		private float depthStep;
+		[HideInInspector]
 		private float currentDepth;
+		[HideInInspector]
 		private int currentOrderInLayer;
+		[HideInInspector]
 		private int currentRaycastPriority;
 
-		private static WindowSystem instance;
+		private static WindowSystem _instance;
+		private static WindowSystem instance {
+
+			get {
+
+				#if UNITY_EDITOR
+				if (WindowSystem._instance == null) WindowSystem._instance = GameObject.FindObjectOfType<WindowSystem>();
+				#endif
+
+				return WindowSystem._instance;
+
+			}
+
+			set {
+
+				WindowSystem._instance = value;
+
+			}
+
+		}
 
 		private void Awake() {
 
@@ -74,6 +126,31 @@ namespace UnityEngine.UI.Windows {
 			
 			this.depthStep = (this.settings.maxDepth - this.settings.minDepth) / this.settings.poolSize;
 			WindowSystem.ResetDepth();
+
+		}
+
+		public static bool IsUIHovered() {
+
+			return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+
+		}
+
+		public static void ApplyToSettings(Camera camera) {
+
+			if (WindowSystem.instance.settings.file == null) {
+
+				camera.orthographic = true;
+				camera.orthographicSize = 5f;
+				camera.nearClipPlane = -100f;
+				camera.farClipPlane = 100f;
+				camera.useOcclusionCulling = false;
+				camera.hdr = false;
+
+			} else {
+
+				WindowSystem.instance.settings.file.Apply(camera: camera);
+
+			}
 
 		}
 

@@ -57,8 +57,6 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector][SerializeField]
 		public GameObject editorLabel;
-		[HideInInspector][SerializeField]
-		public Image editorBody;
 		public override void Update_EDITOR() {
 			
 			base.Update_EDITOR();
@@ -77,18 +75,6 @@ namespace UnityEngine.UI.Windows {
 				return;
 
 			}
-			
-			this.editorBody = this.gameObject.GetComponent<Image>();
-			if (this.editorBody == null) {
-				
-				Component.DestroyImmediate(this.GetComponent<Image>());
-				Component.DestroyImmediate(this.GetComponent<CanvasRenderer>());
-				this.editorBody = this.gameObject.AddComponent<Image>();
-				this.editorBody.hideFlags = HideFlags.HideAndDontSave;
-
-				this.editorBody.color = this.editorColor;
-
-			}
 
 			if (this.editorLabel == null) {
 
@@ -101,18 +87,27 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.editorLabel == null) {
 
-				GameObject.DestroyImmediate(this.editorLabel);
 				this.editorLabel = new GameObject("__EditorLabel");
-				this.editorLabel.hideFlags = HideFlags.HideAndDontSave;
+				this.editorLabel.transform.SetParent(this.transform);
 
-				var shadow = this.editorLabel.AddComponent<Shadow>();
-				shadow.hideFlags = HideFlags.HideAndDontSave;
+				this.editorLabel.hideFlags = HideFlags.HideAndDontSave;
+				this.CenterAndStretch(this.editorLabel.transform);
+
+				var subLabel = new GameObject("Label");
+				subLabel.transform.SetParent(this.editorLabel.transform);
+				this.CenterAndStretch(subLabel.transform);
+				
+				var image = this.editorLabel.AddComponent<Image>();
+				image.color = this.editorColor;
+
+				var layout = this.editorLabel.AddComponent<LayoutElement>();
+				layout.ignoreLayout = true;
+
+				var shadow = subLabel.AddComponent<Shadow>();
 				shadow.effectDistance = new Vector2(1f, -1f);
 				shadow.useGraphicAlpha = true;
 
-				this.editorLabel.transform.SetParent(this.transform);
-				var text = this.editorLabel.AddComponent<Text>();
-				text.hideFlags = HideFlags.HideAndDontSave;
+				var text = subLabel.AddComponent<Text>();
 				text.alignment = TextAnchor.MiddleCenter;
 				text.fontStyle = FontStyle.Bold;
 				text.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -123,23 +118,28 @@ namespace UnityEngine.UI.Windows {
 				text.color = color;
 				text.text = descr;
 
-				var rect = this.editorLabel.transform as RectTransform;
-				rect.anchorMin = Vector2.zero;
-				rect.anchorMax = Vector2.one;
-				rect.pivot = Vector2.one * 0.5f;
-				rect.anchoredPosition3D = Vector3.zero;
-				rect.sizeDelta = Vector2.zero;
-
-				rect.localScale = Vector3.one;
-
 			} else {
 
-				var text = this.editorLabel.GetComponent<Text>();
+				var text = this.editorLabel.GetComponentInChildren<Text>();
 
 				this.editorLabel.transform.SetAsLastSibling();
 				text.text = descr;
 
 			}
+
+		}
+
+		private void CenterAndStretch(Transform tr) {
+
+			var rect = tr as RectTransform;
+			if (rect == null) rect = tr.gameObject.AddComponent<RectTransform>();
+
+			rect.anchorMin = Vector2.zero;
+			rect.anchorMax = Vector2.one;
+			rect.pivot = Vector2.one * 0.5f;
+			rect.anchoredPosition3D = Vector3.zero;
+			rect.sizeDelta = Vector2.zero;
+			rect.localScale = Vector3.one;
 
 		}
 		#endif

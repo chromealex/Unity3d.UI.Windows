@@ -30,7 +30,7 @@ public class UIWindowExampleStart : MonoBehaviour {
 
 		}
 
-		var content = new GUIContent("UI.Windows Extension. Version 0.1a. You can e-mail me: chrome.alex@gmail.com or use repo to get updates: https://github.com/chromealex/Unity3d.UI.Windows");
+		var content = new GUIContent("UI.Windows Extension. Version 0.2a. You can e-mail me chrome.alex@gmail.com or use repo to get updates: https://github.com/chromealex/Unity3d.UI.Windows");
 		var height = GUILayoutUtility.GetRect(content, GUI.skin.label).height;
 		GUI.Label(new Rect(0f, Screen.height - height, Screen.width, height), content);
 

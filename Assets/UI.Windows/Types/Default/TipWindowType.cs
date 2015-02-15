@@ -16,7 +16,25 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector][SerializeField]
 		public bool initializedChild = false;
 
+		private HUDItem tempHud;
+
+		public void OnHover(Transform worldElement, Vector3 worldPoint, Camera gameCamera, Vector3 offset = default(Vector3)) {
+			
+			if (this.animationRoot != null) this.animationRoot.SetInState();
+
+			if (this.tempHud == null) this.tempHud = this.root.GetComponent<HUDItem>();
+			if (this.tempHud == null) this.tempHud = this.root.gameObject.AddComponent<HUDItem>();
+
+			this.tempHud.InitHUD(worldElement, this.workCamera, gameCamera, offset);
+			this.tempHud.enabled = true;
+
+			if (this.animationRoot != null) this.animationRoot.SetResetState();
+			
+		}
+
 		public void OnHover(RectTransform uiElement) {
+			
+			if (this.tempHud != null) this.tempHud.enabled = false;
 
 			if (this.animationRoot != null) this.animationRoot.SetInState();
 

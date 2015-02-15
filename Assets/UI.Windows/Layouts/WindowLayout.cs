@@ -8,8 +8,10 @@ namespace UnityEngine.UI.Windows {
 
 	[RequireComponent(typeof(Canvas))]
 	public class WindowLayout : WindowObject, ICanvasElement, IWindowEvents {
-
+		
+		[ReadOnly]
 		public WindowLayoutRoot root;
+		[ReadOnly]
 		public List<WindowLayoutElement> elements = new List<WindowLayoutElement>();
 		
 		[HideInInspector][SerializeField]
@@ -18,7 +20,8 @@ namespace UnityEngine.UI.Windows {
 		public UnityEngine.EventSystems.BaseRaycaster raycaster;
 		[HideInInspector][SerializeField]
 		public bool initialized = false;
-
+		
+		[HideInInspector][SerializeField]
 		private bool isAlive = false;
 
 		public void Init(float depth, int raycastPriority, int orderInLayer) {

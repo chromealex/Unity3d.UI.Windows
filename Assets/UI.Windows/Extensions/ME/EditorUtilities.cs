@@ -11,14 +11,12 @@ namespace ME {
 
 		public static void ClearLayoutElement(UnityEngine.UI.Windows.WindowLayoutElement layoutElement) {
 			
-			if (layoutElement.GetComponent<UnityEngine.UI.Image>() == null) return;
+			if (layoutElement.editorLabel == null) return;
 
 			var root = layoutElement.gameObject.transform.root.gameObject;
 
 			if (EditorUtilities.IsPrefab(root) == false) {
 
-				Component.DestroyImmediate(layoutElement.GetComponent<UnityEngine.UI.Image>());
-				Component.DestroyImmediate(layoutElement.GetComponent<CanvasRenderer>());
 				GameObject.DestroyImmediate(layoutElement.editorLabel);
 				return;
 
@@ -40,6 +38,21 @@ namespace ME {
 
 				// Clean up
 				GameObject.DestroyImmediate(instance);
+
+			}
+
+		}
+
+		public static void DestroyImmediateHidden<T>(this MonoBehaviour root) where T : Component {
+
+			var components = root.GetComponents<T>();
+			foreach (var component in components) {
+
+				if (component.hideFlags == HideFlags.HideAndDontSave) {
+
+					Component.DestroyImmediate(component);
+
+				}
 
 			}
 
