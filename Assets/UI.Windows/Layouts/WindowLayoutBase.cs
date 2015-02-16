@@ -11,13 +11,13 @@ namespace UnityEngine.UI.Windows {
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
 		public bool animationRefresh = false;
 
-		protected void Show(bool resetAnimation = true) {
+		public void Show(bool resetAnimation = true) {
 			
 			this.OnShowBegin_INTERNAL(null, resetAnimation);
 
 		}
 
-		protected void Hide() {
+		public void Hide() {
 
 			this.OnHideBegin(null);
 

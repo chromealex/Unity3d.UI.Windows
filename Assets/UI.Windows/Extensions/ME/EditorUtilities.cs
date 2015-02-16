@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace ME {
 
-	public static class EditorUtilities {
+	public partial class EditorUtilities {
 
 		public static void ClearLayoutElement(UnityEngine.UI.Windows.WindowLayoutElement layoutElement) {
 			
@@ -42,7 +42,7 @@ namespace ME {
 			}
 
 		}
-
+		/*
 		public static void DestroyImmediateHidden<T>(this MonoBehaviour root) where T : Component {
 
 			var components = root.GetComponents<T>();
@@ -56,7 +56,7 @@ namespace ME {
 
 			}
 
-		}
+		}*/
 
 		public static bool IsPrefab(GameObject go) {
 
@@ -67,82 +67,6 @@ namespace ME {
 			}
 
 			return false;
-
-		}
-
-		public static T[] GetPrefabsOfType<T>(string fileExtension = ".prefab", bool silent = false) where T : Component {
-			
-			if (silent == false) UnityEditor.EditorUtility.DisplayProgressBar("Searching for files", "*" + fileExtension, 0f);
-			
-			List<T> tempObjects = new List<T>();
-			DirectoryInfo directory = new DirectoryInfo(Application.dataPath);
-			FileInfo[] goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
-			
-			int i = 0; int goFileInfoLength = goFileInfo.Length;
-			FileInfo tempGoFileInfo; string tempFilePath;
-			GameObject tempGO;
-			for (; i < goFileInfoLength; i++) {
-				
-				tempGoFileInfo = goFileInfo[i];
-				if (tempGoFileInfo == null)
-					continue;
-				
-				tempFilePath = tempGoFileInfo.FullName;
-				tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
-				
-				//Debug.Log(tempFilePath + "\n" + Application.dataPath);
-				
-				tempGO = AssetDatabase.LoadAssetAtPath(tempFilePath, typeof(GameObject)) as GameObject;
-				if (tempGO == null) continue;
-				var tempComp = tempGO.GetComponent<T>();
-				if (tempComp == null) continue;
-
-				tempObjects.Add(tempComp);
-				
-				if (silent == false) UnityEditor.EditorUtility.DisplayProgressBar("Searching for files", "*" + fileExtension, i / (float)goFileInfoLength);
-				
-			}
-			
-			if (silent == false) UnityEditor.EditorUtility.ClearProgressBar();
-			
-			return tempObjects.ToArray();
-			
-		}
-
-		public static T[] GetAssetsOfType<T>(string fileExtension = ".asset", bool silent = false) where T : ScriptableObject {
-
-			if (silent == false) UnityEditor.EditorUtility.DisplayProgressBar("Searching for files", "*" + fileExtension, 0f);
-
-			List<T> tempObjects = new List<T>();
-			DirectoryInfo directory = new DirectoryInfo(Application.dataPath);
-			FileInfo[] goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
-			
-			int i = 0; int goFileInfoLength = goFileInfo.Length;
-			FileInfo tempGoFileInfo; string tempFilePath;
-			T tempGO;
-			for (; i < goFileInfoLength; i++) {
-
-				tempGoFileInfo = goFileInfo[i];
-				if (tempGoFileInfo == null)
-					continue;
-				
-				tempFilePath = tempGoFileInfo.FullName;
-				tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
-				
-				//Debug.Log(tempFilePath + "\n" + Application.dataPath);
-				
-				tempGO = AssetDatabase.LoadAssetAtPath(tempFilePath, typeof(T)) as T;
-				if (tempGO == null) continue;
-
-				tempObjects.Add(tempGO);
-				
-				if (silent == false) UnityEditor.EditorUtility.DisplayProgressBar("Searching for files", "*" + fileExtension, i / (float)goFileInfoLength);
-
-			}
-			
-			if (silent == false) UnityEditor.EditorUtility.ClearProgressBar();
-
-			return tempObjects.ToArray();
 
 		}
 

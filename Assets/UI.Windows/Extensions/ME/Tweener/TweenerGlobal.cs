@@ -9,7 +9,7 @@ public class TweenerGlobal : MonoBehaviour {
 	public ME.Tweener tweener;
 	public ME.Tweener gameTimeTweener;
 	
-	public void Awake() {
+	public virtual void Awake() {
 		
 		TweenerGlobal.instance = this.tweener;
 		TweenerGlobal.gameTimeInstance = this.gameTimeTweener;
