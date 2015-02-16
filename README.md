@@ -1,6 +1,28 @@
+# Version 0.2b
+
+<b>Windows Behavior:</b>
+<ul>
+<li>added window iteration states (such as Initializing, Initialized, Showing, Hiding etc.)</li>
+<li>added 3D->UI component (useful for tooltips window type)</li>
+</ul>
+
+<b>Core:</b>
+<ul>
+<li>all settings from window system moved to settings file</li>
+<li>improved layouts drawer behavior (fixes)</li>
+</ul>
+
+<b>Examples:</b>
+<ul>
+<li>added alert message</li>
+<li>added modules (BackgroundCloseable, BackgroundLock)</li>
+<li>added 3D->UI HUD</li>
+<li>split button components (Default button, Button with tooltip)</li>
+</ul>
+
 # Unity3d UI Windows Extension
 
-Features:<br />
+<b>Features:</b><br />
 - MVC<br />
 You can store your layout out of your logic and model.
 <br /><br />
