@@ -4,7 +4,21 @@
 <img src="https://raw.githubusercontent.com/chromealex/Unity3d.UI.Windows/master/README/4.png" width="170" />
 <img src="https://raw.githubusercontent.com/chromealex/Unity3d.UI.Windows/master/README/5.png" width="170" />
 
-# Version 0.2b
+# Version 0.3a
+
+<b>Windows Behavior:</b>
+<ul>
+<li>Added dontDestroyOnLoad flag in window preferences</li>
+</ul>
+
+<b>Core:</b>
+<ul>
+<li>Fix WindowSystem linq query - ignore null windows</li>
+<li>ObjectPool now in Extensions namespace</li>
+<li>Some minor fixes</li>
+</ul>
+
+# Version 0.2a
 
 <b>Windows Behavior:</b>
 <ul>
@@ -26,7 +40,7 @@
 <li>split button components (Default button, Button with tooltip)</li>
 </ul>
 
-# Unity3d UI Windows Extension
+# Version 0.1a
 
 <b>Features:</b><br />
 - MVC<br />
