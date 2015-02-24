@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
@@ -101,7 +102,9 @@ namespace UnityEngine.UI.Windows {
 		private void Awake() {
 
 			WindowSystem.instance = this;
-			
+
+			GameObject.DontDestroyOnLoad(this.gameObject);
+
 			this.Init();
 
 		}
@@ -177,7 +180,7 @@ namespace UnityEngine.UI.Windows {
 
 		private WindowBase GetInstance(WindowBase window, params object[] parameters) {
 
-			var instance = this.currentWindows.FirstOrDefault((w) => w.GetType().IsInstanceOfType(window));
+			var instance = this.currentWindows.FirstOrDefault((w) => w != null && w.GetType().IsInstanceOfType(window));
 			if (instance == null) {
 
 				instance = this.Create_INTERNAL(window, parameters);

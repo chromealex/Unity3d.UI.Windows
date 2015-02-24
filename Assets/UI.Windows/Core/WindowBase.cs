@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
@@ -231,6 +232,7 @@ namespace UnityEngine.UI.Windows {
 		};
 
 		public Depth depth;
+		public bool dontDestroyOnLoad = true;
 
 	}
 
@@ -270,6 +272,7 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.workCamera.depth = depth;
+			if (this.preferences.dontDestroyOnLoad == true) GameObject.DontDestroyOnLoad(this.gameObject);
 
 			if (this.setup == false) {
 				

@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows {
 				var text = this.editorLabel.GetComponentInChildren<Text>();
 
 				this.editorLabel.transform.SetAsLastSibling();
-				text.text = descr;
+				if (text != null) text.text = descr;
 
 			}
 

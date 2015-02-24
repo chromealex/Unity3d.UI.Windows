@@ -21,18 +21,63 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace UnityEngine.UI.Windows {
+namespace UnityEngine.Extensions {
 
 	public sealed class ObjectPool : MonoBehaviour
 	{
 		static ObjectPool _instance;
 		Dictionary<Component, List<Component>> objectLookup = new Dictionary<Component, List<Component>> ();
 		Dictionary<Component, Component> prefabLookup = new Dictionary<Component, Component> ();
+		Dictionary<Component, List<Component>> allLookup = new Dictionary<Component, List<Component>> ();
 		
+		public void Awake() {
+
+			ObjectPool._instance = this;
+			
+		}
+
 		public static void Clear ()
 		{
 			instance.objectLookup.Clear ();
 			instance.prefabLookup.Clear ();
+			instance.allLookup.Clear();
+		}
+		
+		public static void RecycleAll<T> (T prefab) where T : Component
+		{
+			if (prefab == null)
+				return;
+			
+			
+			if (instance.allLookup.ContainsKey (prefab)) {
+
+				foreach (var item in instance.allLookup[prefab]) {
+					
+					item.Recycle();
+					
+				}
+
+			}
+
+		}
+		
+		public static void ClearPool<T> (T prefab) where T : Component
+		{
+			if (prefab == null)
+				return;
+			
+			if (instance.allLookup.ContainsKey (prefab)) {
+
+				foreach (var item in instance.allLookup[prefab]) {
+					
+					if (item != null) GameObject.Destroy(item.gameObject);
+					
+				}
+				
+				instance.allLookup[prefab].Clear();
+				
+			}
+
 		}
 
 		public static void CreatePool<T> (T prefab, int capacity, Transform root = null) where T : Component
@@ -82,6 +127,7 @@ namespace UnityEngine.UI.Windows {
 						obj.gameObject.SetActive(true);
 						
 						instance.prefabLookup.Add (obj, prefab);
+						prefab.AddToAll(obj);
 						
 						return (T)obj;
 						
@@ -94,14 +140,33 @@ namespace UnityEngine.UI.Windows {
 				obj.name = prefab.name;
 				obj.gameObject.SetActive(true);
 				instance.prefabLookup.Add (obj, prefab);
+				prefab.AddToAll(obj);
+
 				return (T)obj;
 			} else {
 				T obj = null;
 				obj = (T)Object.Instantiate (prefab, position, rotation);
 				obj.transform.SetParent(prefab.transform.parent);
 				obj.name = prefab.name;
+				prefab.AddToAll(obj);
+
 				return (T)obj;
 			}
+		}
+
+		public static void AddToAll<T> (T prefab, T item) where T : Component {
+
+			if (instance.allLookup.ContainsKey(prefab) == true) {
+
+				var list = instance.allLookup[prefab];
+				if (list.Contains(item) == false) list.Add(item);
+
+			} else {
+
+				instance.allLookup.Add(prefab, new List<Component>() { item });
+
+			}
+
 		}
 
 		public static T Spawn<T> (T prefab, Vector3 position) where T : Component
@@ -116,6 +181,8 @@ namespace UnityEngine.UI.Windows {
 		
 		public static void Recycle<T> (T obj) where T : Component
 		{
+			if (obj == null) return;
+
 			if (instance.prefabLookup.ContainsKey (obj)) {
 				instance.objectLookup [instance.prefabLookup [obj]].Add (obj);
 				instance.prefabLookup.Remove (obj);
@@ -150,6 +217,22 @@ namespace UnityEngine.UI.Windows {
 
 	public static class ObjectPoolExtensions
 	{
+		public static void AddToAll<T> (this T prefab, T instance) where T : Component {
+			
+			ObjectPool.AddToAll(prefab, instance);
+			
+		}
+
+		public static void RecycleAll<T> (this T prefab) where T : Component
+		{
+			ObjectPool.RecycleAll(prefab);
+		}
+		
+		public static void ClearPool<T> (this T prefab) where T : Component
+		{
+			ObjectPool.ClearPool(prefab);
+		}
+
 		public static void CreatePool<T> (this T prefab, int capacity, Transform root = null) where T : Component
 		{
 			ObjectPool.CreatePool (prefab, capacity, root);

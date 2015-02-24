@@ -16,13 +16,19 @@ namespace UnityEngine.UI.Windows {
 			this.OnShowBegin_INTERNAL(null, resetAnimation);
 
 		}
-
+		
 		public void Hide() {
-
+			
 			this.OnHideBegin(null);
-
+			
 		}
 		
+		public void Hide(System.Action callback) {
+			
+			this.OnHideBegin(callback);
+			
+		}
+
 		public void SetResetState() {
 			
 			if (this.animation != null) this.animation.SetResetState(this.animationInputParams, this);
@@ -75,7 +81,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void OnHideBegin(System.Action callback) {
-			
+
 			if (this.animation != null) {
 				
 				this.animation.Play(this.animationInputParams, this, false, callback);

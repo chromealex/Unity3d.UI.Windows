@@ -4,7 +4,7 @@ public static class TweenerExt
 {
 	public static ME.Tweener.Tween<CanvasGroup> addTweenAlpha(this ME.Tweener tweener, CanvasGroup canvasGroup, float duration, float end)
 	{
-		return tweener.addTweenAlpha(canvasGroup, duration, canvasGroup.alpha, end);
+		return tweener.addTweenAlpha(canvasGroup, duration, canvasGroup != null ? canvasGroup.alpha : 0f, end);
 	}
 
 	public static ME.Tweener.Tween<CanvasGroup> addTweenAlpha(this ME.Tweener tweener, CanvasGroup canvasGroup, float duration, float start, float end)
