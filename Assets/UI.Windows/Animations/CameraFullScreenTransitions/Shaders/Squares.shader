@@ -45,14 +45,19 @@
 			fixed4 frag( v2f_img i ) : COLOR {
 			
 	         	 float2 uv = i.uv;
+	         	 float2 ouv = uv;
 	         	 #if UNITY_UV_STARTS_AT_TOP
 				 if (_MainTex_TexelSize.y < 0) uv.y = 1 - uv.y;
 				 #endif
 				
+				fixed4 t1 = tex2D(_MainTex, ouv);
+				fixed4 t2 = tex2D(_ClearScreen, uv);
+				if (t1.a - t2.a == 0 && t1.r - t2.r == 0 && t1.g - t2.g == 0 && t1.b - t2.b == 0) discard;
+				
 				float r = rand( floor( _Size.xy * uv ) );
 				float m = smoothstep( 0.0, -_Smoothness, r - ( _Value * ( 1.0 + _Smoothness ) ) );
 
-				return lerp(tex2D(_MainTex, uv), tex2D(_ClearScreen, uv), m );
+				return lerp(t1, t2, m );
 				
 			}
 

@@ -28,8 +28,8 @@
 
 
 			// uniforms
-			sampler2D _MainTex;
-			sampler2D _ClearScreen;
+			uniform sampler2D _MainTex;
+			uniform sampler2D _ClearScreen;
 			uniform fixed _Value;
 			uniform float _Amplitude;
 			uniform float _Speed;
@@ -39,9 +39,14 @@
 			fixed4 frag( v2f_img i ) : COLOR {
 			
 	         	 float2 uv = i.uv;
+	         	 float2 ouv = uv;
 	         	 #if UNITY_UV_STARTS_AT_TOP
 				 if (_MainTex_TexelSize.y < 0) uv.y = 1 - uv.y;
 				 #endif
+				
+				fixed4 t1 = tex2D(_MainTex, ouv);
+				fixed4 t2 = tex2D(_ClearScreen, uv);
+				if (t1.a - t2.a == 0 && t1.r - t2.r == 0 && t1.g - t2.g == 0 && t1.b - t2.b == 0) discard;
 				
 				fixed value = 1 - _Value;
 				if (value < 0.5) value = 1 - value;
@@ -50,7 +55,7 @@
 				float dist = length( dir );
 				half2 offset = dir * ( sin( _Time.x * dist * _Amplitude * value - value * _Speed) + 0.5 ) / 30.0;
 
-				return lerp( lerp( tex2D( _MainTex, uv + offset ), tex2D(_ClearScreen, uv + offset), _Value), fixed4( 0.0, 0.0, 0.0, 0.0 ), smoothstep( 0.5, 1.0, value ) );
+				return lerp( lerp( tex2D( _MainTex, ouv + offset ), tex2D(_ClearScreen, uv + offset), _Value), fixed4( 0.0, 0.0, 0.0, 0.0 ), smoothstep( 0.5, 1.0, value ) );
 				
 			}
 
