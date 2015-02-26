@@ -16,7 +16,17 @@ namespace UnityEngine.UI.Windows {
 		public class Settings {
 
 			public WindowSystemSettings file;
-			
+
+			public float minZDepth {
+				
+				get {
+					
+					return this.file != null ? this.file.baseInfo.minZDepth : 0f;
+					
+				}
+
+			}
+
 			public float minDepth {
 
 				get {
@@ -65,9 +75,12 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR || UNITY_STANDALONE
 		public List<WindowBase> standaloneOnly = new List<WindowBase>();
 		#endif
-
+		
 		[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
+		
+		//[HideInInspector]
+		public List<WindowBase> history = new List<WindowBase>();
 
 		[HideInInspector]
 		private float depthStep;
@@ -77,6 +90,11 @@ namespace UnityEngine.UI.Windows {
 		private int currentOrderInLayer;
 		[HideInInspector]
 		private int currentRaycastPriority;
+		
+		[HideInInspector]
+		private float zDepthStep;
+		[HideInInspector]
+		private float currentZDepth;
 
 		private static WindowSystem _instance;
 		private static WindowSystem instance {
@@ -128,7 +146,14 @@ namespace UnityEngine.UI.Windows {
 			foreach (var window in this.windows) window.CreatePool(0);
 			
 			this.depthStep = (this.settings.maxDepth - this.settings.minDepth) / this.settings.poolSize;
+			this.zDepthStep = 200f;
 			WindowSystem.ResetDepth();
+
+		}
+
+		internal static void WaitCoroutine(IEnumerator routine) {
+
+			WindowSystem.instance.StartCoroutine(routine);
 
 		}
 
@@ -157,6 +182,37 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void AddToHistory(WindowBase window) {
+
+			WindowSystem.instance.history.Add(window);
+
+		}
+
+		public static void RemoveFromHistory(WindowBase window) {
+
+			WindowSystem.instance.history.Remove(window);
+
+		}
+
+		public static WindowBase GetPreviousWindow(WindowBase current) {
+
+			WindowBase prev = null;
+			foreach (var window in WindowSystem.instance.history) {
+
+				if (window == current) break;
+
+				if (window.GetState() == WindowState.Shown) {
+
+					prev = window;
+
+				}
+
+			}
+
+			return prev;
+
+		}
+
 		public static void ShowDefault(params object[] parameters) {
 
 			WindowSystem.instance.ShowDefault_INTERNAL(parameters);
@@ -170,7 +226,7 @@ namespace UnityEngine.UI.Windows {
 				var instance = this.GetInstance(window, parameters);
 
 				instance.SetParameters(parameters);
-				instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
+				instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
 				
 				instance.Show();
 
@@ -194,6 +250,7 @@ namespace UnityEngine.UI.Windows {
 		internal static void ResetDepth() {
 
 			WindowSystem.instance.currentDepth = WindowSystem.instance.settings.minDepth;
+			WindowSystem.instance.currentZDepth = WindowSystem.instance.settings.minZDepth;
 
 		}
 
@@ -302,7 +359,7 @@ namespace UnityEngine.UI.Windows {
 			instance.transform.localScale = Vector3.one;
 			
 			instance.SetParameters(parameters);
-			instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
+			instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
 
 			if (WindowSystem.instance.currentWindows.Contains(instance) == false) WindowSystem.instance.currentWindows.Add(instance);
 
@@ -318,7 +375,16 @@ namespace UnityEngine.UI.Windows {
 			return instance;
 			
 		}
-		
+
+		public static T Show<T>(T source, params object[] parameters) where T : WindowBase {
+
+			var instance = WindowSystem.instance.Create_INTERNAL(source, parameters) as T;
+			if (instance != null) instance.Show();
+
+			return instance;
+
+		}
+
 		private int GetNextOrderInLayer() {
 			
 			return ++this.currentOrderInLayer;
@@ -331,6 +397,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
+		private float GetNextZDepth() {
+
+			this.currentZDepth += this.zDepthStep;
+			return this.currentZDepth;
+			
+		}
+
 		private float GetNextDepth(Preferences preferences, float windowDepth) {
 
 			var depth = 0f;

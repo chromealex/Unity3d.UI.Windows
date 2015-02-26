@@ -229,56 +229,52 @@ namespace UnityEngine.UI.Windows {
 
 			this.instance.OnShowBegin(); 
 
-			Component callbacker = null;
-			var maxDuration = 0f;
-			foreach (var component in this.components) {
+			ME.Utilities.CallInSequence(callback, this.components, (e, c) => { e.OnShowBegin(c); });
+			/*
+			var counter = 0;
+			System.Action callbackItem = () => {
 				
-				var d = component.GetDuration(true);
-				if (d >= maxDuration) {
-					
-					maxDuration = d;
-					callbacker = component;
-					
-				}
+				++counter;
+				if (counter < this.components.Length) return;
 				
-			}
+				if (callback != null) callback();
+				
+			};
 			
 			foreach (var component in this.components) {
 				
-				component.OnShowBegin(callbacker == component ? callback : null);
+				component.OnShowBegin(callbackItem);
 				
 			}
-			
-			if (callbacker == null && callback != null) callback();
-			
+
+			if (this.components.Length == 0 && callback != null) callback();
+			*/
 		}
 		public void OnShowEnd() { this.instance.OnShowEnd(); foreach (var component in this.components) component.OnShowEnd(); }
 		public void OnHideBegin(System.Action callback) {
 
 			this.instance.OnHideBegin(); 
 
-			Component callbacker = null;
-			var maxDuration = 0f;
-			foreach (var component in this.components) {
+			ME.Utilities.CallInSequence(callback, this.components, (e, c) => { e.OnHideBegin(c); });
+			/*
+			var counter = 0;
+			System.Action callbackItem = () => {
 				
-				var d = component.GetDuration(true);
-				if (d >= maxDuration) {
-					
-					maxDuration = d;
-					callbacker = component;
-					
-				}
+				++counter;
+				if (counter < this.components.Length) return;
 				
-			}
+				if (callback != null) callback();
+				
+			};
 			
 			foreach (var component in this.components) {
 				
-				component.OnHideBegin(callbacker == component ? callback : null);
+				component.OnHideBegin(callbackItem);
 				
 			}
 			
-			if (callbacker == null && callback != null) callback();
-			
+			if (this.components.Length == 0 && callback != null) callback();
+*/
 		}
 		public void OnHideEnd() { this.instance.OnHideEnd(); foreach (var component in this.components) component.OnHideEnd(); }
 		

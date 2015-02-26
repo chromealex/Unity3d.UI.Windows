@@ -6,24 +6,29 @@ using System.Linq;
 namespace ME {
 
 	public class Tweener: MonoBehaviour {
+
 		public interface ITransition {
+
 			float interpolate(float start, float distance, float elapsedTime, float duration);
+
 		}
 	
 		public interface ITween {
+
 			bool isCompleted();
-
 			void RaiseCancel();
-
 			void RaiseComplete();
-
 			object getTag();
-
 			void update(float dt, bool debug);
-
 			bool isDirty { get; set; }
+
 		}
-	
+		
+		public enum TimerType {
+			Fixed,
+			Game,
+		}
+
 		public class Tween<T>: ITween {
 
 			public bool isDirty {
@@ -228,12 +233,7 @@ namespace ME {
 			}
 			
 		}
-		
-		public enum TimerType {
-			Fixed,
-			Game,
-			Battle,
-		}
+
 		public TimerType timerType = TimerType.Game;
 		public bool repeatByDefault = false;
 		public bool debug = false;
@@ -261,10 +261,16 @@ namespace ME {
 			Mark(tween => tween.getTag() == tweenerTag);
 			
 		}
-		
-		void Update() {
 
-			_update((this.timerType == TimerType.Fixed) ? Time.unscaledDeltaTime : Time.deltaTime, this.debug);
+		public virtual void Update() {
+
+			this.Update((this.timerType == TimerType.Fixed) ? Time.unscaledDeltaTime : Time.deltaTime);
+
+		}
+
+		protected void Update(float deltaTime) {
+
+			_update(deltaTime, this.debug);
 			
 		}
 		

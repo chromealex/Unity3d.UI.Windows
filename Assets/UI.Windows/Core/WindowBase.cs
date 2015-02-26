@@ -121,67 +121,51 @@ namespace UnityEngine.UI.Windows {
 		public void OnInit() { foreach (var element in this.elements) element.OnInit(); }
 		public void OnDeinit() { foreach (var element in this.elements) element.OnDeinit(); }
 		public void OnShowBegin(System.Action callback) {
-			
-			ModuleInfo callbacker = null;
-			var maxDuration = 0f;
-			foreach (var element in this.elements) {
+
+			ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnShowBegin(c); });
+			/*
+			var counter = 0;
+			System.Action callbackItem = () => {
 				
-				var d = element.GetDuration(true);
-				if (d >= maxDuration) {
-					
-					maxDuration = d;
-					callbacker = element;
-					
-				}
+				++counter;
+				if (counter < this.elements.Length) return;
 				
-			}
+				if (callback != null) callback();
+				
+			};
 			
 			foreach (var element in this.elements) {
 				
-				if (callbacker == element) {
-					
-					element.OnShowBegin(callback);
-					
-				} else {
-					
-					element.OnShowBegin(null);
-					
-				}
+				element.OnShowBegin(callbackItem);
 				
 			}
-			
+
+			if (this.elements.Length == 0 && callback != null) callback();
+*/
 		}
 		public void OnShowEnd() { foreach (var element in this.elements) element.OnShowEnd(); }
 		public void OnHideBegin(System.Action callback) {
-			
-			ModuleInfo callbacker = null;
-			var maxDuration = 0f;
+
+			ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnHideBegin(c); });
+			/*
+			var counter = 0;
+			System.Action callbackItem = () => {
+
+				++counter;
+				if (counter < this.elements.Length) return;
+
+				if (callback != null) callback();
+
+			};
+
 			foreach (var element in this.elements) {
 				
-				var d = element.GetDuration(true);
-				if (d >= maxDuration) {
-					
-					maxDuration = d;
-					callbacker = element;
-					
-				}
-				
+				element.OnHideBegin(callbackItem);
+
 			}
 			
-			foreach (var element in this.elements) {
-				
-				if (callbacker == element) {
-					
-					element.OnHideBegin(callback);
-					
-				} else {
-					
-					element.OnHideBegin(null);
-					
-				}
-				
-			}
-			
+			if (this.elements.Length == 0 && callback != null) callback();
+*/
 		}
 		public void OnHideEnd() { foreach (var element in this.elements) element.OnHideEnd(); }
 
@@ -236,6 +220,115 @@ namespace UnityEngine.UI.Windows {
 
 	}
 
+	[System.Serializable]
+	public class Transition : IWindowEventsAsync {
+
+		public TransitionBase transition;
+
+		[HideInInspector]
+		private WindowBase window;
+
+		public void Setup(WindowBase window) {
+
+			this.window = window;
+
+			if (this.transition!= null) {
+
+				this.transition.SetupCamera(this.window.workCamera);
+
+			}
+
+		}
+
+		// Events
+		public void OnInit() { if (this.transition != null) this.transition.OnInit(); }
+		public void OnDeinit() {}
+		public void OnShowEnd() {}
+		public void OnHideEnd() {}
+		public void OnShowBegin(System.Action callback) {
+
+			if (this.transition != null) {
+
+				this.transition.SetResetState(null, null);
+				this.transition.Play(this.window, forward: true, callback: callback);
+
+			} else {
+
+				if (callback != null) callback();
+
+			}
+
+		}
+		public void OnHideBegin(System.Action callback) {
+
+			if (this.transition != null) {
+
+				this.transition.Play(this.window, forward: false, callback: callback);
+
+			} else {
+				
+				if (callback != null) callback();
+				
+			}
+
+		}
+
+		private bool waitCapture = false;
+		private bool grabEveryFrame = false;
+		private Texture2D screen;
+		private System.Action callback;
+		public void SaveToCache(Texture2D screen, System.Action callback, bool grabEveryFrame = false) {
+
+			this.callback = callback;
+			this.screen = screen;
+			this.grabEveryFrame = grabEveryFrame;
+			this.waitCapture = true;
+
+		}
+
+		public void OnPostRender() {
+
+			if (this.waitCapture == true) {
+
+				ME.Utilities.ScreenToTexture(this.screen);
+				
+				if (this.callback != null) this.callback();
+				this.callback = null;
+
+				if (this.grabEveryFrame == true) {
+
+					if (this.transition != null && this.transition.IsValid(this.window) == false) {
+
+						this.waitCapture = false;
+
+					}
+
+				} else {
+
+					this.waitCapture = false;
+
+				}
+
+			}
+
+		}
+
+		public void OnRenderImage(RenderTexture source, RenderTexture destination) {
+
+			if (this.transition != null) this.transition.OnRenderTransition(this.window, source, destination);
+
+		}
+
+		public float GetAnimationDuration(bool forward) {
+
+			if (this.transition != null) return this.transition.GetDuration(null, forward);
+
+			return 0f;
+
+		}
+
+	}
+
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
 	public class WindowBase : WindowObject, IWindowEvents {
@@ -246,6 +339,7 @@ namespace UnityEngine.UI.Windows {
 		public bool initialized = false;
 
 		public Preferences preferences;
+		public Transition transition;
 		public Modules modules;
 		public Events events;
 		
@@ -258,7 +352,7 @@ namespace UnityEngine.UI.Windows {
 
 		private WindowState currentState = WindowState.NotInitialized;
 
-		internal void Init(float depth, int raycastPriority, int orderInLayer) {
+		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer) {
 			
 			this.currentState = WindowState.Initializing;
 
@@ -271,6 +365,10 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+			var pos = this.transform.position;
+			pos.z = zDepth;
+			this.transform.position = pos;
+
 			this.workCamera.depth = depth;
 			if (this.preferences.dontDestroyOnLoad == true) GameObject.DontDestroyOnLoad(this.gameObject);
 
@@ -278,6 +376,7 @@ namespace UnityEngine.UI.Windows {
 				
 				this.Setup(this);
 
+				this.OnTransitionInit();
 				this.OnLayoutInit(depth, raycastPriority, orderInLayer);
 				this.OnModulesInit();
 				this.OnInit();
@@ -319,6 +418,32 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+		
+		public WindowState GetState() {
+			
+			return this.currentState;
+			
+		}
+		
+		public void OnRenderImage(RenderTexture source, RenderTexture destination) {
+			
+			this.transition.OnRenderImage(source, destination);
+			
+		}
+
+		public void OnPostRender() {
+
+			this.transition.OnPostRender();
+
+		}
+
+		private void OnTransitionInit() {
+			
+			this.workCamera.clearFlags = CameraClearFlags.Depth;
+			this.transition.Setup(this);
+			this.transition.OnInit();
+
+		}
 
 		private void OnModulesInit() {
 
@@ -343,11 +468,18 @@ namespace UnityEngine.UI.Windows {
 			
 			var layoutDuration = this.GetLayoutAnimationDuration(forward);
 			var moduleDuration = this.GetModuleAnimationDuration(forward);
+			var transitionDuration = this.GetTransitionAnimationDuration(forward);
 
-			return Mathf.Max(layoutDuration, moduleDuration);
+			return Mathf.Max(layoutDuration, Mathf.Max(moduleDuration, transitionDuration));
 
 		}
 		
+		public virtual float GetTransitionAnimationDuration(bool forward) {
+			
+			return this.transition.GetAnimationDuration(forward);
+			
+		}
+
 		public virtual float GetModuleAnimationDuration(bool forward) {
 			
 			return this.modules.GetAnimationDuration(forward);
@@ -364,27 +496,35 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.currentState == WindowState.Showing || this.currentState == WindowState.Shown) return;
 			this.currentState = WindowState.Showing;
+			
+			WindowSystem.AddToHistory(this);
 
+			var counter = 0;
 			System.Action callback = () => {
-				
+
+				if (this.currentState != WindowState.Showing) return;
+
+				++counter;
+				if (counter < 3) return;
+
 				this.OnShowEnd();
 				this.OnLayoutShowEnd();
 				this.modules.OnShowEnd();
 				this.events.OnShowEnd();
-				
+				this.transition.OnShowEnd();
+
+			    this.currentState = WindowState.Shown;
+
 			};
 
-			var layoutCallback = (this.GetLayoutAnimationDuration(true) >= this.GetModuleAnimationDuration(true));
-
-			this.OnLayoutShowBegin(layoutCallback == true ? callback : null);
-			this.modules.OnShowBegin(layoutCallback == false ? callback : null);
+			this.OnLayoutShowBegin(callback);
+			this.modules.OnShowBegin(callback);
+			this.transition.OnShowBegin(callback);
 			this.events.OnShowBegin();
 			this.OnShowBegin();
 
 			this.gameObject.SetActive(true);
 			
-			this.currentState = WindowState.Shown;
-
 		}
 		
 		public void Hide() {
@@ -397,30 +537,38 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.currentState == WindowState.Hided || this.currentState == WindowState.Hiding) return;
 			this.currentState = WindowState.Hiding;
-
+			
+			var counter = 0;
 			System.Action callback = () => {
 				
+				if (this.currentState != WindowState.Hiding) return;
+
+				++counter;
+				if (counter < 3) return;
+				
+				WindowSystem.RemoveFromHistory(this);
+
 				this.Recycle();
 				
 				this.OnHideEnd();
 				this.OnLayoutHideEnd();
 				this.modules.OnHideEnd();
 				this.events.OnHideEnd();
+				this.transition.OnHideEnd();
 				if (onHideEnd != null) onHideEnd();
 				
 				this.events.Clear();
-				
-			};
-			
-			var layoutCallback = (this.GetLayoutAnimationDuration(false) >= this.GetModuleAnimationDuration(false));
+						
+				this.currentState = WindowState.Hided;
 
-			this.OnLayoutHideBegin(layoutCallback == true ? callback : null);
-			this.modules.OnHideBegin(layoutCallback == false ? callback : null);
+			};
+
+			this.OnLayoutHideBegin(callback);
+			this.modules.OnHideBegin(callback);
+			this.transition.OnHideBegin(callback);
 			this.events.OnHideBegin();
 			this.OnHideBegin();
 			
-			this.currentState = WindowState.Hided;
-
 		}
 
 		public void OnDestroy() {
@@ -430,6 +578,7 @@ namespace UnityEngine.UI.Windows {
 			this.OnLayoutDeinit();
 			this.events.OnDeinit();
 			this.modules.OnDeinit();
+			this.transition.OnDeinit();
 
 			this.events.OnDestroy();
 
@@ -485,6 +634,8 @@ namespace UnityEngine.UI.Windows {
 				this.workCamera.cullingMask = 0x0;
 				this.workCamera.cullingMask |= 1 << this.gameObject.layer;
 				
+				this.workCamera.backgroundColor = new Color(0f, 0f, 0f, 0f);
+
 			}
 			
 			this.initialized = (this.workCamera != null);

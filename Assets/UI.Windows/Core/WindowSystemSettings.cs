@@ -8,6 +8,8 @@ public class WindowSystemSettings : UnityEngine.ScriptableObject {
 		public float maxDepth = 98f;
 		public int poolSize = 100;
 
+		public float minZDepth = 0f;
+
 	}
 
 	[System.Serializable]
@@ -19,6 +21,17 @@ public class WindowSystemSettings : UnityEngine.ScriptableObject {
 		public float farClipPlane = 100f;
 		public bool useOcclusionCulling = false;
 		public bool hdr = false;
+		
+		public void Apply(UnityEngine.Camera camera) {
+			
+			camera.orthographic = this.orthographic;
+			camera.orthographicSize = this.orthographicSize;
+			camera.nearClipPlane = this.nearClipPlane;
+			camera.farClipPlane = this.farClipPlane;
+			camera.useOcclusionCulling = this.useOcclusionCulling;
+			camera.hdr = this.hdr;
+
+		}
 
 	}
 
@@ -35,7 +48,8 @@ public class WindowSystemSettings : UnityEngine.ScriptableObject {
 
 	public void Apply(UnityEngine.Camera camera = null, UnityEngine.Canvas canvas = null) {
 
-
+		if (camera != null) this.camera.Apply(camera);
+		if (canvas != null) canvas.sortingLayerName = this.sortingLayer.name;
 
 	}
 

@@ -4,6 +4,36 @@
 <img src="https://raw.githubusercontent.com/chromealex/Unity3d.UI.Windows/master/README/4.png" width="170" />
 <img src="https://raw.githubusercontent.com/chromealex/Unity3d.UI.Windows/master/README/5.png" width="170" />
 
+Online Samples:
+https://c11cf9e2a0f3c662eb191e3f47f.../host/0B9amRnYzMgMneGxpRXZNdDNNUDA/Basic.html
+https://afa89e40ebdcaea748467be1cd3...0B9amRnYzMgMnbEdOT21rcHM3b2c/Transitions.html
+
+# Version 0.4a
+
+<b>Components:</b>
+<ul>
+<li>Added ButtonWithText component</li>
+<li>Added callback with type support to Button Component</li>
+</ul>
+
+<b>Transitions:</b>
+<ul>
+<li>Splitted layout transitions and fullscreen transitions</li>
+<li>Added 7 basic fullscreen transitions</li>
+</ul>
+
+<b>Core:</b>
+<ul>
+<li>Added fullscreen transitions support</li>
+<li>Windows sorting by Z axis now</li>
+<li>Some minor fixes</li>
+</ul>
+
+<b>Examples:</b>
+<ul>
+<li>Added Basic and Transitions scenes</li>
+</ul>
+
 # Version 0.3a
 
 <b>Windows Behavior:</b>
