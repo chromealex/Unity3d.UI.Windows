@@ -17,17 +17,22 @@
          sampler2D _ClearScreen;
          sampler2D _Mask;
          fixed _Value;
+         float4 _MainTex_TexelSize;
  
          struct Input {
              float2 uv_MainTex;
-             float2 uv_ClearScreen;
              float2 uv_Mask;
          };
  
          void surf(Input IN, inout SurfaceOutput o) {
-         
-             half4 c = tex2D(_MainTex, IN.uv_MainTex);
-             half4 d = tex2D(_ClearScreen, IN.uv_ClearScreen);
+         	
+         	 float2 uv = IN.uv_MainTex;
+         	 #if UNITY_UV_STARTS_AT_TOP
+			 if (_MainTex_TexelSize.y < 0) uv.y = 1 - uv.y;
+			 #endif
+			
+             half4 c = tex2D(_MainTex, uv);
+             half4 d = tex2D(_ClearScreen, uv);
              half4 g = tex2D(_Mask, IN.uv_Mask);
              
              if ((g.r + g.g + g.b) * 0.33333f < _Value) {

@@ -33,6 +33,7 @@
 			uniform half _Value;
 			uniform float2 _Size;
 			uniform float _Smoothness;
+            float4 _MainTex_TexelSize;
 
 			float rand( float2 co ) {
 			
@@ -43,10 +44,15 @@
 			
 			fixed4 frag( v2f_img i ) : COLOR {
 			
-				float r = rand( floor( _Size.xy * i.uv ) );
+	         	 float2 uv = i.uv;
+	         	 #if UNITY_UV_STARTS_AT_TOP
+				 if (_MainTex_TexelSize.y < 0) uv.y = 1 - uv.y;
+				 #endif
+				
+				float r = rand( floor( _Size.xy * uv ) );
 				float m = smoothstep( 0.0, -_Smoothness, r - ( _Value * ( 1.0 + _Smoothness ) ) );
 
-				return lerp(tex2D(_MainTex, i.uv), tex2D(_ClearScreen, i.uv), m );
+				return lerp(tex2D(_MainTex, uv), tex2D(_ClearScreen, uv), m );
 				
 			}
 

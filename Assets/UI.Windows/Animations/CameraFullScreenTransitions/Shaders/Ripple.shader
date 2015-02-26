@@ -33,18 +33,24 @@
 			uniform fixed _Value;
 			uniform float _Amplitude;
 			uniform float _Speed;
+            float4 _MainTex_TexelSize;
 
 
 			fixed4 frag( v2f_img i ) : COLOR {
 			
+	         	 float2 uv = i.uv;
+	         	 #if UNITY_UV_STARTS_AT_TOP
+				 if (_MainTex_TexelSize.y < 0) uv.y = 1 - uv.y;
+				 #endif
+				
 				fixed value = 1 - _Value;
 				if (value < 0.5) value = 1 - value;
 			
-				half2 dir = i.uv - half2( 0.5, 0.5 );
+				half2 dir = uv - half2( 0.5, 0.5 );
 				float dist = length( dir );
 				half2 offset = dir * ( sin( _Time.x * dist * _Amplitude * value - value * _Speed) + 0.5 ) / 30.0;
 
-				return lerp( lerp( tex2D( _MainTex, i.uv + offset ), tex2D(_ClearScreen, i.uv + offset), _Value), fixed4( 0.0, 0.0, 0.0, 0.0 ), smoothstep( 0.5, 1.0, value ) );
+				return lerp( lerp( tex2D( _MainTex, uv + offset ), tex2D(_ClearScreen, uv + offset), _Value), fixed4( 0.0, 0.0, 0.0, 0.0 ), smoothstep( 0.5, 1.0, value ) );
 				
 			}
 
