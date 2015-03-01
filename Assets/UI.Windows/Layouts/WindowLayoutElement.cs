@@ -35,12 +35,7 @@ namespace UnityEngine.UI.Windows {
 		public Color editorColor;
 		public void TurnOff_EDITOR() {
 
-			if (this.editorActive == false) return;
-
 			this.editorActive = false;
-
-			ME.EditorUtilities.ClearLayoutElement(this);
-
 		}
 
 		public void TurnOn_EDITOR() {
@@ -54,94 +49,71 @@ namespace UnityEngine.UI.Windows {
 			this.Update();
 
 		}
-
-		[HideInInspector][SerializeField]
-		public GameObject editorLabel;
-		public override void Update_EDITOR() {
+		
+		public string GetDescription() {
 			
-			base.Update_EDITOR();
-
-			if (this.editorActive == false) return;
-
-			if (Application.isPlaying == true) {
-				/*
-				if (this.editorBody != null) {
-
-					Component.Destroy(this.editorBody);
-					Component.Destroy(this.GetComponent<CanvasRenderer>());
-
-				}
-				if (this.editorLabel != null) GameObject.Destroy(this.editorLabel);*/
-				return;
-
-			}
-
-			if (this.editorLabel == null) {
-
-				var t = this.transform.FindChild("__EditorLabel");
-				if (t != null) this.editorLabel = t.gameObject;
-
-			}
-
-			var descr = this.tag.ToString() + ": " + this.comment + "\n" + "(Animation: " + (this.animation != null ? this.animation.name : "None") + ")";
-
-			if (this.editorLabel == null) {
-
-				this.editorLabel = new GameObject("__EditorLabel");
-				this.editorLabel.transform.SetParent(this.transform);
-
-				this.editorLabel.hideFlags = HideFlags.HideAndDontSave;
-				this.CenterAndStretch(this.editorLabel.transform);
-
-				var subLabel = new GameObject("Label");
-				subLabel.transform.SetParent(this.editorLabel.transform);
-				this.CenterAndStretch(subLabel.transform);
-				
-				var image = this.editorLabel.AddComponent<Image>();
-				image.color = this.editorColor;
-
-				var layout = this.editorLabel.AddComponent<LayoutElement>();
-				layout.ignoreLayout = true;
-
-				var shadow = subLabel.AddComponent<Shadow>();
-				shadow.effectDistance = new Vector2(1f, -1f);
-				shadow.useGraphicAlpha = true;
-
-				var text = subLabel.AddComponent<Text>();
-				text.alignment = TextAnchor.MiddleCenter;
-				text.fontStyle = FontStyle.Bold;
-				text.horizontalOverflow = HorizontalWrapMode.Overflow;
-				text.verticalOverflow = VerticalWrapMode.Overflow;
-				text.fontSize = 20;
-				var color = Color.white;
-				color.a = 0.5f;
-				text.color = color;
-				text.text = descr;
-
-			} else {
-
-				var text = this.editorLabel.GetComponentInChildren<Text>();
-
-				this.editorLabel.transform.SetAsLastSibling();
-				if (text != null) text.text = descr;
-
-			}
-
+			return this.tag + ": " + this.comment + "\n" + "(Animation: " + (this.animation != null ? this.animation.name : "None") + ")";
 		}
 
-		private void CenterAndStretch(Transform tr) {
+		public GUIStyle GetActiveGUIStyle() {
 
-			var rect = tr as RectTransform;
-			if (rect == null) rect = tr.gameObject.AddComponent<RectTransform>();
+			var result = new GUIStyle { fontStyle = FontStyle.Bold, fontSize = 20, alignment = TextAnchor.MiddleCenter };
 
-			rect.anchorMin = Vector2.zero;
-			rect.anchorMax = Vector2.one;
-			rect.pivot = Vector2.one * 0.5f;
-			rect.anchoredPosition3D = Vector3.zero;
-			rect.sizeDelta = Vector2.zero;
-			rect.localScale = Vector3.one;
+			var color = Color.white;
+			color.a = 0.7f;
 
+			result.normal.textColor = color;
+
+			return result;
 		}
+
+		public GUIStyle GetInactiveGUIStyle() {
+
+			var result = new GUIStyle { fontStyle = FontStyle.Bold, fontSize = 20, alignment = TextAnchor.MiddleCenter };
+
+			var color = Color.white;
+			color.a = 0.2f;
+
+			result.normal.textColor = color;
+
+			return result;
+		}
+
+		public void DrawHandle(bool isActive = true) {
+
+			var corners = new Vector3[4];
+
+			var textScaleFactor = 100;
+			var maxTextSize = 100;
+
+			#region Layout pass
+
+			( transform as RectTransform ).GetWorldCorners( corners );
+
+			var targetColor = editorColor;
+			if ( !isActive ) {
+
+				var inactiveColor = Color.gray;
+				inactiveColor.a = 0f;
+
+				targetColor += inactiveColor * 0.3f;
+			}
+
+			UnityEditor.Handles.DrawSolidRectangleWithOutline( corners, targetColor, targetColor );
+
+			#endregion
+
+			#region Text pass
+
+			var style = isActive ? GetActiveGUIStyle() : GetInactiveGUIStyle();
+			style.fontSize = (int)( style.fontSize / UnityEditor.HandleUtility.GetHandleSize( transform.position ) * textScaleFactor );
+			style.fontSize = Mathf.Clamp( style.fontSize, 1, maxTextSize );
+
+			UnityEditor.Handles.Label( transform.position, GetDescription(), style );
+
+			#endregion
+		}
+
 		#endif
 		
 	}
