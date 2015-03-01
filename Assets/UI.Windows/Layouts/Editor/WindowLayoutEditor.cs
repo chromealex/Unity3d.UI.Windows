@@ -9,7 +9,9 @@ namespace UnityEditor.UI.Windows {
 	[CustomEditor(typeof(WindowLayout))]
 	[CanEditMultipleObjects()]
 	public class WindowLayoutEditor : Editor {
-		
+
+		public bool drawEditorRects = false;
+
 		private bool isDirty = false;
 
 		public override void OnInspectorGUI() {
@@ -31,7 +33,12 @@ namespace UnityEditor.UI.Windows {
 				this.isDirty = false;
 
 			}
+			
+		}
 
+		public void OnSceneGUI() {
+
+			this.DrawElements( target as WindowLayout );
 		}
 
 		private void ApplyRoot(UnityEngine.UI.Windows.WindowLayout _target) {
@@ -77,7 +84,6 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public bool drawEditorRects = false;
 		private void UpdateLinks(UnityEngine.UI.Windows.WindowLayout _target) {
 
 			this.Setup_EDITOR(_target);
@@ -87,7 +93,7 @@ namespace UnityEditor.UI.Windows {
 		
 		private void Update_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
 
-			foreach (var element in _target.elements) element.Update_EDITOR();
+			//foreach (var element in _target.elements) element.Update_EDITOR();
 
 			#region COMPONENTS
 			_target.canvas = _target.GetComponentsInChildren<Canvas>(true)[0];
@@ -119,11 +125,9 @@ namespace UnityEditor.UI.Windows {
 
 		private void Setup_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
 			
-			_target.elements = _target.elements.Where((e) => e != null).ToList();
-			
 			var usedTags = new List<LayoutTag>();
 			var elements = _target.GetComponentsInChildren<WindowLayoutElement>(true);
-			_target.elements = _target.elements.Where((e) => elements.Contains(e)).ToList();
+			_target.elements = _target.elements.Where(e => e!=null && elements.Contains(e)).ToList();
 			
 			foreach (var element in elements) {
 				
@@ -172,7 +176,15 @@ namespace UnityEditor.UI.Windows {
 			}
 			
 		}
-		
+
+		private void DrawElements(UnityEngine.UI.Windows.WindowLayout _target) {
+
+			foreach ( var each in _target.elements ) {
+				
+				each.DrawHandle();
+			}
+		}
+
 		private LayoutTag GetTag(List<LayoutTag> used) {
 			
 			var tags = System.Enum.GetValues(typeof(LayoutTag));
