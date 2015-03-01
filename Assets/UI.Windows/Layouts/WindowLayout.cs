@@ -63,7 +63,9 @@ namespace UnityEngine.UI.Windows {
 			descriptions.Clear();
 			
 			foreach (var element in this.elements) {
-				
+
+				if (element == null) continue;
+
 				tags.Add(element.tag);
 #if UNITY_EDITOR
 				descriptions.Add(element.comment);

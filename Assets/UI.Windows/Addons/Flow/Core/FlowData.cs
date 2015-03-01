@@ -12,7 +12,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public List<FlowWindow> windows = new List<FlowWindow>();
 		public bool isDirty = false;
 
-		private Rect selectionRect;
+		//private Rect selectionRect;
 		private List<int> selected = new List<int>();
 
 		public void Save() {
@@ -39,7 +39,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public void SelectWindowsInRect(Rect rect, System.Func<FlowWindow, bool> predicate = null) {
 
-			this.selectionRect = rect;
+			//this.selectionRect = rect;
 
 			this.selected.Clear();
 			foreach (var window in this.windows) {

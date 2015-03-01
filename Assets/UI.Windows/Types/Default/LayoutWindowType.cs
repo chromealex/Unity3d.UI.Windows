@@ -6,6 +6,93 @@ using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
+	[ExecuteInEditMode()]
+	public class LayoutWindowType : WindowBase {
+		
+		public Layout layout;
+		
+		new public LayoutWindowType GetWindow() {
+			
+			return base.GetWindow() as LayoutWindowType;
+			
+		}
+		
+		public T GetLayoutComponent<T>(LayoutTag tag = LayoutTag.None) where T : WindowComponent {
+			
+			return this.layout.Get<T>(tag);
+			
+		}
+
+		public override string GetSortingLayerName() {
+			
+			return this.layout.GetSortingLayerName();
+			
+		}
+		
+		public override int GetSortingOrder() {
+			
+			return this.layout.GetSortingOrder();
+			
+		}
+		
+		public override float GetLayoutAnimationDuration(bool forward) {
+			
+			return this.layout.GetAnimationDuration(forward);
+			
+		}
+
+		protected override Transform GetLayoutRoot() {
+			
+			return this.layout.GetRoot();
+			
+		}
+
+		protected override void OnLayoutInit(float depth, int raycastPriority, int orderInLayer) {
+			
+			this.layout.Create(this, this.transform, depth, raycastPriority, orderInLayer);
+			this.layout.OnInit();
+
+		}
+		protected override void OnLayoutDeinit() {
+
+			this.layout.OnDeinit();
+
+		}
+		protected override void OnLayoutShowBegin(System.Action callback) {
+
+			this.layout.OnShowBegin(callback);
+
+		}
+		protected override void OnLayoutShowEnd() {
+
+			this.layout.OnShowEnd();
+
+		}
+		protected override void OnLayoutHideBegin(System.Action callback) {
+
+			this.layout.OnHideBegin(callback);
+
+		}
+		protected override void OnLayoutHideEnd() {
+
+			this.layout.OnHideEnd();
+
+		}
+
+		#if UNITY_EDITOR
+		protected override void Update() {
+			
+			base.Update();
+			
+			if (Application.isPlaying == true) return;
+			
+			this.layout.Update_EDITOR();
+			
+		}
+		#endif
+
+	}
+	
 	[System.Serializable]
 	public class Layout : IWindowEventsAsync {
 		
@@ -226,9 +313,9 @@ namespace UnityEngine.UI.Windows {
 		public void OnInit() { this.instance.OnInit(); foreach (var component in this.components) component.OnInit(); }
 		public void OnDeinit() { this.instance.OnDeinit(); foreach (var component in this.components) component.OnDeinit(); }
 		public void OnShowBegin(System.Action callback) {
-
+			
 			this.instance.OnShowBegin(); 
-
+			
 			ME.Utilities.CallInSequence(callback, this.components, (e, c) => { e.OnShowBegin(c); });
 			/*
 			var counter = 0;
@@ -252,9 +339,9 @@ namespace UnityEngine.UI.Windows {
 		}
 		public void OnShowEnd() { this.instance.OnShowEnd(); foreach (var component in this.components) component.OnShowEnd(); }
 		public void OnHideBegin(System.Action callback) {
-
+			
 			this.instance.OnHideBegin(); 
-
+			
 			ME.Utilities.CallInSequence(callback, this.components, (e, c) => { e.OnHideBegin(c); });
 			/*
 			var counter = 0;
@@ -328,93 +415,6 @@ namespace UnityEngine.UI.Windows {
 		}
 		#endif
 		
-	}
-	
-	[ExecuteInEditMode()]
-	public class LayoutWindowType : WindowBase {
-		
-		public Layout layout;
-		
-		new public LayoutWindowType GetWindow() {
-			
-			return base.GetWindow() as LayoutWindowType;
-			
-		}
-		
-		public T GetLayoutComponent<T>(LayoutTag tag = LayoutTag.None) where T : WindowComponent {
-			
-			return this.layout.Get<T>(tag);
-			
-		}
-
-		public override string GetSortingLayerName() {
-			
-			return this.layout.GetSortingLayerName();
-			
-		}
-		
-		public override int GetSortingOrder() {
-			
-			return this.layout.GetSortingOrder();
-			
-		}
-		
-		public override float GetLayoutAnimationDuration(bool forward) {
-			
-			return this.layout.GetAnimationDuration(forward);
-			
-		}
-
-		protected override Transform GetLayoutRoot() {
-			
-			return this.layout.GetRoot();
-			
-		}
-
-		protected override void OnLayoutInit(float depth, int raycastPriority, int orderInLayer) {
-			
-			this.layout.Create(this, this.transform, depth, raycastPriority, orderInLayer);
-			this.layout.OnInit();
-
-		}
-		protected override void OnLayoutDeinit() {
-
-			this.layout.OnDeinit();
-
-		}
-		protected override void OnLayoutShowBegin(System.Action callback) {
-
-			this.layout.OnShowBegin(callback);
-
-		}
-		protected override void OnLayoutShowEnd() {
-
-			this.layout.OnShowEnd();
-
-		}
-		protected override void OnLayoutHideBegin(System.Action callback) {
-
-			this.layout.OnHideBegin(callback);
-
-		}
-		protected override void OnLayoutHideEnd() {
-
-			this.layout.OnHideEnd();
-
-		}
-
-		#if UNITY_EDITOR
-		protected override void Update() {
-			
-			base.Update();
-			
-			if (Application.isPlaying == true) return;
-			
-			this.layout.Update_EDITOR();
-			
-		}
-		#endif
-
 	}
 
 }

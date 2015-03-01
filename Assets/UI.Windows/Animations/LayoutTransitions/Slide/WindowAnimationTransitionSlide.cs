@@ -105,18 +105,27 @@ namespace UnityEngine.UI.Windows {
 			var rect = this.GetRoot(param, root);
 			var startPosition = rect.anchoredPosition;
 			var endPosition = result;
-
-			TweenerGlobal.instance.removeTweens(tag);
-			TweenerGlobal.instance.addTween<RectTransform>(rect, duration, 0f, 1f).onUpdate((obj, value) => {
-
-				if (obj != null) {
-
-					obj.anchoredPosition = Vector2.Lerp(startPosition, endPosition, value);
-
-				}
-
-			}).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
 			
+			if (TweenerGlobal.instance != null) {
+
+				TweenerGlobal.instance.removeTweens(tag);
+				TweenerGlobal.instance.addTween<RectTransform>(rect, duration, 0f, 1f).onUpdate((obj, value) => {
+
+					if (obj != null) {
+
+						obj.anchoredPosition = Vector2.Lerp(startPosition, endPosition, value);
+
+					}
+
+				}).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
+
+			} else {
+				
+				rect.anchoredPosition = endPosition;
+				if (callback != null) callback();
+				
+			}
+
 		}
 		
 		public override void SetInState(TransitionInputParameters parameters, WindowLayoutBase root) {

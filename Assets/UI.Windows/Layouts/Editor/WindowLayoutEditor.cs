@@ -99,12 +99,9 @@ namespace UnityEditor.UI.Windows {
 			
 			#region SETUP
 			if (_target.initialized == true) {
-				
-				// Canvas
-				_target.canvas.overrideSorting = true;
-				_target.canvas.sortingLayerName = "Windows";
-				_target.canvas.sortingOrder = 0;
-				
+
+				WindowSystem.ApplyToSettings(_target.canvas);
+
 				// Raycaster
 				if ((_target.raycaster as GraphicRaycaster) != null) {
 					
@@ -159,7 +156,7 @@ namespace UnityEditor.UI.Windows {
 				
 				if (element.tag == LayoutTag.None) element.tag = this.GetTag(usedTags);
 
-				if (ME.EditorUtilities.IsPrefab(_target.gameObject) == true) {
+				/*if (ME.EditorUtilities.IsPrefab(_target.gameObject) == true) {
 
 					element.TurnOff_EDITOR();
 					
@@ -167,7 +164,7 @@ namespace UnityEditor.UI.Windows {
 
 					element.TurnOn_EDITOR();
 					
-				}
+				}*/
 				
 			}
 			

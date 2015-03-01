@@ -86,9 +86,18 @@ namespace UnityEngine.UI.Windows {
 			var duration = this.GetDuration(parameters, forward);
 			var result = param.GetResult(forward);
 
-			TweenerGlobal.instance.removeTweens(tag);
-			TweenerGlobal.instance.addTweenAlpha(root.canvas, duration, result).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
-			
+			if (TweenerGlobal.instance != null) {
+
+				TweenerGlobal.instance.removeTweens(tag);
+				TweenerGlobal.instance.addTweenAlpha(root.canvas, duration, result).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
+
+			} else {
+
+				if (root.canvas != null) root.canvas.alpha = result;
+				if (callback != null) callback();
+
+			}
+
 		}
 
 		public override void SetInState(TransitionInputParameters parameters, WindowLayoutBase root) {

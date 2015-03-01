@@ -6,14 +6,36 @@ namespace UnityEngine.UI.Windows {
 
 	public class WindowLayoutElement : WindowLayoutBase {
 		
-		#if UNITY_EDITOR
-		public string comment;
-		#endif
-
 		[ReadOnly]
 		new public LayoutTag tag = LayoutTag.None;
 
 		#if UNITY_EDITOR
+		public string comment;
+
+		[ReadOnly]
+		public WindowComponent tempEditorComponent;
+		private bool randomColorSetup;
+		private Color randomColor;
+		public void OnDrawGizmos() {
+
+			if (this.randomColorSetup == false) {
+
+				this.randomColor = UnityEngine.UI.Windows.Plugins.ColorHSV.GetDistinctColor();
+				this.randomColorSetup = true;
+
+			}
+
+			this.OnDrawGUI_EDITOR(false, false);
+			
+		}
+		
+		public void OnDrawGizmosSelected() {
+
+			var selected = (UnityEditor.Selection.activeGameObject == this.gameObject);
+			this.OnDrawGUI_EDITOR(selected, true);
+			
+		}
+
 		public void OnEnable() {
 
 			if (Application.isPlaying == true) return;
@@ -29,117 +51,80 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		//[HideInInspector]
-		public bool editorActive = false;
-		[HideInInspector]
-		public Color editorColor;
-		public void TurnOff_EDITOR() {
+		private void OnDrawGUI_EDITOR(bool selected, bool selectedHierarchy) {
 
-			if (this.editorActive == false) return;
+			var textStyle = new GUIStyle(GUI.skin.label);
+			textStyle.fontStyle = FontStyle.Normal;
+			textStyle.stretchWidth = true;
+			textStyle.fontSize = 12;
+			textStyle.richText = true;
+			textStyle.alignment = TextAnchor.MiddleCenter;
+			textStyle.wordWrap = false;
 
-			this.editorActive = false;
+			var points = new Vector3[4];
+			var rect = this.transform as RectTransform;
+			rect.GetWorldCorners(points);
 
-			ME.EditorUtilities.ClearLayoutElement(this);
+			var descr = "<b>" + this.tag.ToString() + "</b>\n" + this.comment + "\n" + "(Animation: " + (this.animation != null ? this.animation.name : "None") + ")" +
+				(this.tempEditorComponent != null ? ("\n(Component: " + this.tempEditorComponent.name + ")") : "");
 
-		}
-
-		public void TurnOn_EDITOR() {
-
-			if (this.editorActive == true) return;
-
-			this.editorActive = true;
+			var center = Vector3.zero;
+			for (int i = 0; i < 4; ++i) center += points[i];
+			center /= 4f;
 			
-			this.editorColor = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 0.7f);
-
-			this.Update();
-
-		}
-
-		[HideInInspector][SerializeField]
-		public GameObject editorLabel;
-		public override void Update_EDITOR() {
+			textStyle.fixedWidth = rect.rect.width;
+			textStyle.fixedHeight = rect.rect.height;
 			
-			base.Update_EDITOR();
+			// Hack to draw handles always
+			var face = this.randomColor;
+			face.a = 0.3f;
+			UnityEditor.Handles.DrawSolidRectangleWithOutline(points, face, this.randomColor);
 
-			if (this.editorActive == false) return;
+			var shadowOffset = Vector3.one * 1f;
+			shadowOffset.z = 0f;
 
-			if (Application.isPlaying == true) {
-				/*
-				if (this.editorBody != null) {
+			var color = Color.black;
+			color.a = 0.5f;
+			textStyle.normal.textColor = color;
+			UnityEditor.Handles.Label(center + shadowOffset, descr, textStyle);
+			
+			color = Color.white;
+			color.a = (selected == true) ? 1f : 0.7f;
+			textStyle.normal.textColor = color;
+			UnityEditor.Handles.Label(center, descr, textStyle);
+			
+			color = Color.white;
+			color.a = selected ? 1f : 0f;
+			UnityEditor.Handles.color = color;
+			this.DrawLineWithOffset(50f, center, points[0]);
+			this.DrawLineWithOffset(50f, center, points[1]);
+			this.DrawLineWithOffset(50f, center, points[2]);
+			this.DrawLineWithOffset(50f, center, points[3]);
 
-					Component.Destroy(this.editorBody);
-					Component.Destroy(this.GetComponent<CanvasRenderer>());
-
-				}
-				if (this.editorLabel != null) GameObject.Destroy(this.editorLabel);*/
-				return;
-
-			}
-
-			if (this.editorLabel == null) {
-
-				var t = this.transform.FindChild("__EditorLabel");
-				if (t != null) this.editorLabel = t.gameObject;
-
-			}
-
-			var descr = this.tag.ToString() + ": " + this.comment + "\n" + "(Animation: " + (this.animation != null ? this.animation.name : "None") + ")";
-
-			if (this.editorLabel == null) {
-
-				this.editorLabel = new GameObject("__EditorLabel");
-				this.editorLabel.transform.SetParent(this.transform);
-
-				this.editorLabel.hideFlags = HideFlags.HideAndDontSave;
-				this.CenterAndStretch(this.editorLabel.transform);
-
-				var subLabel = new GameObject("Label");
-				subLabel.transform.SetParent(this.editorLabel.transform);
-				this.CenterAndStretch(subLabel.transform);
-				
-				var image = this.editorLabel.AddComponent<Image>();
-				image.color = this.editorColor;
-
-				var layout = this.editorLabel.AddComponent<LayoutElement>();
-				layout.ignoreLayout = true;
-
-				var shadow = subLabel.AddComponent<Shadow>();
-				shadow.effectDistance = new Vector2(1f, -1f);
-				shadow.useGraphicAlpha = true;
-
-				var text = subLabel.AddComponent<Text>();
-				text.alignment = TextAnchor.MiddleCenter;
-				text.fontStyle = FontStyle.Bold;
-				text.horizontalOverflow = HorizontalWrapMode.Overflow;
-				text.verticalOverflow = VerticalWrapMode.Overflow;
-				text.fontSize = 20;
-				var color = Color.white;
-				color.a = 0.5f;
-				text.color = color;
-				text.text = descr;
-
-			} else {
-
-				var text = this.editorLabel.GetComponentInChildren<Text>();
-
-				this.editorLabel.transform.SetAsLastSibling();
-				if (text != null) text.text = descr;
-
-			}
+			color = Color.white;
+			color.a = 0.5f;
+			UnityEditor.Handles.color = color;
 
 		}
 
-		private void CenterAndStretch(Transform tr) {
+		private void DrawLineWithOffset(float offset, Vector3 pos1, Vector3 pos2) {
 
-			var rect = tr as RectTransform;
-			if (rect == null) rect = tr.gameObject.AddComponent<RectTransform>();
+			var oldColor = UnityEditor.Handles.color;
 
-			rect.anchorMin = Vector2.zero;
-			rect.anchorMax = Vector2.one;
-			rect.pivot = Vector2.one * 0.5f;
-			rect.anchoredPosition3D = Vector3.zero;
-			rect.sizeDelta = Vector2.zero;
-			rect.localScale = Vector3.one;
+			var shadowColor = new Color(0f, 0f, 0f, oldColor.a > 0f ? 0.5f : 0f);
+			var shadowOffset = Vector3.one * 1f;
+			shadowOffset.z = 0f;
+
+			var ray = new Ray(pos1, (pos2 - pos1).normalized);
+			pos1 = ray.GetPoint(offset);
+
+			UnityEditor.Handles.color = shadowColor;
+			UnityEditor.Handles.DrawDottedLine(pos1 + shadowOffset, pos2 + shadowOffset, 10f);
+			UnityEditor.Handles.color = oldColor;
+			UnityEditor.Handles.DrawDottedLine(pos1, pos2, 10f);
+			//UnityEditor.Handles.DrawLine(pos1, pos2);
+			
+			UnityEditor.Handles.color = oldColor;
 
 		}
 		#endif

@@ -1,0 +1,973 @@
+﻿using UnityEngine;
+using UnityEditor;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.Extensions;
+using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Plugins.Flow;
+using System.Linq;
+using System.IO;
+using UnityEditor.UI.Windows.Plugins.Flow.Editors;
+
+namespace UnityEditor.UI.Windows.Plugins.Flow {
+
+	public class FlowSceneItem {
+		
+		public const float POPUP_OFFSET = 50f;
+		public const float POPUP_MARGIN = 5f;
+
+		private FlowSystemEditorWindow rootWindow;
+		private FlowWindow window;
+		private string currentScene;
+		private SceneView currentView;
+		private List<WindowLayout> layouts;
+		private List<WindowBase> screens;
+		private bool autoloadedLayout = false;
+		private bool autoloadedScreen = false;
+
+		private bool isLayoutDirty = false;
+		private bool isScreenDirty = false;
+
+		internal FlowSceneViewWindow view;
+		internal FlowInspectorWindow inspector;
+		internal FlowHierarchyWindow hierarchy;
+		internal FlowGameViewWindow gameView;
+
+		public FlowSceneItem(FlowSystemEditorWindow rootWindow, FlowWindow window, AnimatedValues.AnimFloat progressValue) {
+
+			this.rootWindow = rootWindow;
+			this.window = window;
+			this.currentScene = EditorApplication.currentScene;
+			this.layouts = new List<WindowLayout>();
+			this.layoutPrefab = null;
+
+			this.screens = new List<WindowBase>();
+			this.screenPrefab = null;
+
+			EditorApplication.NewScene();
+
+			var popupOffset = 100f;
+			var popupSize = new Vector2(rootWindow.position.width - popupOffset * 2f, rootWindow.position.height - popupOffset * 2f);
+			var popupRect = new Rect(rootWindow.position.x + popupOffset, rootWindow.position.y + popupOffset, popupSize.x, popupSize.y);
+
+			this.view = FlowSceneViewWindow.CreateInstance<FlowSceneViewWindow>();
+			FlowSceneView.recompileChecker = this.view;
+
+			this.view.title = "UI.Windows Flow Screen Editor ('" + this.window.title + "')";
+			this.view.position = popupRect;
+			this.view.rootWindow = rootWindow;
+			
+			this.inspector = FlowInspectorWindow.CreateInstance<FlowInspectorWindow>();
+			this.inspector.position = popupRect;
+			this.inspector.rootWindow = rootWindow;
+			this.inspector.Repaint();
+			this.inspector.Focus();
+			
+			this.hierarchy = FlowInspectorWindow.CreateInstance<FlowHierarchyWindow>();
+			this.hierarchy.position = popupRect;
+			this.hierarchy.rootWindow = rootWindow;
+			this.hierarchy.Repaint();
+			this.hierarchy.Focus();
+
+			this.Show();
+
+			this.inspector.Repaint();
+			this.inspector.Focus();
+			this.hierarchy.Repaint();
+			this.hierarchy.Focus();
+			this.view.Repaint();
+			this.view.Focus();
+
+			this.autoloadedLayout = false;
+			this.ReloadLayouts();
+			this.autoloadedScreen = false;
+			this.ReloadScreens();
+
+			this.defaultRects = false;
+
+			progressValue.valueChanged.AddListener(() => {
+				
+				this.view.DrawProgress(progressValue.value);
+				this.inspector.DrawProgress(progressValue.value);
+				this.hierarchy.DrawProgress(progressValue.value);
+
+				if (progressValue.value == progressValue.target) {
+					
+					this.view.Repaint();
+					this.view.Focus();
+
+				}
+
+			});
+
+		}
+
+		public void OnLostFocus() {
+
+		}
+
+		public void Show() {
+			
+			SceneView.onSceneGUIDelegate -= this.OnGUI;
+			SceneView.onSceneGUIDelegate += this.OnGUI;
+
+			if (this.view != null) this.view.ShowView();
+			if (this.inspector != null) this.inspector.ShowView();
+			if (this.hierarchy != null) this.hierarchy.ShowView();
+
+		}
+
+		public void Hide() {
+			
+			SceneView.onSceneGUIDelegate -= this.OnGUI;
+
+			if (this.view != null) this.view.HideView();
+			if (this.inspector != null) this.inspector.HideView();
+			if (this.hierarchy != null) this.hierarchy.HideView();
+
+		}
+
+		public void Dispose(bool onDestroy = false, AnimatedValues.AnimFloat progressValue = null) {
+
+			System.Action close = () => {
+				
+				if (this.view != null && onDestroy == false) this.view.Close();
+				if (this.inspector != null && onDestroy == false) this.inspector.Close();
+				if (this.hierarchy != null && onDestroy == false) this.hierarchy.Close();
+				this.view = null;
+				this.inspector = null;
+				this.hierarchy = null;
+
+			};
+
+			if (progressValue != null) {
+
+				progressValue.valueChanged.AddListener(() => {
+					
+					this.view.DrawProgress(progressValue.value);
+					this.inspector.DrawProgress(progressValue.value);
+					this.hierarchy.DrawProgress(progressValue.value);
+
+					if (progressValue.value == progressValue.target) {
+
+						close();
+
+					}
+
+				});
+
+			} else {
+
+				close();
+
+			}
+
+			if (string.IsNullOrEmpty(this.currentScene) == true) {
+
+				EditorApplication.NewScene();
+
+			} else {
+				
+				EditorApplication.OpenScene(this.currentScene);
+
+			}
+
+			SceneView.onSceneGUIDelegate -= this.OnGUI;
+
+		}
+
+		private Rect mainRect;
+		private Rect itemRect;
+		private bool defaultRects = false;
+
+		public void OnGUI(SceneView sceneView) {
+
+			sceneView.in2DMode = true;
+			
+			if (this.view != null) {
+
+				GUILayout.BeginArea(new Rect(0f, SceneView.kToolbarHeight, this.view.position.width, this.view.position.height));
+
+				var headerStyle = new GUIStyle(EditorStyles.whiteLargeLabel);
+				headerStyle.fontSize = 30;
+
+				var oldColor = GUI.color;
+				var color = Color.white;
+				color.a = 0.6f;
+				GUI.color = color;
+				GUI.Label(new Rect(30f, SceneView.kToolbarHeight, this.view.position.width, this.view.position.height), this.window.title, headerStyle);
+				GUI.color = oldColor;
+
+				GUILayout.EndArea();
+
+			}
+
+			if (this.defaultRects == false) {
+
+				var rect = sceneView.position;
+				var size = new Vector2(200f, 100f);
+				this.mainRect = new Rect(rect.width - size.x, 30f, size.x, size.y);
+				
+				var itemSize = new Vector2(200f, 300f);
+				this.itemRect = this.mainRect;
+				this.itemRect.height = itemSize.y;
+
+				this.defaultRects = true;
+
+			}
+
+			this.currentView = sceneView;
+
+			if (this.view != null) {
+
+				if (this.mainRect.x + this.mainRect.width > this.view.position.width) this.mainRect.x = this.view.position.width - this.mainRect.width;
+				if (this.mainRect.y + this.mainRect.height > this.view.position.height) this.mainRect.y = this.view.position.height - this.mainRect.height;
+				if (this.mainRect.x < 0f) this.mainRect.x = 0f;
+				if (this.mainRect.y < 0f) this.mainRect.y = 0f;
+
+			}
+
+			this.mainRect = GUILayout.Window(1, this.mainRect, (id) => {
+
+				this.DrawGUI();
+				GUI.DragWindow();
+				
+			}, "Window Settings", GUILayout.ExpandHeight(true));
+			
+			if (this.isScreenDirty == true && this.screenInstance != null) {
+				
+				FlowSystem.SaveScreen(this.screenInstance);
+				this.isScreenDirty = false;
+
+			}
+			
+			if (this.isLayoutDirty == true && this.layoutInstance != null) {
+				
+				FlowSystem.SaveLayout(this.layoutInstance);
+				this.isLayoutDirty = false;
+				
+			}
+			
+			if (this.view != null) {
+
+				var height = 80f;
+				var tabsRect = this.view.position;
+				tabsRect.x = 10f;
+				tabsRect.y = tabsRect.height - height - 10f;
+				tabsRect.width -= 10f * 2f;
+				tabsRect.height = height;
+				GUILayout.BeginArea(tabsRect);
+				this.DrawTabs(height);
+				GUILayout.EndArea();
+
+			}
+
+		}
+		
+		private WindowLayout layoutPrefab;
+		private WindowLayout layoutInstance;
+		
+		private WindowBase screenPrefab;
+		private WindowBase screenInstance;
+		
+		public WindowBase GetScreenInstance() {
+
+			return this.screenInstance;
+
+		}
+		
+		public WindowLayout GetLayoutInstance() {
+
+			return this.layoutInstance;
+
+		}
+		
+		public void SetScreenDirty() {
+			
+			EditorApplication.delayCall += () => {
+
+				this.isScreenDirty = true;
+				EditorApplication.delayCall = null;
+
+			};
+
+		}
+		
+		public void SetLayoutDirty() {
+
+			EditorApplication.delayCall += () => {
+
+				this.isLayoutDirty = true;
+				EditorApplication.delayCall = null;
+
+			};
+
+		}
+
+		public void SetTab(int index) {
+
+			this.tab = index;
+
+		}
+
+		private float scaleFactor = 0f;
+		private int tab = 0;
+		
+		private Vector2 scrollPosition;
+		private Rect lastRect;
+
+		private void DrawGUI() {
+
+			if (this.window.compiled == false) {
+
+				EditorGUILayout.HelpBox("To start use this function you need to generate ui layouts first.", MessageType.Warning);
+
+			} else {
+
+				var header = EditorStyles.whiteLargeLabel;
+				
+				var width = 200f - 40f;
+
+				this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition, false, true, GUILayout.Height(this.itemRect.height));
+
+				switch (this.tab) {
+
+				case 0:
+					GUILayout.Label("Layout", header);
+					this.DrawLayoutChooser(width);
+					break;
+					
+				case 1:
+					GUILayout.Label("Screen", header);
+					this.DrawScreenChooser(width);
+					break;
+					
+				case 2:
+					GUILayout.Label("Preferences", header);
+					this.DrawPreferences(width);
+					break;
+					
+				case 3:
+					GUILayout.Label("Modules", header);
+					this.DrawModules(width);
+					break;
+
+				case 4:
+					GUILayout.Label("Components", header);
+					this.DrawComponents(width);
+					break;
+					
+				case 5:
+					GUILayout.Label("Summary & Preview", header);
+					this.DrawPreview(width);
+					break;
+
+				}
+				
+				GUILayout.EndScrollView();
+
+				if (this.layoutInstance != null) {
+						
+					var scale = (this.layoutInstance.transform as RectTransform).sizeDelta.y + this.scaleFactor;
+					this.currentView.LookAtDirect(this.layoutInstance.transform.position, Quaternion.Euler(Vector3.up), scale);
+
+				}
+
+			}
+
+		}
+
+		private void DrawTabs(float height) {
+			
+			var scaleWidth = this.view.position.width * 0.4f;
+			var scaleHeight = 20f;
+			this.scaleFactor = GUI.HorizontalSlider(new Rect(this.view.position.width * 0.5f - scaleWidth * 0.5f, 0f, scaleWidth, scaleHeight), this.scaleFactor, 0f, 500f);
+
+			GUILayout.Space(scaleHeight);
+
+			var notPassedColor = Color.white;
+			var activeColor = new Color(0.9f, 0.9f, 1f, 1f);
+			var passedColor = new Color(0.9f, 1f, 0.9f, 1f);
+
+			var left = EditorStyles.miniButtonLeft;
+			var mid = EditorStyles.miniButtonMid;
+			var right = EditorStyles.miniButtonRight;
+			var leftActive = new GUIStyle(EditorStyles.miniButtonLeft);
+			leftActive.normal = leftActive.active;
+			var midActive = new GUIStyle(EditorStyles.miniButtonMid);
+			midActive.normal = midActive.active;
+			var rightActive = new GUIStyle(EditorStyles.miniButtonRight);
+			rightActive.normal = rightActive.active;
+			var leftInactive = new GUIStyle(EditorStyles.miniButtonLeft);
+			leftInactive.normal.textColor = Color.gray;
+			var midInactive = new GUIStyle(EditorStyles.miniButtonMid);
+			midInactive.normal.textColor = Color.gray;
+			var rightInactive = new GUIStyle(EditorStyles.miniButtonRight);
+			rightInactive.normal.textColor = Color.gray;
+
+			var oldColor = GUI.color;
+
+			EditorGUILayout.BeginHorizontal();
+			var count = 6;
+			for (int i = 0; i < count; ++i) {
+				
+				var style = mid;
+				var color = (this.tab == i) ? activeColor : (this.tab > i ? passedColor : notPassedColor);
+				
+				if (i == 0) {
+					
+					style = (this.tab == i) ? leftActive : (this.tab > i ? leftInactive : left);
+					
+				} else if (i == count - 1) {
+					
+					style = (this.tab == i) ? rightActive : (this.tab > i ? rightInactive : right);
+					
+				} else {
+					
+					style = (this.tab == i) ? midActive : (this.tab > i ? midInactive : mid);
+					
+				}
+
+				GUI.color = color;
+				if (GUILayout.Button((i + 1).ToString(), style, GUILayout.Height(height - scaleHeight)) == true) this.tab = i;
+				
+			}
+			EditorGUILayout.EndHorizontal();
+
+			GUI.color = oldColor;
+
+		}
+
+		private WindowBase previewScreen;
+		private void DrawPreview(float width) {
+
+			if (this.screenInstance == null || this.layoutInstance == null) return;
+
+			GUILayout.Label("Screen: " + this.screenInstance.name);
+			GUILayout.Label("Layout: " + this.layoutInstance.name);
+
+			if (GUILayout.Button("Build Preview") == true) {
+
+				if (this.previewScreen != null) GameObject.DestroyImmediate(this.previewScreen.gameObject);
+
+				this.previewScreen = WindowSystem.Show(this.screenInstance);
+				this.ShowPreview();
+
+			}
+
+		}
+
+		private void ShowPreview() {
+			
+			this.gameView = FlowGameViewWindow.CreateInstance<FlowGameViewWindow>();
+			this.gameView.rootWindow = this.rootWindow;
+			this.gameView.Focus();
+			this.gameView.Repaint();
+			this.gameView.ShowView();
+
+		}
+
+		private void DrawScreenChooser(float width) {
+			
+			var screens = new string[this.screens.Count + 1];
+			screens[0] = "None";
+			for (int i = 1; i < screens.Length; ++i) screens[i] = this.screens[i - 1].name.Replace("Screen", string.Empty);
+			
+			GUILayout.Label("Use existing screen:");
+			
+			var index = this.screenPrefab == null ? 0 : (System.Array.IndexOf(screens, this.screenPrefab.name.Replace("Screen", string.Empty)));
+			index = EditorGUILayout.Popup(index, screens);
+			if (index > 0) {
+				
+				this.screenPrefab = this.screens[index - 1];
+				
+			}
+			
+			this.screenPrefab = EditorGUILayout.ObjectField(this.screenPrefab, typeof(WindowBase), false) as WindowBase;
+			if (GUILayout.Button("Load") == true) {
+				
+				this.LoadScreen(this.screenPrefab);
+				
+			}
+			
+			GUILayout.Label("Or create the new one:");
+			
+			if (GUILayout.Button("Create Screen") == true) {
+				
+				this.screenPrefab = FlowSystem.GenerateScreen(this.window);
+				this.ReloadScreens();
+				
+			}
+
+		}
+
+		private void DrawPreferences(float width) {
+			
+			if (this.screenInstance != null) {
+
+				var screen = this.screenInstance;
+				if (screen != null) {
+
+					var prefs = screen.preferences;
+
+					EditorGUIUtility.labelWidth = 50f;
+
+					EditorGUILayout.HelpBox("By default all windows sorted by Z-Order and Camera's Depth. But you may need to show for example level loader at the top or put some window at the background (For example animated background).", MessageType.Info);
+					var depth = (Preferences.Depth)EditorGUILayout.EnumPopup("Depth:", prefs.depth, GUILayout.Width(width));
+					if (depth != prefs.depth) {
+
+						this.isScreenDirty = true;
+						prefs.depth = depth;
+
+					}
+
+					EditorGUIUtility.labelWidth = 100f;
+
+					EditorGUILayout.HelpBox("You may need to destroy windows automatic on new scene loaded. Set this toggle off to do it. By default its on.", MessageType.Info);
+					var dontDestroyOnLoad = EditorGUILayout.Toggle("Dont Destroy:", prefs.dontDestroyOnLoad, GUILayout.Width(width));
+					if (dontDestroyOnLoad != prefs.dontDestroyOnLoad) {
+						
+						this.isScreenDirty = true;
+						prefs.dontDestroyOnLoad = dontDestroyOnLoad;
+						
+					}
+
+					EditorGUIUtility.LookLikeControls();
+
+				}
+
+			}
+
+		}
+
+		private bool foldoutModules = false;
+		private bool showModuleWindow;
+		private void DrawModules(float width) {
+			
+			this.lastRect = GUILayoutUtility.GetLastRect();
+
+			if (this.screenInstance != null) {
+				
+				var screen = this.screenInstance;
+				if (screen != null) {
+
+					var commentStyle = new GUIStyle(EditorStyles.miniLabel);
+					commentStyle.wordWrap = true;
+
+					var modules = screen.modules.GetModulesInfo();
+
+					var query = from x in modules group x.moduleSource by x.moduleSource into g let count = g.Count() orderby count descending select new { Value = g.Key, Count = count };
+
+					var warnings = new List<string>();
+					foreach (var element in query) {
+
+						if (element.Count > 1) {
+
+							warnings.Add(element.Value.name);
+
+						}
+
+					}
+
+					if (warnings.Count > 0) {
+
+						EditorGUILayout.HelpBox("Warning! You have duplicate elements in modules list. It may cause problems in View. Modules: " + (string.Join(", ", warnings.ToArray())), MessageType.Warning);
+
+					}
+
+					foreach (var moduleInfo in modules) {
+
+						var oldColor = GUI.color;
+
+						GUILayout.BeginVertical(GUI.skin.box);
+						
+						GUILayout.BeginHorizontal();
+						GUILayout.Label(moduleInfo.moduleSource.name, EditorStyles.miniButtonLeft);
+						GUI.color = Color.red;
+						if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.Width(30f)) == true) {
+
+							screen.modules.RemoveModule(moduleInfo);
+							this.isScreenDirty = true;
+							return;
+
+						}
+						GUI.color = oldColor;
+						GUILayout.EndHorizontal();
+						
+						GUILayout.BeginHorizontal();
+						GUILayout.Label(moduleInfo.moduleSource.comment, commentStyle);
+						GUILayout.EndHorizontal();
+						
+						GUILayout.BeginVertical();
+						this.foldoutModules = EditorGUILayout.Foldout(this.foldoutModules, "Properties", EditorStyles.foldout);
+						if (this.foldoutModules == true) {
+
+							EditorGUIUtility.labelWidth = 100f;
+							
+							EditorGUILayout.HelpBox("Sorting Order - it's SiblibngIndex() of transform. Sorting order always must have more than zero values.", MessageType.Info);
+							var sortingOrder = EditorGUILayout.IntField("Sorting Order:", moduleInfo.sortingOrder, GUILayout.Width(width));
+							if (sortingOrder < 0) sortingOrder = 0;
+							if (sortingOrder != moduleInfo.sortingOrder) {
+								
+								this.isScreenDirty = true;
+								moduleInfo.sortingOrder = sortingOrder;
+								
+							}
+							
+							EditorGUIUtility.labelWidth = 140f;
+							
+							EditorGUILayout.HelpBox("To set SiblingIndex() lower than zero use this option.", MessageType.Info);
+							var backgroundLayer = EditorGUILayout.Toggle("Is Background Layer:", moduleInfo.backgroundLayer, GUILayout.Width(width));
+							if (backgroundLayer != moduleInfo.backgroundLayer) {
+								
+								this.isScreenDirty = true;
+								moduleInfo.backgroundLayer = backgroundLayer;
+								
+							}
+
+						}
+						GUILayout.EndHorizontal();
+
+						GUILayout.EndVertical();
+
+					}
+
+					if (GUILayout.Button("Add Module...", GUILayout.Height(30f)) == true) {
+
+						this.showModuleWindow = true;
+
+					}
+
+					if (Event.current.type == EventType.Repaint && this.showModuleWindow == true) {
+
+						this.showModuleWindow = false;
+
+						var rect = GUILayoutUtility.GetLastRect();
+						rect.x += this.mainRect.x + this.currentView.position.x - this.scrollPosition.x + this.lastRect.x;
+						rect.y += this.mainRect.y + this.currentView.position.y + rect.height - this.scrollPosition.y + this.lastRect.y + 15f;
+						FlowDropDownFilterWindow.Show<WindowModule>(rect, (module) => {
+							
+							screen.modules.AddModuleInfo(module, module.defaultSortingOrder, module.defaultBackgroundLayer);
+							this.isScreenDirty = true;
+							
+						}, (module) => {
+
+							GUILayout.Label(module.comment, commentStyle);
+
+						});
+
+					}
+
+				}
+
+			}
+
+		}
+
+		private void DrawComponents(float width) {
+
+			// Drawing selected screen
+			if (this.screenInstance != null) {
+
+				var screen = this.screenInstance as LayoutWindowType;
+				if (screen != null) {
+
+					var layout = this.layoutInstance;
+
+					foreach (var component in screen.layout.components) {
+
+						this.DrawLayoutItem(screen, layout, component, width);
+
+					}
+
+				}
+
+			}
+
+		}
+
+		private void DrawLayoutItem(WindowBase screen, WindowLayout layout, Layout.Component component, float width) {
+
+			if (layout == null) return;
+
+			var tempComponent = layout.elements.FirstOrDefault((e) => e.tag == component.tag);
+			var selected = (Selection.activeGameObject == tempComponent.gameObject);
+			var oldColor = GUI.color;
+
+			var boxStyle = new GUIStyle(EditorStyles.toolbar);
+			boxStyle.fixedHeight = 0f;
+			boxStyle.stretchHeight = true;
+			boxStyle.padding.right = -20;
+			boxStyle.margin.right = -20;
+
+			var titleStyle = EditorStyles.whiteMiniLabel;
+
+			EditorGUILayout.Separator();
+
+			GUI.color = selected == true ? new Color(0.7f, 1f, 0.7f, 1f) : Color.white;
+			EditorGUILayout.BeginVertical(boxStyle, GUILayout.Width(width));
+
+			if (GUILayout.Button(component.tag.ToString() + " (" + component.description + ")", titleStyle, GUILayout.Width(width)) == true) {
+
+				Selection.activeGameObject = tempComponent.gameObject;
+
+			}
+
+			EditorGUILayout.BeginHorizontal();
+			GUILayout.Label("Order:", GUILayout.Width(50f));
+			var newOrder = EditorGUILayout.IntField(component.sortingOrder, EditorStyles.miniTextField, GUILayout.Width(50f));
+			if (newOrder != component.sortingOrder) {
+
+				component.sortingOrder = newOrder;
+				this.isScreenDirty = true;
+
+			}
+
+			if (component.sortingOrder == 0) {
+
+				GUILayout.Label("(Auto)", EditorStyles.miniLabel);
+
+			} else {
+
+				if (GUILayout.Button("Set Auto", EditorStyles.miniButton) == true) {
+
+					component.sortingOrder = 0;
+					this.isScreenDirty = true;
+
+				}
+
+			}
+
+			EditorGUILayout.EndHorizontal();
+
+			var newComponent = EditorGUILayout.ObjectField(component.component, typeof(WindowComponent), false, GUILayout.Width(width)) as WindowComponent;
+			if (newComponent != component.component) {
+				
+				component.component = newComponent;
+				this.isScreenDirty = true;
+				
+			}
+
+			tempComponent.tempEditorComponent = component.component;
+
+			EditorGUILayout.EndVertical();
+			var rect = GUILayoutUtility.GetLastRect();
+			if (Event.current.type == EventType.MouseUp && rect.Contains(Event.current.mousePosition) == true) {
+
+				Selection.activeGameObject = tempComponent.gameObject;
+
+			}
+
+			GUI.color = oldColor;
+
+		}
+
+		private void DrawLayoutChooser(float width) {
+
+			var layouts = new string[this.layouts.Count + 1];
+			layouts[0] = "None";
+			for (int i = 1; i < layouts.Length; ++i) layouts[i] = this.layouts[i - 1].name.Replace("Layout", string.Empty);
+
+			GUILayout.Label("Use existing layout:");
+
+			var index = this.layoutPrefab == null ? 0 : (System.Array.IndexOf(layouts, this.layoutPrefab.name.Replace("Layout", string.Empty)));
+			index = EditorGUILayout.Popup(index, layouts);
+			if (index > 0) {
+
+				this.layoutPrefab = this.layouts[index - 1];
+
+			}
+
+			this.layoutPrefab = EditorGUILayout.ObjectField(this.layoutPrefab, typeof(WindowLayout), false) as WindowLayout;
+			if (GUILayout.Button("Load") == true) {
+
+				this.LoadLayout(this.layoutPrefab);
+
+			}
+
+			GUILayout.Label("Or create the new one:");
+
+			if (GUILayout.Button("Create Layout") == true) {
+
+				this.layoutPrefab = FlowSystem.GenerateLayout(this.window);
+				this.ReloadLayouts();
+
+			}
+
+		}
+		
+		private void LoadLayout(WindowLayout layoutPrefab) {
+			
+			if (layoutPrefab != null) {
+				
+				if (this.layoutInstance != null) GameObject.DestroyImmediate(this.layoutInstance.gameObject);
+				
+				// Loading layout
+				this.layoutInstance = FlowSystem.LoadLayout(layoutPrefab);
+				this.layoutInstance.transform.position = Vector3.zero;
+				this.layoutInstance.transform.rotation = Quaternion.identity;
+				this.layoutInstance.transform.localScale = Vector3.zero;
+				
+			}
+			
+		}
+		
+		private void ReloadLayouts() {
+
+			this.layouts.Clear();
+			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowSystem.LAYOUT_FOLDER + "/", "*Layout.prefab");
+			foreach (var prefab in prefabs) {
+				
+				var layout = AssetDatabase.LoadAssetAtPath(prefab, typeof(WindowLayout)) as WindowLayout;
+				if (layout != null) this.layouts.Add(layout);
+				
+			}
+			
+			if (this.layouts.Count == 1 && this.autoloadedLayout == false) {
+				
+				this.layoutPrefab = this.layouts[0];
+				this.LoadLayout(this.layoutPrefab);
+				this.autoloadedLayout = true;
+				
+			}
+			
+		}
+		
+		private void LoadScreen(WindowBase screenPrefab) {
+			
+			if (screenPrefab != null) {
+				
+				if (this.screenInstance != null) GameObject.DestroyImmediate(this.screenInstance.gameObject);
+				
+				// Loading screen
+				this.screenInstance = FlowSystem.LoadScreen(screenPrefab);
+				this.screenInstance.transform.position = Vector3.zero;
+				this.screenInstance.transform.rotation = Quaternion.identity;
+				this.screenInstance.transform.localScale = Vector3.zero;
+
+				if ((this.screenInstance as LayoutWindowType) != null) {
+
+					var layout = this.screenInstance as LayoutWindowType;
+					layout.layout.layout = this.layoutInstance;
+
+				}
+
+			}
+			
+		}
+		
+		private void ReloadScreens() {
+			
+			this.screens.Clear();
+			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowSystem.SCREENS_FOLDER + "/", "*Screen.prefab");
+			foreach (var prefab in prefabs) {
+				
+				var screen = AssetDatabase.LoadAssetAtPath(prefab, typeof(WindowBase)) as WindowBase;
+				if (screen != null) this.screens.Add(screen);
+				
+			}
+			
+			if (this.screens.Count == 1 && this.autoloadedScreen == false) {
+				
+				this.screenPrefab = this.screens[0];
+				this.LoadScreen(this.screenPrefab);
+				this.autoloadedScreen = true;
+				
+			}
+			
+		}
+
+	}
+
+	public class FlowSceneView {
+		
+		public static FlowSceneViewWindow recompileChecker;
+
+		private static FlowSceneItem currentItem;
+		private static bool isActive = false;
+		
+		public static FlowSceneItem GetItem() {
+			
+			return FlowSceneView.currentItem;
+			
+		}
+
+		public static FlowSceneViewWindow GetView() {
+			
+			return FlowSceneView.currentItem != null ? FlowSceneView.currentItem.view : null;
+			
+		}
+		
+		public static FlowInspectorWindow GetInspector() {
+			
+			return FlowSceneView.currentItem != null ? FlowSceneView.currentItem.inspector : null;
+			
+		}
+		
+		public static FlowHierarchyWindow GetHierarchy() {
+			
+			return FlowSceneView.currentItem != null ? FlowSceneView.currentItem.hierarchy : null;
+			
+		}
+
+		public static bool IsActive() {
+
+			return FlowSceneView.isActive;
+
+		}
+		
+		private static AnimatedValues.AnimFloat editAnimation;
+		public static void SetControl(FlowSystemEditorWindow rootWindow, FlowWindow window, System.Action<float> onProgress) {
+
+			if (EditorApplication.SaveCurrentSceneIfUserWantsTo() == true) {
+				
+				FlowSceneView.editAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
+
+					onProgress(FlowSceneView.editAnimation.value);
+
+				});
+				FlowSceneView.editAnimation.value = 0f;
+				FlowSceneView.editAnimation.speed = 2f;
+				FlowSceneView.editAnimation.target = 1f;
+
+				FlowSceneView.currentItem = new FlowSceneItem(rootWindow, window, FlowSceneView.editAnimation);
+				FlowSceneView.isActive = true;
+
+			}
+
+		}
+
+		public static void Reset(System.Action<float> onProgress, bool onDestroy = false) {
+			
+			FlowSceneView.editAnimation = new UnityEditor.AnimatedValues.AnimFloat(1f, () => {
+				
+				onProgress(FlowSceneView.editAnimation.value);
+				
+			});
+			FlowSceneView.editAnimation.value = 1f;
+			FlowSceneView.editAnimation.speed = 2f;
+			FlowSceneView.editAnimation.target = 0f;
+
+			if (FlowSceneView.currentItem != null) FlowSceneView.currentItem.Dispose(onDestroy, FlowSceneView.editAnimation);
+			FlowSceneView.currentItem = null;
+			
+			FlowSceneView.isActive = false;
+			
+		}
+		
+		public static void Show() {
+			
+			if (FlowSceneView.currentItem != null) FlowSceneView.currentItem.Show();
+			
+		}
+		
+		
+		public static void Hide() {
+			
+			if (FlowSceneView.currentItem != null) FlowSceneView.currentItem.Hide();
+			
+		}
+
+	}
+
+}

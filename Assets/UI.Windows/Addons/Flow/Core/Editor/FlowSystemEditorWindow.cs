@@ -28,13 +28,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	}
 
-	public class FlowSystemEditorWindow : EditorWindow {
+	public class FlowSystemEditorWindow : EditorWindowExt {
 
 		[MenuItem("Window/UI.Windows Flow")]
 		static void ShowEditor() {
 
 			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
 			editor.title = "Windows Flow";
+			editor.autoRepaintOnSceneChange = true;
 
 		}
 
@@ -42,10 +43,30 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Rect contentRect;
 		
 		private const float scrollSize = 18f;
+		
+		public override void OnActive() {
+
+			FlowSceneView.Show();
+
+		}
+		
+		public override void OnInactive() {
+
+			FlowSceneView.Hide();
+
+		}
+
+		public override void OnClose() {
+
+			FlowSceneView.Reset(this.OnItemProgress);
+
+		}
 
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
+
+			GUI.enabled = !FlowSceneView.IsActive();
 
 			var windowStyle = new GUIStyle(GUI.skin.FindStyle("window"));
 			windowStyle.fontStyle = FontStyle.Bold;
@@ -66,9 +87,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var hasData = FlowSystem.HasData();
 
-			GUI.enabled = hasData;
+			var oldEnabled = GUI.enabled;
+			GUI.enabled = hasData && GUI.enabled;
 			var toolbarHeight = this.DrawToolbar();
-			GUI.enabled = true;
+			GUI.enabled = oldEnabled;
 			
 			IEnumerable<FlowWindow> windows = null;
 			IEnumerable<FlowWindow> containers = null;
@@ -274,12 +296,49 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			this.EndWindows();
 			
-			if (this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
+			if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
 
 			GUI.EndScrollView();
 
 			this.DragBackground(toolbarHeight);
 
+			GUI.enabled = true;
+
+			if (FlowSceneView.IsActive() == true) {
+
+				var style = new GUIStyle(GUI.skin.button);
+
+				var rect = this.position;
+				rect.x = 0f;
+				rect.y = 0f;
+
+				var oldColor = GUI.color;
+
+				var color = Color.black;
+				color.a = 0.6f * this.itemProgress;
+				GUI.color = color;
+				if (GUI.Button(rect, string.Empty, style) == true) {
+
+					FlowSceneView.Reset(this.OnItemProgress);
+
+				}
+
+				GUI.color = oldColor;
+
+			}
+
+		}
+		
+		public void OnLostFocus() {
+
+			//FlowSceneView.Reset();
+			
+		}
+		
+		private void OnFocus() {
+
+			//FlowSceneView.Reset();
+			
 		}
 
 		private Dictionary<int, List<FlowWindow>> bringFront = new Dictionary<int, List<FlowWindow>>();
@@ -585,7 +644,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
 			
-			if (GUILayout.Button("Create Window", buttonStyle)) {
+			if (GUILayout.Button("New Window", buttonStyle)) {
 				
 				var scrollPos = FlowSystem.GetScrollPosition();
 				
@@ -595,7 +654,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			if (GUILayout.Button("Create Container", buttonStyle)) {
+			if (GUILayout.Button("New Container", buttonStyle)) {
 				
 				var scrollPos = FlowSystem.GetScrollPosition();
 				
@@ -608,7 +667,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			if (GUILayout.Button("Center Screen", buttonStyle)) {
 				
 				FlowSystem.SetScrollPosition(Vector2.one * -1f);
-
+				
+			}
+			
+			if (GUILayout.Button("Generate UI", buttonStyle)) {
+				
+				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
+				
+			}
+			
+			if (GUILayout.Button("Recompile UI", buttonStyle)) {
+				
+				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData), recompile: true);
+				
 			}
 
 			GUILayout.FlexibleSpace();
@@ -625,10 +696,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		private void DrawNodeContainer(int id) {
 			
+			GUI.enabled = !FlowSceneView.IsActive();
+
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
 			
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
+			
+			var window = FlowSystem.GetWindow(id);
 
 			if (this.waitForAttach == true) {
 				
@@ -707,6 +782,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
 					
+					this.ShowNotification(new GUIContent("Use Attach/Detach buttons to connect/disconnect the container"));
 					this.WaitForAttach(id);
 					
 				}
@@ -715,6 +791,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					if (EditorUtility.DisplayDialog("Are you sure?", "Current container will be destroyed with all links (All windows will be saved)", "Yes, destroy", "No") == true) {
 						
+						this.ShowNotification(new GUIContent("The container '" + window.title + "' was successfully destroyed"));
 						FlowSystem.DestroyWindow(id);
 						return;
 
@@ -727,9 +804,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.FlexibleSpace();
 
 			GUILayout.EndHorizontal();
-			
-			var window = FlowSystem.GetWindow(id);
+
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Title:", GUILayout.Width(70f));
 			window.title = GUILayout.TextField(window.title);
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Directory:", GUILayout.Width(70f));
+			window.directory = GUILayout.TextField(window.directory);
+			GUILayout.EndHorizontal();
 
 			var attaches = window.attaches.Count;
 			if (attaches == 0) {
@@ -741,10 +825,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.DragWindow(headerOnly: true);
 
 			}
+			
+			GUI.enabled = true;
 
 		}
 
 		private void DragWindow(bool headerOnly) {
+			
+			GUI.enabled = !FlowSceneView.IsActive();
+			if (GUI.enabled == false) return;
 
 			if (Event.current.button != 2) {
 
@@ -761,14 +850,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
+			GUI.enabled = true;
+
 		}
 
 		private void DrawNodeWindow(int id) {
 			
+			GUI.enabled = !FlowSceneView.IsActive();
+
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
+			
+			var window = FlowSystem.GetWindow(id);
 
 			if (this.waitForAttach == true) {
 
@@ -819,7 +914,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			} else {
 
 				if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
-
+					
+					this.ShowNotification(new GUIContent("Use Attach/Detach buttons to connect/disconnect the window"));
 					this.WaitForAttach(id);
 
 				}
@@ -828,6 +924,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					if (EditorUtility.DisplayDialog("Are you sure?", "Current window will be destroyed with all links", "Yes, destroy", "No") == true) {
 
+						this.ShowNotification(new GUIContent("The window '" + window.title + "' was successfully destroyed"));
 						FlowSystem.DestroyWindow(id);
 						return;
 
@@ -839,19 +936,50 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			GUILayout.FlexibleSpace();
 
-			if (GUILayout.Button("View", buttonStyle) == true) {
+			var edit = false;
+			if (GUILayout.Button("Edit", buttonStyle) == true) {
 
+				if (window.compiled == false) {
 
+					this.ShowNotification(new GUIContent("You need to compile this window to use 'Edit' command"));
+
+				} else {
+
+					edit = true;
+
+				}
 
 			}
 
 			GUILayout.EndHorizontal();
-
-			var window = FlowSystem.GetWindow(id);
-
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Title:", GUILayout.Width(70f));
 			window.title = GUILayout.TextField(window.title);
+			GUILayout.EndHorizontal();
+			
+			GUILayout.BeginHorizontal();
+			GUILayout.Label("Directory:", GUILayout.Width(70f));
+			window.directory = GUILayout.TextField(window.directory);
+			GUILayout.EndHorizontal();
 
 			this.DragWindow(headerOnly: true);
+
+			if (edit == true) {
+
+				FlowSceneView.SetControl(this, window, this.OnItemProgress);
+
+			}
+			
+			GUI.enabled = true;
+
+		}
+		
+		private float itemProgress;
+		public void OnItemProgress(float value) {
+
+			this.itemProgress = value;
+			this.Repaint();
 
 		}
 
@@ -882,6 +1010,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
+			var zOffset = -10f;
+
 			if (doubleSide == true) {
 
 				var size = 6f;
@@ -890,22 +1020,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var ray = new Ray(Vector3.zero, (rot * (end.center - start.center)).normalized);
 
 				var offset = ray.GetPoint(size);
-				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, -10f);
-				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, -10f);
+				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
+				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
 				
 				this.DrawNodeCurve(startPos, endPos, color1);
 				
 				offset = ray.GetPoint(-size);
-				startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, -10f);
-				endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, -10f);
+				startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
+				endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
 				
 				this.DrawNodeCurve(endPos, startPos, color2);
 
 			} else {
 
 				var offset = Vector2.zero;
-				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, -10f);
-				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, -10f);
+				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
+				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
 
 				this.DrawNodeCurve(startPos, endPos, color1);
 
@@ -914,9 +1044,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private void DrawNodeCurve(Vector3 startPos, Vector3 endPos, Color color) {
-			
-			startPos.z = -50f;
-			endPos.z = -50f;
 
 			var shadowColor = new Color(0f, 0f, 0f, 0.5f);
 			var lineColor = color;//new Color(1f, 1f, 1f, 1f);
@@ -928,11 +1055,38 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			Handles.color = shadowColor;
 			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos, endPos });
-			Handles.ConeCap(-1, (endPos + startPos) * 0.5f + shadowOffset, Quaternion.LookRotation(endPos - startPos), 15f);
 			
 			Handles.color = lineColor;
 			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos, endPos });
-			Handles.ConeCap(-1, (endPos + startPos) * 0.5f, Quaternion.LookRotation(endPos - startPos), 15f);
+			
+			var ray = new Ray(startPos, (endPos - startPos).normalized);
+			var rot = Quaternion.LookRotation(endPos - startPos);
+
+			var every = 300f;
+			var fullDistance = Vector3.Distance(endPos, startPos);
+			if (fullDistance < every * 2f) {
+
+				var pos = ray.GetPoint(fullDistance * 0.5f);
+
+				Handles.color = shadowColor;
+				Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
+				Handles.color = lineColor;
+				Handles.ConeCap(-1, pos, rot, 15f);
+
+			} else {
+
+				for (float distance = every; distance < fullDistance; distance += every) {
+
+					var pos = ray.GetPoint(distance);
+
+					Handles.color = shadowColor;
+					Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
+					Handles.color = lineColor;
+					Handles.ConeCap(-1, pos, rot, 15f);
+
+				}
+
+			}
 
 			Handles.EndGUI();
 

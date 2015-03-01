@@ -5,14 +5,13 @@ namespace UnityEngine.UI.Windows {
 	
 	[ExecuteInEditMode()]
 	public class WindowModule : WindowLayoutBase {
+		
+		#if UNITY_EDITOR
+		public string comment;
+		#endif
 
-#if UNITY_EDITOR
-		protected override void Update() {
-
-			base.Update();
-
-		}
-#endif
+		public int defaultSortingOrder;
+		public bool defaultBackgroundLayer;
 
 	}
 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEngine.UI.Windows {
 
@@ -114,13 +115,13 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideEnd() {}
 		
 		#if UNITY_EDITOR
-		protected virtual void Update() {
-			
-			if (Application.isPlaying == true) return;
+		public virtual void OnValidate() {
 
 			this.Update_EDITOR();
-			
+
 		}
+
+		private List<TransitionInputParameters> componentsToDestroy = new List<TransitionInputParameters>();
 
 		[HideInInspector][SerializeField]
 		public WindowAnimationBase lastAnimation;
@@ -129,8 +130,12 @@ namespace UnityEngine.UI.Windows {
 			if (this.animation == null || this.lastAnimation != this.animation || this.animationRefresh == false) {
 				
 				var ps = this.GetComponents<TransitionInputParameters>();
-				foreach (var p in ps) Component.DestroyImmediate(p);
-				
+				foreach (var p in ps) {
+
+					this.componentsToDestroy.Add(p);
+
+				}
+
 				this.animationRefresh = false;
 				
 			}
@@ -143,6 +148,17 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			this.lastAnimation = this.animation;
+			
+			UnityEditor.EditorApplication.delayCall += () => {
+
+				foreach (var c in this.componentsToDestroy) {
+
+					Component.DestroyImmediate(c);
+					this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
+
+				}
+
+			};
 
 		}
 		#endif

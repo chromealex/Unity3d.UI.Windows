@@ -9,7 +9,7 @@ namespace ME {
 
 	public partial class EditorUtilities {
 
-		public static void ClearLayoutElement(UnityEngine.UI.Windows.WindowLayoutElement layoutElement) {
+		/*public static void ClearLayoutElement(UnityEngine.UI.Windows.WindowLayoutElement layoutElement) {
 			
 			if (layoutElement.editorLabel == null) return;
 
@@ -41,7 +41,7 @@ namespace ME {
 
 			}
 
-		}
+		}*/
 		/*
 		public static void DestroyImmediateHidden<T>(this MonoBehaviour root) where T : Component {
 
@@ -128,6 +128,43 @@ namespace ME {
 			EditorUtility.FocusProjectWindow();
 			Selection.activeObject = asset;
 
+		}
+
+		/// TODO: REPLACE WITH MY VERSION!!!
+		public static T[] GetAssetsOfType<T>(string fileExtension = ".*") where T : Component {
+
+			List<T> tempObjects = new List<T>();
+			DirectoryInfo directory = new DirectoryInfo(Application.dataPath);
+			FileInfo[] goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
+			
+			int i = 0; int goFileInfoLength = goFileInfo.Length;
+			FileInfo tempGoFileInfo; string tempFilePath;
+			GameObject tempGO;
+			for (; i < goFileInfoLength; i++)
+			{
+				tempGoFileInfo = goFileInfo[i];
+				if (tempGoFileInfo == null)
+					continue;
+				
+				tempFilePath = tempGoFileInfo.FullName;
+				tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
+
+				tempGO = AssetDatabase.LoadAssetAtPath(tempFilePath, typeof(Object)) as GameObject;
+				if (tempGO == null)
+				{
+					//Debug.LogWarning("Skipping Null");
+					continue;
+				}
+				else if (tempGO.GetComponent<T>() == null)
+				{
+					//Debug.LogWarning("Skipping " + tempGO.GetType().ToString());
+					continue;
+				}
+				
+				tempObjects.Add(tempGO.GetComponent<T>());
+			}
+			
+			return tempObjects.ToArray();
 		}
 
 	}

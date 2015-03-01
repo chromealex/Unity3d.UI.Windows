@@ -58,7 +58,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public Settings settings;
+		public Settings settings = new Settings();
 
 		public List<WindowBase> defaults = new List<WindowBase>();
 		#if UNITY_EDITOR || UNITY_MOBILE
@@ -102,7 +102,17 @@ namespace UnityEngine.UI.Windows {
 			get {
 
 				#if UNITY_EDITOR
-				if (WindowSystem._instance == null) WindowSystem._instance = GameObject.FindObjectOfType<WindowSystem>();
+				if (WindowSystem._instance == null) {
+
+					WindowSystem._instance = GameObject.FindObjectOfType<WindowSystem>();
+					if (WindowSystem._instance == null) {
+
+						var go = new GameObject("WindowSystem");
+						WindowSystem._instance = go.AddComponent<WindowSystem>();
+
+					}
+
+				}
 				#endif
 
 				return WindowSystem._instance;
@@ -162,24 +172,40 @@ namespace UnityEngine.UI.Windows {
 			return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 
 		}
-
+		
 		public static void ApplyToSettings(Camera camera) {
-
+			
 			if (WindowSystem.instance.settings.file == null) {
-
+				
 				camera.orthographic = true;
 				camera.orthographicSize = 5f;
 				camera.nearClipPlane = -100f;
 				camera.farClipPlane = 100f;
 				camera.useOcclusionCulling = false;
 				camera.hdr = false;
+				
+			} else {
+				
+				WindowSystem.instance.settings.file.Apply(camera: camera);
+				
+			}
+			
+		}
+		
+		public static void ApplyToSettings(Canvas canvas) {
+
+			if (WindowSystem.instance.settings.file == null) {
+				
+				canvas.overrideSorting = true;
+				canvas.sortingLayerName = "Windows";
+				canvas.sortingOrder = 0;
 
 			} else {
-
-				WindowSystem.instance.settings.file.Apply(camera: camera);
-
+				
+				WindowSystem.instance.settings.file.Apply(canvas: canvas);
+				
 			}
-
+			
 		}
 
 		public static void AddToHistory(WindowBase window) {
