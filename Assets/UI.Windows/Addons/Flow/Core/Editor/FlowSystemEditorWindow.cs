@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 
@@ -30,12 +31,26 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowSystemEditorWindow : EditorWindowExt {
 
+		[MenuItem( "Assets/Open Flow Editor", validate = true )]
+		private static bool ShowEditorValidate() {
+
+			return Selection.activeObject is FlowData;
+		}
+
+		[MenuItem("Assets/Open Flow Editor")]
 		[MenuItem("Window/UI.Windows Flow")]
 		static void ShowEditor() {
-
+			
 			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
 			editor.title = "Windows Flow";
 			editor.autoRepaintOnSceneChange = true;
+
+			var selectedObject = Selection.activeObject as FlowData;
+
+			if ( selectedObject != null ) {
+				
+				editor.OpenFlowData( selectedObject );
+			}
 
 		}
 
@@ -85,11 +100,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f);
 
+			var toolbarHeight = this.DrawToolbar();
+
 			var hasData = FlowSystem.HasData();
 
 			var oldEnabled = GUI.enabled;
 			GUI.enabled = hasData && GUI.enabled;
-			var toolbarHeight = this.DrawToolbar();
 			GUI.enabled = oldEnabled;
 			
 			IEnumerable<FlowWindow> windows = null;
@@ -397,15 +413,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			if (Event.current.type == EventType.MouseDown && button == 2) {
 
 				this.scrollingMouse = true;
-				
-				this.scrollingMouseAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
-					
-					this.Repaint();
-					
-				});
-				this.scrollingMouseAnimation.speed = 2f;
-				this.scrollingMouseAnimation.target = 1f;
-				
+
+				this.scrollingMouseAnimation = new UnityEditor.AnimatedValues.AnimFloat( 0f, this.Repaint ) {
+					speed = 2f,
+					target = 1f
+				};
 			}
 			
 			if (Event.current.type == EventType.MouseDrag && this.scrollingMouse == true) {
@@ -431,14 +443,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.selectionRect = new Rect(position.x, position.y, 0f, 0f);
 				this.selectionRectWait = true;
 
-				this.selectionRectAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
-					
-					this.Repaint();
-
-				});
-				this.selectionRectAnimation.speed = 2f;
-				this.selectionRectAnimation.target = 1f;
-
+				this.selectionRectAnimation = new UnityEditor.AnimatedValues.AnimFloat( 0f, this.Repaint ) {speed = 2f, target = 1f};
 			}
 
 			if (Event.current.type == EventType.MouseDrag && this.selectionRectWait == true) {
@@ -499,10 +504,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (this.selectionRect.size != Vector2.zero && (this.selectionRectAnimation.isAnimating == true || this.selectionRectWait == true)) {
 				
-				var selectionBoxStyle = new GUIStyle(GUI.skin.FindStyle("box"));
-				selectionBoxStyle.margin = new RectOffset();
-				selectionBoxStyle.padding = new RectOffset();
-				selectionBoxStyle.contentOffset = Vector2.zero;
+				var selectionBoxStyle = new GUIStyle(GUI.skin.FindStyle("box")) {
+					margin = new RectOffset(),
+					padding = new RectOffset(),
+					contentOffset = Vector2.zero
+				};
 
 				color = new Color(1f, 1f, 1f, this.selectionRectAnimation.value);
 
@@ -636,11 +642,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private void OpenFlowData( FlowData flowData ) {
+
+			cachedData = flowData;
+			FlowSystem.SetData( flowData );
+		}
+
+		private void CloseFlowData() {
+
+			cachedData = null;
+			FlowSystem.SetData( null );
+		}
+
 		private float DrawToolbar() {
 
 			var toolbarHeight = 0f;
-			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
-			buttonStyle.stretchWidth = false;
+			var buttonStyle = new GUIStyle( EditorStyles.toolbarButton ) {stretchWidth = false};
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
 			
@@ -670,13 +687,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			if (GUILayout.Button("Generate UI", buttonStyle)) {
+			if (GUILayout.Button("Compile UI", buttonStyle)) {
 				
 				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
 				
 			}
 			
-			if (GUILayout.Button("Recompile UI", buttonStyle)) {
+			if (GUILayout.Button("Force Recompile UI", buttonStyle)) {
 				
 				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData), recompile: true);
 				
@@ -685,6 +702,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.FlexibleSpace();
 
 			GUILayout.Label("Current Data: " + AssetDatabase.GetAssetPath(this.cachedData), buttonStyle);
+
+			if ( GUILayout.Button( "Close", buttonStyle ) ) {
+				
+				CloseFlowData();
+			}
 
 			GUILayout.EndHorizontal();
 

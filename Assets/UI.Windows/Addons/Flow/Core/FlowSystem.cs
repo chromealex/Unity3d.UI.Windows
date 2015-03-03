@@ -195,9 +195,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 #if UNITY_EDITOR
-		private static void CreateDirectory(string root, string folder) {
+		private static void CreateDirectory(string root, string folder, bool suppressWarnings = false) {
 		
-			var path = root + "/" + folder;
+			var path = root	+ "/" + folder;
 
 			if (System.IO.Directory.Exists(path) == false) {
 				
@@ -206,19 +206,24 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 			} else {
 
-				Debug.LogWarning("Folder Already Exists: " + path);
+				if ( !suppressWarnings ) {
+					
+					Debug.LogWarning("Folder Already Exists: " + path);
+				}
 
 			}
 
 		}
 
-		private static string LoadScriptTemplate(string templateName, string projectName, string containerNamespace, ref string screenName) {
+		private static string LoadScriptTemplate(string templateName, string projectName, string containerNamespace, string screenName, out string className) {
+
+			className = null;
 
 			var file = Resources.Load("UI.Windows/Templates/" + templateName) as TextAsset;
 			if (file == null) return null;
 			
 			projectName = projectName.UppercaseFirst() + ".UI" + (string.IsNullOrEmpty(containerNamespace) == false ? ("." + containerNamespace) : string.Empty);
-			screenName = screenName.UppercaseFirst() + "Screen";
+			className = screenName.UppercaseFirst() + "Screen";
 
 			var text = file.text;
 			text = text.Replace("{NAMESPACE_NAME}", projectName);
@@ -230,19 +235,20 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		private static void GenerateUIWindow(string fullpath, string containerNamespace, FlowWindow window, bool recompile = false) {
 
-			FlowSystem.CreateDirectory(fullpath, window.directory);
-			FlowSystem.CreateDirectory(fullpath, window.directory + "/" + COMPONENTS_FOLDER);
-			FlowSystem.CreateDirectory(fullpath, window.directory + "/" + LAYOUT_FOLDER);
-			FlowSystem.CreateDirectory(fullpath, window.directory + "/" + SCREENS_FOLDER);
+			FlowSystem.CreateDirectory(fullpath, window.directory, suppressWarnings: true);
+			FlowSystem.CreateDirectory(fullpath, window.directory + "/" + COMPONENTS_FOLDER, suppressWarnings: true);
+			FlowSystem.CreateDirectory(fullpath, window.directory + "/" + LAYOUT_FOLDER, suppressWarnings: true);
+			FlowSystem.CreateDirectory(fullpath, window.directory + "/" + SCREENS_FOLDER, suppressWarnings: true);
 
 			if (window.compiled == false || recompile == true) {
 
 				var screenName = window.directory;
 				var tplName = "TemplateScreen";
-				var tplData = FlowSystem.LoadScriptTemplate(tplName, FlowSystem.currentProject, containerNamespace, ref screenName);
+				var className = string.Empty;
+				var tplData = FlowSystem.LoadScriptTemplate( tplName, FlowSystem.currentProject, containerNamespace, screenName, out className );
 				if (tplData != null) {
 
-					var filepath = fullpath + "/" + window.directory + "/" + screenName + ".cs";
+					var filepath = fullpath + "/" + window.directory + "/" + className + ".cs";
 					File.WriteAllText(filepath, tplData);
 
 				} else {
@@ -380,24 +386,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		private static string currentProject;
 		public static void GenerateUI(string pathToData, bool recompile = false) {
 
-			var dir = pathToData.Split("/"[0]);
+			var dir = pathToData.Split( '/' );
 			var filename = dir[dir.Length - 1];
-			System.Array.Resize(ref dir, dir.Length - 1);
-			var directory = string.Join("/", dir);
-			
-			FlowSystem.currentProject = filename.Split("."[0])[0];
-			var path = directory + "/" + FlowSystem.currentProject;
+			var directory = string.Join( "/", dir ).Replace( filename, "" );
 
-			var counter = 0;
-			var fullpath = path;
-			while (System.IO.Directory.Exists(fullpath) == true) {
-				
-				fullpath = path + (++counter).ToString();
+			FlowSystem.currentProject = filename.Split( '.' )[0];
+			var fullpath = directory + "/" + FlowSystem.currentProject;
 
-			}
-
-			FlowSystem.CreateDirectory(fullpath, string.Empty);
-			FlowSystem.CreateDirectory(fullpath, OTHER_NAME);
+			FlowSystem.CreateDirectory(fullpath, string.Empty, suppressWarnings: true);
+			FlowSystem.CreateDirectory(fullpath, OTHER_NAME, suppressWarnings: true);
 
 			var containers = FlowSystem.GetContainers();
 			foreach (var container in containers) {
@@ -409,7 +406,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 						var local = (string.IsNullOrEmpty(accumulate) == false ? accumulate + "/" : string.Empty) + child.directory;
 						if (string.IsNullOrEmpty(child.directory) == false) {
 							
-							FlowSystem.CreateDirectory(fullpath, local);
+							FlowSystem.CreateDirectory(fullpath, local, suppressWarnings: true);
 							
 						}
 						
