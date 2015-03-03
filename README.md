@@ -5,8 +5,8 @@
 <img src="https://raw.githubusercontent.com/chromealex/Unity3d.UI.Windows/master/README/5.png" width="170" />
 
 # Online Samples:
-https://c11cf9e2a0f3c662eb191e3f47f.../host/0B9amRnYzMgMneGxpRXZNdDNNUDA/Basic.html
-https://afa89e40ebdcaea748467be1cd3...0B9amRnYzMgMnbEdOT21rcHM3b2c/Transitions.html
+https://c11cf9e2a0f3c662eb191e3f47f2d05514d5cbc0.googledrive.com/host/0B9amRnYzMgMneGxpRXZNdDNNUDA/Basic.html
+https://ec5dbe2d80c5f4f1a03800ad67c1340fe62155d9.googledrive.com/host/0B9amRnYzMgMnTkRkVGs3S290bjg/Transitions.html
 
 # Version 0.4a
 
