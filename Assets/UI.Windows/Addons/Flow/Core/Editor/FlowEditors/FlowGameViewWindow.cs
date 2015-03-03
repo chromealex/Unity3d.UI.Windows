@@ -2,9 +2,133 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine.UI;
+using UnityEngine.UI.Windows;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
-	
+
+	public class FlowGameViewRenderWindow : EditorWindowExt {
+
+		public static FlowGameViewRenderWindow Show(WindowBase previewScreen) {
+
+			var window = FlowGameViewRenderWindow.CreateInstance<FlowGameViewRenderWindow>();
+			window.previewScreen = previewScreen;
+			window.ShowPopup();
+
+			window.SetRenderSize(Screen.width, Screen.height, Screen.dpi);
+
+			return window;
+
+		}
+
+		private WindowBase previewScreen;
+		private RenderTexture tempRenderTexture;
+		private int currentWidth;
+		private int currentHeight;
+		private float ppi;
+		public void SetRenderSize(int width, int height, float ppi) {
+
+			this.ppi = ppi;
+			this.currentWidth = width;
+			this.currentHeight = height;
+
+			var layoutWindow = this.previewScreen as LayoutWindowType;
+			if (layoutWindow != null) {
+				
+				var layout = layoutWindow.layout.GetLayoutInstance();
+				
+				this.tempRenderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
+				this.previewScreen.workCamera.targetTexture = this.tempRenderTexture;
+
+				layout.canvasScaler.enabled = true;
+				layout.canvasScaler.drawAsWorld = true;
+				layout.canvasScaler.manualUpdate = true;
+
+				layoutWindow.transition.StartRenderToTexture();
+
+				var size = new Vector2(this.position.width, this.position.height);
+				var imageSize = new Vector2(this.currentWidth, this.currentHeight);
+				var factor = this.GetFactor(imageSize, size);
+				var k = Screen.dpi / this.ppi;
+
+				if (factor / k < 1f) {
+
+					this.ShowNotification(new GUIContent("Drawing screen (" + width.ToString() + "x" + height.ToString() + ") doesn't fit into your window size (" + size.x.ToString() + "x" + size.y.ToString() + ")."));
+
+				} else {
+
+					this.RemoveNotification();
+
+				}
+
+				this.Repaint();
+
+			}
+
+		}
+
+		private float GetFactor(Vector2 inner, Vector2 boundingBox) {     
+			
+			float widthScale = 0, heightScale = 0;
+			if (inner.x != 0)
+				widthScale = boundingBox.x / inner.x;
+			if (inner.y != 0)
+				heightScale = boundingBox.y / inner.y;                
+			
+			return Mathf.Min(widthScale, heightScale);
+			
+		}
+
+		public void Update() {
+
+			var layoutWindow = this.previewScreen as LayoutWindowType;
+			if (layoutWindow != null) {
+
+				layoutWindow.layout.GetLayoutInstance().canvasScaler.UpdateWithMode(new Vector2(this.currentWidth, this.currentHeight));
+				this.Repaint();
+
+			}
+
+		}
+
+		public void OnGUI() {
+			
+			var rectStyle = new GUIStyle("flow node 0");
+
+			var size = new Vector2(this.position.width, this.position.height);
+
+			GUI.Box(new Rect(0f, 0f, size.x, size.y), string.Empty, rectStyle);
+
+			var imageSize = new Vector2(this.currentWidth, this.currentHeight);
+
+			var factor = this.GetFactor(imageSize, size);
+			var k = Screen.dpi / this.ppi;
+			
+			var newImageSize = Vector2.zero;
+			if (factor / k < 1f) {
+
+				newImageSize = imageSize * factor;
+
+			} else {
+
+				var deviceSize = imageSize * k;
+				newImageSize = deviceSize;
+
+			}
+
+			GUI.DrawTexture(new Rect((size.x - newImageSize.x) * 0.5f, (size.y - newImageSize.y) * 0.5f, newImageSize.x, newImageSize.y), this.tempRenderTexture);
+
+		}
+
+		public override void OnClose() {
+
+			Object.DestroyImmediate(this.tempRenderTexture);
+			this.tempRenderTexture = null;
+
+		}
+
+	}
+
 	public class FlowGameViewWindow : EditorWindowExt {
 
 		public FlowSystemEditorWindow rootWindow;
@@ -14,16 +138,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
 		private const float PANEL_WIDTH = 200f;
 
-		private EditorWindow gameView;
+		private FlowGameViewRenderWindow gameView;
 		private System.Action onClose;
-		
+		/*
 		private PropertyInfo gameViewSizeProperty;
 		private object gameViewSize;
-		private System.Type gameViewSizeType;
+		private System.Type gameViewSizeType;*/
+		private WindowBase previewScreen;
 
+		public void ShowView(WindowBase previewScreen, System.Action onClose) {
 
-		public void ShowView(System.Action onClose) {
-
+			this.previewScreen = previewScreen;
 			this.onClose = onClose;
 
 			this.ShowPopup();
@@ -32,26 +157,49 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			this.minSize = new Vector2(this.minSize.x, 1f);
 			this.progress = 1f;
 
-			this.gameView = this.GetGameView();
+			/*this.gameView = this.GetGameView();
 			this.gameView.ShowPopup();
-			this.gameView.Focus();
+			this.gameView.Focus();*/
+
+			this.gameView = FlowGameViewRenderWindow.Show(this.previewScreen);
 
 			this.Focus();
 
 			this.selectedId = -1;
 			this.directoriesFoldOut = new List<bool>();
 
+			this.gameView.ShowNotification(new GUIContent("Double-Click on any item in left list to toggle between Portrait/Landscape orientation"));
+
 		}
 
-		private void SetGameViewSize(int width, int height, ScreenOrientation orientation) {
+		private void SetGameViewSize(int width, int height, float dpi) {
 			
-			this.gameViewSizeType.GetProperty("width", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(this.gameViewSize, orientation == ScreenOrientation.Landscape ? width : height, new object[] {});
-			this.gameViewSizeType.GetProperty("height", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(this.gameViewSize, orientation == ScreenOrientation.Landscape ? height : width, new object[] {});
+			//var x = orientation == ScreenOrientation.Landscape ? width : height;
+			//var y = orientation == ScreenOrientation.Landscape ? height : width;
+
+			/*this.gameViewSizeType.GetProperty("width", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(this.gameViewSize, x, new object[] {});
+			this.gameViewSizeType.GetProperty("height", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).SetValue(this.gameViewSize, y, new object[] {});
+			*/
+
+			this.gameView.SetRenderSize(width, height, dpi);
+
+			/*var layoutWindow = (this.previewScreen as LayoutWindowType);
+			if (layoutWindow != null) {
+
+				var layout = layoutWindow.layout.GetLayoutInstance();
+				if (layout != null) {
+
+					// Set new render size
+
+					//layout.SetScale(x, y, true);
+
+				}
+
+			}*/
 
 		}
 
-		private EditorWindow GetGameView() {
-
+		/*private EditorWindow GetGameView() {
 
 			var type = System.Type.GetType("UnityEditor.GameView,UnityEditor");
 			var gameView = EditorWindow.CreateInstance(type) as EditorWindow;
@@ -62,7 +210,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
 			return gameView;
 
-		}
+		}*/
 		
 		public void HideView() {
 			
@@ -228,6 +376,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 						foreach (var item in list) {
 
 							var style = this.selectedId == i ? (item.orientation == ScreenOrientation.Landscape ? elementStyleSelected : elementStyleSelectedPortrait) : (item.orientation == ScreenOrientation.Landscape ? elementStyle : elementStylePortrait);
+							
+							if (item.current == true) {
+								
+								item.width = Mathf.RoundToInt(this.gameView.position.width);
+								item.height = Mathf.RoundToInt(this.gameView.position.height);
+								item.orientation = item.orientation;
+									
+							}
 
 							if (GUILayout.Button(item.model, style) == true) {
 								
@@ -242,14 +398,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
 								this.lastClickTime = EditorApplication.timeSinceStartup;
 
-								this.SetGameViewSize(item.width, item.height, item.orientation);
+								this.SetGameViewSize(item.width, item.height, item.ppi);
 
 							}
 
 							var rect = GUILayoutUtility.GetLastRect();
 							rect.x += style.padding.left;
 							rect.y += rect.height - style.padding.bottom;
-							GUI.Label(rect, "Resolution: " + item.width.ToString() + "x" + item.height.ToString(), miniLabel);
+							GUI.Label(rect, "Resolution: " + item.width.ToString() + "x" + item.height.ToString() + " (" + item.ppi.ToString() + ")", miniLabel);
 
 							++i;
 

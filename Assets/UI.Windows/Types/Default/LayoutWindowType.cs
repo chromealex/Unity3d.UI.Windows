@@ -232,7 +232,9 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
-		
+
+		public WindowLayout.ScaleMode scaleMode;
+
 		public WindowLayout layout;
 		public Component[] components;
 		
@@ -252,14 +254,20 @@ namespace UnityEngine.UI.Windows {
 			rect.anchoredPosition = (this.layout.transform as RectTransform).anchoredPosition;
 			
 			instance.Setup(window);
-			instance.Init(depth, raycastPriority, orderInLayer);
+			instance.Init(depth, raycastPriority, orderInLayer, this.scaleMode);
 			
 			this.instance = instance;
 			
 			foreach (var component in this.components) component.Create(window, instance.GetRootByTag(component.tag));
 			
 		}
-		
+
+		public WindowLayout GetLayoutInstance() {
+
+			return this.instance;
+
+		}
+
 		public float GetAnimationDuration(bool forward) {
 			
 			var maxDuration = 0f;

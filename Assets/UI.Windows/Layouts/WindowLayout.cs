@@ -8,14 +8,22 @@ namespace UnityEngine.UI.Windows {
 
 	[RequireComponent(typeof(Canvas))]
 	public class WindowLayout : WindowObject, ICanvasElement, IWindowEvents {
-		
-		public float factor;
+
+		public enum ScaleMode {
+
+			Normal,
+			Fixed,
+			Custom,
+
+		};
+
+		public MECanvasScaler canvasScaler;
 
 		[ReadOnly]
 		public WindowLayoutRoot root;
 		[ReadOnly]
 		public List<WindowLayoutElement> elements = new List<WindowLayoutElement>();
-		
+
 		[HideInInspector][SerializeField]
 		public Canvas canvas;
 		[HideInInspector][SerializeField]
@@ -25,8 +33,18 @@ namespace UnityEngine.UI.Windows {
 		
 		[HideInInspector][SerializeField]
 		private bool isAlive = false;
+		
+		#if UNITY_EDITOR
+		[ContextMenu("Setup")]
+		public void Setup() {
 
-		public void Init(float depth, int raycastPriority, int orderInLayer) {
+			if (this.GetComponent<CanvasScaler>() != null) Component.DestroyImmediate(this.GetComponent<CanvasScaler>());
+			this.canvasScaler = this.gameObject.AddComponent<MECanvasScaler>();
+
+		}
+		#endif
+
+		public void Init(float depth, int raycastPriority, int orderInLayer, WindowLayout.ScaleMode scaleMode) {
 			
 			if (this.initialized == false) {
 				
@@ -38,6 +56,68 @@ namespace UnityEngine.UI.Windows {
 			this.canvas.sortingOrder = orderInLayer;
 			this.canvas.planeDistance = 10f;// * orderInLayer;
 			this.canvas.worldCamera = this.GetWindow().workCamera;
+
+			this.SetScale(scaleMode);
+
+		}
+
+		public bool ValidateCanvasScaler() {
+
+			var changed = false;
+
+			if (this.canvasScaler == null) {
+
+				this.canvasScaler = this.GetComponent<MECanvasScaler>();
+				changed = true;
+
+			}
+
+			if (this.canvasScaler == null) {
+
+				this.canvasScaler = this.gameObject.AddComponent<MECanvasScaler>();
+				changed = true;
+
+			}
+
+			return changed;
+
+		}
+
+		public void SetNoScale() {
+
+			this.ValidateCanvasScaler();
+			
+			this.canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
+			this.canvasScaler.enabled = false;
+
+		}
+		
+		public void SetScale(WindowLayout.ScaleMode scaleMode) {
+
+			this.ValidateCanvasScaler();
+
+			if (scaleMode == ScaleMode.Normal) {
+
+				this.SetNoScale();
+
+			} else {
+				
+				this.canvasScaler.enabled = true;
+
+				if (scaleMode == ScaleMode.Fixed) {
+
+					this.canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+					this.canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+					this.canvasScaler.matchWidthOrHeight = 0f;
+					this.canvasScaler.referenceResolution = new Vector2(1024f, 768f);	// TODO: Add to flow data settings
+
+				} else if (scaleMode == ScaleMode.Custom) {
+
+					// We should not do anything in canvasScaler
+
+				}
+
+			}
 
 		}
 

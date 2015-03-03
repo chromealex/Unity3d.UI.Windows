@@ -1,13 +1,21 @@
-﻿Acer, Iconia Tab, 1280x800, 10.1
-Amazon, Kindle Fire, 1024x600, 7
-Amazon, Kindle Fire 2, 1024x600, 7
-Amazon, Kindle Fire HD 7", 1280x800, 7
-Amazon, Kindle Fire HD 8.9", 1920x1200, 8.9
-Amazon, Kindle Fire HDX 7", 1920x1200, 7
-Amazon, Kindle Fire HDX 8.9", 2560x1600, 8.9
-Amazon, Fire HD 6, 1280x800, 6
-Amazon, Fire HD 7, 1280x800, 7
-Amazon, Fire HD 8.9, 1920x1200, 8.9
+﻿PC/Mac, iMac 27", 2560x1440, 27
+PC/Mac, iMac 21.5", 1920x1080, 21.5
+PC/Mac, Macbook Air 11.6", 1366x768, 11.6
+PC/Mac, Macbook Air 13", 1440x900, 13
+PC/Mac, Macbook Pro 13.3", 1280x800, 13.3
+PC/Mac, Macbook Pro 15.4", 1440x900, 15.4
+PC/Mac, Macbook Pro 17", 1920x1200, 17
+PC/Mac, Macbook Pro 13.3" Retina, 2560x1600, 13.3
+PC/Mac, Macbook Pro 15.4" Retina, 2880x1800, 15.4
+PC/Mac, PC, 1024x768, 17
+PC/Mac, PC, 1280x720, 17
+PC/Mac, PC, 1280x800, 17
+PC/Mac, PC, 1152x900, 17
+PC/Mac, PC, 1440x960, 17
+PC/Mac, PC, 1600x1024, 17
+PC/Mac, PC, 1600x1200, 17
+PC/Mac, PC, 1920x1080, 17
+PC/Mac, {SCREEN}, 0x0, 0
 Apple, iPad, 1024x768, 9.7
 Apple, iPad 2, 1024x768, 9.7
 Apple, iPad 3, 2048x1536, 9.7
@@ -20,6 +28,16 @@ Apple, iPhone 3GS, 480x320, 3.5
 Apple, iPhone 4S, 960x640, 3.5
 Apple, iPhone 5, 1136x640, 4
 Apple, iPad mini 3, 2048x1536, 7.9
+Acer, Iconia Tab, 1280x800, 10.1
+Amazon, Kindle Fire, 1024x600, 7
+Amazon, Kindle Fire 2, 1024x600, 7
+Amazon, Kindle Fire HD 7", 1280x800, 7
+Amazon, Kindle Fire HD 8.9", 1920x1200, 8.9
+Amazon, Kindle Fire HDX 7", 1920x1200, 7
+Amazon, Kindle Fire HDX 8.9", 2560x1600, 8.9
+Amazon, Fire HD 6, 1280x800, 6
+Amazon, Fire HD 7, 1280x800, 7
+Amazon, Fire HD 8.9, 1920x1200, 8.9
 ASUS, Transformer TF101, 1280x800, 10.1
 ASUS, Transformer Prime TF201, 1280x800, 10.1
 Asus, Nexus 7 (2013), 1920x1200, 7

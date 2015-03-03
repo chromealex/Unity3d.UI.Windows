@@ -11,9 +11,46 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public string model;
 		public int width;
 		public int height;
-		public int ppi;
+		public float ppi;
 
-		public ScreenOrientation orientation;
+		public bool current = false;
+
+		private ScreenOrientation _orientation;
+		public ScreenOrientation orientation {
+
+			set {
+				
+				if (value == ScreenOrientation.Landscape) {
+					
+					var w = this.width;
+					var h = this.height;
+					
+					this.width = Mathf.Max(w, h);
+					this.height = Mathf.Min(w, h);
+					
+				}
+				
+				if (value == ScreenOrientation.Portrait) {
+					
+					var w = this.width;
+					var h = this.height;
+					
+					this.width = Mathf.Min(w, h);
+					this.height = Mathf.Max(w, h);
+					
+				}
+
+				this._orientation = value;
+
+			}
+
+			get {
+
+				return this._orientation;
+
+			}
+
+		}
 
 	};
 
@@ -36,10 +73,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			FlowDevicesParser.manufacturerToDevices.Clear();
 
-			FlowDevicesParser.Parse_INTERNAL("720-800", FlowDevicesParser.p720, ParseDeviceResolutionType.PPI);
-			FlowDevicesParser.Parse_INTERNAL("1080", FlowDevicesParser.p1080, ParseDeviceResolutionType.PPI);
-			FlowDevicesParser.Parse_INTERNAL("1440", FlowDevicesParser.p1440, ParseDeviceResolutionType.PPI);
 			FlowDevicesParser.Parse_INTERNAL("Popular", FlowDevicesParser.popular, ParseDeviceResolutionType.INCHES);
+			//FlowDevicesParser.Parse_INTERNAL("720-800", FlowDevicesParser.p720, ParseDeviceResolutionType.PPI);
+			//FlowDevicesParser.Parse_INTERNAL("1080", FlowDevicesParser.p1080, ParseDeviceResolutionType.PPI);
+			//FlowDevicesParser.Parse_INTERNAL("1440", FlowDevicesParser.p1440, ParseDeviceResolutionType.PPI);
 
 		}
 
@@ -61,32 +98,47 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					device.orientation = ScreenOrientation.Landscape;
 
-					var res = info[2].Trim();
-					var sres = res.Split('x');
-					
-					device.width = int.Parse(sres[0]);
-					device.height = int.Parse(sres[1]);
+					if (device.model == "{SCREEN}") {
 
-					if (type == ParseDeviceResolutionType.PPI) {
+						device.current = true;
 
-						device.ppi = int.Parse(info[3].Trim());
-
-					} else if (type == ParseDeviceResolutionType.INCHES) {
-
-						device.ppi = FlowDevicesParser.ConvertInchesToPPI(float.Parse(info[3]), device.width, device.height);
-
-					}
-
-					output.Add(device);
-
-					if (FlowDevicesParser.manufacturerToDevices.ContainsKey(device.manufacturer) == true) {
-
-						FlowDevicesParser.manufacturerToDevices[device.manufacturer].Add(device);
+						device.model = "MY SCREEN";
+						device.width = Screen.width;
+						device.height = Screen.height;
+						device.ppi = Screen.dpi;
 
 					} else {
+						
+						device.current = false;
 
+						var res = info[2].Trim();
+						var sres = res.Split('x');
+						
+						device.width = int.Parse(sres[0]);
+						device.height = int.Parse(sres[1]);
+
+						if (type == ParseDeviceResolutionType.PPI) {
+
+							device.ppi = float.Parse(info[3].Trim());
+
+						} else if (type == ParseDeviceResolutionType.INCHES) {
+
+							device.ppi = FlowDevicesParser.ConvertInchesToPPI(float.Parse(info[3]), device.width, device.height);
+
+						}
+
+					}
+					
+					output.Add(device);
+					
+					if (FlowDevicesParser.manufacturerToDevices.ContainsKey(device.manufacturer) == true) {
+						
+						FlowDevicesParser.manufacturerToDevices[device.manufacturer].Add(device);
+						
+					} else {
+						
 						FlowDevicesParser.manufacturerToDevices.Add(device.manufacturer, new List<DeviceInfo>() { device });
-
+						
 					}
 
 				}

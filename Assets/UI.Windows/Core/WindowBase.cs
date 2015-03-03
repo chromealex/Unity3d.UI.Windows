@@ -121,11 +121,17 @@ namespace UnityEngine.UI.Windows {
 			this.transition.OnRenderImage(source, destination);
 			
 		}
-
+		
 		public void OnPostRender() {
-
+			
 			this.transition.OnPostRender();
-
+			
+		}
+		
+		public void OnPreRender() {
+			
+			this.transition.OnPreRender();
+			
 		}
 
 		private void OnTransitionInit() {

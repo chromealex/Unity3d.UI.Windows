@@ -8,7 +8,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		#if UNITY_EDITOR
 		public string comment;
-		public string previewIcon;
 		#endif
 
 	}

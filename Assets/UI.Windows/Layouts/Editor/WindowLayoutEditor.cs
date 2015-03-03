@@ -96,8 +96,8 @@ namespace UnityEditor.UI.Windows {
 				rect.x += r.x + r.width * 0.5f;
 				rect.y += r.y + r.height * 0.5f;
 
-				var color = new Color(0.7f, 0.8f, 0.9f, 1f);
-				color.a = 0.5f;
+				var color = new Color(0.8f, 0.8f, 1f, 1f);
+				color.a = 0.7f;
 				GUI.color = color;
 				GUI.Box(rect, string.Empty, style);
 				

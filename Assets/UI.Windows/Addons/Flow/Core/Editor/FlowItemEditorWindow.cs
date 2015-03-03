@@ -205,10 +205,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			if (this.defaultRects == false) {
 
 				var rect = sceneView.position;
-				var size = new Vector2(200f, 100f);
+				var size = new Vector2(250f, 100f);
 				this.mainRect = new Rect(rect.width - size.x, 30f, size.x, size.y);
 				
-				var itemSize = new Vector2(200f, 300f);
+				var itemSize = new Vector2(250f, 300f);
 				this.itemRect = this.mainRect;
 				this.itemRect.height = itemSize.y;
 
@@ -326,7 +326,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var header = EditorStyles.whiteLargeLabel;
 				
-				var width = 200f - 40f;
+				var width = 250f - 40f;
 
 				this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition, false, true, GUILayout.Height(this.itemRect.height));
 				
@@ -671,7 +671,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.gameView.rootWindow = this.rootWindow;
 			this.gameView.Focus();
 			this.gameView.Repaint();
-			this.gameView.ShowView(() => {
+			this.gameView.ShowView(this.previewScreen, () => {
 				
 				if (this.previewScreen != null) GameObject.DestroyImmediate(this.previewScreen.gameObject);
 
@@ -752,6 +752,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var screen = this.screenInstance;
 				if (screen != null) {
+					
+					EditorGUILayout.LabelField("Screen", EditorStyles.boldLabel);
 
 					var prefs = screen.preferences;
 
@@ -778,6 +780,41 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					}
 
 					EditorGUIUtility.LookLikeControls();
+
+					var layoutScreen = screen as LayoutWindowType;
+					if (this.layoutInstance != null && layoutScreen != null) {
+						
+						EditorGUILayout.Space();
+						EditorGUILayout.LabelField("Layout Fit", EditorStyles.boldLabel);
+
+						var scaleMode = (WindowLayout.ScaleMode)EditorGUILayout.EnumPopup("", layoutScreen.layout.scaleMode);
+						if (scaleMode != layoutScreen.layout.scaleMode) {
+
+							layoutScreen.layout.scaleMode = scaleMode;
+
+							this.isScreenDirty = true;
+							this.isLayoutDirty = true;
+
+							this.layoutInstance.SetScale(scaleMode);
+
+						}
+
+						if (layoutScreen.layout.scaleMode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Custom) {
+
+							EditorGUIUtility.labelWidth = 70f;
+							
+							if (this.layoutInstance.ValidateCanvasScaler() == true) this.isLayoutDirty = true;
+							
+							var scalerEditor = Editor.CreateEditor(this.layoutInstance.canvasScaler);
+							scalerEditor.OnInspectorGUI();
+							
+							if (GUI.changed == true) this.isLayoutDirty = true;
+							
+							EditorGUIUtility.LookLikeControls();
+
+						}
+
+					}
 
 				}
 
