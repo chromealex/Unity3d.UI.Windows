@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Other {
 
-	public class MapLoaderScreen : LayoutWindowType {
+	public class MapLoader : LayoutWindowType {
 
 		public override void OnInit() {
 		}

@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Menu.Shop {
 
-	public class ShopScreen : LayoutWindowType {
+	public class Shop : LayoutWindowType {
 
 		public override void OnInit() {
 		}

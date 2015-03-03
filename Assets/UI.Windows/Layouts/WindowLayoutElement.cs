@@ -15,8 +15,12 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly]
 		public WindowComponent tempEditorComponent;
 		private bool randomColorSetup;
-		private Color randomColor;
+		[HideInInspector]
+		public Color randomColor;
+		public Rect editorRect;
 		public void OnDrawGizmos() {
+			
+			// Hack to draw handles always
 
 			if (this.randomColorSetup == false) {
 
@@ -51,7 +55,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		VerticalLayoutGroup lay1;
+		LayoutElement lay;
 		private void OnDrawGUI_EDITOR(bool selected, bool selectedHierarchy) {
+
+			var scale = 1f;
+			var canvas = this.GetComponentInParent<Canvas>();
+			if (canvas != null) scale = canvas.transform.localScale.x;
 
 			var textStyle = new GUIStyle(GUI.skin.label);
 			textStyle.fontStyle = FontStyle.Normal;
@@ -74,14 +84,14 @@ namespace UnityEngine.UI.Windows {
 			
 			textStyle.fixedWidth = rect.rect.width;
 			textStyle.fixedHeight = rect.rect.height;
-			
-			// Hack to draw handles always
+
 			var face = this.randomColor;
 			face.a = 0.3f;
 			UnityEditor.Handles.DrawSolidRectangleWithOutline(points, face, this.randomColor);
 
 			var shadowOffset = Vector3.one * 1f;
 			shadowOffset.z = 0f;
+			shadowOffset *= scale;
 
 			var color = Color.black;
 			color.a = 0.5f;
@@ -96,10 +106,13 @@ namespace UnityEngine.UI.Windows {
 			color = Color.white;
 			color.a = selected ? 1f : 0f;
 			UnityEditor.Handles.color = color;
-			this.DrawLineWithOffset(50f, center, points[0]);
-			this.DrawLineWithOffset(50f, center, points[1]);
-			this.DrawLineWithOffset(50f, center, points[2]);
-			this.DrawLineWithOffset(50f, center, points[3]);
+
+			var offset = 50f * scale;
+
+			this.DrawLineWithOffset(offset, center, points[0], scale);
+			this.DrawLineWithOffset(offset, center, points[1], scale);
+			this.DrawLineWithOffset(offset, center, points[2], scale);
+			this.DrawLineWithOffset(offset, center, points[3], scale);
 
 			color = Color.white;
 			color.a = 0.5f;
@@ -107,13 +120,14 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void DrawLineWithOffset(float offset, Vector3 pos1, Vector3 pos2) {
+		private void DrawLineWithOffset(float offset, Vector3 pos1, Vector3 pos2, float scale) {
 
 			var oldColor = UnityEditor.Handles.color;
 
 			var shadowColor = new Color(0f, 0f, 0f, oldColor.a > 0f ? 0.5f : 0f);
 			var shadowOffset = Vector3.one * 1f;
 			shadowOffset.z = 0f;
+			shadowOffset *= scale;
 
 			var ray = new Ray(pos1, (pos2 - pos1).normalized);
 			pos1 = ray.GetPoint(offset);

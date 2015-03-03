@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UnityEditor.UI.Windows {
 
-	[CustomEditor(typeof(WindowLayout))]
+	[CustomEditor(typeof(WindowLayout), true)]
 	[CanEditMultipleObjects()]
 	public class WindowLayoutEditor : Editor {
 		
@@ -31,6 +31,85 @@ namespace UnityEditor.UI.Windows {
 				this.isDirty = false;
 
 			}
+
+		}
+
+		private float GetFactor(Vector2 inner, Vector2 boundingBox) {     
+
+			float widthScale = 0, heightScale = 0;
+			if (inner.x != 0)
+				widthScale = boundingBox.x / inner.x;
+			if (inner.y != 0)
+				heightScale = boundingBox.y / inner.y;                
+			
+			return Mathf.Min(widthScale, heightScale);
+
+		}
+
+		public override void OnPreviewGUI(Rect r, GUIStyle background) {
+			
+			var oldColor = GUI.color;
+
+			GUI.Box(r, string.Empty);
+
+			var _target = this.target as UnityEngine.UI.Windows.WindowLayout;
+			if (_target == null) return;
+			
+			var elements = _target.elements;
+
+			if (ME.EditorUtilities.IsPrefab(_target.gameObject) == false) {
+
+				var pos = (_target.transform as RectTransform).localPosition;
+				(_target.transform as RectTransform).localPosition = Vector3.zero;
+
+				foreach (var element in elements) {
+					
+					var rectTransform = (element.transform as RectTransform);
+
+					var corners = new Vector3[4];
+					rectTransform.GetWorldCorners(corners);
+
+					var rect = new Rect(corners[0].x, -corners[1].y, corners[2].x - corners[1].x, corners[2].y - corners[3].y);
+
+					element.editorRect = rect;
+
+				}
+
+				(_target.transform as RectTransform).localPosition = pos;
+
+			}
+			
+			var scaleFactor = 0f;
+			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(elements[0].editorRect.width, elements[0].editorRect.height), new Vector2(r.width, r.height));
+
+			var style = new GUIStyle("flow node 0");
+
+			foreach (var element in elements) {
+
+				var rect = element.editorRect;
+				
+				rect.x *= scaleFactor;
+				rect.y *= scaleFactor;
+				rect.width *= scaleFactor;
+				rect.height *= scaleFactor;
+
+				rect.x += r.x + r.width * 0.5f;
+				rect.y += r.y + r.height * 0.5f;
+
+				var color = new Color(0.8f, 0.8f, 1f, 1f);
+				color.a = 0.7f;
+				GUI.color = color;
+				GUI.Box(rect, string.Empty, style);
+				
+			}
+
+			GUI.color = oldColor;
+
+		}
+
+		public override bool HasPreviewGUI() {
+
+			return true;
 
 		}
 

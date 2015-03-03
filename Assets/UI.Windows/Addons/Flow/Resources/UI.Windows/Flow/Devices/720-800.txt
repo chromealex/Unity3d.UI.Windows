@@ -1,0 +1,56 @@
+﻿Acer, CloudMobile, 720x1280, 342
+Asus, Padfone 2, 720x1280, 312
+BlackBerry, Z10, 768x1280, 355
+General Mobile, Discovery, 720x1280, 312
+Huawei, Ascend D1, 720x1280, 326
+Huawei, Ascend D quad, 720x1280, 326
+Huawei, Ascend D quad XL, 720x1280, 326
+Huawei, Honor 2, 720x1280, 326
+Huawei, Honor 3X G750, 720x1280, 267
+Huawei, Ascend P2, 720x1280, 312
+Huawei, Ascend Mate, 720x1280, 241
+HTC, Rezound, 720x1280, 342
+HTC, One X/XL, 720x1280, 312
+HTC, One X+, 720x1280, 312
+HTC, One Mini, 720x1280, 342
+HTC, Windows Phone 8X, 720x1280, 342
+Jiayu, Jiayu G3/G3S/G3T, 720x1280, 320
+Lenovo, K800, 720x1280, 326
+Lenovo, K860, 720x1280, 294
+LG, Nitro HD/Optimus 4G LTE, 720x1280, 326
+LG, Optimus 4X HD, 720x1280, 312
+LG, Optimus Vu, 768x1024, 256
+LG, Nexus 4, 768x1280, 318
+LG, Optimus G, 768x1280, 318
+LG, Optimus L9 II, 720x1280, 312
+Meizu, MX2, 800x1280, 343
+Motorola, Atrix HD, 720x1280, 326
+Motorola, Droid Razr HD, 720x1280, 312
+Motorola, Droid Razr Maxx HD, 720x1280, 312
+Motorola, Razr HD, 720x1280, 312
+Motorola, Moto X, 720x1280, 312
+Nokia, Lumia 920, 768x1280, 332
+Nokia, Lumia 925/928, 768x1280, 332
+Nokia, Lumia 1020, 768x1280, 332
+Panasonic, ELUGA power, 720x1280, 294
+Panasonic, ELUGA V, 720x1280, 319
+Samsung, Ativ S, 720x1280, 306
+Samsung, Ativ S Neo, 720x1280, 306
+Samsung, Galaxy Note, 800x1280, 285
+Samsung, Galaxy Note II, 720x1280, 267
+Samsung, Galaxy Nexus, 720x1280, 319
+Samsung, Galaxy S II HD LTE, 720x1280, 319
+Samsung, Galaxy S III, 720x1280, 306
+Samsung, Galaxy Premier, 720x1280, 319
+Samsung, Galaxy Mega 6.3, 720x1280, 234
+Sony, Xperia acro HD, 720x1280, 342
+Sony, Xperia acro S, 720x1280, 342
+Sony, Xperia ion, 720x1280, 323
+Sony, Xperia S/SL, 720x1280, 342
+Sony, Xperia V, 720x1280, 342
+Sony, Xperia T/TX, 720x1280, 323
+Sony, Xperia SP, 720x1280, 320
+Xiaomi, Mi-Two, 720x1280, 342
+ZTE, Flash, 720x1280, 326
+ZTE, Grand Memo, 720x1280, 258
+ZTE, PF112 HD, 720x1280, 326

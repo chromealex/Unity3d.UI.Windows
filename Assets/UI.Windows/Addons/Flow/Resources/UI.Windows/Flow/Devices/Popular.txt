@@ -1,0 +1,96 @@
+﻿PC/Mac, iMac 27", 2560x1440, 27
+PC/Mac, iMac 21.5", 1920x1080, 21.5
+PC/Mac, Macbook Air 11.6", 1366x768, 11.6
+PC/Mac, Macbook Air 13", 1440x900, 13
+PC/Mac, Macbook Pro 13.3", 1280x800, 13.3
+PC/Mac, Macbook Pro 15.4", 1440x900, 15.4
+PC/Mac, Macbook Pro 17", 1920x1200, 17
+PC/Mac, Macbook Pro 13.3" Retina, 2560x1600, 13.3
+PC/Mac, Macbook Pro 15.4" Retina, 2880x1800, 15.4
+PC/Mac, PC, 1024x768, 17
+PC/Mac, PC, 1280x720, 17
+PC/Mac, PC, 1280x800, 17
+PC/Mac, PC, 1152x900, 17
+PC/Mac, PC, 1440x960, 17
+PC/Mac, PC, 1600x1024, 17
+PC/Mac, PC, 1600x1200, 17
+PC/Mac, PC, 1920x1080, 17
+PC/Mac, {SCREEN}, 0x0, 0
+Apple, iPad, 1024x768, 9.7
+Apple, iPad 2, 1024x768, 9.7
+Apple, iPad 3, 2048x1536, 9.7
+Apple, iPad 4, 2048x1536, 9.7
+Apple, iPad Air, 2048x1536, 9.7
+Apple, iPad Air 2, 2048x1536, 9.7
+Apple, iPad Mini, 1024x768, 7.9
+Apple, iPad Mini 2, 2048x1536, 7.9
+Apple, iPhone 3GS, 480x320, 3.5
+Apple, iPhone 4S, 960x640, 3.5
+Apple, iPhone 5, 1136x640, 4
+Apple, iPad mini 3, 2048x1536, 7.9
+Acer, Iconia Tab, 1280x800, 10.1
+Amazon, Kindle Fire, 1024x600, 7
+Amazon, Kindle Fire 2, 1024x600, 7
+Amazon, Kindle Fire HD 7", 1280x800, 7
+Amazon, Kindle Fire HD 8.9", 1920x1200, 8.9
+Amazon, Kindle Fire HDX 7", 1920x1200, 7
+Amazon, Kindle Fire HDX 8.9", 2560x1600, 8.9
+Amazon, Fire HD 6, 1280x800, 6
+Amazon, Fire HD 7, 1280x800, 7
+Amazon, Fire HD 8.9, 1920x1200, 8.9
+ASUS, Transformer TF101, 1280x800, 10.1
+ASUS, Transformer Prime TF201, 1280x800, 10.1
+Asus, Nexus 7 (2013), 1920x1200, 7
+Asus, Nexus 10, 2560x1600, 10
+Barnes &amp; Noble, Nook, 1024x600, 7
+Barnes &amp; Noble, Nook HD 7", 1440x900, 7
+Barnes &amp; Noble, Nook HD 9", 1920x1280, 9
+BlackBerry, Playbook, 1024x600, 7
+BlackBerry, Torch 9800, 480x360, 3.2
+BlackBerry, Torch 9810, 640x480, 3.2
+Colby, Kyros, 800x480, 7
+HP, TouchPad, 1024x768, 9.7
+HTC, Amaze 4G, 960x540, 4.3
+HTC, Evo 3D, 960x540, 4.3
+HTC, Flyer, 1024x600, 7
+HTC, Sensation 4G, 960x540, 4.3
+HTC, Thunderbolt, 800x480, 4.3
+Lenovo, IdeaPad A1, 1024x600, 7
+Lenovo, ThinkPad, 1280x800, 10.1
+Lenovo, Yoga 3 Pro, 3200x1800, 13.3
+Lenovo, Yoga 2 8", 1920x1200, 8
+Lenovo, Yoga 2 10.1", 1920x1200, 10.1
+Lenovo, Yoga 2 11.6", 1366x768, 11.6
+Lenovo, Yoga 2 13", 1920x1080, 13
+LG, G2x 4G, 800x400, 4
+LG, G-Slate, 1280x768, 8.9
+Motorola, Droid BIONIC, 960x540, 4.3
+Motorola, Droid RAZR, 960x540, 4.3
+Motorola, Droid Xyboard 10.1, 1280x800, 10.1
+Motorola, Xoom, 1280x800, 10.1
+Nokia, Lumia 900, 800x480, 4.3
+Samsung, Brightside, 320x240, 3.1
+Samsung, Epic 4G Touch, 800x480, 4.52
+Samsung, Exhibit 4G, 800x480, 3.5
+Samsung, Focus Flash, 800x480, 3.7
+Samsung, Galaxy S2, 800x480, 4.52
+Samsung, Galaxy S3, 1280x720, 4.8
+Samsung, Galaxy S4, 1920x1080, 5
+Samsung, Galaxy Tab, 1024x600, 7
+Samsung, Galaxy Tab 7.7, 1280x800, 7.7
+Samsung, Galaxy Tab 10.1, 1280x800, 10.1
+Samsung, Galaxy Tab 2 7.0, 1024x600, 7
+Samsung, Galaxy Tab 2 10.1, 1280x800, 10.1
+Samsung, Galaxy Tab 3 7, 1024x600, 7
+Samsung, Galaxy Tab 3 8, 1280x800, 8
+Samsung, Galaxy Tab 3 10.1, 1280x800, 10.1
+Samsung, Gravity Smart, 480x320, 3.2
+Samsung, Sidekick 4G, 800x480, 3.5
+Samsung, Galaxy Tab Pro 8.4, 2560x1600, 8.4
+Samsung, Galaxy Tab Pro 10.1, 2560x1600, 10.1
+Samsung, Galaxy Tab Pro 12.2, 2560x1600, 12.2
+Sony, Tablet S, 1280x800, 9.4
+T-Mobile, MyTouch 4G Slide, 800x480, 3.8
+T-Mobile, SpringBoard, 1280x800, 7
+Toshiba, Thrive, 1280x800, 10.1
+Toshiba, Satellite Radius L15W, 1366x768, 11.6

@@ -1,0 +1,12 @@
+﻿BBK, Vivo Xplay 3S, 2560x1440, 490
+LG, G3, 2560x1440, 538
+LG, isai FL, 2560x1440, 538
+OPPO, Find 7, 2560x1440, 538
+Samsung, Galaxy S5 LTE-A G906S, 2560x1440, 577
+Lenovo, Vibe Z2 Pro K920, 2560x1440, 490
+Samsung, Galaxy Note 4, 2560x1440, 515
+Motorola, Droid Turbo, 2560x1440, 565
+Philips, i966 Aurora, 2560x1440, 538
+Motorola, Nexus 6, 2560x1440, 493
+Fujitsu, ARROWS NX/F-02G, 2560x1440, 570
+LG, isai VL, 2560x1440, 538

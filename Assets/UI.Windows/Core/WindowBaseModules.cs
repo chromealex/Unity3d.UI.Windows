@@ -251,6 +251,8 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		private WindowBase window;
 		
+		private bool renderingToTexture = false;
+
 		public void Setup(WindowBase window) {
 			
 			this.window = window;
@@ -334,11 +336,45 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
+			/*if (this.renderingToTexture == true && this.transition == null) {
+				
+				// Unity bug
+				
+				var layoutWindow = (this.window as LayoutWindowType);
+				if (layoutWindow != null) layoutWindow.layout.GetLayoutInstance().canvas.renderMode = RenderMode.ScreenSpaceCamera;
+				
+			}*/
+
+		}
+
+		public void OnPreRender() {
+
+			/*if (this.renderingToTexture == true && this.transition == null) {
+
+				// Unity bug
+
+				var layoutWindow = (this.window as LayoutWindowType);
+				if (layoutWindow != null) layoutWindow.layout.GetLayoutInstance().canvas.renderMode = RenderMode.WorldSpace;
+
+			}*/
+
 		}
 		
 		public void OnRenderImage(RenderTexture source, RenderTexture destination) {
 			
-			if (this.transition != null) this.transition.OnRenderTransition(this.window, source, destination);
+			if (this.transition != null) {
+
+				this.transition.OnRenderTransition(this.window, source, destination);
+
+			} else {
+
+				if (this.renderingToTexture == true) {
+
+					Graphics.Blit(source, destination);
+
+				}
+
+			}
 			
 		}
 		
@@ -349,7 +385,49 @@ namespace UnityEngine.UI.Windows {
 			return 0f;
 			
 		}
+
+		public void StartRenderToTexture() {
+
+			this.renderingToTexture = true;
+
+			// Unity bug
+			
+			var layoutWindow = (this.window as LayoutWindowType);
+			if (layoutWindow != null) {
+
+				var canvas = layoutWindow.layout.GetLayoutInstance().canvas;
+
+				canvas.renderMode = RenderMode.WorldSpace;
+				canvas.renderMode = RenderMode.ScreenSpaceCamera;
+				Canvas.ForceUpdateCanvases();
+				
+				//var localScale = canvas.transform.localScale;
+				//var localPosition = canvas.transform.localPosition;
+				//var sizeDelta = (canvas.transform as RectTransform).sizeDelta;
+				
+				canvas.renderMode = RenderMode.WorldSpace;
+				
+				Canvas.ForceUpdateCanvases();
+
+				//canvas.transform.localScale = localScale;
+				//canvas.transform.localPosition = localPosition;
+				//(canvas.transform as RectTransform).sizeDelta = sizeDelta;
+
+			}
+
+		}
 		
+		public void StopRenderToTexture() {
+			
+			this.renderingToTexture = false;
+			
+			// Unity bug
+			
+			var layoutWindow = (this.window as LayoutWindowType);
+			if (layoutWindow != null) layoutWindow.layout.GetLayoutInstance().canvas.renderMode = RenderMode.ScreenSpaceCamera;
+
+		}
+
 	}
 
 }
