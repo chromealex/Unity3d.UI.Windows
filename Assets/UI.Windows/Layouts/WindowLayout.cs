@@ -9,6 +9,8 @@ namespace UnityEngine.UI.Windows {
 	[RequireComponent(typeof(Canvas))]
 	public class WindowLayout : WindowObject, ICanvasElement, IWindowEvents {
 		
+		public float factor;
+
 		[ReadOnly]
 		public WindowLayoutRoot root;
 		[ReadOnly]

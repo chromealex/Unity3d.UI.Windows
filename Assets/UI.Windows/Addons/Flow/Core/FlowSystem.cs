@@ -243,7 +243,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				if (tplData != null) {
 
 					var filepath = fullpath + "/" + window.directory + "/" + screenName + ".cs";
+					#if !WEBPLAYER
 					File.WriteAllText(filepath, tplData);
+					#endif
 
 				} else {
 
@@ -284,17 +286,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public static WindowLayout GenerateLayout(FlowWindow window) {
+		public static WindowLayout GenerateLayout(FlowWindow window, FlowWindowLayoutTemplate layout) {
 			
 			WindowLayout instance = null;
 			
 			if (window.compiled == false) return instance;
-			
-			// TODO: Add layout presets chooser
-			// Now using default
-			
-			var tplName = "3Buttons";
-			var tplData = FlowSystem.LoadPrefabTemplate<WindowLayout>(FlowSystem.LAYOUT_FOLDER, tplName);
+
+			var tplName = layout.name;//"3Buttons";
+			var tplData = layout;//FlowSystem.LoadPrefabTemplate<WindowLayout>(FlowSystem.LAYOUT_FOLDER, tplName);
 			if (tplData != null) {
 				
 				var sourcepath = ADB.GetAssetPath(tplData);
@@ -305,11 +304,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				ADB.Refresh();
 				
 				var source = ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject;
-				instance = UnityEditor.PrefabUtility.InstantiatePrefab(source.GetComponent<WindowLayout>()) as WindowLayout;
+				var prefab = source.GetComponent<WindowLayout>();
+				instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowLayout;
 				
 				UnityEditor.PrefabUtility.ReplacePrefab(instance.gameObject, source.transform.root, UnityEditor.ReplacePrefabOptions.ReplaceNameBased);
 				ADB.Refresh();
 				
+				GameObject.DestroyImmediate(instance.gameObject);
+
+				instance = (ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject).GetComponent<WindowLayout>();
+
 			} else {
 				
 				Debug.LogError("Template Loading Error: " + tplName);
@@ -332,17 +336,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public static WindowBase GenerateScreen(FlowWindow window) {
+		public static WindowBase GenerateScreen(FlowWindow window, FlowLayoutWindowTypeTemplate template) {
 			
 			WindowBase instance = null;
 			
 			if (window.compiled == false) return instance;
-			
-			// TODO: Add screen presets chooser
-			// Now using default
-			
-			var tplName = "Layout";
-			var tplData = FlowSystem.LoadPrefabTemplate<WindowBase>(FlowSystem.SCREENS_FOLDER, tplName);
+
+			var tplName = template.name;//"Layout";
+			var tplData = template;//FlowSystem.LoadPrefabTemplate<WindowBase>(FlowSystem.SCREENS_FOLDER, tplName);
 			if (tplData != null) {
 
 				var sourcepath = ADB.GetAssetPath(tplData);
@@ -353,7 +354,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				ADB.Refresh();
 
 				var source = ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject;
-				instance = UnityEditor.PrefabUtility.InstantiatePrefab(source.GetComponent<WindowBase>()) as WindowBase;
+				var prefab = source.GetComponent<WindowBase>();
+				instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowBase;
 
 				var go = instance.gameObject;
 				Component.DestroyImmediate(instance);
@@ -361,6 +363,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				UnityEditor.PrefabUtility.ReplacePrefab(instance.gameObject, source.transform.root, UnityEditor.ReplacePrefabOptions.ReplaceNameBased);
 				ADB.Refresh();
+
+				GameObject.DestroyImmediate(instance.gameObject);
+
+				instance = (ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject).GetComponent<WindowBase>();
 
 			} else {
 				

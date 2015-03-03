@@ -9,15 +9,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowDropDownFilterWindow : EditorWindow {
 
-		public static void Show<T>(Rect buttonRect, System.Action<T> onSelect, System.Action<T> onEveryGUI = null) where T : Component {
+		public static void Show<T>(Rect buttonRect, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, bool strongType = false) where T : Component {
 			
 			var size = new Vector2(buttonRect.width, 250f);
 
-			FlowDropDownFilterWindow.Show(buttonRect, size, onSelect, onEveryGUI);
+			FlowDropDownFilterWindow.Show(buttonRect, size, onSelect, onEveryGUI, strongType);
 			
 		}
 
-		public static void Show<T>(Rect buttonRect, Vector2 windowSize, System.Action<T> onSelect, System.Action<T> onEveryGUI = null) where T : Component {
+		public static void Show<T>(Rect buttonRect, Vector2 windowSize, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, bool strongType = false) where T : Component {
 
 			var editor = FlowDropDownFilterWindow.CreateInstance<FlowDropDownFilterWindow>();
 			editor.title = "UI.Windows Flow Filter";
@@ -36,7 +36,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			};
 
-			editor.Scan<T>();
+			editor.Scan<T>(strongType);
 
 		}
 		
@@ -44,9 +44,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private System.Action<Component> onEveryGUI;
 		private List<Component> items = new List<Component>();
 
-		public void Scan<T>() where T : Component {
+		public void Scan<T>(bool strongType) where T : Component {
 
-			var items = ME.EditorUtilities.GetAssetsOfType<T>(".prefab");
+			var items = ME.EditorUtilities.GetAssetsOfType<T>(".prefab", strongType);
 
 			this.items = new List<Component>();
 			foreach (var item in items) {
@@ -92,7 +92,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				this.onEveryGUI(item);
 
-				GUILayout.EndHorizontal();
+				GUILayout.EndVertical();
 
 			}
 

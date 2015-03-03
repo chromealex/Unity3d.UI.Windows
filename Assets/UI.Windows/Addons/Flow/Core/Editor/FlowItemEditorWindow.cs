@@ -78,10 +78,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.view.Repaint();
 			this.view.Focus();
 
-			this.autoloadedLayout = false;
-			this.ReloadLayouts();
 			this.autoloadedScreen = false;
 			this.ReloadScreens();
+			this.autoloadedLayout = false;
+			this.ReloadLayouts();
 
 			this.defaultRects = false;
 
@@ -264,8 +264,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 		
-		private WindowLayout layoutPrefab;
-		private WindowLayout layoutInstance;
+		private UnityEngine.UI.Windows.WindowLayout layoutPrefab;
+		private UnityEngine.UI.Windows.WindowLayout layoutInstance;
 		
 		private WindowBase screenPrefab;
 		private WindowBase screenInstance;
@@ -329,36 +329,34 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var width = 200f - 40f;
 
 				this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition, false, true, GUILayout.Height(this.itemRect.height));
+				
+				GUILayout.Label(this.GetHeader(this.tab), header);
+				
+				this.lastRect = GUILayoutUtility.GetLastRect();
 
 				switch (this.tab) {
-
-				case 0:
-					GUILayout.Label("Layout", header);
-					this.DrawLayoutChooser(width);
-					break;
 					
-				case 1:
-					GUILayout.Label("Screen", header);
+				case 0:
 					this.DrawScreenChooser(width);
 					break;
-					
+
+				case 1:
+					this.DrawLayoutChooser(width);
+					break;
+
 				case 2:
-					GUILayout.Label("Preferences", header);
 					this.DrawPreferences(width);
 					break;
 					
 				case 3:
-					GUILayout.Label("Modules", header);
 					this.DrawModules(width);
 					break;
 
 				case 4:
-					GUILayout.Label("Components", header);
 					this.DrawComponents(width);
 					break;
 					
 				case 5:
-					GUILayout.Label("Summary & Preview", header);
 					this.DrawPreview(width);
 					break;
 
@@ -366,10 +364,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				GUILayout.EndScrollView();
 
-				if (this.layoutInstance != null) {
-						
-					var scale = (this.layoutInstance.transform as RectTransform).sizeDelta.y + this.scaleFactor;
-					this.currentView.LookAtDirect(this.layoutInstance.transform.position, Quaternion.Euler(Vector3.up), scale);
+				if (this.layoutInstance != null && this.screenInstance != null) {
+
+					this.layoutInstance.canvas.worldCamera = this.screenInstance.workCamera;
 
 				}
 
@@ -381,17 +378,30 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			var scaleWidth = this.view.position.width * 0.4f;
 			var scaleHeight = 20f;
-			this.scaleFactor = GUI.HorizontalSlider(new Rect(this.view.position.width * 0.5f - scaleWidth * 0.5f, 0f, scaleWidth, scaleHeight), this.scaleFactor, 0f, 500f);
+			var newScaleFactor = GUI.HorizontalSlider(new Rect(this.view.position.width * 0.5f - scaleWidth * 0.5f, 0f, scaleWidth, scaleHeight), this.scaleFactor, 1f, 20f);
+			if (newScaleFactor != this.scaleFactor) {
+
+				this.scaleFactor = newScaleFactor;
+				
+				if (this.layoutInstance != null) {
+					
+					var scale = this.scaleFactor;
+					var size = this.screenInstance.workCamera.pixelWidth / this.layoutInstance.canvas.pixelRect.width * scale;
+					this.currentView.LookAtDirect(Selection.activeTransform == null ? this.layoutInstance.transform.position : Selection.activeTransform.position, Quaternion.Euler(Vector3.up), size);
+					
+				}
+
+			}
 
 			GUILayout.Space(scaleHeight);
 
 			var notPassedColor = Color.white;
 			var activeColor = new Color(0.9f, 0.9f, 1f, 1f);
-			var passedColor = new Color(0.9f, 1f, 0.9f, 1f);
+			var passedColor = Color.white;//new Color(0.9f, 1f, 0.9f, 1f);
 
-			var left = EditorStyles.miniButtonLeft;
-			var mid = EditorStyles.miniButtonMid;
-			var right = EditorStyles.miniButtonRight;
+			var left = new GUIStyle(EditorStyles.miniButtonLeft);
+	        var mid = new GUIStyle(EditorStyles.miniButtonMid);
+	       	var right = new GUIStyle(EditorStyles.miniButtonRight);
 			var leftActive = new GUIStyle(EditorStyles.miniButtonLeft);
 			leftActive.normal = leftActive.active;
 			var midActive = new GUIStyle(EditorStyles.miniButtonMid);
@@ -407,10 +417,36 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var oldColor = GUI.color;
 
+			var iconIncorrect = (new GUIStyle("WinBtnCloseMac")).normal.background;
+			var iconCorrect = (new GUIStyle("WinBtnMaxMac")).normal.background;
+			var iconWarning = (new GUIStyle("WinBtnMinMac")).normal.background;
+
 			EditorGUILayout.BeginHorizontal();
 			var count = 6;
 			for (int i = 0; i < count; ++i) {
+
+				CompletedState state = CompletedState.NotReady;
+
+				var step = i + 1;
 				
+				var errors = false;
+				var warnings = false;
+				var hasState = this.IsValidTab(i, out errors, out warnings);
+
+				var stepState = string.Empty;
+				Texture icon = null;
+
+				if (hasState == true) {
+
+					stepState = (errors == false) ? (warnings == true ? "Completed with warnings" : "Completed") : "Has errors";
+					icon = (errors == false) ? (warnings == true ? iconWarning : iconCorrect) : iconIncorrect;
+
+					state = (errors == false) ? (warnings == true ? CompletedState.ReadyButWarnings : CompletedState.Ready) : CompletedState.NotReady;
+
+					this.window.SetCompletedState(i, state);
+
+				}
+
 				var style = mid;
 				var color = (this.tab == i) ? activeColor : (this.tab > i ? passedColor : notPassedColor);
 				
@@ -428,14 +464,186 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				}
 
+				style.fontSize = 11;
+				style.fontStyle = FontStyle.Bold;
+
 				GUI.color = color;
-				if (GUILayout.Button((i + 1).ToString(), style, GUILayout.Height(height - scaleHeight)) == true) this.tab = i;
+				if (GUILayout.Button(new GUIContent(step.ToString() + ". " + this.GetHeader(i), icon, "Step " + step.ToString() + (string.IsNullOrEmpty(stepState) ? string.Empty : (": " + stepState))), style, GUILayout.Height(height - scaleHeight)) == true) this.tab = i;
 				
 			}
 			EditorGUILayout.EndHorizontal();
 
 			GUI.color = oldColor;
 
+		}
+
+		private string GetHeader(int tabIndex) {
+
+			var result = string.Empty;
+
+			switch (tabIndex) {
+				
+			case 0:
+				result = "Screen";
+				break;
+				
+			case 1:
+				result = "Layout";
+				break;
+				
+			case 2:
+				result = "Preferences";
+				break;
+				
+			case 3:
+				result = "Modules";
+				break;
+				
+			case 4:
+				result = "Components";
+				break;
+				
+			case 5:
+				result = "Summary & Preview";
+				break;
+				
+			}
+
+			return result;
+
+		}
+
+		private bool IsValidTab(int tabIndex, out bool errors, out bool warnings) {
+			
+			errors = false;
+			warnings = false;
+			var hasState = false;
+
+			switch (tabIndex) {
+				
+			case 0:
+				hasState = this.IsValidScreenChooser(out errors, out warnings);
+				break;
+				
+			case 1:
+				hasState = this.IsValidLayoutChooser(out errors, out warnings);
+				break;
+				
+			case 2:
+				hasState = this.IsValidPreferences(out errors, out warnings);
+				break;
+				
+			case 3:
+				hasState = this.IsValidModules(out errors, out warnings);
+				break;
+				
+			case 4:
+				hasState = this.IsValidComponents(out errors, out warnings);
+				break;
+				
+			case 5:
+				hasState = this.IsValidPreview(out errors, out warnings);
+				break;
+				
+			}
+
+			return hasState;
+
+		}
+		
+		private bool IsValidScreenChooser(out bool errors, out bool warnings) {
+			
+			warnings = false;
+			errors = this.screenInstance == null;
+
+			return true;
+			
+		}
+		
+		private bool IsValidLayoutChooser(out bool errors, out bool warnings) {
+			
+			warnings = false;
+			errors = this.screenInstance == null || this.layoutInstance == null;
+
+			return true;
+			
+		}
+		
+		private bool IsValidPreferences(out bool errors, out bool warnings) {
+			
+			warnings = false;
+			errors = this.screenInstance == null || this.layoutInstance == null;
+
+			return true;
+			
+		}
+		
+		private bool IsValidModules(out bool errors, out bool warnings) {
+			
+			warnings = false;
+			errors = this.screenInstance == null || this.layoutInstance == null;
+
+			if (errors == true) return true;
+
+			var modules = this.screenInstance.modules.GetModulesInfo();
+			var query = from x in modules group x.moduleSource by x.moduleSource into g let count = g.Count() orderby count descending select new { Value = g.Key, Count = count };
+			
+			var warningsList = new List<string>();
+			foreach (var element in query) {
+				
+				if (element.Count > 1) {
+					
+					warningsList.Add(element.Value.name);
+					
+				}
+				
+			}
+			
+			if (warningsList.Count > 0) {
+
+				warnings = true;
+
+			}
+
+			return true;
+			
+		}
+		
+		private bool IsValidComponents(out bool errors, out bool warnings) {
+
+			warnings = false;
+			errors = false;
+
+			var screen = this.screenInstance as LayoutWindowType;
+			if (screen == null || screen.layout.layout == null) {
+
+				errors = true;
+				return true;
+
+			}
+
+			foreach (var component in screen.layout.components) {
+
+				if (component.component == null) {
+
+					warnings = true;
+					break;
+
+				}
+
+			}
+
+			return true;
+			
+		}
+		
+		private bool IsValidPreview(out bool errors, out bool warnings) {
+			
+			warnings = false;
+			errors = false;
+
+			return false;
+			
 		}
 
 		private WindowBase previewScreen;
@@ -463,10 +671,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.gameView.rootWindow = this.rootWindow;
 			this.gameView.Focus();
 			this.gameView.Repaint();
-			this.gameView.ShowView();
+			this.gameView.ShowView(() => {
+				
+				if (this.previewScreen != null) GameObject.DestroyImmediate(this.previewScreen.gameObject);
+
+			});
 
 		}
 
+		private bool showScreenWindow = false;
 		private void DrawScreenChooser(float width) {
 			
 			var screens = new string[this.screens.Count + 1];
@@ -492,15 +705,47 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			GUILayout.Label("Or create the new one:");
 			
+			if (GUILayout.Button("Create Screen...", GUILayout.Height(30f)) == true) {
+				
+				this.showScreenWindow = true;
+				
+			}
+			/*
 			if (GUILayout.Button("Create Screen") == true) {
 				
 				this.screenPrefab = FlowSystem.GenerateScreen(this.window);
 				this.ReloadScreens();
 				
+			}*/
+			
+			if (Event.current.type == EventType.Repaint && this.showScreenWindow == true) {
+				
+				this.showScreenWindow = false;
+
+				var commentStyle = new GUIStyle(EditorStyles.miniLabel);
+				commentStyle.wordWrap = true;
+
+				var rect = GUILayoutUtility.GetLastRect();
+				rect.x += this.mainRect.x + this.currentView.position.x - this.scrollPosition.x + this.lastRect.x;
+				rect.y += this.mainRect.y + this.currentView.position.y + rect.height - this.scrollPosition.y + this.lastRect.y + 15f;
+				FlowDropDownFilterWindow.Show<FlowLayoutWindowTypeTemplate>(rect, (screen) => {
+
+					this.screenPrefab = FlowSystem.GenerateScreen(this.window, screen);
+					this.ReloadScreens();
+					this.LoadScreen(this.screenPrefab);
+
+					this.isScreenDirty = true;
+					
+				}, (screen) => {
+					
+					GUILayout.Label(screen.comment, commentStyle);
+					
+				}, strongType: true);
+				
 			}
 
 		}
-
+		
 		private void DrawPreferences(float width) {
 			
 			if (this.screenInstance != null) {
@@ -543,8 +788,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private bool foldoutModules = false;
 		private bool showModuleWindow;
 		private void DrawModules(float width) {
-			
-			this.lastRect = GUILayoutUtility.GetLastRect();
 
 			if (this.screenInstance != null) {
 				
@@ -762,7 +1005,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private bool showLayoutWindow = false;
 		private void DrawLayoutChooser(float width) {
+
+			if (this.screenInstance == null) return;
 
 			var layouts = new string[this.layouts.Count + 1];
 			layouts[0] = "None";
@@ -786,12 +1032,41 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 
 			GUILayout.Label("Or create the new one:");
-
-			if (GUILayout.Button("Create Layout") == true) {
+			/*
+			if (GUILayout.Button("Create Layout...") == true) {
 
 				this.layoutPrefab = FlowSystem.GenerateLayout(this.window);
 				this.ReloadLayouts();
 
+			}*/
+			
+			if (GUILayout.Button("Create Layout...", GUILayout.Height(30f)) == true) {
+				
+				this.showLayoutWindow = true;
+				
+			}
+
+			if (Event.current.type == EventType.Repaint && this.showLayoutWindow == true) {
+				
+				this.showLayoutWindow = false;
+				
+				var commentStyle = new GUIStyle(EditorStyles.miniLabel);
+				commentStyle.wordWrap = true;
+
+				FlowChooserFilterWindow.Show<FlowWindowLayoutTemplate>(this.rootWindow, (layout) => {
+
+					this.layoutPrefab = FlowSystem.GenerateLayout(this.window, layout);
+					this.ReloadLayouts();
+					this.LoadLayout(this.layoutPrefab);
+
+					this.isScreenDirty = true;
+					
+				}, (layout) => {
+					
+					GUILayout.Label(layout.comment, commentStyle);
+					
+				});
+				
 			}
 
 		}
@@ -808,6 +1083,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.layoutInstance.transform.rotation = Quaternion.identity;
 				this.layoutInstance.transform.localScale = Vector3.zero;
 				
+				if ((this.screenInstance as LayoutWindowType) != null) {
+					
+					var layoutScreen = this.screenInstance as LayoutWindowType;
+					layoutScreen.layout.layout = this.layoutInstance;
+					
+				}
+
 			}
 			
 		}
@@ -844,13 +1126,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.screenInstance.transform.position = Vector3.zero;
 				this.screenInstance.transform.rotation = Quaternion.identity;
 				this.screenInstance.transform.localScale = Vector3.zero;
-
-				if ((this.screenInstance as LayoutWindowType) != null) {
-
-					var layout = this.screenInstance as LayoutWindowType;
-					layout.layout.layout = this.layoutInstance;
-
-				}
 
 			}
 			

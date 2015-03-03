@@ -8,7 +8,7 @@ namespace UnityEngine.UI.Windows {
 
 	[ExecuteInEditMode()]
 	public class LayoutWindowType : WindowBase {
-		
+
 		public Layout layout;
 		
 		new public LayoutWindowType GetWindow() {

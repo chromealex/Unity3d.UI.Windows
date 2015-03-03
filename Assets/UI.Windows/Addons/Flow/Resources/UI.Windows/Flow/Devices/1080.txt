@@ -1,0 +1,59 @@
+﻿Acer, Liquid S2, 1080x1920, 367
+Asus, Padfone Infinity, 1080x1920, 441
+Asus, Fonepad Note 6, 1080x1920, 367
+BBK, Vivo Xplay, 1080x1920, 386
+Coolpad, Magview 4, 1080x1920, 380
+Fujitsu, ARROWS X F-02E, 1080x1920, 441
+Fujitsu, ARROWS NX F-06E, 1080x1920, 424
+Fujitsu, ARROWS A 202F, 1080x1920, 441
+Gionee, Elife E6, 1080x1920, 441
+Huawei, Ascend D2, 1080x1920, 441
+Huawei, Ascend P7, 1080x1920, 441
+HTC, Droid DNA/Butterfly, 1080x1920, 441
+HTC, One (2013), 1080x1920, 468
+HTC, One Max, 1080x1920, 376
+HTC, Butterfly S, 1080x1920, 441
+HTC, One M8 (2014 Model), 1080x1920, 441
+HTC, Butterfly 2, 1080x1920, 441
+iBerry, auxus nuclea n1, 1080x1920, 441
+Intex, Aqua i7, 1080x1920, 441
+iOcean, X7, 1080x1920, 441
+Koobee, Max (X7), 1080x1920, 441
+Lenovo, K900, 1080x1920, 401
+Lenovo, Vibe X, 1080x1920, 441
+LG, Optimus G Pro, 1080x1920, 401
+LG, G2, 1080x1920, 424
+LG, G Pro 2, 1080x1920, 373
+LG, Nexus 5, 1080x1920, 445
+Meizu, MX3, 1080x1800, 412
+Micromax, Canvas Turbo A250, 1080x1920, 441
+Micromax, Canvas Knight A350, 1080x1920, 441
+NEO, 1080P-N003, 1080x1920, 441
+Nokia, Lumia 1520, 1080x1920, 367
+OPPO, Find 5, 1080x1920, 441
+Oppo, N1, 1080x1920, 373
+Panasonic, ELUGA X P-02E, 1080x1920, 441
+Panasonic, ELUGA P P-03E, 1080x1920, 468
+Pantech, Vega No.6, 1080x1920, 373
+Samsung, Galaxy S4, 1080x1920, 441
+Samsung, Galaxy S4 Active, 1080x1920, 441
+Samsung, Galaxy Note 3, 1080x1920, 386
+Samsung, Galaxy Round, 1080x1920, 386
+Samsung, Galaxy J, 1080x1920, 441
+Samsung, Galaxy S5, 1080x1920, 431
+Sharp, AQUOS PHONE SH930W, 1080x1920, 441
+Sharp, AQUOS PHONE ZETA SH-06E, 1080x1920, 460
+Sharp, AQUOS PHONE Xx, 1080x1920, 441
+Sony, Xperia Z/ZL, 1080x1920, 441
+Sony, Xperia Z Ultra, 1080x1920, 343
+Sony, Xperia Z1, 1080x1920, 441
+Sony, Xperia Z2, 1080x1920, 424
+TCL, idol X, 1080x1920, 441
+TCL, Alcatel One Touch Hero, 1080x1920, 367
+ThL, W11, 1080x1920, 441
+Xiaomi, Mi3, 1080x1920, 441
+ZOPO, C2, 1080x1920, 441
+ZOPO, C3, 1080x1920, 441
+ZOPO, ZP990 CAPTAIN S, 1080x1920, 367
+ZTE, Nubia Z5, 1080x1920, 441
+ZTE, Grand S, 1080x1920, 441
