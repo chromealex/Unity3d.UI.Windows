@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
+using UnityEditorInternal;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -315,6 +316,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					}
 					
+					this.DrawSettings();
+
 					this.EndWindows();
 
 					var defaultColor = GUI.color;
@@ -417,6 +420,42 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 			}
+
+		}
+
+		private ReorderableList defaultWindows;
+		private void DrawSettings() {
+
+			var scrollPos = FlowSystem.GetScrollPosition();
+
+			var wRect = new Rect(10f + scrollPos.x, 20f + scrollPos.y, 200f, 200f);
+			GUI.Window(-1, wRect, (id) => {
+
+				if (this.defaultWindows == null) {
+
+					var label = "Default Windows";
+
+					this.defaultWindows = new ReorderableList(FlowSystem.GetDefaultWindows(), typeof(int), true, true, false, true);
+
+					/*this.defaultWindows.onRemoveCallback += (list) => {
+
+						FlowSystem.Save();
+
+					};*/
+					this.defaultWindows.drawHeaderCallback += rect => GUI.Label(rect, label);
+					this.defaultWindows.drawElementCallback += (rect, index, active, focused) => {
+
+						GUI.Label(rect, FlowSystem.GetWindow(FlowSystem.GetDefaultWindows()[index]).title);
+
+					};
+
+				}
+
+				this.defaultWindows.DoLayoutList();
+
+			}, "Settings");
+
+			GUI.BringWindowToFront(-1);
 
 		}
 
@@ -1044,6 +1083,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						return;
 
 					}
+
+				}
+
+			}
+
+			if (FlowSystem.GetDefaultWindows().Contains(id) == false) {
+
+				if (GUILayout.Button("Set Default", buttonStyle) == true) {
+					
+					FlowSystem.GetDefaultWindows().Add(id);
+					FlowSystem.Save();
 
 				}
 

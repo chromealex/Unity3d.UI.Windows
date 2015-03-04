@@ -62,7 +62,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data != null;
 
 		}
-		
+
+		public static List<int> GetDefaultWindows() {
+
+			return FlowSystem.instance.data.GetDefaultWindows();
+
+		}
+
+		public static void SetDefaultWindows(List<int> list) {
+
+			FlowSystem.instance.data.SetDefaultWindows(list);
+
+		}
+
 		public static IEnumerable<FlowWindow> GetWindows() {
 			
 			if (FlowSystem.HasData() == false) return null;

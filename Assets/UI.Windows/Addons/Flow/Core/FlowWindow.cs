@@ -17,9 +17,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	public class FlowWindow {
 
 		private const int STATES_COUNT = 5;
-		
-		public bool isDefault;
-		public int defaultIndex;
 
 		public int id;
 		public string title = string.Empty;
@@ -120,9 +117,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				if (this.compiled == true) {
 
-					// Compiled - Blue
-					styleNormal = "flow node 1";
-					styleSelected = "flow node 1 on";
+					if (FlowSystem.GetDefaultWindows().Contains(this.id) == true) {
+
+						// Default - Orange
+						styleNormal = "flow node 5";
+						styleSelected = "flow node 5 on";
+
+					} else {
+
+						// Compiled - Blue
+						styleNormal = "flow node 1";
+						styleSelected = "flow node 1 on";
+
+					}
 
 				} else {
 
@@ -150,7 +157,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				var windowStyleSelected = new GUIStyle(styleSelected);
 				windowStyleSelected.fontStyle = FontStyle.Bold;
 				windowStyleSelected.margin = new RectOffset(0, 0, 0, 0);
-				windowStyleSelected.padding = new RectOffset(1, -1, 5, 4);
+				windowStyleSelected.padding = new RectOffset(0, -1, 5, 4);
 				windowStyleSelected.alignment = TextAnchor.UpperLeft;
 				windowStyleSelected.contentOffset = new Vector2(5f, 0f);
 

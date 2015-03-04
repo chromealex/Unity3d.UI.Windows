@@ -8,6 +8,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	public class FlowData : ScriptableObject {
 
 		public Vector2 scrollPos = new Vector2(-1f, -1f);
+		
+		public List<int> defaultWindows = new List<int>();
 
 		public List<FlowWindow> windows = new List<FlowWindow>();
 		public bool isDirty = false;
@@ -22,6 +24,18 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 #endif
 
 			this.isDirty = false;
+
+		}
+
+		public List<int> GetDefaultWindows() {
+
+			return this.defaultWindows;
+
+		}
+
+		public void SetDefaultWindows(List<int> defaultWindows) {
+
+			this.defaultWindows = defaultWindows;
 
 		}
 
