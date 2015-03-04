@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Menu {
 
-	public class GlobalMap : LayoutWindowType {
+	public class GlobalMapScreen : LayoutWindowType {
 
 		public override void OnInit() {
 		}

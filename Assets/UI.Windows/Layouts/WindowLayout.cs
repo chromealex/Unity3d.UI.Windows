@@ -42,6 +42,12 @@ namespace UnityEngine.UI.Windows {
 			this.canvasScaler = this.gameObject.AddComponent<MECanvasScaler>();
 
 		}
+
+		public virtual void OnValidate() {
+
+			this.elements = this.GetComponentsInChildren<WindowLayoutElement>(true).ToList();
+
+		}
 		#endif
 
 		public void Init(float depth, int raycastPriority, int orderInLayer, WindowLayout.ScaleMode scaleMode) {

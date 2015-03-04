@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Other {
 
-	public class MainLoader : LayoutWindowType {
+	public class MainLoaderScreen : LayoutWindowType {
 
 		public override void OnInit() {
 		}

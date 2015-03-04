@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.GameTypes {
 
-	public class MultiplayerAuto : LayoutWindowType {
+	public class MultiplayerAutoScreen : LayoutWindowType {
 
 		public override void OnInit() {
 		}

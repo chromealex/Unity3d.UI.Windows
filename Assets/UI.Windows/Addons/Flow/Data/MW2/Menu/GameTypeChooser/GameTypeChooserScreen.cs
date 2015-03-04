@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Menu {
 
-	public class GameTypeChooser : LayoutWindowType {
+	public class GameTypeChooserScreen : LayoutWindowType {
 
 		public override void OnInit() {
 		}

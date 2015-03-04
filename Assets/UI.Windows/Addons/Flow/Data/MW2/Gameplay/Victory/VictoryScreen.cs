@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Gameplay {
 
-	public class Victory : LayoutWindowType {
+	public class VictoryScreen : LayoutWindowType {
 
 		public override void OnInit() {
 		}

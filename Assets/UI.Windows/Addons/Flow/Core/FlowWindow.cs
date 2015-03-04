@@ -17,6 +17,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	public class FlowWindow {
 
 		private const int STATES_COUNT = 5;
+		
+		public bool isDefault;
+		public int defaultIndex;
 
 		public int id;
 		public string title = string.Empty;
@@ -30,6 +33,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public string compiledDirectory = string.Empty;
 		public string compiledNamespace = string.Empty;
 		public string compiledScreenName = string.Empty;
+		public string compiledClassName = string.Empty;
 
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 

@@ -6,10 +6,14 @@ namespace UnityEngine.UI.Windows {
 
 	//[ExecuteInEditMode()]
 	public class WindowLayoutBase : WindowComponentBase, IWindowAnimation {
-		
-		public CanvasGroup canvas;
+
+		[Header("Animation Info")]
 		new public WindowAnimationBase animation;
+		[HideInInspector]
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
+		[HideInInspector]
+		public CanvasGroup canvas;
+		[HideInInspector]
 		public bool animationRefresh = false;
 
 		public void Show(bool resetAnimation = true) {
@@ -126,6 +130,10 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector][SerializeField]
 		public WindowAnimationBase lastAnimation;
 		public virtual void Update_EDITOR() {
+
+			this.canvas = this.GetComponent<CanvasGroup>();
+
+			this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
 
 			if (this.animation == null || this.lastAnimation != this.animation || this.animationRefresh == false) {
 				

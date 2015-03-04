@@ -236,14 +236,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			if (this.isScreenDirty == true && this.screenInstance != null) {
 				
-				FlowSystem.SaveScreen(this.screenInstance);
+				FlowDatabase.SaveScreen(this.screenInstance);
 				this.isScreenDirty = false;
 
 			}
 			
 			if (this.isLayoutDirty == true && this.layoutInstance != null) {
 				
-				FlowSystem.SaveLayout(this.layoutInstance);
+				FlowDatabase.SaveLayout(this.layoutInstance);
 				this.isLayoutDirty = false;
 				
 			}
@@ -730,7 +730,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				rect.y += this.mainRect.y + this.currentView.position.y + rect.height - this.scrollPosition.y + this.lastRect.y + 15f;
 				FlowDropDownFilterWindow.Show<FlowLayoutWindowTypeTemplate>(rect, (screen) => {
 
-					this.screenPrefab = FlowSystem.GenerateScreen(this.window, screen);
+					this.screenPrefab = FlowDatabase.GenerateScreen(this.window, screen);
 					this.ReloadScreens();
 					this.LoadScreen(this.screenPrefab);
 
@@ -1092,7 +1092,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				FlowChooserFilterWindow.Show<FlowWindowLayoutTemplate>(this.rootWindow, (layout) => {
 
-					this.layoutPrefab = FlowSystem.GenerateLayout(this.window, layout);
+					this.layoutPrefab = FlowDatabase.GenerateLayout(this.window, layout);
 					this.ReloadLayouts();
 					this.LoadLayout(this.layoutPrefab);
 
@@ -1115,7 +1115,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (this.layoutInstance != null) GameObject.DestroyImmediate(this.layoutInstance.gameObject);
 				
 				// Loading layout
-				this.layoutInstance = FlowSystem.LoadLayout(layoutPrefab);
+				this.layoutInstance = FlowDatabase.LoadLayout(layoutPrefab);
 				this.layoutInstance.transform.position = Vector3.zero;
 				this.layoutInstance.transform.rotation = Quaternion.identity;
 				this.layoutInstance.transform.localScale = Vector3.zero;
@@ -1159,7 +1159,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (this.screenInstance != null) GameObject.DestroyImmediate(this.screenInstance.gameObject);
 				
 				// Loading screen
-				this.screenInstance = FlowSystem.LoadScreen(screenPrefab);
+				this.screenInstance = FlowDatabase.LoadScreen(screenPrefab);
 				this.screenInstance.transform.position = Vector3.zero;
 				this.screenInstance.transform.rotation = Quaternion.identity;
 				this.screenInstance.transform.localScale = Vector3.zero;

@@ -55,7 +55,7 @@ public class MECanvasScaler : CanvasScaler {
 
 			switch (uiScaleMode) {
 
-			case CanvasScaler.ScaleMode.ScaleWithScreenSize: this.WorldConstantPixelSize(); break; // fixed mode
+			case CanvasScaler.ScaleMode.ScaleWithScreenSize: this.WorldConstantPixelSize(); break; 				// fixed mode
 			case CanvasScaler.ScaleMode.ConstantPixelSize: this.WorldScaleWithScreenSize(screenSize); break;	// dynamic
 			case CanvasScaler.ScaleMode.ConstantPhysicalSize: this.WorldConstantPhysicalSize(); break;
 

@@ -205,7 +205,7 @@ namespace UnityEditor {
 			
 		}
 		
-		public void Update() {
+		public virtual void Update() {
 			
 			this.currentVisibleState = this.IsVisible();
 			this.UpdateState();

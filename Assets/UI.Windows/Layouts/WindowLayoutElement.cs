@@ -5,19 +5,47 @@ using System.Collections.Generic;
 namespace UnityEngine.UI.Windows {
 
 	public class WindowLayoutElement : WindowLayoutBase {
+
+		[ReadOnly("Layout Info")]
+		new public LayoutTag tag = LayoutTag.None;
 		
 		[ReadOnly]
-		new public LayoutTag tag = LayoutTag.None;
+		public bool containsLayouts = false;
 
 		#if UNITY_EDITOR
+		[Header("Editor-Only Parameters")]
 		public string comment;
+		
+		public bool autoStretchX = false;
+		public bool autoStretchY = false;
 
-		[ReadOnly]
+		[HideInInspector]
 		public WindowComponent tempEditorComponent;
+		[HideInInspector]
 		private bool randomColorSetup;
 		[HideInInspector]
 		public Color randomColor;
+		[HideInInspector]
 		public Rect editorRect;
+		[HideInInspector]
+		public Vector2 editorAnchorMin;
+		[HideInInspector]
+		public Vector2 editorAnchorMax;
+		
+		[HideInInspector]
+		public float editorMinWidth = 0f;
+		[HideInInspector]
+		public float editorMinHeight = 0f;
+
+		[HideInInspector]
+		public Rect tempEditorRect;
+
+		[HideInInspector]
+		public int editorDrawDepth;
+
+		[HideInInspector]
+		public bool editorHovered;
+
 		public void OnDrawGizmos() {
 			
 			// Hack to draw handles always
@@ -52,6 +80,30 @@ namespace UnityEngine.UI.Windows {
 		public void Reset() {
 
 			this.tag = LayoutTag.None;
+
+		}
+		
+		public override void OnValidate() {
+			
+			base.OnValidate();
+
+			var layoutComponent = this.GetComponent<LayoutElement>();
+			if (layoutComponent != null) {
+
+				this.editorMinWidth = layoutComponent.minWidth;
+				this.editorMinHeight = layoutComponent.minHeight;
+
+			}
+
+			this.containsLayouts = this.GetComponentsInChildren<WindowLayoutElement>(true).Length > 1;
+
+			var layouts = this.GetComponentsInParent<WindowLayout>();
+			if (layouts != null && layouts.Length > 0) {
+
+				var layout = layouts[0];
+				layout.OnValidate();
+
+			}
 
 		}
 

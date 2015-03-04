@@ -79,7 +79,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			
 		}
 
-		public void Update() {
+		public override void Update() {
+
+			base.Update();
 
 			var layoutWindow = this.previewScreen as LayoutWindowType;
 			if (layoutWindow != null) {

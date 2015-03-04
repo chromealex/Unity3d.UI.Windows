@@ -5,10 +5,19 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace UnityEditor.UI.Windows {
+	
+	public interface IPreviewEditor {
+
+		bool HasPreviewGUI();
+		void OnPreviewGUI(Rect rect, GUIStyle style);
+		void OnPreviewGUI(Color color, Rect rect, GUIStyle style);
+		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo);
+		
+	}
 
 	[CustomEditor(typeof(WindowLayout), true)]
 	[CanEditMultipleObjects()]
-	public class WindowLayoutEditor : Editor {
+	public class WindowLayoutEditor : Editor, IPreviewEditor {
 		
 		private bool isDirty = false;
 
@@ -20,7 +29,6 @@ namespace UnityEditor.UI.Windows {
 
 			var _target = this.target as UnityEngine.UI.Windows.WindowLayout;
 			if (_target == null) return;
-			if (_target.hideFlags == HideFlags.HideAndDontSave) return;
 
 			this.ApplyRoot(_target);
 			this.UpdateLinks(_target);
@@ -48,8 +56,21 @@ namespace UnityEditor.UI.Windows {
 
 		public override void OnPreviewGUI(Rect r, GUIStyle background) {
 			
-			var oldColor = GUI.color;
+			//var color = new Color(0.8f, 0.8f, 1f, 1f);
+			//color.a = 0.7f;
+			this.OnPreviewGUI(Color.white, r, background, true);
 
+		}
+
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background) {
+
+			this.OnPreviewGUI(color, r, background, true);
+
+		}
+
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo) {
+
+			var oldColor = GUI.color;
 			GUI.Box(r, string.Empty);
 
 			var _target = this.target as UnityEngine.UI.Windows.WindowLayout;
@@ -72,6 +93,8 @@ namespace UnityEditor.UI.Windows {
 					var rect = new Rect(corners[0].x, -corners[1].y, corners[2].x - corners[1].x, corners[2].y - corners[3].y);
 
 					element.editorRect = rect;
+					element.editorAnchorMin = rectTransform.anchorMin;
+					element.editorAnchorMax = rectTransform.anchorMax;
 
 				}
 
@@ -82,25 +105,168 @@ namespace UnityEditor.UI.Windows {
 			var scaleFactor = 0f;
 			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(elements[0].editorRect.width, elements[0].editorRect.height), new Vector2(r.width, r.height));
 
-			var style = new GUIStyle("flow node 0");
+			const int maxDepth = 7;
+			var styles = new GUIStyle[maxDepth] {
+				
+				new GUIStyle("flow node 0"),
+				new GUIStyle("flow node 1"),
+				new GUIStyle("flow node 2"),
+				new GUIStyle("flow node 3"),
+				new GUIStyle("flow node 4"),
+				new GUIStyle("flow node 5"),
+				new GUIStyle("flow node 6")
+
+			};
+			
+			var horArrowsStyle = new GUIStyle("ColorPickerHorizThumb");
+			var vertArrowsStyle = new GUIStyle("ColorPickerVertThumb");
+			
+			var horStyle = new GUIStyle("box");
+			var vertStyle = new GUIStyle("box");
 
 			foreach (var element in elements) {
 
+				element.editorDrawDepth = element.GetComponentsInParent<WindowLayoutElement>(true).Length - 1;
+
 				var rect = element.editorRect;
-				
-				rect.x *= scaleFactor;
-				rect.y *= scaleFactor;
-				rect.width *= scaleFactor;
-				rect.height *= scaleFactor;
+				var anchorMin = element.editorAnchorMin;
+				var anchorMax = element.editorAnchorMax;
 
-				rect.x += r.x + r.width * 0.5f;
-				rect.y += r.y + r.height * 0.5f;
+				if (element.editorDrawDepth == 0 && anchorMin != Vector2.one * 0.5f && anchorMax != Vector2.one * 0.5f) {
+					
+					rect.x = r.x + r.width * anchorMin.x;
+					rect.y = r.y + r.height * anchorMin.y;
+					rect.width = r.width * (anchorMax.x - anchorMin.x);
+					rect.height = r.height * (anchorMax.y - anchorMin.y);
 
-				var color = new Color(0.8f, 0.8f, 1f, 1f);
-				color.a = 0.7f;
+				} else {
+					
+					rect.x *= scaleFactor;
+					rect.y *= scaleFactor;
+
+					rect.x += r.x + r.width * 0.5f;
+					rect.y += r.y + r.height * 0.5f;
+					
+					rect.width *= scaleFactor;
+					rect.height *= scaleFactor;
+
+				}
+
+				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth)];
+
 				GUI.color = color;
-				GUI.Box(rect, string.Empty, style);
+				GUI.Label(rect, string.Empty, style);
+
+				GUI.color = oldColor;
 				
+				var marginX = 4f;
+				var marginY = 2f;
+
+				if (element.autoStretchX == true) {
+					
+					var vRect = new Rect(rect);
+					vRect.x += marginX;
+					vRect.width -= marginX * 2f;
+					vRect.y = vRect.y + vRect.height * 0.5f - horArrowsStyle.fixedHeight * 0.5f;
+					vRect.height = vertArrowsStyle.fixedHeight;
+					
+					GUI.Label(vRect, string.Empty, vertArrowsStyle);
+					GUI.Label(vRect, string.Empty, vertStyle);
+					
+				}
+
+				if (element.autoStretchY == true) {
+					
+					var vRect = new Rect(rect);
+					vRect.y += marginY;
+					vRect.height -= marginY * 2f;
+					vRect.x = vRect.x + vRect.width * 0.5f - vertArrowsStyle.fixedWidth * 0.5f;
+					vRect.width = horArrowsStyle.fixedWidth;
+
+					GUI.Label(vRect, string.Empty, horArrowsStyle);
+					GUI.Label(vRect, string.Empty, horStyle);
+					
+				}
+
+				element.tempEditorRect = rect;
+
+				if (rect.Contains(Event.current.mousePosition) == true) {
+
+					element.editorHovered = true;
+
+				} else {
+
+					element.editorHovered = false;
+
+				}
+
+			}
+
+			if (drawInfo == true) {
+
+				WindowLayoutElement maxDepthElement = null;
+				var _maxDepth = -1;
+				foreach (var element in elements) {
+
+					if (element.editorHovered == false) continue;
+
+					if (_maxDepth < element.editorDrawDepth) {
+
+						_maxDepth = element.editorDrawDepth;
+						maxDepthElement = element;
+
+					}
+
+				}
+
+				var labelStyle = new GUIStyle(EditorStyles.whiteMiniLabel);
+				labelStyle.alignment = TextAnchor.UpperLeft;
+
+				foreach (var element in elements) {
+					
+					if (element.editorHovered == false || maxDepthElement != element) {
+						
+						continue;
+						
+					}
+
+					var rect = element.tempEditorRect;
+					rect.y -= 2f;
+					
+					var w = Mathf.Clamp(element.editorMinWidth, 0, element.editorMinWidth);
+					var h = Mathf.Clamp(element.editorMinHeight, 0, element.editorMinHeight);
+
+					if (w > 0 || h > 0) {
+
+						GUI.Label(rect, "min: " + w.ToString() + "x" + h.ToString(), labelStyle);
+
+					}
+
+					rect.y += 8f;
+
+					if (element.autoStretchX == false && element.autoStretchY == false) {
+
+						w = element.editorRect.width;
+						h = element.editorRect.height;
+
+						GUI.Label(rect, "size: " + w.ToString() + "x" + h.ToString(), labelStyle);
+						
+					} else if (element.autoStretchX == false) {
+						
+						w = element.editorRect.width;
+						
+						GUI.Label(rect, "size x: " + w.ToString(), labelStyle);
+						
+					} else if (element.autoStretchY == false) {
+						
+						h = element.editorRect.height;
+						
+						GUI.Label(rect, "size y: " + h.ToString(), labelStyle);
+						
+					}
+
+				}
+
 			}
 
 			GUI.color = oldColor;
@@ -155,19 +321,18 @@ namespace UnityEditor.UI.Windows {
 			}
 
 		}
-
-		public bool drawEditorRects = false;
+		
 		private void UpdateLinks(UnityEngine.UI.Windows.WindowLayout _target) {
-
+			
 			this.Setup_EDITOR(_target);
 			this.Update_EDITOR(_target);
 			
 		}
 		
 		private void Update_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
-
+			
 			foreach (var element in _target.elements) element.Update_EDITOR();
-
+			
 			#region COMPONENTS
 			_target.canvas = _target.GetComponentsInChildren<Canvas>(true)[0];
 			var raycasters = _target.GetComponentsInChildren<UnityEngine.EventSystems.BaseRaycaster>(true);
@@ -178,9 +343,9 @@ namespace UnityEditor.UI.Windows {
 			
 			#region SETUP
 			if (_target.initialized == true) {
-
+				
 				WindowSystem.ApplyToSettings(_target.canvas);
-
+				
 				// Raycaster
 				if ((_target.raycaster as GraphicRaycaster) != null) {
 					
@@ -192,7 +357,7 @@ namespace UnityEditor.UI.Windows {
 			#endregion
 			
 		}
-
+		
 		private void Setup_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
 			
 			_target.elements = _target.elements.Where((e) => e != null).ToList();
@@ -225,7 +390,7 @@ namespace UnityEditor.UI.Windows {
 					_target.elements.Add(element);
 					
 					this.isDirty = true;
-
+					
 				}
 				
 			}
@@ -234,16 +399,6 @@ namespace UnityEditor.UI.Windows {
 			foreach (var element in _target.elements) {
 				
 				if (element.tag == LayoutTag.None) element.tag = this.GetTag(usedTags);
-
-				/*if (ME.EditorUtilities.IsPrefab(_target.gameObject) == true) {
-
-					element.TurnOff_EDITOR();
-					
-				} else {
-
-					element.TurnOn_EDITOR();
-					
-				}*/
 				
 			}
 			
@@ -270,6 +425,7 @@ namespace UnityEditor.UI.Windows {
 			return LayoutTag.None;
 			
 		}
+
 	}
 
 }

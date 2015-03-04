@@ -8,6 +8,12 @@ using System.Linq;
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowChooserFilterWindow : EditorWindow {
+		
+		private EditorWindow root;
+		
+		private System.Action<Component> onSelect;
+		private System.Action<Component> onEveryGUI;
+		private List<Component> items = new List<Component>();
 
 		private static Dictionary<string, List<Component>> cache = new Dictionary<string, List<Component>>();
 
@@ -45,12 +51,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private EditorWindow root;
-
-		private System.Action<Component> onSelect;
-		private System.Action<Component> onEveryGUI;
-		private List<Component> items = new List<Component>();
-
 		public void Scan<T>(bool strongType, string cacheKey) where T : Component {
 
 			List<Component> list;
@@ -76,7 +76,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public void Update() {
 
-			var offset = 50f;
+			var offset = FlowSceneItem.POPUP_OFFSET + 50f;
 			this.position = new Rect(this.root.position.x + offset, this.root.position.y + offset, this.root.position.width - offset * 2f, this.root.position.height - offset * 2f);
 
 			if (FlowSceneView.recompileChecker == null) this.Close();
@@ -87,79 +87,95 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void OnGUI() {
 
 			//var scrollWidth = 30f;
+			
+			var width = 160f;
+			var height = 160f;
 
-			var origBox = new GUIStyle(GUI.skin.box);
+			var itemBox = new GUIStyle(GUI.skin.box);
+			itemBox.fixedWidth = 0f;
+			itemBox.stretchWidth = false;
 
 			var box = new GUIStyle(GUI.skin.box);
+			box.fixedWidth = 0f;
+			box.stretchWidth = true;
+
 			box.margin = new RectOffset();
 			var style = new GUIStyle(EditorStyles.toolbarButton);
 
 			var rect = this.position;
 			rect.x = 0f;
 			rect.y = 0f;
-			GUI.Box(rect, string.Empty, box);
+			GUI.Box(rect, string.Empty);
 
 			this.scrollPos = GUILayout.BeginScrollView(this.scrollPos, false, false);
+			{
 
-			GUILayout.BeginVertical(box);
-
-			var width = 140f;
-			var height = 140f;
-
-			var xCount = Mathf.FloorToInt(this.position.width / width);
-			
-			style.fixedWidth = width;
-			style.fixedHeight = height;
-
-			var i = 0;
-			foreach (var item in this.items) {
-
-				if (item == null) continue;
-
-				if (i % xCount == 0) {
-
-					if (i != 0) GUILayout.EndHorizontal();
-					GUILayout.BeginHorizontal();
-
-				}
-
-				GUILayout.BeginVertical(origBox);
+				GUILayout.BeginVertical();
 				{
 
-					if (GUILayout.Button(string.Empty, style) == true) {
+					var xCount = Mathf.FloorToInt(this.position.width / width);
+					
+					style.fixedWidth = width;
+					style.fixedHeight = height;
+					style.stretchWidth = false;
+					style.stretchHeight = false;
+
+					var i = 0;
+					foreach (var item in this.items) {
+
+						if (item == null) continue;
+
+						if (i % xCount == 0) {
+
+							if (i != 0) GUILayout.EndHorizontal();
+							GUILayout.BeginHorizontal();
+
+						}
+
+						GUILayout.BeginVertical(itemBox, GUILayout.Width(width), GUILayout.Height(height));
+						{
+
+							if (GUILayout.Button(string.Empty, style) == true) {
+								
+								this.onSelect(item);
+								
+							}
+
+							var lastRect = GUILayoutUtility.GetLastRect();
+							lastRect.width = width;
+							lastRect.height = height;
+
+							{
+
+								var editor = Editor.CreateEditor(item) as IPreviewEditor;
+								if (editor.HasPreviewGUI() == true) {
+
+									Color color = Color.white;
+									editor.OnPreviewGUI(color, lastRect, style, false);
+
+								}
+
+							}
+
+							this.onEveryGUI(item);
+
+						}
+						GUILayout.EndVertical();
+
+						++i;
+
+					}
+					
+					if (i % xCount != 0 && xCount > 0) {
 						
-						this.onSelect(item);
+						GUILayout.EndHorizontal();
 						
 					}
-
-					var lastRect = GUILayoutUtility.GetLastRect();
-					lastRect.width = width;
-					lastRect.height = height;
-
-					{
-
-						var editor = Editor.CreateEditor(item);
-						editor.OnPreviewGUI(lastRect, style);
-
-					}
-
-					this.onEveryGUI(item);
 
 				}
 				GUILayout.EndVertical();
 
-				++i;
-
 			}
-			
-			if (i % xCount != 0) {
-				
-				GUILayout.EndHorizontal();
-				
-			}
-
-			GUILayout.EndVertical();
-
 			GUILayout.EndScrollView();
 
 		}
