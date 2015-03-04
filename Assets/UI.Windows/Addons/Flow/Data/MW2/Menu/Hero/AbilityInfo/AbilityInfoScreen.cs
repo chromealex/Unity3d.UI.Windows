@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Menu.Hero {
 
-	public class AbilityInfoScreen : LayoutWindowType {
+	public class AbilityInfo : LayoutWindowType {
 
 		public override void OnInit() {
 		}

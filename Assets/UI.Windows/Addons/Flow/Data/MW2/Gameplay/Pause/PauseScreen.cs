@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Gameplay {
 
-	public class PauseScreen : LayoutWindowType {
+	public class Pause : LayoutWindowType {
 
 		public override void OnInit() {
 		}

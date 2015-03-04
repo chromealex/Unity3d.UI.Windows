@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Gameplay {
 
-	public class GameplayHUDScreen : LayoutWindowType {
+	public class GameplayHUD : LayoutWindowType {
 
 		public override void OnInit() {
 		}

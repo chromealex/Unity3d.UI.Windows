@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Menu.Hero {
 
-	public class HeroChooserScreen : LayoutWindowType {
+	public class HeroChooser : LayoutWindowType {
 
 		public override void OnInit() {
 		}

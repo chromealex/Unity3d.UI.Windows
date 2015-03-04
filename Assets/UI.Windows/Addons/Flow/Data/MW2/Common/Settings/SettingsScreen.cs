@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.Common {
 
-	public class SettingsScreen : LayoutWindowType {
+	public class Settings : LayoutWindowType {
 
 		public override void OnInit() {
 		}

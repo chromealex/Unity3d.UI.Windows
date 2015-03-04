@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.GameTypes {
 
-	public class MultiplayerPvPScreen : LayoutWindowType {
+	public class MultiplayerPvP : LayoutWindowType {
 
 		public override void OnInit() {
 		}

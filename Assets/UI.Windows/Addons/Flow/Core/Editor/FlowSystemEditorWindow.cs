@@ -29,6 +29,29 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 	}
 
 	public class FlowSystemEditorWindow : EditorWindowExt {
+		
+		[MenuItem( "Assets/Open Flow Editor", validate = true )]
+		private static bool ContextMenuValidate() {
+
+			return Selection.activeObject is FlowData;
+		}
+
+		[MenuItem( "Assets/Open Flow Editor" )]
+		[MenuItem( "Window/UI.Windows Flow" )]
+		static void ShowEditorFromContextMenu() {
+
+			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
+			editor.title = "Windows Flow";
+			editor.autoRepaintOnSceneChange = true;
+
+			var selectedObject = Selection.activeObject as FlowData;
+
+			if ( selectedObject != null ) {
+
+				editor.OpenFlowData( selectedObject );
+			}
+
+		}
 
 		[MenuItem("Window/UI.Windows Flow")]
 		static void ShowEditor() {
@@ -83,13 +106,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f);
 
-				var hasData = FlowSystem.HasData();
-
 				var oldEnabled = GUI.enabled;
-				GUI.enabled = hasData && GUI.enabled;
+				GUI.enabled = FlowSystem.HasData() && GUI.enabled;
 				var toolbarHeight = this.DrawToolbar();
 				GUI.enabled = oldEnabled;
-				
+
+				var hasData = FlowSystem.HasData();
+
 				IEnumerable<FlowWindow> windows = null;
 				IEnumerable<FlowWindow> containers = null;
 				if (hasData == true) {
@@ -647,6 +670,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private void OpenFlowData(FlowData flowData) {
+
+			cachedData = flowData;
+			FlowSystem.SetData( flowData );
+		}
+
+		private void CloseFlowData() {
+
+			cachedData = null;
+			FlowSystem.SetData( null );
+		}
+
 		private float DrawToolbar() {
 
 			var toolbarHeight = 0f;
@@ -686,13 +721,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.enabled = false;
 			disabledDescr = " (WebPlayer Restriction)";
 			#endif
-			if (GUILayout.Button("Generate UI" + disabledDescr, buttonStyle)) {
+			if (GUILayout.Button("Compile UI" + disabledDescr, buttonStyle)) {
 				
 				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
-				
+
 			}
 			
-			if (GUILayout.Button("Recompile UI" + disabledDescr, buttonStyle)) {
+			if (GUILayout.Button("Force Recompile UI" + disabledDescr, buttonStyle)) {
 				
 				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData), recompile: true);
 				
@@ -704,6 +739,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.FlexibleSpace();
 
 			GUILayout.Label("Current Data: " + AssetDatabase.GetAssetPath(this.cachedData), buttonStyle);
+
+			if ( GUILayout.Button( "Close", buttonStyle ) ) {
+				
+				CloseFlowData();
+			}
 
 			GUILayout.EndHorizontal();
 

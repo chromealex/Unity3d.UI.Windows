@@ -17,7 +17,7 @@ using UnityEngine.UI.Windows;
 
 namespace MW2.UI.GameTypes {
 
-	public class CampaignScreen : LayoutWindowType {
+	public class Campaign : LayoutWindowType {
 
 		public override void OnInit() {
 		}
