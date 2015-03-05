@@ -117,11 +117,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				if (this.compiled == true) {
 
-					if (FlowSystem.GetDefaultWindows().Contains(this.id) == true) {
-
-						// Default - Orange
+					if (FlowSystem.GetRootWindow() == this.id) {
+						
+						// Root - Orange
 						styleNormal = "flow node 5";
 						styleSelected = "flow node 5 on";
+
+					} else if (FlowSystem.GetDefaultWindows().Contains(this.id) == true) {
+
+						// Default - Cyan
+						styleNormal = "flow node 2";
+						styleSelected = "flow node 2 on";
 
 					} else {
 

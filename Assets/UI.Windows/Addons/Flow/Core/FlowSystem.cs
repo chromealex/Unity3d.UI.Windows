@@ -62,6 +62,18 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data != null;
 
 		}
+		
+		public static void SetRootWindow(int id) {
+			
+			FlowSystem.instance.data.SetRootWindow(id);
+			
+		}
+		
+		public static int GetRootWindow() {
+			
+			return FlowSystem.instance.data.GetRootWindow();
+			
+		}
 
 		public static List<int> GetDefaultWindows() {
 
@@ -185,6 +197,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 			}
 			
+		}
+
+		public static void SelectWindows(params int[] ids) {
+			
+			if (FlowSystem.HasData() == false) return;
+			
+			FlowSystem.instance.data.SelectWindows(ids);
+
 		}
 
 		public static void SelectWindowsInRect(Rect rect, System.Func<FlowWindow, bool> predicate = null) {

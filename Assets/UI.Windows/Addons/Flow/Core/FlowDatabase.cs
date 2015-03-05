@@ -14,6 +14,45 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 	public class FlowDatabase {
 
+		public static void RemoveLayoutComponent(Transform element) {
+
+			var root = element.root;
+
+			GameObject.DestroyImmediate(element.gameObject);
+
+			FlowDatabase.SaveLayout(root.GetComponent<WindowLayout>());
+
+		}
+
+		public static WindowLayoutElement AddLayoutElementComponent(string name, Transform root, int siblingIndex) {
+			
+			var go = new GameObject(name);
+			go.transform.SetParent(root);
+			go.transform.localScale = Vector3.one;
+			go.transform.localPosition = Vector3.zero;
+			go.transform.localRotation = Quaternion.identity;
+			
+			go.AddComponent<RectTransform>();
+			
+			go.transform.SetSiblingIndex(siblingIndex);
+			
+			var layoutElement = go.AddComponent<WindowLayoutElement>();
+			layoutElement.comment = "NEW LAYOUT ELEMENT";
+			
+			var canvas = go.AddComponent<CanvasGroup>();
+			canvas.alpha = 1f;
+			canvas.blocksRaycasts = true;
+			canvas.interactable = true;
+			canvas.ignoreParentGroups = false;
+			layoutElement.canvas = canvas;
+			
+			//FlowSceneView.GetItem().SetLayoutDirty();
+			FlowDatabase.SaveLayout(layoutElement.transform.root.GetComponent<WindowLayout>());
+
+			return layoutElement;
+
+		}
+		
 		public static TWith ReplaceComponents<TReplace, TWith>(TReplace source, System.Type withType) where TReplace : Component where TWith : Component {
 
 			var cachedFields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
@@ -59,7 +98,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		
 		public static void SaveLayout(WindowLayout instance) {
 			
-			UnityEditor.PrefabUtility.ReplacePrefab(instance.gameObject, UnityEditor.PrefabUtility.GetPrefabParent(instance.gameObject), UnityEditor.ReplacePrefabOptions.Default);
+			UnityEditor.PrefabUtility.ReplacePrefab(instance.gameObject, UnityEditor.PrefabUtility.GetPrefabParent(instance.gameObject), UnityEditor.ReplacePrefabOptions.ConnectToPrefab);
 			ADB.Refresh();
 
 		}

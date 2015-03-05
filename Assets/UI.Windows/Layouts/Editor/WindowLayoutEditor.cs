@@ -152,7 +152,7 @@ namespace UnityEditor.UI.Windows {
 
 				}
 
-				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth)];
+				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
 
 				GUI.color = color;
 				GUI.Label(rect, string.Empty, style);

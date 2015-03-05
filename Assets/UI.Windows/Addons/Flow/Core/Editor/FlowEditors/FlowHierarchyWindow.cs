@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Plugins.Flow;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 	
@@ -272,8 +273,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
 				EditorApplication.delayCall = null;
 
-				GameObject.DestroyImmediate(element.gameObject);
-				FlowSceneView.GetItem().SetLayoutDirty();
+				//GameObject.DestroyImmediate(element.gameObject);
+				//FlowSceneView.GetItem().SetLayoutDirty();
+
+				FlowDatabase.RemoveLayoutComponent(element);
 
 			};
 
@@ -285,27 +288,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 				
 				EditorApplication.delayCall = null;
 
-				var go = new GameObject("LayoutElement");
-				go.transform.SetParent(element.parent);
-				go.transform.localScale = Vector3.one;
-				go.transform.localPosition = Vector3.zero;
-				go.transform.localRotation = Quaternion.identity;
-
-				go.AddComponent<RectTransform>();
-
-				go.transform.SetSiblingIndex(element.GetSiblingIndex());
-
-				var layoutElement = go.AddComponent<WindowLayoutElement>();
-				layoutElement.comment = "NEW LAYOUT ELEMENT";
-
-				var canvas = go.AddComponent<CanvasGroup>();
-				canvas.alpha = 1f;
-				canvas.blocksRaycasts = true;
-				canvas.interactable = true;
-				canvas.ignoreParentGroups = false;
-				layoutElement.canvas = canvas;
-				
-				FlowSceneView.GetItem().SetLayoutDirty();
+				FlowDatabase.AddLayoutElementComponent("LayoutElement", element.parent, element.GetSiblingIndex());
 
 			};
 

@@ -8,7 +8,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	public class FlowData : ScriptableObject {
 
 		public Vector2 scrollPos = new Vector2(-1f, -1f);
-		
+
+		public int rootWindow;
 		public List<int> defaultWindows = new List<int>();
 
 		public List<FlowWindow> windows = new List<FlowWindow>();
@@ -25,6 +26,18 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			this.isDirty = false;
 
+		}
+		
+		public void SetRootWindow(int id) {
+			
+			this.rootWindow = id;
+			
+		}
+		
+		public int GetRootWindow() {
+			
+			return this.rootWindow;
+			
 		}
 
 		public List<int> GetDefaultWindows() {
@@ -49,6 +62,21 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			return this.selected;
 
+		}
+		
+		public void SelectWindows(int[] ids) {
+
+			this.selected.Clear();
+			foreach (var window in this.windows) {
+				
+				if (window.isContainer == false && ids.Contains(window.id) == true) {
+					
+					this.selected.Add(window.id);
+					
+				}
+				
+			}
+			
 		}
 
 		public void SelectWindowsInRect(Rect rect, System.Func<FlowWindow, bool> predicate = null) {
@@ -108,6 +136,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			// Remove window
 			this.windows.Remove(this.GetWindow(id));
+
+			this.selected.Remove(id);
+			this.defaultWindows.Remove(id);
 
 			foreach (var window in this.windows) {
 

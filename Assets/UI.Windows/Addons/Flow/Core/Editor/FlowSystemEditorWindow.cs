@@ -431,6 +431,29 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var wRect = new Rect(10f + scrollPos.x, 20f + scrollPos.y, 200f, 200f);
 			GUI.Window(-1, wRect, (id) => {
 
+				#region ROOT WINDOW
+				GUILayout.Label("Root Window", EditorStyles.boldLabel);
+
+				var rootWindow = FlowSystem.GetWindow(FlowSystem.GetRootWindow());
+				if (rootWindow != null) {
+
+					if (GUILayout.Button(rootWindow.title) == true) {
+
+						this.focusedGUIWindow = rootWindow.id;
+						FlowSystem.ResetSelection();
+
+					}
+
+				} else {
+
+					GUILayout.Label("No root window selected.");
+
+				}
+
+				#endregion
+
+				#region DEFAULT WINDOWS
+				GUILayout.Label("Default Windows", EditorStyles.boldLabel);
 				if (this.defaultWindows == null) {
 
 					var label = "Default Windows";
@@ -452,6 +475,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 				this.defaultWindows.DoLayoutList();
+
+				#endregion
 
 			}, "Settings");
 
@@ -972,10 +997,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var elemWidth = style.fixedWidth - 3f;
 			var width = window.rect.width - 6f;
 
-			var posY = -8f;
+			var posY = -9f;
 
-			var color = Color.white;
+			var color = Color.black;
+			color.a = 0.6f;
 			var posX = width - elemWidth;
+
+			var shadowOffset = 1f;
+			for (int i = states.Length - 1; i >= 0; --i) {
+
+				GUI.color = color;
+				GUI.Label(new Rect(posX + shadowOffset, posY + shadowOffset, elemWidth, style.fixedHeight), string.Empty, style);
+				posX -= elemWidth;
+
+			}
+			
+			posX = width - elemWidth;
 			for (int i = states.Length - 1; i >= 0; --i) {
 
 				var state = states[i];
@@ -1013,7 +1050,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.DrawStates(window.states, window);
 
 			GUI.enabled = !FlowSceneView.IsActive();
-
+			
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
 
@@ -1087,15 +1124,42 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 			}
+			
+			var isRoot = (FlowSystem.GetRootWindow() == id);
+			if (GUILayout.Toggle(isRoot, new GUIContent("R", "Set as root"), buttonStyle) != isRoot) {
 
-			if (FlowSystem.GetDefaultWindows().Contains(id) == false) {
+				if (isRoot == true) {
 
-				if (GUILayout.Button("Set Default", buttonStyle) == true) {
-					
-					FlowSystem.GetDefaultWindows().Add(id);
-					FlowSystem.Save();
+					// Was as root
+					FlowSystem.SetRootWindow(-1);
+
+				} else {
+
+					// Was not as root
+					FlowSystem.SetRootWindow(id);
 
 				}
+
+				FlowSystem.Save();
+				
+			}
+			
+			var isDefault = FlowSystem.GetDefaultWindows().Contains(id);
+			if (GUILayout.Toggle(isDefault, new GUIContent("D", "Set as default"), buttonStyle) != isDefault) {
+
+				if (isDefault == true) {
+
+					// Was as default
+					FlowSystem.GetDefaultWindows().Remove(id);
+
+				} else {
+
+					// Was not as default
+					FlowSystem.GetDefaultWindows().Add(id);
+
+				}
+
+				FlowSystem.Save();
 
 			}
 

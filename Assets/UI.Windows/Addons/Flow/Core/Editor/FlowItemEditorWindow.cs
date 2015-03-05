@@ -851,7 +851,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					if (warnings.Count > 0) {
 
-						EditorGUILayout.HelpBox("Warning! You have duplicate elements in modules list. It may cause problems in View. Modules: " + (string.Join(", ", warnings.ToArray())), MessageType.Warning);
+						EditorGUILayout.HelpBox("Warning! You have duplicate elements in modules list. It may cause problems in the View. Modules: " + (string.Join(", ", warnings.ToArray())), MessageType.Warning);
 
 					}
 
@@ -970,7 +970,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (layout == null) return;
 
-			var tempComponent = layout.elements.FirstOrDefault((e) => e.tag == component.tag);
+			var tempComponent = layout.elements.FirstOrDefault((e) => e != null && e.tag == component.tag);
 			var selected = (Selection.activeGameObject == tempComponent.gameObject);
 			var oldColor = GUI.color;
 
@@ -1069,14 +1069,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 
 			GUILayout.Label("Or create the new one:");
-			/*
-			if (GUILayout.Button("Create Layout...") == true) {
 
-				this.layoutPrefab = FlowSystem.GenerateLayout(this.window);
-				this.ReloadLayouts();
-
-			}*/
-			
 			if (GUILayout.Button("Create Layout...", GUILayout.Height(30f)) == true) {
 				
 				this.showLayoutWindow = true;
