@@ -97,7 +97,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 		
 		public static void SaveLayout(WindowLayout instance) {
-			
+
+			if (instance == null) return;
+
 			UnityEditor.PrefabUtility.ReplacePrefab(instance.gameObject, UnityEditor.PrefabUtility.GetPrefabParent(instance.gameObject), UnityEditor.ReplacePrefabOptions.ConnectToPrefab);
 			ADB.Refresh();
 

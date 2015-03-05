@@ -224,7 +224,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				var childs = window.attaches;
 				foreach (var child in childs) {
-					
+
 					FlowSystem.ForEachContainer(child, each, accumulate);
 					
 				}
@@ -366,7 +366,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				if (containers.Any((c) => c.HasContainer(container)) == false) {
 
 					FlowSystem.ForEachContainer(container.id, (child, accumulate) => {
-						
+
 						var local = (string.IsNullOrEmpty(accumulate) == false ? accumulate + "/" : string.Empty) + child.directory;
 						if (string.IsNullOrEmpty(child.directory) == false) {
 							
@@ -378,7 +378,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 						foreach (var attachId in child.attaches) {
 
 							var window = FlowSystem.GetWindow(attachId);
-							if (window.isContainer == false) {
+							if (window.isContainer == false && window.isDefaultLink == false) {
 
 								FlowSystem.GenerateUIWindow(fullpath + "/" + local + "/", localNamespace, window, recompile);
 
@@ -397,7 +397,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var windows = FlowSystem.GetWindows();
 			foreach (var window in windows) {
 
-				if (window.HasContainer() == false) {
+				if (window.isDefaultLink == false && window.HasContainer() == false) {
 
 					// Put into other
 					FlowSystem.GenerateUIWindow(fullpath + "/" + OTHER_NAME + "/", OTHER_NAME, window, recompile);
