@@ -62,20 +62,46 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data != null;
 
 		}
-		
+
+		public static List<FlowTag> GetTags() {
+			
+			if (FlowSystem.HasData() == false) return null;
+
+			return FlowSystem.instance.data.tags;
+
+		}
+
+		public static void AddTag(FlowWindow window, FlowTag tag) {
+
+			FlowSystem.instance.data.AddTag(window, tag);
+
+		}
+
+		public static void RemoveTag(FlowWindow window, FlowTag tag) {
+			
+			FlowSystem.instance.data.RemoveTag(window, tag);
+
+		}
+
 		public static void SetRootWindow(int id) {
 			
+			if (FlowSystem.HasData() == false) return;
+
 			FlowSystem.instance.data.SetRootWindow(id);
 			
 		}
 		
 		public static int GetRootWindow() {
 			
+			if (FlowSystem.HasData() == false) return -1;
+
 			return FlowSystem.instance.data.GetRootWindow();
 			
 		}
 
 		public static List<int> GetDefaultWindows() {
+			
+			if (FlowSystem.HasData() == false) return null;
 
 			return FlowSystem.instance.data.GetDefaultWindows();
 
@@ -104,6 +130,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		public static FlowWindow GetWindow(int id) {
+			
+			if (FlowSystem.HasData() == false) return null;
 
 			return FlowSystem.instance.data.GetWindow(id);
 
@@ -119,6 +147,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			return FlowSystem.instance.data.CreateWindow();
 
+		}
+		
+		public static FlowWindow CreateDefaultLink() {
+			
+			return FlowSystem.instance.data.CreateDefaultLink();
+			
 		}
 
 		public static void DestroyWindow(int id) {

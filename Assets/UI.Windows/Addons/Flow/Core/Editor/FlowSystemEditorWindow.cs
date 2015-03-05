@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 using UnityEditorInternal;
+using ME;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -265,13 +266,25 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					foreach (var window in windows) {
 
-						window.rect.width = 250f;
-						window.rect.height = 80f;
+						var title = string.Empty;
+						if (window.isDefaultLink == true) {
+
+							window.rect.width = 150f;
+							window.rect.height = 30f;
+
+							title = "Default Link";
+
+						} else {
+
+							window.rect.width = 250f;
+							window.rect.height = 80f;
+
+						}
 
 						var isSelected = selected.Contains(window.id) || (selected.Count == 0 && this.focusedGUIWindow == window.id);
 						var style = window.GetEditorStyle(isSelected);
 
-						var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, string.Empty, style/*, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)*/);
+						var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, title, style/*, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)*/);
 						GUI.BringWindowToFront(window.id);
 
 						var isMoving = (rect != window.rect);
@@ -334,6 +347,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
 
 				GUI.EndScrollView();
+				
+				this.DrawTagsPopup();
 
 				this.DragBackground(toolbarHeight);
 
@@ -423,13 +438,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private Vector2 settingsWindowScroll;
 		private ReorderableList defaultWindows;
+		private ReorderableList tagsList;
 		private void DrawSettings() {
 
 			var scrollPos = FlowSystem.GetScrollPosition();
 
 			var wRect = new Rect(10f + scrollPos.x, 20f + scrollPos.y, 200f, 200f);
 			GUI.Window(-1, wRect, (id) => {
+				
+				if (FlowSystem.HasData() == false) return;
+
+				this.settingsWindowScroll = GUILayout.BeginScrollView(this.settingsWindowScroll, false, false);
 
 				#region ROOT WINDOW
 				GUILayout.Label("Root Window", EditorStyles.boldLabel);
@@ -451,32 +472,83 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 				#endregion
-
+				
 				#region DEFAULT WINDOWS
 				GUILayout.Label("Default Windows", EditorStyles.boldLabel);
 				if (this.defaultWindows == null) {
-
+					
 					var label = "Default Windows";
-
+					
 					this.defaultWindows = new ReorderableList(FlowSystem.GetDefaultWindows(), typeof(int), true, true, false, true);
 
-					/*this.defaultWindows.onRemoveCallback += (list) => {
-
-						FlowSystem.Save();
-
-					};*/
 					this.defaultWindows.drawHeaderCallback += rect => GUI.Label(rect, label);
 					this.defaultWindows.drawElementCallback += (rect, index, active, focused) => {
-
+						
 						GUI.Label(rect, FlowSystem.GetWindow(FlowSystem.GetDefaultWindows()[index]).title);
+						
+					};
+					
+				}
+				
+				if (this.defaultWindows != null) this.defaultWindows.DoLayoutList();
+				#endregion
+				
+				#region TAGS
+				GUILayout.Label("Tags", EditorStyles.boldLabel);
+				if (this.tagsList == null) {
+					
+					var label = "Tags";
+
+					var styles = new GUIStyle[7] {
+						
+						new GUIStyle("sv_label_1"),
+						new GUIStyle("sv_label_2"),
+						new GUIStyle("sv_label_3"),
+						new GUIStyle("sv_label_4"),
+						new GUIStyle("sv_label_5"),
+						new GUIStyle("sv_label_6"),
+						new GUIStyle("sv_label_7")
 
 					};
 
+					var selected = new GUIStyle("U2D.pivotDotActive");
+
+					this.tagsList = new ReorderableList(FlowSystem.GetTags(), typeof(FlowTag), true, true, false, true);
+
+					this.tagsList.drawHeaderCallback += rect => GUI.Label(rect, label);
+					this.tagsList.drawElementCallback += (rect, index, active, focused) => {
+
+						var tag = FlowSystem.GetTags()[index];
+						GUI.Label(rect, tag.title);
+
+						var itemRect = new Rect(rect);
+						itemRect.x += itemRect.width;
+						itemRect.width = 14f;
+
+						var i = 0;
+						foreach (var style in styles) {
+
+							itemRect.x -= itemRect.width;
+							if (GUI.Button(itemRect, " ", style) == true) {
+
+								tag.color = i;
+
+							}
+
+							if (tag.color == i) GUI.Label(new Rect(itemRect.x - 2f, itemRect.y - 2f, itemRect.width, itemRect.height), string.Empty, selected);
+
+							++i;
+
+						}
+
+					};
+					
 				}
-
-				this.defaultWindows.DoLayoutList();
-
+				
+				if (this.tagsList != null) this.tagsList.DoLayoutList();
 				#endregion
+
+				GUILayout.EndScrollView();
 
 			}, "Settings");
 
@@ -736,14 +808,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private void OpenFlowData(FlowData flowData) {
 
-			cachedData = flowData;
-			FlowSystem.SetData( flowData );
+			this.cachedData = flowData;
+			FlowSystem.SetData(flowData);
+
 		}
 
-		private void CloseFlowData() {
+		private void ChangeFlowData() {
 
-			cachedData = null;
-			FlowSystem.SetData( null );
+			FlowSystem.SetData(null);
+			this.defaultWindows = null;
+
 		}
 
 		private float DrawToolbar() {
@@ -753,8 +827,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			buttonStyle.stretchWidth = false;
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
-			
-			if (GUILayout.Button("New Window", buttonStyle)) {
+
+			if (GUILayout.Button("New Window", buttonStyle) == true) {
 				
 				var scrollPos = FlowSystem.GetScrollPosition();
 				
@@ -764,7 +838,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			if (GUILayout.Button("New Container", buttonStyle)) {
+			if (GUILayout.Button("New Container", buttonStyle) == true) {
 				
 				var scrollPos = FlowSystem.GetScrollPosition();
 				
@@ -774,6 +848,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
+			if (GUILayout.Button("New Default Link", buttonStyle) == true) {
+				
+				var scrollPos = FlowSystem.GetScrollPosition();
+
+				var defaultLink = FlowSystem.CreateDefaultLink();
+				defaultLink.rect.x = scrollPos.x + this.position.width * 0.5f - defaultLink.rect.width * 0.5f;
+				defaultLink.rect.y = scrollPos.y + this.position.height * 0.5f - defaultLink.rect.height * 0.5f;
+
+			}
+			   
 			if (GUILayout.Button("Center Screen", buttonStyle)) {
 				
 				FlowSystem.SetScrollPosition(Vector2.one * -1f);
@@ -804,9 +888,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			GUILayout.Label("Current Data: " + AssetDatabase.GetAssetPath(this.cachedData), buttonStyle);
 
-			if ( GUILayout.Button( "Close", buttonStyle ) ) {
+			if (GUILayout.Button("Change", buttonStyle) == true) {
 				
-				CloseFlowData();
+				this.ChangeFlowData();
+
 			}
 
 			GUILayout.EndHorizontal();
@@ -818,7 +903,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		private void DrawNodeContainer(int id) {
-			
+
+			EditorGUIUtility.labelWidth = 65f;
+
 			GUI.enabled = !FlowSceneView.IsActive();
 
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
@@ -929,14 +1016,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
-			GUILayout.Label("Title:", GUILayout.Width(70f));
+			GUILayoutExt.LabelWithShadow("Title:", GUILayout.Width(EditorGUIUtility.labelWidth));
 			window.title = GUILayout.TextField(window.title);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			GUILayout.Label("Directory:", GUILayout.Width(70f));
+			GUILayoutExt.LabelWithShadow("Directory:", GUILayout.Width(EditorGUIUtility.labelWidth));
 			window.directory = GUILayout.TextField(window.directory);
 			GUILayout.EndHorizontal();
+
+			this.DrawTags(window);
 
 			var attaches = window.attaches.Count;
 			if (attaches == 0) {
@@ -950,6 +1039,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 			
 			GUI.enabled = true;
+
+			EditorGUIUtility.LookLikeControls();
 
 		}
 
@@ -982,6 +1073,227 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			if ((Event.current.button == 0) && (Event.current.type == EventType.MouseDown)) {
 
 				this.focusedGUIWindow = id;
+
+			}
+
+		}
+
+		private void DrawTagsPopup() {
+
+			if (this.showTagsPopup == false) return;
+
+			if (string.IsNullOrEmpty(this.tagCaption) == true) return;
+
+			var oldColor = GUI.color;
+
+			this.Repaint();
+			
+			var tagStyles = new GUIStyle[7] {
+				
+				new GUIStyle("sv_label_1"),
+				new GUIStyle("sv_label_2"),
+				new GUIStyle("sv_label_3"),
+				new GUIStyle("sv_label_4"),
+				new GUIStyle("sv_label_5"),
+				new GUIStyle("sv_label_6"),
+				new GUIStyle("sv_label_7")
+				
+			};
+
+			var tagStyle = tagStyles[0];
+			tagStyle.stretchWidth = false;
+			tagStyle.margin = new RectOffset(0, 0, 2, 2);
+
+			var shadow = new GUIStyle("ObjectPickerPreviewBackground");
+
+			var allTags = FlowSystem.GetTags();
+			if (allTags != null) {
+				
+				var window = FlowSystem.GetWindow(this.showTagsPopupId);
+
+				var topOffset = 15f;
+				var backTopOffset = 12f;
+				var offset = 5f;
+
+				var count = 0;
+				foreach (var tag in allTags) {
+					
+					if (tag.title.Contains(this.tagCaption) == true && window != null && window.tags.Contains(tag.id) == false) {
+
+						++count;
+
+					}
+
+				}
+
+				if (count > 0) {
+
+					var r = this.showTagsPopupRect;
+					var elementHeight = r.height + tagStyle.margin.top + tagStyle.margin.bottom;
+					
+					r.y += this.showTagsPopupRect.height * 2f + offset;
+					r.height = elementHeight * count + topOffset;
+
+					var scrollPos = FlowSystem.GetScrollPosition();
+
+					var drawRect = new Rect(r.x - scrollPos.x, r.y - scrollPos.y - topOffset, r.width, r.height);
+
+					tagStyle.fixedWidth = drawRect.width;
+
+					GUILayout.BeginArea(drawRect);
+					{
+						GUI.color = Color.black;
+						GUI.Label(new Rect(10f, backTopOffset, drawRect.width - 10f * 2f, drawRect.height - backTopOffset * 2f), string.Empty, shadow);
+
+						GUILayout.Space(topOffset);
+
+						GUI.color = oldColor;
+						foreach (var tag in allTags) {
+							
+							if (tag.title.Contains(this.tagCaption) == true && window != null && window.tags.Contains(tag.id) == false) {
+
+								var style = tagStyles[tag.color];
+								style.margin = tagStyle.margin;
+								style.fixedWidth = tagStyle.fixedWidth;
+
+								if (GUILayout.Button(tag.title, style) == true) {
+									
+									window.AddTag(tag);
+									
+								}
+								
+							}
+							
+						}
+					}
+					GUILayout.EndArea();
+
+				}
+
+			}
+
+			GUI.color = oldColor;
+
+		}
+
+		private bool showTagsPopup = false;
+		private Rect showTagsPopupRect;
+		private int showTagsPopupId;
+		private string tagCaption = string.Empty;
+		private void DrawTags(FlowWindow window) {
+			
+			var tagStyles = new GUIStyle[7] {
+				
+				new GUIStyle("sv_label_1"),
+				new GUIStyle("sv_label_2"),
+				new GUIStyle("sv_label_3"),
+				new GUIStyle("sv_label_4"),
+				new GUIStyle("sv_label_5"),
+				new GUIStyle("sv_label_6"),
+				new GUIStyle("sv_label_7")
+				
+			};
+
+			var tagCaptionStyle = new GUIStyle("sv_label_0");
+			tagCaptionStyle.fixedWidth = 60f;
+			tagCaptionStyle.stretchWidth = false;
+			
+			var tagStyleAdd = new GUIStyle("sv_label_3");
+			tagStyleAdd.stretchWidth = false;
+			
+			var changed = false;
+
+			GUILayout.BeginHorizontal();
+			{
+				GUILayoutExt.LabelWithShadow("Tags:", GUILayout.Width(EditorGUIUtility.labelWidth));
+
+				GUILayout.BeginHorizontal();
+				{
+					var tagCaption = string.Empty;
+					if (this.showTagsPopupId == window.id) tagCaption = this.tagCaption;
+
+					var isEnter = (Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.Return);
+
+					var newTagCaption = string.Empty;
+					var rect = new Rect();
+					GUILayout.BeginHorizontal();
+					{
+
+						var oldEnabled = GUI.enabled;
+						GUI.enabled = !string.IsNullOrEmpty(this.tagCaption) && (this.showTagsPopupId == window.id);
+						if ((GUILayout.Button(new GUIContent("+"), tagStyleAdd) == true || isEnter == true) && GUI.enabled == true) {
+							
+							FlowSystem.AddTag(window, new FlowTag(FlowSystem.GetData().GetNextTagId(), this.tagCaption));
+							this.tagCaption = string.Empty;
+							
+						}
+						GUI.enabled = oldEnabled;
+
+						newTagCaption = GUILayout.TextField(tagCaption, tagCaptionStyle);
+						rect = GUILayoutUtility.GetLastRect();
+
+					}
+					GUILayout.EndHorizontal();
+
+					if (tagCaption != newTagCaption) {
+						
+						this.showTagsPopupId = window.id;
+						this.tagCaption = newTagCaption;
+						
+						this.showTagsPopup = false;
+						changed = true;
+
+					}
+
+					if (this.showTagsPopupId == window.id && newTagCaption.Length > 0) {
+
+						// Show Tags Popup
+						var allTags = FlowSystem.GetTags();
+						if (allTags != null) {
+
+							this.showTagsPopup = true;
+							if (Event.current.type == EventType.Repaint) {
+
+								this.showTagsPopupRect = new Rect(window.rect.x + rect.x, window.rect.y + rect.y, rect.width, rect.height);
+
+							}
+
+							if (changed == true) this.Repaint();
+
+						}
+
+					}
+
+					GUILayout.FlexibleSpace();
+
+					foreach (var tag in window.tags) {
+
+						var tagInfo = FlowSystem.GetData().GetTag(tag);
+						if (tagInfo == null) {
+
+							window.tags.Remove(tag);
+							break;
+
+						}
+
+						if (GUILayout.Button(tagInfo.title, tagStyles[tagInfo.color]) == true) {
+
+							FlowSystem.RemoveTag(window, tagInfo);
+							break;
+
+						}
+
+					}
+
+				}
+				GUILayout.EndHorizontal();
+
+			}
+			GUILayout.EndHorizontal();
+
+			if (changed == true) {
+
+				this.Repaint();
 
 			}
 
@@ -1041,169 +1353,222 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private void DrawNodeWindow(int id) {
+		private void DrawWindowToolbar(FlowWindow window) {
 
-			this.UpdateFocus(id);
-			
-			var window = FlowSystem.GetWindow(id);
+			var id = window.id;
 
-			this.DrawStates(window.states, window);
-
-			GUI.enabled = !FlowSceneView.IsActive();
-			
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
-
 			if (this.waitForAttach == true) {
-
+				
 				if (id != this.currentAttachId) {
-
+					
 					var currentAttach = FlowSystem.GetWindow(this.currentAttachId);
 					//var attachTo = FlowSystem.GetWindow(id);
 					//var hasContainer = currentAttach.HasContainer();
-
+					
 					if (currentAttach.isContainer == true) {
-
-
-
+						
+						
+						
 					} else {
-
+						
 						if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
 							
 							if (GUILayout.Button("Detach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
 								
 								FlowSystem.Detach(this.currentAttachId, id, oneWay: !Event.current.shift);
 								if (!Event.current.shift) this.WaitForAttach(-1);
-
+								
 							}
-
+							
 						} else {
-
+							
 							if (GUILayout.Button("Attach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
-
+								
 								FlowSystem.Attach(this.currentAttachId, id, oneWay: !Event.current.shift);
 								if (!Event.current.shift) this.WaitForAttach(-1);
-
+								
 							}
-
+							
 						}
-
+						
 					}
-
-				} else {
-
-					if (GUILayout.Button("Cancel", buttonStyle) == true) {
-
-						this.WaitForAttach(-1);
-
-					}
-
-				}
-
-			} else {
-
-				if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
 					
-					this.ShowNotification(new GUIContent("Use Attach/Detach buttons to connect/disconnect the window"));
-					this.WaitForAttach(id);
+				} else {
+					
+					if (GUILayout.Button("Cancel", buttonStyle) == true) {
+						
+						this.WaitForAttach(-1);
+						
+					}
+					
+				}
+				
+			} else {
+				
+				if (window.isDefaultLink == false) {
+
+					if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
+						
+						this.ShowNotification(new GUIContent("Use Attach/Detach buttons to connect/disconnect the window"));
+						this.WaitForAttach(id);
+						
+					}
 
 				}
-
+				
 				if (GUILayout.Button("Destroy", buttonStyle) == true) {
-
+					
 					if (EditorUtility.DisplayDialog("Are you sure?", "Current window will be destroyed with all links", "Yes, destroy", "No") == true) {
-
+						
 						this.ShowNotification(new GUIContent("The window '" + window.title + "' was successfully destroyed"));
 						FlowSystem.DestroyWindow(id);
 						return;
-
+						
 					}
-
+					
 				}
 
 			}
-			
-			var isRoot = (FlowSystem.GetRootWindow() == id);
-			if (GUILayout.Toggle(isRoot, new GUIContent("R", "Set as root"), buttonStyle) != isRoot) {
 
-				if (isRoot == true) {
+			if (window.isDefaultLink == false) {
 
-					// Was as root
-					FlowSystem.SetRootWindow(-1);
-
-				} else {
-
-					// Was not as root
-					FlowSystem.SetRootWindow(id);
-
+				var isRoot = (FlowSystem.GetRootWindow() == id);
+				if (GUILayout.Toggle(isRoot, new GUIContent("R", "Set as root"), buttonStyle) != isRoot) {
+					
+					if (isRoot == true) {
+						
+						// Was as root
+						FlowSystem.SetRootWindow(-1);
+						
+					} else {
+						
+						// Was not as root
+						FlowSystem.SetRootWindow(id);
+						
+					}
+					
+					FlowSystem.Save();
+					
 				}
-
-				FlowSystem.Save();
 				
-			}
-			
-			var isDefault = FlowSystem.GetDefaultWindows().Contains(id);
-			if (GUILayout.Toggle(isDefault, new GUIContent("D", "Set as default"), buttonStyle) != isDefault) {
-
-				if (isDefault == true) {
-
-					// Was as default
-					FlowSystem.GetDefaultWindows().Remove(id);
-
-				} else {
-
-					// Was not as default
-					FlowSystem.GetDefaultWindows().Add(id);
-
+				var isDefault = FlowSystem.GetDefaultWindows().Contains(id);
+				if (GUILayout.Toggle(isDefault, new GUIContent("D", "Set as default"), buttonStyle) != isDefault) {
+					
+					if (isDefault == true) {
+						
+						// Was as default
+						FlowSystem.GetDefaultWindows().Remove(id);
+						
+					} else {
+						
+						// Was not as default
+						FlowSystem.GetDefaultWindows().Add(id);
+						
+					}
+					
+					FlowSystem.Save();
+					
 				}
-
-				FlowSystem.Save();
 
 			}
 
 			GUILayout.FlexibleSpace();
-
+			
 			var edit = false;
-			if (GUILayout.Button("Edit", buttonStyle) == true) {
+			if (window.isDefaultLink == false) {
 
-				if (window.compiled == false) {
-
-					this.ShowNotification(new GUIContent("You need to compile this window to use 'Edit' command"));
-
-				} else {
-
-					edit = true;
-
+				if (GUILayout.Button("Edit", buttonStyle) == true) {
+					
+					if (window.compiled == false) {
+						
+						this.ShowNotification(new GUIContent("You need to compile this window to use 'Edit' command"));
+						
+					} else {
+						
+						edit = true;
+						
+					}
+					
 				}
 
 			}
-
 			GUILayout.EndHorizontal();
 			
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Title:", GUILayout.Width(70f));
-			window.title = GUILayout.TextField(window.title);
-			GUILayout.EndHorizontal();
-			
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Directory:", GUILayout.Width(70f));
-			if (string.IsNullOrEmpty(window.directory) == true) window.directory = "";
-			window.directory = GUILayout.TextField(window.directory);
-			GUILayout.EndHorizontal();
-
-			this.DragWindow(headerOnly: false);
-
 			if (edit == true) {
-
+				
 				FlowSceneView.SetControl(this, window, this.OnItemProgress);
+				
+			}
+
+		}
+
+		private void DrawCompiledStatus(FlowWindow window) {
+			
+			var oldColor = GUI.color;
+			var style = new GUIStyle("U2D.dragDotDimmed");
+			var styleCompiled = new GUIStyle("U2D.dragDot");
+			
+			var elemWidth = style.fixedWidth - 3f;
+			
+			var posY = -1f;
+			var posX = -1f;
+
+			GUI.color = window.compiled ? Color.white : Color.red;
+			GUI.Label(new Rect(posX, posY, elemWidth, style.fixedHeight), new GUIContent(string.Empty, window.compiled ? "Compiled" : "Not compiled"), window.compiled ? styleCompiled : style);
+
+			GUI.color = oldColor;
+
+		}
+
+		private void DrawNodeWindow(int id) {
+
+			EditorGUIUtility.labelWidth = 65f;
+
+			this.UpdateFocus(id);
+			
+			var window = FlowSystem.GetWindow(id);
+
+			if (window.isDefaultLink == true) {
+				
+				this.DrawWindowToolbar(window);
+				this.DragWindow(headerOnly: false);
+
+			} else {
+
+				this.DrawStates(window.states, window);
+
+				GUI.enabled = !FlowSceneView.IsActive();
+
+				this.DrawWindowToolbar(window);
+
+				GUILayout.BeginHorizontal();
+				GUILayoutExt.LabelWithShadow("Title:", GUILayout.Width(EditorGUIUtility.labelWidth));
+				window.title = GUILayout.TextField(window.title);
+				GUILayout.EndHorizontal();
+				
+				GUILayout.BeginHorizontal();
+				GUILayoutExt.LabelWithShadow("Directory:", GUILayout.Width(EditorGUIUtility.labelWidth));
+				if (string.IsNullOrEmpty(window.directory) == true) window.directory = string.Empty;
+				window.directory = GUILayout.TextField(window.directory);
+				GUILayout.EndHorizontal();
+				
+				this.DrawTags(window);
+				
+				this.DrawCompiledStatus(window);
+
+				this.DragWindow(headerOnly: false);
+
+				if (GUI.changed == true) this.cachedData.isDirty = true;
+
+				GUI.enabled = true;
 
 			}
 
-			if (GUI.changed == true) this.cachedData.isDirty = true;
-
-			GUI.enabled = true;
+			EditorGUIUtility.LookLikeControls();
 
 		}
 		

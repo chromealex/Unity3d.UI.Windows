@@ -24,7 +24,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public Rect rect;
 		public List<int> attaches;
 		public bool isContainer = false;
+		public bool isDefaultLink = false;
 		public Color randomColor;
+		
+		public List<int> tags = new List<int>();
 
 		public bool compiled = false;
 		public string compiledDirectory = string.Empty;
@@ -34,19 +37,37 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 
-		public FlowWindow(int id, bool isContainer) {
+		public FlowWindow(int id, bool isContainer = false, bool isDefaultLink = false) {
 
 			this.states = new CompletedState[STATES_COUNT];
+			this.tags = new List<int>();
 
 			this.id = id;
 			this.attaches = new List<int>();
 			this.rect = new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 200f, 200f);
 			this.isContainer = isContainer;
+			this.isDefaultLink = isDefaultLink;
 			this.title = (this.isContainer == true ? "Container" : "Window " + this.id.ToString());
 			this.directory = (this.isContainer == true ? "ContainerDirectory" : "Window" + this.id.ToString() + "Directory");
 			this.randomColor = ColorHSV.GetDistinctColor();
 
 			this.compiled = false;
+
+		}
+
+		public void AddTag(FlowTag tag) {
+			
+			if (this.tags.Contains(tag.id) == false) {
+
+				this.tags.Add(tag.id);
+
+			}
+
+		}
+		
+		public void RemoveTag(FlowTag tag) {
+
+			this.tags.Remove(tag.id);
 
 		}
 
@@ -85,7 +106,27 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public GUIStyle GetEditorStyle(bool selected) {
 
-			if (this.isContainer == true) {
+			if (this.isDefaultLink == true) {
+
+				// Yellow
+
+				var defaultLinkStyle = new GUIStyle("flow node 4");
+				defaultLinkStyle.padding = new RectOffset(0, 0, 14, 1);
+				defaultLinkStyle.contentOffset = new Vector2(0f, -15f);
+				defaultLinkStyle.fontStyle = FontStyle.Bold;
+				defaultLinkStyle.alignment = TextAnchor.MiddleCenter;
+				defaultLinkStyle.normal.textColor = Color.white;
+				
+				var defaultLinkStyleSelected = new GUIStyle("flow node 4 on");
+				defaultLinkStyleSelected.padding = new RectOffset(0, 0, 14, 1);
+				defaultLinkStyleSelected.contentOffset = new Vector2(0f, -15f);
+				defaultLinkStyleSelected.fontStyle = FontStyle.Bold;
+				defaultLinkStyleSelected.alignment = TextAnchor.MiddleCenter;
+				defaultLinkStyleSelected.normal.textColor = Color.white;
+
+				return selected ? defaultLinkStyleSelected : defaultLinkStyle;
+
+			} else if (this.isContainer == true) {
 
 				var styleNormal = string.Empty;
 				//var styleSelected = string.Empty;
@@ -102,7 +143,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 					
 				}
 				
-				var containerStyle = new GUIStyle(GUI.skin.FindStyle(styleNormal));
+				var containerStyle = new GUIStyle(styleNormal);
 				containerStyle.padding = new RectOffset(0, 0, 16, 1);
 				containerStyle.contentOffset = new Vector2(0f, -15f);
 				containerStyle.fontStyle = FontStyle.Bold;
@@ -115,35 +156,35 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				var styleNormal = string.Empty;
 				var styleSelected = string.Empty;
 
-				if (this.compiled == true) {
+				//if (this.compiled == true) {
 
-					if (FlowSystem.GetRootWindow() == this.id) {
-						
-						// Root - Orange
-						styleNormal = "flow node 5";
-						styleSelected = "flow node 5 on";
+				if (FlowSystem.GetRootWindow() == this.id) {
+					
+					// Root - Orange
+					styleNormal = "flow node 5";
+					styleSelected = "flow node 5 on";
 
-					} else if (FlowSystem.GetDefaultWindows().Contains(this.id) == true) {
+				} else if (FlowSystem.GetDefaultWindows().Contains(this.id) == true) {
 
-						// Default - Cyan
-						styleNormal = "flow node 2";
-						styleSelected = "flow node 2 on";
-
-					} else {
-
-						// Compiled - Blue
-						styleNormal = "flow node 1";
-						styleSelected = "flow node 1 on";
-
-					}
+					// Default - Cyan
+					styleNormal = "flow node 2";
+					styleSelected = "flow node 2 on";
 
 				} else {
+
+					// Compiled - Blue
+					styleNormal = "flow node 1";
+					styleSelected = "flow node 1 on";
+
+				}
+
+				/*} else {
 
 					// Not Compiled - Gray
 					styleNormal = "flow node 0";
 					styleSelected = "flow node 0 on";
 
-				}
+				}*/
 
 				if (this.IsValidToCompile() == false) {
 

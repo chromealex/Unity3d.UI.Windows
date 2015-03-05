@@ -4,6 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
+	
+	[System.Serializable]
+	public class FlowTag {
+		
+		public int id;
+		public string title;
+		public int color;
+		
+		public FlowTag(int id, string title) {
+			
+			this.id = id;
+			this.title = title;
+			this.color = 0;
+			
+		}
+		
+	};
 
 	public class FlowData : ScriptableObject {
 
@@ -14,6 +31,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public List<FlowWindow> windows = new List<FlowWindow>();
 		public bool isDirty = false;
+
+		public List<FlowTag> tags = new List<FlowTag>();
 
 		//private Rect selectionRect;
 		private List<int> selected = new List<int>();
@@ -28,10 +47,50 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 		
+		public int GetNextTagId() {
+			
+			var maxId = 0;
+			foreach (var tag in this.tags) {
+				
+				if (tag.id > maxId) maxId = tag.id;
+				
+			}
+			
+			return maxId + 1;
+			
+		}
+
+		public FlowTag GetTag(int id) {
+
+			return this.tags.FirstOrDefault((t) => t.id == id);
+
+		}
+
+		public void AddTag(FlowWindow window, FlowTag tag) {
+
+			var contains = this.tags.Any((t) => t.title == tag.title);
+			if (contains == false) this.tags.Add(tag);
+
+			window.AddTag(tag);
+
+			this.isDirty = true;
+
+		}
+		
+		public void RemoveTag(FlowWindow window, FlowTag tag) {
+			
+			window.RemoveTag(tag);
+
+			this.isDirty = true;
+
+		}
+
 		public void SetRootWindow(int id) {
 			
 			this.rootWindow = id;
-			
+
+			this.isDirty = true;
+
 		}
 		
 		public int GetRootWindow() {
@@ -146,8 +205,23 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			}
 
+			this.isDirty = true;
+
 		}
 		
+		public FlowWindow CreateDefaultLink() {
+			
+			var newId = this.AllocateId();
+			var window = new FlowWindow(newId, isDefaultLink: true);
+			
+			this.windows.Add(window);
+			
+			this.isDirty = true;
+			
+			return window;
+			
+		}
+
 		public FlowWindow CreateWindow() {
 			
 			var newId = this.AllocateId();
