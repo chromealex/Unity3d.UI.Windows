@@ -10,13 +10,21 @@ using ME;
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowSystemEditor {
-
+		
 		public static Rect GetCenterRect(EditorWindow editorWindow, float width, float height) {
-
+			
 			var size = editorWindow.position;
-
+			
 			return new Rect(size.width * 0.5f - width * 0.5f, size.height * 0.5f - height * 0.5f, width, height);
-
+			
+		}
+		
+		public static Rect GetCenterRect(Rect rect, float width, float height) {
+			
+			var size = rect;
+			
+			return new Rect(size.width * 0.5f - width * 0.5f, size.height * 0.5f - height * 0.5f, width, height);
+			
 		}
 
 		public static Rect Scale(Rect realRect, Rect minMaxRect, Rect toPosition, Vector2 offset) {
@@ -140,7 +148,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.contentRect.height -= scrollSize;
 
 				var scrollPos = FlowSystem.GetScrollPosition();
-				if (scrollPos == -Vector2.one) scrollPos = new Vector2(this.contentRect.width * 0.5f - this.position.width * 0.5f, this.contentRect.height * 0.5f - this.position.height * 0.5f);
+				if (scrollPos == -Vector2.one) scrollPos = new Vector2(this.contentRect.width * 0.5f - this.scrollRect.width * 0.5f, this.contentRect.height * 0.5f - this.scrollRect.height * 0.5f);
 				FlowSystem.SetScrollPosition(GUI.BeginScrollView(this.scrollRect, scrollPos, this.contentRect));
 
 				this.DrawBackground();
@@ -363,7 +371,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var style = new GUIStyle(GUI.skin.button);
 
-				var rect = this.position;
+				var rect = this.scrollRect;
 				rect.x = 0f;
 				rect.y = 0f;
 
@@ -749,7 +757,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var color = Color.black;
 			color.a = backAlpha;
 			GUI.color = color;
-			GUI.Box(FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.position, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+			GUI.Box(FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
 
 			if (containers != null) {
 				
@@ -758,7 +766,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					color = container.randomColor;
 					color.a = elementAlpha;
 					GUI.color = color;
-					GUI.Box(FlowSystemEditor.Scale(container.rect, new Rect(0f, 0f, 10000f, 10000f), this.position, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+					GUI.Box(FlowSystemEditor.Scale(container.rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
 					
 				}
 				
@@ -774,7 +782,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					var rect = window.rect;
 					if (rect.height < 60f) rect.height = 60f;
-					GUI.Box(FlowSystemEditor.Scale(rect, new Rect(0f, 0f, 10000f, 10000f), this.position, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+					GUI.Box(FlowSystemEditor.Scale(rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
 					
 				}
 				
@@ -785,7 +793,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.color = color;
 
 			var scrollPos = FlowSystem.GetScrollPosition();
-			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.position.width, this.position.height), new Rect(0f, 0f, 10000f, 10000f), this.position, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width, this.scrollRect.height), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
 			
 			GUI.color = oldColor;
 
@@ -794,7 +802,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private FlowData cachedData;
 		private void DrawDataSelection() {
 
-			var rect = FlowSystemEditor.GetCenterRect(this, 300f, 100f);
+			var rect = FlowSystemEditor.GetCenterRect(this.scrollRect, 300f, 100f);
 
 			rect.height = 0f;
 			GUILayout.Window(0, rect, (id) => {
@@ -844,8 +852,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var scrollPos = FlowSystem.GetScrollPosition();
 				
 				var window = FlowSystem.CreateWindow();
-				window.rect.x = scrollPos.x + this.position.width * 0.5f - window.rect.width * 0.5f;
-				window.rect.y = scrollPos.y + this.position.height * 0.5f - window.rect.height * 0.5f;
+				window.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - window.rect.width * 0.5f;
+				window.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - window.rect.height * 0.5f;
 				
 			}
 			
@@ -854,8 +862,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var scrollPos = FlowSystem.GetScrollPosition();
 				
 				var container = FlowSystem.CreateContainer();
-				container.rect.x = scrollPos.x + this.position.width * 0.5f - container.rect.width * 0.5f;
-				container.rect.y = scrollPos.y + this.position.height * 0.5f - container.rect.height * 0.5f;
+				container.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - container.rect.width * 0.5f;
+				container.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - container.rect.height * 0.5f;
 				
 			}
 			
@@ -864,8 +872,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var scrollPos = FlowSystem.GetScrollPosition();
 
 				var defaultLink = FlowSystem.CreateDefaultLink();
-				defaultLink.rect.x = scrollPos.x + this.position.width * 0.5f - defaultLink.rect.width * 0.5f;
-				defaultLink.rect.y = scrollPos.y + this.position.height * 0.5f - defaultLink.rect.height * 0.5f;
+				defaultLink.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - defaultLink.rect.width * 0.5f;
+				defaultLink.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - defaultLink.rect.height * 0.5f;
 
 			}
 			   
@@ -1628,7 +1636,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			var zOffset = 0f;
+			var zOffset = -10f;
 
 			if (doubleSide == true) {
 
