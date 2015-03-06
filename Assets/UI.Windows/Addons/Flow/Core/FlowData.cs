@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +24,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 	public class FlowData : ScriptableObject {
 
+		public string namespaceName;
+
 		public Vector2 scrollPos = new Vector2(-1f, -1f);
 
 		public int rootWindow;
@@ -36,6 +38,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		//private Rect selectionRect;
 		private List<int> selected = new List<int>();
+
+		void OnEnable() {
+
+			namespaceName = string.IsNullOrEmpty( namespaceName ) ? this.name + ".UI" : namespaceName;
+		}
 
 		public void Save() {
 
