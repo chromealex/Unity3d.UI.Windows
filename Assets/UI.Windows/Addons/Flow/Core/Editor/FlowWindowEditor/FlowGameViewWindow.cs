@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows;
+using UnityEditor.UI.Windows.Plugins.DevicePreview;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
@@ -345,7 +346,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			this.scrollPosition = EditorGUILayout.BeginScrollView(this.scrollPosition, false, false);
 			
 			var i = 0;
-			var directories = FlowDevicesParser.manufacturerToDevices;
+			var directories = Parser.manufacturerToDevices;
 			if (this.directoriesFoldOut.Count != directories.Count) {
 
 				this.directoriesFoldOut = new List<bool>();

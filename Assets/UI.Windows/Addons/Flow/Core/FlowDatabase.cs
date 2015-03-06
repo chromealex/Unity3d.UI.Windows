@@ -125,9 +125,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				var source = ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject;
 				var prefab = source.GetComponent<WindowLayout>();
 				instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowLayout;
-				
-				var name = window.compiledNamespace + "." + window.compiledClassName;
-				instance = FlowDatabase.ReplaceComponents<FlowWindowLayoutTemplate, WindowLayout>(instance as FlowWindowLayoutTemplate, System.Type.GetType(name));
+
+				instance = FlowDatabase.ReplaceComponents<FlowWindowLayoutTemplate, WindowLayout>(instance as FlowWindowLayoutTemplate, typeof(WindowLayout));
 				
 				FlowDatabase.SaveLayout(instance);
 

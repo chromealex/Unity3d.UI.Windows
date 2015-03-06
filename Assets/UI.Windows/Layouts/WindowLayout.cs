@@ -24,6 +24,9 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly]
 		public List<WindowLayoutElement> elements = new List<WindowLayoutElement>();
 
+		public bool showGrid = false;
+		public Vector2 gridSize = Vector2.one * 5f;
+
 		[HideInInspector][SerializeField]
 		public Canvas canvas;
 		[HideInInspector][SerializeField]

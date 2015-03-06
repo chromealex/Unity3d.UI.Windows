@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace UnityEditor.UI.Windows.Plugins.Flow {
+namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 	public class DeviceInfo {
 		
@@ -61,7 +61,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	};
 
-	public class FlowDevicesParser {
+	public class Parser {
 
 		public static List<DeviceInfo> popular = new List<DeviceInfo>();
 		public static List<DeviceInfo> p720 = new List<DeviceInfo>();
@@ -69,14 +69,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public static List<DeviceInfo> p1440 = new List<DeviceInfo>();
 		public static Dictionary<string, List<DeviceInfo>> manufacturerToDevices = new Dictionary<string, List<DeviceInfo>>();
 
-		static FlowDevicesParser() {
+		static Parser() {
 
-			FlowDevicesParser.manufacturerToDevices.Clear();
+			Parser.manufacturerToDevices.Clear();
 
-			FlowDevicesParser.Parse_INTERNAL("Popular", FlowDevicesParser.popular, ParseDeviceResolutionType.INCHES);
-			//FlowDevicesParser.Parse_INTERNAL("720-800", FlowDevicesParser.p720, ParseDeviceResolutionType.PPI);
-			//FlowDevicesParser.Parse_INTERNAL("1080", FlowDevicesParser.p1080, ParseDeviceResolutionType.PPI);
-			//FlowDevicesParser.Parse_INTERNAL("1440", FlowDevicesParser.p1440, ParseDeviceResolutionType.PPI);
+			Parser.Parse_INTERNAL("Popular", Parser.popular, ParseDeviceResolutionType.INCHES);
+			//Parser.Parse_INTERNAL("720-800", Parser.p720, ParseDeviceResolutionType.PPI);
+			//Parser.Parse_INTERNAL("1080", Parser.p1080, ParseDeviceResolutionType.PPI);
+			//Parser.Parse_INTERNAL("1440", Parser.p1440, ParseDeviceResolutionType.PPI);
 
 		}
 
@@ -84,7 +84,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			output.Clear();
 
-			var data = Resources.Load("UI.Windows/Flow/Devices/" + file) as TextAsset;
+			var data = Resources.Load("UI.Windows/DevicePreview/" + file) as TextAsset;
 			if (data != null) {
 
 				var lines = data.text.Split('\n');
@@ -123,7 +123,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						} else if (type == ParseDeviceResolutionType.INCHES) {
 
-							device.ppi = FlowDevicesParser.ConvertInchesToPPI(float.Parse(info[3]), device.width, device.height);
+							device.ppi = Parser.ConvertInchesToPPI(float.Parse(info[3]), device.width, device.height);
 
 						}
 
@@ -131,13 +131,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					output.Add(device);
 					
-					if (FlowDevicesParser.manufacturerToDevices.ContainsKey(device.manufacturer) == true) {
+					if (Parser.manufacturerToDevices.ContainsKey(device.manufacturer) == true) {
 						
-						FlowDevicesParser.manufacturerToDevices[device.manufacturer].Add(device);
+						Parser.manufacturerToDevices[device.manufacturer].Add(device);
 						
 					} else {
 						
-						FlowDevicesParser.manufacturerToDevices.Add(device.manufacturer, new List<DeviceInfo>() { device });
+						Parser.manufacturerToDevices.Add(device.manufacturer, new List<DeviceInfo>() { device });
 						
 					}
 

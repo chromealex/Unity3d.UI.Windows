@@ -40,18 +40,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowSystemEditorWindow : EditorWindowExt {
 		
-		[MenuItem( "Assets/Open Flow Editor", validate = true )]
+		[MenuItem( "Assets/Open In Flow Editor", validate = true )]
 		private static bool ContextMenuValidate() {
 
 			return Selection.activeObject is FlowData;
 		}
 
 		[MenuItem( "Assets/Open Flow Editor" )]
-		[MenuItem( "Window/UI.Windows Flow" )]
+		[MenuItem( "Window/UI.Windows: Flow" )]
 		static void ShowEditorFromContextMenu() {
 
 			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
-			editor.title = "Windows Flow";
+			editor.title = "UI.Windows: Flow";
 			editor.autoRepaintOnSceneChange = true;
 
 			var selectedObject = Selection.activeObject as FlowData;
@@ -63,11 +63,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		[MenuItem("Window/UI.Windows Flow")]
+		[MenuItem("Window/UI.Windows: Flow")]
 		static void ShowEditor() {
 
 			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
-			editor.title = "Windows Flow";
+			editor.title = "UI.Windows: Flow";
 			editor.autoRepaintOnSceneChange = true;
 
 		}
@@ -103,16 +103,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private const float SETTINGS_WIDTH = 250f;
+		private const float TOOLBAR_HEIGHT = 18f;
 
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
 			
-			var draw = !FlowSceneView.IsActive();
+			//var draw = !FlowSceneView.IsActive();
 
-			if (draw == true) {
+			//if (draw == true) {
 
-				GUI.enabled = !FlowSceneView.IsActive();
+			GUI.enabled = true;//!FlowSceneView.IsActive();
 
 				if (this._background == null) this._background = Resources.Load("UI.Windows/Flow/Background") as Texture2D;
 
@@ -120,8 +121,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var oldEnabled = GUI.enabled;
 				GUI.enabled = FlowSystem.HasData() && GUI.enabled;
-				var toolbarHeight = this.DrawToolbar();
+				this.DrawToolbar();
 				GUI.enabled = oldEnabled;
+				
+				this.DrawSettings(TOOLBAR_HEIGHT);
 
 				var hasData = FlowSystem.HasData();
 
@@ -136,9 +139,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				this.scrollRect = this.position;
 				this.scrollRect.x = SETTINGS_WIDTH;
-				this.scrollRect.y = toolbarHeight;
+				this.scrollRect.y = TOOLBAR_HEIGHT;
 				this.scrollRect.width -= SETTINGS_WIDTH;
-				this.scrollRect.height -= toolbarHeight;
+				this.scrollRect.height -= TOOLBAR_HEIGHT;
 
 				this.contentRect = this.position;
 				this.contentRect.x = 0f;
@@ -162,7 +165,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					this.EndWindows();
 
 				} else {
-					
+
 					this.tempAttaches.Clear();
 					foreach (var window in windows) {
 						
@@ -339,8 +342,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						}
 
 					}
-					
-					this.DrawSettings();
 
 					this.EndWindows();
 
@@ -361,13 +362,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				this.DrawTagsPopup();
 
-				this.DragBackground(toolbarHeight);
+				this.DragBackground(TOOLBAR_HEIGHT);
 
 				GUI.enabled = true;
 
-			}
+			//}
 
-			if (FlowSceneView.IsActive() == true) {
+			/*if (FlowSceneView.IsActive() == true) {
 
 				var style = new GUIStyle(GUI.skin.button);
 
@@ -388,7 +389,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				GUI.color = oldColor;
 
-			}
+			}*/
 
 		}
 		
@@ -452,14 +453,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Vector2 settingsWindowScroll;
 		private ReorderableList defaultWindows;
 		private ReorderableList tagsList;
-		private void DrawSettings() {
+		private void DrawSettings(float offsetY) {
 
-			var scrollPos = FlowSystem.GetScrollPosition();
+			//var scrollPos = FlowSystem.GetScrollPosition();
 
-			var wRect = new Rect(10f + scrollPos.x, 20f + scrollPos.y, 200f, 200f);
-			GUI.Window(-1, wRect, (id) => {
+			//var wRect = new Rect(10f + scrollPos.x, 20f + scrollPos.y, 200f, 200f);
+			//GUI.Window(-1, wRect, (id) => {
 				
-				if (FlowSystem.HasData() == false) return;
+			if (FlowSystem.HasData() == false) return;
+
+			var boxStyle = new GUIStyle("AnimationCurveEditorBackground");
+			boxStyle.padding = new RectOffset(10, 10, 10, 10);
+
+			GUILayout.BeginArea(new Rect(0f, offsetY, SETTINGS_WIDTH, this.position.height - offsetY), boxStyle);
+			{
+				
+				//var buttonStyle = new GUIStyle(EditorStyles.miniButton);
+				//this.DrawToolbar(buttonStyle);
 
 				this.settingsWindowScroll = GUILayout.BeginScrollView(this.settingsWindowScroll, false, false);
 
@@ -558,20 +568,47 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				if (this.tagsList != null) this.tagsList.DoLayoutList();
 				#endregion
-
+				
 				#region NAMESPACE
+				
+				GUILayout.Label("Compiler", EditorStyles.boldLabel);
 
-				GUILayout.Label( "Namespace", EditorStyles.boldLabel );
+				EditorGUIUtility.labelWidth = 70f;
 
-				FlowSystem.GetData().namespaceName = GUILayout.TextField( FlowSystem.GetData().namespaceName );
+				var namespaceName = EditorGUILayout.TextField("Namespace: ", FlowSystem.GetData().namespaceName);
+				if (namespaceName != FlowSystem.GetData().namespaceName) {
 
+					FlowSystem.GetData().namespaceName = namespaceName;
+					FlowSystem.Save();
+
+				}
+
+				EditorGUIUtility.LookLikeControls();
+
+				#endregion
+				
+				#region WINDOW EDITOR
+				
+				GUILayout.Label("Window Editor", EditorStyles.boldLabel);
+				/*
+				var editorWindowAsPopup = GUILayout.Toggle(FlowSystem.GetData().editorWindowAsPopup, "Show as popup");
+				if (editorWindowAsPopup != FlowSystem.GetData().editorWindowAsPopup) {
+
+					FlowSystem.GetData().editorWindowAsPopup = editorWindowAsPopup;
+					FlowSystem.Save();
+
+				}
+				*/
 				#endregion
 
 				GUILayout.EndScrollView();
 
-			}, "Settings");
+			}
+			GUILayout.EndArea();
 
-			GUI.BringWindowToFront(-1);
+			//}, "Settings");
+
+			//GUI.BringWindowToFront(-1);
 
 		}
 
@@ -839,41 +876,46 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private float DrawToolbar() {
+		private void CreateNewItem(System.Func<FlowWindow> predicate) {
+			
+			var scrollPos = FlowSystem.GetScrollPosition();
+			
+			var window = predicate();
+			window.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - window.rect.width * 0.5f;
+			window.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - window.rect.height * 0.5f;
 
-			var toolbarHeight = 0f;
+		}
+		
+		private void DrawToolbar() {
+
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
-
+			
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
 
+			this.DrawToolbar(buttonStyle);
+			
+			GUILayout.EndHorizontal();
+
+		}
+
+		private void DrawToolbar(GUIStyle buttonStyle) {
+
 			if (GUILayout.Button("New Window", buttonStyle) == true) {
-				
-				var scrollPos = FlowSystem.GetScrollPosition();
-				
-				var window = FlowSystem.CreateWindow();
-				window.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - window.rect.width * 0.5f;
-				window.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - window.rect.height * 0.5f;
-				
+
+				this.CreateNewItem(() => FlowSystem.CreateWindow());
+
 			}
 			
 			if (GUILayout.Button("New Container", buttonStyle) == true) {
 				
-				var scrollPos = FlowSystem.GetScrollPosition();
-				
-				var container = FlowSystem.CreateContainer();
-				container.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - container.rect.width * 0.5f;
-				container.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - container.rect.height * 0.5f;
-				
+				this.CreateNewItem(() => FlowSystem.CreateContainer());
+
 			}
 			
 			if (GUILayout.Button("New Default Link", buttonStyle) == true) {
 				
-				var scrollPos = FlowSystem.GetScrollPosition();
-
-				var defaultLink = FlowSystem.CreateDefaultLink();
-				defaultLink.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - defaultLink.rect.width * 0.5f;
-				defaultLink.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - defaultLink.rect.height * 0.5f;
+				this.CreateNewItem(() => FlowSystem.CreateDefaultLink());
 
 			}
 			   
@@ -913,19 +955,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			GUILayout.EndHorizontal();
-
-			toolbarHeight = GUILayoutUtility.GetLastRect().height;
-
-			return toolbarHeight;
-
 		}
 		
 		private void DrawNodeContainer(int id) {
 
 			EditorGUIUtility.labelWidth = 65f;
 
-			GUI.enabled = !FlowSceneView.IsActive();
+			GUI.enabled = true;//!FlowSceneView.IsActive();
 
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
@@ -1065,7 +1101,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private void DragWindow(bool headerOnly) {
 			
-			GUI.enabled = !FlowSceneView.IsActive();
+			GUI.enabled = true;//!FlowSceneView.IsActive();
 			if (GUI.enabled == false) return;
 
 			if (Event.current.button != 2) {
@@ -1498,7 +1534,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.FlexibleSpace();
 			
 			var edit = false;
-			if (window.isDefaultLink == false) {
+			if (window.isDefaultLink == false && FlowSceneView.IsActive() == false) {
 
 				if (GUILayout.Button("Edit", buttonStyle) == true) {
 					
@@ -1527,13 +1563,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private void DrawCompiledStatus(FlowWindow window) {
 
-			if (window.compiled == true) {
+			if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
 
-				if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
-
-					window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledScreenName + ".cs");
-
-				}
+				window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledClassName + ".cs");
 
 			}
 
@@ -1570,7 +1602,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				this.DrawStates(window.states, window);
 
-				GUI.enabled = !FlowSceneView.IsActive();
+				GUI.enabled = true;//!FlowSceneView.IsActive();
 
 				this.DrawWindowToolbar(window);
 
@@ -1601,10 +1633,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 		
-		private float itemProgress;
+		//private float itemProgress;
 		public void OnItemProgress(float value) {
 
-			this.itemProgress = value;
+			//this.itemProgress = value;
 			this.Repaint();
 
 		}

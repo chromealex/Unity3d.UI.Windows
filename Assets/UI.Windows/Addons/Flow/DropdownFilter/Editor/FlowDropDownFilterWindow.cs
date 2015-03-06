@@ -76,28 +76,34 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.Box(rect, string.Empty, box);
 
 			this.scrollPos = GUILayout.BeginScrollView(this.scrollPos, false, true);
+			{
 
-			GUILayout.BeginVertical(box);
+				GUILayout.BeginVertical(box);
+				{
 
-			foreach (var item in this.items) {
+					foreach (var item in this.items) {
 
-				if (item == null) continue;
+						if (item == null) continue;
 
-				GUILayout.BeginVertical(origBox);
+						GUILayout.BeginVertical(origBox);
+						{
 
-				if (GUILayout.Button(item.name, style) == true) {
+							if (GUILayout.Button(item.name, style) == true) {
 
-					this.onSelect(item);
+								this.onSelect(item);
+
+							}
+							this.onEveryGUI(item);
+
+						}
+						GUILayout.EndVertical();
+
+					}
 
 				}
-				this.onEveryGUI(item);
-
 				GUILayout.EndVertical();
 
 			}
-
-			GUILayout.EndVertical();
-
 			GUILayout.EndScrollView();
 
 		}

@@ -33,7 +33,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		internal FlowHierarchyWindow hierarchy;
 		internal FlowGameViewWindow gameView;
 
+		public bool isLocked = false;
+
 		public FlowSceneItem(FlowSystemEditorWindow rootWindow, FlowWindow window, AnimatedValues.AnimFloat progressValue) {
+
+			this.isLocked = false;
 
 			this.rootWindow = rootWindow;
 			this.window = window;
@@ -61,24 +65,24 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.view.position = popupRect;
 			this.view.rootWindow = rootWindow;
 			
-			this.inspector = FlowInspectorWindow.CreateInstance<FlowInspectorWindow>();
+			/*this.inspector = FlowInspectorWindow.CreateInstance<FlowInspectorWindow>();
 			this.inspector.position = popupRect;
 			this.inspector.rootWindow = rootWindow;
 			this.inspector.Repaint();
 			this.inspector.Focus();
 			
-			this.hierarchy = FlowInspectorWindow.CreateInstance<FlowHierarchyWindow>();
+			this.hierarchy = FlowHierarchyWindow.CreateInstance<FlowHierarchyWindow>();
 			this.hierarchy.position = popupRect;
 			this.hierarchy.rootWindow = rootWindow;
 			this.hierarchy.Repaint();
-			this.hierarchy.Focus();
+			this.hierarchy.Focus();*/
 
 			this.Show();
 
-			this.inspector.Repaint();
-			this.inspector.Focus();
-			this.hierarchy.Repaint();
-			this.hierarchy.Focus();
+			//this.inspector.Repaint();
+			//this.inspector.Focus();
+			//this.hierarchy.Repaint();
+			//this.hierarchy.Focus();
 			this.view.Repaint();
 			this.view.Focus();
 
@@ -92,8 +96,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			progressValue.valueChanged.AddListener(() => {
 				
 				this.view.DrawProgress(progressValue.value);
-				this.inspector.DrawProgress(progressValue.value);
-				this.hierarchy.DrawProgress(progressValue.value);
+				//this.inspector.DrawProgress(progressValue.value);
+				//this.hierarchy.DrawProgress(progressValue.value);
 
 				if (progressValue.value == progressValue.target) {
 					
@@ -115,9 +119,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			SceneView.onSceneGUIDelegate -= this.OnGUI;
 			SceneView.onSceneGUIDelegate += this.OnGUI;
 
-			if (this.view != null) this.view.ShowView();
 			if (this.inspector != null) this.inspector.ShowView();
 			if (this.hierarchy != null) this.hierarchy.ShowView();
+			if (this.view != null) this.view.ShowView();
 
 		}
 
@@ -149,8 +153,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				progressValue.valueChanged.AddListener(() => {
 					
 					this.view.DrawProgress(progressValue.value);
-					this.inspector.DrawProgress(progressValue.value);
-					this.hierarchy.DrawProgress(progressValue.value);
+					//this.inspector.DrawProgress(progressValue.value);
+					//this.hierarchy.DrawProgress(progressValue.value);
 
 					if (progressValue.value == progressValue.target) {
 
@@ -864,54 +868,62 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						var oldColor = GUI.color;
 
 						GUILayout.BeginVertical(GUI.skin.box);
-						
-						GUILayout.BeginHorizontal();
-						GUILayout.Label(moduleInfo.moduleSource.name, EditorStyles.miniButtonLeft);
-						GUI.color = Color.red;
-						if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.Width(30f)) == true) {
+						{
 
-							screen.modules.RemoveModule(moduleInfo);
-							this.isScreenDirty = true;
-							return;
+							GUILayout.BeginHorizontal();
+							{
+								GUILayout.Label(moduleInfo.moduleSource.name, EditorStyles.miniButtonLeft);
+								GUI.color = Color.red;
+								if (GUILayout.Button("X", EditorStyles.miniButtonRight, GUILayout.Width(30f)) == true) {
+
+									screen.modules.RemoveModule(moduleInfo);
+									this.isScreenDirty = true;
+									break;
+
+								}
+								GUI.color = oldColor;
+							}
+							GUILayout.EndHorizontal();
+								
+							GUILayout.BeginHorizontal();
+							{
+								GUILayout.Label(moduleInfo.moduleSource.comment, commentStyle);
+							}
+							GUILayout.EndHorizontal();
+								
+							GUILayout.BeginVertical();
+							{
+								this.foldoutModules = EditorGUILayout.Foldout(this.foldoutModules, "Properties", EditorStyles.foldout);
+								if (this.foldoutModules == true) {
+
+									EditorGUIUtility.labelWidth = 100f;
+									
+									EditorGUILayout.HelpBox("Sorting Order - it's SiblibngIndex() of transform. Sorting order always must have more than zero values.", MessageType.Info);
+									var sortingOrder = EditorGUILayout.IntField("Sorting Order:", moduleInfo.sortingOrder, GUILayout.Width(width));
+									if (sortingOrder < 0) sortingOrder = 0;
+									if (sortingOrder != moduleInfo.sortingOrder) {
+										
+										this.isScreenDirty = true;
+										moduleInfo.sortingOrder = sortingOrder;
+										
+									}
+									
+									EditorGUIUtility.labelWidth = 140f;
+									
+									EditorGUILayout.HelpBox("To set SiblingIndex() lower than zero use this option.", MessageType.Info);
+									var backgroundLayer = EditorGUILayout.Toggle("Is Background Layer:", moduleInfo.backgroundLayer, GUILayout.Width(width));
+									if (backgroundLayer != moduleInfo.backgroundLayer) {
+										
+										this.isScreenDirty = true;
+										moduleInfo.backgroundLayer = backgroundLayer;
+										
+									}
+
+								}
+							}
+							GUILayout.EndHorizontal();
 
 						}
-						GUI.color = oldColor;
-						GUILayout.EndHorizontal();
-						
-						GUILayout.BeginHorizontal();
-						GUILayout.Label(moduleInfo.moduleSource.comment, commentStyle);
-						GUILayout.EndHorizontal();
-						
-						GUILayout.BeginVertical();
-						this.foldoutModules = EditorGUILayout.Foldout(this.foldoutModules, "Properties", EditorStyles.foldout);
-						if (this.foldoutModules == true) {
-
-							EditorGUIUtility.labelWidth = 100f;
-							
-							EditorGUILayout.HelpBox("Sorting Order - it's SiblibngIndex() of transform. Sorting order always must have more than zero values.", MessageType.Info);
-							var sortingOrder = EditorGUILayout.IntField("Sorting Order:", moduleInfo.sortingOrder, GUILayout.Width(width));
-							if (sortingOrder < 0) sortingOrder = 0;
-							if (sortingOrder != moduleInfo.sortingOrder) {
-								
-								this.isScreenDirty = true;
-								moduleInfo.sortingOrder = sortingOrder;
-								
-							}
-							
-							EditorGUIUtility.labelWidth = 140f;
-							
-							EditorGUILayout.HelpBox("To set SiblingIndex() lower than zero use this option.", MessageType.Info);
-							var backgroundLayer = EditorGUILayout.Toggle("Is Background Layer:", moduleInfo.backgroundLayer, GUILayout.Width(width));
-							if (backgroundLayer != moduleInfo.backgroundLayer) {
-								
-								this.isScreenDirty = true;
-								moduleInfo.backgroundLayer = backgroundLayer;
-								
-							}
-
-						}
-						GUILayout.EndHorizontal();
-
 						GUILayout.EndVertical();
 
 					}

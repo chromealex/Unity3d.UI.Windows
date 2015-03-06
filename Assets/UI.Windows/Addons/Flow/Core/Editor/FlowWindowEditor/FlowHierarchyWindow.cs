@@ -29,7 +29,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 		
 		private GameObject lastSelected;
 		private GameObject currentSelected;
-		
+
+		private bool isLocked;
+		private bool pinned = true;
+
 		public void OnSelected(GameObject go) {
 			
 			this.Repaint();
@@ -38,11 +41,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 		
 		public void ShowView() {
 			
-			this.ShowPopup();
+			this.isLocked = false;//!FlowSystem.GetData().editorWindowAsPopup;
+			if (this.isLocked == true) {
+				
+				this.ShowPopup();
+				
+			} else {
+				
+				this.ShowUtility();
+				
+			}
+
 			this.hided = false;
 			
 			this.minSize = new Vector2(this.minSize.x, 1f);
 			this.autoRepaintOnSceneChange = true;
+			
+			this.UpdateSize(1f);
 
 		}
 		
@@ -52,6 +67,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			
 		}
 		
+		public void UpdateSize(float progress) {
+			
+			var popupOffset = FlowSceneItem.POPUP_OFFSET;
+			var margin = FlowSceneItem.POPUP_MARGIN;
+			this.popupSize = new Vector2((this.rootWindow.position.width - popupOffset * 2f) * 0.3f, (this.rootWindow.position.height - popupOffset * 2f) * progress);
+			this.popupSize.x = Mathf.Clamp(this.popupSize.x, MIN_WIDTH + margin, MAX_WIDTH);
+			this.popupRect = new Rect(this.rootWindow.position.x + this.rootWindow.position.width - popupOffset - this.popupSize.x + margin, this.rootWindow.position.y + popupOffset, this.popupSize.x - margin, this.popupSize.y);
+			
+			this.position = this.popupRect;
+
+		}
+
 		new public void Update() {
 
 			base.Update();
@@ -65,26 +92,45 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 				this.lastSelected = this.currentSelected;
 				
 			}
+			
+			if (this.isLocked == true) {
 
-			if (this.hided == true) {
+				if (this.hided == true) {
+					
+					this.minSize = Vector2.zero;
+					this.popupRect = new Rect(0f, 0f, 1f, 1f);
+
+				} else {
+					
+					this.UpdateSize(this.progress);
+
+				}
 				
-				this.minSize = Vector2.zero;
-				this.popupRect = new Rect(0f, 0f, 1f, 1f);
+				this.position = this.popupRect;
 
 			} else {
 
-				var progress = this.progress;
+				if (this.pinned == true) {
 
-				var popupOffset = FlowSceneItem.POPUP_OFFSET;
-				var margin = FlowSceneItem.POPUP_MARGIN;
-				this.popupSize = new Vector2((this.rootWindow.position.width - popupOffset * 2f) * 0.3f, (this.rootWindow.position.height - popupOffset * 2f) * progress);
-				this.popupSize.x = Mathf.Clamp(this.popupSize.x, MIN_WIDTH + margin, MAX_WIDTH);
-				this.popupRect = new Rect(this.rootWindow.position.x + this.rootWindow.position.width - popupOffset - this.popupSize.x + margin, this.rootWindow.position.y + popupOffset, this.popupSize.x - margin, this.popupSize.y);
+					this.UpdateSize(this.progress);
+
+				}
+
+				var pinnedDistance = 10f;
+
+				// snap to SceneView
+				if (Vector2.Distance(new Vector2(this.rootWindow.position.x + this.rootWindow.position.width, this.rootWindow.position.y), new Vector2(this.position.x, this.position.y)) < pinnedDistance) {
+
+					this.pinned = true;
+
+				} else {
+
+					this.pinned = false;
+
+				}
 
 			}
 
-			this.position = this.popupRect;
-			
 			if (FlowSceneView.recompileChecker == null) {
 				
 				this.Close();

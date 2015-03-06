@@ -10,7 +10,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 	public class FlowChooserFilterWindow : EditorWindow {
 		
 		private EditorWindow root;
-		
+		private bool isLocked;
+
 		private System.Action<Component> onSelect;
 		private System.Action<Component> onEveryGUI;
 		private List<Component> items = new List<Component>();
@@ -21,8 +22,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var editor = FlowChooserFilterWindow.CreateInstance<FlowChooserFilterWindow>();
 			editor.title = "UI.Windows Flow Filter";
-			editor.ShowPopup();
 			editor.position = new Rect(0f, 0f, 1f, 1f);
+
+			editor.isLocked = false;
+			if (editor.isLocked == true) {
+
+				editor.ShowPopup();
+
+			} else {
+
+				editor.ShowUtility();
+
+			}
 
 			editor.root = root;
 
@@ -41,6 +52,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			editor.Scan<T>(strongType, "CACHE" + strongType.ToString());
 
+			editor.UpdateSize();
 			editor.Focus();
 
 		}
@@ -74,10 +86,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void Update() {
-
+		public void UpdateSize() {
+			
 			var offset = FlowSceneItem.POPUP_OFFSET + 50f;
 			this.position = new Rect(this.root.position.x + offset, this.root.position.y + offset, this.root.position.width - offset * 2f, this.root.position.height - offset * 2f);
+
+		}
+
+		public void Update() {
+
+			if (this.isLocked == true) {
+
+				this.UpdateSize();
+
+			}
 
 			if (FlowSceneView.recompileChecker == null) this.Close();
 
@@ -114,62 +136,65 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				{
 
 					var xCount = Mathf.FloorToInt(this.position.width / width);
-					
-					style.fixedWidth = width;
-					style.fixedHeight = height;
-					style.stretchWidth = false;
-					style.stretchHeight = false;
+					if (xCount > 0) {
 
-					var i = 0;
-					foreach (var item in this.items) {
+						style.fixedWidth = width;
+						style.fixedHeight = height;
+						style.stretchWidth = false;
+						style.stretchHeight = false;
 
-						if (item == null) continue;
+						var i = 0;
+						foreach (var item in this.items) {
 
-						if (i % xCount == 0) {
+							if (item == null) continue;
 
-							if (i != 0) GUILayout.EndHorizontal();
-							GUILayout.BeginHorizontal();
+							if (i % xCount == 0) {
 
-						}
+								if (i != 0) GUILayout.EndHorizontal();
+								GUILayout.BeginHorizontal();
 
-						GUILayout.BeginVertical(itemBox, GUILayout.Width(width), GUILayout.Height(height));
-						{
-
-							if (GUILayout.Button(string.Empty, style) == true) {
-								
-								this.onSelect(item);
-								
 							}
 
-							var lastRect = GUILayoutUtility.GetLastRect();
-							lastRect.width = width;
-							lastRect.height = height;
-
+							GUILayout.BeginVertical(itemBox, GUILayout.Width(width), GUILayout.Height(height));
 							{
 
-								var editor = Editor.CreateEditor(item) as IPreviewEditor;
-								if (editor.HasPreviewGUI() == true) {
+								if (GUILayout.Button(string.Empty, style) == true) {
+									
+									this.onSelect(item);
+									
+								}
 
-									Color color = Color.white;
-									editor.OnPreviewGUI(color, lastRect, style, false);
+								var lastRect = GUILayoutUtility.GetLastRect();
+								lastRect.width = width;
+								lastRect.height = height;
+
+								{
+
+									var editor = Editor.CreateEditor(item) as IPreviewEditor;
+									if (editor.HasPreviewGUI() == true) {
+
+										Color color = Color.white;
+										editor.OnPreviewGUI(color, lastRect, style, false);
+
+									}
 
 								}
 
-							}
+								this.onEveryGUI(item);
 
-							this.onEveryGUI(item);
+							}
+							GUILayout.EndVertical();
+
+							++i;
 
 						}
-						GUILayout.EndVertical();
-
-						++i;
-
-					}
-					
-					if (i % xCount != 0 && xCount > 0) {
 						
-						GUILayout.EndHorizontal();
-						
+						if (i % xCount != 0 && xCount > 0) {
+							
+							GUILayout.EndHorizontal();
+							
+						}
+
 					}
 
 				}
