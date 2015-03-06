@@ -44,7 +44,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.screens = new List<WindowBase>();
 			this.screenPrefab = null;
 
+			#if UNITY_5_0
+			EditorApplication.NewEmptyScene();
+			#else
 			EditorApplication.NewScene();
+			#endif
 
 			var popupOffset = 100f;
 			var popupSize = new Vector2(rootWindow.position.width - popupOffset * 2f, rootWindow.position.height - popupOffset * 2f);

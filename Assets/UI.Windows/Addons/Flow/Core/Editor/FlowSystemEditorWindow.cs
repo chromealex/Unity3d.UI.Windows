@@ -94,6 +94,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private const float SETTINGS_WIDTH = 250f;
+
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
@@ -125,8 +127,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 				this.scrollRect = this.position;
-				this.scrollRect.x = 0f;
+				this.scrollRect.x = SETTINGS_WIDTH;
 				this.scrollRect.y = toolbarHeight;
+				this.scrollRect.width -= SETTINGS_WIDTH;
 				this.scrollRect.height -= toolbarHeight;
 
 				this.contentRect = this.position;
@@ -1507,7 +1510,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private void DrawCompiledStatus(FlowWindow window) {
-			
+
+			if (window.compiled == true) {
+
+				if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
+
+					window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledScreenName + ".cs");
+
+				}
+
+			}
+
 			var oldColor = GUI.color;
 			var style = new GUIStyle("U2D.dragDotDimmed");
 			var styleCompiled = new GUIStyle("U2D.dragDot");
@@ -1607,7 +1620,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			var zOffset = -10f;
+			var zOffset = 0f;
 
 			if (doubleSide == true) {
 
@@ -1670,6 +1683,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				Handles.color = lineColor;
 				Handles.ConeCap(-1, pos, rot, 15f);
 
+				//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
+				//GUIExt.DrawTextureRotated(pos, arrow, Vector3.Angle(startPos, endPos));
+
 			} else {
 
 				for (float distance = every; distance < fullDistance; distance += every) {
@@ -1680,6 +1696,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
 					Handles.color = lineColor;
 					Handles.ConeCap(-1, pos, rot, 15f);
+
+					//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
+					//GUIExt.DrawTextureRotated(pos, arrow, rot);
 
 				}
 

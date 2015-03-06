@@ -86,21 +86,25 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		public bool IsValidToCompile() {
-			
-			var pattern = string.Empty;
-			var directory = this.directory;
-			if (this.isContainer == false) {
 
-				pattern = @"^([A-Z]+[a-zA-Z0-9]*)$";
+			return ME.Utilities.CacheByTime("FlowWindow." + this.id.ToString() + ".IsValidCompile", () => {
 
-			} else {
+				var pattern = string.Empty;
+				var directory = this.directory;
+				if (this.isContainer == false) {
+
+					pattern = @"^([A-Z]+[a-zA-Z0-9]*)$";
+
+				} else {
+					
+					pattern = @"^([A-Z]+[a-zA-Z0-9]*)$";
+
+				}
 				
-				pattern = @"^([A-Z]+[a-zA-Z0-9]*)$";
+				Regex rgx = new Regex(pattern, RegexOptions.Singleline);
+				return rgx.IsMatch(directory);
 
-			}
-			
-			Regex rgx = new Regex(pattern, RegexOptions.Singleline);
-			return rgx.IsMatch(directory);
+			});
 
 		}
 
@@ -110,19 +114,31 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				// Yellow
 
-				var defaultLinkStyle = new GUIStyle("flow node 4");
-				defaultLinkStyle.padding = new RectOffset(0, 0, 14, 1);
-				defaultLinkStyle.contentOffset = new Vector2(0f, -15f);
-				defaultLinkStyle.fontStyle = FontStyle.Bold;
-				defaultLinkStyle.alignment = TextAnchor.MiddleCenter;
-				defaultLinkStyle.normal.textColor = Color.white;
-				
-				var defaultLinkStyleSelected = new GUIStyle("flow node 4 on");
-				defaultLinkStyleSelected.padding = new RectOffset(0, 0, 14, 1);
-				defaultLinkStyleSelected.contentOffset = new Vector2(0f, -15f);
-				defaultLinkStyleSelected.fontStyle = FontStyle.Bold;
-				defaultLinkStyleSelected.alignment = TextAnchor.MiddleCenter;
-				defaultLinkStyleSelected.normal.textColor = Color.white;
+				var defaultLinkStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.NotSelected", "flow node 4", (styleName) => {
+					
+					var _style = new GUIStyle(styleName);
+					_style.padding = new RectOffset(0, 0, 14, 1);
+					_style.contentOffset = new Vector2(0f, -15f);
+					_style.fontStyle = FontStyle.Bold;
+					_style.alignment = TextAnchor.MiddleCenter;
+					_style.normal.textColor = Color.white;
+
+					return _style;
+
+				});
+
+				var defaultLinkStyleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.Selected", "flow node 4 on", (styleName) => {
+					
+					var _style = new GUIStyle(styleName);
+					_style.padding = new RectOffset(0, 0, 14, 1);
+					_style.contentOffset = new Vector2(0f, -15f);
+					_style.fontStyle = FontStyle.Bold;
+					_style.alignment = TextAnchor.MiddleCenter;
+					_style.normal.textColor = Color.white;
+					
+					return _style;
+					
+				});
 
 				return selected ? defaultLinkStyleSelected : defaultLinkStyle;
 
@@ -143,11 +159,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 					
 				}
 				
-				var containerStyle = new GUIStyle(styleNormal);
-				containerStyle.padding = new RectOffset(0, 0, 16, 1);
-				containerStyle.contentOffset = new Vector2(0f, -15f);
-				containerStyle.fontStyle = FontStyle.Bold;
-				containerStyle.normal.textColor = Color.white;
+				var containerStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Container", styleNormal, (styleName) => {
+					
+					var _style = new GUIStyle(styleName);
+					_style.padding = new RectOffset(0, 0, 16, 1);
+					_style.contentOffset = new Vector2(0f, -15f);
+					_style.fontStyle = FontStyle.Bold;
+					_style.normal.textColor = Color.white;
+					
+					return _style;
+					
+				});
 
 				return containerStyle;
 
@@ -193,20 +215,32 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 					styleSelected = "flow node 6 on";
 
 				}
-
-				var windowStyle = new GUIStyle(styleNormal);
-				windowStyle.fontStyle = FontStyle.Bold;
-				windowStyle.margin = new RectOffset(0, 0, 0, 0);
-				windowStyle.padding = new RectOffset(0, 0, 5, 4);
-				windowStyle.alignment = TextAnchor.UpperLeft;
-				windowStyle.contentOffset = new Vector2(5f, 0f);
-
-				var windowStyleSelected = new GUIStyle(styleSelected);
-				windowStyleSelected.fontStyle = FontStyle.Bold;
-				windowStyleSelected.margin = new RectOffset(0, 0, 0, 0);
-				windowStyleSelected.padding = new RectOffset(0, -1, 5, 4);
-				windowStyleSelected.alignment = TextAnchor.UpperLeft;
-				windowStyleSelected.contentOffset = new Vector2(5f, 0f);
+				
+				var windowStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Window.Selected", styleNormal, (styleName) => {
+					
+					var _style = new GUIStyle(styleName);
+					_style.fontStyle = FontStyle.Bold;
+					_style.margin = new RectOffset(0, 0, 0, 0);
+					_style.padding = new RectOffset(0, 0, 5, 4);
+					_style.alignment = TextAnchor.UpperLeft;
+					_style.contentOffset = new Vector2(5f, 0f);
+					
+					return _style;
+					
+				});
+				
+				var windowStyleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Window.NotSelected", styleSelected, (styleName) => {
+					
+					var _style = new GUIStyle(styleName);
+					_style.fontStyle = FontStyle.Bold;
+					_style.margin = new RectOffset(0, 0, 0, 0);
+					_style.padding = new RectOffset(0, -1, 5, 4);
+					_style.alignment = TextAnchor.UpperLeft;
+					_style.contentOffset = new Vector2(5f, 0f);
+					
+					return _style;
+					
+				});
 
 				return selected ? windowStyleSelected : windowStyle;
 
@@ -225,7 +259,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		
 		public FlowWindow GetContainer() {
 			
-			return FlowSystem.GetWindow(this.attaches.FirstOrDefault((id) => FlowSystem.GetWindow(id).isContainer));
+			return ME.Utilities.CacheByFrame("FlowWindow." + this.id.ToString() + ".GetContainer", () => FlowSystem.GetWindow(this.attaches.FirstOrDefault((id) => FlowSystem.GetWindow(id).isContainer)));
 			
 		}
 		
