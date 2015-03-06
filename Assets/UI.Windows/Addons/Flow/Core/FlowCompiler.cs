@@ -213,7 +213,7 @@ public static class FlowCompiler {
 
 			foreach ( var line in lines ) {
 
-				writer.Write( line.Replace( oldClassName, newClassName ) );
+				writer.WriteLine( line.Replace( oldClassName, newClassName ) );
 			}
 
 			writer.Dispose();
