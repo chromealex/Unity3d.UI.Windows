@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -551,6 +551,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (this.tagsList != null) this.tagsList.DoLayoutList();
 				#endregion
 
+				#region NAMESPACE
+
+				GUILayout.Label( "Namespace", EditorStyles.boldLabel );
+
+				FlowSystem.GetData().namespaceName = GUILayout.TextField( FlowSystem.GetData().namespaceName );
+
+				#endregion
+
 				GUILayout.EndScrollView();
 
 			}, "Settings");
@@ -874,13 +882,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			#endif
 			if (GUILayout.Button("Compile UI" + disabledDescr, buttonStyle)) {
 				
-				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
+				FlowCompiler.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
 
 			}
 			
 			if (GUILayout.Button("Force Recompile UI" + disabledDescr, buttonStyle)) {
-				
-				FlowSystem.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData), recompile: true);
+
+				FlowCompiler.GenerateUI( AssetDatabase.GetAssetPath( this.cachedData ), recompile: true );
 				
 			}
 			#if WEBPLAYER

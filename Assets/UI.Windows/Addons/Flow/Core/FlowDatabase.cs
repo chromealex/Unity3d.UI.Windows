@@ -116,7 +116,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			if (tplData != null) {
 				
 				var sourcepath = ADB.GetAssetPath(tplData);
-				var filepath = window.compiledDirectory + "/" + FlowSystem.LAYOUT_FOLDER + "/" + tplName + "Layout.prefab";
+				var filepath = window.compiledDirectory + "/" + FlowCompiler.LAYOUT_FOLDER + "/" + tplName + "Layout.prefab";
 				filepath = filepath.Replace("//", "/");
 				
 				System.IO.File.Copy(sourcepath, filepath, true);
@@ -168,7 +168,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			if (tplData != null) {
 				
 				var sourcepath = ADB.GetAssetPath(tplData);
-				var filepath = window.compiledDirectory + "/" + FlowSystem.SCREENS_FOLDER + "/" + tplName + "Screen.prefab";
+				var filepath = window.compiledDirectory + "/" + FlowCompiler.SCREENS_FOLDER + "/" + tplName + "Screen.prefab";
 				filepath = filepath.Replace("//", "/");
 				
 				System.IO.File.Copy(sourcepath, filepath, true);
