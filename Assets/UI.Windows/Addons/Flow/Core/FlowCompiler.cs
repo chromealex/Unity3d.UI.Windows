@@ -94,10 +94,13 @@ public static class FlowCompiler {
 
 			var oldClassName = window.compiledClassName;
 			var newClassName = className;
+			var oldNamespace = window.compiledNamespace;
 
 			window.compiledClassName = className;
 			window.compiledScreenName = screenName;
 			window.compiledNamespace = currentProject.UppercaseFirst() + ".UI" + ( string.IsNullOrEmpty( containerNamespace ) == false ? ( "." + containerNamespace ) : string.Empty ); ;
+
+			var newNamespace = window.compiledNamespace;
 
 			window.compiledDirectory = fullpath + "/" + window.directory;
 			window.compiledDirectory = window.compiledDirectory.Replace( "//", "/" );
@@ -106,7 +109,7 @@ public static class FlowCompiler {
 
 			if ( isCompiledInfoInvalid ) {
 
-				UpdateInheritedClasses( oldClassName, newClassName );
+				UpdateInheritedClasses( oldClassName, newClassName, oldNamespace, newNamespace );
 			}
 		}
 
@@ -190,7 +193,7 @@ public static class FlowCompiler {
 		AssetDatabase.StopAssetEditing();
 	}
 
-	private static void UpdateInheritedClasses( string oldClassName, string newClassName ) {
+	private static void UpdateInheritedClasses( string oldClassName, string newClassName, string oldNamespace, string newNamespace ) {
 
 		if ( string.IsNullOrEmpty( oldClassName ) || string.IsNullOrEmpty( newClassName ) ) {
 
@@ -213,7 +216,13 @@ public static class FlowCompiler {
 
 			foreach ( var line in lines ) {
 
-				writer.WriteLine( line.Replace( oldClassName, newClassName ) );
+				if ( line.Contains( "using" ) ) {
+
+					writer.WriteLine( line.Replace( oldNamespace, newNamespace ) );
+				} else {
+
+					writer.WriteLine( line.Replace( oldClassName, newClassName ) );
+				}
 			}
 
 			writer.Dispose();
