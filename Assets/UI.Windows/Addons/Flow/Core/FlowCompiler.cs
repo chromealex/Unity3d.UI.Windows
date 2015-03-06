@@ -60,6 +60,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			if ( window.compiled == false || recompile == true || isCompiledInfoInvalid ) {
 
+				var directory = window.directory;
 				var screenName = GetClassName( window );
 				var tplName = "TemplateScreen";
 				var className = string.Empty;
@@ -71,15 +72,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 						Directory.Delete( window.compiledDirectory, recursive: true );
 					}
 
-					window.directory = GetDirectoryName( window );
+					//directory = GetDirectoryName( window );
 
-					CreateDirectory( fullpath, window.directory, suppressWarnings: true );
-					CreateDirectory( fullpath, window.directory + "/" + COMPONENTS_FOLDER, suppressWarnings: true );
-					CreateDirectory( fullpath, window.directory + "/" + LAYOUT_FOLDER, suppressWarnings: true );
-					CreateDirectory( fullpath, window.directory + "/" + SCREENS_FOLDER, suppressWarnings: true );
+					CreateDirectory( fullpath, directory, suppressWarnings: true );
+					CreateDirectory( fullpath, directory + "/" + COMPONENTS_FOLDER, suppressWarnings: true );
+					CreateDirectory( fullpath, directory + "/" + LAYOUT_FOLDER, suppressWarnings: true );
+					CreateDirectory( fullpath, directory + "/" + SCREENS_FOLDER, suppressWarnings: true );
 
-					var filepath = ( fullpath + "/" + window.directory + "/" + className + ".cs" ).Replace( "//", "/" );
+					var filepath = ( fullpath + "/" + directory + "/" + className + ".cs" ).Replace( "//", "/" );
 	#if !WEBPLAYER
+
+					//Debug.Log(filepath);
 					File.WriteAllText( filepath, tplData );
 
 					AssetDatabase.ImportAsset( filepath );
@@ -101,7 +104,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				var newNamespace = window.compiledNamespace;
 
-				window.compiledDirectory = fullpath + "/" + window.directory;
+				window.compiledDirectory = fullpath + "/" + directory;
 				window.compiledDirectory = window.compiledDirectory.Replace( "//", "/" );
 
 				window.compiled = true;
@@ -121,12 +124,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		private static string GetDirectoryName( FlowWindow flowWindow ) {
 
-			return GetClassName( flowWindow ) + "Directory";
+			return flowWindow.directory;//GetClassName( flowWindow );
 		}
 
 		private static string GetClassName( FlowWindow flowWindow ) {
 
-			return flowWindow.title.Replace( " ", "" );
+			return flowWindow.directory;//flowWindow.title.Replace( " ", "" );
 		}
 
 		private static bool CompiledInfoIsInvalid( FlowWindow flowWindow ) {

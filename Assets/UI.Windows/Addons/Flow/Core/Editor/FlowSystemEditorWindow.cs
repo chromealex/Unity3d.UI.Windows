@@ -581,7 +581,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void DragBackground(float offset) {
 
 			var button = Event.current.button;
-			var position = Event.current.mousePosition + FlowSystem.GetScrollPosition() + new Vector2(0f, -offset);
+			var position = Event.current.mousePosition + FlowSystem.GetScrollPosition() + new Vector2(-SETTINGS_WIDTH, -offset);
 			
 			if (Event.current.type == EventType.MouseDown && button == 2) {
 
@@ -1273,7 +1273,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							this.showTagsPopup = true;
 							if (Event.current.type == EventType.Repaint) {
 
-								this.showTagsPopupRect = new Rect(window.rect.x + rect.x, window.rect.y + rect.y, rect.width, rect.height);
+								this.showTagsPopupRect = new Rect(window.rect.x + rect.x + SETTINGS_WIDTH, window.rect.y + rect.y, rect.width, rect.height);
 
 							}
 
