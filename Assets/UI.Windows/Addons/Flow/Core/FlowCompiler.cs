@@ -213,6 +213,11 @@ public static class FlowCompiler {
 
 		foreach ( var each in scripts ) {
 
+			if ( !each.text.Contains( oldClassName ) ) {
+
+				continue;
+			}
+
 			var path = AssetDatabase.GetAssetPath( each );
 
 			var lines = File.ReadAllLines( path );
