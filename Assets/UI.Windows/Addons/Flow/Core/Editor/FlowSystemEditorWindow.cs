@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -546,6 +546,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				
 				if (this.tagsList != null) this.tagsList.DoLayoutList();
+				#endregion
+
+				#region NAMESPACE
+
+				GUILayout.Label( "Namespace", EditorStyles.boldLabel );
+
+				FlowSystem.GetData().namespaceName = GUILayout.TextField( FlowSystem.GetData().namespaceName );
+
 				#endregion
 
 				GUILayout.EndScrollView();

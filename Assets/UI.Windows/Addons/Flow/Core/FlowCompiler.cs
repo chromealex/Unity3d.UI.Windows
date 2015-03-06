@@ -44,7 +44,7 @@ public static class FlowCompiler {
 		var file = Resources.Load( "UI.Windows/Templates/" + templateName ) as TextAsset;
 		if ( file == null ) return null;
 
-		projectName = projectName.UppercaseFirst() + ".UI" + ( string.IsNullOrEmpty( containerNamespace ) == false ? ( "." + containerNamespace ) : string.Empty );
+		projectName = GetNamespace() + ( string.IsNullOrEmpty( containerNamespace ) == false ? ( "." + containerNamespace ) : string.Empty );
 		className = screenName.UppercaseFirst() + "Screen";
 
 		var text = file.text;
@@ -98,7 +98,7 @@ public static class FlowCompiler {
 
 			window.compiledClassName = className;
 			window.compiledScreenName = screenName;
-			window.compiledNamespace = currentProject.UppercaseFirst() + ".UI" + ( string.IsNullOrEmpty( containerNamespace ) == false ? ( "." + containerNamespace ) : string.Empty ); ;
+			window.compiledNamespace = GetNamespace() + ( string.IsNullOrEmpty( containerNamespace ) == false ? ( "." + containerNamespace ) : string.Empty ); ;
 
 			var newNamespace = window.compiledNamespace;
 
@@ -113,6 +113,11 @@ public static class FlowCompiler {
 			}
 		}
 
+	}
+
+	private static string GetNamespace() {
+
+		return FlowSystem.GetData().namespaceName;
 	}
 
 	private static string GetDirectoryName( FlowWindow flowWindow ) {
