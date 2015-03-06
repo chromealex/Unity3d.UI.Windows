@@ -9,6 +9,12 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 
 public static class FlowCompiler {
 
+	public const string COMPONENTS_FOLDER = "Components";
+	public const string LAYOUT_FOLDER = "Layouts";
+	public const string SCREENS_FOLDER = "Screens";
+	public const string OTHER_NAME = "Other";
+
+	private static string currentProject;
 
 #if UNITY_EDITOR
 	private static void CreateDirectory( string root, string folder, bool suppressWarnings = false ) {
@@ -51,18 +57,27 @@ public static class FlowCompiler {
 
 	private static void GenerateUIWindow( string fullpath, string containerNamespace, FlowWindow window, bool recompile = false ) {
 
-		CreateDirectory( fullpath, window.directory, suppressWarnings: true );
-		CreateDirectory( fullpath, window.directory + "/" + COMPONENTS_FOLDER, suppressWarnings: true );
-		CreateDirectory( fullpath, window.directory + "/" + LAYOUT_FOLDER, suppressWarnings: true );
-		CreateDirectory( fullpath, window.directory + "/" + SCREENS_FOLDER, suppressWarnings: true );
+		var isCompiledInfoInvalid = window.compiled && CompiledInfoIsInvalid( window );
 
-		if ( window.compiled == false || recompile == true ) {
+		if ( window.compiled == false || recompile == true || isCompiledInfoInvalid ) {
 
-			var screenName = window.directory;
+			var screenName = GetClassName( window );
 			var tplName = "TemplateScreen";
 			var className = string.Empty;
 			var tplData = LoadScriptTemplate( tplName, currentProject, containerNamespace, screenName, out className );
 			if ( tplData != null ) {
+
+				if ( Directory.Exists( window.compiledDirectory ) ) {
+
+					Directory.Delete( window.compiledDirectory, recursive: true );
+				}
+
+				window.directory = GetDirectoryName( window );
+
+				CreateDirectory( fullpath, window.directory, suppressWarnings: true );
+				CreateDirectory( fullpath, window.directory + "/" + COMPONENTS_FOLDER, suppressWarnings: true );
+				CreateDirectory( fullpath, window.directory + "/" + LAYOUT_FOLDER, suppressWarnings: true );
+				CreateDirectory( fullpath, window.directory + "/" + SCREENS_FOLDER, suppressWarnings: true );
 
 				var filepath = ( fullpath + "/" + window.directory + "/" + className + ".cs" ).Replace( "//", "/" );
 #if !WEBPLAYER
@@ -77,6 +92,9 @@ public static class FlowCompiler {
 
 			}
 
+			var oldClassName = window.compiledClassName;
+			var newClassName = className;
+
 			window.compiledClassName = className;
 			window.compiledScreenName = screenName;
 			window.compiledNamespace = currentProject.UppercaseFirst() + ".UI" + ( string.IsNullOrEmpty( containerNamespace ) == false ? ( "." + containerNamespace ) : string.Empty ); ;
@@ -85,16 +103,30 @@ public static class FlowCompiler {
 			window.compiledDirectory = window.compiledDirectory.Replace( "//", "/" );
 
 			window.compiled = true;
+
+			if ( isCompiledInfoInvalid ) {
+
+				UpdateInheritedClasses( oldClassName, newClassName );
+			}
 		}
 
 	}
 
-	public const string COMPONENTS_FOLDER = "Components";
-	public const string LAYOUT_FOLDER = "Layouts";
-	public const string SCREENS_FOLDER = "Screens";
-	public const string OTHER_NAME = "Other";
+	private static string GetDirectoryName( FlowWindow flowWindow ) {
 
-	private static string currentProject;
+		return GetClassName( flowWindow ) + "Directory";
+	}
+
+	private static string GetClassName( FlowWindow flowWindow ) {
+
+		return flowWindow.title.Replace( " ", "" );
+	}
+
+	private static bool CompiledInfoIsInvalid( FlowWindow flowWindow ) {
+
+		return GetClassName( flowWindow ) != flowWindow.compiledClassName;
+	}
+
 	public static void GenerateUI( string pathToData, bool recompile = false ) {
 
 		var dir = pathToData.Split( '/' );
@@ -157,6 +189,39 @@ public static class FlowCompiler {
 
 		AssetDatabase.StopAssetEditing();
 	}
+
+	private static void UpdateInheritedClasses( string oldClassName, string newClassName ) {
+
+		if ( string.IsNullOrEmpty( oldClassName ) || string.IsNullOrEmpty( newClassName ) ) {
+
+			return;
+		}
+
+		var scripts =
+			AssetDatabase.FindAssets( "t:MonoScript" )
+				.Select( _ => AssetDatabase.GUIDToAssetPath( _ ) )
+				.Select( _ => AssetDatabase.LoadAssetAtPath( _, typeof( MonoScript ) ) )
+				.OfType<MonoScript>();
+
+		foreach ( var each in scripts ) {
+
+			var path = AssetDatabase.GetAssetPath( each );
+
+			var lines = File.ReadAllLines( path );
+
+			var writer = new StreamWriter( path );
+
+			foreach ( var line in lines ) {
+
+				writer.Write( line.Replace( oldClassName, newClassName ) );
+			}
+
+			writer.Dispose();
+		}
+
+		AssetDatabase.Refresh();
+	}
+
 #endif
 
 }
