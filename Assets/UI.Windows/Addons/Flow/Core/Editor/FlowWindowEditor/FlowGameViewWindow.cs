@@ -42,8 +42,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 				this.previewScreen.workCamera.targetTexture = this.tempRenderTexture;
 
 				layout.canvasScaler.enabled = true;
-				layout.canvasScaler.drawAsWorld = true;
-				layout.canvasScaler.manualUpdate = true;
+				//layout.canvasScaler.drawAsWorld = true;
+				//layout.canvasScaler.manualUpdate = true;
 
 				layoutWindow.transition.StartRenderToTexture();
 
@@ -87,7 +87,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			var layoutWindow = this.previewScreen as LayoutWindowType;
 			if (layoutWindow != null) {
 
-				layoutWindow.layout.GetLayoutInstance().canvasScaler.UpdateWithMode(new Vector2(this.currentWidth, this.currentHeight));
+				//layoutWindow.layout.GetLayoutInstance().canvasScaler.UpdateWithMode(new Vector2(this.currentWidth, this.currentHeight));
 				this.Repaint();
 
 			}

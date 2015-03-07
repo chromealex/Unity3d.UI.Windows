@@ -122,6 +122,7 @@ namespace UnityEngine.Extensions {
 					if (obj != null) {
 						
 						obj.transform.SetParent(prefab.transform.parent);
+						obj.SetTransformAs(prefab);
 						obj.transform.localPosition = position;
 						obj.transform.localRotation = rotation;
 						obj.gameObject.SetActive(true);
@@ -137,6 +138,7 @@ namespace UnityEngine.Extensions {
 
 				obj = (T)Object.Instantiate (prefab, position, rotation);
 				obj.transform.SetParent(prefab.transform.parent);
+				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
 				obj.gameObject.SetActive(true);
 				instance.prefabLookup.Add (obj, prefab);
@@ -147,6 +149,7 @@ namespace UnityEngine.Extensions {
 				T obj = null;
 				obj = (T)Object.Instantiate (prefab, position, rotation);
 				obj.transform.SetParent(prefab.transform.parent);
+				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
 				prefab.AddToAll(obj);
 
@@ -217,6 +220,20 @@ namespace UnityEngine.Extensions {
 
 	public static class ObjectPoolExtensions
 	{
+		public static void SetTransformAs<T>(this T instance, T source) where T : Component {
+			
+			instance.transform.SetTransformAs(source.transform);
+			
+		}
+
+		public static void SetTransformAs(this Transform instance, Transform source) {
+
+			instance.localPosition = source.localPosition;
+			instance.localRotation = source.localRotation;
+			instance.localScale = source.localScale;
+			
+		}
+
 		public static void AddToAll<T> (this T prefab, T instance) where T : Component {
 			
 			ObjectPool.AddToAll(prefab, instance);

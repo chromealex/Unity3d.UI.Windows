@@ -12,6 +12,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		public int width;
 		public int height;
 		public float ppi;
+		public string deviceOutput;
 
 		public bool current = false;
 
@@ -90,7 +91,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				var lines = data.text.Split('\n');
 				foreach (var line in lines) {
 
-					var info = line.Split(',');
+					var info = line.Trim().Split(',');
 
 					var device = new DeviceInfo();
 					device.manufacturer = info[0].Trim();
@@ -128,7 +129,10 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 						}
 
 					}
-					
+
+					var devOutput = info.Length > 4 ? info[4].Trim() : string.Empty;
+					device.deviceOutput = devOutput;
+
 					output.Add(device);
 					
 					if (Parser.manufacturerToDevices.ContainsKey(device.manufacturer) == true) {

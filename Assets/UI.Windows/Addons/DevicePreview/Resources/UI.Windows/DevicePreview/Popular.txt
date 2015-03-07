@@ -24,10 +24,12 @@ Apple, iPad Air, 2048x1536, 9.7
 Apple, iPad Air 2, 2048x1536, 9.7
 Apple, iPad Mini, 1024x768, 7.9
 Apple, iPad Mini 2, 2048x1536, 7.9
-Apple, iPhone 3GS, 480x320, 3.5
-Apple, iPhone 4S, 960x640, 3.5
-Apple, iPhone 5, 1136x640, 4
 Apple, iPad mini 3, 2048x1536, 7.9
+Apple, iPhone 3GS, 480x320, 3.5, Apple.Iphone3
+Apple, iPhone 4S, 960x640, 3.5, Apple.Iphone4
+Apple, iPhone 5, 1136x640, 4, Apple.Iphone5
+Apple, iPhone 6, 1334x750, 4.7
+Apple, iPhone 6 Plus, 1920x1080, 5.5
 Acer, Iconia Tab, 1280x800, 10.1
 Amazon, Kindle Fire, 1024x600, 7
 Amazon, Kindle Fire 2, 1024x600, 7

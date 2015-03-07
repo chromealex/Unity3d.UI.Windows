@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
+using System;
+using UnityEditor.UI.Windows.Plugins.DevicePreview.Output;
 
 namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
@@ -11,10 +13,20 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		public class GameView {
 
+			public DevicePreviewWindow root;
+
 			public float width = 600f;
 			public float height = 400f;
+			
+			private IDeviceOutput deviceOutput;
 
 			private bool isActive = false;
+
+			public GameView(DevicePreviewWindow root) {
+
+				this.root = root;
+
+			}
 
 			public void Resize(float width, float height) {
 
@@ -29,9 +41,13 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			private int currentWidth;
 			private int currentHeight;
 			private float ppi;
-			public bool SetResolution(int width, int height, float ppi) {
+			private ScreenOrientation orientation;
+			public bool SetResolution(int width, int height, float ppi, ScreenOrientation orientation, IDeviceOutput deviceOutput) {
 
 				var result = false;
+
+				this.orientation = orientation;
+				this.deviceOutput = deviceOutput;
 
 				this.ppi = ppi;
 				this.currentWidth = width;
@@ -42,12 +58,16 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				if (this.previewCamera == null) {
 
 					var go = new GameObject("__TempCamera");
-					go.AddComponent<Camera>();
 					this.previewCamera = go.AddComponent<DevicePreviewCamera>();
 
 				}
 
-				this.previewCamera.Initialize(this.tempRenderTexture);
+				this.previewCamera.Initialize(this.tempRenderTexture, () => {
+
+					this.root.Repaint();
+					GameObject.DestroyImmediate(this.previewCamera.gameObject);
+
+				});
 
 				var size = new Vector2(this.width, this.height);
 				var imageSize = new Vector2(this.currentWidth, this.currentHeight);
@@ -56,7 +76,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 				if (factor / k < 1f) {
 
-					result = false;
+					result = true;
 
 				}
 
@@ -79,12 +99,31 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				if (this.isActive == false) return;
 
 			}
-			
+
 			public void OnGUI() {
 				
 				if (this.isActive == false) {
 
-					GUILayout.Label("No Selection");
+					var warningOffset = 15f;
+
+					var style = new GUIStyle("flow node 6");
+					style.alignment = TextAnchor.MiddleCenter;
+					style.fontStyle = FontStyle.Bold;
+
+					style.margin = new RectOffset();
+					style.padding = new RectOffset();
+					style.contentOffset = Vector2.zero;
+
+					var content = new GUIContent("YOU HAVE NO DEVICE SELECTED");
+					var contentRect = GUILayoutUtility.GetRect(content, style);
+					
+					var width = contentRect.width + warningOffset;
+					var height = contentRect.height + warningOffset;
+
+					var centerRect = new Rect(this.width * 0.5f - width * 0.5f, this.height * 0.5f - height * 0.5f, width, height);
+					GUI.Label(centerRect, content, style);
+
+					this.root.selectedId = -1;
 
 					return;
 
@@ -96,7 +135,55 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				
 				GUI.Box(new Rect(0f, 0f, size.x, size.y), string.Empty, rectStyle);
 				
-				var imageSize = new Vector2(this.currentWidth, this.currentHeight);
+				var drawRect = this.GetRectFromSize(this.currentWidth, this.currentHeight);
+				var drawRectLandscape = this.GetRectFromSize(this.orientation == ScreenOrientation.Landscape ? this.currentWidth : this.currentHeight, this.orientation == ScreenOrientation.Landscape ? this.currentHeight : this.currentWidth);
+
+				var deviceOutput = this.deviceOutput as IDeviceOutput;
+				if (deviceOutput == null) {
+					
+					var offset = 5f;
+					var backRect = new Rect(drawRect.x - offset, drawRect.y - offset, drawRect.width + offset * 2f, drawRect.height + offset * 2f);
+					var oldColor = GUI.color;
+					GUI.color = Color.black;
+					GUI.Box(backRect, string.Empty, rectStyle);
+					GUI.color = oldColor;
+
+				}
+
+				if (deviceOutput != null) {
+
+					deviceOutput.SetRect(new Rect(0f, 0f, size.x, size.y), drawRect, drawRectLandscape, this.orientation);
+
+					deviceOutput.DoPreGUI();
+
+				}
+
+				GUI.DrawTexture(drawRect, this.tempRenderTexture);
+				
+				if (deviceOutput != null) {
+
+					deviceOutput.DoPostGUI();
+					
+				}
+
+			}
+			
+			private float GetFactor(Vector2 inner, Vector2 boundingBox) {     
+				
+				float widthScale = 0, heightScale = 0;
+				if (inner.x != 0)
+					widthScale = boundingBox.x / inner.x;
+				if (inner.y != 0)
+					heightScale = boundingBox.y / inner.y;                
+				
+				return Mathf.Min(widthScale, heightScale);
+				
+			}
+			
+			private Rect GetRectFromSize(float currentWidth, float currentHeight) {
+				
+				var size = new Vector2(this.width, this.height);
+				var imageSize = new Vector2(currentWidth, currentHeight);
 				
 				var factor = this.GetFactor(imageSize, size);
 				var k = Screen.dpi / this.ppi;
@@ -113,25 +200,13 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 					
 				}
 				
-				GUI.DrawTexture(new Rect((size.x - newImageSize.x) * 0.5f, (size.y - newImageSize.y) * 0.5f, newImageSize.x, newImageSize.y), this.tempRenderTexture);
-
-			}
-			
-			private float GetFactor(Vector2 inner, Vector2 boundingBox) {     
-				
-				float widthScale = 0, heightScale = 0;
-				if (inner.x != 0)
-					widthScale = boundingBox.x / inner.x;
-				if (inner.y != 0)
-					heightScale = boundingBox.y / inner.y;                
-				
-				return Mathf.Min(widthScale, heightScale);
+				return new Rect((size.x - newImageSize.x) * 0.5f, (size.y - newImageSize.y) * 0.5f, newImageSize.x, newImageSize.y);
 				
 			}
 
 		}
-		
-		private const float PANEL_WIDTH = 200f;
+
+		private const float PANEL_WIDTH = 250f;
 		private const float MARGIN = 5f;
 
 		[MenuItem("Window/UI.Windows: Device Preview")]
@@ -141,10 +216,9 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			editor.title = "UI.Windows: Device Preview";
 			editor.position = new Rect(0f, 0f, 1f, 1f);
 
-			editor.gameView = new GameView();
+			editor.gameView = new GameView(editor);
 
 			editor.Show();
-			
 			editor.Focus();
 
 		}
@@ -159,7 +233,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		public void Validate() {
 
-			if (this.gameView == null) this.gameView = new GameView();
+			if (this.gameView == null) this.gameView = new GameView(this);
 
 		}
 
@@ -329,8 +403,27 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 								this.selectedId = i;
 
 								this.lastClickTime = EditorApplication.timeSinceStartup;
-								
-								if (this.gameView.SetResolution(item.width, item.height, item.ppi) == true) {
+
+								IDeviceOutput specialInstance = null;
+								if (string.IsNullOrEmpty(item.deviceOutput) == false) {
+
+									var outputNamespace = "UnityEditor.UI.Windows.Plugins.DevicePreview.Output";
+									var type = outputNamespace + "." + item.deviceOutput;
+
+									var specialOutput = System.Type.GetType(type);
+									if (specialOutput != null) {
+
+										specialInstance = Activator.CreateInstance(specialOutput) as IDeviceOutput;
+
+									} else {
+
+										Debug.LogWarning("Class not found: " + type);
+
+									}
+
+								}
+
+								if (this.gameView.SetResolution(item.width, item.height, item.ppi, item.orientation, specialInstance) == true) {
 
 									this.ShowNotification(new GUIContent("Drawing screen (" + item.width.ToString() + "x" + item.height.ToString() + ") doesn't fit into your window size (" + this.gameView.width.ToString() + "x" + this.gameView.height.ToString() + ")."));
 

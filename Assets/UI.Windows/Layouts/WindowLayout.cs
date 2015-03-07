@@ -17,7 +17,7 @@ namespace UnityEngine.UI.Windows {
 
 		};
 
-		public MECanvasScaler canvasScaler;
+		public CanvasScaler canvasScaler;
 
 		[ReadOnly]
 		public WindowLayoutRoot root;
@@ -42,7 +42,7 @@ namespace UnityEngine.UI.Windows {
 		public void Setup() {
 
 			if (this.GetComponent<CanvasScaler>() != null) Component.DestroyImmediate(this.GetComponent<CanvasScaler>());
-			this.canvasScaler = this.gameObject.AddComponent<MECanvasScaler>();
+			this.canvasScaler = this.gameObject.AddComponent<CanvasScaler>();
 
 		}
 
@@ -76,14 +76,14 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.canvasScaler == null) {
 
-				this.canvasScaler = this.GetComponent<MECanvasScaler>();
+				this.canvasScaler = this.GetComponent<CanvasScaler>();
 				changed = true;
 
 			}
 
 			if (this.canvasScaler == null) {
 
-				this.canvasScaler = this.gameObject.AddComponent<MECanvasScaler>();
+				this.canvasScaler = this.gameObject.AddComponent<CanvasScaler>();
 				changed = true;
 
 			}

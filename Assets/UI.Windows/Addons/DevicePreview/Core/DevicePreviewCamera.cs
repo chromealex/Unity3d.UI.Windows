@@ -1,84 +1,223 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
-[ExecuteInEditMode]
-public class DevicePreviewCamera : MonoBehaviour {
+namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
-	private RenderTexture targetTexture;
+	[ExecuteInEditMode]
+	public class DevicePreviewCamera : MonoBehaviour {
 
-	public Material material;
+		public float timeout = 0.2f;
+		private RenderTexture targetTexture;
+		private System.Action callback;
 
-	public void Initialize(RenderTexture texture) {
-		
-		//this.camera.depthTextureMode = DepthTextureMode.Depth;
-		this.targetTexture = texture;
+		public void Initialize(RenderTexture texture, System.Action callback) {
 
-		this.Render();
+			this.targetTexture = texture;
+			this.callback = callback;
 
-	}
-
-	public void CleanUp() {
-
-		this.camera.targetTexture = null;
-		GameObject.DestroyImmediate(this.gameObject);
-
-	}
-
-	/*public Texture2D tmp;
-	public bool needScreen;
-	public void Update() {
-
-		if (this.needScreen == true) {
-
-			this.tmp = this.TakeScreenshot();
-			this.needScreen = false;
+			this.StartCoroutine(this.Render());
 
 		}
 
-	}*/
+		public void CleanUp() {
 
-	public void Render() {
+			GameObject.DestroyImmediate(this.gameObject);
 
-		this.camera.Render();
+		}
 
-	}
+		private Vector2 mainGameViewSize;
+		public void RestoreMainGameViewSize() {
 
-	public void OnRenderImage(RenderTexture src, RenderTexture dest) {
+			this.SetMainGameViewSize(Mathf.RoundToInt(this.mainGameViewSize.x), Mathf.RoundToInt(this.mainGameViewSize.y));
 
-		this.targetTexture = src;
-		RenderTexture.active = src;
-		Graphics.Blit(src, dest);//, this.material);
+		}
 
-	}
+		private EditorWindow GetMainGameView() {
+			
+			var gameViewType = System.Type.GetType("UnityEditor.GameView,UnityEditor");
+			var getMainGameView = gameViewType.GetMethod("GetMainGameView", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
 
-	public void OnPreRender() {
+			return (UnityEditor.EditorWindow)getMainGameView.Invoke(null,null);
+			
+		}
 
-	}
+		private void SetMainGameViewSize(int width, int height) {
 
-	public void OnPostRender() {
+			var gameView = this.GetMainGameView();
+			var prop = gameView.GetType().GetProperty("currentGameViewSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+			var gvsize = prop.GetValue(gameView, new object[0]{});
+			var gvSizeType = gvsize.GetType();
 
-	}
+			var w = gvSizeType.GetProperty("width", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+			var h = gvSizeType.GetProperty("height", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 
-	public Texture2D TakeScreenshot() {
+			//I have 2 instance variable which this function sets:
+			this.mainGameViewSize.x = (int)w.GetValue(gvsize, new object[0]{});
+			this.mainGameViewSize.y = (int)h.GetValue(gvsize, new object[0]{});
 
-		var width = targetTexture.width;
-		var height = targetTexture.height;
+			w.SetValue(gvsize, width, null);
+			h.SetValue(gvsize, height, null);
 
-		Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
+		}
 
-		this.camera.targetTexture = targetTexture;
-		this.camera.Render();
+		private int currentIteration = 0;
+		private bool working = false;
+		public IEnumerator Render() {
+			
+			++this.currentIteration;
 
-		RenderTexture.active = targetTexture;
+			if (this.working == true) {
 
-		screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
-		screenshot.Apply(false);
+				this.ResetWorking();
+				//yield break;
 
-		this.camera.targetTexture = null;
+			}
 
-		RenderTexture.active = null;
+			this.canvasesInWork.Clear();
 
-		return screenshot;
+			this.working = true;
+
+			this.SetMainGameViewSize(this.targetTexture.width, this.targetTexture.height);
+
+			var allCanvases = Canvas.FindObjectsOfType<Canvas>();
+			var allCameras = Camera.allCameras;
+			foreach (var camera in allCameras) {
+
+				var found = false;
+				foreach (var canvas in allCanvases) {
+
+					if (canvas.renderMode == RenderMode.ScreenSpaceCamera &&
+					    canvas.worldCamera == camera) {
+						
+						yield return this.StartCoroutine(this.Render(this.currentIteration, camera, canvas));
+						found = true;
+
+					}
+
+				}
+
+				if (found == false) yield return this.StartCoroutine(this.Render(this.currentIteration, camera, null));
+
+			}
+
+			this.working = false;
+			
+			this.RestoreMainGameViewSize();
+
+			if (this.callback != null) this.callback();
+
+		}
+
+		public void ResetWorking() {
+
+			foreach (var canvas in this.canvasesInWork) {
+
+				canvas.renderMode = RenderMode.ScreenSpaceCamera;
+
+			}
+
+		}
+
+		private List<Canvas> canvasesInWork = new List<Canvas>();
+		public IEnumerator Render(int currentIteration, Camera camera, Canvas canvas) {
+
+			if (canvas != null) {
+
+				// Workout of unity bug: Canvas render mode
+
+				canvas.renderMode = RenderMode.WorldSpace;
+				this.canvasesInWork.Add(canvas);
+
+				// Delegate render
+				yield return this.StartCoroutine(this.ResetRender(currentIteration, camera, canvas));
+
+			} else {
+
+				if (currentIteration == this.currentIteration) {
+
+					//camera.RenderToCubemap(this.targetTexture);
+					Graphics.Blit(this.TakeScreenshot(camera), this.targetTexture);
+
+				}
+
+			}
+
+		}
+
+		public IEnumerator ResetRender(int currentIteration, Camera camera, Canvas canvas) {
+			
+			var canvasScaler = canvas.GetComponent<CanvasScaler>();
+			if (canvasScaler != null) {
+				
+				canvasScaler.SendMessage("Update");
+				
+			}
+
+			var current = Selection.instanceIDs;
+
+			Selection.activeGameObject = canvas.gameObject;
+
+			Canvas.ForceUpdateCanvases();
+
+			var timeout = this.timeout;
+			var time = UnityEditor.EditorApplication.timeSinceStartup;
+			while (UnityEditor.EditorApplication.timeSinceStartup < time + timeout) {
+
+				yield return false;
+
+			}
+
+			Canvas.ForceUpdateCanvases();
+
+			this.StartCoroutine(this.Render(currentIteration, camera, null));
+
+			if (currentIteration == this.currentIteration) {
+
+				canvas.renderMode = RenderMode.ScreenSpaceCamera;
+
+			} else {
+
+				Debug.Log("ITERATION: " + currentIteration + " / " + this.currentIteration);
+
+			}
+
+			Selection.instanceIDs = current;
+
+		}
+
+		public void OnRenderImage(RenderTexture src, RenderTexture dest) {
+
+			this.targetTexture = src;
+			RenderTexture.active = src;
+			Graphics.Blit(src, dest);
+
+		}
+
+		public Texture2D TakeScreenshot(Camera camera) {
+
+			var width = this.targetTexture.width;
+			var height = this.targetTexture.height;
+
+			Texture2D screenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
+
+			camera.targetTexture = this.targetTexture;
+			camera.Render();
+
+			RenderTexture.active = this.targetTexture;
+
+			screenshot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+			screenshot.Apply(false);
+
+			camera.targetTexture = null;
+
+			RenderTexture.active = null;
+
+			return screenshot;
+
+		}
 
 	}
 
