@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
-	//[ExecuteInEditMode()]
 	public class WindowLayoutBase : WindowComponentBase, IWindowAnimation {
 
 		[Header("Animation Info")]
@@ -17,8 +17,19 @@ namespace UnityEngine.UI.Windows {
 		public bool animationRefresh = false;
 
 		public void Show(bool resetAnimation = true) {
+
+			this.Show(null, resetAnimation);
+
+		}
+
+		public void Show(System.Action callback, bool resetAnimation) {
 			
-			this.OnShowBegin_INTERNAL(null, resetAnimation);
+			if (this.component != null) this.component.OnShowBegin();
+			this.OnShowBegin_INTERNAL(() => {
+
+				if (this.component != null) this.component.OnShowEnd();
+
+			}, resetAnimation);
 
 		}
 		
@@ -30,7 +41,13 @@ namespace UnityEngine.UI.Windows {
 		
 		public void Hide(System.Action callback) {
 			
-			this.OnHideBegin(callback);
+			if (this.component != null) this.component.OnHideBegin();
+			this.OnHideBegin(() => {
+				
+				if (this.component != null) this.component.OnHideEnd();
+				if (callback != null) callback();
+
+			});
 			
 		}
 
@@ -98,12 +115,33 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
-		
+
+		public void Unload() {
+
+			if (this.component != null) {
+
+				this.component.OnDeinit();
+				this.component.Recycle();
+
+			}
+
+		}
+
+		private Layout.Component activatorInstance;
 		private WindowComponent component;
-		public virtual void Setup(WindowComponent component) {
-			
+		public void Load(WindowComponent component) {
+
+			this.activatorInstance.component = component;
+			var instance = this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement);
+			if (instance != null) instance.OnInit();
+
+		}
+
+		public virtual void Setup(WindowComponent component, Layout.Component activatorInstance) {
+
+			this.activatorInstance = activatorInstance;
 			this.component = component;
-			this.component.Setup(this);
+			if (this.component != null) this.component.Setup(this);
 			
 		}
 		

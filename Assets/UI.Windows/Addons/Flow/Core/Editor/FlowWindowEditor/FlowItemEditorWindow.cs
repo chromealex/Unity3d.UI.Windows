@@ -662,10 +662,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.Label("Screen: " + this.screenInstance.name);
 			GUILayout.Label("Layout: " + this.layoutInstance.name);
 
-			if (GUILayout.Button("Build Preview") == true) {
-
+			if (WindowGUIUtilities.ButtonAddon("DevicePreview", "Build Preview", "Install it to get the preview of your screen per device.") == true) {
+				
 				if (this.previewScreen != null) GameObject.DestroyImmediate(this.previewScreen.gameObject);
-
+				
 				this.previewScreen = WindowSystem.Show(this.screenInstance);
 				this.ShowPreview();
 
@@ -674,7 +674,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private void ShowPreview() {
-			
+
+			var addon = WindowUtilities.GetAddon("DevicePreview");
+			if (addon != null) {
+
+				addon.Show(() => {
+					
+					if (this.previewScreen != null) GameObject.DestroyImmediate(this.previewScreen.gameObject);
+
+				});
+
+			} else {
+
+				Debug.LogWarning("No Addon Found: DevicePreview");
+
+			}
+
+			/*
 			this.gameView = FlowGameViewWindow.CreateInstance<FlowGameViewWindow>();
 			this.gameView.rootWindow = this.rootWindow;
 			this.gameView.Focus();
@@ -683,7 +699,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				if (this.previewScreen != null) GameObject.DestroyImmediate(this.previewScreen.gameObject);
 
-			});
+			});*/
 
 		}
 

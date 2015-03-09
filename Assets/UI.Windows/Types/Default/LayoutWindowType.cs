@@ -23,6 +23,12 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public WindowLayoutElement GetLayoutContainer(LayoutTag tag) {
+
+			return this.layout.GetContainer(tag);
+
+		}
+
 		public override string GetSortingLayerName() {
 			
 			return this.layout.GetSortingLayerName();
@@ -144,12 +150,23 @@ namespace UnityEngine.UI.Windows {
 			[HideInInspector][System.NonSerialized]
 			private IWindowAnimation root;
 			
-			public void Create(WindowBase window, WindowLayoutElement root) {
-				
-				if (this.component == null) return;
+			public IWindowEvents Create(WindowBase window, WindowLayoutElement root) {
 				
 				this.root = root;
-				
+
+				if (this.component == null && this.root == null) {
+
+					return null;
+
+				}
+
+				if (this.component == null) {
+
+					this.root.Setup(null, this);
+					return null;
+
+				}
+
 				var instance = this.component.Spawn();
 				instance.transform.SetParent(root.transform);
 				instance.transform.localPosition = Vector3.zero;
@@ -160,15 +177,23 @@ namespace UnityEngine.UI.Windows {
 				rect.sizeDelta = (this.component.transform as RectTransform).sizeDelta;
 				rect.anchoredPosition = (this.component.transform as RectTransform).anchoredPosition;
 				
-				this.root.Setup(instance);
+				this.root.Setup(instance, this);
 				instance.Setup(window);
 				
 				instance.transform.SetSiblingIndex(this.sortingOrder);
 				
 				this.instance = instance;
-				
+
+				return instance;
+
 			}
-			
+
+			public WindowLayoutElement GetContainer() {
+
+				return this.root as WindowLayoutElement;
+
+			}
+
 			public T Get<T>(LayoutTag tag = LayoutTag.None) where T : WindowComponent {
 				
 				if (tag != LayoutTag.None) {
@@ -197,14 +222,14 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			public void OnDeinit() {
-				
+
 				if (this.instance != null) this.instance.OnDeinit();
 				if (this.root != null) this.root.OnDeinit();
 				
 			}
 			
 			public void OnShowBegin(System.Action callback) {
-				
+
 				if (this.instance != null) this.instance.OnShowBegin();
 				if (this.root != null) this.root.OnShowBegin(callback);
 				
@@ -291,7 +316,16 @@ namespace UnityEngine.UI.Windows {
 			return this.instance.transform;
 			
 		}
-		
+
+		public WindowLayoutElement GetContainer(LayoutTag tag) {
+
+			var component = this.components.FirstOrDefault((c) => c.tag == tag);
+			if (component != null) return component.GetContainer();
+
+			return null;
+
+		}
+
 		public T Get<T>(LayoutTag tag = LayoutTag.None) where T : WindowComponent {
 			
 			foreach (var component in this.components) {

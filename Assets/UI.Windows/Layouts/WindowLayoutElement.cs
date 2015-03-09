@@ -82,7 +82,7 @@ namespace UnityEngine.UI.Windows {
 			this.tag = LayoutTag.None;
 
 		}
-		
+
 		public override void OnValidate() {
 			
 			base.OnValidate();
@@ -107,8 +107,6 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		VerticalLayoutGroup lay1;
-		LayoutElement lay;
 		private void OnDrawGUI_EDITOR(bool selected, bool selectedHierarchy) {
 
 			var scale = 1f;

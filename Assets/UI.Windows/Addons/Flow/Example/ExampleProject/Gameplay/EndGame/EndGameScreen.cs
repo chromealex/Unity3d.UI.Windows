@@ -20,6 +20,9 @@ namespace ExampleProject.UI.Gameplay {
 	public class EndGameScreen : LayoutWindowType {
 
 		public override void OnInit() {
+			
+			base.OnInit();
+
 		}
 
 	}

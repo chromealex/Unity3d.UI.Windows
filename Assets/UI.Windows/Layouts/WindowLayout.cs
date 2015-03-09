@@ -38,17 +38,17 @@ namespace UnityEngine.UI.Windows {
 		private bool isAlive = false;
 		
 		#if UNITY_EDITOR
-		[ContextMenu("Setup")]
-		public void Setup() {
-
-			if (this.GetComponent<CanvasScaler>() != null) Component.DestroyImmediate(this.GetComponent<CanvasScaler>());
-			this.canvasScaler = this.gameObject.AddComponent<CanvasScaler>();
-
-		}
-
 		public virtual void OnValidate() {
 
 			this.elements = this.GetComponentsInChildren<WindowLayoutElement>(true).ToList();
+
+			if (this.canvasScaler == null || this.GetComponents<CanvasScaler>().Length > 1) {
+
+				if (this.GetComponent<CanvasScaler>() != null) Component.DestroyImmediate(this.GetComponent<CanvasScaler>());
+				this.canvasScaler = this.GetComponent<CanvasScaler>();
+				if (this.canvasScaler == null) this.canvasScaler = this.gameObject.AddComponent<CanvasScaler>();
+
+			}
 
 		}
 		#endif

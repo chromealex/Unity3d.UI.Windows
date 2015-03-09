@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Components;
 
 public class UIWindowExampleScreen : LayoutWindowType {
 
 	private UIWindowExampleComponent contentComponent;
 	private ButtonComponent buttonAlert;
-	private UIWindowExampleButtonComponent button;
+	private ButtonWithTipComponent button;
 	private bool closeOnButtonPress;
 
 	public void OnParametersPass(bool closeOnButtonPress) {
@@ -16,7 +17,7 @@ public class UIWindowExampleScreen : LayoutWindowType {
 		if (this.closeOnButtonPress == true) {
 			
 			this.contentComponent.SetText("This is the second instance of UIWindowExampleScreen. Look for this behaviour in UIWindowExampleScreen->OnInit() method.");
-			this.button.SetTextToTip("<b>Click here to close current instance.</b>\nYou can simply edit this text or pass it from your code. See UIWindowExampleTip and UIWindowExampleScreen.");
+			this.button.SetTextToTip("<b>Click here to close current instance.</b>\nYou can simply edit this text or pass it from the code. See UIWindowExampleTip and UIWindowExampleScreen.");
 
 		}
 
@@ -29,10 +30,10 @@ public class UIWindowExampleScreen : LayoutWindowType {
 		this.buttonAlert = this.GetWindow().GetLayoutComponent<ButtonComponent>(LayoutTag.Tag4);
 		this.buttonAlert.SetCallback(this.OnAlert);
 
-		this.button = this.GetWindow().GetLayoutComponent<UIWindowExampleButtonComponent>();
+		this.button = this.GetWindow().GetLayoutComponent<ButtonWithTipComponent>();
 		this.button.SetCallback(this.OnClick);
 
-		this.button.SetTextToTip("<b>Click here to open new instance.</b>\nYou can simply edit this text or pass it from your code. See UIWindowExampleTip and UIWindowExampleScreen.");
+		this.button.SetTextToTip("<b>Click here to open new instance.</b>\nYou can simply edit this text or pass it from the code. See UIWindowExampleTip and UIWindowExampleScreen.");
 
 	}
 

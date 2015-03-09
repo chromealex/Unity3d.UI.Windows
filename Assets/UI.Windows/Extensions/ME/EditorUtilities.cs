@@ -134,8 +134,11 @@ namespace ME {
 		public static T[] GetAssetsOfType<T>(string fileExtension = ".*", bool strongType = false) where T : Component {
 
 			List<T> tempObjects = new List<T>();
+			FileInfo[] goFileInfo = new FileInfo[0];
+			#if !UNITY_WEBPLAYER
 			DirectoryInfo directory = new DirectoryInfo(Application.dataPath);
 			FileInfo[] goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
+			#endif
 			
 			int i = 0; int goFileInfoLength = goFileInfo.Length;
 			FileInfo tempGoFileInfo; string tempFilePath;

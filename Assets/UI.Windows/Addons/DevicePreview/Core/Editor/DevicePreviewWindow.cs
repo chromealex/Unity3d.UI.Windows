@@ -6,10 +6,11 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 using System;
 using UnityEditor.UI.Windows.Plugins.DevicePreview.Output;
+using UnityEngine.UI.Windows.Plugins.DevicePreview;
 
 namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
-	public class DevicePreviewWindow : EditorWindow {
+	public class DevicePreviewWindow : EditorWindowExt {
 
 		public class GameView {
 
@@ -209,8 +210,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		private const float PANEL_WIDTH = 250f;
 		private const float MARGIN = 5f;
 
-		[MenuItem("Window/UI.Windows: Device Preview")]
-		public static void ShowEditor() {
+		public static DevicePreviewWindow ShowEditor(System.Action onClose) {
 			
 			var editor = DevicePreviewWindow.CreateInstance<DevicePreviewWindow>();
 			editor.title = "UI.Windows: Device Preview";
@@ -218,16 +218,22 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 			editor.gameView = new GameView(editor);
 
+			editor.onClose = onClose;
+
 			editor.Show();
 			editor.Focus();
 
+			return editor;
+
 		}
 
-		public void OnDisable() {
+		public override void OnClose() {
 			
 			this.Validate();
 
 			this.gameView.CleanUp();
+
+			if (this.onClose != null) this.onClose();
 
 		}
 
@@ -237,7 +243,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		}
 
-		public void Update() {
+		public override void Update() {
 			
 			this.Validate();
 
@@ -278,6 +284,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			GUILayout.EndArea();
 
 		}
+
+		private System.Action onClose;
 
 		public GameView gameView;
 

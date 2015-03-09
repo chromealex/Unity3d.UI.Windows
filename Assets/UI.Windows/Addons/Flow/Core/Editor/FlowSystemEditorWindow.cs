@@ -39,38 +39,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 	}
 
 	public class FlowSystemEditorWindow : EditorWindowExt {
-		
-		[MenuItem( "Assets/Open In Flow Editor", validate = true )]
-		private static bool ContextMenuValidate() {
 
-			return Selection.activeObject is FlowData;
-		}
-
-		[MenuItem( "Assets/Open Flow Editor" )]
-		[MenuItem( "Window/UI.Windows: Flow" )]
-		static void ShowEditorFromContextMenu() {
+		static FlowSystemEditorWindow ShowEditor(System.Action onClose) {
 
 			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
 			editor.title = "UI.Windows: Flow";
 			editor.autoRepaintOnSceneChange = true;
+			editor.onClose = onClose;
 
-			var selectedObject = Selection.activeObject as FlowData;
-
-			if ( selectedObject != null ) {
-
-				editor.OpenFlowData( selectedObject );
-			}
+			return editor;
 
 		}
 
-		[MenuItem("Window/UI.Windows: Flow")]
-		static void ShowEditor() {
-
-			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
-			editor.title = "UI.Windows: Flow";
-			editor.autoRepaintOnSceneChange = true;
-
-		}
+		private System.Action onClose;
 
 		private Rect scrollRect;
 		private Rect contentRect;
@@ -92,6 +73,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public override void OnClose() {
 
 			FlowSceneView.Reset(this.OnItemProgress);
+
+			if (this.onClose != null) this.onClose();
 
 		}
 
@@ -862,14 +845,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private void OpenFlowData(FlowData flowData) {
+		public void OpenFlowData(FlowData flowData) {
 
 			this.cachedData = flowData;
 			FlowSystem.SetData(flowData);
 
 		}
 
-		private void ChangeFlowData() {
+		public void ChangeFlowData() {
 
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;

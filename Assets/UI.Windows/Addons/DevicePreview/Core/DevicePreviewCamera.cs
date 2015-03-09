@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
+namespace UnityEngine.UI.Windows.Plugins.DevicePreview {
 
 	[ExecuteInEditMode]
 	public class DevicePreviewCamera : MonoBehaviour {
@@ -141,6 +142,10 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 					//camera.RenderToCubemap(this.targetTexture);
 					Graphics.Blit(this.TakeScreenshot(camera), this.targetTexture);
 
+				} else {
+
+					Debug.LogWarning("Out of sync: " + currentIteration + "/" + this.currentIteration);
+
 				}
 
 			}
@@ -179,8 +184,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				canvas.renderMode = RenderMode.ScreenSpaceCamera;
 
 			} else {
-
-				Debug.Log("ITERATION: " + currentIteration + " / " + this.currentIteration);
+				
+				Debug.LogWarning("Out of sync: " + currentIteration + "/" + this.currentIteration);
 
 			}
 
@@ -222,3 +227,4 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 	}
 
 }
+#endif

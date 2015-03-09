@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine.UI.Windows;
 using System.Linq;
 
-namespace UnitEditor.UI.Windows {
+namespace UnityEditor.UI.Windows {
 
 	[CanEditMultipleObjects()]
 	[CustomEditor(typeof(WindowBase), true)]
