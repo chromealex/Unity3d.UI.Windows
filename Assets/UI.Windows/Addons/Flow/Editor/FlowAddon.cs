@@ -1,13 +1,18 @@
-﻿#if UNITY_EDITOR
-using UnityEditor.UI.Windows.Plugins.DevicePreview;
+﻿using UnityEditor.UI.Windows.Plugins.DevicePreview;
 using UnityEditor;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Plugins.Flow;
-
-
-#endif
+using UnityEngine;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
+	
+	public interface IWindowFlowAddon : IWindowAddon {
+
+		void OnFlowWindowGUI(FlowWindow window);
+		void OnFlowSettingsGUI();
+		void OnFlowToolbarGUI(GUIStyle toolbarButton);
+		
+	}
 
 	public class Flow : IWindowAddon {
 		
@@ -55,6 +60,39 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			Flow.ShowEditor(onClose);
 
+		}
+		
+		public static void OnDrawWindowGUI(FlowWindow window) {
+			
+			var flowAddons = WindowUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.OnFlowWindowGUI(window);
+				
+			}
+			
+		}
+		
+		public static void OnDrawSettingsGUI() {
+			
+			var flowAddons = WindowUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.OnFlowSettingsGUI();
+				
+			}
+			
+		}
+		
+		public static void OnDrawToolbarGUI(GUIStyle buttonStyle) {
+			
+			var flowAddons = WindowUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.OnFlowToolbarGUI(buttonStyle);
+				
+			}
+			
 		}
 
 	}

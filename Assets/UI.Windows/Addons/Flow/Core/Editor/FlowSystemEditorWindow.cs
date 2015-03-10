@@ -57,7 +57,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Rect contentRect;
 		
 		private const float scrollSize = 18f;
-		
+
 		public override void OnActive() {
 
 			FlowSceneView.Show();
@@ -92,6 +92,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
 			
+			WindowUtilities.LoadAddons();
+
 			//var draw = !FlowSceneView.IsActive();
 
 			//if (draw == true) {
@@ -455,6 +457,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				//this.DrawToolbar(buttonStyle);
 
 				this.settingsWindowScroll = GUILayout.BeginScrollView(this.settingsWindowScroll, false, false);
+				
+				CustomGUI.Splitter();
+				GUILayout.Label("Base Modules:", EditorStyles.whiteLargeLabel);
+				CustomGUI.Splitter();
 
 				#region ROOT WINDOW
 				GUILayout.Label("Root Window", EditorStyles.boldLabel);
@@ -551,25 +557,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				if (this.tagsList != null) this.tagsList.DoLayoutList();
 				#endregion
-				
-				#region NAMESPACE
-				
-				GUILayout.Label("Compiler", EditorStyles.boldLabel);
 
-				EditorGUIUtility.labelWidth = 70f;
-
-				var namespaceName = EditorGUILayout.TextField("Namespace: ", FlowSystem.GetData().namespaceName);
-				if (namespaceName != FlowSystem.GetData().namespaceName) {
-
-					FlowSystem.GetData().namespaceName = namespaceName;
-					FlowSystem.Save();
-
-				}
-
-				EditorGUIUtility.LookLikeControls();
-
-				#endregion
-				
 				#region WINDOW EDITOR
 				
 				GUILayout.Label("Window Editor", EditorStyles.boldLabel);
@@ -583,6 +571,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				*/
 				#endregion
+
+				CustomGUI.Splitter();
+				GUILayout.Label("Installed Modules:", EditorStyles.whiteLargeLabel);
+				CustomGUI.Splitter();
+
+				Flow.OnDrawSettingsGUI();
 
 				GUILayout.EndScrollView();
 
@@ -908,31 +902,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 
-			var disabledDescr = string.Empty;
-			#if WEBPLAYER
-			GUI.enabled = false;
-			disabledDescr = " (WebPlayer Restriction)";
-			#endif
-			if (WindowGUIUtilities.ButtonAddon("FlowCompiler", "Compile UI... " + disabledDescr, "") == true) {
-
-
-
-			}
-			/*
-			if (GUILayout.Button("Compile UI" + disabledDescr, buttonStyle)) {
-				
-				FlowCompiler.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
-
-			}
-			
-			if (GUILayout.Button("Force Recompile UI" + disabledDescr, buttonStyle)) {
-
-				FlowCompiler.GenerateUI( AssetDatabase.GetAssetPath( this.cachedData ), recompile: true );
-				
-			}*/
-			#if WEBPLAYER
-			GUI.enabled = true;
-			#endif
+			Flow.OnDrawToolbarGUI(buttonStyle);
 
 			GUILayout.FlexibleSpace();
 
@@ -1550,30 +1520,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private void DrawCompiledStatus(FlowWindow window) {
-
-			if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
-
-				window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledBaseClassName + ".cs");
-
-			}
-
-			var oldColor = GUI.color;
-			var style = new GUIStyle("U2D.dragDotDimmed");
-			var styleCompiled = new GUIStyle("U2D.dragDot");
-			
-			var elemWidth = style.fixedWidth - 3f;
-			
-			var posY = -1f;
-			var posX = -1f;
-
-			GUI.color = window.compiled ? Color.white : Color.red;
-			GUI.Label(new Rect(posX, posY, elemWidth, style.fixedHeight), new GUIContent(string.Empty, window.compiled ? "Compiled" : "Not compiled"), window.compiled ? styleCompiled : style);
-
-			GUI.color = oldColor;
-
-		}
-
 		private void DrawNodeWindow(int id) {
 
 			EditorGUIUtility.labelWidth = 65f;
@@ -1607,8 +1553,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				GUILayout.EndHorizontal();
 				
 				this.DrawTags(window);
-				
-				this.DrawCompiledStatus(window);
+
+				Flow.OnDrawWindowGUI(window);
 
 				this.DragWindow(headerOnly: false);
 
