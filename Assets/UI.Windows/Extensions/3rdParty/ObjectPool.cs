@@ -218,21 +218,7 @@ namespace UnityEngine.Extensions {
 		}
 	}
 
-	public static class ObjectPoolExtensions
-	{
-		public static void SetTransformAs<T>(this T instance, T source) where T : Component {
-			
-			instance.transform.SetTransformAs(source.transform);
-			
-		}
-
-		public static void SetTransformAs(this Transform instance, Transform source) {
-
-			instance.localPosition = source.localPosition;
-			instance.localRotation = source.localRotation;
-			instance.localScale = source.localScale;
-			
-		}
+	public static class ObjectPoolExtensions {
 
 		public static void AddToAll<T> (this T prefab, T instance) where T : Component {
 			
@@ -279,6 +265,56 @@ namespace UnityEngine.Extensions {
 		{
 			return ObjectPool.Count (prefab);
 		}
+	}
+
+	public static class TransformExtensions {
+		
+		public static void SetParent<T>(this T instance, T source, bool setTransformAsSource = true) where T : Component {
+			
+			if (source != null) {
+
+				instance.transform.SetParent(source.transform);
+
+			} else {
+
+				instance.transform.SetParent(null);
+
+			}
+
+			if (setTransformAsSource == true) instance.SetTransformAs(source);
+
+		}
+
+		public static void SetTransformAs<T>(this T instance) where T : Component {
+			
+			instance.transform.SetTransformAs(null);
+			
+		}
+		
+		public static void SetTransformAs<T>(this T instance, T source) where T : Component {
+			
+			instance.transform.SetTransformAs(source.transform);
+			
+		}
+		
+		public static void SetTransformAs(this Transform instance, Transform source) {
+			
+			if (source == null) {
+				
+				instance.localPosition = Vector3.zero;
+				instance.localRotation = Quaternion.identity;
+				instance.localScale = Vector3.one;
+				
+			} else {
+				
+				instance.localPosition = source.localPosition;
+				instance.localRotation = source.localRotation;
+				instance.localScale = source.localScale;
+				
+			}
+			
+		}
+
 	}
 
 }

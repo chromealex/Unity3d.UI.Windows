@@ -137,7 +137,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			foreach ( var each in transitions ) {
 
 				var className = each.directory;
-				var classNameWithNamespace = GetNamespace( each ) + "." + GetBaseClassName( each );
+				var classNameWithNamespace = GetNamespace( each ) + "." + GetDerivedClassName(each);//GetBaseClassName( each );
 
 				result = result + FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod( className, classNameWithNamespace );
 			}
@@ -256,7 +256,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			try {
 
-				foreach ( var each in FlowSystem.GetWindows().Where( predicate ) ) {
+				foreach ( var each in FlowSystem.GetWindows().Where( (win) => !win.isDefaultLink && (predicate == null || predicate(win)) ) ) {
 
 					var relativePath = GetRelativePath( each, "/" );
 

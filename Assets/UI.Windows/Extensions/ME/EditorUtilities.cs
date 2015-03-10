@@ -132,7 +132,7 @@ namespace ME {
 
 		/// TODO: REPLACE WITH MY VERSION!!!
 		public static T[] GetAssetsOfType<T>(string fileExtension = ".*", bool strongType = false) where T : Component {
-
+			
 			List<T> tempObjects = new List<T>();
 			FileInfo[] goFileInfo = new FileInfo[0];
 			#if !UNITY_WEBPLAYER
@@ -144,14 +144,14 @@ namespace ME {
 			FileInfo tempGoFileInfo; string tempFilePath;
 			GameObject tempGO;
 			for (; i < goFileInfoLength; i++) {
-
+				
 				tempGoFileInfo = goFileInfo[i];
 				if (tempGoFileInfo == null)
 					continue;
 				
 				tempFilePath = tempGoFileInfo.FullName;
 				tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
-
+				
 				tempGO = AssetDatabase.LoadAssetAtPath(tempFilePath, typeof(Object)) as GameObject;
 				if (tempGO == null) {
 					//Debug.LogWarning("Skipping Null");
@@ -160,15 +160,55 @@ namespace ME {
 					//Debug.LogWarning("Skipping " + tempGO.GetType().ToString());
 					continue;
 				}
-
+				
 				if (strongType == true) {
-
+					
 					if (tempGO.GetComponent<T>().GetType().Name != typeof(T).Name) continue;
-
+					
 				}
-
+				
 				tempObjects.Add(tempGO.GetComponent<T>());
+				
+			}
+			
+			return tempObjects.ToArray();
+		}
 
+		public static T[] GetAssetsDataOfType<T>(string fileExtension = ".assets", bool strongType = false) where T : ScriptableObject {
+			
+			List<T> tempObjects = new List<T>();
+			FileInfo[] goFileInfo = new FileInfo[0];
+			#if !UNITY_WEBPLAYER
+			DirectoryInfo directory = new DirectoryInfo(Application.dataPath);
+			goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
+			#endif
+			
+			int i = 0; int goFileInfoLength = goFileInfo.Length;
+			FileInfo tempGoFileInfo; string tempFilePath;
+			ScriptableObject tempGO;
+			for (; i < goFileInfoLength; i++) {
+				
+				tempGoFileInfo = goFileInfo[i];
+				if (tempGoFileInfo == null)
+					continue;
+				
+				tempFilePath = tempGoFileInfo.FullName;
+				tempFilePath = tempFilePath.Replace(@"\", "/").Replace(Application.dataPath, "Assets");
+
+				tempGO = AssetDatabase.LoadAssetAtPath(tempFilePath, typeof(Object)) as ScriptableObject;
+				if (tempGO == null) {
+					//Debug.LogWarning("Skipping Null");
+					continue;
+				}
+				
+				if (strongType == true) {
+					
+					if ((tempGO is T) == false) continue;
+					
+				}
+				
+				tempObjects.Add(tempGO as T);
+				
 			}
 			
 			return tempObjects.ToArray();

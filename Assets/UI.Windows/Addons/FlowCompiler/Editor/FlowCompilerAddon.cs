@@ -25,7 +25,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			
 			#region NAMESPACE
 			
-			GUILayout.Label("Compiler", EditorStyles.boldLabel);
+			GUILayout.Label("Flow Compiler", EditorStyles.boldLabel);
 			
 			EditorGUIUtility.labelWidth = 70f;
 			

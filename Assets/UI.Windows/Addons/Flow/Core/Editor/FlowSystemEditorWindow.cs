@@ -99,8 +99,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			//if (draw == true) {
 
 			GUI.enabled = true;//!FlowSceneView.IsActive();
+			
+			var hasData = FlowSystem.HasData();
 
-				if (this._background == null) this._background = Resources.Load("UI.Windows/Flow/Background") as Texture2D;
+			if (hasData == false) {
+
+				this.BeginWindows();
+				
+				this.DrawDataSelection();
+				
+				this.EndWindows();
+
+			} else {
 
 				FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f);
 
@@ -110,8 +120,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				GUI.enabled = oldEnabled;
 				
 				this.DrawSettings(TOOLBAR_HEIGHT);
-
-				var hasData = FlowSystem.HasData();
 
 				IEnumerable<FlowWindow> windows = null;
 				IEnumerable<FlowWindow> containers = null;
@@ -141,16 +149,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				this.DrawBackground();
 
-				if (hasData == false) {
+				if (hasData == true && windows != null) {
 					
-					this.BeginWindows();
-
-					this.DrawDataSelection();
-
-					this.EndWindows();
-
-				} else {
-
 					this.tempAttaches.Clear();
 					foreach (var window in windows) {
 						
@@ -351,30 +351,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				GUI.enabled = true;
 
-			//}
-
-			/*if (FlowSceneView.IsActive() == true) {
-
-				var style = new GUIStyle(GUI.skin.button);
-
-				var rect = this.scrollRect;
-				rect.x = 0f;
-				rect.y = 0f;
-
-				var oldColor = GUI.color;
-
-				var color = Color.black;
-				color.a = 0.6f * this.itemProgress;
-				GUI.color = color;
-				if (GUI.Button(rect, string.Empty, style) == true) {
-
-					FlowSceneView.Reset(this.OnItemProgress);
-
-				}
-
-				GUI.color = oldColor;
-
-			}*/
+			}
 
 		}
 		
@@ -527,49 +504,55 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					buttonStyle.normal.background = buttonStyle.active.background;
 					buttonStyle.active.background = null;
 					buttonStyle.focused.background = null;
+					buttonStyle.wordWrap = false;
 
-					this.tagsList = new ReorderableList(FlowSystem.GetTags(), typeof(FlowTag), true, true, false, true);
+					var tagsSource = FlowSystem.GetTags();
+					if (tagsSource != null) {
 
-					this.tagsList.drawHeaderCallback += rect => GUI.Label(rect, label);
-					this.tagsList.drawElementCallback += (rect, index, active, focused) => {
+						this.tagsList = new ReorderableList(tagsSource, typeof(FlowTag), true, true, false, true);
 
-						var tags = FlowSystem.GetTags();
-						if (index < 0 || index >= tags.Count) return;
+						this.tagsList.drawHeaderCallback += rect => GUI.Label(rect, label);
+						this.tagsList.drawElementCallback += (rect, index, active, focused) => {
 
-						var tag = tags[index];
+							var tags = FlowSystem.GetTags();
+							if (index < 0 || index >= tags.Count) return;
 
-						var itemRect = new Rect(rect);
-						itemRect.x += itemRect.width;
-						itemRect.width = 14f;
+							var tag = tags[index];
 
-						var i = 0;
-						foreach (var style in styles) {
+							var itemRect = new Rect(rect);
+							itemRect.x += itemRect.width;
+							itemRect.width = 14f;
 
-							itemRect.x -= itemRect.width;
-							if (GUI.Button(itemRect, " ", style) == true) {
+							var i = 0;
+							foreach (var style in styles) {
 
-								tag.color = i;
+								itemRect.x -= itemRect.width;
+								if (GUI.Button(itemRect, " ", style) == true) {
+
+									tag.color = i;
+
+								}
+
+								if (tag.color == i) GUI.Label(new Rect(itemRect.x - 2f, itemRect.y - 2f, itemRect.width, itemRect.height), string.Empty, selected);
+
+								++i;
 
 							}
 
-							if (tag.color == i) GUI.Label(new Rect(itemRect.x - 2f, itemRect.y - 2f, itemRect.width, itemRect.height), string.Empty, selected);
+							rect.width = itemRect.x - rect.x - 5f;
+							rect.height -= 2f;
+							var title = GUI.TextField(rect, tag.title, buttonStyle);
+							if (title != tag.title) {
+								
+								tag.title = title;
+								FlowSystem.SetDirty();
+								
+							}
 
-							++i;
+						};
+						
+					}
 
-						}
-
-						rect.width = itemRect.x - rect.x - 5f;
-						rect.height -= 2f;
-						var title = GUI.TextArea(rect, tag.title, buttonStyle);
-						if (title != tag.title) {
-							
-							tag.title = title;
-							FlowSystem.SetDirty();
-							
-						}
-
-					};
-					
 				}
 				
 				if (this.tagsList != null) this.tagsList.DoLayoutList();
@@ -706,6 +689,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private AnimatedValues.AnimFloat selectionRectAnimation;
 		private void DrawBackground() {
+			
+			if (this._background == null) this._background = Resources.Load("UI.Windows/Flow/Background") as Texture2D;
 
 			var oldColor = GUI.color;
 
@@ -830,29 +815,136 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private Vector2 dataSelectionScroll;
+		private Texture splash;
 		private FlowData cachedData;
+		private FlowData[] scannedData;
 		private void DrawDataSelection() {
 
-			var rect = FlowSystemEditor.GetCenterRect(this.scrollRect, 300f, 100f);
+			this.DrawBackground();
 
-			rect.height = 0f;
-			GUILayout.Window(0, rect, (id) => {
+			if (this.splash == null) this.splash = Resources.Load("UI.Windows/Flow/Splash") as Texture;
 
-				this.cachedData = EditorGUILayout.ObjectField(this.cachedData, typeof(FlowData), false) as FlowData;
+			var rect = FlowSystemEditor.GetCenterRect(this.position, this.splash.width, this.splash.height);
 
-				GUILayout.BeginHorizontal();
+			var boxStyle = new GUIStyle(GUI.skin.box);
+			boxStyle.margin = new RectOffset(0, 0, 0, 0);
+			boxStyle.padding = new RectOffset(0, 0, 0, 0);
+			boxStyle.normal.background = null;
+			GUI.Box(rect, this.splash, boxStyle);
 
-				GUILayout.FlexibleSpace();
+			var width = 730f;
+			var height = 456f;
+			var rectOffset = FlowSystemEditor.GetCenterRect(this.position, width, height);
 
-				if (GUILayout.Button("Load", GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+			var marginLeft = 240f;
+			var margin = 20f;
 
-					FlowSystem.SetData(this.cachedData);
+			var padding = 20f;
+
+			GUILayout.BeginArea(rectOffset);
+			{
+
+				var borderWidth = width - marginLeft - margin;
+				var borderHeight = height - margin * 2f;
+
+				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), new GUIStyle("sv_iconselector_labelselection"));
+				{
+
+					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f));
+					{
+
+						var headerStyle = new GUIStyle("LODLevelNotifyText");
+						headerStyle.fontSize = 14;
+						headerStyle.alignment = TextAnchor.MiddleCenter;
+
+						GUILayoutExt.LabelWithShadow("UI.Windows Flow Extension v" + PlayerSettings.bundleVersion, headerStyle);
+						
+						GUILayout.Space(10f);
+
+						GUILayoutExt.LabelWithShadow("Open one of your projects:", EditorStyles.whiteLabel);
+						this.dataSelectionScroll = GUILayout.BeginScrollView(this.dataSelectionScroll, false, true, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, new GUIStyle("sv_iconselector_labelselection"));
+						{
+
+							if (this.scannedData == null) {
+
+								this.scannedData = EditorUtilities.GetAssetsDataOfType<FlowData>("*.asset", true);
+
+							} else {
+
+								if (this.scannedData.Length == 0) {
+
+									var center = new GUIStyle(EditorStyles.whiteLabel);
+									center.alignment = TextAnchor.MiddleCenter;
+									center.fixedHeight = 0f;
+									center.stretchHeight = true;
+
+									GUILayoutExt.LabelWithShadow("No projects found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", center);
+
+								} else {
+
+									var buttonStyle = new GUIStyle("SelectionRect");
+									buttonStyle.padding = new RectOffset(15, 15, 15, 15);
+									buttonStyle.margin = new RectOffset(2, 2, 2, 2);
+									buttonStyle.fixedWidth = 0f;
+									buttonStyle.fixedHeight = 0f;
+									buttonStyle.stretchWidth = true;
+									buttonStyle.stretchHeight = false;
+									buttonStyle.normal.textColor = Color.black;
+									buttonStyle.fontSize = 12;
+
+									var buttonStyleSelected = new GUIStyle(buttonStyle);
+
+									buttonStyle.normal.background = null;
+
+									foreach (var data in this.scannedData) {
+
+										if (GUILayout.Button(data.name, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
+
+											this.cachedData = data;
+
+										}
+
+									}
+
+								}
+
+							}
+
+							GUILayout.FlexibleSpace();
+
+						}
+						GUILayout.EndScrollView();
+						
+						GUILayout.Space(10f);
+
+						GUILayoutExt.LabelWithShadow("Or select the project file:", EditorStyles.whiteLabel);
+						this.cachedData = EditorGUILayout.ObjectField(this.cachedData, typeof(FlowData), false) as FlowData;
+
+						CustomGUI.Splitter();
+
+						GUILayout.BeginHorizontal();
+						{
+							
+							GUILayout.FlexibleSpace();
+
+							if (GUILayout.Button("Open", GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+								
+								FlowSystem.SetData(this.cachedData);
+								
+							}
+							
+						}
+						GUILayout.EndHorizontal();
+
+					}
+					GUILayout.EndArea();
 
 				}
+				GUILayout.EndArea();
 
-				GUILayout.EndHorizontal();
-
-			}, "Select Data File", GUILayout.ExpandHeight(true));
+			}
+			GUILayout.EndArea();
 
 		}
 
@@ -867,6 +959,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;
+			this.tagsList = null;
 
 		}
 
