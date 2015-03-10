@@ -21,7 +21,7 @@ namespace {NAMESPACE_NAME} {
 
 		public override void OnInit() {
 		}
-
+		{TRANSITION_METHODS}
 	}
 
 }

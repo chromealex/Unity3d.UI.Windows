@@ -33,7 +33,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public string compiledDirectory = string.Empty;
 		public string compiledNamespace = string.Empty;
 		public string compiledScreenName = string.Empty;
-		public string compiledClassName = string.Empty;
+		public string compiledBaseClassName = string.Empty;
+		public string compiledDerivedClassName = string.Empty;
 
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 
