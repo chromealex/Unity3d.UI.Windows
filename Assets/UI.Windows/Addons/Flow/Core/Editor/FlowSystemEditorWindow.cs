@@ -6,7 +6,6 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 using UnityEditorInternal;
 using ME;
-using UnityEngine.UI.Windows.Plugins.FlowCompiler;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -919,18 +918,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 
 			}
-			
+			/*
 			if (GUILayout.Button("Compile UI" + disabledDescr, buttonStyle)) {
-
-				FlowCompilerSystem.GenerateUI( AssetDatabase.GetAssetPath( this.cachedData ) );
+				
+				FlowCompiler.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
 
 			}
 			
 			if (GUILayout.Button("Force Recompile UI" + disabledDescr, buttonStyle)) {
 
-				FlowCompilerSystem.GenerateUI( AssetDatabase.GetAssetPath( this.cachedData ), recompile: true );
+				FlowCompiler.GenerateUI( AssetDatabase.GetAssetPath( this.cachedData ), recompile: true );
 				
-			}
+			}*/
 			#if WEBPLAYER
 			GUI.enabled = true;
 			#endif
