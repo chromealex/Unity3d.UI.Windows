@@ -15,9 +15,9 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
-namespace ExampleProject.UI.Menu.GlobalMap {
+namespace ExampleProject.UI.GameplayLoader {
 
-	public class GlobalMapScreen : GlobalMapScreenBase {
+	public class GameplayLoaderScreen : GameplayLoaderScreenBase {
 
 	}
 

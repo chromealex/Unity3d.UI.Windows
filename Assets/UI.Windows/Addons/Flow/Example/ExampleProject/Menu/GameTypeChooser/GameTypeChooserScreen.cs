@@ -15,12 +15,9 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
-namespace ExampleProject.UI.Menu {
+namespace ExampleProject.UI.Menu.GameTypeChooser {
 
-	public class GameTypeChooserScreen : LayoutWindowType {
-
-		public override void OnInit() {
-		}
+	public class GameTypeChooserScreen : GameTypeChooserScreenBase {
 
 	}
 

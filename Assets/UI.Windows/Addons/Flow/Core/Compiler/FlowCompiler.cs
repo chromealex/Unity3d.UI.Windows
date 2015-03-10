@@ -22,8 +22,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		private static void CreateDirectory( string root, string folder ) {
 
-			var path = Path.Combine( root, folder );
+			folder = folder.Trim('/');
 
+			var path = Path.Combine( root, folder );
 			if ( Directory.Exists( path ) == false ) {
 
 				Directory.CreateDirectory( path );

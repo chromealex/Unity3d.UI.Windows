@@ -15,15 +15,9 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
-namespace ExampleProject.UI.Gameplay {
+namespace ExampleProject.UI.Gameplay.EndGame {
 
-	public class EndGameScreen : LayoutWindowType {
-
-		public override void OnInit() {
-			
-			base.OnInit();
-
-		}
+	public class EndGameScreen : EndGameScreenBase {
 
 	}
 

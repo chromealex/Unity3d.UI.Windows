@@ -4,21 +4,16 @@
 //
 //     You may simply edit this file to setup your behavior.
 // </auto-generated>
-// <example>
-// Pass parameters here
-// Example: WindowSystem.Show<T>(true, "some text", this.transform);
-// 
-// 	public void OnParametersPass(bool anyBool, string text, Transform transform) {
-// 	}
-// </example>
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
-namespace ExampleProject.UI.Menu.GlobalMap {
+namespace ExampleProject.UI.Shop.Menu.Shop {
 
-	public class GlobalMapScreen : GlobalMapScreenBase {
+	public class ShopScreenBase : LayoutWindowType {
 
+
+		
 	}
 
 }

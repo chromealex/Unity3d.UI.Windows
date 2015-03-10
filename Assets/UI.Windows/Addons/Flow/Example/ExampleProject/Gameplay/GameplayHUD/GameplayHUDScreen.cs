@@ -15,12 +15,9 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
-namespace ExampleProject.UI.Gameplay {
+namespace ExampleProject.UI.Gameplay.GameplayHUD {
 
-	public class GameplayHUDScreen : LayoutWindowType {
-
-		public override void OnInit() {
-		}
+	public class GameplayHUDScreen : GameplayHUDScreenBase {
 
 	}
 

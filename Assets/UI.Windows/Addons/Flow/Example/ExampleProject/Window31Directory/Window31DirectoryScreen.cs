@@ -15,9 +15,9 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
-namespace ExampleProject.UI.Menu.GlobalMap {
+namespace ExampleProject.UI.Window31Directory {
 
-	public class GlobalMapScreen : GlobalMapScreenBase {
+	public class Window31DirectoryScreen : Window31DirectoryScreenBase {
 
 	}
 
