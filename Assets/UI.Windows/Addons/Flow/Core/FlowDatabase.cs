@@ -177,7 +177,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				var prefab = source.GetComponent<WindowBase>();
 				instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowBase;
 
-				var name = window.compiledNamespace + "." + window.compiledClassName;
+				var name = window.compiledNamespace + "." + window.compiledBaseClassName;
 				instance = FlowDatabase.ReplaceComponents<FlowLayoutWindowTypeTemplate, WindowBase>(instance as FlowLayoutWindowTypeTemplate, System.Type.GetType(name));
 
 				FlowDatabase.SaveScreen(instance);

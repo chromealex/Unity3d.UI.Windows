@@ -46,7 +46,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			return Selection.activeObject is FlowData;
 		}
 
-		[MenuItem( "Assets/Open Flow Editor" )]
+		[MenuItem( "Assets/Open In Flow Editor" )]
 		[MenuItem( "Window/UI.Windows: Flow" )]
 		static void ShowEditorFromContextMenu() {
 
@@ -1565,7 +1565,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
 
-				window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledClassName + ".cs");
+				window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledBaseClassName + ".cs");
 
 			}
 
