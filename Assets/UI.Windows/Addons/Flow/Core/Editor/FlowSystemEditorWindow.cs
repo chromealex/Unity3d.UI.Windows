@@ -1548,7 +1548,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
 
-				window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledClassName + ".cs");
+				window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledBaseClassName + ".cs");
 
 			}
 

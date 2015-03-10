@@ -137,7 +137,7 @@ namespace ME {
 			FileInfo[] goFileInfo = new FileInfo[0];
 			#if !UNITY_WEBPLAYER
 			DirectoryInfo directory = new DirectoryInfo(Application.dataPath);
-			FileInfo[] goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
+			goFileInfo = directory.GetFiles("*" + fileExtension, SearchOption.AllDirectories);
 			#endif
 			
 			int i = 0; int goFileInfoLength = goFileInfo.Length;
