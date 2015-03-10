@@ -913,6 +913,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.enabled = false;
 			disabledDescr = " (WebPlayer Restriction)";
 			#endif
+			if (WindowGUIUtilities.ButtonAddon("FlowCompiler", "Compile UI... " + disabledDescr, "") == true) {
+
+
+
+			}
+			/*
 			if (GUILayout.Button("Compile UI" + disabledDescr, buttonStyle)) {
 				
 				FlowCompiler.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
@@ -923,7 +929,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				FlowCompiler.GenerateUI( AssetDatabase.GetAssetPath( this.cachedData ), recompile: true );
 				
-			}
+			}*/
 			#if WEBPLAYER
 			GUI.enabled = true;
 			#endif

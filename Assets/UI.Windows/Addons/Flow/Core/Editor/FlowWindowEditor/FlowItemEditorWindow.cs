@@ -1159,7 +1159,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void ReloadLayouts() {
 
 			this.layouts.Clear();
-			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowCompiler.LAYOUT_FOLDER + "/", "*Layout.prefab");
+			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowDatabase.LAYOUT_FOLDER + "/", "*Layout.prefab");
 			foreach (var prefab in prefabs) {
 				
 				var layout = AssetDatabase.LoadAssetAtPath(prefab, typeof(WindowLayout)) as WindowLayout;
@@ -1196,7 +1196,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void ReloadScreens() {
 			
 			this.screens.Clear();
-			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowCompiler.SCREENS_FOLDER + "/", "*Screen.prefab");
+			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowDatabase.SCREENS_FOLDER + "/", "*Screen.prefab");
 			foreach (var prefab in prefabs) {
 				
 				var screen = AssetDatabase.LoadAssetAtPath(prefab, typeof(WindowBase)) as WindowBase;

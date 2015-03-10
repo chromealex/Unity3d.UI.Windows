@@ -10,7 +10,7 @@ namespace UnityEditor.UI.Windows {
 
 			if (WindowUtilities.IsAddonAvailable(addonName) == true) {
 				
-				if (GUILayout.Button("Build Preview") == true) {
+				if (GUILayout.Button(buttonCaption) == true) {
 
 					result = true;
 

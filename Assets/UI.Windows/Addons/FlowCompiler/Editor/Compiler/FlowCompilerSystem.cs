@@ -6,15 +6,11 @@ using System.Linq;
 using ME;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI.Windows.Plugins.Flow;
 
-namespace UnityEngine.UI.Windows.Plugins.Flow {
+namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
-	public static class FlowCompiler {
-
-		public const string COMPONENTS_FOLDER = "Components";
-		public const string LAYOUT_FOLDER = "Layouts";
-		public const string SCREENS_FOLDER = "Screens";
-		public const string OTHER_NAME = "Other";
+	public static class FlowCompilerSystem {
 
 		private static string currentProject;
 
@@ -165,9 +161,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				if ( baseClassTemplate != null && derivedClassTemplate != null ) {
 
 					CreateDirectory( fullpath, string.Empty );
-					CreateDirectory( fullpath, COMPONENTS_FOLDER );
-					CreateDirectory( fullpath, LAYOUT_FOLDER );
-					CreateDirectory( fullpath, SCREENS_FOLDER );
+					CreateDirectory( fullpath, FlowDatabase.COMPONENTS_FOLDER );
+					CreateDirectory( fullpath, FlowDatabase.LAYOUT_FOLDER );
+					CreateDirectory( fullpath, FlowDatabase.SCREENS_FOLDER );
 
 					if ( Directory.Exists( window.compiledDirectory ) && fullpath != window.compiledDirectory ) {
 
@@ -247,7 +243,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var basePath = directory + currentProject;
 
 			CreateDirectory( basePath, string.Empty );
-			CreateDirectory( basePath, OTHER_NAME );
+			CreateDirectory( basePath, FlowDatabase.OTHER_NAME );
 
 			AssetDatabase.StartAssetEditing();
 

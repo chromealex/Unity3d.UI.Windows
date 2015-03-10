@@ -4,6 +4,7 @@ using ME;
 
 using System.Reflection;
 using System.Linq;
+using UnityEngine.UI.Windows.Plugins.Flow;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,6 +14,11 @@ using ADB = UnityEditor.AssetDatabase;
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 	public class FlowDatabase {
+		
+		public const string COMPONENTS_FOLDER = "Components";
+		public const string LAYOUT_FOLDER = "Layouts";
+		public const string SCREENS_FOLDER = "Screens";
+		public const string OTHER_NAME = "Other";
 
 		public static void RemoveLayoutComponent(Transform element) {
 
@@ -116,7 +122,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			if (tplData != null) {
 				
 				var sourcepath = ADB.GetAssetPath(tplData);
-				var filepath = window.compiledDirectory + "/" + FlowCompiler.LAYOUT_FOLDER + "/" + tplName + "Layout.prefab";
+				var filepath = window.compiledDirectory + "/" + FlowDatabase.LAYOUT_FOLDER + "/" + tplName + "Layout.prefab";
 				filepath = filepath.Replace("//", "/");
 				
 				System.IO.File.Copy(sourcepath, filepath, true);
@@ -167,7 +173,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			if (tplData != null) {
 				
 				var sourcepath = ADB.GetAssetPath(tplData);
-				var filepath = window.compiledDirectory + "/" + FlowCompiler.SCREENS_FOLDER + "/" + tplName + "Screen.prefab";
+				var filepath = window.compiledDirectory + "/" + FlowDatabase.SCREENS_FOLDER + "/" + tplName + "Screen.prefab";
 				filepath = filepath.Replace("//", "/");
 				
 				System.IO.File.Copy(sourcepath, filepath, true);
