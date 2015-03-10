@@ -23,8 +23,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	};
 
 	public class FlowData : ScriptableObject {
-
+		
 		public string namespaceName;
+		public bool forceRecompile;
 
 		public Vector2 scrollPos = new Vector2(-1f, -1f);
 

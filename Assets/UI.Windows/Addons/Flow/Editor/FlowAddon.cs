@@ -76,12 +76,32 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public static void OnDrawSettingsGUI() {
 			
 			var flowAddons = WindowUtilities.GetAddons<IWindowFlowAddon>();
-			foreach (var addon in flowAddons) {
-				
-				addon.OnFlowSettingsGUI();
-				
-			}
+			if (flowAddons.Count == 0) {
+
+				GUILayout.Label("No Modules Have Been Installed.");
+
+			} else {
+
+				foreach (var addon in flowAddons) {
+					
+					addon.OnFlowSettingsGUI();
+					
+				}
 			
+			}
+
+			CustomGUI.Splitter();
+
+			var buttonStyle = new GUIStyle(GUI.skin.button);
+			buttonStyle.fontSize = 12;
+
+			var content = new GUIContent("Install Modules...");
+			if (GUILayout.Button(content, buttonStyle, GUILayout.Height(40f)) == true) {
+
+				Application.OpenURL(VersionInfo.downloadLink);
+
+			}
+
 		}
 		
 		public static void OnDrawToolbarGUI(GUIStyle buttonStyle) {

@@ -33,12 +33,20 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			if (namespaceName != FlowSystem.GetData().namespaceName) {
 				
 				FlowSystem.GetData().namespaceName = namespaceName;
-				FlowSystem.Save();
+				FlowSystem.SetDirty();
 				
 			}
 			
 			EditorGUIUtility.LookLikeControls();
-			
+
+			var forceRecompile = GUILayout.Toggle(FlowSystem.GetData().forceRecompile, "Force Recompile");
+			if (forceRecompile != FlowSystem.GetData().forceRecompile) {
+				
+				FlowSystem.GetData().forceRecompile = forceRecompile;
+				FlowSystem.SetDirty();
+				
+			}
+
 			#endregion
 
 		}

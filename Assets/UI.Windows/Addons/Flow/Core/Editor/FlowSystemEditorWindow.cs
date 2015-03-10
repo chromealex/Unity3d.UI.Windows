@@ -523,13 +523,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					var selected = new GUIStyle("U2D.pivotDotActive");
 
+					var buttonStyle = new GUIStyle(EditorStyles.miniButton);
+					buttonStyle.normal.background = buttonStyle.active.background;
+					buttonStyle.active.background = null;
+					buttonStyle.focused.background = null;
+
 					this.tagsList = new ReorderableList(FlowSystem.GetTags(), typeof(FlowTag), true, true, false, true);
 
 					this.tagsList.drawHeaderCallback += rect => GUI.Label(rect, label);
 					this.tagsList.drawElementCallback += (rect, index, active, focused) => {
 
-						var tag = FlowSystem.GetTags()[index];
-						GUI.Label(rect, tag.title);
+						var tags = FlowSystem.GetTags();
+						if (index < 0 || index >= tags.Count) return;
+
+						var tag = tags[index];
 
 						var itemRect = new Rect(rect);
 						itemRect.x += itemRect.width;
@@ -551,6 +558,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						}
 
+						rect.width = itemRect.x - rect.x - 5f;
+						rect.height -= 2f;
+						var title = GUI.TextArea(rect, tag.title, buttonStyle);
+						if (title != tag.title) {
+							
+							tag.title = title;
+							FlowSystem.SetDirty();
+							
+						}
+
 					};
 					
 				}
@@ -566,7 +583,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (editorWindowAsPopup != FlowSystem.GetData().editorWindowAsPopup) {
 
 					FlowSystem.GetData().editorWindowAsPopup = editorWindowAsPopup;
-					FlowSystem.Save();
+					FlowSystem.SetDirty();
 
 				}
 				*/
@@ -1171,7 +1188,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								style.fixedWidth = tagStyle.fixedWidth;
 
 								if (GUILayout.Button(tag.title, style) == true) {
-									
+
+									this.tagCaption = string.Empty;
+									this.showTagsPopupId = -1;
+
 									window.AddTag(tag);
 									
 								}
@@ -1465,7 +1485,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 					}
 					
-					FlowSystem.Save();
+					FlowSystem.SetDirty();
 					
 				}
 				
@@ -1484,7 +1504,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 					}
 					
-					FlowSystem.Save();
+					FlowSystem.SetDirty();
 					
 				}
 

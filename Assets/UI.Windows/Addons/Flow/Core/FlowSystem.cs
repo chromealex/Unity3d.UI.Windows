@@ -45,6 +45,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
+		public static void SetDirty() {
+
+			FlowSystem.instance.data.isDirty = true;
+
+		}
+
 		public static FlowData GetData() {
 			
 			return FlowSystem.instance.data;

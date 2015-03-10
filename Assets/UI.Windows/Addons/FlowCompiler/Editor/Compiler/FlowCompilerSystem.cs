@@ -12,6 +12,8 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 	public static class FlowCompilerSystem {
 
+		public static string currentNamespace;
+
 		private static string currentProject;
 
 #if UNITY_EDITOR
@@ -30,7 +32,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		private static string GetNamespace() {
 
-			return FlowSystem.GetData().namespaceName;
+			return currentNamespace;//FlowSystem.GetData().namespaceName;
 		}
 
 		private static string GetBaseClassName( FlowWindow flowWindow ) {
@@ -144,6 +146,8 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		}
 
 		private static void GenerateUIWindow( string fullpath, FlowWindow window, bool recompile = false ) {
+
+			if (window.isDefaultLink == true) return;
 
 			var isCompiledInfoInvalid = window.compiled && CompiledInfoIsInvalid( window );
 
@@ -270,10 +274,25 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			AssetDatabase.StopAssetEditing();
 		}
-
+		
 		public static void GenerateUIByTag( string pathToData, bool recompile = false, int tag = 0 ) {
-
+			
 			GenerateUI( pathToData, recompile, flowWindow => flowWindow.tags.Contains( tag ) );
+		}
+		
+		public static void GenerateUIByTags( string pathToData, int[] tags, bool recompile = false ) {
+			
+			GenerateUI( pathToData, recompile, flowWindow => {
+
+				foreach (var tag in flowWindow.tags) {
+
+					if (tags.Contains(tag) == true) return true;
+
+				}
+
+				return false;
+
+			});
 		}
 
 		public static void GenerateWindow( string pathToData, bool recompile = false, FlowWindow window = null ) {

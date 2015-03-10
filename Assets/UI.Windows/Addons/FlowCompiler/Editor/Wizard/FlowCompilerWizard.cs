@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI.Windows.Plugins.Flow;
+using UnityEngine.UI.Windows.Plugins.FlowCompiler;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 	public class FlowCompilerWizard : EditorWindowExt {
+
+		public static object compilationSync = null;
 
 		public static FlowCompilerWizard ShowEditor(System.Action onClose) {
 
@@ -14,8 +20,8 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			var rootWidth = rootWindow.position.width;
 			var rootHeight = rootWindow.position.height;
 
-			var width = 400f;
-			var height = 300f;
+			var width = 500f;
+			var height = 400f;
 
 			FlowCompilerWizard editor = null;
 
@@ -32,13 +38,305 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 			editor.position = new Rect(rootX + rootWidth * 0.5f - width * 0.5f, rootY + rootHeight * 0.5f - height * 0.5f, width, height);
 
-			editor.Focus();
+			editor.compileNamespace = FlowSystem.GetData().namespaceName;
+			editor.forceRecompile = FlowSystem.GetData().forceRecompile;
+			editor.partIndex = 0;
+
+			FlowCompilerWizard.compilationSync = new object();
 
 			return editor;
 
 		}
 
+		private int partIndex = 0;
+		private int processPartIndex = 1;
+		private int parts = 4;
 
+		public void OnGUI() {
+			
+			if (this.partIndex <= this.processPartIndex && FlowCompilerWizard.compilationSync == null) {
+
+				this.Close();
+				return;
+
+			}
+
+			GUILayout.BeginHorizontal();
+			{
+
+				GUILayout.BeginVertical(GUILayout.Width(160f), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+				{
+
+					GUILayout.Box("test", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+
+				}
+				GUILayout.EndVertical();
+
+				GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+				{
+					switch (partIndex) {
+						
+					case 0:
+						this.DrawPart1();
+						break;
+						
+					case 1:
+						this.DrawPart2();
+						break;
+						
+					case 2:
+						this.DrawPart3();
+						break;
+						
+					case 3:
+						this.DrawPart4();
+						break;
+
+					}
+
+				}
+				GUILayout.EndVertical();
+
+			}
+			GUILayout.EndHorizontal();
+
+		}
+		
+		public void DrawPart4() {
+			
+			GUILayout.Label("Finish", EditorStyles.whiteLargeLabel);
+			
+			GUILayout.FlexibleSpace();
+
+			GUILayout.Label("All files were successfully compiled!");
+
+			GUILayout.FlexibleSpace();
+
+			this.DrawBottom();
+
+		}
+
+		public void DrawPart3() {
+			
+			GUILayout.Label("Processing...", EditorStyles.whiteLargeLabel);
+			
+			GUILayout.FlexibleSpace();
+
+			if (EditorApplication.isCompiling == true) {
+
+				EditorGUILayout.HelpBox("Wait until the project is compiled...", MessageType.None);
+
+			} else {
+
+				++this.partIndex;
+				this.Repaint();
+
+			}
+
+			GUILayout.FlexibleSpace();
+
+			GUI.enabled = false;
+			this.DrawBottom();
+			GUI.enabled = true;
+
+		}
+
+		private Vector2 tagsScroll;
+		public void DrawPart2() {
+			
+			GUILayout.Label("Tags", EditorStyles.whiteLargeLabel);
+			
+			GUILayout.FlexibleSpace();
+
+			this.tagsScroll = GUILayout.BeginScrollView(this.tagsScroll);
+			
+			var tagStyles = new GUIStyle[7] {
+				
+				new GUIStyle("sv_label_1"),
+				new GUIStyle("sv_label_2"),
+				new GUIStyle("sv_label_3"),
+				new GUIStyle("sv_label_4"),
+				new GUIStyle("sv_label_5"),
+				new GUIStyle("sv_label_6"),
+				new GUIStyle("sv_label_7")
+				
+			};
+
+			foreach (var tag in FlowSystem.GetData().tags) {
+				
+				var tagStyle = tagStyles[tag.color];
+				tagStyle.alignment = TextAnchor.MiddleLeft;
+				tagStyle.stretchWidth = false;
+				tagStyle.stretchHeight = false;
+				tagStyle.margin = new RectOffset(0, 0, 2, 2);
+
+				GUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+				var oldState = !this.tagsIgnored.Contains(tag.id);
+				var state = GUILayout.Toggle(oldState, string.Empty);
+
+				if (GUILayout.Button(tag.title, tagStyle) == true) {
+
+					state = !oldState;
+
+				}
+
+				if (oldState != state) {
+					
+					if (state == false) {
+						
+						this.tagsIgnored.Add(tag.id);
+						
+					} else {
+						
+						this.tagsIgnored.Remove(tag.id);
+						
+					}
+					
+				}
+
+				GUILayout.EndHorizontal();
+				
+			}
+
+			GUILayout.EndScrollView();
+			
+			EditorGUILayout.HelpBox("All tags included by default.", MessageType.Info);
+			
+			CustomGUI.Splitter();
+			
+			this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
+			
+			CustomGUI.Splitter();
+			
+			GUILayout.FlexibleSpace();
+
+			this.DrawBottom();
+
+		}
+
+		private string compileNamespace;
+		private bool saveDefaultSettings = false;
+		private bool forceRecompile = false;
+		private List<int> tagsIgnored = new List<int>();
+		public void DrawPart1() {
+
+			GUILayout.Label("Build Settings", EditorStyles.whiteLargeLabel);
+
+			GUILayout.FlexibleSpace();
+
+			GUILayout.Label("Namespace:");
+			this.compileNamespace = GUILayout.TextField(this.compileNamespace);
+
+			CustomGUI.Splitter();
+			
+			this.forceRecompile = GUILayout.Toggle(this.forceRecompile, "Force to recompile all");
+			EditorGUILayout.HelpBox("By default all not compiled windows will be compiled. If you want to recompile all *ScreenBase windows - turn on this flag. Your *Screen code will not be changed in any case.", MessageType.Info);
+			
+			CustomGUI.Splitter();
+
+			this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
+			
+			CustomGUI.Splitter();
+
+			GUILayout.FlexibleSpace();
+
+			this.DrawBottom();
+
+		}
+
+		private void DrawBottom() {
+			
+			GUILayout.BeginHorizontal();
+			{
+				var firstPart = (this.partIndex == 0);
+				var lastPart = (this.partIndex == this.parts - 1);
+				
+				var oldEnabled = GUI.enabled;
+
+				GUI.enabled = !lastPart;
+				if (GUILayout.Button("Cancel", GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+					
+					this.Close();
+					
+				}
+				
+				GUILayout.FlexibleSpace();
+
+				GUI.enabled = oldEnabled && !firstPart && !lastPart;
+				if (GUILayout.Button("Back", GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+					
+					--this.partIndex;
+					
+				}
+				GUI.enabled = oldEnabled;
+
+				if (this.partIndex == this.processPartIndex) {
+
+					if (GUILayout.Button("GO!", GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+						
+						++this.partIndex;
+						this.Repaint();
+
+						if (this.saveDefaultSettings == true) {
+							
+							FlowSystem.GetData().namespaceName = this.compileNamespace;
+							FlowSystem.GetData().forceRecompile = this.forceRecompile;
+							FlowSystem.Save();
+							
+						}
+						
+						FlowCompilerSystem.currentNamespace = this.compileNamespace;
+						
+						if (this.tagsIgnored.Count == 0) {
+							
+							// Build all
+							
+							FlowCompilerSystem.GenerateUI(AssetDatabase.GetAssetPath(FlowSystem.GetData()), this.forceRecompile);
+							
+						} else {
+
+							var tags = new List<int>();
+							foreach (var tag in FlowSystem.GetData().tags) {
+
+								if (this.tagsIgnored.Contains(tag.id) == false) tags.Add(tag.id);
+
+							}
+
+							FlowCompilerSystem.GenerateUIByTags(AssetDatabase.GetAssetPath(FlowSystem.GetData()), tags.ToArray(), this.forceRecompile);
+							
+						}
+
+						this.Repaint();
+
+					}
+
+				} else {
+
+					if (lastPart == true) {
+						
+						if (GUILayout.Button("Finish", GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+
+							this.Close();
+
+						}
+
+					} else {
+
+						if (GUILayout.Button("Next", GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+							
+							++this.partIndex;
+							
+						}
+
+					}
+
+				}
+
+			}
+			GUILayout.EndHorizontal();
+
+		}
 
 	}
 
