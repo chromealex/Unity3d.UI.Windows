@@ -236,7 +236,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		public static void GenerateUI( string pathToData, bool recompile = false ) {
+		public static void GenerateUI( string pathToData, bool recompile = false, Func<FlowWindow, bool> predicate = null ) {
 
 			var filename = Path.GetFileName( pathToData );
 			var directory = pathToData.Replace( filename, "" );
@@ -249,9 +249,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			AssetDatabase.StartAssetEditing();
 
+			predicate = predicate ?? delegate { return true; };
+
 			try {
 
-				foreach ( var each in FlowSystem.GetWindows() ) {
+				foreach ( var each in FlowSystem.GetWindows().Where( predicate ) ) {
 
 					var relativePath = GetRelativePath( each, "/" );
 
@@ -268,6 +270,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			}
 
 			AssetDatabase.StopAssetEditing();
+		}
+
+		public static void GenerateUIByTag( string pathToData, bool recompile = false, int tag = 0 ) {
+
+			GenerateUI( pathToData, recompile, flowWindow => flowWindow.tags.Contains( tag ) );
+		}
+
+		public static void GenerateWindow( string pathToData, bool recompile = false, FlowWindow window = null ) {
+
+			GenerateUI( pathToData, recompile, flowWindow => flowWindow == window );
 		}
 
 #endif
