@@ -20,8 +20,8 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			var rootWidth = rootWindow.position.width;
 			var rootHeight = rootWindow.position.height;
 
-			var width = 500f;
-			var height = 400f;
+			var width = 600f;
+			var height = 389f;
 
 			FlowCompilerWizard editor = null;
 
@@ -42,58 +42,123 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			editor.forceRecompile = FlowSystem.GetData().forceRecompile;
 			editor.partIndex = 0;
 
+			editor.image = Resources.Load("UI.Windows/FlowCompiler/WizardImage") as Texture;
+
+			editor.maxSize = new Vector2(width, height);
+			editor.minSize = editor.maxSize;
+
 			FlowCompilerWizard.compilationSync = new object();
 
 			return editor;
 
 		}
 
+		private bool readyToNext = false;
 		private int partIndex = 0;
 		private int processPartIndex = 1;
 		private int parts = 4;
+		private string[] partTitles = new string[] { "Build Settings", "Tags", "Processing Files...", "Finishing" };
+		private string[] partSteps = new string[] { "Build Settings", "Selecting Tags", "Processing Files", "Finishing" };
 
-		public void OnGUI() {
+		private bool waitForCompileEnding;
+
+		private Texture image;
+
+		public override void Update() {
 			
 			if (this.partIndex <= this.processPartIndex && FlowCompilerWizard.compilationSync == null) {
-
+				
 				this.Close();
 				return;
+				
+			}
+
+			if (this.waitForCompileEnding == true && EditorApplication.isCompiling == false) {
+
+				++this.partIndex;
+				this.waitForCompileEnding = false;
+				this.Repaint();
 
 			}
+
+		}
+
+		public void OnGUI() {
 
 			GUILayout.BeginHorizontal();
 			{
 
-				GUILayout.BeginVertical(GUILayout.Width(160f), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+				GUILayout.BeginVertical(GUILayout.Width(this.image.width), GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 				{
 
-					GUILayout.Box("test", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+					var boxStyle = new GUIStyle(GUI.skin.box);
+					boxStyle.margin = new RectOffset(0, 0, 0, 0);
+					boxStyle.padding = new RectOffset(0, 0, 0, 0);
+					GUILayout.Box(this.image, boxStyle, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 
+				}
+				GUILayout.EndVertical();
+
+				GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Width(15f), GUILayout.MinWidth(15f));
+				{
+					GUILayout.FlexibleSpace();
 				}
 				GUILayout.EndVertical();
 
 				GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
 				{
-					switch (partIndex) {
-						
-					case 0:
-						this.DrawPart1();
-						break;
-						
-					case 1:
-						this.DrawPart2();
-						break;
-						
-					case 2:
-						this.DrawPart3();
-						break;
-						
-					case 3:
-						this.DrawPart4();
-						break;
+					
+					GUILayout.BeginHorizontal(GUILayout.ExpandHeight(true), GUILayout.Height(15f));
+					{
+						GUILayout.FlexibleSpace();
+					}
+					GUILayout.EndHorizontal();
+					
+					GUILayout.BeginVertical(GUILayout.ExpandHeight(true));
+					{
+						this.DrawSteps();
+						GUILayout.FlexibleSpace();
+					}
+					GUILayout.EndVertical();
+
+					GUILayout.BeginVertical();
+					{
+
+						switch (partIndex) {
+							
+						case 0:
+							this.DrawPart1();
+							break;
+							
+						case 1:
+							this.DrawPart2();
+							break;
+							
+						case 2:
+							this.DrawPart3();
+							break;
+							
+						case 3:
+							this.DrawPart4();
+							break;
+
+						}
 
 					}
+					GUILayout.EndVertical();
+					
+					GUILayout.BeginHorizontal(GUILayout.ExpandHeight(true), GUILayout.Height(15f));
+					{
+						GUILayout.FlexibleSpace();
+					}
+					GUILayout.EndHorizontal();
 
+				}
+				GUILayout.EndVertical();
+				
+				GUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.Width(15f), GUILayout.MinWidth(15f));
+				{
+					GUILayout.FlexibleSpace();
 				}
 				GUILayout.EndVertical();
 
@@ -101,51 +166,62 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			GUILayout.EndHorizontal();
 
 		}
-		
+
+		public void DrawSteps() {
+
+			this.DrawHeader("Steps:");
+
+			var selected = new GUIStyle(EditorStyles.boldLabel);
+			var normal = new GUIStyle(EditorStyles.label);
+
+			for (int i = 0; i < this.partSteps.Length; ++i) {
+
+				GUILayout.Label((i + 1).ToString() + ". " + this.partSteps[i], this.partIndex == i ? selected : normal);
+
+			}
+
+		}
+
 		public void DrawPart4() {
 			
-			GUILayout.Label("Finish", EditorStyles.whiteLargeLabel);
+			this.DrawHeader(this.partTitles[this.partIndex]);
 			
 			GUILayout.FlexibleSpace();
 
 			GUILayout.Label("All files were successfully compiled!");
 
-			GUILayout.FlexibleSpace();
-
 			this.DrawBottom();
+
+			this.readyToNext = true;
 
 		}
 
 		public void DrawPart3() {
 			
-			GUILayout.Label("Processing...", EditorStyles.whiteLargeLabel);
-			
+			this.DrawHeader(this.partTitles[this.partIndex]);
+
 			GUILayout.FlexibleSpace();
 
 			if (EditorApplication.isCompiling == true) {
 
+				this.waitForCompileEnding = true;
 				EditorGUILayout.HelpBox("Wait until the project is compiled...", MessageType.None);
 
-			} else {
-
-				++this.partIndex;
-				this.Repaint();
-
 			}
-
-			GUILayout.FlexibleSpace();
 
 			GUI.enabled = false;
 			this.DrawBottom();
 			GUI.enabled = true;
+
+			this.readyToNext = false;
 
 		}
 
 		private Vector2 tagsScroll;
 		public void DrawPart2() {
 			
-			GUILayout.Label("Tags", EditorStyles.whiteLargeLabel);
-			
+			this.DrawHeader(this.partTitles[this.partIndex]);
+
 			GUILayout.FlexibleSpace();
 
 			this.tagsScroll = GUILayout.BeginScrollView(this.tagsScroll);
@@ -162,7 +238,8 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				
 			};
 
-			foreach (var tag in FlowSystem.GetData().tags) {
+			var allTags = FlowSystem.GetData().tags;
+			foreach (var tag in allTags) {
 				
 				var tagStyle = tagStyles[tag.color];
 				tagStyle.alignment = TextAnchor.MiddleLeft;
@@ -170,46 +247,57 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				tagStyle.stretchHeight = false;
 				tagStyle.margin = new RectOffset(0, 0, 2, 2);
 
-				GUILayout.BeginHorizontal(EditorStyles.toolbar);
+				var backStyle = new GUIStyle(EditorStyles.toolbar);
+				backStyle.stretchHeight = false;
+				backStyle.fixedHeight = 0f;
+				backStyle.padding = new RectOffset(4, 4, 4, 4);
 
-				var oldState = !this.tagsIgnored.Contains(tag.id);
-				var state = GUILayout.Toggle(oldState, string.Empty);
+				GUILayout.BeginHorizontal(backStyle);
+				{
 
-				if (GUILayout.Button(tag.title, tagStyle) == true) {
+					var oldState = !this.tagsIgnored.Contains(tag.id);
+					var state = GUILayout.Toggle(oldState, string.Empty);
 
-					state = !oldState;
+					if (GUILayout.Button(tag.title, tagStyle) == true) {
 
-				}
+						state = !oldState;
 
-				if (oldState != state) {
-					
-					if (state == false) {
+					}
+
+					if (oldState != state) {
 						
-						this.tagsIgnored.Add(tag.id);
-						
-					} else {
-						
-						this.tagsIgnored.Remove(tag.id);
+						if (state == false) {
+							
+							this.tagsIgnored.Add(tag.id);
+							
+						} else {
+							
+							this.tagsIgnored.Remove(tag.id);
+							
+						}
 						
 					}
-					
-				}
 
+					GUILayout.FlexibleSpace();
+
+				}
 				GUILayout.EndHorizontal();
 				
+			}
+			
+			this.readyToNext = true;
+
+			if (this.tagsIgnored.Count == allTags.Count) {
+
+				this.readyToNext = false;
+
 			}
 
 			GUILayout.EndScrollView();
 			
 			EditorGUILayout.HelpBox("All tags included by default.", MessageType.Info);
-			
-			CustomGUI.Splitter();
-			
-			this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
-			
-			CustomGUI.Splitter();
-			
-			GUILayout.FlexibleSpace();
+
+			//this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
 
 			this.DrawBottom();
 
@@ -220,8 +308,8 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 		private bool forceRecompile = false;
 		private List<int> tagsIgnored = new List<int>();
 		public void DrawPart1() {
-
-			GUILayout.Label("Build Settings", EditorStyles.whiteLargeLabel);
+			
+			this.DrawHeader(this.partTitles[this.partIndex]);
 
 			GUILayout.FlexibleSpace();
 
@@ -236,17 +324,28 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			CustomGUI.Splitter();
 
 			this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
-			
-			CustomGUI.Splitter();
-
-			GUILayout.FlexibleSpace();
 
 			this.DrawBottom();
+
+			this.readyToNext = true;
+
+		}
+
+		private void DrawHeader(string text) {
+
+			var style = new GUIStyle(EditorStyles.whiteLargeLabel);
+			style.fontSize = 14;
+
+			GUILayout.Label(text, style);
 
 		}
 
 		private void DrawBottom() {
 			
+			GUILayout.FlexibleSpace();
+
+			CustomGUI.Splitter();
+
 			GUILayout.BeginHorizontal();
 			{
 				var firstPart = (this.partIndex == 0);
@@ -271,6 +370,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				}
 				GUI.enabled = oldEnabled;
 
+				GUI.enabled = GUI.enabled && this.readyToNext;
 				if (this.partIndex == this.processPartIndex) {
 
 					if (GUILayout.Button("GO!", GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
@@ -332,6 +432,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 					}
 
 				}
+				GUI.enabled = oldEnabled;
 
 			}
 			GUILayout.EndHorizontal();
