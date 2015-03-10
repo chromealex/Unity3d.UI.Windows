@@ -73,7 +73,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		private static bool CompiledInfoIsInvalid( FlowWindow flowWindow ) {
 
-			return GetBaseClassName( flowWindow ) != flowWindow.compiledBaseClassName;
+			return GetBaseClassName( flowWindow ) != flowWindow.compiledBaseClassName 
+				|| GetNamespace( flowWindow ) != flowWindow.compiledNamespace;
 		}
 
 		private static void UpdateInheritedClasses( string oldBaseClassName, string newBaseClassName, string oldDerivedClassName, string newDerivedClassName, string oldNamespace, string newNamespace ) {
