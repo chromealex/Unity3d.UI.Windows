@@ -58,6 +58,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		private static string GetRelativePath( FlowWindow window, string token ) {
 
 			return GetParentContainers( window, FlowSystem.GetContainers() )
+					.Reverse()
 					.Select( _ => _.directory )
 					.Aggregate( string.Empty, ( total, _ ) => total + token + _ )
 					   + token + window.directory;
