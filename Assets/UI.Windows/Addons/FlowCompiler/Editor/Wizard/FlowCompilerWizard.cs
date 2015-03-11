@@ -50,9 +50,13 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 			FlowCompilerWizard.compilationSync = new object();
 
+			editor.defaultSkin = FlowSystemEditorWindow.defaultSkin;
+
 			return editor;
 
 		}
+		
+		private GUISkin defaultSkin;
 
 		private bool readyToNext = false;
 		private int partIndex = 0;
@@ -365,7 +369,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				var oldEnabled = GUI.enabled;
 
 				GUI.enabled = !lastPart;
-				if (GUILayout.Button("Cancel", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+				if (GUILayout.Button("Cancel", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
 					
 					this.Close();
 					
@@ -374,7 +378,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				GUILayout.FlexibleSpace();
 
 				GUI.enabled = oldEnabled && !firstPart && !lastPart;
-				if (GUILayout.Button("Back", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+				if (GUILayout.Button("Back", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
 					
 					--this.partIndex;
 					
@@ -384,7 +388,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				GUI.enabled = GUI.enabled && this.readyToNext;
 				if (this.partIndex == this.processPartIndex) {
 
-					if (GUILayout.Button("GO!", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+					if (GUILayout.Button("GO!", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
 						
 						++this.partIndex;
 						this.Repaint();
@@ -393,7 +397,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 							
 							FlowSystem.GetData().namespaceName = this.compileNamespace;
 							FlowSystem.GetData().forceRecompile = this.forceRecompile;
-							FlowSystem.Save();
+							FlowSystem.SetDirty();
 							
 						}
 						
@@ -426,7 +430,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 					if (lastPart == true) {
 						
-						if (GUILayout.Button("Finish", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+						if (GUILayout.Button("Finish", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
 
 							this.Close();
 
@@ -434,7 +438,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 					} else {
 
-						if (GUILayout.Button("Next", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
+						if (GUILayout.Button("Next", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
 							
 							++this.partIndex;
 							

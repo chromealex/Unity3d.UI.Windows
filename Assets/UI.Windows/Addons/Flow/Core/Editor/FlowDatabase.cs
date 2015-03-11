@@ -8,6 +8,7 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.UI.Windows;
 using ADB = UnityEditor.AssetDatabase;
 #endif
 
@@ -183,8 +184,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				var prefab = source.GetComponent<WindowBase>();
 				instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowBase;
 
-				var name = window.compiledNamespace + "." + window.compiledBaseClassName;
-				instance = FlowDatabase.ReplaceComponents<FlowLayoutWindowTypeTemplate, WindowBase>(instance as FlowLayoutWindowTypeTemplate, System.Type.GetType(name));
+				var type = WindowUtilities.GetTypeFromAllAssemblies(window.compiledDerivedClassName);
+				instance = FlowDatabase.ReplaceComponents<FlowLayoutWindowTypeTemplate, WindowBase>(instance as FlowLayoutWindowTypeTemplate, type);
 
 				FlowDatabase.SaveScreen(instance);
 

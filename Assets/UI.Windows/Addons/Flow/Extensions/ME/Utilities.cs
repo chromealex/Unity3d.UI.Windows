@@ -13,16 +13,16 @@ namespace ME {
 		private static Dictionary<string, double> cacheByTimeLastTime = new Dictionary<string, double>();
 		private static Dictionary<string, object> cacheByTimeLastValue = new Dictionary<string, object>();
 		
-		public static Component[] CacheComponentsArray<T>(System.Func<T[]> func) {
+		public static Component[] CacheComponentsArray<T>(System.Func<T[]> func, bool strongType) {
 			
-			var key = typeof(T).FullName;
+			var key = typeof(T).FullName + "," + strongType.ToString();
 			
 			Component[] value;
 			if (Utilities.cacheComponents.TryGetValue(key, out value) == false) {
 
 				value = func().Cast<Component>().ToArray();
 				Utilities.cacheComponents.Add(key, value);
-				
+
 			}
 			
 			return value;

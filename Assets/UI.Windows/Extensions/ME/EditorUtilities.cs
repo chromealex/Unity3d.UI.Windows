@@ -131,13 +131,13 @@ namespace ME {
 
 		}
 		
-		public static T[] GetPrefabsOfType<T>() where T : Component {
+		public static T[] GetPrefabsOfType<T>(bool strongType = true) where T : Component {
 			
-			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>().Cast<T>().ToArray();
+			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType).Cast<T>().ToArray();
 			
 		}
 
-		public static Component[] GetPrefabsOfTypeRaw<T>() where T : Component {
+		public static Component[] GetPrefabsOfTypeRaw<T>(bool strongType) where T : Component {
 			
 			return ME.Utilities.CacheComponentsArray<T>(() => {
 
@@ -157,13 +157,15 @@ namespace ME {
 					var comp = file.GetComponent<T>();
 					if (comp == null) continue;
 
+					if (strongType == true && comp.GetType().Name != typeof(T).Name) continue;
+
 					output.Add(comp);
 
 				}
 
 				return output.ToArray();
 
-			});
+			}, strongType);
 
 		}
 		

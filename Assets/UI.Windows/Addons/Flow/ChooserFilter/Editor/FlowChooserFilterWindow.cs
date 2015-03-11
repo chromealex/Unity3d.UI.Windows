@@ -48,7 +48,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			};
 
-			editor.Scan<T>(strongType, "CACHE" + strongType.ToString());
+			editor.Scan<T>(strongType);
 
 			editor.UpdateSize();
 			//editor.Focus();
@@ -61,9 +61,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void Scan<T>(bool strongType, string cacheKey) where T : Component {
+		public void Scan<T>(bool strongType) where T : Component {
 
-			this.items = ME.EditorUtilities.GetPrefabsOfTypeRaw<T>().ToList();
+			this.items = ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType).ToList();
 
 		}
 

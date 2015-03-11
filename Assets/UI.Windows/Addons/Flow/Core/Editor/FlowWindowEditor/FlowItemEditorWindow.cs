@@ -24,9 +24,41 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private List<WindowBase> screens;
 		private bool autoloadedLayout = false;
 		private bool autoloadedScreen = false;
-
-		private bool isLayoutDirty = false;
-		private bool isScreenDirty = false;
+		
+		private bool _isLayoutDirty = false;
+		private bool isLayoutDirty {
+			
+			set {
+				
+				this._isLayoutDirty = value;
+				if (value == true) this.ValidateTabs();
+				
+			}
+			
+			get {
+				
+				return this._isLayoutDirty;
+				
+			}
+			
+		}
+		private bool _isScreenDirty = false;
+		private bool isScreenDirty {
+			
+			set {
+				
+				this._isScreenDirty = value;
+				if (value == true) this.ValidateTabs();
+				
+			}
+			
+			get {
+				
+				return this._isScreenDirty;
+				
+			}
+			
+		}
 
 		internal FlowSceneViewWindow view;
 		internal FlowInspectorWindow inspector;
@@ -295,7 +327,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			EditorApplication.delayCall += () => {
 
 				this.isScreenDirty = true;
-				EditorApplication.delayCall = null;
 
 			};
 
@@ -306,7 +337,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			EditorApplication.delayCall += () => {
 
 				this.isLayoutDirty = true;
-				EditorApplication.delayCall = null;
 
 			};
 
@@ -382,8 +412,31 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private void ValidateTabs() {
+
+			var count = 6;
+			for (int i = 0; i < count; ++i) {
+				
+				CompletedState state = CompletedState.NotReady;
+
+				var errors = false;
+				var warnings = false;
+				var hasState = this.IsValidTab(i, out errors, out warnings);
+
+				if (hasState == true) {
+
+					state = (errors == false) ? (warnings == true ? CompletedState.ReadyButWarnings : CompletedState.Ready) : CompletedState.NotReady;
+					
+					this.window.SetCompletedState(i, state);
+					
+				}
+
+			}
+
+		}
+
 		private void DrawTabs(float height) {
-			
+
 			var scaleWidth = this.view.position.width * 0.4f;
 			var scaleHeight = 20f;
 			var newScaleFactor = GUI.HorizontalSlider(new Rect(this.view.position.width * 0.5f - scaleWidth * 0.5f, 0f, scaleWidth, scaleHeight), this.scaleFactor, 1f, 20f);
@@ -433,8 +486,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var count = 6;
 			for (int i = 0; i < count; ++i) {
 
-				CompletedState state = CompletedState.NotReady;
-
 				var step = i + 1;
 				
 				var errors = false;
@@ -448,10 +499,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					stepState = (errors == false) ? (warnings == true ? "Completed with warnings" : "Completed") : "Has errors";
 					icon = (errors == false) ? (warnings == true ? iconWarning : iconCorrect) : iconIncorrect;
-
-					state = (errors == false) ? (warnings == true ? CompletedState.ReadyButWarnings : CompletedState.Ready) : CompletedState.NotReady;
-
-					this.window.SetCompletedState(i, state);
 
 				}
 
@@ -757,7 +804,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					GUILayout.Label(screen.comment, commentStyle);
 					
-				});
+				}, strongType: true);
 
 				Event.current.Use();
 
@@ -961,7 +1008,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							GUILayout.Label(module.comment, commentStyle);
 
-						});
+						}, strongType: false);
 						
 						Event.current.Use();
 
@@ -1156,14 +1203,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void ReloadLayouts() {
 
 			this.layouts.Clear();
-			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowDatabase.LAYOUT_FOLDER + "/", "*Layout.prefab");
-			foreach (var prefab in prefabs) {
+			
+			var guids = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/" + FlowDatabase.LAYOUT_FOLDER });
+			foreach (var guid in guids) {
 				
-				var layout = AssetDatabase.LoadAssetAtPath(prefab, typeof(WindowLayout)) as WindowLayout;
+				var layout = AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), typeof(WindowLayout)) as WindowLayout;
 				if (layout != null) this.layouts.Add(layout);
 				
 			}
-			
+
 			if (this.layouts.Count == 1 && this.autoloadedLayout == false) {
 				
 				this.layoutPrefab = this.layouts[0];
@@ -1193,14 +1241,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void ReloadScreens() {
 			
 			this.screens.Clear();
-			var prefabs = Directory.GetFiles(window.compiledDirectory + "/" + FlowDatabase.SCREENS_FOLDER + "/", "*Screen.prefab");
-			foreach (var prefab in prefabs) {
-				
-				var screen = AssetDatabase.LoadAssetAtPath(prefab, typeof(WindowBase)) as WindowBase;
+
+			var guids = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/" + FlowDatabase.SCREENS_FOLDER });
+			foreach (var guid in guids) {
+
+				var screen = AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(guid), typeof(WindowBase)) as WindowBase;
 				if (screen != null) this.screens.Add(screen);
-				
+
 			}
-			
+
 			if (this.screens.Count == 1 && this.autoloadedScreen == false) {
 				
 				this.screenPrefab = this.screens[0];

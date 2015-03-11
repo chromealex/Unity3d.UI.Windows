@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 using UnityEditorInternal;
@@ -126,6 +127,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					// Cache
 					ME.EditorUtilities.GetAssetsOfType<FlowData>();
 					ME.EditorUtilities.GetPrefabsOfType<FlowWindowLayoutTemplate>();
+					ME.EditorUtilities.GetPrefabsOfType<FlowLayoutWindowTypeTemplate>();
+					ME.EditorUtilities.GetPrefabsOfType<WindowModule>(strongType: false);
 					
 					FlowSystemEditorWindow.loading = false;
 					FlowSystemEditorWindow.loaded = true;

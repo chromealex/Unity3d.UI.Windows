@@ -80,7 +80,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			if (oldState != state) {
 
 				this.states[index] = state;
-				FlowSystem.GetData().isDirty = true;
+				FlowSystem.SetDirty();
 
 			}
 
