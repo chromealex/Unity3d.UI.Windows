@@ -85,8 +85,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public void AddTag(FlowWindow window, FlowTag tag) {
 
-			var contains = this.tags.Any((t) => t.title == tag.title);
-			if (contains == false) this.tags.Add(tag);
+			var contains = this.tags.FirstOrDefault((t) => t.title.ToLower() == tag.title.ToLower());
+			if (contains == null) {
+
+				this.tags.Add(tag);
+
+			} else {
+
+				tag = contains;
+
+			}
 
 			window.AddTag(tag);
 

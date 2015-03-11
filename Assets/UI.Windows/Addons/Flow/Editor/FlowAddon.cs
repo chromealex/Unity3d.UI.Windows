@@ -46,12 +46,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		public static FlowSystemEditorWindow ShowEditor(System.Action onClose) {
-			
-			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
-			editor.title = "UI.Windows: Flow";
-			editor.autoRepaintOnSceneChange = true;
 
-			return editor;
+			return FlowSystemEditorWindow.ShowEditor(onClose);
 
 		}
 		#endif
@@ -92,11 +88,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			CustomGUI.Splitter();
 
-			var buttonStyle = new GUIStyle(GUI.skin.button);
-			buttonStyle.fontSize = 12;
-
 			var content = new GUIContent("Install Modules...");
-			if (GUILayout.Button(content, buttonStyle, GUILayout.Height(40f)) == true) {
+			if (GUILayout.Button(content, FlowSystemEditorWindow.defaultSkin.button, GUILayout.Height(40f)) == true) {
 
 				Application.OpenURL(VersionInfo.downloadLink);
 

@@ -27,11 +27,7 @@ namespace UnityEngine.UI.Windows {
 		public Color randomColor;
 		[HideInInspector]
 		public Rect editorRect;
-		[HideInInspector]
-		public Vector2 editorAnchorMin;
-		[HideInInspector]
-		public Vector2 editorAnchorMax;
-		
+
 		[HideInInspector]
 		public float editorMinWidth = 0f;
 		[HideInInspector]

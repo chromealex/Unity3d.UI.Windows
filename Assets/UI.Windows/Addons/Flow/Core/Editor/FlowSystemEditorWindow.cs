@@ -6,6 +6,7 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 using UnityEditorInternal;
 using ME;
+using System.Reflection;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -39,13 +40,33 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 	}
 
 	public class FlowSystemEditorWindow : EditorWindowExt {
+		
+		public static GUISkin defaultSkin;
 
-		static FlowSystemEditorWindow ShowEditor(System.Action onClose) {
+		public static FlowSystemEditorWindow ShowEditor(System.Action onClose) {
 
-			var editor = EditorWindow.GetWindow<FlowSystemEditorWindow>();
+			var editor = FlowSystemEditorWindow.GetWindow<FlowSystemEditorWindow>(typeof(SceneView));
 			editor.title = "UI.Windows: Flow";
 			editor.autoRepaintOnSceneChange = true;
 			editor.onClose = onClose;
+
+			var fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+			var isDockedMethod = typeof(EditorWindow).GetProperty("docked", fullBinding).GetGetMethod(true);
+			if ((bool)isDockedMethod.Invoke(editor, null) == false) {
+
+				var width = 800f;
+				var height = 600f;
+
+				var rect = new Rect(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f - height * 0.5f, width, height);
+				if (rect.x < 120f) rect.x = 120f;
+				if (rect.y < 120f) rect.y = 120f;
+
+				editor.position = rect;
+				editor.minSize = new Vector2(width, height);
+
+			}
+
+			editor.ChangeFlowData();
 
 			return editor;
 
@@ -97,6 +118,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			//var draw = !FlowSceneView.IsActive();
 
 			//if (draw == true) {
+			
+			if (FlowSystemEditorWindow.defaultSkin == null) FlowSystemEditorWindow.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
+
+			this.contentRect = this.position;
+			this.contentRect.x = 0f;
+			this.contentRect.y = 0f;
+			this.contentRect.width = 10000f;
+			this.contentRect.height = 10000f;
+			this.contentRect.height -= scrollSize;
 
 			GUI.enabled = true;//!FlowSceneView.IsActive();
 			
@@ -111,8 +141,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.EndWindows();
 
 			} else {
-
-				FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f);
 
 				var oldEnabled = GUI.enabled;
 				GUI.enabled = FlowSystem.HasData() && GUI.enabled;
@@ -135,13 +163,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.scrollRect.y = TOOLBAR_HEIGHT;
 				this.scrollRect.width -= SETTINGS_WIDTH;
 				this.scrollRect.height -= TOOLBAR_HEIGHT;
-
-				this.contentRect = this.position;
-				this.contentRect.x = 0f;
-				this.contentRect.y = 0f;
-				this.contentRect.width = 10000f;
-				this.contentRect.height = 10000f;
-				this.contentRect.height -= scrollSize;
 
 				var scrollPos = FlowSystem.GetScrollPosition();
 				if (scrollPos == -Vector2.one) scrollPos = new Vector2(this.contentRect.width * 0.5f - this.scrollRect.width * 0.5f, this.contentRect.height * 0.5f - this.scrollRect.height * 0.5f);
@@ -691,6 +712,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void DrawBackground() {
 			
 			if (this._background == null) this._background = Resources.Load("UI.Windows/Flow/Background") as Texture2D;
+			
+			FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f);
 
 			var oldColor = GUI.color;
 
@@ -831,7 +854,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private GUISkin defaultSkin;
 		private Vector2 dataSelectionScroll;
 		private Texture splash;
 		private FlowData cachedData;
@@ -841,8 +863,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.DrawBackground();
 
 			if (this.splash == null) this.splash = Resources.Load("UI.Windows/Flow/Splash") as Texture;
-			//if (this.defaultSkin == null)
-				this.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin") as GUISkin;
+			
+			var darkLabel = FlowSystemEditorWindow.defaultSkin.FindStyle("DarkLabel");
 
 			var rect = FlowSystemEditor.GetCenterRect(this.position, this.splash.width, this.splash.height);
 
@@ -881,12 +903,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 						GUILayout.Space(10f);
 
-						GUILayout.Label("Open one of your projects:", this.defaultSkin.label);
+						GUILayout.Label("Open one of your projects:", darkLabel);
 
 						var backStyle = new GUIStyle("sv_iconselector_labelselection");
 
 						var skin = GUI.skin;
-						GUI.skin = this.defaultSkin;
+						GUI.skin = FlowSystemEditorWindow.defaultSkin;
 						this.dataSelectionScroll = GUILayout.BeginScrollView(this.dataSelectionScroll, false, true, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, backStyle);
 						{
 
@@ -895,13 +917,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							if (this.scannedData == null) {
 
 								this.scannedData = EditorUtilities.GetAssetsDataOfType<FlowData>("*.asset", true);
-								this.scannedData = this.scannedData.OrderByDescending((data) => data.lastModified).ToArray();
 
 							} else {
 
 								if (this.scannedData.Length == 0) {
 
-									GUILayout.Label("No projects found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", this.defaultSkin.label);
+									var center = new GUIStyle(FlowSystemEditorWindow.defaultSkin.label);
+									center.stretchWidth = true;
+									center.stretchHeight = true;
+									center.alignment = TextAnchor.MiddleCenter;
+
+									GUILayout.Label("No projects was found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", center);
 
 								} else {
 
@@ -919,6 +945,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									var buttonStyleSelected = new GUIStyle(buttonStyle);
 
 									buttonStyle.normal.background = null;
+									
+									this.scannedData = this.scannedData.OrderByDescending((data) => data.lastModified).ToArray();
 
 									foreach (var data in this.scannedData) {
 
@@ -943,12 +971,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 						GUILayout.Space(10f);
 
-						GUILayout.Label("Or select the project file:", this.defaultSkin.label);
+						GUILayout.Label("Or select the project file:", darkLabel);
 
-						skin = GUI.skin;
-						GUI.skin = this.defaultSkin;
-						this.cachedData = EditorGUILayout.ObjectField(this.cachedData, typeof(FlowData), false) as FlowData;
-						GUI.skin = skin;
+						this.cachedData = GUILayoutExt.ObjectField<FlowData>(this.cachedData, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ObjectField"));
 
 						CustomGUI.Splitter();
 
@@ -957,7 +982,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							GUILayout.FlexibleSpace();
 
-							if (GUILayout.Button("Open", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+							if (GUILayout.Button("Open", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
 								
 								FlowSystem.SetData(this.cachedData);
 								
@@ -1169,12 +1194,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
-			GUILayoutExt.LabelWithShadow("Title:", GUILayout.Width(EditorGUIUtility.labelWidth));
+			GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 			window.title = GUILayout.TextField(window.title);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			GUILayoutExt.LabelWithShadow("Directory:", GUILayout.Width(EditorGUIUtility.labelWidth));
+			GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 			window.directory = GUILayout.TextField(window.directory);
 			GUILayout.EndHorizontal();
 
@@ -1271,7 +1296,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var count = 0;
 				foreach (var tag in allTags) {
 					
-					if (tag.title.Contains(this.tagCaption) == true && window != null && window.tags.Contains(tag.id) == false) {
+					if (tag.title.ToLower().Contains(this.tagCaption.ToLower()) == true && window != null && window.tags.Contains(tag.id) == false) {
 
 						++count;
 
@@ -1303,7 +1328,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						GUI.color = oldColor;
 						foreach (var tag in allTags) {
 							
-							if (tag.title.Contains(this.tagCaption) == true && window != null && window.tags.Contains(tag.id) == false) {
+							if (tag.title.ToLower().Contains(this.tagCaption.ToLower()) == true && window != null && window.tags.Contains(tag.id) == false) {
 
 								var style = tagStyles[tag.color];
 								style.margin = tagStyle.margin;
@@ -1361,7 +1386,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			GUILayout.BeginHorizontal();
 			{
-				GUILayoutExt.LabelWithShadow("Tags:", GUILayout.Width(EditorGUIUtility.labelWidth));
+				GUILayoutExt.LabelWithShadow("Tags:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 
 				GUILayout.BeginHorizontal();
 				{
@@ -1684,12 +1709,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.DrawWindowToolbar(window);
 
 				GUILayout.BeginHorizontal();
-				GUILayoutExt.LabelWithShadow("Title:", GUILayout.Width(EditorGUIUtility.labelWidth));
+				GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 				window.title = GUILayout.TextField(window.title);
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
-				GUILayoutExt.LabelWithShadow("Directory:", GUILayout.Width(EditorGUIUtility.labelWidth));
+				GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 				if (string.IsNullOrEmpty(window.directory) == true) window.directory = string.Empty;
 				window.directory = GUILayout.TextField(window.directory);
 				GUILayout.EndHorizontal();

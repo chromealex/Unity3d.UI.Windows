@@ -93,8 +93,6 @@ namespace UnityEditor.UI.Windows {
 					var rect = new Rect(corners[0].x, -corners[1].y, corners[2].x - corners[1].x, corners[2].y - corners[3].y);
 
 					element.editorRect = rect;
-					element.editorAnchorMin = rectTransform.anchorMin;
-					element.editorAnchorMax = rectTransform.anchorMax;
 
 				}
 
@@ -129,28 +127,15 @@ namespace UnityEditor.UI.Windows {
 				element.editorDrawDepth = element.GetComponentsInParent<WindowLayoutElement>(true).Length - 1;
 
 				var rect = element.editorRect;
-				var anchorMin = element.editorAnchorMin;
-				var anchorMax = element.editorAnchorMax;
 
-				if (element.editorDrawDepth == 0 && anchorMin != Vector2.one * 0.5f && anchorMax != Vector2.one * 0.5f) {
-					
-					rect.x = r.x + r.width * anchorMin.x;
-					rect.y = r.y + r.height * anchorMin.y;
-					rect.width = r.width * (anchorMax.x - anchorMin.x);
-					rect.height = r.height * (anchorMax.y - anchorMin.y);
+				rect.x *= scaleFactor;
+				rect.y *= scaleFactor;
 
-				} else {
-					
-					rect.x *= scaleFactor;
-					rect.y *= scaleFactor;
-
-					rect.x += r.x + r.width * 0.5f;
-					rect.y += r.y + r.height * 0.5f;
-					
-					rect.width *= scaleFactor;
-					rect.height *= scaleFactor;
-
-				}
+				rect.x += r.x + r.width * 0.5f;
+				rect.y += r.y + r.height * 0.5f;
+				
+				rect.width *= scaleFactor;
+				rect.height *= scaleFactor;
 
 				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
 
