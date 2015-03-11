@@ -70,7 +70,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			}
 
 			result += token + window.directory;
-			
+
 			return result;
 		}
 
@@ -154,8 +154,6 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		}
 
 		private static void GenerateUIWindow( string fullpath, FlowWindow window, bool recompile = false ) {
-
-			if ( window.isDefaultLink == true ) return;
 
 			var isCompiledInfoInvalid = window.compiled && CompiledInfoIsInvalid( window );
 
@@ -264,7 +262,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			try {
 
-				foreach ( var each in FlowSystem.GetWindows().Where( ( win ) => !win.isDefaultLink && ( predicate == null || predicate( win ) ) ) ) {
+				foreach ( var each in FlowSystem.GetWindows().Where( _ => !_.isDefaultLink && predicate( _ ) ) ) {
 
 					var relativePath = GetRelativePath( each, "/" );
 
