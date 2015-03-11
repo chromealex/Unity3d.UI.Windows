@@ -284,18 +284,28 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				GUILayout.EndHorizontal();
 				
 			}
-			
-			this.readyToNext = true;
-
-			if (this.tagsIgnored.Count == allTags.Count) {
-
-				this.readyToNext = false;
-
-			}
 
 			GUILayout.EndScrollView();
 			
-			EditorGUILayout.HelpBox("All tags included by default.", MessageType.Info);
+			this.readyToNext = true;
+			
+			if (allTags.Count == 0) {
+
+				var style = new GUIStyle(GUI.skin.label);
+				style.wordWrap = true;
+				GUILayout.Label("Current project has no tags. You can add tags (`Android`, `iOS`, etc.) to improve your flow.", style);
+				
+			} else {
+				
+				if (this.tagsIgnored.Count == allTags.Count) {
+					
+					this.readyToNext = false;
+					
+				}
+				
+				EditorGUILayout.HelpBox("All tags included by default.", MessageType.Info);
+
+			}
 
 			//this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
 
