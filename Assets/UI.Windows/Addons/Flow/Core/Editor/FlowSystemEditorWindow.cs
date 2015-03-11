@@ -815,6 +815,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		private GUISkin defaultSkin;
 		private Vector2 dataSelectionScroll;
 		private Texture splash;
 		private FlowData cachedData;
@@ -824,6 +825,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.DrawBackground();
 
 			if (this.splash == null) this.splash = Resources.Load("UI.Windows/Flow/Splash") as Texture;
+			//if (this.defaultSkin == null)
+				this.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin") as GUISkin;
 
 			var rect = FlowSystemEditor.GetCenterRect(this.position, this.splash.width, this.splash.height);
 
@@ -855,16 +858,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					{
 
 						var headerStyle = new GUIStyle("LODLevelNotifyText");
-						headerStyle.fontSize = 14;
+						headerStyle.fontSize = 18;
 						headerStyle.alignment = TextAnchor.MiddleCenter;
 
-						GUILayoutExt.LabelWithShadow("UI.Windows Flow Extension v" + PlayerSettings.bundleVersion, headerStyle);
+						GUILayoutExt.LabelWithShadow("UI.Windows Flow Extension v" + VersionInfo.bundleVersion, headerStyle);
 						
 						GUILayout.Space(10f);
 
-						GUILayoutExt.LabelWithShadow("Open one of your projects:", EditorStyles.whiteLabel);
-						this.dataSelectionScroll = GUILayout.BeginScrollView(this.dataSelectionScroll, false, true, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, new GUIStyle("sv_iconselector_labelselection"));
+						GUILayout.Label("Open one of your projects:", this.defaultSkin.label);
+
+						var backStyle = new GUIStyle("sv_iconselector_labelselection");
+
+						var skin = GUI.skin;
+						GUI.skin = this.defaultSkin;
+						this.dataSelectionScroll = GUILayout.BeginScrollView(this.dataSelectionScroll, false, true, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, backStyle);
 						{
+
+							GUI.skin = skin;
 
 							if (this.scannedData == null) {
 
@@ -874,12 +884,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 								if (this.scannedData.Length == 0) {
 
-									var center = new GUIStyle(EditorStyles.whiteLabel);
-									center.alignment = TextAnchor.MiddleCenter;
-									center.fixedHeight = 0f;
-									center.stretchHeight = true;
-
-									GUILayoutExt.LabelWithShadow("No projects found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", center);
+									GUILayout.Label("No projects found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", this.defaultSkin.label);
 
 								} else {
 
@@ -918,8 +923,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 						GUILayout.Space(10f);
 
-						GUILayoutExt.LabelWithShadow("Or select the project file:", EditorStyles.whiteLabel);
+						GUILayout.Label("Or select the project file:", this.defaultSkin.label);
+
+						skin = GUI.skin;
+						GUI.skin = this.defaultSkin;
 						this.cachedData = EditorGUILayout.ObjectField(this.cachedData, typeof(FlowData), false) as FlowData;
+						GUI.skin = skin;
 
 						CustomGUI.Splitter();
 
@@ -928,7 +937,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							GUILayout.FlexibleSpace();
 
-							if (GUILayout.Button("Open", GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+							if (GUILayout.Button("Open", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
 								
 								FlowSystem.SetData(this.cachedData);
 								
