@@ -895,6 +895,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							if (this.scannedData == null) {
 
 								this.scannedData = EditorUtilities.GetAssetsDataOfType<FlowData>("*.asset", true);
+								this.scannedData = this.scannedData.OrderByDescending((data) => data.lastModified).ToArray();
 
 							} else {
 
@@ -913,6 +914,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									buttonStyle.stretchHeight = false;
 									buttonStyle.normal.textColor = Color.black;
 									buttonStyle.fontSize = 12;
+									buttonStyle.richText = true;
 
 									var buttonStyleSelected = new GUIStyle(buttonStyle);
 
@@ -920,7 +922,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 									foreach (var data in this.scannedData) {
 
-										if (GUILayout.Button(data.name, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
+										var title = data.name + "\n<color=#777><size=10>Modified: " + data.lastModified + "</size></color>";
+
+										if (GUILayout.Button(title, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
 
 											this.cachedData = data;
 

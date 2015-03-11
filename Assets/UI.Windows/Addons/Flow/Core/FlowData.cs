@@ -23,7 +23,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	};
 
 	public class FlowData : ScriptableObject {
-		
+
+		public string lastModified = "-";
+
 		public string namespaceName;
 		public bool forceRecompile;
 
@@ -48,7 +50,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public void Save() {
 
 #if UNITY_EDITOR
-			if (this.isDirty == true) UnityEditor.EditorUtility.SetDirty(this);
+			if (this.isDirty == true) {
+
+				UnityEditor.EditorUtility.SetDirty(this);
+				
+				var dateTime = System.DateTime.Now;
+				this.lastModified = dateTime.ToString("dd.MM.yyyy hh:mm");
+
+			}
 #endif
 
 			this.isDirty = false;
