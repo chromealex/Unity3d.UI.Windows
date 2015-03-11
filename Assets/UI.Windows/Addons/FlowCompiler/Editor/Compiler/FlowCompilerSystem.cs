@@ -66,7 +66,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			if ( string.IsNullOrEmpty( result ) ) {
 
-				result = FlowDatabase.OTHER_NAME;
+				result = token + FlowDatabase.OTHER_NAME;
 			}
 
 			result += token + window.directory;
