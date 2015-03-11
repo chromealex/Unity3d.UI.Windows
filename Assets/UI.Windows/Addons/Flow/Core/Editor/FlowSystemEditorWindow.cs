@@ -703,8 +703,24 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.DrawTextureWithTexCoords(new Rect(0f, 0f, drawSize.x, drawSize.y), this._background, new Rect(0f, 0f, drawSize.x / size.x, drawSize.y / size.y), true);
 
 			if (this.selectionRect.size != Vector2.zero && (this.selectionRectAnimation.isAnimating == true || this.selectionRectWait == true)) {
-				
-				var selectionBoxStyle = new GUIStyle(GUI.skin.FindStyle("box"));
+
+				var normalRect = this.selectionRect;
+
+				if (normalRect.width < 0f) {
+					
+					normalRect.x += normalRect.width;
+					normalRect.width = -normalRect.width;
+					
+				}
+
+				if (normalRect.height < 0f) {
+					
+					normalRect.y += normalRect.height;
+					normalRect.height = -normalRect.height;
+					
+				}
+
+				var selectionBoxStyle = new GUIStyle("SelectionRect");
 				selectionBoxStyle.margin = new RectOffset();
 				selectionBoxStyle.padding = new RectOffset();
 				selectionBoxStyle.contentOffset = Vector2.zero;
@@ -712,7 +728,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				color = new Color(1f, 1f, 1f, this.selectionRectAnimation.value);
 
 				GUI.color = color;
-				GUI.Box(this.selectionRect, string.Empty, selectionBoxStyle);
+				GUI.Box(normalRect, string.Empty, selectionBoxStyle);
 				
 			}
 
@@ -888,7 +904,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 								} else {
 
-									var buttonStyle = new GUIStyle("SelectionRect");
+									var buttonStyle = new GUIStyle("U2D.createRect");
 									buttonStyle.padding = new RectOffset(15, 15, 15, 15);
 									buttonStyle.margin = new RectOffset(2, 2, 2, 2);
 									buttonStyle.fixedWidth = 0f;
