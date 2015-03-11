@@ -151,8 +151,8 @@ namespace UnityEditor.UI.Windows {
 					
 					var vRect = new Rect(rect);
 					vRect.x += marginX;
+					vRect.y = vRect.y + vRect.height * 0.5f - vertArrowsStyle.fixedHeight * 0.5f;
 					vRect.width -= marginX * 2f;
-					vRect.y = vRect.y + vRect.height * 0.5f - horArrowsStyle.fixedHeight * 0.5f;
 					vRect.height = vertArrowsStyle.fixedHeight;
 					
 					GUI.Label(vRect, string.Empty, vertArrowsStyle);
@@ -163,10 +163,10 @@ namespace UnityEditor.UI.Windows {
 				if (element.autoStretchY == true) {
 					
 					var vRect = new Rect(rect);
+					vRect.x = vRect.x + vRect.width * 0.5f - horArrowsStyle.fixedWidth * 0.5f;
 					vRect.y += marginY;
-					vRect.height -= marginY * 2f;
-					vRect.x = vRect.x + vRect.width * 0.5f - vertArrowsStyle.fixedWidth * 0.5f;
 					vRect.width = horArrowsStyle.fixedWidth;
+					vRect.height -= marginY * 2f;
 
 					GUI.Label(vRect, string.Empty, horArrowsStyle);
 					GUI.Label(vRect, string.Empty, horStyle);

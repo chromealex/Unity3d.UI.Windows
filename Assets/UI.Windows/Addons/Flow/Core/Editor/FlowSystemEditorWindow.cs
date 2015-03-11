@@ -946,9 +946,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 									buttonStyle.normal.background = null;
 									
-									this.scannedData = this.scannedData.OrderByDescending((data) => data.lastModified).ToArray();
+									this.scannedData = this.scannedData.OrderByDescending((data) => (data != null ? data.lastModified : string.Empty)).ToArray();
 
 									foreach (var data in this.scannedData) {
+
+										if (data == null) continue;
 
 										var title = data.name + "\n<color=#777><size=10>Modified: " + data.lastModified + "</size></color>";
 
