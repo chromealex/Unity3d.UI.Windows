@@ -9,19 +9,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowDropDownFilterWindow : EditorWindow {
 
-		public static void Show<T>(Rect buttonRect, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, bool strongType = false) where T : Component {
+		public static void Show<T>(Rect buttonRect, System.Action<T> onSelect, System.Action<T> onEveryGUI = null) where T : Component {
 			
 			var size = new Vector2(buttonRect.width, 250f);
 
-			FlowDropDownFilterWindow.Show(buttonRect, size, onSelect, onEveryGUI, strongType);
+			FlowDropDownFilterWindow.Show(buttonRect, size, onSelect, onEveryGUI);
 			
 		}
 
-		public static void Show<T>(Rect buttonRect, Vector2 windowSize, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, bool strongType = false) where T : Component {
+		public static void Show<T>(Rect buttonRect, Vector2 windowSize, System.Action<T> onSelect, System.Action<T> onEveryGUI = null) where T : Component {
 
 			var editor = FlowDropDownFilterWindow.CreateInstance<FlowDropDownFilterWindow>();
 			editor.title = "UI.Windows Flow Filter";
-			editor.ShowAsDropDown(new Rect(buttonRect.x, buttonRect.y, 1, 1), windowSize);
+			editor.ShowAsDropDown(new Rect(buttonRect.x, buttonRect.y, buttonRect.width, 1), windowSize);
 
 			editor.onSelect = (c) => {
 
@@ -36,7 +36,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			};
 
-			editor.Scan<T>(strongType);
+			editor.Scan<T>();
 
 		}
 		
@@ -44,21 +44,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private System.Action<Component> onEveryGUI;
 		private List<Component> items = new List<Component>();
 
-		public void Scan<T>(bool strongType) where T : Component {
+		public void Scan<T>() where T : Component {
 
-			var items = ME.EditorUtilities.GetAssetsOfType<T>(".prefab", strongType);
+			this.items = ME.EditorUtilities.GetPrefabsOfTypeRaw<T>().ToList();
 
-			this.items = new List<Component>();
-			foreach (var item in items) {
+		}
 
-				this.items.Add(item);
+		public void OnFocusLost() {
 
-			}
+			this.Close();
 
 		}
 
 		private Vector2 scrollPos;
 		private void OnGUI() {
+
+			if (this.items.Count == 0) return;
 
 			var scrollWidth = 30f;
 
@@ -93,6 +94,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								this.onSelect(item);
 
 							}
+
 							this.onEveryGUI(item);
 
 						}

@@ -72,12 +72,21 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		static Parser() {
 
-			Parser.manufacturerToDevices.Clear();
-
-			Parser.Parse_INTERNAL("Popular", Parser.popular, ParseDeviceResolutionType.INCHES);
 			//Parser.Parse_INTERNAL("720-800", Parser.p720, ParseDeviceResolutionType.PPI);
 			//Parser.Parse_INTERNAL("1080", Parser.p1080, ParseDeviceResolutionType.PPI);
 			//Parser.Parse_INTERNAL("1440", Parser.p1440, ParseDeviceResolutionType.PPI);
+
+		}
+
+		public static void Collect(bool forced = true) {
+
+			if (Parser.manufacturerToDevices.Count == 0 || forced == true) {
+
+				Parser.manufacturerToDevices.Clear();
+
+				Parser.Parse_INTERNAL("Popular", Parser.popular, ParseDeviceResolutionType.INCHES);
+
+			}
 
 		}
 

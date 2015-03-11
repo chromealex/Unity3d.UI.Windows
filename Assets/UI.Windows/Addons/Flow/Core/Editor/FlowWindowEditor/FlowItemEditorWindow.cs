@@ -732,18 +732,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			if (GUILayout.Button("Create Screen...", GUILayout.Height(30f)) == true) {
 				
 				this.showScreenWindow = true;
-				
+
 			}
-			/*
-			if (GUILayout.Button("Create Screen") == true) {
-				
-				this.screenPrefab = FlowSystem.GenerateScreen(this.window);
-				this.ReloadScreens();
-				
-			}*/
 			
 			if (Event.current.type == EventType.Repaint && this.showScreenWindow == true) {
-				
+
 				this.showScreenWindow = false;
 
 				var commentStyle = new GUIStyle(EditorStyles.miniLabel);
@@ -764,8 +757,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					GUILayout.Label(screen.comment, commentStyle);
 					
-				}, strongType: true);
-				
+				});
+
+				Event.current.Use();
+
 			}
 
 		}
@@ -967,6 +962,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							GUILayout.Label(module.comment, commentStyle);
 
 						});
+						
+						Event.current.Use();
 
 					}
 

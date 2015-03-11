@@ -16,8 +16,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private System.Action<Component> onEveryGUI;
 		private List<Component> items = new List<Component>();
 
-		private static Dictionary<string, List<Component>> cache = new Dictionary<string, List<Component>>();
-
 		public static void Show<T>(EditorWindow root, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, bool strongType = false) where T : Component {
 
 			var editor = FlowChooserFilterWindow.CreateInstance<FlowChooserFilterWindow>();
@@ -53,7 +51,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			editor.Scan<T>(strongType, "CACHE" + strongType.ToString());
 
 			editor.UpdateSize();
-			editor.Focus();
+			//editor.Focus();
 
 		}
 
@@ -65,24 +63,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public void Scan<T>(bool strongType, string cacheKey) where T : Component {
 
-			List<Component> list;
-			if (FlowChooserFilterWindow.cache.TryGetValue(cacheKey, out list) == true) {
-
-				this.items = list;
-				return;
-
-			}
-
-			var items = ME.EditorUtilities.GetAssetsOfType<T>(".prefab", strongType);
-
-			this.items = new List<Component>();
-			foreach (var item in items) {
-
-				this.items.Add(item);
-
-			}
-
-			FlowChooserFilterWindow.cache.Add(cacheKey, this.items);
+			this.items = ME.EditorUtilities.GetPrefabsOfTypeRaw<T>().ToList();
 
 		}
 

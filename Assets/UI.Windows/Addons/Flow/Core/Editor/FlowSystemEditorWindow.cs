@@ -42,6 +42,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 	public class FlowSystemEditorWindow : EditorWindowExt {
 		
 		public static GUISkin defaultSkin;
+		private static bool loaded = false;
+		private static bool loading = false;
 
 		public static FlowSystemEditorWindow ShowEditor(System.Action onClose) {
 
@@ -63,10 +65,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				editor.position = rect;
 				editor.minSize = new Vector2(width, height);
+				
+				editor.Focus();
 
 			}
 
 			editor.ChangeFlowData();
+			
+			FlowSystemEditorWindow.loaded = false;
+			FlowSystemEditorWindow.loading = false;
 
 			return editor;
 
@@ -106,13 +113,40 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		public override void Update() {
+			
+			if (FlowSystemEditorWindow.loading == true) return;
+			
+			if (FlowSystemEditorWindow.loaded == false) {
+				
+				FlowSystemEditorWindow.loading = true;
+				
+				EditorApplication.delayCall += () => {
+					
+					// Cache
+					ME.EditorUtilities.GetAssetsOfType<FlowData>();
+					ME.EditorUtilities.GetPrefabsOfType<FlowWindowLayoutTemplate>();
+					
+					FlowSystemEditorWindow.loading = false;
+					FlowSystemEditorWindow.loaded = true;
+					
+				};
+				
+				return;
+				
+			}
+
+		}
+
 		private const float SETTINGS_WIDTH = 250f;
 		private const float TOOLBAR_HEIGHT = 18f;
 
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
-			
+
+			if (FlowSystemEditorWindow.loaded == false) return;
+
 			WindowUtilities.LoadAddons();
 
 			//var draw = !FlowSceneView.IsActive();
@@ -914,51 +948,48 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							GUI.skin = skin;
 
-							if (this.scannedData == null) {
+							this.scannedData = EditorUtilities.GetAssetsOfType<FlowData>();
 
-								this.scannedData = EditorUtilities.GetAssetsDataOfType<FlowData>("*.asset", true);
+							if (this.scannedData.Length == 0) {
+
+								var center = new GUIStyle(darkLabel);
+								center.fixedWidth = 0f;
+								center.fixedHeight = 0f;
+								center.stretchWidth = true;
+								center.stretchHeight = true;
+								center.alignment = TextAnchor.MiddleCenter;
+								center.wordWrap = true;
+
+								GUILayout.Label("No projects was found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", center);
 
 							} else {
 
-								if (this.scannedData.Length == 0) {
+								var buttonStyle = new GUIStyle("U2D.createRect");
+								buttonStyle.padding = new RectOffset(15, 15, 15, 15);
+								buttonStyle.margin = new RectOffset(2, 2, 2, 2);
+								buttonStyle.fixedWidth = 0f;
+								buttonStyle.fixedHeight = 0f;
+								buttonStyle.stretchWidth = true;
+								buttonStyle.stretchHeight = false;
+								buttonStyle.normal.textColor = Color.black;
+								buttonStyle.fontSize = 12;
+								buttonStyle.richText = true;
 
-									var center = new GUIStyle(FlowSystemEditorWindow.defaultSkin.label);
-									center.stretchWidth = true;
-									center.stretchHeight = true;
-									center.alignment = TextAnchor.MiddleCenter;
+								var buttonStyleSelected = new GUIStyle(buttonStyle);
 
-									GUILayout.Label("No projects was found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", center);
+								buttonStyle.normal.background = null;
+								
+								this.scannedData = this.scannedData.OrderByDescending((data) => (data != null ? data.lastModified : string.Empty)).ToArray();
 
-								} else {
+								foreach (var data in this.scannedData) {
 
-									var buttonStyle = new GUIStyle("U2D.createRect");
-									buttonStyle.padding = new RectOffset(15, 15, 15, 15);
-									buttonStyle.margin = new RectOffset(2, 2, 2, 2);
-									buttonStyle.fixedWidth = 0f;
-									buttonStyle.fixedHeight = 0f;
-									buttonStyle.stretchWidth = true;
-									buttonStyle.stretchHeight = false;
-									buttonStyle.normal.textColor = Color.black;
-									buttonStyle.fontSize = 12;
-									buttonStyle.richText = true;
+									if (data == null) continue;
 
-									var buttonStyleSelected = new GUIStyle(buttonStyle);
+									var title = data.name + "\n<color=#777><size=10>Modified: " + data.lastModified + "</size></color>";
 
-									buttonStyle.normal.background = null;
-									
-									this.scannedData = this.scannedData.OrderByDescending((data) => (data != null ? data.lastModified : string.Empty)).ToArray();
+									if (GUILayout.Button(title, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
 
-									foreach (var data in this.scannedData) {
-
-										if (data == null) continue;
-
-										var title = data.name + "\n<color=#777><size=10>Modified: " + data.lastModified + "</size></color>";
-
-										if (GUILayout.Button(title, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
-
-											this.cachedData = data;
-
-										}
+										this.cachedData = data;
 
 									}
 
@@ -984,11 +1015,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							GUILayout.FlexibleSpace();
 
+							var oldState = GUI.enabled;
+							GUI.enabled = oldState && this.cachedData != null;
 							if (GUILayout.Button("Open", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
 								
 								FlowSystem.SetData(this.cachedData);
 								
 							}
+							GUI.enabled = oldState;
 							
 						}
 						GUILayout.EndHorizontal();
@@ -1772,7 +1806,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			var zOffset = -10f;
+			var zOffset = -4f;
 
 			if (doubleSide == true) {
 
@@ -1810,9 +1844,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var shadowColor = new Color(0f, 0f, 0f, 0.5f);
 			var lineColor = color;//new Color(1f, 1f, 1f, 1f);
 
-			var shadowOffset = Vector3.one * 2f;
-			shadowOffset.z = 0f;
-
 			Handles.BeginGUI();
 
 			Handles.color = shadowColor;
@@ -1830,10 +1861,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var pos = ray.GetPoint(fullDistance * 0.5f);
 
-				Handles.color = shadowColor;
-				Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
-				Handles.color = lineColor;
-				Handles.ConeCap(-1, pos, rot, 15f);
+				this.DrawCap(pos, rot, shadowColor, lineColor);
 
 				//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
 				//GUIExt.DrawTextureRotated(pos, arrow, Vector3.Angle(startPos, endPos));
@@ -1844,10 +1872,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					var pos = ray.GetPoint(distance);
 
-					Handles.color = shadowColor;
-					Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
-					Handles.color = lineColor;
-					Handles.ConeCap(-1, pos, rot, 15f);
+					this.DrawCap(pos, rot, shadowColor, lineColor);
 
 					//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
 					//GUIExt.DrawTextureRotated(pos, arrow, rot);
@@ -1857,6 +1882,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 
 			Handles.EndGUI();
+
+		}
+
+		private void DrawCap(Vector3 pos, Quaternion rot, Color shadowColor, Color lineColor) {
+
+			var scrollPos = FlowSystem.GetScrollPosition();
+			var offset = -8f;
+
+			if (this.scrollRect.Contains(new Vector3(pos.x - scrollPos.x + SETTINGS_WIDTH + offset, pos.y - scrollPos.y + TOOLBAR_HEIGHT + offset, 0f)) == false) return;
+
+			var shadowOffset = Vector3.one * 2f;
+			shadowOffset.z = 0f;
+			
+			Handles.color = shadowColor;
+			Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
+			Handles.color = lineColor;
+			Handles.ConeCap(-1, pos, rot, 15f);
 
 		}
 

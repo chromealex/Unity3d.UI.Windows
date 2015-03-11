@@ -223,6 +223,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			editor.Show();
 			editor.Focus();
 
+			Parser.Collect(forced: false);
+
 			return editor;
 
 		}

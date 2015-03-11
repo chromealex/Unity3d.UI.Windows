@@ -19,8 +19,9 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 #if UNITY_EDITOR
 
 		private static void CreateDirectory( string root, string folder ) {
-
+			
 			folder = folder.Trim( '/' );
+			root = root.Trim( '/' );
 
 			var path = Path.Combine( root, folder );
 			if ( Directory.Exists( path ) == false ) {
@@ -128,6 +129,8 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			} catch ( Exception e ) { Debug.LogException( e ); }
 
 			AssetDatabase.StopAssetEditing();
+			AssetDatabase.Refresh( ImportAssetOptions.ForceUpdate );
+
 		}
 
 		private static string GenerateTransitionMethods( FlowWindow window ) {
@@ -197,7 +200,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 						Directory.Delete( window.compiledDirectory, recursive: true );
 					}
 
-#if !WEBPLAYER
+#if !UNITY_WEBPLAYER
 
 					Directory.CreateDirectory( fullpath );
 
@@ -234,10 +237,10 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				window.compiledDirectory = fullpath;
 
 				window.compiled = true;
+				
+				AssetDatabase.Refresh( ImportAssetOptions.ForceUpdate );
 
 				if ( isCompiledInfoInvalid ) {
-
-					AssetDatabase.Refresh( ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ForceUpdate );
 
 					EditorApplication.delayCall += () => UpdateInheritedClasses( oldBaseClassName, newBaseClassName, oldDerivedClassName, newDerivedClassName, oldNamespace, newNamespace );
 				}
@@ -279,9 +282,11 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			}
 
 			AssetDatabase.StopAssetEditing();
+			AssetDatabase.Refresh( ImportAssetOptions.ForceUpdate );
+
 		}
 
-		public static void GenerateUIByTag( string pathToData, bool recompile = false, int tag = 0 ) {
+		public static void GenerateUIByTag( string pathToData, int tag, bool recompile = false) {
 
 			GenerateUI( pathToData, recompile, flowWindow => flowWindow.tags.Contains( tag ) );
 		}

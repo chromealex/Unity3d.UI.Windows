@@ -7,9 +7,44 @@ namespace ME {
 	
 	public partial class Utilities {
 		
+		private static Dictionary<string, Component[]> cacheComponents = new Dictionary<string, Component[]>();
+		private static Dictionary<string, ScriptableObject[]> cacheAssets = new Dictionary<string, ScriptableObject[]>();
+
 		private static Dictionary<string, double> cacheByTimeLastTime = new Dictionary<string, double>();
 		private static Dictionary<string, object> cacheByTimeLastValue = new Dictionary<string, object>();
 		
+		public static Component[] CacheComponentsArray<T>(System.Func<T[]> func) {
+			
+			var key = typeof(T).FullName;
+			
+			Component[] value;
+			if (Utilities.cacheComponents.TryGetValue(key, out value) == false) {
+
+				value = func().Cast<Component>().ToArray();
+				Utilities.cacheComponents.Add(key, value);
+				
+			}
+			
+			return value;
+			
+		}
+		
+		public static ScriptableObject[] CacheAssetsArray<T>(System.Func<T[]> func) {
+			
+			var key = typeof(T).FullName;
+			
+			ScriptableObject[] value;
+			if (Utilities.cacheAssets.TryGetValue(key, out value) == false) {
+
+				value = func().Cast<ScriptableObject>().ToArray();
+				Utilities.cacheAssets.Add(key, value);
+				
+			}
+			
+			return value;
+			
+		}
+
 		public static T CacheByTime<T>(string name, System.Func<T> func, float timeout = 2f) {
 
 #if UNITY_EDITOR

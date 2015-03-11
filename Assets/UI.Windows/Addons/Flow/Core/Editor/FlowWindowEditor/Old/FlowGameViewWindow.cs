@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows;
-using UnityEditor.UI.Windows.Plugins.DevicePreview;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
@@ -168,8 +167,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
 			this.Focus();
 
-			this.selectedId = -1;
-			this.directoriesFoldOut = new List<bool>();
+			//this.selectedId = -1;
+			//this.directoriesFoldOut = new List<bool>();
 
 			this.gameView.ShowNotification(new GUIContent("Double-Click on any item in left list to toggle between Portrait/Landscape orientation"));
 
@@ -270,11 +269,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			
 		}
 		
-		private List<bool> directoriesFoldOut = new List<bool>();
+		//private List<bool> directoriesFoldOut = new List<bool>();
 
-		private int selectedId = -1;
+		//private int selectedId = -1;
 		private Vector2 scrollPosition;
-		private double lastClickTime = 0d;
+		//private double lastClickTime = 0d;
 
 		public void OnGUI() {
 			
@@ -345,7 +344,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
 			this.scrollPosition = EditorGUILayout.BeginScrollView(this.scrollPosition, false, false);
 			
-			var i = 0;
+			/*var i = 0;
 			var directories = Parser.manufacturerToDevices;
 			if (this.directoriesFoldOut.Count != directories.Count) {
 
@@ -426,7 +425,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 
 				++f;
 
-			}
+			}*/
 
 			EditorGUILayout.EndScrollView();
 

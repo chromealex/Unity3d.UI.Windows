@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ME {
 
@@ -129,10 +130,78 @@ namespace ME {
 			Selection.activeObject = asset;
 
 		}
-
-		/// TODO: REPLACE WITH MY VERSION!!!
-		public static T[] GetAssetsOfType<T>(string fileExtension = ".*", bool strongType = false) where T : Component {
+		
+		public static T[] GetPrefabsOfType<T>() where T : Component {
 			
+			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>().Cast<T>().ToArray();
+			
+		}
+
+		public static Component[] GetPrefabsOfTypeRaw<T>() where T : Component {
+			
+			return ME.Utilities.CacheComponentsArray<T>(() => {
+
+				var objects = AssetDatabase.FindAssets("t:GameObject");
+
+				var output = new List<T>();
+				foreach (var obj in objects) {
+
+					if (obj == null) continue;
+
+					var path = AssetDatabase.GUIDToAssetPath(obj);
+					if (path == null) continue;
+
+					var file = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+					if (file == null) continue;
+
+					var comp = file.GetComponent<T>();
+					if (comp == null) continue;
+
+					output.Add(comp);
+
+				}
+
+				return output.ToArray();
+
+			});
+
+		}
+		
+		public static T[] GetAssetsOfType<T>() where T : ScriptableObject {
+
+			return ME.EditorUtilities.GetAssetsOfTypeRaw<T>().Cast<T>().ToArray();
+
+		}
+
+		public static ScriptableObject[] GetAssetsOfTypeRaw<T>() where T : ScriptableObject {
+
+			return ME.Utilities.CacheAssetsArray<T>(() => {
+
+				var objects = AssetDatabase.FindAssets("t:ScriptableObject");
+				
+				var output = new List<T>();
+				foreach (var obj in objects) {
+					
+					if (obj == null) continue;
+					
+					var path = AssetDatabase.GUIDToAssetPath(obj);
+					if (path == null) continue;
+
+					var file = AssetDatabase.LoadAssetAtPath(path, typeof(ScriptableObject)) as ScriptableObject;
+					if (file == null) continue;
+
+					var comp = file as T;
+					if (comp == null) continue;
+					
+					output.Add(comp);
+
+				}
+				
+				return output.ToArray();
+
+			});
+
+			/*
 			List<T> tempObjects = new List<T>();
 			FileInfo[] goFileInfo = new FileInfo[0];
 			#if !UNITY_WEBPLAYER
@@ -171,9 +240,9 @@ namespace ME {
 				
 			}
 			
-			return tempObjects.ToArray();
+			return tempObjects.ToArray();*/
 		}
-
+		/*
 		public static T[] GetAssetsDataOfType<T>(string fileExtension = ".assets", bool strongType = false) where T : ScriptableObject {
 			
 			List<T> tempObjects = new List<T>();
@@ -212,7 +281,7 @@ namespace ME {
 			}
 			
 			return tempObjects.ToArray();
-		}
+		}*/
 
 	}
 
