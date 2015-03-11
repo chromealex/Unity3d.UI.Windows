@@ -20,7 +20,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		private static void CreateDirectory( string root, string folder ) {
 
-			folder = folder.Trim('/');
+			folder = folder.Trim( '/' );
 
 			var path = Path.Combine( root, folder );
 			if ( Directory.Exists( path ) == false ) {
@@ -59,11 +59,19 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		private static string GetRelativePath( FlowWindow window, string token ) {
 
-			return GetParentContainers( window, FlowSystem.GetContainers() )
-					.Reverse()
-					.Select( _ => _.directory )
-					.Aggregate( string.Empty, ( total, _ ) => total + token + _ )
-					   + token + window.directory;
+			var result = GetParentContainers( window, FlowSystem.GetContainers() )
+				.Reverse()
+				.Select( _ => _.directory )
+				.Aggregate( string.Empty, ( total, _ ) => total + token + _ );
+
+			if ( string.IsNullOrEmpty( result ) ) {
+
+				result = FlowDatabase.OTHER_NAME;
+			}
+
+			result += token + window.directory;
+
+			return result;
 		}
 
 		private static string GetNamespace( FlowWindow window ) {
@@ -73,7 +81,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		private static bool CompiledInfoIsInvalid( FlowWindow flowWindow ) {
 
-			return GetBaseClassName( flowWindow ) != flowWindow.compiledBaseClassName 
+			return GetBaseClassName( flowWindow ) != flowWindow.compiledBaseClassName
 				|| GetNamespace( flowWindow ) != flowWindow.compiledNamespace;
 		}
 
@@ -137,7 +145,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			foreach ( var each in transitions ) {
 
 				var className = each.directory;
-				var classNameWithNamespace = GetNamespace( each ) + "." + GetDerivedClassName(each);//GetBaseClassName( each );
+				var classNameWithNamespace = GetNamespace( each ) + "." + GetDerivedClassName( each );//GetBaseClassName( each );
 
 				result = result + FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod( className, classNameWithNamespace );
 			}
@@ -146,8 +154,6 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		}
 
 		private static void GenerateUIWindow( string fullpath, FlowWindow window, bool recompile = false ) {
-
-			if (window.isDefaultLink == true) return;
 
 			var isCompiledInfoInvalid = window.compiled && CompiledInfoIsInvalid( window );
 
@@ -256,7 +262,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			try {
 
-				foreach ( var each in FlowSystem.GetWindows().Where( (win) => !win.isDefaultLink && (predicate == null || predicate(win)) ) ) {
+				foreach ( var each in FlowSystem.GetWindows().Where( _ => !_.isDefaultLink && predicate( _ ) ) ) {
 
 					var relativePath = GetRelativePath( each, "/" );
 
@@ -274,25 +280,25 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			AssetDatabase.StopAssetEditing();
 		}
-		
+
 		public static void GenerateUIByTag( string pathToData, bool recompile = false, int tag = 0 ) {
-			
+
 			GenerateUI( pathToData, recompile, flowWindow => flowWindow.tags.Contains( tag ) );
 		}
-		
+
 		public static void GenerateUIByTags( string pathToData, int[] tags, bool recompile = false ) {
-			
+
 			GenerateUI( pathToData, recompile, flowWindow => {
 
-				foreach (var tag in flowWindow.tags) {
+				foreach ( var tag in flowWindow.tags ) {
 
-					if (tags.Contains(tag) == true) return true;
+					if ( tags.Contains( tag ) == true ) return true;
 
 				}
 
 				return false;
 
-			});
+			} );
 		}
 
 		public static void GenerateWindow( string pathToData, bool recompile = false, FlowWindow window = null ) {
