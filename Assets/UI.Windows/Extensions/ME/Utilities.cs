@@ -13,6 +13,12 @@ namespace ME {
 			return uiCamera.ViewportToWorldPoint(gameCamera.WorldToViewportPoint(position));
 
 		}
+		
+		public static void CallInSequence<T>(System.Action callback, System.Action<T, System.Action> each, params T[] collection) {
+
+			Utilities.CallInSequence(callback, (IEnumerable<T>)collection, each);
+
+		}
 
 		public static void CallInSequence<T>(System.Action callback, IEnumerable<T> collection, System.Action<T, System.Action> each) {
 
@@ -31,7 +37,15 @@ namespace ME {
 			var ie = collection.GetEnumerator();
 			while (ie.MoveNext() == true) {
 
-				if (ie.Current != null) each(ie.Current, callbackItem);
+				if (ie.Current != null) {
+
+					each(ie.Current, callbackItem);
+
+				} else {
+
+					callbackItem();
+
+				}
 
 			}
 

@@ -1,14 +1,32 @@
 ﻿using UnityEngine;
-using UnityEngine.UI.Windows.Components.List;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows.Components.Events;
+using UnityEngine.Events;
 
-namespace UnityEngine.UI.Windows.Components.Tabs {
+namespace UnityEngine.UI.Windows.Components {
 	
-	public class Tabs : Components.List.List {
+	public class Tabs : Components.List {
 
 		private List<WindowComponent> components = new List<WindowComponent>();
 
 		private WindowLayoutElement layoutContent;
+		
+		private ComponentEvent<WindowComponent, int> onChangeBefore = new ComponentEvent<WindowComponent, int>();
+		private ComponentEvent<WindowComponent, int> onChangeAfter = new ComponentEvent<WindowComponent, int>();
+		
+		public void SetCallback(UnityAction<WindowComponent, int> onChangeBefore = null, UnityAction<WindowComponent, int> onChangeAfter = null) {
+			
+			if (onChangeBefore != null) this.onChangeBefore.AddListenerDistinct(onChangeBefore);
+			if (onChangeAfter != null) this.onChangeAfter.AddListenerDistinct(onChangeAfter);
+			
+		}
+
+		public void SetCallbacks(UnityAction<WindowComponent, int> onChangeBefore, UnityAction<WindowComponent, int> onChangeAfter) {
+			
+			this.onChangeBefore.AddListenerDistinct(onChangeBefore);
+			this.onChangeAfter.AddListenerDistinct(onChangeAfter);
+			
+		}
 
 		public void SetContent(WindowLayoutElement layoutContent) {
 
@@ -22,7 +40,8 @@ namespace UnityEngine.UI.Windows.Components.Tabs {
 			var element = this.AddItem<T1>();
 			element.SetCallback((button) => {
 
-				this.Load(this.GetIndexOf(button));
+				var index = this.GetIndexOf(button);
+				this.Load(index, immediately: false);
 
 			});
 
@@ -32,19 +51,35 @@ namespace UnityEngine.UI.Windows.Components.Tabs {
 
 		}
 
-		public void Load(int index) {
+		private int lastIndex = -1;
+		public void Load(int index, bool immediately = false) {
 
 			if (index < 0 || index >= this.components.Count) return;
+			
+			if (this.layoutContent.GetCurrentComponent() != null) this.onChangeBefore.Invoke(this.layoutContent.GetCurrentComponent(), this.lastIndex);
 
 			var component = this.components[index];
-			
+
 			this.layoutContent.Hide(() => {
 
 				this.layoutContent.Unload();
 				this.layoutContent.Load(component);
 				this.layoutContent.Show();
 
-			});
+				this.onChangeAfter.Invoke(this.layoutContent.GetCurrentComponent(), index);
+
+				this.lastIndex = index;
+
+			}, immediately);
+
+		}
+
+		public override void OnDeinit() {
+
+			base.OnDeinit();
+			
+			this.onChangeBefore.RemoveAllListeners();
+			this.onChangeAfter.RemoveAllListeners();
 
 		}
 

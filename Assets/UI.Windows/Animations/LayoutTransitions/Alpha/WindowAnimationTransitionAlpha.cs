@@ -73,7 +73,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowLayoutBase root, bool forward, System.Action callback) {
+		public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null || root == null) {
@@ -100,8 +100,10 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public override void SetInState(TransitionInputParameters parameters, WindowLayoutBase root) {
+		public override void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
 			
+			base.SetInState(parameters, root);
+
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 			
@@ -109,17 +111,21 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public override void SetOutState(TransitionInputParameters parameters, WindowLayoutBase root) {
+		public override void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
 			
+			base.SetOutState(parameters, root);
+
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
-			
+
 			root.canvas.alpha = param.GetOut();
-			
+
 		}
 		
-		public override void SetResetState(TransitionInputParameters parameters, WindowLayoutBase root) {
-			
+		public override void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
+
+			base.SetResetState(parameters, root);
+
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 			

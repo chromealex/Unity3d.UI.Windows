@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI.Windows;
-using UnityEngine.UI.Windows.Components.List;
 using UnityEngine.UI.Windows.Components;
 
 public class UIWindowExampleComponentsEx4 : WindowComponent {

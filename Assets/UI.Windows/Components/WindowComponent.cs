@@ -1,17 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
-	public class WindowComponent : WindowComponentBase, IWindowComponent {
+	public class WindowComponent : WindowComponentBase, IComponent {
 
+		[Header("Sub Components")]
 		public bool autoRegisterSubComponents = true;
 		[SerializeField]
 		private List<WindowComponent> subComponents = new List<WindowComponent>();
 
 		private WindowLayoutBase layoutRoot;
-		
+
 		internal void Setup(WindowLayoutBase layoutRoot) {
 			
 			this.layoutRoot = layoutRoot;
@@ -46,44 +48,76 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public virtual void OnInit() {
+		public override void OnInit() {
+
+			base.OnInit();
 
 			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnInit();
 
 		}
 
-		public virtual void OnDeinit() {
+		public override void OnDeinit() {
+			
+			base.OnDeinit();
 
 			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnDeinit();
 
 		}
 
-		public virtual void OnShowBegin() {
-
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnShowBegin();
-
-		}
-
-		public virtual void OnShowEnd() {
+		public override void OnShowEnd() {
+			
+			base.OnShowEnd();
 
 			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnShowEnd();
 
 		}
 
-		public virtual void OnHideBegin() {		
-
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnHideBegin();
-
-		}
-
-		public virtual void OnHideEnd() {
+		public override void OnHideEnd() {
+			
+			base.OnHideEnd();
 
 			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnHideEnd();
 			
 		}
+		
+		public override void OnShowBegin(System.Action callback) {
+			
+			var counter = 0;
+			System.Action callbackItem = () => {
+				
+				++counter;
+				if (counter < 2) return;
+				
+				if (callback != null) callback();
+				
+			};
+
+			base.OnShowBegin(callbackItem);
+			ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnShowBegin(c); });
+
+		}
+		
+		public override void OnHideBegin(System.Action callback) {		
+			
+			var counter = 0;
+			System.Action callbackItem = () => {
+				
+				++counter;
+				if (counter < 2) return;
+				
+				if (callback != null) callback();
+				
+			};
+
+			base.OnHideBegin(callbackItem);
+			ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnHideBegin(c); });
+
+		}
 
 		#if UNITY_EDITOR
-		public virtual void OnValidate() {
+		public override void OnValidate() {
+
+			base.OnValidate();
 
 			if (this.autoRegisterSubComponents == true) {
 

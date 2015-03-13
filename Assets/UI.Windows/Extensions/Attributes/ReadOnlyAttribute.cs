@@ -6,16 +6,19 @@ using UnityEditor;
 public class ReadOnlyAttribute : PropertyAttribute {
 
 	public readonly string header;
+	public readonly bool drawHeaderOnly;
 
 	public ReadOnlyAttribute() {
 
 		this.header = null;
+		this.drawHeaderOnly = false;
 
 	}
 	
-	public ReadOnlyAttribute(string header) {
+	public ReadOnlyAttribute(string header, bool drawHeaderOnly = false) {
 
 		this.header = header;
+		this.drawHeaderOnly = drawHeaderOnly;
 
 	}
 
@@ -30,7 +33,15 @@ public class ReadOnlyDrawer : PropertyDrawer {
 		var attribute = this.attribute as ReadOnlyAttribute;
 		if (string.IsNullOrEmpty(attribute.header) == false) {
 
-			return 5f;
+			if (attribute.drawHeaderOnly == true) {
+
+				return 1f;
+
+			} else {
+
+				return 5f;
+
+			}
 
 		}
 
@@ -42,19 +53,25 @@ public class ReadOnlyDrawer : PropertyDrawer {
 
 		var attribute = this.attribute as ReadOnlyAttribute;
 		if (string.IsNullOrEmpty(attribute.header) == true) {
-
+			
+			var oldState = GUI.enabled;
 			GUI.enabled = false;
 			EditorGUI.PropertyField(position, property, label, true);
-			GUI.enabled = true;
+			GUI.enabled = oldState;
 
 		} else {
 
 			var oldValue = new GUIContent(label);
 			EditorGUILayout.LabelField(attribute.header, EditorStyles.boldLabel);
 
-			GUI.enabled = false;
-			EditorGUILayout.PropertyField(property, oldValue, true);
-			GUI.enabled = true;
+			if (attribute.drawHeaderOnly == false) {
+
+				var oldState = GUI.enabled;
+				GUI.enabled = false;
+				EditorGUILayout.PropertyField(property, oldValue, true);
+				GUI.enabled = oldState;
+
+			}
 
 		}
 

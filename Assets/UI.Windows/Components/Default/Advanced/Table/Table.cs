@@ -3,11 +3,10 @@ using UnityEngine.Extensions;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Linq;
-using UnityEngine.UI.Windows.Components.List;
 
 namespace UnityEngine.UI.Windows.Components.Table {
 	
-	public class Table : Components.List.List {
+	public class Table : Components.List {
 
 		private List<WindowComponent> list = new List<WindowComponent>();
 

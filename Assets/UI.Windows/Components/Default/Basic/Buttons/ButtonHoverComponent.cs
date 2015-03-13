@@ -32,9 +32,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnHideBegin() {
+		public override void OnHideBegin(System.Action callback) {
 
-			base.OnHideBegin();
+			base.OnHideBegin(callback);
 
 			this.OnPointerExit(null);
 

@@ -310,7 +310,17 @@ namespace UnityEngine.Extensions {
 				instance.localPosition = source.localPosition;
 				instance.localRotation = source.localRotation;
 				instance.localScale = source.localScale;
-				
+
+				if (instance is RectTransform && source is RectTransform) {
+
+					var instanceRect = instance as RectTransform;
+					var sourceRect = source as RectTransform;
+					
+					instanceRect.anchoredPosition3D = sourceRect.anchoredPosition3D;
+					instanceRect.sizeDelta = sourceRect.sizeDelta;
+
+				}
+
 			}
 			
 		}

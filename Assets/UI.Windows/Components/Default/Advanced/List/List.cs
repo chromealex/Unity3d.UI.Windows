@@ -3,8 +3,9 @@ using UnityEngine.Extensions;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEngine.EventSystems;
 
-namespace UnityEngine.UI.Windows.Components.List {
+namespace UnityEngine.UI.Windows.Components {
 	
 	public class List : WindowComponent {
 		
@@ -13,22 +14,33 @@ namespace UnityEngine.UI.Windows.Components.List {
 		public ScrollRect scrollRect;
 		public WindowComponent source;
 
-		public T AddItem<T>() where T : WindowComponent {
+		public T AddItem<T>() where T : IComponent {
+
+			if (this.source == null) return default(T);
 
 			var instance = this.source.Spawn();
-			instance.Setup(this.GetLayoutRoot());
 
-			this.list.Add(instance);
+			if (instance is LinkerComponent) {
+
+				instance.OnInit();
+				instance.gameObject.SetActive(true);
+
+				instance = (instance as LinkerComponent).Get<WindowComponent>();
+
+			}
 			
-			instance.gameObject.SetActive(true);
-
+			instance.Setup(this.GetLayoutRoot());
+			instance.Setup(this.GetWindow());
 			this.RegisterSubComponent(instance);
 
-			return instance as T;
+			this.list.Add(instance);
+			instance.gameObject.SetActive(true);
+
+			return (T)(instance as IComponent);
 
 		}
 
-		public int GetIndexOf<T>(T item) where T : WindowComponent {
+		public int GetIndexOf<T>(T item) where T : IComponent {
 			
 			return this.GetItems().IndexOf(item as WindowComponent);
 
@@ -40,25 +52,29 @@ namespace UnityEngine.UI.Windows.Components.List {
 			
 		}
 		
-		public List<T> GetItems<T>() where T : WindowComponent {
+		public List<T> GetItems<T>() where T : IComponent {
 			
 			return this.list.Cast<T>().ToList();
 			
 		}
 		
-		public T GetItem<T>(int index) where T : WindowComponent {
+		public T GetItem<T>(int index) where T : IComponent {
 			
-			return this.list[index] as T;
+			return (T)(this.list[index] as IComponent);
 			
 		}
 
-		public void SetItems(int capacity, UnityAction<WindowComponent> onItem = null) {
+		public void SetItems(int capacity, UnityAction<IComponent> onItem = null) {
 
-			this.SetItems(capacity, onItem);
+			this.SetItems<IComponent>(capacity, (element, index) => {
+
+				if (onItem != null) onItem(element as WindowComponent);
+
+			});
 
 		}
 
-		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : WindowComponent {
+		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
 
 			foreach (var element in this.list) element.Recycle();
 			this.list.Clear();
@@ -66,7 +82,7 @@ namespace UnityEngine.UI.Windows.Components.List {
 			for (int i = 0; i < capacity; ++i) {
 
 				var instance = this.AddItem<T>();
-				if (onItem != null) onItem.Invoke(instance, i);
+				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 
 			}
 

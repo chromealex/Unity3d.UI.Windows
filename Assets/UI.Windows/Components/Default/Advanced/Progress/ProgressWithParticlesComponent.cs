@@ -53,9 +53,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnHideBegin() {
+		public override void OnHideBegin(System.Action callback) {
 
-			base.OnHideBegin();
+			base.OnHideBegin(callback);
 
 			if (this.effect != null) this.effect.Stop(true, this.GetWindow().GetAnimationDuration(forward: false));
 			

@@ -15,9 +15,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public T Get<T>(ref T instance) where T : WindowComponent {
 			
-			instance = this.instance as T;
+			instance = this.Get<T>();
 
 			return instance;
+
+		}
+
+		public T Get<T>() where T : WindowComponent {
+			
+			return this.instance as T;
 
 		}
 
@@ -30,7 +36,7 @@ namespace UnityEngine.UI.Windows.Components {
 				this.instance.OnInit();
 
 			} else if (this.prefab != null) {
-				
+
 				this.instance = this.prefab.Spawn();
 				this.instance.SetParent(this, false);
 				this.instance.SetTransformAs(this.prefab);
@@ -53,13 +59,21 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public override void OnShowBegin() {
+		public override void OnShowBegin(System.Action callback) {
 			
-			base.OnShowBegin();
+			var counter = 0;
+			System.Action callbackItem = () => {
+				
+				++counter;
+				if (counter < 2) return;
+				
+				if (callback != null) callback();
+				
+			};
 			
-			var instance = this.instance;
-			if (instance != null) instance.OnShowBegin();
-			
+			base.OnShowBegin(callbackItem);
+			this.instance.OnShowBegin(callbackItem);
+
 		}
 		
 		public override void OnShowEnd() {
@@ -71,13 +85,21 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public override void OnHideBegin() {
+		public override void OnHideBegin(System.Action callback) {
 			
-			base.OnHideBegin();
+			var counter = 0;
+			System.Action callbackItem = () => {
+				
+				++counter;
+				if (counter < 2) return;
+				
+				if (callback != null) callback();
+				
+			};
 			
-			var instance = this.instance;
-			if (instance != null) instance.OnHideBegin();
-			
+			base.OnHideBegin(callbackItem);
+			this.instance.OnHideBegin(callbackItem);
+
 		}
 		
 		public override void OnHideEnd() {

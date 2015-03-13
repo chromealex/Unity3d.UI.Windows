@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
-using UnityEngine.UI.Windows.Components.Tabs;
 using UnityEngine.UI.Windows.Components;
-using UnityEngine.UI.Windows.Components.List;
 
 public class UIWindowExampleComponents : LayoutWindowType {
 
@@ -29,7 +27,7 @@ public class UIWindowExampleComponents : LayoutWindowType {
 
 		}
 
-		this.tabs.Load(0);
+		this.tabs.Load(0, immediately: true);
 
 	}
 

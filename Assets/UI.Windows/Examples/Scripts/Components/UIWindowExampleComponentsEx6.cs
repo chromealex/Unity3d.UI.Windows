@@ -8,14 +8,7 @@ public class UIWindowExampleComponentsEx6 : WindowComponent {
 	public LinkerComponent buttonLinker;
 	private ButtonWithTextComponent button;
 	
-	public LinkerComponent barLinker;
-	private ProgressComponent bar;
-	
-	public LinkerComponent barAnimatedLinker;
-	private ProgressWithParticlesComponent barAnimated;
-	
-	public LinkerComponent barAnimated2Linker;
-	private ProgressAnimatedComponent barAnimated2;
+	public LinkerComponent[] bars;
 
 	public override void OnInit() {
 		
@@ -34,9 +27,11 @@ public class UIWindowExampleComponentsEx6 : WindowComponent {
 
 	private void SetRandom() {
 
-		this.barLinker.Get(ref this.bar).SetValue(Random.Range(0f, 1f));
-		this.barAnimatedLinker.Get(ref this.barAnimated).SetValue(Random.Range(0f, 1f));
-		this.barAnimated2Linker.Get(ref this.barAnimated2).SetValue(Random.Range(0f, 1f));
+		foreach (var bar in this.bars) {
+
+			bar.Get<ProgressComponent>().SetValue(Random.Range(0f, 1f));
+
+		}
 
 	}
 

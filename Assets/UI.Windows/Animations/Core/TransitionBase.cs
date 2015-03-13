@@ -40,15 +40,24 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public virtual void SetInState(TransitionInputParameters parameters, WindowLayoutBase root) {
+		public virtual void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
+			
+			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+			TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
-		public virtual void SetOutState(TransitionInputParameters parameters, WindowLayoutBase root) {
+		public virtual void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
+
+			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+			TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
-		public virtual void SetResetState(TransitionInputParameters parameters, WindowLayoutBase root) {
+		public virtual void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
+
+			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+			TweenerGlobal.instance.removeTweens(tag);
 
 		}
 
@@ -58,23 +67,28 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public void Play(TransitionInputParameters parameters, WindowLayoutBase root, bool forward, System.Action callback) {
+		public void Play(TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 			
 			this.Play(null, parameters, root, forward, callback);
 
 		}
 
-		public void Play(WindowBase window, TransitionInputParameters parameters, WindowLayoutBase root, bool forward, System.Action callback) {
+		public void Play(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var delay = this.GetDelay(parameters, forward);
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+			
+			TweenerGlobal.instance.removeTweens(tag);
 
 			if (delay > 0f) {
 
-				TweenerGlobal.instance.removeTweens(tag);
 				TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
 
 					this.OnPlay(window, tag, parameters, root, forward, callback);
+
+				}).onCancel((obj) => {
+
+					if (callback != null) callback();
 
 				});
 
@@ -88,7 +102,7 @@ namespace UnityEngine.UI.Windows {
 
 		public virtual void OnInit() {}
 
-		public virtual void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowLayoutBase root, bool forward, System.Action callback) {}
+		public virtual void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {}
 
 		public virtual float GetDelay(TransitionInputParameters parameters, bool forward) {
 			

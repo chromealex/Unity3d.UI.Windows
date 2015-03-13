@@ -151,12 +151,12 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			[HideInInspector][System.NonSerialized]
-			private IWindowEvents instance;
+			private IWindowEventsAsync instance;
 			
 			[HideInInspector][System.NonSerialized]
-			private IWindowAnimation root;
+			private IWindowComponentLayout root;
 			
-			public IWindowEvents Create(WindowBase window, WindowLayoutElement root) {
+			public IWindowEventsAsync Create(WindowBase window, WindowLayoutElement root) {
 				
 				this.root = root;
 
@@ -213,8 +213,11 @@ namespace UnityEngine.UI.Windows {
 			public float GetDuration(bool forward) {
 				
 				if (this.component == null) return 0f;
-				
-				return this.root.GetAnimationDuration(forward);
+
+				var root = this.root as IWindowAnimation;
+				if (root == null) return 0f;
+
+				return root.GetAnimationDuration(forward);
 				
 			}
 			
@@ -234,9 +237,8 @@ namespace UnityEngine.UI.Windows {
 			
 			public void OnShowBegin(System.Action callback) {
 
-				if (this.instance != null) this.instance.OnShowBegin();
-				if (this.root != null) this.root.OnShowBegin(callback);
-				
+				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnShowBegin(c); }, this.instance, this.root);
+
 			}
 			
 			public void OnShowEnd() {
@@ -247,10 +249,9 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			public void OnHideBegin(System.Action callback) {
-				
-				if (this.instance != null) this.instance.OnHideBegin();
-				if (this.root != null) this.root.OnHideBegin(callback);
-				
+
+				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnHideBegin(c); }, this.instance, this.root);
+
 			}
 			
 			public void OnHideEnd() {
@@ -359,55 +360,39 @@ namespace UnityEngine.UI.Windows {
 		public void OnInit() { this.instance.OnInit(); foreach (var component in this.components) component.OnInit(); }
 		public void OnDeinit() { this.instance.OnDeinit(); foreach (var component in this.components) component.OnDeinit(); }
 		public void OnShowBegin(System.Action callback) {
-			
-			this.instance.OnShowBegin(); 
-			
-			ME.Utilities.CallInSequence(callback, this.components, (e, c) => { e.OnShowBegin(c); });
-			/*
+
 			var counter = 0;
 			System.Action callbackItem = () => {
 				
 				++counter;
-				if (counter < this.components.Length) return;
+				if (counter < 2) return;
 				
 				if (callback != null) callback();
 				
 			};
-			
-			foreach (var component in this.components) {
-				
-				component.OnShowBegin(callbackItem);
-				
-			}
 
-			if (this.components.Length == 0 && callback != null) callback();
-			*/
+			this.instance.OnShowBegin(callbackItem); 
+			
+			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnShowBegin(c); });
+
 		}
 		public void OnShowEnd() { this.instance.OnShowEnd(); foreach (var component in this.components) component.OnShowEnd(); }
 		public void OnHideBegin(System.Action callback) {
 			
-			this.instance.OnHideBegin(); 
-			
-			ME.Utilities.CallInSequence(callback, this.components, (e, c) => { e.OnHideBegin(c); });
-			/*
 			var counter = 0;
 			System.Action callbackItem = () => {
 				
 				++counter;
-				if (counter < this.components.Length) return;
+				if (counter < 2) return;
 				
 				if (callback != null) callback();
 				
 			};
+
+			this.instance.OnHideBegin(callbackItem); 
 			
-			foreach (var component in this.components) {
-				
-				component.OnHideBegin(callbackItem);
-				
-			}
-			
-			if (this.components.Length == 0 && callback != null) callback();
-*/
+			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnHideBegin(c); });
+
 		}
 		public void OnHideEnd() { this.instance.OnHideEnd(); foreach (var component in this.components) component.OnHideEnd(); }
 		

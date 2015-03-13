@@ -110,7 +110,7 @@ public class WindowTransitionBasic : TransitionBase {
 
 	}
 
-	public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowLayoutBase root, bool forward, System.Action callback) {
+	public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 		var param = this.GetParams<Parameters>(parameters);
 		if (param == null) {
@@ -167,7 +167,7 @@ public class WindowTransitionBasic : TransitionBase {
 		
 	}
 	
-	public override void SetInState(TransitionInputParameters parameters, WindowLayoutBase root) {
+	public override void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
 		
 		var param = this.GetParams<Parameters>(parameters);
 		if (param == null) return;
@@ -176,7 +176,7 @@ public class WindowTransitionBasic : TransitionBase {
 		
 	}
 	
-	public override void SetOutState(TransitionInputParameters parameters, WindowLayoutBase root) {
+	public override void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
 		
 		var param = this.GetParams<Parameters>(parameters);
 		if (param == null) return;
@@ -185,7 +185,7 @@ public class WindowTransitionBasic : TransitionBase {
 		
 	}
 	
-	public override void SetResetState(TransitionInputParameters parameters, WindowLayoutBase root) {
+	public override void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
 		
 		var param = this.GetParams<Parameters>(parameters);
 		if (param == null) return;

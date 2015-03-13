@@ -22,7 +22,7 @@ namespace UnityEngine.UI.Windows {
 
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
-	public class WindowBase : WindowObject, IWindowEvents {
+	public class WindowBase : WindowObject, IWindowEventsAsync {
 
 		[HideInInspector]
 		public Camera workCamera;
@@ -202,7 +202,7 @@ namespace UnityEngine.UI.Windows {
 				if (this.currentState != WindowState.Showing) return;
 
 				++counter;
-				if (counter < 3) return;
+				if (counter < 5) return;
 
 				this.OnShowEnd();
 				this.OnLayoutShowEnd();
@@ -217,8 +217,8 @@ namespace UnityEngine.UI.Windows {
 			this.OnLayoutShowBegin(callback);
 			this.modules.OnShowBegin(callback);
 			this.transition.OnShowBegin(callback);
-			this.events.OnShowBegin();
-			this.OnShowBegin();
+			this.events.OnShowBegin(callback);
+			this.OnShowBegin(callback);
 
 			this.gameObject.SetActive(true);
 			
@@ -241,7 +241,7 @@ namespace UnityEngine.UI.Windows {
 				if (this.currentState != WindowState.Hiding) return;
 
 				++counter;
-				if (counter < 3) return;
+				if (counter < 5) return;
 				
 				WindowSystem.RemoveFromHistory(this);
 
@@ -263,8 +263,8 @@ namespace UnityEngine.UI.Windows {
 			this.OnLayoutHideBegin(callback);
 			this.modules.OnHideBegin(callback);
 			this.transition.OnHideBegin(callback);
-			this.events.OnHideBegin();
-			this.OnHideBegin();
+			this.events.OnHideBegin(callback);
+			this.OnHideBegin(callback);
 			
 		}
 
@@ -300,9 +300,9 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnEmptyPass() {}
 		public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
-		public virtual void OnShowBegin() {}
+		public virtual void OnShowBegin(System.Action callback) { if (callback != null) callback(); }
 		public virtual void OnShowEnd() {}
-		public virtual void OnHideBegin() {}
+		public virtual void OnHideBegin(System.Action callback) { if (callback != null) callback(); }
 		public virtual void OnHideEnd() {}
 		
 		#if UNITY_EDITOR

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI.Windows;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class WindowAnimationTransitionAlphaParameters : TransitionInputParameters {
 
 	public WindowAnimationTransitionAlpha.Parameters parameters;

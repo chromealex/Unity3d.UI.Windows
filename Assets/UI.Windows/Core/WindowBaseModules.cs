@@ -61,9 +61,35 @@ namespace UnityEngine.UI.Windows {
 			
 			public void OnInit() { if (this.instance != null) this.instance.OnInit(); }
 			public void OnDeinit() { if (this.instance != null) this.instance.OnDeinit(); }
-			public void OnShowBegin(System.Action callback) { if (this.instance != null) this.instance.OnShowBegin(callback); }
+			public void OnShowBegin(System.Action callback) {
+
+				if (this.instance != null) {
+
+					this.instance.OnShowBegin(callback);
+
+				} else {
+
+					if (callback != null) callback();
+
+				}
+
+			}
+
 			public void OnShowEnd() { if (this.instance != null) this.instance.OnShowEnd(); }
-			public void OnHideBegin(System.Action callback) { if (this.instance != null) this.instance.OnHideBegin(callback); }
+			public void OnHideBegin(System.Action callback) {
+				
+				if (this.instance != null) {
+					
+					this.instance.OnHideBegin(callback);
+					
+				} else {
+					
+					if (callback != null) callback();
+					
+				}
+
+			}
+
 			public void OnHideEnd() { if (this.instance != null) this.instance.OnHideEnd(); }
 			
 		}
@@ -195,7 +221,7 @@ namespace UnityEngine.UI.Windows {
 	}
 	
 	[System.Serializable]
-	public class Events : IWindowEvents {
+	public class Events : IWindowEventsAsync {
 		
 		public EventsAction<WindowEventType> events = new EventsAction<WindowEventType>();
 		public EventsAction<WindowEventType> eventsInstance = new EventsAction<WindowEventType>();
@@ -222,9 +248,9 @@ namespace UnityEngine.UI.Windows {
 		// Events
 		public void OnInit() { this.ReleaseEvents(WindowEventType.OnInit); }
 		public void OnDeinit() { this.ReleaseEvents(WindowEventType.OnDeinit); }
-		public void OnShowBegin() { this.ReleaseEvents(WindowEventType.OnShowBegin); }
+		public void OnShowBegin(System.Action callback) { this.ReleaseEvents(WindowEventType.OnShowBegin); if (callback != null) callback(); }
 		public void OnShowEnd() { this.ReleaseEvents(WindowEventType.OnShowEnd); }
-		public void OnHideBegin() { this.ReleaseEvents(WindowEventType.OnHideBegin); }
+		public void OnHideBegin(System.Action callback) { this.ReleaseEvents(WindowEventType.OnHideBegin); if (callback != null) callback(); }
 		public void OnHideEnd() { this.ReleaseEvents(WindowEventType.OnHideEnd); }
 		
 	}

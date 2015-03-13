@@ -6,9 +6,9 @@ public class UIWindowExampleButtonComponent : ButtonComponent {
 
 	public UIWindowExampleHover hover;
 
-	public override void OnHideBegin() {
+	public override void OnHideBegin(System.Action callback) {
 
-		base.OnHideBegin();
+		base.OnHideBegin(callback);
 		this.hover.OnLeave();
 
 	}

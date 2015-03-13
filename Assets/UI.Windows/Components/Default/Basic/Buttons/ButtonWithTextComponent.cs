@@ -4,14 +4,20 @@ using UnityEngine.UI;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonWithTextComponent : ButtonComponent {
+	public class ButtonWithTextComponent : ButtonComponent, ITextComponent {
 
 		public Text text;
 
 		public void SetText(string text) {
-
+			
 			this.text.text = text;
+			
+		}
 
+		public string GetText() {
+			
+			return this.text.text;
+			
 		}
 		
 		#if UNITY_EDITOR

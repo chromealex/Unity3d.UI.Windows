@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
@@ -59,11 +60,11 @@ namespace UnityEngine.UI.Windows {
 				
 				if (forward == true) {
 					
-					return this.inState.to;
+					return this.GetIn();
 					
 				}
 				
-				return this.outState.to;
+				return this.GetOut();
 				
 			}
 
@@ -71,12 +72,33 @@ namespace UnityEngine.UI.Windows {
 
 		public Parameters defaultInputParams;
 
-		private RectTransform GetRoot(Parameters parameters, WindowLayoutBase root) {
+		private RectTransform GetRoot(Parameters parameters, WindowComponentBase root) {
 
-			var component = root.GetCurrentComponent();
+			WindowComponent component = null;
+			if (root is LinkerComponent && !component) {
+
+				component = (root as LinkerComponent).Get<WindowComponent>();
+				
+			}
+			
+			if (root is WindowLayoutBase && !component) {
+				
+				component = (root as WindowLayoutBase).GetCurrentComponent();
+				
+			}
+
+			if (root is WindowComponent && !component) {
+				
+				component = root as WindowComponent;
+				
+			}
+
+			//var component = (root is LinkerComponent ? (root as LinkerComponent).Get<WindowComponent>() : (root is WindowLayoutBase ? (root as WindowLayoutBase).GetCurrentComponent() : (root as WindowComponent ? root is WindowComponent : null)));
 			if (component == null && parameters == null) return null;
 
+
 			if (component == null || parameters.moveRoot == true) return root.transform as RectTransform;
+
 			if (parameters == null) return component.transform as RectTransform;
 
 			return component.transform as RectTransform;
@@ -89,7 +111,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowLayoutBase root, bool forward, System.Action callback) {
+		public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null || root == null) {
@@ -128,7 +150,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public override void SetInState(TransitionInputParameters parameters, WindowLayoutBase root) {
+		public override void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
 			
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
@@ -137,20 +159,20 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public override void SetOutState(TransitionInputParameters parameters, WindowLayoutBase root) {
-			
+		public override void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
+
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
-			
+
 			this.GetRoot(param, root).anchoredPosition = param.GetOut();
 
 		}
 		
-		public override void SetResetState(TransitionInputParameters parameters, WindowLayoutBase root) {
+		public override void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
 			
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
-			
+
 			this.GetRoot(param, root).anchoredPosition = param.GetReset();
 
 		}

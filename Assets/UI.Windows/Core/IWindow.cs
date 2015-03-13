@@ -13,7 +13,7 @@ namespace UnityEngine.UI.Windows {
 		OnHideEnd,
 
 	};
-	
+	/*
 	public interface IWindowEvents {
 		
 		void OnInit();
@@ -23,7 +23,7 @@ namespace UnityEngine.UI.Windows {
 		void OnHideBegin();
 		void OnHideEnd();
 		
-	}
+	}*/
 	
 	public interface IWindowEventsAsync {
 		

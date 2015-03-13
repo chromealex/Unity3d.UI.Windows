@@ -7,7 +7,7 @@ using System.Collections;
 namespace UnityEngine.UI.Windows {
 
 	[RequireComponent(typeof(Canvas))]
-	public class WindowLayout : WindowObject, ICanvasElement, IWindowEvents {
+	public class WindowLayout : WindowObject, ICanvasElement, IWindowEventsAsync {
 
 		public enum ScaleMode {
 
@@ -168,32 +168,34 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public void OnShowBegin() {
+		public virtual void OnShowBegin(System.Action callback) {
 
 			this.isAlive = true;
 			CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
 
-			this.OnShowBeginEvent();
+			//this.OnShowBeginEvent();
+
+			if (callback != null) callback();
 
 		}
 
-		public void OnHideEnd() {
+		public virtual void OnHideEnd() {
 
 			this.isAlive = false;
 			CanvasUpdateRegistry.UnRegisterCanvasElementForRebuild(this);
 
-			this.OnHideEndEvent();
+			//this.OnHideEndEvent();
 
 		}
 		
 		public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
-		public virtual void OnHideBegin() {}
-
+		public virtual void OnHideBegin(System.Action callback) { if (callback != null) callback(); }
+		/*
 		public virtual void OnShowBeginEvent() {}
 		public virtual void OnHideEndEvent() {}
-
+*/
 	}
 
 }

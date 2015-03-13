@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI.Windows.Components.List;
 using UnityEngine.UI.Windows.Components;
 
 public class UIWindowExampleTransitionsListComponent : List {
