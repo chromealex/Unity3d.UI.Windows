@@ -21,7 +21,7 @@ public class UIWindowExampleStart : MonoBehaviour {
 #if UNITY_EDITOR
 	public void LateUpdate() {
 		
-		this.version = UnityEditor.PlayerSettings.bundleVersion;
+		this.version = UnityEditor.UI.Windows.VersionInfo.bundleVersion;
 
 	}
 #endif

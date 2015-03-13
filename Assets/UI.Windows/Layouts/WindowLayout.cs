@@ -68,6 +68,8 @@ namespace UnityEngine.UI.Windows {
 
 			this.SetScale(scaleMode);
 
+			for (int i = 0; i < this.elements.Count; ++i) this.elements[i].Setup(this.GetWindow());
+
 		}
 
 		public bool ValidateCanvasScaler() {

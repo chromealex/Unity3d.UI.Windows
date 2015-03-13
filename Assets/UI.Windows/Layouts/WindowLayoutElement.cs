@@ -19,6 +19,8 @@ namespace UnityEngine.UI.Windows {
 		public bool autoStretchX = false;
 		public bool autoStretchY = false;
 
+		public bool showFullDescription = false;
+
 		[HideInInspector]
 		public WindowComponent tempEditorComponent;
 		[HideInInspector]
@@ -121,8 +123,17 @@ namespace UnityEngine.UI.Windows {
 			var rect = this.transform as RectTransform;
 			rect.GetWorldCorners(points);
 
-			var descr = "<b>" + this.tag.ToString() + "</b>\n" + this.comment + "\n" + "(Animation: " + (this.animation != null ? this.animation.name : "None") + ")" +
-				(this.tempEditorComponent != null ? ("\n(Component: " + this.tempEditorComponent.name + ")") : "");
+			var descr = string.Empty;
+			if (this.showFullDescription == true) {
+
+				descr = "<b>" + this.tag.ToString() + "</b>\n" + this.comment + "\n" + "(Animation: " + (this.animation != null ? this.animation.name : "None") + ")" +
+					(this.tempEditorComponent != null ? ("\n(Component: " + this.tempEditorComponent.name + ")") : "");
+
+			} else {
+
+				descr = this.comment;
+
+			}
 
 			var center = Vector3.zero;
 			for (int i = 0; i < 4; ++i) center += points[i];

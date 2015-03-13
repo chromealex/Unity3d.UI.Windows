@@ -269,7 +269,7 @@ namespace UnityEngine.Extensions {
 
 	public static class TransformExtensions {
 		
-		public static void SetParent<T>(this T instance, T source, bool setTransformAsSource = true) where T : Component {
+		public static void SetParent<T1, T2>(this T1 instance, T2 source, bool setTransformAsSource = true) where T1 : Component where T2 : Component {
 			
 			if (source != null) {
 
@@ -291,7 +291,7 @@ namespace UnityEngine.Extensions {
 			
 		}
 		
-		public static void SetTransformAs<T>(this T instance, T source) where T : Component {
+		public static void SetTransformAs<T1, T2>(this T1 instance, T2 source) where T1 : Component where T2: Component {
 			
 			instance.transform.SetTransformAs(source.transform);
 			

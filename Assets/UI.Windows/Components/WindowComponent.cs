@@ -15,9 +15,19 @@ namespace UnityEngine.UI.Windows {
 		internal void Setup(WindowLayoutBase layoutRoot) {
 			
 			this.layoutRoot = layoutRoot;
-
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].Setup(this.layoutRoot);
+			
 		}
 		
+		internal override void Setup(WindowBase window) {
+			
+			base.Setup(window);
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].Setup(window);
+			
+		}
+
 		public WindowLayoutBase GetLayoutRoot() {
 			
 			return this.layoutRoot;
@@ -25,13 +35,13 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		public void RegisterSubComponent(WindowComponent subComponent) {
-			
+
 			if (this.subComponents.Contains(subComponent) == false) this.subComponents.Add(subComponent);
 			
 		}
 		
 		public void UnregisterSubComponent(WindowComponent subComponent) {
-			
+
 			this.subComponents.Remove(subComponent);
 			
 		}

@@ -38,6 +38,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 
+		public WindowBase screen;
+
 		public FlowWindow(int id, bool isContainer = false, bool isDefaultLink = false) {
 
 			this.states = new CompletedState[STATES_COUNT];
@@ -54,6 +56,18 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			this.compiled = false;
 
+		}
+
+		public void SetScreen(WindowBase screen) {
+
+			this.screen = screen;
+
+		}
+
+		public WindowBase GetScreen() {
+			
+			return this.screen;
+			
 		}
 
 		public void AddTag(FlowTag tag) {

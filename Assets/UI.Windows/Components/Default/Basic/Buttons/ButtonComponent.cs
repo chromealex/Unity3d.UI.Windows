@@ -10,7 +10,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class ButtonComponent : WindowComponent {
 
-		public Button button;
+		[SerializeField]
+		protected Button button;
+
 		private ComponentEvent callback = new ComponentEvent();
 		private ComponentEvent<ButtonComponent> callbackButton = new ComponentEvent<ButtonComponent>();
 
@@ -26,6 +28,22 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
+		public Color GetColor() {
+			
+			return this.button != null ? this.button.targetGraphic.color : Color.white;
+			
+		}
+		
+		public void SetColor(Color color) {
+			
+			if (this.button != null) {
+
+				this.button.targetGraphic.color = color;
+
+			}
+
+		}
+
 		public virtual void SetCallback(UnityAction callback) {
 			
 			this.callback.AddListenerDistinct(callback);

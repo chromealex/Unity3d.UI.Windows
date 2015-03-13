@@ -17,6 +17,12 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
+		public void GetLayoutComponent<T>(out T component, LayoutTag tag = LayoutTag.None) where T : WindowComponent {
+			
+			component = this.GetLayoutComponent<T>(tag);
+			
+		}
+
 		public T GetLayoutComponent<T>(LayoutTag tag = LayoutTag.None) where T : WindowComponent {
 			
 			return this.layout.Get<T>(tag);
@@ -168,11 +174,9 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				var instance = this.component.Spawn();
-				instance.transform.SetParent(root.transform);
-				instance.transform.localPosition = Vector3.zero;
-				instance.transform.localRotation = Quaternion.identity;
-				instance.transform.localScale = Vector3.one;
-				
+				instance.SetParent(root, setTransformAsSource: false);
+				instance.SetTransformAs();
+
 				var rect = instance.transform as RectTransform;
 				rect.sizeDelta = (this.component.transform as RectTransform).sizeDelta;
 				rect.anchoredPosition = (this.component.transform as RectTransform).anchoredPosition;

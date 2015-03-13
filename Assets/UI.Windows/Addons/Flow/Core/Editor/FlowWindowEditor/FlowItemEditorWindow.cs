@@ -1192,8 +1192,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if ((this.screenInstance as LayoutWindowType) != null) {
 					
 					var layoutScreen = this.screenInstance as LayoutWindowType;
-					layoutScreen.layout.layout = this.layoutInstance;
-					
+					layoutScreen.layout.layout = layoutPrefab;
+					this.isScreenDirty = true;
+
 				}
 
 			}
@@ -1233,6 +1234,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.screenInstance.transform.position = Vector3.zero;
 				this.screenInstance.transform.rotation = Quaternion.identity;
 				this.screenInstance.transform.localScale = Vector3.zero;
+
+				this.window.SetScreen(screenPrefab);
 
 			}
 			

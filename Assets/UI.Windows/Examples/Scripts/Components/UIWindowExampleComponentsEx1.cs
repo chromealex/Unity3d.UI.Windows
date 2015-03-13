@@ -31,16 +31,16 @@ public class UIWindowExampleComponentsEx1 : WindowComponent {
 
 		});
 
-		var oldColor = this.button3.button.targetGraphic.color;
+		var oldColor = this.button3.GetColor();
 		this.button3.SetCallbackHover((state) => {
 
 			if (state == true) {
 
-				this.button3.button.targetGraphic.color = new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), 1f);
+				this.button3.SetColor(new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), 1f));
 
 			} else {
 
-				this.button3.button.targetGraphic.color = oldColor;
+				this.button3.SetColor(oldColor);
 
 			}
 

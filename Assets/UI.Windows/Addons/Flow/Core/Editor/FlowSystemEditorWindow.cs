@@ -147,16 +147,21 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
+			
+			if (FlowSystemEditorWindow.defaultSkin == null) FlowSystemEditorWindow.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
 
-			if (FlowSystemEditorWindow.loaded == false) return;
+			if (FlowSystemEditorWindow.loaded == false) {
+
+				this.DrawLoader();
+				return;
+
+			}
 
 			WindowUtilities.LoadAddons();
 
 			//var draw = !FlowSceneView.IsActive();
 
 			//if (draw == true) {
-			
-			if (FlowSystemEditorWindow.defaultSkin == null) FlowSystemEditorWindow.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
 
 			this.contentRect = this.position;
 			this.contentRect.x = 0f;
@@ -888,6 +893,61 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width, this.scrollRect.height), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
 			
 			GUI.color = oldColor;
+
+		}
+
+		private void DrawLoader() {
+			
+			this.DrawBackground();
+			
+			if (this.splash == null) this.splash = Resources.Load("UI.Windows/Flow/Splash") as Texture;
+			
+			var darkLabel = FlowSystemEditorWindow.defaultSkin.FindStyle("DarkLabel");
+			darkLabel.alignment = TextAnchor.MiddleCenter;
+			darkLabel.stretchWidth = true;
+			darkLabel.stretchHeight = true;
+			darkLabel.fixedWidth = 0f;
+			darkLabel.fixedHeight = 0f;
+
+			var rect = FlowSystemEditor.GetCenterRect(this.position, this.splash.width, this.splash.height);
+
+			var boxStyle = new GUIStyle(GUI.skin.box);
+			boxStyle.margin = new RectOffset(0, 0, 0, 0);
+			boxStyle.padding = new RectOffset(0, 0, 0, 0);
+			boxStyle.normal.background = null;
+			GUI.Box(rect, this.splash, boxStyle);
+			
+			var width = 730f;
+			var height = 456f;
+			var rectOffset = FlowSystemEditor.GetCenterRect(this.position, width, height);
+			
+			var marginLeft = 240f;
+			var margin = 20f;
+			
+			var padding = 20f;
+			
+			GUILayout.BeginArea(rectOffset);
+			{
+				
+				var borderWidth = width - marginLeft - margin;
+				var borderHeight = height - margin * 2f;
+				
+				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), new GUIStyle("sv_iconselector_labelselection"));
+				{
+					
+					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f));
+					{
+
+						GUILayout.Label("Loading...", darkLabel);
+
+					}
+					GUILayout.EndArea();
+
+				}
+				GUILayout.EndArea();
+
+			}
+			GUILayout.EndArea();
 
 		}
 

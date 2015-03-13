@@ -1,8 +1,4 @@
-﻿#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-#define UNITY_MOBILE
-#endif
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
@@ -61,20 +57,7 @@ namespace UnityEngine.UI.Windows {
 		public Settings settings = new Settings();
 
 		public List<WindowBase> defaults = new List<WindowBase>();
-		#if UNITY_EDITOR || UNITY_MOBILE
-		public List<WindowBase> defaultsMobileOnly = new List<WindowBase>();
-		#endif
-		#if UNITY_EDITOR || UNITY_STANDALONE
-		public List<WindowBase> defaultsStandaloneOnly = new List<WindowBase>();
-		#endif
-		
 		public List<WindowBase> windows = new List<WindowBase>();
-		#if UNITY_EDITOR || UNITY_MOBILE
-		public List<WindowBase> mobileOnly = new List<WindowBase>();
-		#endif
-		#if UNITY_EDITOR || UNITY_STANDALONE
-		public List<WindowBase> standaloneOnly = new List<WindowBase>();
-		#endif
 		
 		[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
@@ -137,22 +120,8 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void Init() {
+		protected virtual void Init() {
 
-			#if UNITY_MOBILE
-			this.defaults.AddRange(this.defaultsMobileOnly);
-			#endif
-			#if UNITY_STANDALONE
-			this.defaults.AddRange(this.defaultsStandaloneOnly);
-			#endif
-			
-			#if UNITY_MOBILE
-			this.windows.AddRange(this.mobileOnly);
-			#endif
-			#if UNITY_STANDALONE
-			this.windows.AddRange(this.standaloneOnly);
-			#endif
-			
 			foreach (var window in this.windows) window.CreatePool(0);
 			
 			this.depthStep = (this.settings.maxDepth - this.settings.minDepth) / this.settings.poolSize;

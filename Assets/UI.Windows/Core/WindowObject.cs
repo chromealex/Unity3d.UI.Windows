@@ -8,10 +8,10 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		private WindowBase window;
 		
-		internal void Setup(WindowBase window) {
+		internal virtual void Setup(WindowBase window) {
 			
 			this.window = window;
-			
+
 		}
 		
 		public WindowBase GetWindow() {

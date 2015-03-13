@@ -25,12 +25,12 @@ public class UIWindowExampleScreen : LayoutWindowType {
 
 	public override void OnInit() {
 
-		this.contentComponent = this.GetWindow().GetLayoutComponent<UIWindowExampleComponent>();
+		this.contentComponent = this.GetLayoutComponent<UIWindowExampleComponent>();
 
-		this.buttonAlert = this.GetWindow().GetLayoutComponent<ButtonComponent>(LayoutTag.Tag4);
+		this.buttonAlert = this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag4);
 		this.buttonAlert.SetCallback(this.OnAlert);
 
-		this.button = this.GetWindow().GetLayoutComponent<ButtonWithTipComponent>();
+		this.button = this.GetLayoutComponent<ButtonWithTipComponent>();
 		this.button.SetCallback(this.OnClick);
 
 		this.button.SetTextToTip("<b>Click here to open new instance.</b>\nYou can simply edit this text or pass it from the code. See UIWindowExampleTip and UIWindowExampleScreen.");

@@ -47,6 +47,45 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			namespaceName = string.IsNullOrEmpty( namespaceName ) ? this.name + ".UI" : namespaceName;
 		}
 
+		public WindowBase GetRootScreen() {
+
+			var flowWindow = this.windows.FirstOrDefault((w) => w.id == this.rootWindow);
+			if (flowWindow != null) {
+
+				return flowWindow.GetScreen();
+
+			}
+
+			return null;
+
+		}
+
+		public List<WindowBase> GetAllScreens(System.Func<FlowWindow, bool> predicate = null) {
+			
+			var list = new List<WindowBase>();
+			foreach (var window in this.windows) {
+
+				if (window.isDefaultLink == true) continue;
+
+				if (predicate != null && predicate(window) == false) continue;
+
+				var screen = window.GetScreen();
+				if (screen == null) continue;
+
+				list.Add(screen);
+				
+			}
+			
+			return list;
+			
+		}
+		
+		public List<WindowBase> GetDefaultScreens() {
+
+			return this.GetAllScreens((w) => this.defaultWindows.Contains(w.id));
+			
+		}
+
 		public void Save() {
 
 #if UNITY_EDITOR
