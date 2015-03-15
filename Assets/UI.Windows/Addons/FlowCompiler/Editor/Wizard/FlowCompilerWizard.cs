@@ -327,7 +327,10 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			this.DrawHeader(this.partTitles[this.partIndex]);
 
 			GUILayout.FlexibleSpace();
-
+			
+			#if UNITY_WEBPLAYER
+			EditorGUILayout.HelpBox("Due to the Unity3D WebPlayer limitations File System using is not allowed. Use other platform.", MessageType.Error);
+			#else
 			GUILayout.Label("Namespace:");
 			this.compileNamespace = GUILayout.TextField(this.compileNamespace);
 
@@ -339,10 +342,15 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			CustomGUI.Splitter();
 
 			this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
+			#endif
 
 			this.DrawBottom();
 
+			#if UNITY_WEBPLAYER
+			this.readyToNext = false;
+			#else
 			this.readyToNext = true;
+			#endif
 
 		}
 

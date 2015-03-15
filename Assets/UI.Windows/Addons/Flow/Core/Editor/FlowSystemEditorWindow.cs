@@ -52,25 +52,25 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			editor.title = "UI.Windows: Flow";
 			editor.autoRepaintOnSceneChange = true;
 			editor.onClose = onClose;
+			
+			var width = 800f;
+			var height = 600f;
 
 			var fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 			var isDockedMethod = typeof(EditorWindow).GetProperty("docked", fullBinding).GetGetMethod(true);
 			if ((bool)isDockedMethod.Invoke(editor, null) == false) {
-
-				var width = 800f;
-				var height = 600f;
 
 				var rect = new Rect(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f - height * 0.5f, width, height);
 				if (rect.x < 120f) rect.x = 120f;
 				if (rect.y < 120f) rect.y = 120f;
 
 				editor.position = rect;
-				editor.minSize = new Vector2(width, height);
 				
 				editor.Focus();
 
 			}
-
+			
+			editor.minSize = new Vector2(width, height);
 			editor.ChangeFlowData();
 			
 			FlowSystemEditorWindow.loaded = false;
@@ -338,8 +338,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						} else {
 
-							window.rect.width = 250f;
-							window.rect.height = 80f;
+							var size = this.GetWindowSize(window);
+
+							window.rect.width = size.x;
+							window.rect.height = size.y;
 
 						}
 
@@ -405,9 +407,28 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
+				
+				if (FlowSystem.GetData().flowWindowWithLayout == true) {
+
+					foreach (var window in windows) {
+						
+						var components = window.attachedComponents;
+						for (int i = 0; i < components.Count; ++i) {
+
+							var component = components[i];
+							this.DrawComponentCurve(window, ref component, FlowSystem.GetWindow (component.targetWindowId));
+							components[i] = component;
+
+						}
+
+					}
+
+				}
 
 				GUI.EndScrollView();
-				
+
+				this.DrawWaitForComponentConnection();
+
 				this.DrawTagsPopup();
 
 				this.DragBackground(TOOLBAR_HEIGHT);
@@ -417,7 +438,26 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 
 		}
-		
+
+		public Vector2 GetWindowSize(FlowWindow window) {
+			
+			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
+			var flowWindowWithLayoutScaleFactor = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
+			if (flowWindowWithLayout == true) {
+
+				var screen = window.GetScreen() as LayoutWindowType;
+				if (screen != null && screen.layout.layout != null) {
+
+					return new Vector2(250f, 250f) * (1f + flowWindowWithLayoutScaleFactor);
+
+				}
+
+			}
+
+			return new Vector2(250f, 80f);
+
+		}
+
 		public void OnLostFocus() {
 
 			//FlowSceneView.Reset();
@@ -428,6 +468,75 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			//FlowSceneView.Reset();
 			
+		}
+
+		public void DrawWindowLayout(FlowWindow window) {
+
+			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
+			if (flowWindowWithLayout == true) {
+				
+				var screen = window.GetScreen() as LayoutWindowType;
+				if (screen != null && screen.layout.layout != null) {
+					
+					GUILayout.Box(string.Empty, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+					var rect = GUILayoutUtility.GetLastRect();
+
+					if (window.OnPreviewGUI(rect, GUI.skin.box) == true) {
+
+						// Set for waiting connection
+						var element = WindowLayoutElement.waitForComponentConnectionElementTemp;
+
+						this.WaitForAttach(window.id, element);
+
+						WindowLayoutElement.waitForComponentConnectionTemp = false;
+
+					}
+
+				}
+
+			}
+
+		}
+
+		public void DrawWaitForComponentConnection() {
+
+			if (this.waitForAttach == true && this.currentAttachId >= 0 && this.currentAttachComponent != null) {
+
+				var element = this.currentAttachComponent;
+				//var window = FlowSystem.GetWindow(this.currentAttachId);
+
+				const int maxDepth = 6;
+				var styles = new GUIStyle[maxDepth] {
+					
+					new GUIStyle("flow node 0"),
+					new GUIStyle("flow node 1"),
+					new GUIStyle("flow node 2"),
+					new GUIStyle("flow node 3"),
+					new GUIStyle("flow node 4"),
+					new GUIStyle("flow node 5")
+					
+				};
+
+				var offset = 10f;
+				var width = 90f;
+				var height = 90f;
+
+				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
+				var rect = this.scrollRect;
+				rect.x += offset;
+				rect.y = rect.height - height - offset;
+				rect.width = width;
+				rect.height = height;
+
+				if (GUI.Button(rect, string.Empty, style) == true) {
+
+					// Cancel
+					this.WaitForAttach(-1);
+
+				}
+
+			}
+
 		}
 
 		private Dictionary<int, List<FlowWindow>> bringFront = new Dictionary<int, List<FlowWindow>>();
@@ -508,7 +617,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var rootWindow = FlowSystem.GetWindow(FlowSystem.GetRootWindow());
 				if (rootWindow != null) {
 
-					if (GUILayout.Button(rootWindow.title) == true) {
+					if (GUILayout.Button(rootWindow.title, FlowSystemEditorWindow.defaultSkin.button) == true) {
 
 						this.focusedGUIWindow = rootWindow.id;
 						FlowSystem.ResetSelection();
@@ -619,6 +728,39 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				
 				if (this.tagsList != null) this.tagsList.DoLayoutList();
+				#endregion
+				
+				#region FLOW
+				GUILayout.Label("Flow Settings", EditorStyles.boldLabel);
+
+				var flowWindowWithLayout = GUILayout.Toggle(FlowSystem.GetData().flowWindowWithLayout, "Window With Layout");
+				if (flowWindowWithLayout != FlowSystem.GetData().flowWindowWithLayout) {
+					
+					FlowSystem.GetData().flowWindowWithLayout = flowWindowWithLayout;
+					FlowSystem.SetDirty();
+
+					this.Repaint();
+					
+				}
+
+				if (flowWindowWithLayout == true) {
+
+					EditorGUIUtility.labelWidth = 50f;
+
+					var flowWindowWithLayoutScaleFactor = EditorGUILayout.Slider("Scale", FlowSystem.GetData().flowWindowWithLayoutScaleFactor, 0f, 1f);
+					if (flowWindowWithLayoutScaleFactor != FlowSystem.GetData().flowWindowWithLayoutScaleFactor) {
+						
+						FlowSystem.GetData().flowWindowWithLayoutScaleFactor = flowWindowWithLayoutScaleFactor;
+						FlowSystem.SetDirty();
+						
+						this.Repaint();
+						
+					}
+
+					EditorGUIUtility.LookLikeControls();
+
+				}
+
 				#endregion
 
 				#region WINDOW EDITOR
@@ -1193,78 +1335,86 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var window = FlowSystem.GetWindow(id);
 
 			if (this.waitForAttach == true) {
-				
-				if (id != this.currentAttachId) {
-					
-					var currentAttach = FlowSystem.GetWindow(this.currentAttachId);
-					var attachTo = FlowSystem.GetWindow(id);
-					var hasContainer = currentAttach.HasContainer();
-					var container = currentAttach.GetContainer();
 
-					if ((attachTo.isContainer == true && currentAttach.isContainer == true && attachTo == container) || (hasContainer == true && container.id != id)) {
-						
-						
-						
-					} else {
+				if (this.currentAttachComponent == null) {
 
-						if (attachTo.isContainer == true && currentAttach.isContainer == true) {
+					if (id != this.currentAttachId) {
+						
+						var currentAttach = FlowSystem.GetWindow(this.currentAttachId);
+						if (currentAttach != null) {
 
-							if (FlowSystem.AlreadyAttached(id, this.currentAttachId) == true) {
+							var attachTo = FlowSystem.GetWindow(id);
+							var hasContainer = currentAttach.HasContainer();
+							var container = currentAttach.GetContainer();
+
+							if ((attachTo.isContainer == true && currentAttach.isContainer == true && attachTo == container) || (hasContainer == true && container.id != id)) {
 								
-								if (GUILayout.Button("Detach Here", buttonStyle) == true) {
-									
-									FlowSystem.Detach(this.currentAttachId, id, oneWay: false);
-									if (!Event.current.shift) this.WaitForAttach(-1);
-									
-								}
+								
 								
 							} else {
-								
-								if (GUILayout.Button("Attach Here", buttonStyle) == true) {
 
-									FlowSystem.Attach(id, this.currentAttachId, oneWay: true);
-									if (!Event.current.shift) this.WaitForAttach(-1);
-									
+								if (attachTo.isContainer == true && currentAttach.isContainer == true) {
+
+									if (FlowSystem.AlreadyAttached(id, this.currentAttachId) == true) {
+										
+										if (GUILayout.Button("Detach Here", buttonStyle) == true) {
+											
+											FlowSystem.Detach(this.currentAttachId, id, oneWay: false);
+											if (!Event.current.shift) this.WaitForAttach(-1);
+											
+										}
+										
+									} else {
+										
+										if (GUILayout.Button("Attach Here", buttonStyle) == true) {
+
+											FlowSystem.Attach(id, this.currentAttachId, oneWay: true);
+											if (!Event.current.shift) this.WaitForAttach(-1);
+											
+										}
+										
+									}
+
+								} else {
+
+									if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
+										
+										if (GUILayout.Button("Detach Here", buttonStyle) == true) {
+
+											FlowSystem.Detach(this.currentAttachId, id, oneWay: false);
+											if (!Event.current.shift) this.WaitForAttach(-1);
+											
+										}
+										
+									} else {
+										
+										if (GUILayout.Button("Attach Here", buttonStyle) == true) {
+
+											FlowSystem.Attach(this.currentAttachId, id, oneWay: false);
+											if (!Event.current.shift) this.WaitForAttach(-1);
+											
+										}
+										
+									}
+
 								}
-								
-							}
 
-						} else {
-
-							if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
-								
-								if (GUILayout.Button("Detach Here", buttonStyle) == true) {
-
-									FlowSystem.Detach(this.currentAttachId, id, oneWay: false);
-									if (!Event.current.shift) this.WaitForAttach(-1);
-									
-								}
-								
-							} else {
-								
-								if (GUILayout.Button("Attach Here", buttonStyle) == true) {
-
-									FlowSystem.Attach(this.currentAttachId, id, oneWay: false);
-									if (!Event.current.shift) this.WaitForAttach(-1);
-									
-								}
-								
 							}
 
 						}
 
-					}
-
-				} else {
-					
-					if (GUILayout.Button("Cancel", buttonStyle) == true) {
+					} else {
 						
-						this.WaitForAttach(-1);
+						if (GUILayout.Button("Cancel", buttonStyle) == true) {
+							
+							this.WaitForAttach(-1);
+							
+						}
 						
 					}
-					
-				}
 				
+				}
+
 			} else {
 				
 				if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
@@ -1634,44 +1784,61 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private void DrawWindowToolbar(FlowWindow window) {
-
+			
+			var edit = false;
 			var id = window.id;
 
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
-			if (this.waitForAttach == true) {
-				
-				if (id != this.currentAttachId) {
+			if (this.waitForAttach == false || this.currentAttachComponent == null) {
+
+				if (this.waitForAttach == true) {
 					
-					var currentAttach = FlowSystem.GetWindow(this.currentAttachId);
-					//var attachTo = FlowSystem.GetWindow(id);
-					//var hasContainer = currentAttach.HasContainer();
-					
-					if (currentAttach.isContainer == true) {
+					if (id != this.currentAttachId) {
 						
-						
-						
+						var currentAttach = FlowSystem.GetWindow(this.currentAttachId);
+						if (currentAttach != null) {
+
+							//var attachTo = FlowSystem.GetWindow(id);
+							//var hasContainer = currentAttach.HasContainer();
+							
+							if (currentAttach.isContainer == true) {
+								
+								
+								
+							} else {
+								
+								if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
+									
+									if (GUILayout.Button("Detach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
+										
+										FlowSystem.Detach(this.currentAttachId, id, oneWay: !Event.current.alt);
+										if (!Event.current.shift) this.WaitForAttach(-1);
+										
+									}
+									
+								} else {
+									
+									if (GUILayout.Button("Attach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
+										
+										FlowSystem.Attach(this.currentAttachId, id, oneWay: !Event.current.alt);
+										if (!Event.current.shift) this.WaitForAttach(-1);
+										
+									}
+									
+								}
+								
+							}
+
+						}
+
 					} else {
 						
-						if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
+						if (GUILayout.Button("Cancel", buttonStyle) == true) {
 							
-							if (GUILayout.Button("Detach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
-								
-								FlowSystem.Detach(this.currentAttachId, id, oneWay: !Event.current.shift);
-								if (!Event.current.shift) this.WaitForAttach(-1);
-								
-							}
-							
-						} else {
-							
-							if (GUILayout.Button("Attach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
-								
-								FlowSystem.Attach(this.currentAttachId, id, oneWay: !Event.current.shift);
-								if (!Event.current.shift) this.WaitForAttach(-1);
-								
-							}
+							this.WaitForAttach(-1);
 							
 						}
 						
@@ -1679,101 +1846,136 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				} else {
 					
+					if (window.isDefaultLink == false) {
+
+						if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
+							
+							this.ShowNotification(new GUIContent("Use Attach/Detach buttons to connect/disconnect the window"));
+							this.WaitForAttach(id);
+							
+						}
+
+					}
+					
+					if (GUILayout.Button("Destroy", buttonStyle) == true) {
+						
+						if (EditorUtility.DisplayDialog("Are you sure?", "Current window will be destroyed with all links", "Yes, destroy", "No") == true) {
+							
+							this.ShowNotification(new GUIContent("The window '" + window.title + "' was successfully destroyed"));
+							FlowSystem.DestroyWindow(id);
+							return;
+							
+						}
+						
+					}
+
+				}
+
+				if (window.isDefaultLink == false) {
+
+					var isRoot = (FlowSystem.GetRootWindow() == id);
+					if (GUILayout.Toggle(isRoot, new GUIContent("R", "Set as root"), buttonStyle) != isRoot) {
+						
+						if (isRoot == true) {
+							
+							// Was as root
+							FlowSystem.SetRootWindow(-1);
+							
+						} else {
+							
+							// Was not as root
+							FlowSystem.SetRootWindow(id);
+							
+						}
+						
+						FlowSystem.SetDirty();
+						
+					}
+					
+					var isDefault = FlowSystem.GetDefaultWindows().Contains(id);
+					if (GUILayout.Toggle(isDefault, new GUIContent("D", "Set as default"), buttonStyle) != isDefault) {
+						
+						if (isDefault == true) {
+							
+							// Was as default
+							FlowSystem.GetDefaultWindows().Remove(id);
+							
+						} else {
+							
+							// Was not as default
+							FlowSystem.GetDefaultWindows().Add(id);
+							
+						}
+						
+						FlowSystem.SetDirty();
+						
+					}
+
+				}
+
+				GUILayout.FlexibleSpace();
+
+				if (window.isDefaultLink == false && FlowSceneView.IsActive() == false) {
+
+					if (GUILayout.Button("Edit", buttonStyle) == true) {
+						
+						if (window.compiled == false) {
+							
+							this.ShowNotification(new GUIContent("You need to compile this window to use 'Edit' command"));
+							
+						} else {
+							
+							edit = true;
+							
+						}
+						
+					}
+
+				}
+
+			} else {
+
+				// Draw Attach/Detach component link
+
+				if (this.currentAttachId == id) {
+
+					// Cancel
 					if (GUILayout.Button("Cancel", buttonStyle) == true) {
 						
 						this.WaitForAttach(-1);
 						
 					}
 					
-				}
-				
-			} else {
-				
-				if (window.isDefaultLink == false) {
+				} else {
 
-					if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
+					// If it's other window
+					if (window.isDefaultLink == false) {
 						
-						this.ShowNotification(new GUIContent("Use Attach/Detach buttons to connect/disconnect the window"));
-						this.WaitForAttach(id);
-						
+						if (FlowSystem.AlreadyAttached(this.currentAttachId, id, this.currentAttachComponent) == true) {
+							
+							if (GUILayout.Button("Detach Here", buttonStyle) == true) {
+								
+								FlowSystem.Detach(this.currentAttachId, id, oneWay: true, component: this.currentAttachComponent);
+								if (!Event.current.shift) this.WaitForAttach(-1);
+								
+							}
+							
+						} else {
+							
+							if (GUILayout.Button("Attach Here", buttonStyle) == true) {
+								
+								FlowSystem.Attach(this.currentAttachId, id, oneWay: true, component: this.currentAttachComponent);
+								if (!Event.current.shift) this.WaitForAttach(-1);
+								
+							}
+							
+						}
+
 					}
-
-				}
-				
-				if (GUILayout.Button("Destroy", buttonStyle) == true) {
-					
-					if (EditorUtility.DisplayDialog("Are you sure?", "Current window will be destroyed with all links", "Yes, destroy", "No") == true) {
-						
-						this.ShowNotification(new GUIContent("The window '" + window.title + "' was successfully destroyed"));
-						FlowSystem.DestroyWindow(id);
-						return;
-						
-					}
-					
-				}
-
-			}
-
-			if (window.isDefaultLink == false) {
-
-				var isRoot = (FlowSystem.GetRootWindow() == id);
-				if (GUILayout.Toggle(isRoot, new GUIContent("R", "Set as root"), buttonStyle) != isRoot) {
-					
-					if (isRoot == true) {
-						
-						// Was as root
-						FlowSystem.SetRootWindow(-1);
-						
-					} else {
-						
-						// Was not as root
-						FlowSystem.SetRootWindow(id);
-						
-					}
-					
-					FlowSystem.SetDirty();
 					
 				}
 				
-				var isDefault = FlowSystem.GetDefaultWindows().Contains(id);
-				if (GUILayout.Toggle(isDefault, new GUIContent("D", "Set as default"), buttonStyle) != isDefault) {
-					
-					if (isDefault == true) {
-						
-						// Was as default
-						FlowSystem.GetDefaultWindows().Remove(id);
-						
-					} else {
-						
-						// Was not as default
-						FlowSystem.GetDefaultWindows().Add(id);
-						
-					}
-					
-					FlowSystem.SetDirty();
-					
-				}
-
-			}
-
-			GUILayout.FlexibleSpace();
-			
-			var edit = false;
-			if (window.isDefaultLink == false && FlowSceneView.IsActive() == false) {
-
-				if (GUILayout.Button("Edit", buttonStyle) == true) {
-					
-					if (window.compiled == false) {
-						
-						this.ShowNotification(new GUIContent("You need to compile this window to use 'Edit' command"));
-						
-					} else {
-						
-						edit = true;
-						
-					}
-					
-				}
+				GUILayout.FlexibleSpace();
 
 			}
 			GUILayout.EndHorizontal();
@@ -1820,6 +2022,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				this.DrawTags(window);
 
+				this.DrawWindowLayout(window);
+
 				Flow.OnDrawWindowGUI(window);
 
 				this.DragWindow(headerOnly: false);
@@ -1844,17 +2048,210 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private int currentAttachId = -1;
 		private bool waitForAttach = false;
-		private void WaitForAttach(int id) {
+		private WindowLayoutElement currentAttachComponent;
+		private void WaitForAttach(int id, WindowLayoutElement currentAttachComponent = null) {
 
 			this.currentAttachId = id;
+			this.currentAttachComponent = currentAttachComponent;
 			this.waitForAttach = id >= 0;
+
+			if (this.waitForAttach == false) {
+
+				WindowLayoutElement.waitForComponentConnectionElementTemp = null;
+
+			}
+
+		}
+
+		private void DrawComponentCurve(FlowWindow from, ref UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.ComponentLink link, FlowWindow to) {
+
+			var component = from.GetLayoutComponent(link.sourceComponentTag);
+			if (component != null) {
+
+				var rect = component.tempEditorRect;
+
+				var start = new Rect(from.rect.x + rect.x, from.rect.y + rect.y, rect.width, rect.height);
+				var end = to.rect;
+
+				var zOffset = -4f;
+
+				var offset = Vector2.zero;
+				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
+				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
+
+				var side1 = from.rect.size.x * 0.5f;
+				var side2 = from.rect.size.y * 0.5f;
+				var stopDistance = Mathf.Sqrt(side1 * side1 + side2 * side2);
+
+				var color = Color.white;
+				if (from.GetContainer() != to.GetContainer()) {
+					
+					color = Color.gray;
+					if (to.GetContainer() != null) color = to.GetContainer().randomColor;
+					
+				}
+				var comment = this.DrawComponentCurve(startPos, endPos, color, stopDistance, link.comment);
+				if (link.comment != comment) {
+
+					link.comment = comment;
+					FlowSystem.SetDirty();
+
+				}
+
+			}
+
+		}
+		
+		private string DrawComponentCurve(Vector3 startPos, Vector3 endPos, Color color, float stopDistance, string label) {
+			
+			var shadowColor = new Color(0f, 0f, 0f, 0.5f);
+			var lineColor = color;//new Color(1f, 1f, 1f, 1f);
+			
+			var shadowOffset = Vector3.one * 2f;
+			shadowOffset.z = 0f;
+
+			var ray = new Ray(startPos, (endPos - startPos).normalized);
+			var rot = Quaternion.LookRotation(endPos - startPos);
+
+			var centerPoint = (startPos + endPos) * 0.5f;
+
+			endPos = ray.GetPoint(stopDistance);
+			var fullDistance = Vector3.Distance(endPos, startPos);
+			
+			Handles.BeginGUI();
+			
+			Handles.color = shadowColor;
+			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos + shadowOffset, endPos + shadowOffset });
+			
+			Handles.color = lineColor;
+			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos, endPos });
+
+			var labelStyle = new GUIStyle(GUI.skin.label);
+			labelStyle.stretchWidth = false;
+			
+			var backOverStyle = new GUIStyle("flow node 0");
+			backOverStyle.stretchWidth = false;
+			backOverStyle.stretchHeight = false;
+
+			var backStyle = new GUIStyle("flow node hex 5");
+
+			var style = new GUIStyle(GUI.skin.textField);
+			style.stretchWidth = true;
+			style.stretchHeight = true;
+			style.wordWrap = true;
+			//style.contentOffset = new Vector2(0f, -15f);
+			style.contentOffset = new Vector2(0f, 5f);
+			style.alignment = TextAnchor.MiddleCenter;
+			style.border = backStyle.border;
+			style.normal = backStyle.normal;
+			style.focused = backStyle.normal;
+			style.active = backStyle.normal;
+			style.hover = backStyle.normal;
+
+			var content = new GUIContent(label);
+			var contentRect = GUILayoutUtility.GetRect(content, labelStyle);
+
+			contentRect.width = Mathf.Max(contentRect.width, 40f);
+
+			contentRect.width += 40f;
+			contentRect.height += 20f;
+
+			centerPoint.x -= contentRect.width * 0.5f;
+			centerPoint.y -= contentRect.height * 0.5f;
+
+			var boxRect = new Rect(centerPoint.x, centerPoint.y, contentRect.width, contentRect.height);
+
+			style.fixedWidth = contentRect.width;// + 20f;
+			style.fixedHeight = contentRect.height;
+
+			var boxRectBack = boxRect;
+			backOverStyle.fixedWidth = style.fixedWidth;
+			backOverStyle.fixedHeight = style.fixedHeight + 10f;
+
+			var oldColor = GUI.backgroundColor;
+			var bColor = color;
+			bColor.a = 0.4f;
+			GUI.backgroundColor = bColor;
+			GUI.Box(boxRectBack, "Test", backOverStyle);
+			GUI.backgroundColor = oldColor;
+
+			label = GUI.TextField(boxRect, label, style);
+
+			var every = 300f;
+			if (fullDistance < every * 2f) {
+				
+				var pos = ray.GetPoint(fullDistance * 0.5f);
+				
+				this.DrawCap(pos, rot, shadowColor, lineColor);
+				
+				//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
+				//GUIExt.DrawTextureRotated(pos, arrow, Vector3.Angle(startPos, endPos));
+				
+			} else {
+				
+				for (float distance = every; distance < fullDistance; distance += every) {
+					
+					var pos = ray.GetPoint(distance);
+					
+					this.DrawCap(pos, rot, shadowColor, lineColor);
+					
+					//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
+					//GUIExt.DrawTextureRotated(pos, arrow, rot);
+					
+				}
+				
+			}
+			
+			Handles.EndGUI();
+
+			return label;
 
 		}
 
 		private void DrawNodeCurve(FlowWindow from, FlowWindow to, bool doubleSide) {
+			
+			var fromRect = from.rect;
+			Rect centerStart = fromRect;
 
-			Rect start = from.rect;
-			Rect end = to.rect;
+			var toRect = to.rect;
+			Rect centerEnd = toRect;
+
+			if (FlowSystem.GetData().flowWindowWithLayout == true) {
+
+				var comp = from.attachedComponents.FirstOrDefault((c) => c.targetWindowId == to.id);
+				if (comp.sourceComponentTag != LayoutTag.None) {
+
+					var component = from.GetLayoutComponent(comp.sourceComponentTag);
+					if (component != null) {
+
+						var rect = component.tempEditorRect;
+						fromRect = new Rect(fromRect.x + rect.x, fromRect.y + rect.y, rect.width, rect.height);
+
+					}
+
+				}
+
+				if (doubleSide == true) {
+
+					comp = to.attachedComponents.FirstOrDefault((c) => c.targetWindowId == from.id);
+					if (comp.sourceComponentTag != LayoutTag.None) {
+						
+						var component = to.GetLayoutComponent(comp.sourceComponentTag);
+						if (component != null) {
+							
+							var rect = component.tempEditorRect;
+							toRect = new Rect(toRect.x + rect.x, toRect.y + rect.y, rect.width, rect.height);
+
+						}
+						
+					}
+
+				}
+
+			}
+
+			Rect start = fromRect;
+			Rect end = toRect;
 
 			var color1 = Color.white;
 			var color2 = Color.white;
@@ -1880,12 +2277,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var offset = ray.GetPoint(size);
 				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
-				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
+				var endPos = new Vector3(centerEnd.center.x + offset.x, centerEnd.center.y + offset.y, zOffset);
 				
 				this.DrawNodeCurve(startPos, endPos, color1);
 				
 				offset = ray.GetPoint(-size);
-				startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
+				startPos = new Vector3(centerStart.center.x + offset.x, centerStart.center.y + offset.y, zOffset);
 				endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
 				
 				this.DrawNodeCurve(endPos, startPos, color2);
@@ -1894,7 +2291,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var offset = Vector2.zero;
 				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
-				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
+				var endPos = new Vector3(centerEnd.center.x + offset.x, centerEnd.center.y + offset.y, zOffset);
 
 				this.DrawNodeCurve(startPos, endPos, color1);
 
@@ -1903,49 +2300,52 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private void DrawNodeCurve(Vector3 startPos, Vector3 endPos, Color color) {
-
+			
 			var shadowColor = new Color(0f, 0f, 0f, 0.5f);
 			var lineColor = color;//new Color(1f, 1f, 1f, 1f);
-
+			
+			var shadowOffset = Vector3.one * 2f;
+			shadowOffset.z = 0f;
+			
 			Handles.BeginGUI();
-
+			
 			Handles.color = shadowColor;
-			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos, endPos });
+			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos + shadowOffset, endPos + shadowOffset });
 			
 			Handles.color = lineColor;
 			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos, endPos });
 			
 			var ray = new Ray(startPos, (endPos - startPos).normalized);
 			var rot = Quaternion.LookRotation(endPos - startPos);
-
+			
 			var every = 300f;
 			var fullDistance = Vector3.Distance(endPos, startPos);
 			if (fullDistance < every * 2f) {
-
+				
 				var pos = ray.GetPoint(fullDistance * 0.5f);
-
+				
 				this.DrawCap(pos, rot, shadowColor, lineColor);
-
+				
 				//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
 				//GUIExt.DrawTextureRotated(pos, arrow, Vector3.Angle(startPos, endPos));
-
+				
 			} else {
-
+				
 				for (float distance = every; distance < fullDistance; distance += every) {
-
+					
 					var pos = ray.GetPoint(distance);
-
+					
 					this.DrawCap(pos, rot, shadowColor, lineColor);
-
+					
 					//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
 					//GUIExt.DrawTextureRotated(pos, arrow, rot);
-
+					
 				}
-
+				
 			}
-
+			
 			Handles.EndGUI();
-
+			
 		}
 
 		private void DrawCap(Vector3 pos, Quaternion rot, Color shadowColor, Color lineColor) {

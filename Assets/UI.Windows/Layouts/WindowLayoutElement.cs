@@ -16,6 +16,9 @@ namespace UnityEngine.UI.Windows {
 		[Header("Editor-Only Parameters")]
 		public string comment;
 		
+		public static bool waitForComponentConnectionTemp;
+		public static WindowLayoutElement waitForComponentConnectionElementTemp;
+
 		public bool autoStretchX = false;
 		public bool autoStretchY = false;
 

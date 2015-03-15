@@ -42,6 +42,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		//private Rect selectionRect;
 		private List<int> selected = new List<int>();
 
+		public bool flowWindowWithLayout;
+		public float flowWindowWithLayoutScaleFactor = 0f;
+
 		void OnEnable() {
 
 			namespaceName = string.IsNullOrEmpty( namespaceName ) ? this.name + ".UI" : namespaceName;
@@ -231,25 +234,31 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public void Attach(int source, int other, bool oneWay) {
+		public void Attach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 
 			var window = this.GetWindow(source);
-			window.Attach(other, oneWay);
+			window.Attach(other, oneWay, component);
 
 			this.isDirty = true;
 
 		}
 		
-		public void Detach(int source, int other, bool oneWay) {
+		public void Detach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 			
 			var window = this.GetWindow(source);
-			window.Detach(other, oneWay);
+			window.Detach(other, oneWay, component);
 
 			this.isDirty = true;
 
 		}
 		
-		public bool AlreadyAttached(int source, int other) {
+		public bool AlreadyAttached(int source, int other, WindowLayoutElement component = null) {
+
+			if (component != null) {
+
+				return this.windows.Any((w) => w.id == source && w.AlreadyAttached(other, component));
+
+			}
 
 			return this.windows.Any((w) => w.id == source && w.AlreadyAttached(other));
 

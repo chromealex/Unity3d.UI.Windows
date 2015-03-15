@@ -168,8 +168,10 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				var baseClassTemplate = FlowTemplateGenerator.GenerateWindowLayoutBaseClass( baseClassName, classNamespace, GenerateTransitionMethods( window ) );
 				var derivedClassTemplate = FlowTemplateGenerator.GenerateWindowLayoutDerivedClass( derivedClassName, baseClassName, classNamespace );
-
+				
+				#if !UNITY_WEBPLAYER
 				var baseClassPath = ( fullpath + "/" + baseClassName + ".cs" ).Replace( "//", "/" );
+				#endif
 				var derivedClassPath = ( fullpath + "/" + derivedClassName + ".cs" ).Replace( "//", "/" );
 
 				if ( baseClassTemplate != null && derivedClassTemplate != null ) {

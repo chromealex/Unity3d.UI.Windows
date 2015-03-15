@@ -82,7 +82,6 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public bool debug = false;
 		protected virtual void OnShowBegin(System.Action callback, bool resetAnimation) {
 
 			if (this.animation != null) {

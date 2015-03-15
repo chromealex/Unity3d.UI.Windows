@@ -43,21 +43,21 @@ namespace UnityEngine.UI.Windows {
 		public virtual void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
 			
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
-			TweenerGlobal.instance.removeTweens(tag);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
 		public virtual void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
 
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
-			TweenerGlobal.instance.removeTweens(tag);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
 		public virtual void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
 
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
-			TweenerGlobal.instance.removeTweens(tag);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 
@@ -78,9 +78,9 @@ namespace UnityEngine.UI.Windows {
 			var delay = this.GetDelay(parameters, forward);
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
 			
-			TweenerGlobal.instance.removeTweens(tag);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
-			if (delay > 0f) {
+			if (delay > 0f && TweenerGlobal.instance != null) {
 
 				TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
 

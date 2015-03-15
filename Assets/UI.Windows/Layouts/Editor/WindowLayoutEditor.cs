@@ -18,7 +18,7 @@ namespace UnityEditor.UI.Windows {
 	[CustomEditor(typeof(WindowLayout), true)]
 	[CanEditMultipleObjects()]
 	public class WindowLayoutEditor : Editor, IPreviewEditor {
-		
+
 		private bool isDirty = false;
 
 		public override void OnInspectorGUI() {
@@ -93,6 +93,9 @@ namespace UnityEditor.UI.Windows {
 					var rect = new Rect(corners[0].x, -corners[1].y, corners[2].x - corners[1].x, corners[2].y - corners[3].y);
 
 					element.editorRect = rect;
+					
+					//element.autoStretchX = (rectTransform.anchorMin.x != rectTransform.anchorMax.x);
+					//element.autoStretchY = (rectTransform.anchorMin.y != rectTransform.anchorMax.y);
 
 				}
 
@@ -103,7 +106,9 @@ namespace UnityEditor.UI.Windows {
 			var scaleFactor = 0f;
 			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(elements[0].editorRect.width, elements[0].editorRect.height), new Vector2(r.width, r.height));
 
-			const int maxDepth = 7;
+			var selected = new GUIStyle("flow node 6");
+
+			const int maxDepth = 6;
 			var styles = new GUIStyle[maxDepth] {
 				
 				new GUIStyle("flow node 0"),
@@ -111,9 +116,18 @@ namespace UnityEditor.UI.Windows {
 				new GUIStyle("flow node 2"),
 				new GUIStyle("flow node 3"),
 				new GUIStyle("flow node 4"),
-				new GUIStyle("flow node 5"),
-				new GUIStyle("flow node 6")
-
+				new GUIStyle("flow node 5")
+				
+			};
+			var stylesSelected = new GUIStyle[maxDepth] {
+				
+				new GUIStyle("flow node 0 on"),
+				new GUIStyle("flow node 1 on"),
+				new GUIStyle("flow node 2 on"),
+				new GUIStyle("flow node 3 on"),
+				new GUIStyle("flow node 4 on"),
+				new GUIStyle("flow node 5 on")
+				
 			};
 			
 			var horArrowsStyle = new GUIStyle("ColorPickerHorizThumb");
@@ -136,8 +150,27 @@ namespace UnityEditor.UI.Windows {
 				
 				rect.width *= scaleFactor;
 				rect.height *= scaleFactor;
-
+				
 				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
+				if (rect.Contains(Event.current.mousePosition) == true) {
+
+					style = stylesSelected[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
+
+					element.editorHovered = true;
+					this.Repaint();
+
+				} else {
+
+					element.editorHovered = false;
+					this.Repaint();
+					
+				}
+
+				if (WindowLayoutElement.waitForComponentConnectionElementTemp == element) {
+
+					style = selected;
+
+				}
 
 				GUI.color = color;
 				GUI.Label(rect, string.Empty, style);
@@ -173,35 +206,25 @@ namespace UnityEditor.UI.Windows {
 					
 				}
 
-				element.tempEditorRect = rect;
-
-				if (rect.Contains(Event.current.mousePosition) == true) {
-
-					element.editorHovered = true;
-
-				} else {
-
-					element.editorHovered = false;
-
-				}
+				if (Event.current.type == EventType.Repaint) element.tempEditorRect = rect;
 
 			}
 
 			if (drawInfo == true) {
-
+				
 				WindowLayoutElement maxDepthElement = null;
 				var _maxDepth = -1;
 				foreach (var element in elements) {
-
+					
 					if (element.editorHovered == false) continue;
-
+					
 					if (_maxDepth < element.editorDrawDepth) {
-
+						
 						_maxDepth = element.editorDrawDepth;
 						maxDepthElement = element;
-
+						
 					}
-
+					
 				}
 
 				var labelStyle = new GUIStyle(EditorStyles.whiteMiniLabel);
@@ -213,6 +236,13 @@ namespace UnityEditor.UI.Windows {
 						
 						continue;
 						
+					}
+
+					if (GUI.Button(element.tempEditorRect, string.Empty, GUIStyle.none) == true) {
+						
+						WindowLayoutElement.waitForComponentConnectionElementTemp = element;
+						WindowLayoutElement.waitForComponentConnectionTemp = true;
+
 					}
 
 					var rect = element.tempEditorRect;

@@ -167,21 +167,21 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 		
-		public static void Attach(int source, int other, bool oneWay) {
+		public static void Attach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 
-			FlowSystem.instance.data.Attach(source, other, oneWay);
-
-		}
-		
-		public static void Detach(int source, int other, bool oneWay) {
-			
-			FlowSystem.instance.data.Detach(source, other, oneWay);
+			FlowSystem.instance.data.Attach(source, other, oneWay, component);
 
 		}
 		
-		public static bool AlreadyAttached(int source, int other) {
+		public static void Detach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 			
-			return FlowSystem.instance.data.AlreadyAttached(source, other);
+			FlowSystem.instance.data.Detach(source, other, oneWay, component);
+
+		}
+		
+		public static bool AlreadyAttached(int source, int other, WindowLayoutElement component = null) {
+			
+			return FlowSystem.instance.data.AlreadyAttached(source, other, component);
 
 		}
 		

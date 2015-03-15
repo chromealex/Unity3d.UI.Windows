@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using ME;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 
@@ -16,6 +17,29 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	[System.Serializable]
 	public class FlowWindow {
 
+		[System.Serializable]
+		public struct ComponentLink {
+			
+			[Header("Base")]
+			public int targetWindowId;
+			public LayoutTag sourceComponentTag;
+			#if UNITY_EDITOR
+			[Header("Editor-Only")]
+			public string comment;
+			#endif
+
+			public ComponentLink(int targetWindowId, LayoutTag sourceComponentTag, string comment) {
+
+				this.targetWindowId = targetWindowId;
+				this.sourceComponentTag = sourceComponentTag;
+				#if UNITY_EDITOR
+				this.comment = string.IsNullOrEmpty(comment) ? string.Empty : ("On " + comment.ToLower().UppercaseWords().Trim().Replace(" ", "") + " Action");
+				#endif
+
+			}
+
+		}
+
 		private const int STATES_COUNT = 5;
 
 		public int id;
@@ -23,6 +47,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public string directory = string.Empty;
 		public Rect rect;
 		public List<int> attaches;
+		public List<ComponentLink> attachedComponents;
 		public bool isContainer = false;
 		public bool isDefaultLink = false;
 		public Color randomColor;
@@ -47,6 +72,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			this.id = id;
 			this.attaches = new List<int>();
+			this.attachedComponents = new List<ComponentLink>();
 			this.rect = new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 200f, 200f);
 			this.isContainer = isContainer;
 			this.isDefaultLink = isDefaultLink;
@@ -58,6 +84,36 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
+		#if UNITY_EDITOR
+		private UnityEditor.Editor editorCache;
+		public bool OnPreviewGUI(Rect rect, GUIStyle background) {
+
+			WindowLayoutElement.waitForComponentConnectionTemp = false;
+
+			var screen = this.GetScreen() as LayoutWindowType;
+			if (screen != null) {
+
+				var layout = screen.layout.layout;
+				if (layout != null) {
+
+					if (this.editorCache == null) this.editorCache = UnityEditor.Editor.CreateEditor(layout);
+					this.editorCache.OnPreviewGUI(rect, background);
+
+					if (WindowLayoutElement.waitForComponentConnectionTemp == true) {
+
+						return true;
+
+					}
+
+				}
+
+			}
+
+			return false;
+
+		}
+		#endif
+
 		public void SetScreen(WindowBase screen) {
 
 			this.screen = screen;
@@ -68,6 +124,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			return this.screen;
 			
+		}
+
+		public WindowLayoutElement GetLayoutComponent(LayoutTag tag) {
+
+			var screen = this.GetScreen() as LayoutWindowType;
+			if (screen != null && screen.layout.layout != null) {
+				
+				return screen.layout.layout.GetRootByTag(tag);
+
+			}
+
+			return null;
+
 		}
 
 		public void AddTag(FlowTag tag) {
@@ -290,8 +359,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public bool AlreadyAttached(int id) {
-			
+		public bool AlreadyAttached(int id, WindowLayoutElement component = null) {
+
+			if (component != null) {
+
+				return this.attachedComponents.Any((c) => c.targetWindowId == id && c.sourceComponentTag == component.tag);
+
+			}
+
 			return this.attaches.Contains(id);
 			
 		}
@@ -312,10 +387,31 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public bool Attach(int id, bool oneWay = false) {
+		public bool Attach(int id, bool oneWay = false, WindowLayoutElement component = null) {
 			
 			if (this.id == id) return false;
-			
+
+			var result = false;
+
+			if (component != null) {
+
+				if (this.attachedComponents.Any((c) => c.targetWindowId == id && c.sourceComponentTag == component.tag) == false) {
+
+					this.attachedComponents.Add(new ComponentLink(id, component.tag, component.comment));
+
+					// If we attaching component - try to attach window if not
+
+					oneWay = true;
+					result = true;
+
+				} else {
+
+					return false;
+
+				}
+
+			}
+
 			if (this.attaches.Contains(id) == false) {
 				
 				this.attaches.Add(id);
@@ -331,31 +427,46 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			return false;
+			return result;
 			
 		}
 		
-		public bool Detach(int id, bool oneWay = false) {
+		public bool Detach(int id, bool oneWay = false, WindowLayoutElement component = null) {
 			
 			if (this.id == id) return false;
 			
 			var result = false;
-			
-			if (this.attaches.Contains(id) == true) {
+
+			if (component != null) {
+
+				if (this.attachedComponents.Any((c) => c.targetWindowId == id && c.sourceComponentTag == component.tag) == true) {
+
+					this.attachedComponents.RemoveAll((c) => c.targetWindowId == id && c.sourceComponentTag == component.tag);
+
+					result = true;
+
+				}
+
+			} else {
+
+				if (this.attaches.Contains(id) == true) {
+					
+					this.attaches.Remove(id);
+					this.attachedComponents.RemoveAll((c) => c.targetWindowId == id);
+					
+					result = true;
+					
+				}
 				
-				this.attaches.Remove(id);
-				
-				result = true;
-				
+				if (oneWay == false) {
+					
+					var window = FlowSystem.GetWindow(id);
+					if (window != null) result = window.Detach(this.id, oneWay: true);
+					
+				}
+
 			}
-			
-			if (oneWay == false) {
-				
-				var window = FlowSystem.GetWindow(id);
-				if (window != null) result = window.Detach(this.id, oneWay: true);
-				
-			}
-			
+
 			return result;
 			
 		}
