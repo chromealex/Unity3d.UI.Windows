@@ -2,6 +2,15 @@
 using System.Collections;
 
 namespace UnityEngine.UI.Windows {
+	
+	public interface IPreviewEditor {
+		
+		bool HasPreviewGUI();
+		void OnPreviewGUI(Rect rect, GUIStyle style);
+		void OnPreviewGUI(Color color, Rect rect, GUIStyle style);
+		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable);
+		
+	}
 
 	public enum WindowEventType : byte {
 

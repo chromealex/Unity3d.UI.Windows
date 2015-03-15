@@ -427,8 +427,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				GUI.EndScrollView();
 
-				this.DrawWaitForComponentConnection();
-
+				this.DrawWaitForConnection();
+				
 				this.DrawTagsPopup();
 
 				this.DragBackground(TOOLBAR_HEIGHT);
@@ -481,7 +481,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					GUILayout.Box(string.Empty, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 					var rect = GUILayoutUtility.GetLastRect();
 
-					if (window.OnPreviewGUI(rect, GUI.skin.box) == true) {
+					if (window.OnPreviewGUI(rect, GUI.skin.box, drawInfo: true, selectable: true) == true) {
 
 						// Set for waiting connection
 						var element = WindowLayoutElement.waitForComponentConnectionElementTemp;
@@ -498,41 +498,75 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void DrawWaitForComponentConnection() {
+		public void DrawWaitForConnection() {
 
-			if (this.waitForAttach == true && this.currentAttachId >= 0 && this.currentAttachComponent != null) {
+			if (this.waitForAttach == true && this.currentAttachId >= 0) {
 
-				var element = this.currentAttachComponent;
-				//var window = FlowSystem.GetWindow(this.currentAttachId);
+				GUIStyle style = null;
+				string label = string.Empty;
 
-				const int maxDepth = 6;
-				var styles = new GUIStyle[maxDepth] {
-					
-					new GUIStyle("flow node 0"),
-					new GUIStyle("flow node 1"),
-					new GUIStyle("flow node 2"),
-					new GUIStyle("flow node 3"),
-					new GUIStyle("flow node 4"),
-					new GUIStyle("flow node 5")
-					
-				};
+				var window = FlowSystem.GetWindow(this.currentAttachId);
 
+				if (this.currentAttachComponent != null) {
+
+					var element = this.currentAttachComponent;
+
+					const int maxDepth = 6;
+					var styles = new GUIStyle[maxDepth] {
+						
+						new GUIStyle("flow node 0"),
+						new GUIStyle("flow node 1"),
+						new GUIStyle("flow node 2"),
+						new GUIStyle("flow node 3"),
+						new GUIStyle("flow node 4"),
+						new GUIStyle("flow node 5")
+						
+					};
+
+					style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
+					label = window.title + ": " + element.comment;
+
+				} else {
+
+					style = new GUIStyle("flow node 6");
+					label = window.title;
+
+				}
+				
 				var offset = 10f;
-				var width = 90f;
-				var height = 90f;
+				var width = 60f;
+				var height = 60f;
 
-				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
+				var boxStyle = new GUIStyle("flow node 0 on");
+				boxStyle.padding = new RectOffset(20 + (int)width + (int)offset, 20, 20, 20);
+				boxStyle.wordWrap = true;
+				boxStyle.alignment = TextAnchor.MiddleCenter;
+				boxStyle.contentOffset = Vector2.zero;
+				boxStyle.stretchHeight = true;
+
 				var rect = this.scrollRect;
 				rect.x += offset;
 				rect.y = rect.height - height - offset;
 				rect.width = width;
 				rect.height = height;
 
-				if (GUI.Button(rect, string.Empty, style) == true) {
+				var boxRect = rect;
+				boxRect.height -= 20f;
+				boxRect.y += 10f;
+				boxRect.width += width * 3f;
+				boxRect.x += width - offset - width;
+				var backColor = GUI.backgroundColor;
+				var color = Color.black;
+				color.a = 0.6f;
+				GUI.backgroundColor = color;
+				GUI.Box(boxRect, label, boxStyle);
+				GUI.backgroundColor = backColor;
 
+				if (GUI.Button(rect, string.Empty, style) == true) {
+					
 					// Cancel
 					this.WaitForAttach(-1);
-
+					
 				}
 
 			}
@@ -711,14 +745,28 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							}
 
-							rect.width = itemRect.x - rect.x - 5f;
+							var toggleWidth = rect.height;
+
+							rect.width = itemRect.x - rect.x - 5f - toggleWidth;
 							rect.height -= 2f;
+							rect.x += toggleWidth;
 							var title = GUI.TextField(rect, tag.title, buttonStyle);
 							if (title != tag.title) {
 								
 								tag.title = title;
 								FlowSystem.SetDirty();
 								
+							}
+
+							rect.x -= toggleWidth;
+							rect.width = toggleWidth;
+
+							var enabled = GUI.Toggle(rect, tag.enabled, string.Empty);
+							if (enabled != tag.enabled) {
+
+								tag.enabled = enabled;
+								FlowSystem.SetDirty();
+
 							}
 
 						};
@@ -813,13 +861,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				});
 				this.scrollingMouseAnimation.speed = 2f;
 				this.scrollingMouseAnimation.target = 1f;
-				
+
 			}
 			
 			if (Event.current.type == EventType.MouseDrag && this.scrollingMouse == true) {
 
 				this.Repaint();
 				
+				this.showTagsPopup = false;
+				this.showTagsPopupId = -1;
+
 			}
 			
 			if (Event.current.type == EventType.MouseUp && this.scrollingMouse == true) {
@@ -862,6 +913,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				FlowSystem.SelectWindowsInRect(this.selectionRect);
 
 				this.Repaint();
+				
+				this.showTagsPopup = false;
+				this.showTagsPopupId = -1;
 
 			}
 
@@ -1451,7 +1505,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 			window.directory = GUILayout.TextField(window.directory);
 			GUILayout.EndHorizontal();
-
+			
 			this.DrawTags(window);
 
 			var attaches = window.attaches.Count;
@@ -1464,7 +1518,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.DragWindow(headerOnly: true);
 
 			}
-			
+
 			GUI.enabled = true;
 
 			EditorGUIUtility.LookLikeControls();
@@ -1513,8 +1567,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var oldColor = GUI.color;
 
-			this.Repaint();
-			
 			var tagStyles = new GUIStyle[7] {
 				
 				new GUIStyle("sv_label_1"),
@@ -1603,6 +1655,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 
 			GUI.color = oldColor;
+			
+			this.Repaint();
 
 		}
 
@@ -1611,7 +1665,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private int showTagsPopupId;
 		private string tagCaption = string.Empty;
 		private void DrawTags(FlowWindow window) {
-			
+
+			EditorGUIUtility.labelWidth = 35f;
+
 			var tagStyles = new GUIStyle[7] {
 				
 				new GUIStyle("sv_label_1"),
@@ -1623,100 +1679,148 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				new GUIStyle("sv_label_7")
 				
 			};
-
-			var tagCaptionStyle = new GUIStyle("sv_label_0");
-			tagCaptionStyle.fixedWidth = 60f;
-			tagCaptionStyle.stretchWidth = false;
 			
+			var tagCaptionStyleText = new GUIStyle("sv_label_0");
+			var tagCaptionStyle = new GUIStyle(GUI.skin.textField);
+			tagCaptionStyle.alignment = TextAnchor.MiddleCenter;
+			tagCaptionStyle.fixedWidth = 90f;
+			tagCaptionStyle.fixedHeight = tagCaptionStyleText.fixedHeight;
+			tagCaptionStyle.stretchWidth = false;
+			tagCaptionStyle.font = tagCaptionStyleText.font;
+			tagCaptionStyle.fontStyle = tagCaptionStyleText.fontStyle;
+			tagCaptionStyle.fontSize = tagCaptionStyleText.fontSize;
+			tagCaptionStyle.normal = tagCaptionStyleText.normal;
+			tagCaptionStyle.focused = tagCaptionStyleText.normal;
+			tagCaptionStyle.active = tagCaptionStyleText.normal;
+			tagCaptionStyle.hover = tagCaptionStyleText.normal;
+			tagCaptionStyle.border = tagCaptionStyleText.border;
+			//tagCaptionStyle.padding = tagCaptionStyleText.padding;
+			//tagCaptionStyle.margin = tagCaptionStyleText.margin;
+			tagCaptionStyle.margin = new RectOffset();
+
 			var tagStyleAdd = new GUIStyle("sv_label_3");
 			tagStyleAdd.stretchWidth = false;
-			
+
+			var tagsLabel = new GUIStyle(FlowSystemEditorWindow.defaultSkin.label);
+			tagsLabel.padding = new RectOffset(tagsLabel.padding.left, tagsLabel.padding.right, tagsLabel.padding.top, tagsLabel.padding.bottom + 4);
+
 			var changed = false;
 
 			GUILayout.BeginHorizontal();
 			{
-				GUILayoutExt.LabelWithShadow("Tags:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-
-				GUILayout.BeginHorizontal();
+				GUILayoutExt.LabelWithShadow("Tags:", tagsLabel, GUILayout.Width(EditorGUIUtility.labelWidth));
+				
+				GUILayout.BeginVertical();
 				{
+					GUILayout.Space(4f);
+					
 					var tagCaption = string.Empty;
 					if (this.showTagsPopupId == window.id) tagCaption = this.tagCaption;
-
+					
 					var isEnter = (Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.Return);
 
-					var newTagCaption = string.Empty;
-					var rect = new Rect();
-					GUILayout.BeginHorizontal();
+					GUILayout.BeginVertical();
 					{
 
-						var oldEnabled = GUI.enabled;
-						GUI.enabled = !string.IsNullOrEmpty(this.tagCaption) && (this.showTagsPopupId == window.id);
-						if ((GUILayout.Button(new GUIContent("+"), tagStyleAdd) == true || isEnter == true) && GUI.enabled == true) {
+						GUILayout.BeginHorizontal();
+						{
+
+							var columns = 3;
+							var i = 0;
+							foreach (var tag in window.tags) {
+								
+								if (i % columns == 0) {
+									
+									GUILayout.EndHorizontal();
+									GUILayout.BeginHorizontal();
+									
+								}
+								
+								var tagInfo = FlowSystem.GetData().GetTag(tag);
+								if (tagInfo == null) {
+									
+									window.tags.Remove(tag);
+									break;
+									
+								}
+								
+								if (GUILayout.Button(tagInfo.title, tagStyles[tagInfo.color]) == true) {
+									
+									FlowSystem.RemoveTag(window, tagInfo);
+									break;
+									
+								}
+								
+								++i;
+								
+							}
 							
-							FlowSystem.AddTag(window, new FlowTag(FlowSystem.GetData().GetNextTagId(), this.tagCaption));
-							this.tagCaption = string.Empty;
-							
+							if (i % columns != 0) GUILayout.FlexibleSpace();
+
 						}
-						GUI.enabled = oldEnabled;
+						GUILayout.EndHorizontal();
 
-						newTagCaption = GUILayout.TextField(tagCaption, tagCaptionStyle);
-						rect = GUILayoutUtility.GetLastRect();
+						GUILayout.BeginHorizontal();
+						{
 
-					}
-					GUILayout.EndHorizontal();
+							var newTagCaption = string.Empty;
+							var rect = new Rect();
+							GUILayout.BeginHorizontal();
+							{
 
-					if (tagCaption != newTagCaption) {
-						
-						this.showTagsPopupId = window.id;
-						this.tagCaption = newTagCaption;
-						
-						this.showTagsPopup = false;
-						changed = true;
+								var oldEnabled = GUI.enabled;
+								GUI.enabled = !string.IsNullOrEmpty(this.tagCaption) && (this.showTagsPopupId == window.id);
+								if ((GUILayout.Button(new GUIContent("+"), tagStyleAdd) == true || isEnter == true) && GUI.enabled == true) {
+									
+									FlowSystem.AddTag(window, new FlowTag(FlowSystem.GetData().GetNextTagId(), this.tagCaption));
+									this.tagCaption = string.Empty;
+									
+								}
+								GUI.enabled = oldEnabled;
 
-					}
+								newTagCaption = GUILayout.TextField(tagCaption, tagCaptionStyle);
+								rect = GUILayoutUtility.GetLastRect();
 
-					if (this.showTagsPopupId == window.id && newTagCaption.Length > 0) {
+							}
+							GUILayout.EndHorizontal();
 
-						// Show Tags Popup
-						var allTags = FlowSystem.GetTags();
-						if (allTags != null) {
-
-							this.showTagsPopup = true;
-							if (Event.current.type == EventType.Repaint) {
-
-								this.showTagsPopupRect = new Rect(window.rect.x + rect.x + SETTINGS_WIDTH, window.rect.y + rect.y, rect.width, rect.height);
+							if (tagCaption != newTagCaption) {
+								
+								this.showTagsPopupId = window.id;
+								this.tagCaption = newTagCaption;
+								
+								this.showTagsPopup = false;
+								changed = true;
 
 							}
 
-							if (changed == true) this.Repaint();
+							if (this.showTagsPopupId == window.id && newTagCaption.Length > 0) {
+
+								// Show Tags Popup
+								var allTags = FlowSystem.GetTags();
+								if (allTags != null) {
+
+									this.showTagsPopup = true;
+									if (Event.current.type == EventType.Repaint) {
+
+										this.showTagsPopupRect = new Rect(window.rect.x + rect.x + SETTINGS_WIDTH, window.rect.y + rect.y, rect.width, rect.height);
+
+									}
+
+									if (changed == true) this.Repaint();
+
+								}
+
+							}
 
 						}
+						GUILayout.EndHorizontal();
 
 					}
-
-					GUILayout.FlexibleSpace();
-
-					foreach (var tag in window.tags) {
-
-						var tagInfo = FlowSystem.GetData().GetTag(tag);
-						if (tagInfo == null) {
-
-							window.tags.Remove(tag);
-							break;
-
-						}
-
-						if (GUILayout.Button(tagInfo.title, tagStyles[tagInfo.color]) == true) {
-
-							FlowSystem.RemoveTag(window, tagInfo);
-							break;
-
-						}
-
-					}
+					GUILayout.EndVertical();
 
 				}
-				GUILayout.EndHorizontal();
+				GUILayout.EndVertical();
 
 			}
 			GUILayout.EndHorizontal();
@@ -1726,6 +1830,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.Repaint();
 
 			}
+
+			EditorGUIUtility.LookLikeControls();
 
 		}
 
@@ -2019,12 +2125,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (string.IsNullOrEmpty(window.directory) == true) window.directory = string.Empty;
 				window.directory = GUILayout.TextField(window.directory);
 				GUILayout.EndHorizontal();
-				
-				this.DrawTags(window);
 
 				this.DrawWindowLayout(window);
 
 				Flow.OnDrawWindowGUI(window);
+				
+				this.DrawTags(window);
 
 				this.DragWindow(headerOnly: false);
 
@@ -2065,6 +2171,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private void DrawComponentCurve(FlowWindow from, ref UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.ComponentLink link, FlowWindow to) {
 
+			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
+
 			var component = from.GetLayoutComponent(link.sourceComponentTag);
 			if (component != null) {
 
@@ -2079,6 +2187,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
 				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
 
+				var scale = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
+
 				var side1 = from.rect.size.x * 0.5f;
 				var side2 = from.rect.size.y * 0.5f;
 				var stopDistance = Mathf.Sqrt(side1 * side1 + side2 * side2);
@@ -2090,7 +2200,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					if (to.GetContainer() != null) color = to.GetContainer().randomColor;
 					
 				}
-				var comment = this.DrawComponentCurve(startPos, endPos, color, stopDistance, link.comment);
+				var comment = this.DrawComponentCurve(startPos, endPos, color, stopDistance + 50f * scale, link.comment);
 				if (link.comment != comment) {
 
 					link.comment = comment;
@@ -2120,6 +2230,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			Handles.BeginGUI();
 			
+			Handles.color = shadowColor;
+			Handles.DrawSolidDisc(startPos + shadowOffset, Vector3.back, 5f);
+
+			Handles.color = lineColor;
+			Handles.DrawSolidDisc(startPos, Vector3.back, 5f);
+
 			Handles.color = shadowColor;
 			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos + shadowOffset, endPos + shadowOffset });
 			
@@ -2210,6 +2326,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private void DrawNodeCurve(FlowWindow from, FlowWindow to, bool doubleSide) {
 			
+			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
+
 			var fromRect = from.rect;
 			Rect centerStart = fromRect;
 

@@ -11,12 +11,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public int id;
 		public string title;
 		public int color;
+		public bool enabled = true;
 		
 		public FlowTag(int id, string title) {
 			
 			this.id = id;
 			this.title = title;
 			this.color = 0;
+			this.enabled = true;
 			
 		}
 		
@@ -323,13 +325,13 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public IEnumerable<FlowWindow> GetWindows() {
 			
-			return this.windows.Where((w) => w.isContainer == false);
+			return this.windows.Where((w) => w.isContainer == false && w.IsEnabled());
 			
 		}
 		
 		public IEnumerable<FlowWindow> GetContainers() {
 			
-			return this.windows.Where((w) => w.isContainer == true);
+			return this.windows.Where((w) => w.isContainer == true && w.IsEnabled());
 			
 		}
 

@@ -36,9 +36,9 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 			}
 
-			private DevicePreviewCamera previewCamera;
+			//private DevicePreviewCamera previewCamera;
+			//private RenderTexture tempRenderTexture;
 
-			private RenderTexture tempRenderTexture;
 			private int currentWidth;
 			private int currentHeight;
 			private float ppi;
@@ -54,6 +54,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				this.currentWidth = width;
 				this.currentHeight = height;
 
+				/*
 				this.tempRenderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
 
 				if (this.previewCamera == null) {
@@ -68,7 +69,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 					this.root.Repaint();
 					GameObject.DestroyImmediate(this.previewCamera.gameObject);
 
-				});
+				});*/
 
 				var size = new Vector2(this.width, this.height);
 				var imageSize = new Vector2(this.currentWidth, this.currentHeight);
@@ -91,7 +92,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 			public void CleanUp() {
 
-				if (this.previewCamera != null) this.previewCamera.CleanUp();
+				//if (this.previewCamera != null) this.previewCamera.CleanUp();
 
 			}
 
@@ -159,7 +160,41 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 				}
 
-				GUI.DrawTexture(drawRect, this.tempRenderTexture);
+				if (Event.current.type == EventType.Repaint) {
+
+					var allCameras = Camera.allCameras.OrderBy((c) => c.depth);
+					foreach (var camera in allCameras) {
+						
+						var rect = camera.rect;
+
+						//var camRect = new Rect(0f, 0f, this.currentWidth, this.currentHeight);
+						//var camDrawRect = this.GetRectFromSize(this.currentWidth, this.currentHeight);
+
+						camera.gameObject.hideFlags = HideFlags.HideAndDontSave;
+
+						/*var scale = Mathf.Max(camDrawRect.width, camDrawRect.height) / Mathf.Max(this.currentWidth, this.currentHeight);
+
+						var matrix = Handles.matrix;
+						Handles.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one * scale);
+
+						Handles.BeginGUI();
+*/
+						//Handles.ClearCamera(drawRect, camera);
+						Handles.SetCamera(drawRect, camera);
+						Handles.DrawCamera(drawRect, camera, DrawCameraMode.Normal);
+
+						//Handles.EndGUI();
+
+						//Handles.matrix = matrix;
+
+						camera.rect = rect;
+						camera.gameObject.hideFlags = HideFlags.None;
+
+					}
+
+				}
+
+				//GUI.DrawTexture(drawRect, this.tempRenderTexture);
 				
 				if (deviceOutput != null) {
 
@@ -240,6 +275,12 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		}
 
 		public void Validate() {
+
+			if (Parser.manufacturerToDevices == null || Parser.manufacturerToDevices.Count == 0) {
+
+				Parser.Collect(forced: false);
+
+			}
 
 			if (this.gameView == null) this.gameView = new GameView(this);
 

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
+using UnityEngine.UI.Windows;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -155,7 +156,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									if (editor.HasPreviewGUI() == true) {
 
 										Color color = Color.white;
-										editor.OnPreviewGUI(color, lastRect, style, false);
+										editor.OnPreviewGUI(color, lastRect, style, false, false);
 
 									}
 

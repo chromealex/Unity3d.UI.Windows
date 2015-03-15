@@ -5,15 +5,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 namespace UnityEditor.UI.Windows {
-	
-	public interface IPreviewEditor {
-
-		bool HasPreviewGUI();
-		void OnPreviewGUI(Rect rect, GUIStyle style);
-		void OnPreviewGUI(Color color, Rect rect, GUIStyle style);
-		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo);
-		
-	}
 
 	[CustomEditor(typeof(WindowLayout), true)]
 	[CanEditMultipleObjects()]
@@ -58,17 +49,17 @@ namespace UnityEditor.UI.Windows {
 			
 			//var color = new Color(0.8f, 0.8f, 1f, 1f);
 			//color.a = 0.7f;
-			this.OnPreviewGUI(Color.white, r, background, true);
+			this.OnPreviewGUI(Color.white, r, background, true, false);
 
 		}
 
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background) {
 
-			this.OnPreviewGUI(color, r, background, true);
+			this.OnPreviewGUI(color, r, background, true, false);
 
 		}
 
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo) {
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
 
 			var oldColor = GUI.color;
 			GUI.Box(r, string.Empty);
@@ -239,9 +230,13 @@ namespace UnityEditor.UI.Windows {
 					}
 
 					if (GUI.Button(element.tempEditorRect, string.Empty, GUIStyle.none) == true) {
-						
-						WindowLayoutElement.waitForComponentConnectionElementTemp = element;
-						WindowLayoutElement.waitForComponentConnectionTemp = true;
+
+						if (selectable == true) {
+
+							WindowLayoutElement.waitForComponentConnectionElementTemp = element;
+							WindowLayoutElement.waitForComponentConnectionTemp = true;
+
+						}
 
 					}
 

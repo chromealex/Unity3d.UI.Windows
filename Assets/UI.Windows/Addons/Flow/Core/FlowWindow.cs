@@ -84,9 +84,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
+		public bool IsEnabled() {
+
+			return !FlowSystem.GetTags().Any((t) => this.tags.Contains(t.id) && t.enabled == false);
+
+		}
+
 		#if UNITY_EDITOR
-		private UnityEditor.Editor editorCache;
-		public bool OnPreviewGUI(Rect rect, GUIStyle background) {
+		private IPreviewEditor editorCache;
+		public bool OnPreviewGUI(Rect rect, GUIStyle background, bool drawInfo, bool selectable) {
 
 			WindowLayoutElement.waitForComponentConnectionTemp = false;
 
@@ -96,8 +102,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				var layout = screen.layout.layout;
 				if (layout != null) {
 
-					if (this.editorCache == null) this.editorCache = UnityEditor.Editor.CreateEditor(layout);
-					this.editorCache.OnPreviewGUI(rect, background);
+					if (this.editorCache == null) this.editorCache = UnityEditor.Editor.CreateEditor(layout) as IPreviewEditor;
+					if (this.editorCache != null) this.editorCache.OnPreviewGUI(Color.white, rect, background, drawInfo, selectable);
 
 					if (WindowLayoutElement.waitForComponentConnectionTemp == true) {
 
