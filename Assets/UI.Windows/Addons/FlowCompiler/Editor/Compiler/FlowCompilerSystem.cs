@@ -171,8 +171,8 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				
 				#if !UNITY_WEBPLAYER
 				var baseClassPath = ( fullpath + "/" + baseClassName + ".cs" ).Replace( "//", "/" );
-				#endif
 				var derivedClassPath = ( fullpath + "/" + derivedClassName + ".cs" ).Replace( "//", "/" );
+				#endif
 
 				if ( baseClassTemplate != null && derivedClassTemplate != null ) {
 
@@ -180,8 +180,10 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 					CreateDirectory( fullpath, FlowDatabase.COMPONENTS_FOLDER );
 					CreateDirectory( fullpath, FlowDatabase.LAYOUT_FOLDER );
 					CreateDirectory( fullpath, FlowDatabase.SCREENS_FOLDER );
+					
+					#if !UNITY_WEBPLAYER
 
-					if ( Directory.Exists( window.compiledDirectory ) && fullpath != window.compiledDirectory ) {
+					/*if ( Directory.Exists( window.compiledDirectory ) && fullpath != window.compiledDirectory ) {
 
 						foreach ( var each in Directory.GetFiles( window.compiledDirectory ) ) {
 
@@ -200,9 +202,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 						}
 
 						Directory.Delete( window.compiledDirectory, recursive: true );
-					}
-
-#if !UNITY_WEBPLAYER
+					}*/
 
 					Directory.CreateDirectory( fullpath );
 
@@ -216,7 +216,8 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 					}
 
 					AssetDatabase.ImportAsset( baseClassPath );
-#endif
+
+					#endif
 
 				} else {
 

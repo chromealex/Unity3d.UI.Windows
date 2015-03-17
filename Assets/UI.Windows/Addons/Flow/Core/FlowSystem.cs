@@ -161,6 +161,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
+		#if UNITY_EDITOR
 		public static void DestroyWindow(int id) {
 
 			FlowSystem.instance.data.DestroyWindow(id);
@@ -184,6 +185,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data.AlreadyAttached(source, other, component);
 
 		}
+		#endif
 		
 		public static void SetScrollPosition(Vector2 pos) {
 			

@@ -408,7 +408,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
 				
-				if (FlowSystem.GetData().flowWindowWithLayout == true) {
+				if (FlowSystem.GetData() != null && FlowSystem.GetData().flowWindowWithLayout == true) {
 
 					foreach (var window in windows) {
 						

@@ -14,8 +14,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnValidate();
 
-			this.processing.direction = this.bar.direction;
-			this.processing.duration = this.tileDuration;
+			if (this.bar != null) {
+
+				this.processing.direction = this.bar.direction;
+				this.processing.duration = this.tileDuration;
+
+			}
 
 		}
 		#endif

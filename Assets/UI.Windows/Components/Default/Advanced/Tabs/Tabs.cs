@@ -55,7 +55,14 @@ namespace UnityEngine.UI.Windows.Components {
 		public void Load(int index, bool immediately = false) {
 
 			if (index < 0 || index >= this.components.Count) return;
-			
+
+			if (this.lastIndex >= 0) {
+
+				var lastItem = this.GetItem<ButtonComponent>(this.lastIndex);
+				if (lastItem != null) lastItem.SetEnabled();
+
+			}
+
 			if (this.layoutContent.GetCurrentComponent() != null) this.onChangeBefore.Invoke(this.layoutContent.GetCurrentComponent(), this.lastIndex);
 
 			var component = this.components[index];
@@ -69,6 +76,13 @@ namespace UnityEngine.UI.Windows.Components {
 				this.onChangeAfter.Invoke(this.layoutContent.GetCurrentComponent(), index);
 
 				this.lastIndex = index;
+
+				if (this.lastIndex >= 0) {
+					
+					var lastItem = this.GetItem<ButtonComponent>(this.lastIndex);
+					if (lastItem != null) lastItem.SetDisabled();
+					
+				}
 
 			}, immediately);
 

@@ -8,7 +8,7 @@ using UnityEngine.UI.Windows.Components.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonHoverComponent : ButtonComponent, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler {
+	public class ButtonHoverComponent : ButtonWithTextComponent, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler {
 
 		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
 

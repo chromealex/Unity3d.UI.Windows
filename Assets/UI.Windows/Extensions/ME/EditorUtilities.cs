@@ -59,13 +59,6 @@ namespace ME {
 
 		}*/
 
-		public static void FindReference<T>(Component root, ref T link) where T : Component {
-
-			var items = root.GetComponentsInChildren<T>(true);
-			if (items.Length == 1) link = items[0] as T;
-
-		}
-
 		public static bool IsPrefab(GameObject go) {
 
 			if (PrefabUtility.GetPrefabType(go) == PrefabType.Prefab) {

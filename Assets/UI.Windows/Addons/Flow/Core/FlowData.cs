@@ -236,6 +236,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
+		#if UNITY_EDITOR
 		public void Attach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 
 			var window = this.GetWindow(source);
@@ -255,35 +256,36 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 		
 		public bool AlreadyAttached(int source, int other, WindowLayoutElement component = null) {
-
+			
 			if (component != null) {
-
+				
 				return this.windows.Any((w) => w.id == source && w.AlreadyAttached(other, component));
-
+				
 			}
-
+			
 			return this.windows.Any((w) => w.id == source && w.AlreadyAttached(other));
-
-		}
-
-		public void DestroyWindow(int id) {
-
-			// Remove window
-			this.windows.Remove(this.GetWindow(id));
-
-			this.selected.Remove(id);
-			this.defaultWindows.Remove(id);
-
-			foreach (var window in this.windows) {
-
-				window.Detach(id, oneWay: true);
-
-			}
-
-			this.isDirty = true;
-
+			
 		}
 		
+		public void DestroyWindow(int id) {
+			
+			// Remove window
+			this.windows.Remove(this.GetWindow(id));
+			
+			this.selected.Remove(id);
+			this.defaultWindows.Remove(id);
+			
+			foreach (var window in this.windows) {
+				
+				window.Detach(id, oneWay: true);
+				
+			}
+			
+			this.isDirty = true;
+			
+		}
+		#endif
+
 		public FlowWindow CreateDefaultLink() {
 			
 			var newId = this.AllocateId();

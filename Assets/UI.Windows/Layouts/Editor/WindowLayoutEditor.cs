@@ -90,12 +90,13 @@ namespace UnityEditor.UI.Windows {
 
 				}
 
+				_target.root.editorRect = (_target.root.transform as RectTransform).rect;
 				(_target.transform as RectTransform).localPosition = pos;
 
 			}
 			
 			var scaleFactor = 0f;
-			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(elements[0].editorRect.width, elements[0].editorRect.height), new Vector2(r.width, r.height));
+			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(_target.root.editorRect.width, _target.root.editorRect.height), new Vector2(r.width, r.height));
 
 			var selected = new GUIStyle("flow node 6");
 

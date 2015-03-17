@@ -15,6 +15,7 @@ namespace UnityEngine.UI.Windows {
 		Tag7,
 		Tag8,
 		Tag9,
+
 		Tag10,
 		Tag11,
 		Tag12,
@@ -22,6 +23,31 @@ namespace UnityEngine.UI.Windows {
 		Tag14,
 		Tag15,
 		Tag16,
+		Tag17,
+		Tag18,
+		Tag19,
+
+		Tag20,
+		Tag21,
+		Tag22,
+		Tag23,
+		Tag24,
+		Tag25,
+		Tag26,
+		Tag27,
+		Tag28,
+		Tag29,
+
+		Tag30,
+		Tag31,
+		Tag32,
+		Tag33,
+		Tag34,
+		Tag35,
+		Tag36,
+		Tag37,
+		Tag38,
+		Tag39,
 
 	}
 

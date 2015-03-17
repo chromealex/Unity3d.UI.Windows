@@ -29,6 +29,9 @@ namespace UnityEngine.UI.Windows {
 		public float minWidth = 1024f;
 		public float maxWidth = 1920f;
 		public float margin = 100f;
+		
+		[HideInInspector]
+		public Rect editorRect;
 
 		public void Rebuild() {
 

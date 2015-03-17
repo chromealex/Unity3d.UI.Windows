@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UnityEngine.UI.Windows.Components {
@@ -22,18 +22,43 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void SetColor(Color color) {
+
+			base.SetColor(color);
+
+			if (this.effect != null) this.effect.mainParticleSystem.startColor = color;
+
+		}
+
 		private void OnChanged(float value) {
 
 			if (this.bar == null) return;
-
+			
 			var sx = (this.bar.direction == Slider.Direction.TopToBottom ||
 			          this.bar.direction == Slider.Direction.BottomToTop) ? 0f : 1f;
 			
 			var sy = (this.bar.direction == Slider.Direction.LeftToRight ||
 			          this.bar.direction == Slider.Direction.RightToLeft) ? 0f : 1f;
 
-			var rect = this.bar.fillRect.rect;
-			var size = new Vector2(rect.width, rect.height) + this.bar.fillRect.sizeDelta;
+			var size = Vector2.zero;
+
+			if (this.bar.continuous == true) {
+
+				if (this.effect != null) this.effect.mainParticleSystem.simulationSpace = ParticleSystemSimulationSpace.Local;
+
+				var rect = (this.bar.transform as RectTransform).rect;
+				var s = this.bar.continuousWidth;
+				size = new Vector2(rect.width * s, rect.height * s) + this.bar.fillRect.sizeDelta;
+
+			} else {
+				
+				if (this.effect != null) this.effect.mainParticleSystem.simulationSpace = ParticleSystemSimulationSpace.World;
+
+				var rect = this.bar.fillRect.rect;
+				size = new Vector2(rect.width, rect.height) + this.bar.fillRect.sizeDelta;
+
+			}
+
 			size.x *= sx;
 			size.y *= sy;
 			if (size.x < 1f) size.x = 1f;

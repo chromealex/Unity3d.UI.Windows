@@ -12,7 +12,7 @@ namespace UnityEngine.UI.Windows {
 		
 		public void LateUpdate() {
 			
-			#if UNITY_STANDALONE
+			#if UNITY_STANDALONE || UNITY_WEBPLAYER
 			if (Input.GetMouseButtonDown(0) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(0) == true) WindowSystemInput.onPointerUp.Invoke();
 			if (Input.GetMouseButtonDown(1) == true) WindowSystemInput.onPointerDown.Invoke();

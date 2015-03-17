@@ -10,23 +10,15 @@ public class UIWindowExampleComponentsEx5 : WindowComponent {
 	public LinkerComponent textLinker;
 	private InputFieldComponent text;
 
-	public LinkerComponent passwordLinker;
-	private InputFieldComponent password;
-
-	public LinkerComponent emailLinker;
-	private InputFieldComponent email;
-
-	public LinkerComponent phoneLinker;
-	private InputFieldComponent phone;
+	public LinkerComponent indicatorLinker;
+	private InputFieldComponent indicator;
 
 	public override void OnInit() {
 		
 		base.OnInit();
 
-		this.textLinker.Get(ref this.text).SetText("Text field default text");
-		this.passwordLinker.Get(ref this.password).SetText("password");
-		this.emailLinker.Get(ref this.email).SetText("example@email.com");
-		this.phoneLinker.Get(ref this.phone).SetText("89112345678");
+		this.textLinker.Get(ref this.text).SetText("Default text field");
+		this.indicatorLinker.Get(ref this.indicator).SetText("Field with indicator");
 
 	}
 

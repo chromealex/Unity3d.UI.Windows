@@ -11,10 +11,27 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		private List<WindowComponent> list = new List<WindowComponent>();
 
-		public ScrollRect scrollRect;
+		public Extensions.ScrollRect scrollRect;
 		public WindowComponent source;
 
-		public T AddItem<T>() where T : IComponent {
+		public GameObject content;
+		public GameObject noElements;
+
+		public override void OnInit() {
+
+			base.OnInit();
+
+			this.Refresh();
+
+		}
+
+		public void SetupAsDropdown(float maxHeight) {
+
+			this.scrollRect.SetupAsDropdown(maxHeight);
+
+		}
+
+		public virtual T AddItem<T>() where T : IComponent {
 
 			if (this.source == null) return default(T);
 
@@ -35,6 +52,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.list.Add(instance);
 			instance.gameObject.SetActive(true);
+
+			this.Refresh();
 
 			return (T)(instance as IComponent);
 
@@ -64,7 +83,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public void SetItems(int capacity, UnityAction<IComponent> onItem = null) {
+		public virtual void SetItems(int capacity, UnityAction<IComponent> onItem = null) {
 
 			this.SetItems<IComponent>(capacity, (element, index) => {
 
@@ -74,10 +93,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
+		public virtual void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
 
-			foreach (var element in this.list) element.Recycle();
-			this.list.Clear();
+			this.Clear();
 
 			for (int i = 0; i < capacity; ++i) {
 
@@ -85,6 +103,23 @@ namespace UnityEngine.UI.Windows.Components {
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 
 			}
+
+		}
+
+		public virtual void Clear() {
+			
+			foreach (var element in this.list) element.Recycle();
+			this.list.Clear();
+
+			this.Refresh();
+
+		}
+
+		public void Refresh() {
+
+			if (this.noElements != null) this.noElements.SetActive(this.list.Count == 0);
+			if (this.content != null) this.content.SetActive(this.list.Count > 0);
+			if (this.scrollRect != null) this.scrollRect.UpdateDropdown();
 
 		}
 

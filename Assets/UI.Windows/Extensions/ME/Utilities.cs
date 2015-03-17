@@ -6,6 +6,20 @@ using System.Linq;
 namespace ME {
 
 	public partial class Utilities {
+		
+		public static void FindReferenceParent<T>(Component root, ref T link) where T : Component {
+			
+			var items = root.GetComponentsInParent<T>(true);
+			if (items.Length > 0) link = items[0] as T;
+			
+		}
+
+		public static void FindReference<T>(Component root, ref T link) where T : Component {
+			
+			var items = root.GetComponentsInChildren<T>(true);
+			if (items.Length == 1) link = items[0] as T;
+			
+		}
 
 		public static Vector3 GetUIPosition(Transform transform, Vector3 alignToPoint, Camera uiCamera, Camera gameCamera, Vector3 offset = default(Vector3)) {
 

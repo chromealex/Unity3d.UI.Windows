@@ -364,19 +364,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return this.attaches.Any((id) => id == predicate.id && FlowSystem.GetWindow(id).isContainer);
 			
 		}
-		
-		public bool AlreadyAttached(int id, WindowLayoutElement component = null) {
 
-			if (component != null) {
-
-				return this.attachedComponents.Any((c) => c.targetWindowId == id && c.sourceComponentTag == component.tag);
-
-			}
-
-			return this.attaches.Contains(id);
-			
-		}
-		
 		public List<FlowWindow> GetAttachedWindows() {
 			
 			List<FlowWindow> output = new List<FlowWindow>();
@@ -392,7 +380,20 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return output;
 			
 		}
-		
+
+		#if UNITY_EDITOR
+		public bool AlreadyAttached(int id, WindowLayoutElement component = null) {
+			
+			if (component != null) {
+				
+				return this.attachedComponents.Any((c) => c.targetWindowId == id && c.sourceComponentTag == component.tag);
+				
+			}
+			
+			return this.attaches.Contains(id);
+			
+		}
+
 		public bool Attach(int id, bool oneWay = false, WindowLayoutElement component = null) {
 			
 			if (this.id == id) return false;
@@ -476,6 +477,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return result;
 			
 		}
+		#endif
 		
 	}
 
