@@ -92,12 +92,10 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		#if UNITY_EDITOR
-		protected override void Update() {
+		public override void OnValidate() {
 			
-			base.Update();
-			
-			if (Application.isPlaying == true) return;
-			
+			base.OnValidate();
+
 			this.layout.Update_EDITOR();
 			
 		}

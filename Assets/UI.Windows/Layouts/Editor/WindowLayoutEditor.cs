@@ -65,7 +65,7 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, System.Action<WindowLayoutElement, Rect> onElementGUI) {
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, System.Action<WindowLayoutElement, Rect, bool> onElementGUI) {
 
 			var oldColor = GUI.color;
 			GUI.Box(r, string.Empty);
@@ -175,8 +175,6 @@ namespace UnityEditor.UI.Windows {
 
 				GUI.color = oldColor;
 
-				if (onElementGUI != null) onElementGUI(element, rect);
-
 				var marginX = 4f;
 				var marginY = 2f;
 
@@ -210,7 +208,7 @@ namespace UnityEditor.UI.Windows {
 
 			}
 
-			if (drawInfo == true) {
+			if (drawInfo == true || onElementGUI != null) {
 				
 				WindowLayoutElement maxDepthElement = null;
 				var _maxDepth = -1;
@@ -244,8 +242,14 @@ namespace UnityEditor.UI.Windows {
 
 							WindowLayoutElement.waitForComponentConnectionElementTemp = element;
 							WindowLayoutElement.waitForComponentConnectionTemp = true;
+							
+							if (onElementGUI != null) onElementGUI(element, element.tempEditorRect, true);
 
 						}
+
+					} else {
+						
+						if (onElementGUI != null) onElementGUI(element, element.tempEditorRect, false);
 
 					}
 

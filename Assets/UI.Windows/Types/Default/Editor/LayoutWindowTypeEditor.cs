@@ -2,9 +2,11 @@
 using UnityEditor;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Components;
 using System.Linq;
+using ME;
 
 namespace UnityEditor.UI.Windows {
 	
@@ -29,12 +31,13 @@ namespace UnityEditor.UI.Windows {
 			
 		}
 
+		private Layout.Component selectedComponent;
 		private WindowLayoutEditor layoutEditor;
 		public virtual void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
 
 			var _target = this.target as LayoutWindowType;
 			var layout = _target.layout.layout;
-			//var layoutElements = _target.layout.components;
+			var layoutElements = _target.layout.components;
 
 			if (layout != null) {
 
@@ -43,7 +46,19 @@ namespace UnityEditor.UI.Windows {
 
 					//var emptyStyle = GUIStyle.none;
 
-					this.layoutEditor.OnPreviewGUI(color, r, background, drawInfo, selectable, (element, elementRect) => {
+					this.layoutEditor.OnPreviewGUI(color, r, background, drawInfo, true, (element, elementRect, isClicked) => {
+
+						if (isClicked == true) {
+
+							var tag = element.tag;
+							var comp = layoutElements.FirstOrDefault((e) => e.tag == tag);
+							if (comp != null) {
+
+								this.selectedComponent = comp;
+
+							}
+
+						}
 
 						/*var tag = element.tag;
 						var comp = layoutElements.FirstOrDefault((e) => e.tag == tag);
@@ -56,6 +71,34 @@ namespace UnityEditor.UI.Windows {
 					});
 
 				}
+
+			}
+
+		}
+
+		public override void OnPreviewSettings() {
+
+			base.OnPreviewSettings();
+
+			var comp = this.selectedComponent;
+			if (comp != null && comp.tag != LayoutTag.None) {
+
+				EditorGUIUtility.labelWidth = 100f;
+
+				comp.component = EditorGUILayout.ObjectField(comp.description.ToLower().UppercaseWords(), comp.component, typeof(WindowComponent), false) as WindowComponent;
+
+				if (GUILayout.Button("...") == true) {
+					
+					WindowComponentLibraryChooser.Show((element) => {
+						
+						comp.component = element.mainComponent;
+						EditorUtility.SetDirty(comp.component);
+						
+					});
+					
+				}
+
+				EditorGUIUtility.LookLikeControls();
 
 			}
 

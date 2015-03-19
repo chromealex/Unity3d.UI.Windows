@@ -1891,7 +1891,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private void DrawWindowToolbar(FlowWindow window) {
 			
-			var edit = false;
+			//var edit = false;
 			var id = window.id;
 
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
@@ -2023,6 +2023,46 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (window.isDefaultLink == false && FlowSceneView.IsActive() == false) {
 
+					if (GUILayout.Button("Select", buttonStyle) == true) {
+
+						if (window.compiled == false) {
+							
+							this.ShowNotification(new GUIContent("You need to compile this window to use 'Select' command"));
+							
+						} else {
+
+							Selection.activeObject = AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
+							EditorGUIUtility.PingObject(Selection.activeObject);
+
+							if (window.screen == null) {
+
+								var files = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory + "Screens" });
+								foreach (var file in files) {
+
+									var path = AssetDatabase.GUIDToAssetPath(file);
+									
+									var go = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+									if (go != null) {
+
+										var screen = go.GetComponent<WindowBase>();
+										if (screen != null) {
+
+											window.SetScreen(screen);
+											break;
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+					/*
 					if (GUILayout.Button("Edit", buttonStyle) == true) {
 						
 						if (window.compiled == false) {
@@ -2035,7 +2075,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 						}
 						
-					}
+					}*/
 
 				}
 
@@ -2086,11 +2126,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 			GUILayout.EndHorizontal();
 			
-			if (edit == true) {
+			/*if (edit == true) {
 				
 				FlowSceneView.SetControl(this, window, this.OnItemProgress);
-				
-			}
+
+			}*/
 
 		}
 

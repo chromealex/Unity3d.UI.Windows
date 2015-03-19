@@ -306,9 +306,7 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideEnd() {}
 		
 		#if UNITY_EDITOR
-		protected virtual void Update() {
-
-			if (Application.isPlaying == true) return;
+		public virtual void OnValidate() {
 
 			this.SetupCamera();
 
