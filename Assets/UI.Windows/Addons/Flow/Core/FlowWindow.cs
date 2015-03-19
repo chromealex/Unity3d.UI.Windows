@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using ME;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 

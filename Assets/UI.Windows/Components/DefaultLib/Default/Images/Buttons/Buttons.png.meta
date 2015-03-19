@@ -1,0 +1,146 @@
+fileFormatVersion: 2
+guid: 5c2ca5675950a465eb3ecd79a31ca909
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: ButtonLeft_Hover
+    21300002: ButtonCenter_Hover
+    21300004: ButtonRight_Hover
+    21300006: ButtonLeft_Normal
+    21300008: ButtonCenter_Normal
+    21300010: ButtonRight_Normal
+    21300012: ButtonLeft_Pressed
+    21300014: ButtonCenter_Pressed
+    21300016: ButtonRight_Pressed
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: ButtonLeft_Hover
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 79
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 19, y: 18, z: 3, w: 16}
+    - name: ButtonCenter_Hover
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 79
+        width: 73
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 3, y: 4, z: 3, w: 3}
+    - name: ButtonRight_Hover
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 79
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 3, y: 18, z: 18, w: 16}
+    - name: ButtonLeft_Normal
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 40
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 19, y: 18, z: 3, w: 16}
+    - name: ButtonCenter_Normal
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 40
+        width: 73
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 3, y: 4, z: 3, w: 3}
+    - name: ButtonRight_Normal
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 40
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 3, y: 18, z: 18, w: 16}
+    - name: ButtonLeft_Pressed
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 19, y: 18, z: 3, w: 16}
+    - name: ButtonCenter_Pressed
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 0
+        width: 73
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 3, y: 4, z: 3, w: 3}
+    - name: ButtonRight_Pressed
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 0
+        width: 82
+        height: 34
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 3, y: 18, z: 18, w: 16}
+  spritePackingTag: UI.Windows.Default
+  userData: 

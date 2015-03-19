@@ -15,15 +15,13 @@ namespace UnityEngine.UI.Windows.Components {
 		public bool continious;
 		[Range(0f, 1f)]
 		public float continiousWidth = 0.4f;
-
 		public float continiousAngleStep = 0f;
 
-		private Color color;
 		public Image[] images;
-		
+
 		private ComponentEvent<float> callback = new ComponentEvent<float>();
 		private ComponentEvent<ProgressComponent, float> callbackButton = new ComponentEvent<ProgressComponent, float>();
-
+		private Color color;
 		private float currentValue = 0f;
 
 		public override void OnInit() {
@@ -45,6 +43,8 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			this.bar.onValueChanged.RemoveListener(this.OnValueChanged_INTERNAL);
 			this.bar.onValueChanged.AddListener(this.OnValueChanged_INTERNAL);
+
+			this.bar.value = 0f;
 
 		}
 		

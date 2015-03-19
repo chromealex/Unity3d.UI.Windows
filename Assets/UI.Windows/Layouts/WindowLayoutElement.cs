@@ -53,7 +53,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.randomColorSetup == false) {
 
-				this.randomColor = UnityEngine.UI.Windows.Plugins.ColorHSV.GetDistinctColor();
+				this.randomColor = UnityEngine.UI.Windows.Extensions.ColorHSV.GetDistinctColor();
 				this.randomColorSetup = true;
 
 			}

@@ -122,24 +122,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var tplData = layout;//FlowSystem.LoadPrefabTemplate<WindowLayout>(FlowSystem.LAYOUT_FOLDER, tplName);
 			if (tplData != null) {
 				
-				var sourcepath = ADB.GetAssetPath(tplData);
 				var filepath = window.compiledDirectory + "/" + FlowDatabase.LAYOUT_FOLDER + "/" + tplName + "Layout.prefab";
-				filepath = filepath.Replace("//", "/");
-				
-				System.IO.File.Copy(sourcepath, filepath, true);
-				ADB.Refresh();
-				
-				var source = ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject;
-				var prefab = source.GetComponent<WindowLayout>();
-				instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowLayout;
 
-				instance = FlowDatabase.ReplaceComponents<FlowWindowLayoutTemplate, WindowLayout>(instance as FlowWindowLayoutTemplate, typeof(WindowLayout));
-				
-				FlowDatabase.SaveLayout(instance);
+				instance = FlowDatabase.GenerateLayout(filepath, tplData);
 
-				GameObject.DestroyImmediate(instance.gameObject);
-				instance = (ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject).GetComponent<WindowLayout>();
-				
 			} else {
 				
 				Debug.LogError("Template Loading Error: " + tplName);
@@ -148,6 +134,34 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			return instance;
 			
+		}
+
+		public static WindowLayout GenerateLayout(string filepath, FlowWindowLayoutTemplate layout) {
+
+			filepath = filepath.Replace("//", "/");
+
+			WindowLayout instance = null;
+
+			var sourcepath = ADB.GetAssetPath(layout);
+
+			filepath = AssetDatabase.GenerateUniqueAssetPath(filepath);
+
+			System.IO.File.Copy(sourcepath, filepath, true);
+			ADB.Refresh();
+
+			var source = ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject;
+			var prefab = source.GetComponent<WindowLayout>();
+			instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowLayout;
+			
+			instance = FlowDatabase.ReplaceComponents<FlowWindowLayoutTemplate, WindowLayout>(instance as FlowWindowLayoutTemplate, typeof(WindowLayout));
+			
+			FlowDatabase.SaveLayout(instance);
+			
+			GameObject.DestroyImmediate(instance.gameObject);
+			instance = (ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject).GetComponent<WindowLayout>();
+
+			return instance;
+
 		}
 		
 		public static WindowBase LoadScreen(WindowBase prefab) {
@@ -173,25 +187,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var tplData = template;//FlowSystem.LoadPrefabTemplate<WindowBase>(FlowSystem.SCREENS_FOLDER, tplName);
 			if (tplData != null) {
 				
-				var sourcepath = ADB.GetAssetPath(tplData);
 				var filepath = window.compiledDirectory + "/" + FlowDatabase.SCREENS_FOLDER + "/" + tplName + "Screen.prefab";
-				filepath = filepath.Replace("//", "/");
-				
-				System.IO.File.Copy(sourcepath, filepath, true);
-				ADB.Refresh();
-				
-				var source = ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject;
-				var prefab = source.GetComponent<WindowBase>();
-				instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowBase;
 
-				var type = WindowUtilities.GetTypeFromAllAssemblies(window.compiledDerivedClassName);
-				instance = FlowDatabase.ReplaceComponents<FlowLayoutWindowTypeTemplate, WindowBase>(instance as FlowLayoutWindowTypeTemplate, type);
+				instance = FlowDatabase.GenerateScreen(filepath, window.compiledDerivedClassName, tplData);
 
-				FlowDatabase.SaveScreen(instance);
-
-				GameObject.DestroyImmediate(instance.gameObject);
-				instance = (ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject).GetComponent<WindowBase>();
-				
 			} else {
 				
 				Debug.LogError("Template Loading Error: " + tplName);
@@ -200,6 +199,35 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			return instance;
 			
+		}
+		
+		public static WindowBase GenerateScreen(string filepath, string className, FlowLayoutWindowTypeTemplate template) {
+
+			WindowBase instance = null;
+
+			filepath = filepath.Replace("//", "/");
+			
+			var sourcepath = ADB.GetAssetPath(template);
+
+			filepath = AssetDatabase.GenerateUniqueAssetPath(filepath);
+
+			System.IO.File.Copy(sourcepath, filepath, true);
+			ADB.Refresh();
+			
+			var source = ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject;
+			var prefab = source.GetComponent<WindowBase>();
+			instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowBase;
+			
+			var type = WindowUtilities.GetTypeFromAllAssemblies(className);
+			instance = FlowDatabase.ReplaceComponents<FlowLayoutWindowTypeTemplate, WindowBase>(instance as FlowLayoutWindowTypeTemplate, type);
+			
+			FlowDatabase.SaveScreen(instance);
+			
+			GameObject.DestroyImmediate(instance.gameObject);
+			instance = (ADB.LoadAssetAtPath(filepath, typeof(GameObject)) as GameObject).GetComponent<WindowBase>();
+
+			return instance;
+
 		}
 		#endif
 

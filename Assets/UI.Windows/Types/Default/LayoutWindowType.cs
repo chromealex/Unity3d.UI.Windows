@@ -10,7 +10,7 @@ namespace UnityEngine.UI.Windows {
 	public class LayoutWindowType : WindowBase {
 
 		public Layout layout;
-		
+
 		new public LayoutWindowType GetWindow() {
 			
 			return base.GetWindow() as LayoutWindowType;
@@ -129,7 +129,7 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
-		
+
 		[System.Serializable]
 		public class Component : IWindowEventsAsync {
 			
@@ -138,6 +138,7 @@ namespace UnityEngine.UI.Windows {
 			#endif
 			[ReadOnly]
 			public LayoutTag tag;
+			[ComponentChooser]
 			public WindowComponent component;
 			public int sortingOrder = 0;
 			
@@ -150,12 +151,30 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
+			#if UNITY_EDITOR
+			private IPreviewEditor editor;
+			public void OnPreviewGUI(Rect rect, GUIStyle background) {
+				
+				if (this.component != null) {
+
+					if (this.editor == null) this.editor = UnityEditor.Editor.CreateEditor(this.component) as IPreviewEditor;
+					if (this.editor != null) {
+
+						this.editor.OnPreviewGUI(rect, background);
+
+					}
+
+				}
+				
+			}
+			#endif
+
 			[HideInInspector][System.NonSerialized]
 			private IWindowEventsAsync instance;
 			
 			[HideInInspector][System.NonSerialized]
 			private IWindowComponentLayout root;
-			
+
 			public IWindowEventsAsync Create(WindowBase window, WindowLayoutElement root) {
 				
 				this.root = root;

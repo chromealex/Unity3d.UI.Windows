@@ -58,8 +58,14 @@ namespace UnityEditor.UI.Windows {
 			this.OnPreviewGUI(color, r, background, true, false);
 
 		}
-
+		
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
+
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, null);
+
+		}
+
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, System.Action<WindowLayoutElement, Rect> onElementGUI) {
 
 			var oldColor = GUI.color;
 			GUI.Box(r, string.Empty);
@@ -168,7 +174,9 @@ namespace UnityEditor.UI.Windows {
 				GUI.Label(rect, string.Empty, style);
 
 				GUI.color = oldColor;
-				
+
+				if (onElementGUI != null) onElementGUI(element, rect);
+
 				var marginX = 4f;
 				var marginY = 2f;
 

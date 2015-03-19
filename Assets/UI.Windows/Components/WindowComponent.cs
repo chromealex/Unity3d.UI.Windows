@@ -14,6 +14,12 @@ namespace UnityEngine.UI.Windows {
 
 		private WindowLayoutBase layoutRoot;
 
+		public List<WindowComponent> GetSubComponents() {
+
+			return this.subComponents;
+
+		}
+
 		internal void Setup(WindowLayoutBase layoutRoot) {
 			
 			this.layoutRoot = layoutRoot;
