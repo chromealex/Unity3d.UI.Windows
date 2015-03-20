@@ -10,7 +10,7 @@ namespace UnityEditor.UI.Windows {
 	[CustomEditor(typeof(WindowBase), true)]
 	public class WindowBaseInspector : Editor {
 
-		public override void OnInspectorGUI() {
+		/*public override void OnInspectorGUI() {
 
 			this.serializedObject.Update();
 
@@ -24,7 +24,7 @@ namespace UnityEditor.UI.Windows {
 		}
 
 		public virtual void OnEditLogic(WindowBase[] targets) {
-		}
+		}*/
 
 	}
 

@@ -121,9 +121,9 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			if (this.autoRegisterSubComponents == true) {
 

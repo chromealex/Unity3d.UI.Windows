@@ -84,9 +84,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 			
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			var layoutComponent = this.GetComponent<LayoutElement>();
 			if (layoutComponent != null) {

@@ -88,15 +88,23 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void OnClick() {
 
+			if (this.GetWindow().GetState() != WindowState.Shown &&
+			    this.GetWindow().GetState() != WindowState.Showing) {
+
+				Debug.Log("Can't send the click on " + this.GetWindow().GetState() + " state.");
+				return;
+
+			}
+
 			if (this.callback != null) this.callback.Invoke();
 			if (this.callbackButton != null) this.callbackButton.Invoke(this);
 
 		}
 		
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			if (this.gameObject.activeSelf == false) return;
 			

@@ -204,9 +204,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			ME.Utilities.FindReference<Extensions.Slider>(this, ref this.bar);
 

@@ -26,9 +26,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 			
 			if (this.gameObject.activeSelf == false) return;
 

@@ -352,7 +352,11 @@ namespace UnityEngine.UI.Windows {
 			instance.transform.localPosition = Vector3.zero;
 			instance.transform.localRotation = Quaternion.identity;
 			instance.transform.localScale = Vector3.one;
-			
+
+			#if UNITY_EDITOR
+			instance.gameObject.name = "Screen-" + source.GetType().Name;
+			#endif
+
 			instance.SetParameters(parameters);
 			instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
 

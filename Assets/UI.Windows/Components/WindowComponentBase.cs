@@ -132,7 +132,13 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideEnd() {}
 		
 		#if UNITY_EDITOR
-		public virtual void OnValidate() {
+		public void OnValidate() {
+
+			this.OnValidateEditor();
+
+		}
+
+		public virtual void OnValidateEditor() {
 			
 			this.Update_EDITOR();
 			
@@ -145,7 +151,9 @@ namespace UnityEngine.UI.Windows {
 		public virtual void Update_EDITOR() {
 
 			this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
-			
+
+			this.componentsToDestroy.Clear();
+
 			if (this.animation == null || this.lastAnimation != this.animation || this.animationRefresh == false) {
 				
 				var ps = this.GetComponents<TransitionInputParameters>();
@@ -168,7 +176,7 @@ namespace UnityEngine.UI.Windows {
 			
 			this.lastAnimation = this.animation;
 			
-			UnityEditor.EditorApplication.delayCall += () => {
+			UnityEditor.EditorApplication.delayCall = () => {
 				
 				foreach (var c in this.componentsToDestroy) {
 					

@@ -12,7 +12,13 @@ namespace UnityEditor.UI.Windows {
 	
 	[CustomEditor(typeof(LayoutWindowType), true)]
 	public class LayoutWindowTypeEditor : Editor, IPreviewEditor {
-		
+
+		public override void OnInspectorGUI() {
+
+			this.DrawDefaultInspector();
+
+		}
+
 		public override bool HasPreviewGUI() {
 			
 			return true;
@@ -46,29 +52,33 @@ namespace UnityEditor.UI.Windows {
 
 					//var emptyStyle = GUIStyle.none;
 
-					this.layoutEditor.OnPreviewGUI(color, r, background, drawInfo, true, (element, elementRect, isClicked) => {
+					if (Event.current.type != EventType.Layout) {
 
-						if (isClicked == true) {
+						this.layoutEditor.OnPreviewGUI(color, r, background, drawInfo, true, (element, elementRect, isClicked) => {
 
-							var tag = element.tag;
-							var comp = layoutElements.FirstOrDefault((e) => e.tag == tag);
-							if (comp != null) {
+							if (isClicked == true) {
 
-								this.selectedComponent = comp;
+								var tag = element.tag;
+								var comp = layoutElements.FirstOrDefault((e) => e.tag == tag);
+								if (comp != null) {
+
+									this.selectedComponent = comp;
+
+								}
 
 							}
 
-						}
+							/*var tag = element.tag;
+							var comp = layoutElements.FirstOrDefault((e) => e.tag == tag);
+							if (comp != null) {
 
-						/*var tag = element.tag;
-						var comp = layoutElements.FirstOrDefault((e) => e.tag == tag);
-						if (comp != null) {
+								comp.OnPreviewGUI(elementRect, emptyStyle);
 
-							comp.OnPreviewGUI(elementRect, emptyStyle);
+							}*/
 
-						}*/
+						});
 
-					});
+					}
 
 				}
 

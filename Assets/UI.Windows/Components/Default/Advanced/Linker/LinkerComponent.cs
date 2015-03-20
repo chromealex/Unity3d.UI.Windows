@@ -13,7 +13,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[HideInInspector]
 		private WindowComponent instance;
 
-		public T Get<T>(ref T instance) where T : WindowComponent {
+		public T Get<T>(ref T instance) where T : IComponent {
 			
 			instance = this.Get<T>();
 
@@ -21,10 +21,21 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public T Get<T>() where T : WindowComponent {
+		public T Get<T>() where T : IComponent {
 			
-			return this.instance as T;
+			return (T)(this.instance as IComponent);
 
+		}
+		
+		public void InitPool(int capacity) {
+			
+			this.prefab.CreatePool(capacity);
+			if (this.prefab is LinkerComponent) {
+				
+				(this.prefab as LinkerComponent).InitPool(capacity);
+				
+			}
+			
 		}
 
 		public override void OnInit() {
@@ -43,7 +54,9 @@ namespace UnityEngine.UI.Windows.Components {
 				
 				this.instance.Setup(this.GetLayoutRoot());
 				this.instance.Setup(this.GetWindow());
-				
+
+				this.RegisterSubComponent(this.instance);
+
 				this.instance.OnInit();
 
 			}

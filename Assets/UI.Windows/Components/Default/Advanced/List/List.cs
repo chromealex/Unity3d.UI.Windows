@@ -25,6 +25,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public void InitPool(int capacity) {
+
+			this.source.CreatePool(capacity);
+			if (this.source is LinkerComponent) {
+
+				(this.source as LinkerComponent).InitPool(capacity);
+
+			}
+
+		}
+
 		public void SetupAsDropdown(float maxHeight) {
 
 			this.scrollRect.SetupAsDropdown(maxHeight);
@@ -36,6 +47,9 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.source == null) return default(T);
 
 			var instance = this.source.Spawn();
+			
+			this.list.Add(instance);
+			this.RegisterSubComponent(instance);
 
 			if (instance is LinkerComponent) {
 
@@ -48,9 +62,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			instance.Setup(this.GetLayoutRoot());
 			instance.Setup(this.GetWindow());
-			this.RegisterSubComponent(instance);
 
-			this.list.Add(instance);
 			instance.gameObject.SetActive(true);
 
 			this.Refresh();
@@ -61,7 +73,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public int GetIndexOf<T>(T item) where T : IComponent {
 			
-			return this.GetItems().IndexOf(item as WindowComponent);
+			return this.GetItems().FindIndex((c) => {
+
+				if (c is LinkerComponent) {
+
+					return (c as LinkerComponent).Get<WindowComponent>() == (item as WindowComponent);
+
+				}
+
+				return (item as WindowComponent) == c;
+
+			});
 
 		}
 
@@ -78,7 +100,13 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 		
 		public T GetItem<T>(int index) where T : IComponent {
-			
+
+			if (this.list[index] is LinkerComponent) {
+
+				return (this.list[index] as LinkerComponent).Get<T>();
+
+			}
+
 			return (T)(this.list[index] as IComponent);
 			
 		}
@@ -108,7 +136,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public virtual void Clear() {
 			
-			foreach (var element in this.list) element.Recycle();
+			foreach (var element in this.list) {
+
+				this.UnregisterSubComponent(element);
+				element.Recycle();
+
+			}
 			this.list.Clear();
 
 			this.Refresh();
@@ -124,9 +157,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 			//this.scrollRect = this.GetComponentInChildren<ScrollRect>();
 
 		}

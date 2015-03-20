@@ -10,9 +10,9 @@ namespace UnityEngine.UI.Windows.Components {
 		public ProgressAnimationProcessing processing;
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			if (this.bar != null) {
 

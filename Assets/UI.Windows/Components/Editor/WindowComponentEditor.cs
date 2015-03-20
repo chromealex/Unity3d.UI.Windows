@@ -74,17 +74,21 @@ namespace UnityEditor.UI.Windows {
 		private void DrawComponent(WindowComponent comp, string name, Rect r, GUIStyle background) {
 
 			if (comp == null) return;
+			
+			if (Event.current.type != EventType.Layout) {
 
-			var graphics = comp.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
-			foreach (var graphic in graphics) {
-				
-				var editor = Editor.CreateEditor(graphic) as GraphicEditor;
-				if (editor != null && editor.HasPreviewGUI() == true) {
+				var graphics = comp.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
+				foreach (var graphic in graphics) {
 					
-					editor.OnPreviewGUI(r, background);
+					var editor = Editor.CreateEditor(graphic) as GraphicEditor;
+					if (editor != null && editor.HasPreviewGUI() == true) {
+						
+						editor.OnPreviewGUI(r, background);
+						
+					}
 					
 				}
-				
+
 			}
 
 		}
