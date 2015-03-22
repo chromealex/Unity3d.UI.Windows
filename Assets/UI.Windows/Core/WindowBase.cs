@@ -63,6 +63,21 @@ namespace UnityEngine.UI.Windows {
 			this.workCamera.depth = depth;
 			if (this.preferences.dontDestroyOnLoad == true) GameObject.DontDestroyOnLoad(this.gameObject);
 
+			if ( this.passParams == true ) {
+
+				var method = this.GetType().GetMethod( "OnParametersPass" );
+				if ( method != null ) {
+
+					method.Invoke( this, this.parameters );
+
+				}
+
+			} else {
+
+				this.OnEmptyPass();
+
+			}
+
 			if (this.setup == false) {
 				
 				this.Setup(this);
@@ -74,21 +89,6 @@ namespace UnityEngine.UI.Windows {
 
 				this.setup = true;
 
-			}
-			
-			if (this.passParams == true) {
-				
-				var method = this.GetType().GetMethod("OnParametersPass");
-				if (method != null) {
-					
-					method.Invoke(this, this.parameters);
-					
-				}
-				
-			} else {
-				
-				this.OnEmptyPass();
-				
 			}
 			
 			this.currentState = WindowState.Initialized;
