@@ -51,15 +51,18 @@ namespace UnityEngine.UI.Windows.Components {
 			this.list.Add(instance);
 			this.RegisterSubComponent(instance);
 
+			instance.OnInit();
+
 			if (instance is LinkerComponent) {
 
-				instance.OnInit();
-				instance.gameObject.SetActive(true);
-
 				instance = (instance as LinkerComponent).Get<WindowComponent>();
+				instance.OnInit();
 
 			}
-			
+
+			instance.gameObject.SetActive( true );
+			instance.transform.SetParent( scrollRect.content );
+
 			instance.Setup(this.GetLayoutRoot());
 			instance.Setup(this.GetWindow());
 
