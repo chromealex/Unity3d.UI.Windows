@@ -61,7 +61,7 @@ namespace UnityEngine.UI.Windows {
 		public List<WindowBase> defaults = new List<WindowBase>();
 		public List<WindowBase> windows = new List<WindowBase>();
 		
-		[HideInInspector]
+		//[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 		
 		//[HideInInspector]
@@ -288,9 +288,15 @@ namespace UnityEngine.UI.Windows {
 
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
-			var imax = WindowSystem.instance.currentWindows.Count;
-			if (imax > 0) {
+			//var imax = WindowSystem.instance.currentWindows.Count;
+			//if (imax > 0) {
 
+			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => w != except), (window, wait) => {
+
+				if (window.Hide(wait) == false) wait.Invoke();
+
+			});
+				/*
 				WindowBase maxExcept = null;
 				var maxDuration = 0f;
 				foreach (var window in WindowSystem.instance.currentWindows) {
@@ -326,13 +332,13 @@ namespace UnityEngine.UI.Windows {
 
 					if (callback != null) callback();
 
-				}
+				}*/
 
-			} else {
+			/*} else {
 
 				if (callback != null) callback();
 
-			}
+			}*/
 
 			WindowSystem.ResetDepth();
 

@@ -21,7 +21,7 @@ public class UIWindowExampleAlertScreen : LayoutWindowType {
 		this.content = this.GetLayoutComponent<UIWindowExampleComponent>();
 		this.button = this.GetLayoutComponent<ButtonComponent>();
 
-		this.button.SetCallback(this.Hide);
+		this.button.SetCallback(() => this.Hide());
 		
 		this.content.SetText(this.text);
 

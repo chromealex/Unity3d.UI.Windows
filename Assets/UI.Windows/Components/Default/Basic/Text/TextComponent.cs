@@ -26,11 +26,11 @@ namespace UnityEngine.UI.Windows.Components {
 				break;
 				
 			case ValueFormat.WithSpace:
-				output = value.ToString("# ### ### ###").Trim();
+				output = value.ToString("# ### ### ##0").Trim();
 				break;
 				
 			case ValueFormat.WithComma:
-				output = value.ToString("#,### ### ###").Trim(',');
+				output = value.ToString("#,### ### ##0").Trim(',');
 				break;
 
 			}

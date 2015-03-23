@@ -230,15 +230,15 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public void Hide() {
+		public bool Hide() {
 			
-			this.Hide(null);
+			return this.Hide(null);
 			
 		}
 
-		public void Hide(System.Action onHideEnd) {
+		public bool Hide(System.Action onHideEnd) {
 
-			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return;
+			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
 			this.currentState = WindowObjectState.Hiding;
 			
 			var counter = 0;
@@ -271,7 +271,9 @@ namespace UnityEngine.UI.Windows {
 			this.transition.OnHideBegin(callback);
 			this.events.OnHideBegin(callback);
 			this.OnHideBegin(callback);
-			
+
+			return true;
+
 		}
 
 		public void OnDestroy() {

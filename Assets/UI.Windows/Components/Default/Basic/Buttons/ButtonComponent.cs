@@ -16,6 +16,20 @@ namespace UnityEngine.UI.Windows.Components {
 		private ComponentEvent callback = new ComponentEvent();
 		private ComponentEvent<ButtonComponent> callbackButton = new ComponentEvent<ButtonComponent>();
 
+		public void SetEnabledState(bool state) {
+
+			if (state == true) {
+
+				this.SetEnabled();
+
+			} else {
+
+				this.SetDisabled();
+
+			}
+
+		}
+
 		public void SetDisabled() {
 		
 			if (this.button != null) this.button.interactable = false;
@@ -91,7 +105,9 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.GetWindow().GetState() != WindowObjectState.Shown &&
 			    this.GetWindow().GetState() != WindowObjectState.Showing) {
 
-				Debug.Log("Can't send the click on " + this.GetWindow().GetState() + " state.");
+				#if UNITY_EDITOR
+				Debug.LogWarning("Can't send the click on " + this.GetWindow().GetState() + " state.");
+				#endif
 				return;
 
 			}
