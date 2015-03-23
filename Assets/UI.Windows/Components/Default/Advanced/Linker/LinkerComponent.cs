@@ -29,7 +29,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public void InitPool(int capacity) {
 			
-			this.prefab.CreatePool(capacity);
+			this.prefab.CreatePool(capacity, this.transform);
 			if (this.prefab is LinkerComponent) {
 				
 				(this.prefab as LinkerComponent).InitPool(capacity);

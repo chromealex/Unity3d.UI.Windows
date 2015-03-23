@@ -70,14 +70,6 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		public static List<DeviceInfo> p1440 = new List<DeviceInfo>();
 		public static Dictionary<string, List<DeviceInfo>> manufacturerToDevices = new Dictionary<string, List<DeviceInfo>>();
 
-		static Parser() {
-
-			//Parser.Parse_INTERNAL("720-800", Parser.p720, ParseDeviceResolutionType.PPI);
-			//Parser.Parse_INTERNAL("1080", Parser.p1080, ParseDeviceResolutionType.PPI);
-			//Parser.Parse_INTERNAL("1440", Parser.p1440, ParseDeviceResolutionType.PPI);
-
-		}
-
 		public static void Collect(bool forced = true) {
 
 			if (Parser.manufacturerToDevices.Count == 0 || forced == true) {
@@ -85,6 +77,10 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				Parser.manufacturerToDevices.Clear();
 
 				Parser.Parse_INTERNAL("Popular", Parser.popular, ParseDeviceResolutionType.INCHES);
+				
+				//Parser.Parse_INTERNAL("720-800", Parser.p720, ParseDeviceResolutionType.PPI);
+				//Parser.Parse_INTERNAL("1080", Parser.p1080, ParseDeviceResolutionType.PPI);
+				//Parser.Parse_INTERNAL("1440", Parser.p1440, ParseDeviceResolutionType.PPI);
 
 			}
 

@@ -2,10 +2,42 @@
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class TextComponent : WindowComponent {
+	public class TextComponent : WindowComponent, ITextComponent {
+
+		public enum ValueFormat : byte {
+
+			None,
+			WithSpace,	// 1,234
+			WithComma,	// 1 234
+
+		};
 
 		[SerializeField]
 		private Text text;
+
+		public void SetValue(int value, ValueFormat format = ValueFormat.None) {
+
+			var output = string.Empty;
+
+			switch (format) {
+				
+			case ValueFormat.None:
+				output = value.ToString();
+				break;
+				
+			case ValueFormat.WithSpace:
+				output = value.ToString("# ### ### ###").Trim();
+				break;
+				
+			case ValueFormat.WithComma:
+				output = value.ToString("#,### ### ###").Trim(',');
+				break;
+
+			}
+
+			this.SetText(output);
+
+		}
 
 		public string GetText() {
 

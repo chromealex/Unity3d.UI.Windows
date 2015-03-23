@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Extensions;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
@@ -222,7 +223,13 @@ namespace UnityEngine.UI.Windows {
 					if (this.tag != tag) return null;
 					
 				}
-				
+
+				if (this.instance is LinkerComponent) {
+
+					return (this.instance as LinkerComponent).Get<T>();
+
+				}
+
 				return this.instance as T;
 				
 			}

@@ -7,7 +7,7 @@ using UnityEngine.UI.Windows.Components;
 
 namespace UnityEditor.UI.Windows {
 
-	[CustomEditor(typeof(WindowComponent), true)]
+	//[CustomEditor(typeof(WindowComponent), true)]
 	public class WindowComponentEditor : Editor, IPreviewEditor {
 
 		public override bool HasPreviewGUI() {

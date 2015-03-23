@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UnityEditor.UI.Windows {
 	
-	[CustomEditor(typeof(WindowLayoutElement))]
+	//[CustomEditor(typeof(WindowLayoutElement))]
 	[CanEditMultipleObjects()]
 	public class WindowLayoutElementEditor : Editor {
 

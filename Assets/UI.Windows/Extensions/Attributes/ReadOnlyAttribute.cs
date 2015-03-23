@@ -29,23 +29,25 @@ public class ReadOnlyAttribute : PropertyAttribute {
 public class ReadOnlyDrawer : PropertyDrawer {
 
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-		
+
+		var h = EditorGUI.GetPropertyHeight(property, label, true) + 2f;
+
 		var attribute = this.attribute as ReadOnlyAttribute;
 		if (string.IsNullOrEmpty(attribute.header) == false) {
 
 			if (attribute.drawHeaderOnly == true) {
 
-				return 1f;
+				return h;
 
 			} else {
 
-				return 5f;
+				return h * 2f;
 
 			}
 
 		}
 
-		return EditorGUI.GetPropertyHeight(property, label, true);
+		return h;
 
 	}
 
@@ -61,14 +63,17 @@ public class ReadOnlyDrawer : PropertyDrawer {
 
 		} else {
 
+			var posHeader = position;
+			var posContent = new Rect(posHeader.x, posHeader.y + posHeader.height * 0.5f, posHeader.width, posHeader.height * 0.5f);
+
 			var oldValue = new GUIContent(label);
-			EditorGUILayout.LabelField(attribute.header, EditorStyles.boldLabel);
+			EditorGUI.LabelField(posHeader, attribute.header, EditorStyles.boldLabel);
 
 			if (attribute.drawHeaderOnly == false) {
 
 				var oldState = GUI.enabled;
 				GUI.enabled = false;
-				EditorGUILayout.PropertyField(property, oldValue, true);
+				EditorGUI.PropertyField(posContent, property, oldValue, true);
 				GUI.enabled = oldState;
 
 			}

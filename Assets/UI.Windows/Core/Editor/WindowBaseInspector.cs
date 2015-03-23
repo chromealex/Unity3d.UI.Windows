@@ -7,7 +7,7 @@ using System.Linq;
 namespace UnityEditor.UI.Windows {
 
 	[CanEditMultipleObjects()]
-	[CustomEditor(typeof(WindowBase), true)]
+	//[CustomEditor(typeof(WindowBase), true)]
 	public class WindowBaseInspector : Editor {
 
 		/*public override void OnInspectorGUI() {

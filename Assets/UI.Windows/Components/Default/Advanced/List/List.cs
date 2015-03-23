@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using System.Linq;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 namespace UnityEngine.UI.Windows.Components {
 	
@@ -27,7 +28,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void InitPool(int capacity) {
 
-			this.source.CreatePool(capacity);
+			this.source.CreatePool(capacity, this.transform);
 			if (this.source is LinkerComponent) {
 
 				(this.source as LinkerComponent).InitPool(capacity);
@@ -120,18 +121,42 @@ namespace UnityEngine.UI.Windows.Components {
 			});
 
 		}
-
+		
 		public virtual void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
+			
+			this.Clear();
+			
+			for (int i = 0; i < capacity; ++i) {
+				
+				var instance = this.AddItem<T>();
+				if (instance != null && onItem != null) onItem.Invoke(instance, i);
+				
+			}
+			
+		}
+		
+		public virtual void SetItemsAsync<T>(int capacity, UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
+
+			this.StopAllCoroutines();
+			this.StartCoroutine(this.SetItemsAsync_INTERNAL(capacity, onComplete, onItem));
+
+		}
+
+		private IEnumerator SetItemsAsync_INTERNAL<T>(int capacity, UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
 
 			this.Clear();
-
+			
 			for (int i = 0; i < capacity; ++i) {
 
 				var instance = this.AddItem<T>();
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 
+				yield return false;
+				
 			}
 
+			if (onComplete != null) onComplete.Invoke();
+			
 		}
 
 		public virtual void Clear() {
