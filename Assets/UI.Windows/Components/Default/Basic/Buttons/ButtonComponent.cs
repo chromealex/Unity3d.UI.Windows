@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI;
@@ -88,8 +88,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void OnClick() {
 
-			if (this.GetWindow().GetState() != WindowState.Shown &&
-			    this.GetWindow().GetState() != WindowState.Showing) {
+			if (this.GetWindow().GetState() != WindowObjectState.Shown &&
+			    this.GetWindow().GetState() != WindowObjectState.Showing) {
 
 				Debug.Log("Can't send the click on " + this.GetWindow().GetState() + " state.");
 				return;

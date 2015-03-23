@@ -42,7 +42,7 @@ namespace UnityEngine.UI.Windows {
 		void OnShowEnd();
 		void OnHideBegin(System.Action callback);
 		void OnHideEnd();
-		
+
 	}
 
 }

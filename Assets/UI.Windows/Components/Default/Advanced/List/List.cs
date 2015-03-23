@@ -48,10 +48,13 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.source == null) return default(T);
 
 			var instance = this.source.Spawn();
-			
-			this.list.Add(instance);
-			this.RegisterSubComponent(instance);
+			instance.Setup(this.GetLayoutRoot());
+			instance.Setup(this.GetWindow());
 
+			if (this.scrollRect != null && this.scrollRect.content != null) instance.SetParent(this.scrollRect.content, setTransformAsSource: false);
+
+			this.list.Add(instance);
+			
 			if (instance is LinkerComponent) {
 
 				instance.OnInit();
@@ -60,9 +63,8 @@ namespace UnityEngine.UI.Windows.Components {
 				instance = (instance as LinkerComponent).Get<WindowComponent>();
 
 			}
-			
-			instance.Setup(this.GetLayoutRoot());
-			instance.Setup(this.GetWindow());
+
+			this.RegisterSubComponent(instance);
 
 			instance.gameObject.SetActive(true);
 

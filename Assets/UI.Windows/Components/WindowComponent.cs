@@ -44,11 +44,66 @@ namespace UnityEngine.UI.Windows {
 		
 		public void RegisterSubComponent(WindowComponent subComponent) {
 
+			switch (this.GetWindow().GetState()) {
+				
+			case WindowObjectState.Initializing:
+				// after OnInit
+				subComponent.OnInit();
+				break;
+				
+			case WindowObjectState.Showing:
+				// after OnShowBegin
+				subComponent.OnInit();
+				subComponent.OnShowBegin(null);
+				break;
+				
+			case WindowObjectState.Shown:
+				// after OnShowEnd
+				subComponent.OnInit();
+				subComponent.OnShowBegin(() => {
+
+					subComponent.OnShowEnd();
+
+				});
+
+				break;
+				
+			}
+
 			if (this.subComponents.Contains(subComponent) == false) this.subComponents.Add(subComponent);
 			
 		}
 		
 		public void UnregisterSubComponent(WindowComponent subComponent) {
+			
+			switch (this.GetWindow().GetState()) {
+				
+			case WindowObjectState.Shown:
+				// after OnShowEnd
+				subComponent.OnHideBegin(() => {
+					
+					subComponent.OnHideEnd();
+					subComponent.OnDeinit();
+
+				});
+				break;
+				
+			case WindowObjectState.Hiding:
+				// after OnHideBegin
+				subComponent.OnHideBegin(null);
+				break;
+				
+			case WindowObjectState.Hiden:
+				// after OnHideEnd
+				subComponent.OnHideBegin(() => {
+					
+					subComponent.OnHideEnd();
+					subComponent.OnDeinit();
+					
+				});
+				break;
+				
+			}
 
 			this.subComponents.Remove(subComponent);
 			

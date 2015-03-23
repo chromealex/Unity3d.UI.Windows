@@ -15,6 +15,14 @@ namespace UnityEngine.UI.Windows {
 		public CanvasGroup canvas;
 		[HideInInspector]
 		public bool animationRefresh = false;
+		
+		private WindowObjectState currentState = WindowObjectState.NotInitialized;
+		
+		public WindowObjectState GetComponentState() {
+			
+			return this.currentState;
+			
+		}
 
 		public void Show(bool resetAnimation = true) {
 			
@@ -82,8 +90,10 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		protected virtual void OnShowBegin(System.Action callback, bool resetAnimation) {
+		private void OnShowBegin(System.Action callback, bool resetAnimation) {
 
+			this.currentState = WindowObjectState.Showing;
+			
 			if (this.animation != null) {
 				
 				if (resetAnimation == true) this.SetResetState();
@@ -103,7 +113,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		protected virtual void OnHideBegin(System.Action callback, bool immediately) {
+		private void OnHideBegin(System.Action callback, bool immediately) {
+
+			this.currentState = WindowObjectState.Hiding;
 
 			if (this.animation != null) {
 
@@ -126,11 +138,30 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public virtual void OnInit() {}
-		public virtual void OnDeinit() {}
-		public virtual void OnShowEnd() {}
-		public virtual void OnHideEnd() {}
-		
+		public virtual void OnInit() {
+
+			this.currentState = WindowObjectState.Initialized;
+
+		}
+
+		public virtual void OnDeinit() {
+
+			this.currentState = WindowObjectState.NotInitialized;
+
+		}
+
+		public virtual void OnShowEnd() {
+
+			this.currentState = WindowObjectState.Shown;
+
+		}
+
+		public virtual void OnHideEnd() {
+
+			this.currentState = WindowObjectState.Hiden;
+
+		}
+
 		#if UNITY_EDITOR
 		public void OnValidate() {
 

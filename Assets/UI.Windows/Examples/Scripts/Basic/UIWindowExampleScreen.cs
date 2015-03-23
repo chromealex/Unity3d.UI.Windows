@@ -14,13 +14,6 @@ public class UIWindowExampleScreen : LayoutWindowType {
 
 		this.closeOnButtonPress = closeOnButtonPress;
 
-		if (this.closeOnButtonPress == true) {
-			
-			this.contentComponent.SetText("This is the second instance of UIWindowExampleScreen. Look for this behaviour in UIWindowExampleScreen->OnInit() method.");
-			this.button.SetTextToTip("<b>Click here to close current instance.</b>\nYou can simply edit this text or pass it from the code. See UIWindowExampleTip and UIWindowExampleScreen.");
-
-		}
-
 	}
 
 	public override void OnInit() {
@@ -34,6 +27,13 @@ public class UIWindowExampleScreen : LayoutWindowType {
 		this.button.SetCallback(this.OnClick);
 
 		this.button.SetTextToTip("<b>Click here to open new instance.</b>\nYou can simply edit this text or pass it from the code. See UIWindowExampleTip and UIWindowExampleScreen.");
+		
+		if (this.closeOnButtonPress == true) {
+			
+			this.contentComponent.SetText("This is the second instance of UIWindowExampleScreen. Look for this behaviour in UIWindowExampleScreen->OnInit() method.");
+			this.button.SetTextToTip("<b>Click here to close current instance.</b>\nYou can simply edit this text or pass it from the code. See UIWindowExampleTip and UIWindowExampleScreen.");
+			
+		}
 
 	}
 

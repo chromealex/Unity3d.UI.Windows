@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.Extensions;
+using System.Reflection;
+using System.Text;
 
 namespace UnityEngine.UI.Windows {
 
@@ -196,7 +198,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (window == current) break;
 
-				if (window.GetState() == WindowState.Shown) {
+				if (window.GetState() == WindowObjectState.Shown) {
 
 					prev = window;
 
@@ -424,6 +426,80 @@ namespace UnityEngine.UI.Windows {
 			
 			return depth;
 
+		}
+		
+		private Dictionary<string, MethodInfo> methodsCache = new Dictionary<string, MethodInfo>();
+		internal static bool InvokeMethodWithParameters(out MethodInfo methodInfo, WindowBase window, string methodName, params object[] inputParameters) {
+
+			var instance = WindowSystem.instance;
+			
+			const string comma = ",";
+			var key = new StringBuilder();
+			
+			foreach (var input in inputParameters) {
+				
+				key.Append(input.GetType().Name);
+				key.Append(comma);
+				
+			}
+			
+			key.Append(methodName);
+			key.Append(comma);
+			key.Append(window.GetType().Name);
+			
+			var keyStr = key.ToString();
+
+			if (instance.methodsCache.TryGetValue(keyStr, out methodInfo) == false) {
+				
+				instance.methodsCache.Clear();
+				
+				var methods = window.GetType().GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+				foreach (var method in methods) {
+					
+					if (method.Name == methodName) {
+						
+						var count = 0;
+						var parameters = method.GetParameters();
+						
+						if (inputParameters.Length != parameters.Length) continue;
+						
+						for (int i = 0; i < parameters.Length; ++i) {
+							
+							var parameter = parameters[i];
+							var par = inputParameters[i];
+							
+							var equal = (parameter.ParameterType == par.GetType());
+							if (equal == true) {
+								
+								++count;
+								
+							}
+							
+						}
+						
+						if (count == parameters.Length) {
+							
+							// Invoke and break
+							methodInfo = method;
+							
+							instance.methodsCache.Add(keyStr, methodInfo);
+							
+							return true;
+							
+						}
+						
+					}
+					
+				}
+				
+			} else {
+				
+				return true;
+				
+			}
+			
+			return false;
+			
 		}
 
 	}

@@ -8,9 +8,11 @@ public class UIWindowExampleAlertScreen : LayoutWindowType {
 	private ButtonComponent button;
 	private UIWindowExampleComponent content;
 
+	private string text;
+
 	public void OnParametersPass(string text) {
 
-		this.content.SetText(text);
+		this.text = text;
 
 	}
 
@@ -20,6 +22,8 @@ public class UIWindowExampleAlertScreen : LayoutWindowType {
 		this.button = this.GetLayoutComponent<ButtonComponent>();
 
 		this.button.SetCallback(this.Hide);
+		
+		this.content.SetText(this.text);
 
 	}
 

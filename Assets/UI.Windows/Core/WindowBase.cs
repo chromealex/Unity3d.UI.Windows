@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
-	public enum WindowState : byte {
+	public enum WindowObjectState : byte {
 
 		NotInitialized = 0,
 		Initializing,
@@ -16,7 +16,7 @@ namespace UnityEngine.UI.Windows {
 		Shown,
 
 		Hiding,
-		Hided,
+		Hiden,
 
 	}
 
@@ -41,15 +41,15 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		private object[] parameters;
 
-		private WindowState currentState = WindowState.NotInitialized;
+		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 
 		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer) {
 			
-			this.currentState = WindowState.Initializing;
+			this.currentState = WindowObjectState.Initializing;
 
 			if (this.initialized == false) {
 				
-				this.currentState = WindowState.NotInitialized;
+				this.currentState = WindowObjectState.NotInitialized;
 
 				Debug.LogError("Can't initialize window instance because of some components was not installed properly.");
 				return;
@@ -62,6 +62,27 @@ namespace UnityEngine.UI.Windows {
 
 			this.workCamera.depth = depth;
 			if (this.preferences.dontDestroyOnLoad == true) GameObject.DontDestroyOnLoad(this.gameObject);
+			
+			if (this.passParams == true) {
+
+				System.Reflection.MethodInfo methodInfo;
+				if (WindowSystem.InvokeMethodWithParameters(out methodInfo, this, "OnParametersPass", this.parameters) == true) {
+
+					// Success
+					methodInfo.Invoke(this, this.parameters);
+
+				} else {
+
+					// Method not found
+					Debug.LogWarning("Method `OnParametersPass` was not found with input parameters.");
+
+				}
+
+			} else {
+				
+				this.OnEmptyPass();
+				
+			}
 
 			if (this.setup == false) {
 				
@@ -75,26 +96,11 @@ namespace UnityEngine.UI.Windows {
 				this.setup = true;
 
 			}
-			
-			if (this.passParams == true) {
-				
-				var method = this.GetType().GetMethod("OnParametersPass");
-				if (method != null) {
-					
-					method.Invoke(this, this.parameters);
-					
-				}
-				
-			} else {
-				
-				this.OnEmptyPass();
-				
-			}
-			
-			this.currentState = WindowState.Initialized;
+
+			this.currentState = WindowObjectState.Initialized;
 
 		}
-		
+
 		internal void SetParameters(params object[] parameters) {
 
 			if (parameters != null && parameters.Length > 0) {
@@ -110,7 +116,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public WindowState GetState() {
+		public WindowObjectState GetState() {
 			
 			return this.currentState;
 			
@@ -191,15 +197,15 @@ namespace UnityEngine.UI.Windows {
 
 		public void Show() {
 			
-			if (this.currentState == WindowState.Showing || this.currentState == WindowState.Shown) return;
-			this.currentState = WindowState.Showing;
+			if (this.currentState == WindowObjectState.Showing || this.currentState == WindowObjectState.Shown) return;
+			this.currentState = WindowObjectState.Showing;
 			
 			WindowSystem.AddToHistory(this);
 
 			var counter = 0;
 			System.Action callback = () => {
 
-				if (this.currentState != WindowState.Showing) return;
+				if (this.currentState != WindowObjectState.Showing) return;
 
 				++counter;
 				if (counter < 5) return;
@@ -210,7 +216,7 @@ namespace UnityEngine.UI.Windows {
 				this.events.OnShowEnd();
 				this.transition.OnShowEnd();
 
-			    this.currentState = WindowState.Shown;
+			    this.currentState = WindowObjectState.Shown;
 
 			};
 
@@ -232,13 +238,13 @@ namespace UnityEngine.UI.Windows {
 
 		public void Hide(System.Action onHideEnd) {
 
-			if (this.currentState == WindowState.Hided || this.currentState == WindowState.Hiding) return;
-			this.currentState = WindowState.Hiding;
+			if (this.currentState == WindowObjectState.Hiden || this.currentState == WindowObjectState.Hiding) return;
+			this.currentState = WindowObjectState.Hiding;
 			
 			var counter = 0;
 			System.Action callback = () => {
 				
-				if (this.currentState != WindowState.Hiding) return;
+				if (this.currentState != WindowObjectState.Hiding) return;
 
 				++counter;
 				if (counter < 5) return;
@@ -256,7 +262,7 @@ namespace UnityEngine.UI.Windows {
 				
 				this.events.Clear();
 						
-				this.currentState = WindowState.Hided;
+				this.currentState = WindowObjectState.Hiden;
 
 			};
 
@@ -297,6 +303,7 @@ namespace UnityEngine.UI.Windows {
 		protected virtual void OnLayoutHideBegin(System.Action callback) { if (callback != null) callback(); }
 		protected virtual void OnLayoutHideEnd() {}
 
+		public virtual void OnParametersPass() {}
 		public virtual void OnEmptyPass() {}
 		public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
