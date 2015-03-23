@@ -91,17 +91,25 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private void OnShowBegin(System.Action callback, bool resetAnimation) {
+			
+			System.Action callbackInner = () => {
+				
+				this.currentState = WindowObjectState.Shown;
+				
+				if (callback != null) callback();
+				
+			};
 
 			this.currentState = WindowObjectState.Showing;
 			
 			if (this.animation != null) {
 				
 				if (resetAnimation == true) this.SetResetState();
-				this.animation.Play(this.animationInputParams, this, true, callback);
+				this.animation.Play(this.animationInputParams, this, true, callbackInner);
 				
 			} else {
 				
-				if (callback != null) callback();
+				callbackInner();
 				
 			}
 			
@@ -115,6 +123,14 @@ namespace UnityEngine.UI.Windows {
 
 		private void OnHideBegin(System.Action callback, bool immediately) {
 
+			System.Action callbackInner = () => {
+				
+				this.currentState = WindowObjectState.Hidden;
+
+				if (callback != null) callback();
+
+			};
+			
 			this.currentState = WindowObjectState.Hiding;
 
 			if (this.animation != null) {
@@ -126,13 +142,13 @@ namespace UnityEngine.UI.Windows {
 
 				} else {
 
-					this.animation.Play(this.animationInputParams, this, false, callback);
+					this.animation.Play(this.animationInputParams, this, false, callbackInner);
 
 				}
 
 			} else {
 
-				if (callback != null) callback();
+				callbackInner();
 				
 			}
 			
@@ -150,17 +166,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public virtual void OnShowEnd() {
+		public virtual void OnShowEnd() {}
 
-			this.currentState = WindowObjectState.Shown;
-
-		}
-
-		public virtual void OnHideEnd() {
-
-			this.currentState = WindowObjectState.Hiden;
-
-		}
+		public virtual void OnHideEnd() {}
 
 		#if UNITY_EDITOR
 		public void OnValidate() {

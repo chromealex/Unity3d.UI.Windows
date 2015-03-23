@@ -16,7 +16,7 @@ namespace UnityEngine.UI.Windows {
 		Shown,
 
 		Hiding,
-		Hiden,
+		Hidden,
 
 	}
 
@@ -238,7 +238,7 @@ namespace UnityEngine.UI.Windows {
 
 		public void Hide(System.Action onHideEnd) {
 
-			if (this.currentState == WindowObjectState.Hiden || this.currentState == WindowObjectState.Hiding) return;
+			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return;
 			this.currentState = WindowObjectState.Hiding;
 			
 			var counter = 0;
@@ -262,7 +262,7 @@ namespace UnityEngine.UI.Windows {
 				
 				this.events.Clear();
 						
-				this.currentState = WindowObjectState.Hiden;
+				this.currentState = WindowObjectState.Hidden;
 
 			};
 

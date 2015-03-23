@@ -93,7 +93,7 @@ namespace UnityEngine.UI.Windows {
 				subComponent.OnHideBegin(null);
 				break;
 				
-			case WindowObjectState.Hiden:
+			case WindowObjectState.Hidden:
 				// after OnHideEnd
 				subComponent.OnHideBegin(() => {
 					
