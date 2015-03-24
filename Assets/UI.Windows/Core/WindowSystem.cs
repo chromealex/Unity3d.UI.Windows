@@ -11,6 +11,21 @@ namespace UnityEngine.UI.Windows {
 	public class WindowSystem : MonoBehaviour {
 
 		[System.Serializable]
+		public class HistoryItem {
+
+			public WindowBase window;
+			public WindowObjectState state;
+
+			public HistoryItem(WindowBase window) {
+
+				this.state = window.GetState();
+				this.window = window;
+
+			}
+
+		}
+
+		[System.Serializable]
 		public class Settings {
 
 			public WindowSystemSettings file;
@@ -61,11 +76,11 @@ namespace UnityEngine.UI.Windows {
 		public List<WindowBase> defaults = new List<WindowBase>();
 		public List<WindowBase> windows = new List<WindowBase>();
 		
-		//[HideInInspector]
+		[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 		
 		//[HideInInspector]
-		public List<WindowBase> history = new List<WindowBase>();
+		public List<HistoryItem> history = new List<HistoryItem>();
 
 		[HideInInspector]
 		private float depthStep;
@@ -181,26 +196,26 @@ namespace UnityEngine.UI.Windows {
 
 		public static void AddToHistory(WindowBase window) {
 
-			WindowSystem.instance.history.Add(window);
+			WindowSystem.instance.history.Add(new HistoryItem(window));
 
 		}
 
-		public static void RemoveFromHistory(WindowBase window) {
+		public static void RefreshHistory() {
 
-			WindowSystem.instance.history.Remove(window);
+			WindowSystem.instance.history.RemoveAll((item) => item.window == null);
 
 		}
 
 		public static WindowBase GetPreviousWindow(WindowBase current) {
 
 			WindowBase prev = null;
-			foreach (var window in WindowSystem.instance.history) {
+			foreach (var item in WindowSystem.instance.history) {
 
-				if (window == current) break;
+				if (item.window == current) break;
 
-				if (window.GetState() == WindowObjectState.Shown) {
+				if (item.window.GetState() == WindowObjectState.Shown) {
 
-					prev = window;
+					prev = item.window;
 
 				}
 
@@ -251,11 +266,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void HideAllAndClean(WindowBase except = null) {
+		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null) {
 
 			WindowSystem.HideAll(except, () => {
 
 				WindowSystem.Clean(except);
+
+				if (callback != null) callback();
 
 			});
 
@@ -270,6 +287,7 @@ namespace UnityEngine.UI.Windows {
 					if (except == null || window != except) {
 
 						WindowBase.DestroyImmediate(window.gameObject);
+						//WindowBase.Destroy(window.gameObject);
 						return true;
 
 					}
@@ -282,63 +300,19 @@ namespace UnityEngine.UI.Windows {
 				
 			});
 
+			WindowSystem.RefreshHistory();
+
 		}
 
 		public static void HideAll(WindowBase except = null, System.Action callback = null) {
 
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
-			//var imax = WindowSystem.instance.currentWindows.Count;
-			//if (imax > 0) {
-
 			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => w != except), (window, wait) => {
 
 				if (window.Hide(wait) == false) wait.Invoke();
 
 			});
-				/*
-				WindowBase maxExcept = null;
-				var maxDuration = 0f;
-				foreach (var window in WindowSystem.instance.currentWindows) {
-
-					if (except == window) continue;
-
-					var d = window.GetAnimationDuration(false);
-					if (d >= maxDuration) {
-
-						maxDuration = d;
-						maxExcept = window;
-
-					}
-
-				}
-
-				for (int i = 0; i < imax; ++i) {
-
-					if ((except == null || WindowSystem.instance.currentWindows[i] != except) &&
-					    (maxExcept == null || WindowSystem.instance.currentWindows[i] != maxExcept)) {
-
-						WindowSystem.instance.currentWindows[i].Hide();
-
-					}
-
-				}
-
-				if (maxExcept != null) {
-
-					maxExcept.Hide(callback);
-
-				} else {
-
-					if (callback != null) callback();
-
-				}*/
-
-			/*} else {
-
-				if (callback != null) callback();
-
-			}*/
 
 			WindowSystem.ResetDepth();
 

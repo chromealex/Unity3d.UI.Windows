@@ -107,7 +107,7 @@ namespace UnityEngine.UI.Windows {
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 			
-			root.canvas.alpha = param.GetIn();
+			if (root != null && root.canvas != null) root.canvas.alpha = param.GetIn();
 			
 		}
 		
@@ -118,7 +118,7 @@ namespace UnityEngine.UI.Windows {
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 
-			root.canvas.alpha = param.GetOut();
+			if (root != null && root.canvas != null) root.canvas.alpha = param.GetOut();
 
 		}
 		
@@ -129,7 +129,7 @@ namespace UnityEngine.UI.Windows {
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 			
-			root.canvas.alpha = param.GetReset();
+			if (root != null && root.canvas != null) root.canvas.alpha = param.GetReset();
 			
 		}
 

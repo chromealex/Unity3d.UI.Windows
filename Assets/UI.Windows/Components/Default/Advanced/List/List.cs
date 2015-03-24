@@ -55,16 +55,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.list.Add(instance);
 			
+			this.RegisterSubComponent(instance);
+
 			if (instance is LinkerComponent) {
 
-				instance.OnInit();
+				//instance.OnInit();
 				instance.gameObject.SetActive(true);
 
 				instance = (instance as LinkerComponent).Get<WindowComponent>();
 
 			}
-
-			this.RegisterSubComponent(instance);
 
 			instance.gameObject.SetActive(true);
 
@@ -138,6 +138,8 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 		
 		public virtual void SetItemsAsync<T>(int capacity, UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
+			
+			this.Clear();
 
 			this.StopAllCoroutines();
 			this.StartCoroutine(this.SetItemsAsync_INTERNAL(capacity, onComplete, onItem));
@@ -146,8 +148,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private IEnumerator SetItemsAsync_INTERNAL<T>(int capacity, UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
 
-			this.Clear();
-			
 			for (int i = 0; i < capacity; ++i) {
 
 				var instance = this.AddItem<T>();
@@ -162,7 +162,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public virtual void Clear() {
-			
+
+			this.StopAllCoroutines();
+
 			foreach (var element in this.list) {
 
 				this.UnregisterSubComponent(element);
@@ -172,6 +174,14 @@ namespace UnityEngine.UI.Windows.Components {
 			this.list.Clear();
 
 			this.Refresh();
+
+		}
+
+		public override void OnHideBegin(System.Action callback) {
+			
+			this.Clear();
+
+			base.OnHideBegin(callback);
 
 		}
 

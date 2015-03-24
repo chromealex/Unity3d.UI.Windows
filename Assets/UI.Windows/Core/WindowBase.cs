@@ -249,7 +249,7 @@ namespace UnityEngine.UI.Windows {
 				++counter;
 				if (counter < 5) return;
 				
-				WindowSystem.RemoveFromHistory(this);
+				WindowSystem.AddToHistory(this);
 
 				this.Recycle();
 				
