@@ -84,6 +84,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public void SetStep(float minValue, float maxValue, bool roundToInt) {
+
+			this.bar.minValue = minValue;
+			this.bar.maxValue = maxValue;
+			this.bar.wholeNumbers = roundToInt;
+
+		}
+
 		public void SetAsContinuous(float width = 0.4f) {
 			
 			this.bar.continuous = true;
@@ -163,8 +171,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (immediately == false && this.duration > 0f) {
 
+					var currentValueNormalized = this.bar.normalizedValue;
+
 					TweenerGlobal.instance.removeTweens(this.bar);
-					TweenerGlobal.instance.addTween(this.bar, this.duration, this.currentValue, value).onUpdate((obj, val) => {
+					TweenerGlobal.instance.addTween(this.bar, this.duration, currentValueNormalized, value).onUpdate((obj, val) => {
 
 						if (obj != null) {
 
@@ -187,7 +197,7 @@ namespace UnityEngine.UI.Windows.Components {
 		private void SetValue_INTERNAL(float value) {
 			
 			this.currentValue = value;
-			this.bar.value = value;
+			this.bar.normalizedValue = value;
 
 			if (this.continious == false) {
 
@@ -203,6 +213,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public float GetValueNormalized() {
+			
+			return (this.bar != null) ? this.bar.normalizedValue : 0f;
+
+		}
+
 		#if UNITY_EDITOR
 		public override void OnValidateEditor() {
 
@@ -210,13 +226,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 			ME.Utilities.FindReference<Extensions.Slider>(this, ref this.bar);
 
-			if (this.bar != null) {
+			/*if (this.bar != null) {
 				
 				this.bar.minValue = 0f;
 				this.bar.maxValue = 1f;
 				this.bar.wholeNumbers = false;
 				
-			}
+			}*/
 
 		}
 		#endif

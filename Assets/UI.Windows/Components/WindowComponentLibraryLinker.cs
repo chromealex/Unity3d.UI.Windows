@@ -95,8 +95,8 @@ namespace UnityEngine.UI.Windows {
 			var splitted = path.Split('/');
 			var folder = string.Join("/", splitted, 0, splitted.Length - 1);
 
-			var linkers = ME.EditorUtilities.GetAssetsOfType<WindowComponentLibraryLinker>(directory: folder);
-			var prefabs = ME.EditorUtilities.GetPrefabsOfType<WindowComponent>(strongType: false, directory: folder).ToList();
+			var linkers = ME.EditorUtilities.GetAssetsOfType<WindowComponentLibraryLinker>(directory: folder, useCache: false);
+			var prefabs = ME.EditorUtilities.GetPrefabsOfType<WindowComponent>(strongType: false, directory: folder, useCache: false).ToList();
 
 			foreach (var linker in linkers) {
 

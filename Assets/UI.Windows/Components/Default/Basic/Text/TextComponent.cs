@@ -6,9 +6,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public enum ValueFormat : byte {
 
-			None,
-			WithSpace,	// 1,234
-			WithComma,	// 1 234
+			None,		// 1234567890
+			WithSpace,	// 1,234 567 890
+			WithComma,	// 1 234 567 890
 
 		};
 
@@ -49,6 +49,18 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.text != null) this.text.text = text;
 
+		}
+		
+		public void SetColor(Color color) {
+			
+			this.text.color = color;
+			
+		}
+		
+		public Color GetColor() {
+			
+			return this.text.color;
+			
 		}
 
 		#if UNITY_EDITOR

@@ -269,19 +269,27 @@ namespace UnityEngine.Extensions {
 
 	public static class TransformExtensions {
 		
-		public static void SetParent<T1, T2>(this T1 instance, T2 source, bool setTransformAsSource = true) where T1 : Component where T2 : Component {
+		public static void SetParent<T1, T2>(this T1 instance, T2 source, bool setTransformAsSource = true, bool worldPositionStays = true) where T1 : Component where T2 : Component {
 			
 			if (source != null) {
 
-				instance.transform.SetParent(source.transform);
+				instance.transform.SetParent(source.transform, worldPositionStays);
 
 			} else {
 
-				instance.transform.SetParent(null);
+				instance.transform.SetParent(null, worldPositionStays);
 
 			}
 
-			if (setTransformAsSource == true) instance.SetTransformAs(source);
+			if (setTransformAsSource == true) {
+
+				instance.SetTransformAs(source);
+
+			}/* else {
+
+				instance.SetTransformAs();
+
+			}*/
 
 		}
 

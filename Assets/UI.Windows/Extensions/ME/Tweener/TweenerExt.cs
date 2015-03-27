@@ -1,12 +1,35 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class TweenerExt
 {
+	public static ME.Tweener.Tween<RectTransform> addTweenAnchoredPosition(this ME.Tweener tweener, RectTransform rect, float duration, Vector2 end)
+	{
+		return tweener.addTweenAnchoredPosition(rect, duration, rect.anchoredPosition, end);
+	}
+	
+	public static ME.Tweener.Tween<RectTransform> addTweenAnchoredPosition(this ME.Tweener tweener, RectTransform rect, float duration, Vector2 start, Vector2 end)
+	{
+		return tweener.addTween(rect, duration, 0f, 1f)
+			.onUpdate((c, t) => { if (c != null) c.anchoredPosition = Vector2.Lerp(start, end, t); });
+	}
+	
+	public static ME.Tweener.Tween<Image> addTweenAlpha(this ME.Tweener tweener, Image image, float duration, float end)
+	{
+		return tweener.addTweenAlpha(image, duration, image != null ? image.color.a : 0f, end);
+	}
+	
+	public static ME.Tweener.Tween<Image> addTweenAlpha(this ME.Tweener tweener, Image image, float duration, float start, float end)
+	{
+		return tweener.addTween(image, duration, start, end)
+			.onUpdate((c, t) => { if (c != null) c.color = new Color(c.color.r, c.color.g, c.color.b, t); });
+	}
+	
 	public static ME.Tweener.Tween<CanvasGroup> addTweenAlpha(this ME.Tweener tweener, CanvasGroup canvasGroup, float duration, float end)
 	{
 		return tweener.addTweenAlpha(canvasGroup, duration, canvasGroup != null ? canvasGroup.alpha : 0f, end);
 	}
-
+	
 	public static ME.Tweener.Tween<CanvasGroup> addTweenAlpha(this ME.Tweener tweener, CanvasGroup canvasGroup, float duration, float start, float end)
 	{
 		return tweener.addTween(canvasGroup, duration, start, end)

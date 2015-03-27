@@ -38,12 +38,15 @@ namespace ME {
 
 			var count = collection.Count();
 
+			var completed = false;
 			var counter = 0;
 			System.Action callbackItem = () => {
 				
 				++counter;
 				if (counter < count) return;
-				
+
+				completed = true;
+
 				if (callback != null) callback();
 				
 			};
@@ -60,6 +63,8 @@ namespace ME {
 					callbackItem();
 
 				}
+
+				if (completed == true) break;
 
 			}
 

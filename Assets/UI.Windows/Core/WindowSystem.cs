@@ -265,57 +265,107 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.instance.currentZDepth = WindowSystem.instance.settings.minZDepth;
 
 		}
-
+		
 		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null) {
-
+			
 			WindowSystem.HideAll(except, () => {
-
+				
 				WindowSystem.Clean(except);
-
+				
 				if (callback != null) callback();
-
+				
 			});
-
+			
+		}
+		
+		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null) {
+			
+			WindowSystem.HideAll(except, () => {
+				
+				WindowSystem.Clean(except);
+				
+				if (callback != null) callback();
+				
+			});
+			
 		}
 
 		public static void Clean(WindowBase except = null) {
-
+			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
-
+				
 				if (window != null) {
-
+					
 					if (except == null || window != except) {
-
+						
 						WindowBase.DestroyImmediate(window.gameObject);
-						//WindowBase.Destroy(window.gameObject);
 						return true;
-
+						
 					}
-
+					
 					return false;
-
+					
 				}
-
+				
 				return true;
 				
 			});
-
+			
 			WindowSystem.RefreshHistory();
-
+			
+		}
+		
+		public static void Clean(List<WindowBase> except) {
+			
+			WindowSystem.instance.currentWindows.RemoveAll((window) => {
+				
+				if (window != null) {
+					
+					if (except == null || !except.Contains(window)) {
+						
+						WindowBase.DestroyImmediate(window.gameObject);
+						return true;
+						
+					}
+					
+					return false;
+					
+				}
+				
+				return true;
+				
+			});
+			
+			WindowSystem.RefreshHistory();
+			
 		}
 
 		public static void HideAll(WindowBase except = null, System.Action callback = null) {
-
+			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
-
-			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => w != except), (window, wait) => {
-
+			
+			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => except == null || w != except), (window, wait) => {
+				
 				if (window.Hide(wait) == false) wait.Invoke();
-
+				
 			});
-
+			
 			WindowSystem.ResetDepth();
-
+			
+		}
+		
+		public static void HideAll(List<WindowBase> except, System.Action callback) {
+			
+			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
+			
+			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => except == null || !except.Contains(w)), (window, wait) => {
+				
+				if (window.Hide(wait) == false) wait.Invoke();
+				
+			});
+			
+			WindowSystem.ResetDepth();
+			
 		}
 
 		public static T Create<T>(params object[] parameters) where T : WindowBase {

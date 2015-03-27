@@ -131,58 +131,67 @@ namespace ME {
 
 		}
 		
-		public static T[] GetPrefabsOfType<T>(bool strongType = true, string directory = null) where T : Component {
+		public static T[] GetPrefabsOfType<T>(bool strongType = true, string directory = null, bool useCache = true) where T : Component {
 			
-			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory).Cast<T>().ToArray();
+			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory, useCache).Cast<T>().ToArray();
 			
 		}
 
-		public static Component[] GetPrefabsOfTypeRaw<T>(bool strongType, string directory = null) where T : Component {
+		public static Component[] GetPrefabsOfTypeRaw<T>(bool strongType, string directory = null, bool useCache = true) where T : Component {
 			
-			return ME.Utilities.CacheComponentsArray<T>(() => {
-
+			System.Func<T[]> action = () => {
+				
 				var folder = (directory == null) ? null : new string[] { directory };
-
+				
 				var objects = AssetDatabase.FindAssets("t:GameObject", folder);
-
+				
 				var output = new List<T>();
 				foreach (var obj in objects) {
-
+					
 					if (obj == null) continue;
-
+					
 					var path = AssetDatabase.GUIDToAssetPath(obj);
 					if (path == null) continue;
-
+					
 					var file = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
 					if (file == null) continue;
-
+					
 					var comp = file.GetComponent<T>();
 					if (comp == null) continue;
-
+					
 					if (strongType == true && comp.GetType().Name != typeof(T).Name) continue;
-
+					
 					output.Add(comp);
-
+					
 				}
-
+				
 				return output.ToArray();
 
-			}, strongType, directory);
+			};
+
+			if (useCache == true) {
+
+				return ME.Utilities.CacheComponentsArray<T>(action, strongType, directory);
+
+			}
+
+			return action();
 
 		}
 		
-		public static T[] GetAssetsOfType<T>(string directory = null, System.Func<T, bool> predicate = null) where T : ScriptableObject {
+		public static T[] GetAssetsOfType<T>(string directory = null, System.Func<T, bool> predicate = null, bool useCache = true) where T : ScriptableObject {
 
-			return ME.EditorUtilities.GetAssetsOfTypeRaw<T>(directory, (p) => { if (predicate != null && p is T) { return predicate(p as T); } else { return true; } } ).Cast<T>().ToArray();
+			return ME.EditorUtilities.GetAssetsOfTypeRaw<T>(directory, (p) => { if (predicate != null && p is T) { return predicate(p as T); } else { return true; } }, useCache).Cast<T>().ToArray();
 
 		}
 
-		public static ScriptableObject[] GetAssetsOfTypeRaw<T>(string directory = null, System.Func<ScriptableObject, bool> predicate = null) where T : ScriptableObject {
+		public static ScriptableObject[] GetAssetsOfTypeRaw<T>(string directory = null, System.Func<ScriptableObject, bool> predicate = null, bool useCache = true) where T : ScriptableObject {
 
-			return ME.Utilities.CacheAssetsArray<T>(() => {
-				
+			System.Func<T[]> action = () => {
+
 				var folder = (directory == null) ? null : new string[] { directory };
 
+				AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 				var objects = AssetDatabase.FindAssets("t:ScriptableObject", folder);
 				
 				var output = new List<T>();
@@ -192,22 +201,30 @@ namespace ME {
 					
 					var path = AssetDatabase.GUIDToAssetPath(obj);
 					if (path == null) continue;
-
+					
 					var file = AssetDatabase.LoadAssetAtPath(path, typeof(ScriptableObject)) as ScriptableObject;
 					if (file == null) continue;
-
+					
 					var comp = file as T;
 					if (comp == null) continue;
-
+					
 					if (predicate != null && predicate(comp) == false) continue;
-
+					
 					output.Add(comp);
 
 				}
 				
 				return output.ToArray();
+				
+			};
 
-			}, directory);
+			if (useCache == true) {
+
+				return ME.Utilities.CacheAssetsArray<T>(action, directory);
+
+			}
+
+			return action();
 
 		}
 
