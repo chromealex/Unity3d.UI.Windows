@@ -27,6 +27,12 @@ public class UIWindowExampleComponents : LayoutWindowType {
 
 		}
 
+	}
+
+	public override void OnShowBegin(System.Action callback) {
+
+		base.OnShowBegin(callback);
+		
 		this.tabs.Load(0, immediately: true);
 
 	}
