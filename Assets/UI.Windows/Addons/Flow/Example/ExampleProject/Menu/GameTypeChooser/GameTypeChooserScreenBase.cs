@@ -13,12 +13,12 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 		
 		/// <summary>
 		/// Flows to the Shop.
-		/// Full Name: ExampleProject.UI.Menu.Shop.Shop.ShopScreen
+		/// Full Name: ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen
 		/// </summary>
 		/// <returns>Shop</returns>
-		public virtual ExampleProject.UI.Menu.Shop.Shop.ShopScreen FlowShop() {
+		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowShop(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.Shop.Shop.ShopScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
 			
 		}
 				
@@ -27,9 +27,9 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 		/// Full Name: ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen
 		/// </summary>
 		/// <returns>GameplayLoader</returns>
-		public virtual ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen FlowGameplayLoader() {
+		public virtual ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen FlowGameplayLoader(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen>(parameters);
 			
 		}
 		

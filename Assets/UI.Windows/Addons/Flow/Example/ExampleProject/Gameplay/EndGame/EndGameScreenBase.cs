@@ -16,9 +16,9 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 		/// Full Name: ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen
 		/// </summary>
 		/// <returns>MenuLoader</returns>
-		public virtual ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen FlowMenuLoader() {
+		public virtual ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen FlowMenuLoader(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen>(parameters);
 			
 		}
 		

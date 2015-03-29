@@ -36,7 +36,7 @@ namespace UnityEditor.UI.Windows {
 			
 		}
 		
-		[MenuItem("Assets/Create Component...")]
+		[MenuItem("Assets/Create Component...", isValidateFunction: false, priority: 21)]
 		public static void CreateComponent() {
 
 			var obj = Selection.activeObject;

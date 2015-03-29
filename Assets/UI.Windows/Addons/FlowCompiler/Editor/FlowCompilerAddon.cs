@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
-	public class FlowCompiler : IWindowFlowAddon {
+	public class FlowCompiler : FlowAddon {
 
 		public static void ShowEditor(System.Action onClose) {
 
@@ -14,18 +14,16 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		}
 
-		public void Show(System.Action onClose) {
+		public override void Show(System.Action onClose) {
 			
 			FlowCompiler.ShowEditor(onClose);
 
 		}
 
-		public void OnFlowSettingsGUI() {
+		public override void OnFlowSettingsGUI() {
 			
 			#region NAMESPACE
-			
-			GUILayout.Label("Flow Compiler", EditorStyles.boldLabel);
-			
+
 			EditorGUIUtility.labelWidth = 70f;
 			
 			var namespaceName = EditorGUILayout.TextField("Namespace: ", FlowSystem.GetData().namespaceName);
@@ -50,7 +48,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		}
 
-		public void OnFlowWindowGUI(FlowWindow window) {
+		public override void OnFlowWindowGUI(FlowWindow window) {
 
 			if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
 				
@@ -74,7 +72,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			
 		}
 
-		public void OnFlowToolbarGUI(GUIStyle buttonStyle) {
+		public override void OnFlowToolbarGUI(GUIStyle buttonStyle) {
 			
 			var disabledDescr = string.Empty;
 			#if WEBPLAYER

@@ -13,9 +13,31 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 	}
 
-	public class Flow : IWindowAddon {
+	public class FlowAddon : IWindowFlowAddon {
+
+		public string name;
 		
-		#if UNITY_EDITOR
+		public virtual void Show(System.Action onClose) {}
+		public virtual void OnFlowSettingsGUI() {}
+		public virtual void OnFlowWindowGUI(FlowWindow window) {}
+		public virtual void OnFlowToolbarGUI(GUIStyle buttonStyle) {}
+
+	}
+
+	public class Flow : IWindowAddon {
+
+		public static void DrawModuleSettingsGUI(string caption, System.Action onGUI) {
+			
+			GUILayout.Label(caption, EditorStyles.boldLabel);
+			
+			GUILayout.BeginVertical(FlowSystemEditorWindow.defaultSkin.box);//GUI.skin.box);
+			{
+				onGUI();
+			}
+			GUILayout.EndVertical();
+
+		}
+
 		[MenuItem("Window/UI.Windows: Flow")]
 		public static void ShowEditor() {
 			
@@ -49,7 +71,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			return FlowSystemEditorWindow.ShowEditor(onClose);
 
 		}
-		#endif
 
 		public void Show(System.Action onClose) {
 
@@ -70,7 +91,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		public static void OnDrawSettingsGUI() {
 			
-			var flowAddons = WindowUtilities.GetAddons<IWindowFlowAddon>();
+			var flowAddons = WindowUtilities.GetAddons<FlowAddon>((name, item) => item.name = name);
 			if (flowAddons.Count == 0) {
 
 				GUILayout.Label("No Modules Have Been Installed.");
@@ -78,21 +99,31 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			} else {
 
 				foreach (var addon in flowAddons) {
-					
-					addon.OnFlowSettingsGUI();
-					
+
+					Flow.DrawModuleSettingsGUI(addon.name, () => { addon.OnFlowSettingsGUI(); });
+
 				}
 			
 			}
 
 			CustomGUI.Splitter();
 
-			var content = new GUIContent("Install Modules...");
-			if (GUILayout.Button(content, FlowSystemEditorWindow.defaultSkin.button, GUILayout.Height(40f)) == true) {
+			GUILayout.BeginHorizontal();
+			{
+				
+				GUILayout.FlexibleSpace();
 
-				Application.OpenURL(VersionInfo.downloadLink);
+				var content = new GUIContent("Install Modules...");
+				if (GUILayout.Button(content, FlowSystemEditorWindow.defaultSkin.button, GUILayout.Height(40f), GUILayout.MaxWidth(200f)) == true) {
+
+					Application.OpenURL(VersionInfo.downloadLink);
+
+				}
+
+				GUILayout.FlexibleSpace();
 
 			}
+			GUILayout.EndHorizontal();
 
 		}
 		

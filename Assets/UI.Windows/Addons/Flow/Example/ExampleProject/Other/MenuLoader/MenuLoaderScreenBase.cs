@@ -16,9 +16,9 @@ namespace ExampleProject.UI.Other.MenuLoader {
 		/// Full Name: ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen
 		/// </summary>
 		/// <returns>GlobalMap</returns>
-		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowGlobalMap() {
+		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowGlobalMap(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>(parameters);
 			
 		}
 		

@@ -141,7 +141,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private const float SETTINGS_WIDTH = 250f;
+		private const float SETTINGS_WIDTH = 280f;
 		private const float TOOLBAR_HEIGHT = 18f;
 
 		private Texture2D _background;
@@ -646,174 +646,182 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				CustomGUI.Splitter();
 
 				#region ROOT WINDOW
-				GUILayout.Label("Root Window", EditorStyles.boldLabel);
+				Flow.DrawModuleSettingsGUI("Root Window", () => {
 
-				var rootWindow = FlowSystem.GetWindow(FlowSystem.GetRootWindow());
-				if (rootWindow != null) {
+					var rootWindow = FlowSystem.GetWindow(FlowSystem.GetRootWindow());
+					if (rootWindow != null) {
 
-					if (GUILayout.Button(rootWindow.title, FlowSystemEditorWindow.defaultSkin.button) == true) {
+						if (GUILayout.Button(rootWindow.title, FlowSystemEditorWindow.defaultSkin.button) == true) {
 
-						this.focusedGUIWindow = rootWindow.id;
-						FlowSystem.ResetSelection();
+							this.focusedGUIWindow = rootWindow.id;
+							FlowSystem.ResetSelection();
+
+						}
+
+					} else {
+
+						GUILayout.Label("No root window selected.");
 
 					}
 
-				} else {
-
-					GUILayout.Label("No root window selected.");
-
-				}
-
+				});
 				#endregion
 				
 				#region DEFAULT WINDOWS
-				GUILayout.Label("Default Windows", EditorStyles.boldLabel);
-				if (this.defaultWindows == null) {
-					
-					var label = "Default Windows";
-					
-					this.defaultWindows = new ReorderableList(FlowSystem.GetDefaultWindows(), typeof(int), true, true, false, true);
+				Flow.DrawModuleSettingsGUI("Default Windows", () => {
 
-					this.defaultWindows.drawHeaderCallback += rect => GUI.Label(rect, label);
-					this.defaultWindows.drawElementCallback += (rect, index, active, focused) => {
+					if (this.defaultWindows == null) {
 						
-						GUI.Label(rect, FlowSystem.GetWindow(FlowSystem.GetDefaultWindows()[index]).title);
+						var label = "Default Windows";
 						
-					};
-					
-				}
-				
-				if (this.defaultWindows != null) this.defaultWindows.DoLayoutList();
-				#endregion
-				
-				#region TAGS
-				GUILayout.Label("Tags", EditorStyles.boldLabel);
-				if (this.tagsList == null) {
-					
-					var label = "Tags";
+						this.defaultWindows = new ReorderableList(FlowSystem.GetDefaultWindows(), typeof(int), true, true, false, true);
 
-					var styles = new GUIStyle[7] {
-						
-						new GUIStyle("sv_label_1"),
-						new GUIStyle("sv_label_2"),
-						new GUIStyle("sv_label_3"),
-						new GUIStyle("sv_label_4"),
-						new GUIStyle("sv_label_5"),
-						new GUIStyle("sv_label_6"),
-						new GUIStyle("sv_label_7")
-
-					};
-
-					var selected = new GUIStyle("U2D.pivotDotActive");
-
-					var buttonStyle = new GUIStyle(EditorStyles.miniButton);
-					buttonStyle.normal.background = buttonStyle.active.background;
-					buttonStyle.active.background = null;
-					buttonStyle.focused.background = null;
-					buttonStyle.wordWrap = false;
-
-					var tagsSource = FlowSystem.GetTags();
-					if (tagsSource != null) {
-
-						this.tagsList = new ReorderableList(tagsSource, typeof(FlowTag), true, true, false, true);
-
-						this.tagsList.drawHeaderCallback += rect => GUI.Label(rect, label);
-						this.tagsList.drawElementCallback += (rect, index, active, focused) => {
-
-							var tags = FlowSystem.GetTags();
-							if (index < 0 || index >= tags.Count) return;
-
-							var tag = tags[index];
-
-							var itemRect = new Rect(rect);
-							itemRect.x += itemRect.width;
-							itemRect.width = 14f;
-
-							var i = 0;
-							foreach (var style in styles) {
-
-								itemRect.x -= itemRect.width;
-								if (GUI.Button(itemRect, " ", style) == true) {
-
-									tag.color = i;
-
-								}
-
-								if (tag.color == i) GUI.Label(new Rect(itemRect.x - 2f, itemRect.y - 2f, itemRect.width, itemRect.height), string.Empty, selected);
-
-								++i;
-
-							}
-
-							var toggleWidth = rect.height;
-
-							rect.width = itemRect.x - rect.x - 5f - toggleWidth;
-							rect.height -= 2f;
-							rect.x += toggleWidth;
-							var title = GUI.TextField(rect, tag.title, buttonStyle);
-							if (title != tag.title) {
-								
-								tag.title = title;
-								FlowSystem.SetDirty();
-								
-							}
-
-							rect.x -= toggleWidth;
-							rect.width = toggleWidth;
-
-							var enabled = GUI.Toggle(rect, tag.enabled, string.Empty);
-							if (enabled != tag.enabled) {
-
-								tag.enabled = enabled;
-								FlowSystem.SetDirty();
-
-							}
-
+						this.defaultWindows.drawHeaderCallback += rect => GUI.Label(rect, label);
+						this.defaultWindows.drawElementCallback += (rect, index, active, focused) => {
+							
+							GUI.Label(rect, FlowSystem.GetWindow(FlowSystem.GetDefaultWindows()[index]).title);
+							
 						};
 						
 					}
+					
+					if (this.defaultWindows != null) this.defaultWindows.DoLayoutList();
 
-				}
+				});
+				#endregion
 				
-				if (this.tagsList != null) this.tagsList.DoLayoutList();
+				#region TAGS
+				Flow.DrawModuleSettingsGUI("Tags", () => {
+
+					if (this.tagsList == null) {
+						
+						var label = "Tags";
+
+						var styles = new GUIStyle[7] {
+							
+							new GUIStyle("sv_label_1"),
+							new GUIStyle("sv_label_2"),
+							new GUIStyle("sv_label_3"),
+							new GUIStyle("sv_label_4"),
+							new GUIStyle("sv_label_5"),
+							new GUIStyle("sv_label_6"),
+							new GUIStyle("sv_label_7")
+
+						};
+
+						var selected = new GUIStyle("U2D.pivotDotActive");
+
+						var buttonStyle = new GUIStyle(EditorStyles.miniButton);
+						buttonStyle.normal.background = buttonStyle.active.background;
+						buttonStyle.active.background = null;
+						buttonStyle.focused.background = null;
+						buttonStyle.wordWrap = false;
+
+						var tagsSource = FlowSystem.GetTags();
+						if (tagsSource != null) {
+
+							this.tagsList = new ReorderableList(tagsSource, typeof(FlowTag), true, true, false, true);
+
+							this.tagsList.drawHeaderCallback += rect => GUI.Label(rect, label);
+							this.tagsList.drawElementCallback += (rect, index, active, focused) => {
+
+								var tags = FlowSystem.GetTags();
+								if (index < 0 || index >= tags.Count) return;
+
+								var tag = tags[index];
+
+								var itemRect = new Rect(rect);
+								itemRect.x += itemRect.width;
+								itemRect.width = 14f;
+
+								var i = 0;
+								foreach (var style in styles) {
+
+									itemRect.x -= itemRect.width;
+									if (GUI.Button(itemRect, " ", style) == true) {
+
+										tag.color = i;
+
+									}
+
+									if (tag.color == i) GUI.Label(new Rect(itemRect.x - 2f, itemRect.y - 2f, itemRect.width, itemRect.height), string.Empty, selected);
+
+									++i;
+
+								}
+
+								var toggleWidth = rect.height;
+
+								rect.width = itemRect.x - rect.x - 5f - toggleWidth;
+								rect.height -= 2f;
+								rect.x += toggleWidth;
+								var title = GUI.TextField(rect, tag.title, buttonStyle);
+								if (title != tag.title) {
+									
+									tag.title = title;
+									FlowSystem.SetDirty();
+									
+								}
+
+								rect.x -= toggleWidth;
+								rect.width = toggleWidth;
+
+								var enabled = GUI.Toggle(rect, tag.enabled, string.Empty);
+								if (enabled != tag.enabled) {
+
+									tag.enabled = enabled;
+									FlowSystem.SetDirty();
+
+								}
+
+							};
+							
+						}
+
+					}
+					
+					if (this.tagsList != null) this.tagsList.DoLayoutList();
+						
+				});
 				#endregion
 				
 				#region FLOW
-				GUILayout.Label("Flow Settings", EditorStyles.boldLabel);
+				Flow.DrawModuleSettingsGUI("Flow Settings", () => {
 
-				var flowWindowWithLayout = GUILayout.Toggle(FlowSystem.GetData().flowWindowWithLayout, "Window With Layout");
-				if (flowWindowWithLayout != FlowSystem.GetData().flowWindowWithLayout) {
-					
-					FlowSystem.GetData().flowWindowWithLayout = flowWindowWithLayout;
-					FlowSystem.SetDirty();
-
-					this.Repaint();
-					
-				}
-
-				if (flowWindowWithLayout == true) {
-
-					EditorGUIUtility.labelWidth = 50f;
-
-					var flowWindowWithLayoutScaleFactor = EditorGUILayout.Slider("Scale", FlowSystem.GetData().flowWindowWithLayoutScaleFactor, 0f, 1f);
-					if (flowWindowWithLayoutScaleFactor != FlowSystem.GetData().flowWindowWithLayoutScaleFactor) {
+					var flowWindowWithLayout = GUILayout.Toggle(FlowSystem.GetData().flowWindowWithLayout, "Window With Layout");
+					if (flowWindowWithLayout != FlowSystem.GetData().flowWindowWithLayout) {
 						
-						FlowSystem.GetData().flowWindowWithLayoutScaleFactor = flowWindowWithLayoutScaleFactor;
+						FlowSystem.GetData().flowWindowWithLayout = flowWindowWithLayout;
 						FlowSystem.SetDirty();
-						
+
 						this.Repaint();
 						
 					}
 
-					EditorGUIUtility.LookLikeControls();
+					if (flowWindowWithLayout == true) {
 
-				}
+						EditorGUIUtility.labelWidth = 50f;
 
+						var flowWindowWithLayoutScaleFactor = EditorGUILayout.Slider("Scale", FlowSystem.GetData().flowWindowWithLayoutScaleFactor, 0f, 1f);
+						if (flowWindowWithLayoutScaleFactor != FlowSystem.GetData().flowWindowWithLayoutScaleFactor) {
+							
+							FlowSystem.GetData().flowWindowWithLayoutScaleFactor = flowWindowWithLayoutScaleFactor;
+							FlowSystem.SetDirty();
+							
+							this.Repaint();
+							
+						}
+
+						EditorGUIUtility.LookLikeControls();
+
+					}
+
+				});
 				#endregion
 
 				#region WINDOW EDITOR
 				
-				GUILayout.Label("Window Editor", EditorStyles.boldLabel);
+				//GUILayout.Label("Window Editor", EditorStyles.boldLabel);
 				/*
 				var editorWindowAsPopup = GUILayout.Toggle(FlowSystem.GetData().editorWindowAsPopup, "Show as popup");
 				if (editorWindowAsPopup != FlowSystem.GetData().editorWindowAsPopup) {

@@ -415,7 +415,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 							
 							// Build all
 							
-							FlowCompilerSystem.GenerateUI(AssetDatabase.GetAssetPath(FlowSystem.GetData()), this.forceRecompile);
+							FlowCompilerSystem.Generate(AssetDatabase.GetAssetPath(FlowSystem.GetData()), this.forceRecompile);
 							
 						} else {
 
@@ -426,7 +426,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 							}
 
-							FlowCompilerSystem.GenerateUIByTags(AssetDatabase.GetAssetPath(FlowSystem.GetData()), tags.ToArray(), this.forceRecompile);
+							FlowCompilerSystem.GenerateByTags(AssetDatabase.GetAssetPath(FlowSystem.GetData()), tags.ToArray(), this.forceRecompile);
 							
 						}
 

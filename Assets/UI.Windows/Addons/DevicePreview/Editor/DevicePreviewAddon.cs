@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
-	public class DevicePreview : IWindowFlowAddon {
+	public class DevicePreview : FlowAddon {
 
 		[MenuItem("Window/UI.Windows: Device Preview")]
 		public static void ShowEditor() {
@@ -22,23 +22,16 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		}
 
-		public void Show(System.Action onClose) {
+		public override void Show(System.Action onClose) {
 			
 			DevicePreview.ShowEditor(onClose);
 
 		}
 
-		public void OnFlowSettingsGUI() {
-			
-			GUILayout.Label("Device Preview", EditorStyles.boldLabel);
+		public override void OnFlowSettingsGUI() {
+
 			GUILayout.Label("Module Installed");
 
-		}
-
-		public void OnFlowWindowGUI(FlowWindow window) {
-		}
-
-		public void OnFlowToolbarGUI(GUIStyle button) {
 		}
 
 	}

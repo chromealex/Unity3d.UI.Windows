@@ -49,10 +49,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		[MenuItem("Assets/Create Layout...")]
+		[MenuItem("Assets/Create Layout...", isValidateFunction: false, priority: 21)]
 		public static void CreateLayout() {
 
 			LayoutWindowType layoutScreen = null;
+			
+			var name = string.Empty;
 
 			var obj = Selection.activeObject;
 			var path = AssetDatabase.GetAssetPath(obj.GetInstanceID());
@@ -72,7 +74,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					if (Directory.Exists(path) == true) {
 						
 						layoutScreen = screen as LayoutWindowType;
-						
+						name = layoutScreen.name.Replace("Screen", "Layout");
+
 					}
 					
 				}
@@ -83,12 +86,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				// on select
 
+				if (string.IsNullOrEmpty(name) == true) name = element.name + "Layout";
+
 				// Create an instance
-				var layoutPrefab = FlowDatabase.GenerateLayout(path + "/" + element.name + "Layout.prefab", element);
+				var layoutPrefab = FlowDatabase.GenerateLayout(path + "/" + name + ".prefab", element);
 
 				if (layoutScreen != null) {
 
 					layoutScreen.layout.layout = layoutPrefab;
+					layoutScreen.OnValidate();
 					EditorUtility.SetDirty(layoutScreen);
 
 				}
@@ -150,7 +156,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		[MenuItem("Assets/Create Screen...")]
+		[MenuItem("Assets/Create Screen...", isValidateFunction: false, priority: 21)]
 		public static void CreateScreen() {
 
 			var obj = Selection.activeObject;
@@ -176,8 +182,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (string.IsNullOrEmpty(className) == false) {
 
+					var name = className;
 					// Create an instance
-					var layoutPrefab = FlowDatabase.GenerateScreen(path + "/" + element.name + "Screen.prefab", className, element);
+					var layoutPrefab = FlowDatabase.GenerateScreen(path + "/" + name + ".prefab", className, element);
 
 					Selection.activeObject = layoutPrefab;
 
