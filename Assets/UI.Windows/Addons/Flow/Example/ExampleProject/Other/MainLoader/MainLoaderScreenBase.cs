@@ -16,9 +16,9 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// Full Name: ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen
 		/// </summary>
 		/// <returns>GlobalMap</returns>
-		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowGlobalMap() {
+		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowGlobalMap(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>(parameters);
 			
 		}
 				
@@ -27,9 +27,9 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// Full Name: ExampleProject.UI.Other.Background.BackgroundScreen
 		/// </summary>
 		/// <returns>Background</returns>
-		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowBackground() {
+		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowBackground(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>(parameters);
 			
 		}
 		

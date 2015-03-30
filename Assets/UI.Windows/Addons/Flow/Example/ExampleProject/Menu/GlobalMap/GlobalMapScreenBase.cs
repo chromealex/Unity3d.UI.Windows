@@ -16,20 +16,20 @@ namespace ExampleProject.UI.Menu.GlobalMap {
 		/// Full Name: ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen
 		/// </summary>
 		/// <returns>GameTypeChooser</returns>
-		public virtual ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen FlowGameTypeChooser() {
+		public virtual ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen FlowGameTypeChooser(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>(parameters);
 			
 		}
 				
 		/// <summary>
 		/// Flows to the Shop.
-		/// Full Name: ExampleProject.UI.Menu.Shop.Shop.ShopScreen
+		/// Full Name: ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen
 		/// </summary>
 		/// <returns>Shop</returns>
-		public virtual ExampleProject.UI.Menu.Shop.Shop.ShopScreen FlowShop() {
+		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowShop(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.Shop.Shop.ShopScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
 			
 		}
 		

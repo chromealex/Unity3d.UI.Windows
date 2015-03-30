@@ -16,9 +16,9 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// Full Name: ExampleProject.UI.Gameplay.EndGame.EndGameScreen
 		/// </summary>
 		/// <returns>EndGame</returns>
-		public virtual ExampleProject.UI.Gameplay.EndGame.EndGameScreen FlowEndGame() {
+		public virtual ExampleProject.UI.Gameplay.EndGame.EndGameScreen FlowEndGame(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(parameters);
 			
 		}
 				
@@ -27,9 +27,9 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// Full Name: ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen
 		/// </summary>
 		/// <returns>GameplayHUD</returns>
-		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowGameplayHUD() {
+		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowGameplayHUD(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(parameters);
 			
 		}
 		

@@ -16,9 +16,9 @@ namespace ExampleProject.UI.Other.GameplayLoader {
 		/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
 		/// </summary>
 		/// <returns>GameplayView</returns>
-		public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowGameplayView() {
+		public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowGameplayView(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>();
+			return WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>(parameters);
 			
 		}
 		

@@ -7,79 +7,293 @@ using ME;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using System.Text.RegularExpressions;
+
+namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
+
+	public class Tpl {
+
+		public class Info {
+
+			public string baseNamespace;
+			public string classname;
+			public string baseClassname;
+			public string screenName;
+			
+			public string classnameFile {
+				
+				get {
+					
+					return this.classname + ".cs";
+					
+				}
+				
+			}
+			
+			public string baseClassnameFile {
+				
+				get {
+					
+					return this.baseClassname + ".cs";
+					
+				}
+				
+			}
+			
+			public string classnameWithNamespace {
+				
+				get {
+					
+					return this.baseNamespace + "." + this.screenName;
+					
+				}
+				
+			}
+
+			public Info(FlowWindow window) {
+				
+				this.baseNamespace = window.compiledNamespace;
+				this.classname = window.compiledDerivedClassName;
+				this.baseClassname = window.compiledBaseClassName;
+				this.screenName = window.directory;
+
+			}
+
+			public Info(string baseNamespace, string classname, string baseClassname, string screenName) {
+
+				this.baseNamespace = baseNamespace;
+				this.classname = classname;
+				this.baseClassname = baseClassname;
+				this.screenName = screenName;
+
+			}
+
+			public string Replace(string replace, System.Func<string, string> predicate = null) {
+
+				replace = replace.Replace("{CLASS_NAME}", this.classname);
+				replace = replace.Replace("{BASE_CLASS_NAME}", this.baseClassname);
+				replace = replace.Replace("{NAMESPACE_NAME}", this.baseNamespace);
+				replace = replace.Replace("{CLASS_NAME_WITH_NAMESPACE}", this.classnameWithNamespace);
+
+				if (predicate != null) replace = predicate(replace);
+
+				return replace;
+
+			}
+
+		}
+
+		public static string ReplaceText(string text, Info oldInfo, Info newInfo) {
+
+			return FlowTemplateGenerator.ReplaceText(text, oldInfo, newInfo);
+
+		}
+
+		public static string GetNamespace() {
+
+			return FlowCompilerSystem.currentNamespace;
+
+		}
+		
+		public static string GetBaseClassName(FlowWindow flowWindow) {
+			
+			return flowWindow.directory.UppercaseFirst() + "ScreenBase";
+			
+		}
+		
+		public static string GetDerivedClassName(FlowWindow flowWindow) {
+			
+			return flowWindow.directory.UppercaseFirst() + "Screen";
+			
+		}
+		
+		public static string GetNamespace(FlowWindow window) {
+			
+			return Tpl.GetNamespace() + IO.GetRelativePath(window, ".");
+
+		}
+		
+		public static string GenerateTransitionMethods(FlowWindow window) {
+
+			var flowData = FlowSystem.GetData();
+			
+			var transitions = flowData.windows.Where(w => window.attaches.Contains(w.id) && !w.isDefaultLink && !w.isContainer);
+			
+			var result = string.Empty;
+			foreach (var each in transitions) {
+				
+				var className = each.directory;
+				var classNameWithNamespace = Tpl.GetNamespace(each) + "." + Tpl.GetDerivedClassName(each);//GetBaseClassName( each );
+				
+				result = result + FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod(className, classNameWithNamespace);
+
+			}
+			
+			return result;
+
+		}
+
+	}
+
+	public static class IO {
+		
+		public static void RenameDirectory(string oldPath, string newPath) {
+			
+			oldPath = oldPath.Replace("//", "/");
+			newPath = newPath.Replace("//", "/");
+			
+			oldPath = oldPath.Trim('/');
+			newPath = newPath.Trim('/');
+			
+			//Debug.Log("MoveAsset: " + oldPath + " => " + newPath);
+			AssetDatabase.MoveAsset(oldPath, newPath);
+			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			
+		}
+		
+		public static void RenameFile(string oldFile, string newFile) {
+			
+			oldFile = oldFile.Replace("//", "/");
+			newFile = newFile.Replace("//", "/");
+
+			//Debug.Log("RenameAsset: " + oldFile + " => " + newFile);
+			//Debug.Log(AssetDatabase.RenameAsset(oldFile, newFile));
+			System.IO.File.Move(oldFile, newFile);
+			AssetDatabase.ImportAsset(newFile);
+			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			
+		}
+
+		public static void ReplaceInFiles(string path, System.Func<MonoScript, bool> predicate, System.Func<string, string> replace) {
+
+			#if !UNITY_WEBPLAYER
+			try {
+
+				path = path.Trim('/');
+
+				AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+				var scripts = AssetDatabase.FindAssets("t:MonoScript", new string[] { path })
+						.Select(file => AssetDatabase.GUIDToAssetPath(file))
+						.Select(file => AssetDatabase.LoadAssetAtPath(file, typeof(MonoScript)))
+						.OfType<MonoScript>()
+						.Where(predicate);
+				
+				foreach (var each in scripts) {
+
+					var filepath = AssetDatabase.GetAssetPath(each);
+					/*var lines = File.ReadAllLines(filepath);
+					var writer = new StreamWriter(filepath);
+
+					foreach (var line in lines) {
+
+						writer.WriteLine(replace(line));
+
+					}
+					
+					writer.Dispose();*/
+
+					File.WriteAllText(filepath, replace(File.ReadAllText(filepath)));
+
+				}
+
+			} catch (Exception e) {
+
+				Debug.LogException(e);
+			
+			}
+			#endif
+
+		}
+
+		public static void CreateFile(string path, string filename, string content, bool rewrite = true) {
+			
+			#if !UNITY_WEBPLAYER
+			IO.CreateDirectory(path, string.Empty);
+			
+			path = path.Trim('/');
+			filename = filename.Trim('/');
+
+			var filepath = Path.Combine(path, filename);
+			filepath = filepath.Replace("//", "/");
+
+			if (File.Exists(filepath) == false || rewrite == true) {
+
+				File.WriteAllText(filepath, content);
+				AssetDatabase.ImportAsset(filepath);
+
+			}
+			#endif
+
+		}
+		
+		public static void CreateDirectory(string root, string folder) {
+			
+			#if !UNITY_WEBPLAYER
+			folder = folder.Trim('/');
+			root = root.Trim('/');
+			
+			var path = Path.Combine(root, folder);
+			path = path.Replace("//", "/");
+
+			if (Directory.Exists(path) == false) {
+				
+				Directory.CreateDirectory(path);
+				AssetDatabase.Refresh();
+				
+			}
+			#endif
+			
+		}
+		
+		private static IEnumerable<FlowWindow> GetParentContainers(FlowWindow window, IEnumerable<FlowWindow> containers) {
+			
+			var parent = containers.FirstOrDefault(where => where.attaches.Contains(window.id));
+			
+			while (parent != null) {
+				
+				yield return parent;
+				parent = containers.FirstOrDefault(where => where.attaches.Contains(parent.id));
+
+			}
+
+		}
+		
+		public static string GetRelativePath(FlowWindow window, string token) {
+			
+			var result = GetParentContainers(window, FlowSystem.GetContainers())
+					.Reverse()
+					.Select(w => w.directory)
+					.Aggregate(string.Empty, (total, path) => total + token + path);
+			
+			if (string.IsNullOrEmpty(result) == true) {
+				
+				result = token + FlowDatabase.OTHER_NAME;
+
+			}
+			
+			result += token + window.directory;
+			
+			return result;
+
+		}
+
+	}
+
+}
 
 namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 	public static class FlowCompilerSystem {
-
+		
 		public static string currentNamespace;
-
 		private static string currentProject;
+		private static string currentProjectDirectory;
 
 #if UNITY_EDITOR
 
-		private static void CreateDirectory( string root, string folder ) {
-			
-			folder = folder.Trim( '/' );
-			root = root.Trim( '/' );
-
-			var path = Path.Combine( root, folder );
-			if ( Directory.Exists( path ) == false ) {
-
-				Directory.CreateDirectory( path );
-				AssetDatabase.Refresh();
-			}
-		}
-
-		private static string GetNamespace() {
-
-			return currentNamespace;//FlowSystem.GetData().namespaceName;
-		}
-
-		private static string GetBaseClassName( FlowWindow flowWindow ) {
-
-			return flowWindow.directory.UppercaseFirst() + "ScreenBase";
-		}
-
-		private static string GetDerivedClassName( FlowWindow flowWindow ) {
-
-			return flowWindow.directory.UppercaseFirst() + "Screen";
-		}
-
-		private static IEnumerable<FlowWindow> GetParentContainers( FlowWindow window, IEnumerable<FlowWindow> containers ) {
-
-			var parent = containers.FirstOrDefault( where => where.attaches.Contains( window.id ) );
-
-			while ( parent != null ) {
-
-				yield return parent;
-
-				parent = containers.FirstOrDefault( where => where.attaches.Contains( parent.id ) );
-			}
-		}
-
-		private static string GetRelativePath( FlowWindow window, string token ) {
-
-			var result = GetParentContainers( window, FlowSystem.GetContainers() )
-				.Reverse()
-				.Select( _ => _.directory )
-				.Aggregate( string.Empty, ( total, _ ) => total + token + _ );
-
-			if ( string.IsNullOrEmpty( result ) ) {
-
-				result = token + FlowDatabase.OTHER_NAME;
-			}
-
-			result += token + window.directory;
-
-			return result;
-		}
-
-		private static string GetNamespace( FlowWindow window ) {
-
-			return GetNamespace() + GetRelativePath( window, "." );
-		}
-
+		#region OLD
+		/*
 		private static bool CompiledInfoIsInvalid( FlowWindow flowWindow ) {
 
 			return GetBaseClassName( flowWindow ) != flowWindow.compiledBaseClassName
@@ -132,30 +346,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			AssetDatabase.Refresh( ImportAssetOptions.ForceUpdate );
 
 		}
-
-		private static string GenerateTransitionMethods( FlowWindow window ) {
-
-			if ( window.isContainer ) {
-
-				return string.Empty;
-			}
-
-			var flowData = FlowSystem.GetData();
-
-			var transitions = flowData.windows.Where( _ => window.attaches.Contains( _.id ) ).Where( _ => !_.isDefaultLink && !_.isContainer );
-
-			var result = string.Empty;
-			foreach ( var each in transitions ) {
-
-				var className = each.directory;
-				var classNameWithNamespace = GetNamespace( each ) + "." + GetDerivedClassName( each );//GetBaseClassName( each );
-
-				result = result + FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod( className, classNameWithNamespace );
-			}
-
-			return result;
-		}
-
+		
 		private static void GenerateUIWindow( string fullpath, FlowWindow window, bool recompile = false ) {
 
 			var isCompiledInfoInvalid = window.compiled && CompiledInfoIsInvalid( window );
@@ -176,33 +367,12 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				if ( baseClassTemplate != null && derivedClassTemplate != null ) {
 
-					CreateDirectory( fullpath, string.Empty );
-					CreateDirectory( fullpath, FlowDatabase.COMPONENTS_FOLDER );
-					CreateDirectory( fullpath, FlowDatabase.LAYOUT_FOLDER );
-					CreateDirectory( fullpath, FlowDatabase.SCREENS_FOLDER );
+					IO.CreateDirectory( fullpath, string.Empty );
+					IO.CreateDirectory( fullpath, FlowDatabase.COMPONENTS_FOLDER );
+					IO.CreateDirectory( fullpath, FlowDatabase.LAYOUT_FOLDER );
+					IO.CreateDirectory( fullpath, FlowDatabase.SCREENS_FOLDER );
 					
 					#if !UNITY_WEBPLAYER
-
-					/*if ( Directory.Exists( window.compiledDirectory ) && fullpath != window.compiledDirectory ) {
-
-						foreach ( var each in Directory.GetFiles( window.compiledDirectory ) ) {
-
-							if ( Path.GetFileNameWithoutExtension( each ) != window.compiledDerivedClassName ) {
-
-								File.Delete( each );
-							} else {
-
-								if ( !File.Exists( derivedClassPath ) ) {
-
-									File.Move( each, derivedClassPath );
-
-									AssetDatabase.ImportAsset( derivedClassName );
-								}
-							}
-						}
-
-						Directory.Delete( window.compiledDirectory, recursive: true );
-					}*/
 
 					Directory.CreateDirectory( fullpath );
 
@@ -250,7 +420,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			}
 
 		}
-
+		
 		public static void GenerateUI( string pathToData, bool recompile = false, Func<FlowWindow, bool> predicate = null ) {
 
 			var filename = Path.GetFileName( pathToData );
@@ -287,32 +457,155 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			AssetDatabase.StopAssetEditing();
 			AssetDatabase.Refresh( ImportAssetOptions.ForceUpdate );
 
+		}*/
+		#endregion
+
+		private static void GenerateWindow(string newPath, FlowWindow window, bool recompile) {
+
+			if (window.compiled == true && recompile == false) return;
+
+			var oldPath = window.compiledDirectory;
+			
+			var newInfo = new Tpl.Info(Tpl.GetNamespace(window), Tpl.GetDerivedClassName(window), Tpl.GetBaseClassName(window), window.directory);
+			var oldInfo = new Tpl.Info(window);
+
+			var path = oldPath;
+
+			if (window.compiled == true && (oldPath != newPath)) {
+
+				// If window is moving and compiled - just rename
+
+				// Replace in files
+				IO.ReplaceInFiles(FlowCompilerSystem.currentProjectDirectory, (file) => {
+					
+					var text = file.text;
+					return text.Contains(oldInfo.baseNamespace);
+					
+				}, (text) => {
+
+					return Tpl.ReplaceText(text, oldInfo, newInfo);
+
+				});
+
+				// Rename base class name
+				IO.RenameFile(oldPath + oldInfo.baseClassnameFile, oldPath + newInfo.baseClassnameFile);
+
+				// Rename derived class name
+				IO.RenameFile(oldPath + oldInfo.classnameFile, oldPath + newInfo.classnameFile);
+
+				// Rename main folder
+				IO.RenameDirectory(oldPath, newPath);
+
+				path = newPath;
+
+			}
+
+			// Rebuild without rename
+			//Debug.Log(window.title + " :: REBUILD BASE :: " + path);
+
+			IO.CreateDirectory(path, string.Empty);
+			IO.CreateDirectory(path, FlowDatabase.COMPONENTS_FOLDER);
+			IO.CreateDirectory(path, FlowDatabase.LAYOUT_FOLDER);
+			IO.CreateDirectory(path, FlowDatabase.SCREENS_FOLDER);
+
+			var baseClassTemplate = FlowTemplateGenerator.GenerateWindowLayoutBaseClass(newInfo.baseClassname, newInfo.baseNamespace, Tpl.GenerateTransitionMethods(window));
+			var derivedClassTemplate = FlowTemplateGenerator.GenerateWindowLayoutDerivedClass(newInfo.classname, newInfo.baseClassname, newInfo.baseNamespace);
+			
+			if (baseClassTemplate != null && derivedClassTemplate != null) {
+
+				IO.CreateFile(path, newInfo.baseClassnameFile, baseClassTemplate, rewrite: true);
+				IO.CreateFile(path, newInfo.classnameFile, derivedClassTemplate, rewrite: false);
+				
+			}
+
+			window.compiledNamespace = newInfo.baseNamespace;
+			window.compiledScreenName = newInfo.screenName;
+			window.compiledBaseClassName = newInfo.baseClassname;
+			window.compiledDerivedClassName = newInfo.classname;
+			
+			window.compiledDirectory = path;
+			window.compiled = true;
+
+		}
+		
+		private static void Generate(string pathToData, bool recompile, System.Func<FlowWindow, bool> predicate) {
+
+			var filename = Path.GetFileName(pathToData);
+			var directory = pathToData.Replace(filename, string.Empty);
+			
+			FlowCompilerSystem.currentProject = Path.GetFileNameWithoutExtension(pathToData);
+			FlowCompilerSystem.currentProjectDirectory = directory;
+
+			var basePath = directory + FlowCompilerSystem.currentProject;
+			IO.CreateDirectory(basePath, string.Empty);
+			IO.CreateDirectory(basePath, FlowDatabase.OTHER_NAME);
+
+			predicate = predicate ?? delegate { return true; };
+
+			AssetDatabase.StartAssetEditing();
+			{
+
+				try {
+
+					var windows = FlowSystem.GetWindows().Where(w => !w.isDefaultLink && predicate(w));
+
+					foreach (var each in windows) {
+						
+						var relativePath = IO.GetRelativePath(each, "/");
+						FlowCompilerSystem.GenerateWindow(basePath + relativePath + "/", each, recompile);
+
+					}
+
+				} catch (Exception e) {
+					
+					Debug.LogException(e);
+
+				}
+
+			}
+			AssetDatabase.StopAssetEditing();
+			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+			FlowSystem.SetDirty();
+			FlowSystem.Save();
+
 		}
 
-		public static void GenerateUIByTag( string pathToData, int tag, bool recompile = false) {
+		#region VARIANTS
+		public static void GenerateByTag(string pathToData, int tag, bool recompile = false) {
 
-			GenerateUI( pathToData, recompile, flowWindow => flowWindow.tags.Contains( tag ) );
+			FlowCompilerSystem.Generate(pathToData, recompile, flowWindow => flowWindow.tags.Contains(tag));
+
 		}
 
-		public static void GenerateUIByTags( string pathToData, int[] tags, bool recompile = false ) {
+		public static void GenerateByTags(string pathToData, int[] tags, bool recompile = false) {
 
-			GenerateUI( pathToData, recompile, flowWindow => {
+			FlowCompilerSystem.Generate(pathToData, recompile, flowWindow => {
 
-				foreach ( var tag in flowWindow.tags ) {
+				foreach (var tag in flowWindow.tags) {
 
-					if ( tags.Contains( tag ) == true ) return true;
+					if (tags.Contains(tag) == true) return true;
 
 				}
 
 				return false;
 
-			} );
-		}
+			});
 
-		public static void GenerateWindow( string pathToData, bool recompile = false, FlowWindow window = null ) {
-
-			GenerateUI( pathToData, recompile, flowWindow => flowWindow == window );
 		}
+		
+		public static void GenerateByWindow(string pathToData, bool recompile = false, FlowWindow window = null) {
+			
+			FlowCompilerSystem.Generate(pathToData, recompile, flowWindow => flowWindow == window);
+			
+		}
+		
+		public static void Generate(string pathToData, bool recompile = false) {
+			
+			FlowCompilerSystem.Generate(pathToData, recompile, null);
+			
+		}
+		#endregion
 
 #endif
 

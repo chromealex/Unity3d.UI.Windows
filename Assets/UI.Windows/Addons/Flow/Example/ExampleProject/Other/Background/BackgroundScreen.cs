@@ -14,6 +14,8 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
+using t = ExampleProject.UI.Other.Background;
+
 namespace ExampleProject.UI.Other.Background {
 
 	public class BackgroundScreen : BackgroundScreenBase {

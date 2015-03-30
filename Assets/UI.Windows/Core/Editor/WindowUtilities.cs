@@ -42,13 +42,14 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public static List<T> GetAddons<T>() where T : IWindowAddon {
+		public static List<T> GetAddons<T>(System.Action<string, T> forEach = null) where T : IWindowAddon {
 
 			var list = cache.Where((a) => (a.Value is T));
 			var output = new List<T>();
 
 			foreach (var addon in list) {
 
+				if (forEach != null) forEach(addon.Key, (T)addon.Value);
 				output.Add((T)addon.Value);
 
 			}
