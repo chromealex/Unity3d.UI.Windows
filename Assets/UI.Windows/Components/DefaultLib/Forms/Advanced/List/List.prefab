@@ -390,6 +390,7 @@ MonoBehaviour:
   lastAnimation: {fileID: 0}
   autoRegisterSubComponents: 1
   subComponents: []
+  images: []
   text: {fileID: 11419500}
 --- !u!114 &11419506
 MonoBehaviour:
@@ -428,11 +429,10 @@ MonoBehaviour:
   canvas: {fileID: 0}
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents:
-  - {fileID: 11419502}
-  scrollRect: {fileID: 11419488}
+  autoRegisterSubComponents: 0
+  subComponents: []
   source: {fileID: 11419502}
+  scrollRect: {fileID: 11419488}
   content: {fileID: 0}
   noElements: {fileID: 0}
 --- !u!222 &22219480

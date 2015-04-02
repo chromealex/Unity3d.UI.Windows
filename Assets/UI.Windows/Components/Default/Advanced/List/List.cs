@@ -12,9 +12,11 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		private List<WindowComponent> list = new List<WindowComponent>();
 
-		public Extensions.ScrollRect scrollRect;
+		[Header("Required")]
 		public WindowComponent source;
 
+		[Header("Optional")]
+		public Extensions.ScrollRect scrollRect;
 		public GameObject content;
 		public GameObject noElements;
 

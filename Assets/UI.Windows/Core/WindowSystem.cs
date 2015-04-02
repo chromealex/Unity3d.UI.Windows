@@ -435,6 +435,12 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public static float GetDepthStep() {
+
+			return WindowSystem.instance.depthStep;
+
+		}
+
 		private float GetNextDepth(Preferences preferences, float windowDepth) {
 
 			var depth = 0f;

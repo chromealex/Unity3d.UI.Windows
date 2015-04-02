@@ -4,19 +4,27 @@ using UnityEngine.UI;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonWithTextComponent : ButtonComponent, ITextComponent {
+	public class ButtonWithTextComponent : ButtonWithImageComponent, ITextComponent {
+		
+		[Header("Text (Optional)")]
 
 		public Text text;
 
-		public void SetText(string text) {
-			
-			this.text.text = text;
+		public void SetValue(int value, TextComponent.ValueFormat format = TextComponent.ValueFormat.None) {
+
+			this.SetText(TextComponent.FormatValue(value, format));
 			
 		}
-
+		
 		public string GetText() {
 			
-			return this.text.text;
+			return (this.text != null) ? this.text.text : string.Empty;
+			
+		}
+		
+		public void SetText(string text) {
+			
+			if (this.text != null) this.text.text = text;
 			
 		}
 		

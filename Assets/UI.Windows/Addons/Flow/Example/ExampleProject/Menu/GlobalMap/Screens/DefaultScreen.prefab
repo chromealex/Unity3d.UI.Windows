@@ -83,16 +83,8 @@ MonoBehaviour:
     elements: []
   layout:
     scaleMode: 0
-    layout: {fileID: 11440510, guid: c7c0684e2baa6754e922768452530c74, type: 2}
-    components:
-    - description: CONTENT BORDER
-      tag: 1
-      component: {fileID: 0}
-      sortingOrder: 0
-    - description: SHOP
-      tag: 2
-      component: {fileID: 0}
-      sortingOrder: 0
+    layout: {fileID: 0}
+    components: []
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

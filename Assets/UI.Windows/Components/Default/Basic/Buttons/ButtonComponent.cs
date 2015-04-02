@@ -8,7 +8,7 @@ using UnityEngine.UI.Windows.Components.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonComponent : WindowComponent, ISelectable {
+	public class ButtonComponent : ColoredComponent, ISelectable {
 
 		[SerializeField]
 		protected Button button;
@@ -41,12 +41,6 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.button != null) this.button.interactable = true;
 
 		}
-		
-		public Color GetColor() {
-			
-			return this.button != null ? this.button.targetGraphic.color : Color.white;
-			
-		}
 
 		public void Select() {
 
@@ -60,8 +54,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public void SetColor(Color color) {
-			
+		public override void SetColor(Color color) {
+
+			base.SetColor(color);
+
 			if (this.button != null) {
 
 				this.button.targetGraphic.color = color;

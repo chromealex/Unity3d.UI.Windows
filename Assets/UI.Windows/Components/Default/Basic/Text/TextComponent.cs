@@ -2,7 +2,7 @@
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class TextComponent : WindowComponent, ITextComponent {
+	public class TextComponent : ColoredComponent, ITextComponent {
 
 		public enum ValueFormat : byte {
 
@@ -15,10 +15,10 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		private Text text;
 
-		public void SetValue(int value, ValueFormat format = ValueFormat.None) {
-
+		public static string FormatValue(int value, ValueFormat format) {
+			
 			var output = string.Empty;
-
+			
 			switch (format) {
 				
 			case ValueFormat.None:
@@ -32,10 +32,16 @@ namespace UnityEngine.UI.Windows.Components {
 			case ValueFormat.WithComma:
 				output = value.ToString("#,### ### ##0").Trim(',');
 				break;
-
+				
 			}
 
-			this.SetText(output);
+			return output;
+
+		}
+
+		public void SetValue(int value, ValueFormat format = ValueFormat.None) {
+
+			this.SetText(TextComponent.FormatValue(value, format));
 
 		}
 
@@ -51,13 +57,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public void SetColor(Color color) {
+		public virtual void SetTextColor(Color color) {
 			
 			this.text.color = color;
 			
 		}
 		
-		public Color GetColor() {
+		public virtual Color GetTextColor() {
 			
 			return this.text.color;
 			

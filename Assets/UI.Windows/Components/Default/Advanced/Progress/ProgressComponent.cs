@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ProgressComponent : WindowComponent {
+	public class ProgressComponent : ColoredComponent {
 		
 		public float duration = 0f;
 		public float minNormalizedValue = 0f;
@@ -17,11 +17,8 @@ namespace UnityEngine.UI.Windows.Components {
 		public float continiousWidth = 0.4f;
 		public float continiousAngleStep = 0f;
 
-		public Image[] images;
-
 		private ComponentEvent<float> callback = new ComponentEvent<float>();
 		private ComponentEvent<ProgressComponent, float> callbackButton = new ComponentEvent<ProgressComponent, float>();
-		private Color color;
 		private float currentValue = 0f;
 
 		public override void OnInit() {
@@ -47,6 +44,14 @@ namespace UnityEngine.UI.Windows.Components {
 			this.bar.value = 0f;
 
 		}
+
+		public override void OnHideBegin(System.Action callback) {
+
+			base.OnHideBegin(callback);
+
+			this.getValue = null;
+
+		}
 		
 		public virtual void SetCallback(UnityAction<float> callback) {
 
@@ -68,19 +73,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.callback != null) this.callback.Invoke(this.currentValue);
 			if (this.callbackButton != null) this.callbackButton.Invoke(this, this.currentValue);
-
-		}
-
-		public virtual void SetColor(Color color) {
-			
-			this.color = color;
-			for (int i = 0; i < this.images.Length; ++i) this.images[i].color = color;
-			
-		}
-		
-		public Color GetColor() {
-			
-			return this.color;
 
 		}
 
@@ -161,6 +153,25 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		private System.Func<float> getValue;
+		private bool getValueImmediately;
+		public void SetValue(System.Func<float> getValue, bool immediately = false) {
+
+			this.getValue = getValue;
+			this.getValueImmediately = immediately;
+
+		}
+
+		public virtual void LateUpdate() {
+
+			if (this.getValue != null) {
+
+				this.SetValue(this.getValue(), this.getValueImmediately);
+
+			}
+
+		}
+
 		public void SetValue(float value, bool immediately = false) {
 
 			if (this.continious == true && immediately == false) return;
@@ -225,14 +236,6 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnValidateEditor();
 
 			ME.Utilities.FindReference<Extensions.Slider>(this, ref this.bar);
-
-			/*if (this.bar != null) {
-				
-				this.bar.minValue = 0f;
-				this.bar.maxValue = 1f;
-				this.bar.wholeNumbers = false;
-				
-			}*/
 
 		}
 		#endif
