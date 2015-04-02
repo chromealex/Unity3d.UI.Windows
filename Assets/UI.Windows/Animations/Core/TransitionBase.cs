@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace UnityEngine.UI.Windows {
+namespace UnityEngine.UI.Windows.Animations {
 
 	public class TransitionBase : ScriptableObject {
 

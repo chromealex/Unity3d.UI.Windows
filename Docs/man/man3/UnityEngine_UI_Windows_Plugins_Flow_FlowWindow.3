@@ -1,0 +1,267 @@
+.TH "UnityEngine.UI.Windows.Plugins.Flow.FlowWindow" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.Plugins.Flow.FlowWindow \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "struct \fBComponentLink\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBFlowWindow\fP (int \fBid\fP, bool \fBisContainer\fP=false, bool \fBisDefaultLink\fP=false)"
+.br
+.ti -1c
+.RI "bool \fBIsEnabled\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetScreen\fP (\fBWindowBase\fP \fBscreen\fP)"
+.br
+.ti -1c
+.RI "\fBWindowBase\fP \fBGetScreen\fP ()"
+.br
+.ti -1c
+.RI "\fBWindowLayoutElement\fP \fBGetLayoutComponent\fP (\fBLayoutTag\fP tag)"
+.br
+.ti -1c
+.RI "void \fBAddTag\fP (\fBFlowTag\fP tag)"
+.br
+.ti -1c
+.RI "void \fBRemoveTag\fP (\fBFlowTag\fP tag)"
+.br
+.ti -1c
+.RI "void \fBSetCompletedState\fP (int index, \fBCompletedState\fP state)"
+.br
+.ti -1c
+.RI "bool \fBIsValidToCompile\fP ()"
+.br
+.ti -1c
+.RI "GUIStyle \fBGetEditorStyle\fP (bool selected)"
+.br
+.ti -1c
+.RI "void \fBMove\fP (Vector2 delta)"
+.br
+.ti -1c
+.RI "\fBFlowWindow\fP \fBGetContainer\fP ()"
+.br
+.ti -1c
+.RI "bool \fBHasContainer\fP ()"
+.br
+.ti -1c
+.RI "bool \fBHasContainer\fP (\fBFlowWindow\fP predicate)"
+.br
+.ti -1c
+.RI "List< \fBFlowWindow\fP > \fBGetAttachedWindows\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBid\fP"
+.br
+.ti -1c
+.RI "string \fBtitle\fP = string\&.Empty"
+.br
+.ti -1c
+.RI "string \fBdirectory\fP = string\&.Empty"
+.br
+.ti -1c
+.RI "Rect \fBrect\fP"
+.br
+.ti -1c
+.RI "List< int > \fBattaches\fP"
+.br
+.ti -1c
+.RI "List< \fBComponentLink\fP > \fBattachedComponents\fP"
+.br
+.ti -1c
+.RI "bool \fBisContainer\fP = false"
+.br
+.ti -1c
+.RI "bool \fBisDefaultLink\fP = false"
+.br
+.ti -1c
+.RI "Color \fBrandomColor\fP"
+.br
+.ti -1c
+.RI "List< int > \fBtags\fP = new List<int>()"
+.br
+.ti -1c
+.RI "bool \fBcompiled\fP = false"
+.br
+.ti -1c
+.RI "string \fBcompiledDirectory\fP = string\&.Empty"
+.br
+.ti -1c
+.RI "string \fBcompiledNamespace\fP = string\&.Empty"
+.br
+.ti -1c
+.RI "string \fBcompiledScreenName\fP = string\&.Empty"
+.br
+.ti -1c
+.RI "string \fBcompiledBaseClassName\fP = string\&.Empty"
+.br
+.ti -1c
+.RI "string \fBcompiledDerivedClassName\fP = string\&.Empty"
+.br
+.ti -1c
+.RI "\fBCompletedState\fP[] \fBstates\fP = new \fBCompletedState\fP[STATES_COUNT]"
+.br
+.ti -1c
+.RI "\fBWindowBase\fP \fBscreen\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 20 of file FlowWindow\&.cs\&.
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.FlowWindow (int id, bool isContainer = \fCfalse\fP, bool isDefaultLink = \fCfalse\fP)"
+
+.PP
+Definition at line 70 of file FlowWindow\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.AddTag (\fBFlowTag\fP tag)"
+
+.PP
+Definition at line 150 of file FlowWindow\&.cs\&.
+.SS "List<\fBFlowWindow\fP> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.GetAttachedWindows ()"
+
+.PP
+Definition at line 370 of file FlowWindow\&.cs\&.
+.SS "\fBFlowWindow\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.GetContainer ()"
+
+.PP
+Definition at line 352 of file FlowWindow\&.cs\&.
+.SS "GUIStyle UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.GetEditorStyle (bool selected)"
+
+.PP
+Definition at line 203 of file FlowWindow\&.cs\&.
+.SS "\fBWindowLayoutElement\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.GetLayoutComponent (\fBLayoutTag\fP tag)"
+
+.PP
+Definition at line 137 of file FlowWindow\&.cs\&.
+.SS "\fBWindowBase\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.GetScreen ()"
+
+.PP
+Definition at line 131 of file FlowWindow\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.HasContainer ()"
+
+.PP
+Definition at line 358 of file FlowWindow\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.HasContainer (\fBFlowWindow\fP predicate)"
+
+.PP
+Definition at line 364 of file FlowWindow\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.IsEnabled ()"
+
+.PP
+Definition at line 89 of file FlowWindow\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.IsValidToCompile ()"
+
+.PP
+Definition at line 180 of file FlowWindow\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.Move (Vector2 delta)"
+
+.PP
+Definition at line 343 of file FlowWindow\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.RemoveTag (\fBFlowTag\fP tag)"
+
+.PP
+Definition at line 160 of file FlowWindow\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.SetCompletedState (int index, \fBCompletedState\fP state)"
+
+.PP
+Definition at line 166 of file FlowWindow\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.SetScreen (\fBWindowBase\fP screen)"
+
+.PP
+Definition at line 125 of file FlowWindow\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "List<\fBComponentLink\fP> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.attachedComponents"
+
+.PP
+Definition at line 52 of file FlowWindow\&.cs\&.
+.SS "List<int> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.attaches"
+
+.PP
+Definition at line 51 of file FlowWindow\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.compiled = false"
+
+.PP
+Definition at line 59 of file FlowWindow\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.compiledBaseClassName = string\&.Empty"
+
+.PP
+Definition at line 63 of file FlowWindow\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.compiledDerivedClassName = string\&.Empty"
+
+.PP
+Definition at line 64 of file FlowWindow\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.compiledDirectory = string\&.Empty"
+
+.PP
+Definition at line 60 of file FlowWindow\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.compiledNamespace = string\&.Empty"
+
+.PP
+Definition at line 61 of file FlowWindow\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.compiledScreenName = string\&.Empty"
+
+.PP
+Definition at line 62 of file FlowWindow\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.directory = string\&.Empty"
+
+.PP
+Definition at line 49 of file FlowWindow\&.cs\&.
+.SS "int UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.id"
+
+.PP
+Definition at line 47 of file FlowWindow\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.isContainer = false"
+
+.PP
+Definition at line 53 of file FlowWindow\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.isDefaultLink = false"
+
+.PP
+Definition at line 54 of file FlowWindow\&.cs\&.
+.SS "Color UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.randomColor"
+
+.PP
+Definition at line 55 of file FlowWindow\&.cs\&.
+.SS "Rect UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.rect"
+
+.PP
+Definition at line 50 of file FlowWindow\&.cs\&.
+.SS "\fBWindowBase\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.screen"
+
+.PP
+Definition at line 68 of file FlowWindow\&.cs\&.
+.SS "\fBCompletedState\fP [] UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.states = new \fBCompletedState\fP[STATES_COUNT]"
+
+.PP
+Definition at line 66 of file FlowWindow\&.cs\&.
+.SS "List<int> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.tags = new List<int>()"
+
+.PP
+Definition at line 57 of file FlowWindow\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindow\&.title = string\&.Empty"
+
+.PP
+Definition at line 48 of file FlowWindow\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

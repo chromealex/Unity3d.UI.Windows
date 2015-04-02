@@ -2,6 +2,10 @@
 using System.Collections;
 using UnityEngine.UI.Windows;
 
-public class BackgroundLock : WindowModule {
+namespace UnityEngine.UI.Windows.Modules {
+
+	public class BackgroundLock : WindowModule {
+
+	}
 
 }

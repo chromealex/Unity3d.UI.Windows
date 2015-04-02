@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEditorInternal;
 using ME;
 using System.Reflection;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 

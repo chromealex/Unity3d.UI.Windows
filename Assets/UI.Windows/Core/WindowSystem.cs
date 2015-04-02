@@ -73,13 +73,25 @@ namespace UnityEngine.UI.Windows {
 
 		public Settings settings = new Settings();
 
+		/// <summary>
+		/// Default windows list.
+		/// Use WindowSystem.ShowDefault() to show them.
+		/// </summary>
 		public List<WindowBase> defaults = new List<WindowBase>();
+		
+		/// <summary>
+		/// All registered windows.
+		/// If you want to use WindowSystem.Show<T>() you must register window here.
+		/// </summary>
 		public List<WindowBase> windows = new List<WindowBase>();
 		
 		[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 		
 		//[HideInInspector]
+		/// <summary>
+		/// The history of windows.
+		/// </summary>
 		public List<HistoryItem> history = new List<HistoryItem>();
 
 		[HideInInspector]
@@ -137,6 +149,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		/// <summary>
+		/// Init this instance.
+		/// </summary>
 		protected virtual void Init() {
 
 			foreach (var window in this.windows) window.CreatePool(0);
@@ -153,12 +168,20 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		/// <summary>
+		/// Determines if is user interface hovered.
+		/// </summary>
+		/// <returns><c>true</c> if is user interface hovered; otherwise, <c>false</c>.</returns>
 		public static bool IsUIHovered() {
 
 			return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 
 		}
-		
+
+		/// <summary>
+		/// Applies settings file (or default) to camera.
+		/// </summary>
+		/// <param name="camera">Camera.</param>
 		public static void ApplyToSettings(Camera camera) {
 			
 			if (WindowSystem.instance.settings.file == null) {
@@ -177,7 +200,11 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
-		
+
+		/// <summary>
+		/// Applies settings file (or default) to canvas.
+		/// </summary>
+		/// <param name="canvas">Canvas.</param>
 		public static void ApplyToSettings(Canvas canvas) {
 
 			if (WindowSystem.instance.settings.file == null) {
@@ -194,18 +221,30 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Adds to history.
+		/// </summary>
+		/// <param name="window">Window.</param>
 		public static void AddToHistory(WindowBase window) {
 
 			WindowSystem.instance.history.Add(new HistoryItem(window));
 
 		}
 
+		/// <summary>
+		/// Refreshes the history.
+		/// </summary>
 		public static void RefreshHistory() {
 
 			WindowSystem.instance.history.RemoveAll((item) => item.window == null);
 
 		}
 
+		/// <summary>
+		/// Gets the last window in history with the `Shown` state.
+		/// </summary>
+		/// <returns>The previous window.</returns>
+		/// <param name="current">Current.</param>
 		public static WindowBase GetPreviousWindow(WindowBase current) {
 
 			WindowBase prev = null;
@@ -225,6 +264,10 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		/// <summary>
+		/// Shows the default list windows.
+		/// </summary>
+		/// <param name="parameters">Parameters.</param>
 		public static void ShowDefault(params object[] parameters) {
 
 			WindowSystem.instance.ShowDefault_INTERNAL(parameters);
@@ -265,7 +308,12 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.instance.currentZDepth = WindowSystem.instance.settings.minZDepth;
 
 		}
-		
+
+		/// <summary>
+		/// Hides all and clean.
+		/// </summary>
+		/// <param name="except">Except.</param>
+		/// <param name="callback">Callback.</param>
 		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null) {
 			
 			WindowSystem.HideAll(except, () => {
@@ -277,7 +325,12 @@ namespace UnityEngine.UI.Windows {
 			});
 			
 		}
-		
+
+		/// <summary>
+		/// Hides all and clean.
+		/// </summary>
+		/// <param name="except">Except.</param>
+		/// <param name="callback">Callback.</param>
 		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null) {
 			
 			WindowSystem.HideAll(except, () => {
@@ -290,6 +343,10 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Clean the specified except.
+		/// </summary>
+		/// <param name="except">Except.</param>
 		public static void Clean(WindowBase except = null) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
@@ -314,7 +371,11 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.RefreshHistory();
 			
 		}
-		
+
+		/// <summary>
+		/// Clean the specified except.
+		/// </summary>
+		/// <param name="except">Except.</param>
 		public static void Clean(List<WindowBase> except) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
@@ -340,6 +401,11 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Hides all.
+		/// </summary>
+		/// <param name="except">Except.</param>
+		/// <param name="callback">Callback.</param>
 		public static void HideAll(WindowBase except = null, System.Action callback = null) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
@@ -353,7 +419,12 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.ResetDepth();
 			
 		}
-		
+
+		/// <summary>
+		/// Hides all.
+		/// </summary>
+		/// <param name="except">Except.</param>
+		/// <param name="callback">Callback.</param>
 		public static void HideAll(List<WindowBase> except, System.Action callback) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
@@ -368,6 +439,11 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Create the specified parameters.
+		/// </summary>
+		/// <param name="parameters">Parameters.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Create<T>(params object[] parameters) where T : WindowBase {
 			
 			var source = WindowSystem.instance.windows.FirstOrDefault((w) => w is T) as T;
@@ -397,7 +473,13 @@ namespace UnityEngine.UI.Windows {
 			return instance;
 			
 		}
-		
+
+		/// <summary>
+		/// Shows window of T type.
+		/// Returns null if window not registered.
+		/// </summary>
+		/// <param name="parameters">OnParametersPass() values.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(params object[] parameters) where T : WindowBase {
 
 			var instance = WindowSystem.Create<T>(parameters);
@@ -407,6 +489,13 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Shows window of T type.
+		/// Returns null if window not registered.
+		/// </summary>
+		/// <param name="source">Source.</param>
+		/// <param name="parameters">OnParametersPass() values.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(T source, params object[] parameters) where T : WindowBase {
 
 			var instance = WindowSystem.instance.Create_INTERNAL(source, parameters) as T;
@@ -435,6 +524,10 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Gets the depth step.
+		/// </summary>
+		/// <returns>The depth step.</returns>
 		public static float GetDepthStep() {
 
 			return WindowSystem.instance.depthStep;

@@ -1,0 +1,192 @@
+.TH "UnityEngine.UI.Windows.Components.ProgressComponent" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.Components.ProgressComponent \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBUnityEngine\&.UI\&.Windows\&.Components\&.ColoredComponent\fP\&.
+.PP
+Inherited by \fBUnityEngine\&.UI\&.Windows\&.Components\&.ProgressAnimatedComponent\fP, and \fBUnityEngine\&.UI\&.Windows\&.Components\&.ProgressWithParticlesComponent\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnInit\fP ()"
+.br
+.RI "\fIRaises the init event\&. You can override this method but call it's base\&. \fP"
+.ti -1c
+.RI "override void \fBOnHideBegin\fP (System\&.Action callback)"
+.br
+.RI "\fIRaises the hide begin event\&. Wait while all sub components return the callback\&. You can override this method but call it's base\&. \fP"
+.ti -1c
+.RI "virtual void \fBSetCallback\fP (UnityAction< float > callback)"
+.br
+.ti -1c
+.RI "virtual void \fBSetCallback\fP (UnityAction< \fBProgressComponent\fP, float > callback)"
+.br
+.ti -1c
+.RI "void \fBSetStep\fP (float minValue, float maxValue, bool roundToInt)"
+.br
+.ti -1c
+.RI "void \fBSetAsContinuous\fP (float width=0\&.4f)"
+.br
+.ti -1c
+.RI "void \fBSetAsDefault\fP ()"
+.br
+.ti -1c
+.RI "void \fBBreakAnimation\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetAnimation\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetValue\fP (System\&.Func< float > getValue, bool immediately=false)"
+.br
+.ti -1c
+.RI "virtual void \fBLateUpdate\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetValue\fP (float value, bool immediately=false)"
+.br
+.ti -1c
+.RI "float \fBGetValue\fP ()"
+.br
+.ti -1c
+.RI "float \fBGetValueNormalized\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "float \fBduration\fP = 0f"
+.br
+.ti -1c
+.RI "float \fBminNormalizedValue\fP = 0f"
+.br
+.ti -1c
+.RI "\fBExtensions\&.Slider\fP \fBbar\fP"
+.br
+.ti -1c
+.RI "bool \fBcontinious\fP"
+.br
+.ti -1c
+.RI "float \fBcontiniousWidth\fP = 0\&.4f"
+.br
+.ti -1c
+.RI "float \fBcontiniousAngleStep\fP = 0f"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 9 of file ProgressComponent\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.BreakAnimation ()"
+
+.PP
+Definition at line 104 of file ProgressComponent\&.cs\&.
+.SS "float UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.GetValue ()"
+
+.PP
+Definition at line 221 of file ProgressComponent\&.cs\&.
+.SS "float UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.GetValueNormalized ()"
+
+.PP
+Definition at line 227 of file ProgressComponent\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.LateUpdate ()\fC [virtual]\fP"
+
+.PP
+Definition at line 165 of file ProgressComponent\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.OnHideBegin (System\&.Action callback)\fC [virtual]\fP"
+
+.PP
+Raises the hide begin event\&. Wait while all sub components return the callback\&. You can override this method but call it's base\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowComponent\fP\&.
+.PP
+Reimplemented in \fBUnityEngine\&.UI\&.Windows\&.Components\&.ProgressWithParticlesComponent\fP\&.
+.PP
+Definition at line 48 of file ProgressComponent\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.OnInit ()\fC [virtual]\fP"
+
+.PP
+Raises the init event\&. You can override this method but call it's base\&. 
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowComponent\fP\&.
+.PP
+Reimplemented in \fBUnityEngine\&.UI\&.Windows\&.Components\&.ProgressWithParticlesComponent\fP\&.
+.PP
+Definition at line 24 of file ProgressComponent\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetAnimation ()"
+
+.PP
+Definition at line 110 of file ProgressComponent\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetAsContinuous (float width = \fC0\&.4f\fP)"
+
+.PP
+Definition at line 87 of file ProgressComponent\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetAsDefault ()"
+
+.PP
+Definition at line 96 of file ProgressComponent\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetCallback (UnityAction< float > callback)\fC [virtual]\fP"
+
+.PP
+Definition at line 56 of file ProgressComponent\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetCallback (UnityAction< \fBProgressComponent\fP, float > callback)\fC [virtual]\fP"
+
+.PP
+Definition at line 63 of file ProgressComponent\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetStep (float minValue, float maxValue, bool roundToInt)"
+
+.PP
+Definition at line 79 of file ProgressComponent\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetValue (System\&.Func< float > getValue, bool immediately = \fCfalse\fP)"
+
+.PP
+Definition at line 158 of file ProgressComponent\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.SetValue (float value, bool immediately = \fCfalse\fP)"
+
+.PP
+Definition at line 175 of file ProgressComponent\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBExtensions\&.Slider\fP UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.bar"
+
+.PP
+Definition at line 13 of file ProgressComponent\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.continious"
+
+.PP
+Definition at line 15 of file ProgressComponent\&.cs\&.
+.SS "float UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.continiousAngleStep = 0f"
+
+.PP
+Definition at line 18 of file ProgressComponent\&.cs\&.
+.SS "float UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.continiousWidth = 0\&.4f"
+
+.PP
+Definition at line 17 of file ProgressComponent\&.cs\&.
+.SS "float UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.duration = 0f"
+
+.PP
+Definition at line 11 of file ProgressComponent\&.cs\&.
+.SS "float UnityEngine\&.UI\&.Windows\&.Components\&.ProgressComponent\&.minNormalizedValue = 0f"
+
+.PP
+Definition at line 12 of file ProgressComponent\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

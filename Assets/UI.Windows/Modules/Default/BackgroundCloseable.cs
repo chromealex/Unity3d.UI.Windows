@@ -2,34 +2,38 @@
 using System.Collections;
 using UnityEngine.UI.Windows;
 
-public class BackgroundCloseable : WindowModule {
+namespace UnityEngine.UI.Windows.Modules {
 
-	private System.Action callback;
-	private bool overrideAutoHide = false;
+	public class BackgroundCloseable : WindowModule {
 
-	public void SetCallback(System.Action callback, bool overrideAutoHide = true) {
+		private System.Action callback;
+		private bool overrideAutoHide = false;
 
-		this.overrideAutoHide = overrideAutoHide;
-		this.callback = callback;
+		public void SetCallback(System.Action callback, bool overrideAutoHide = true) {
 
-	}
-
-	public override void OnDeinit() {
-
-		this.callback = null;
-
-	}
-
-	public void HideWindow() {
-
-		if (this.callback != null) {
-
-			this.callback();
-			if (this.overrideAutoHide == true) return;
+			this.overrideAutoHide = overrideAutoHide;
+			this.callback = callback;
 
 		}
 
-		this.GetWindow().Hide();
+		public override void OnDeinit() {
+
+			this.callback = null;
+
+		}
+
+		public void HideWindow() {
+
+			if (this.callback != null) {
+
+				this.callback();
+				if (this.overrideAutoHide == true) return;
+
+			}
+
+			this.GetWindow().Hide();
+
+		}
 
 	}
 

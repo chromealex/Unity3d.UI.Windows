@@ -1,0 +1,248 @@
+.TH "UnityEngine.UI.Windows" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "package \fBAnimations\fP"
+.br
+.ti -1c
+.RI "package \fBComponents\fP"
+.br
+.ti -1c
+.RI "package \fBExtensions\fP"
+.br
+.ti -1c
+.RI "package \fBModules\fP"
+.br
+.ti -1c
+.RI "package \fBPlugins\fP"
+.br
+.ti -1c
+.RI "package \fBTypes\fP"
+.br
+.in -1c
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBEvents\fP"
+.br
+.ti -1c
+.RI "interface \fBIPreviewEditor\fP"
+.br
+.ti -1c
+.RI "interface \fBIWindowAnimation\fP"
+.br
+.ti -1c
+.RI "interface \fBIWindowComponentLayout\fP"
+.br
+.ti -1c
+.RI "interface \fBIWindowEventsAsync\fP"
+.br
+.ti -1c
+.RI "class \fBPreferences\fP"
+.br
+.ti -1c
+.RI "class \fBTransition\fP"
+.br
+.ti -1c
+.RI "class \fBWindowBase\fP"
+.br
+.ti -1c
+.RI "class \fBWindowComponent\fP"
+.br
+.ti -1c
+.RI "class \fBWindowComponentBase\fP"
+.br
+.ti -1c
+.RI "class \fBWindowComponentLibraryLinker\fP"
+.br
+.ti -1c
+.RI "class \fBWindowLayout\fP"
+.br
+.ti -1c
+.RI "class \fBWindowLayoutBase\fP"
+.br
+.ti -1c
+.RI "class \fBWindowLayoutElement\fP"
+.br
+.ti -1c
+.RI "class \fBWindowLayoutRoot\fP"
+.br
+.ti -1c
+.RI "class \fBWindowModule\fP"
+.br
+.ti -1c
+.RI "class \fBWindowObject\fP"
+.br
+.ti -1c
+.RI "class \fBWindowSystem\fP"
+.br
+.ti -1c
+.RI "class \fBWindowSystemFlow\fP"
+.br
+.ti -1c
+.RI "class \fBWindowSystemInput\fP"
+.br
+.ti -1c
+.RI "class \fBWindowSystemPlatforms\fP"
+.br
+.ti -1c
+.RI "class \fBWindowSystemSettings\fP"
+.br
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBWindowEventType\fP : byte { \fBWindowEventType\&.OnInit\fP, \fBWindowEventType\&.OnDeinit\fP, \fBWindowEventType\&.OnShowBegin\fP, \fBWindowEventType\&.OnShowEnd\fP, \fBWindowEventType\&.OnHideBegin\fP, \fBWindowEventType\&.OnHideEnd\fP }"
+.br
+.ti -1c
+.RI "enum \fBWindowObjectState\fP : byte { \fBWindowObjectState\&.NotInitialized\fP = 0, \fBWindowObjectState\&.Initializing\fP, \fBWindowObjectState\&.Initialized\fP, \fBWindowObjectState\&.Showing\fP, \fBWindowObjectState\&.Shown\fP, \fBWindowObjectState\&.Hiding\fP, \fBWindowObjectState\&.Hidden\fP }"
+.br
+.RI "\fIWindow or component object state\&. \fP"
+.ti -1c
+.RI "enum \fBLayoutTag\fP : byte { \fBLayoutTag\&.None\fP = 0, \fBLayoutTag\&.Tag1\fP, \fBLayoutTag\&.Tag2\fP, \fBLayoutTag\&.Tag3\fP, \fBLayoutTag\&.Tag4\fP, \fBLayoutTag\&.Tag5\fP, \fBLayoutTag\&.Tag6\fP, \fBLayoutTag\&.Tag7\fP, \fBLayoutTag\&.Tag8\fP, \fBLayoutTag\&.Tag9\fP, \fBLayoutTag\&.Tag10\fP, \fBLayoutTag\&.Tag11\fP, \fBLayoutTag\&.Tag12\fP, \fBLayoutTag\&.Tag13\fP, \fBLayoutTag\&.Tag14\fP, \fBLayoutTag\&.Tag15\fP, \fBLayoutTag\&.Tag16\fP, \fBLayoutTag\&.Tag17\fP, \fBLayoutTag\&.Tag18\fP, \fBLayoutTag\&.Tag19\fP, \fBLayoutTag\&.Tag20\fP, \fBLayoutTag\&.Tag21\fP, \fBLayoutTag\&.Tag22\fP, \fBLayoutTag\&.Tag23\fP, \fBLayoutTag\&.Tag24\fP, \fBLayoutTag\&.Tag25\fP, \fBLayoutTag\&.Tag26\fP, \fBLayoutTag\&.Tag27\fP, \fBLayoutTag\&.Tag28\fP, \fBLayoutTag\&.Tag29\fP, \fBLayoutTag\&.Tag30\fP, \fBLayoutTag\&.Tag31\fP, \fBLayoutTag\&.Tag32\fP, \fBLayoutTag\&.Tag33\fP, \fBLayoutTag\&.Tag34\fP, \fBLayoutTag\&.Tag35\fP, \fBLayoutTag\&.Tag36\fP, \fBLayoutTag\&.Tag37\fP, \fBLayoutTag\&.Tag38\fP, \fBLayoutTag\&.Tag39\fP }"
+.br
+.in -1c
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBUnityEngine\&.UI\&.Windows\&.LayoutTag\fP : byte"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINone \fP\fP
+.TP
+\fB\fITag1 \fP\fP
+.TP
+\fB\fITag2 \fP\fP
+.TP
+\fB\fITag3 \fP\fP
+.TP
+\fB\fITag4 \fP\fP
+.TP
+\fB\fITag5 \fP\fP
+.TP
+\fB\fITag6 \fP\fP
+.TP
+\fB\fITag7 \fP\fP
+.TP
+\fB\fITag8 \fP\fP
+.TP
+\fB\fITag9 \fP\fP
+.TP
+\fB\fITag10 \fP\fP
+.TP
+\fB\fITag11 \fP\fP
+.TP
+\fB\fITag12 \fP\fP
+.TP
+\fB\fITag13 \fP\fP
+.TP
+\fB\fITag14 \fP\fP
+.TP
+\fB\fITag15 \fP\fP
+.TP
+\fB\fITag16 \fP\fP
+.TP
+\fB\fITag17 \fP\fP
+.TP
+\fB\fITag18 \fP\fP
+.TP
+\fB\fITag19 \fP\fP
+.TP
+\fB\fITag20 \fP\fP
+.TP
+\fB\fITag21 \fP\fP
+.TP
+\fB\fITag22 \fP\fP
+.TP
+\fB\fITag23 \fP\fP
+.TP
+\fB\fITag24 \fP\fP
+.TP
+\fB\fITag25 \fP\fP
+.TP
+\fB\fITag26 \fP\fP
+.TP
+\fB\fITag27 \fP\fP
+.TP
+\fB\fITag28 \fP\fP
+.TP
+\fB\fITag29 \fP\fP
+.TP
+\fB\fITag30 \fP\fP
+.TP
+\fB\fITag31 \fP\fP
+.TP
+\fB\fITag32 \fP\fP
+.TP
+\fB\fITag33 \fP\fP
+.TP
+\fB\fITag34 \fP\fP
+.TP
+\fB\fITag35 \fP\fP
+.TP
+\fB\fITag36 \fP\fP
+.TP
+\fB\fITag37 \fP\fP
+.TP
+\fB\fITag38 \fP\fP
+.TP
+\fB\fITag39 \fP\fP
+.PP
+Definition at line 5 of file IWindowLayout\&.cs\&.
+.SS "enum \fBUnityEngine\&.UI\&.Windows\&.WindowEventType\fP : byte"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIOnInit \fP\fP
+.TP
+\fB\fIOnDeinit \fP\fP
+.TP
+\fB\fIOnShowBegin \fP\fP
+.TP
+\fB\fIOnShowEnd \fP\fP
+.TP
+\fB\fIOnHideBegin \fP\fP
+.TP
+\fB\fIOnHideEnd \fP\fP
+.PP
+Definition at line 15 of file IWindow\&.cs\&.
+.SS "enum \fBUnityEngine\&.UI\&.Windows\&.WindowObjectState\fP : byte"
+
+.PP
+Window or component object state\&. 
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINotInitialized \fP\fP
+.TP
+\fB\fIInitializing \fP\fP
+.TP
+\fB\fIInitialized \fP\fP
+.TP
+\fB\fIShowing \fP\fP
+.TP
+\fB\fIShown \fP\fP
+.TP
+\fB\fIHiding \fP\fP
+.TP
+\fB\fIHidden \fP\fP
+.PP
+Definition at line 12 of file WindowBase\&.cs\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

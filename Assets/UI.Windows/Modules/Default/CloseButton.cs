@@ -2,26 +2,30 @@
 using System.Collections;
 using UnityEngine.UI.Windows;
 
-public class CloseButton : WindowModule {
+namespace UnityEngine.UI.Windows.Modules {
 
-	private System.Action callback;
+	public class CloseButton : WindowModule {
 
-	public void SetManualCallback(System.Action callback) {
+		private System.Action callback;
 
-		this.callback = callback;
+		public void SetManualCallback(System.Action callback) {
 
-	}
-
-	public void OnAction() {
-
-		if (this.callback != null) {
-
-			this.callback();
-			return;
+			this.callback = callback;
 
 		}
 
-		this.GetWindow().Hide();
+		public void OnAction() {
+
+			if (this.callback != null) {
+
+				this.callback();
+				return;
+
+			}
+
+			this.GetWindow().Hide();
+
+		}
 
 	}
 

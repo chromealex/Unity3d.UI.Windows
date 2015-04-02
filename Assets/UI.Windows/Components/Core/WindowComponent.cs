@@ -14,6 +14,10 @@ namespace UnityEngine.UI.Windows {
 
 		private WindowLayoutBase layoutRoot;
 
+		/// <summary>
+		/// Gets the sub components.
+		/// </summary>
+		/// <returns>The sub components.</returns>
 		public List<WindowComponent> GetSubComponents() {
 
 			return this.subComponents;
@@ -36,12 +40,23 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Gets the layout root.
+		/// Basicaly it's the parent transform from current. But it's not always so.
+		/// Sometimes you need to get layout element where this component (or it's parent) stored to play animation (for example).
+		/// </summary>
+		/// <returns>The layout root.</returns>
 		public WindowLayoutBase GetLayoutRoot() {
 			
 			return this.layoutRoot;
 			
 		}
-		
+
+		/// <summary>
+		/// Registers the sub component.
+		/// If you want to instantiate new component manualy but wants the window events - register this component here.
+		/// </summary>
+		/// <param name="subComponent">Sub component.</param>
 		public void RegisterSubComponent(WindowComponent subComponent) {
 
 			switch (this.GetWindow().GetState()) {
@@ -73,7 +88,11 @@ namespace UnityEngine.UI.Windows {
 			if (this.subComponents.Contains(subComponent) == false) this.subComponents.Add(subComponent);
 			
 		}
-		
+
+		/// <summary>
+		/// Unregisters the sub component.
+		/// </summary>
+		/// <param name="subComponent">Sub component.</param>
 		public void UnregisterSubComponent(WindowComponent subComponent) {
 			
 			switch (this.GetWindow().GetState()) {

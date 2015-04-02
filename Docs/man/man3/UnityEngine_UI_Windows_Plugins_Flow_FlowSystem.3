@@ -1,0 +1,234 @@
+.TH "UnityEngine.UI.Windows.Plugins.Flow.FlowSystem" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.Plugins.Flow.FlowSystem \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static Rect \fBGrid\fP (Rect rect)"
+.br
+.ti -1c
+.RI "static void \fBSave\fP ()"
+.br
+.ti -1c
+.RI "static void \fBSetDirty\fP ()"
+.br
+.ti -1c
+.RI "static \fBFlowData\fP \fBGetData\fP ()"
+.br
+.ti -1c
+.RI "static void \fBSetData\fP (\fBFlowData\fP \fBdata\fP)"
+.br
+.ti -1c
+.RI "static bool \fBHasData\fP ()"
+.br
+.ti -1c
+.RI "static List< \fBFlowTag\fP > \fBGetTags\fP ()"
+.br
+.ti -1c
+.RI "static void \fBAddTag\fP (\fBFlowWindow\fP window, \fBFlowTag\fP tag)"
+.br
+.ti -1c
+.RI "static void \fBRemoveTag\fP (\fBFlowWindow\fP window, \fBFlowTag\fP tag)"
+.br
+.ti -1c
+.RI "static void \fBSetRootWindow\fP (int id)"
+.br
+.ti -1c
+.RI "static int \fBGetRootWindow\fP ()"
+.br
+.ti -1c
+.RI "static List< int > \fBGetDefaultWindows\fP ()"
+.br
+.ti -1c
+.RI "static void \fBSetDefaultWindows\fP (List< int > list)"
+.br
+.ti -1c
+.RI "static IEnumerable< \fBFlowWindow\fP > \fBGetWindows\fP ()"
+.br
+.ti -1c
+.RI "static IEnumerable< \fBFlowWindow\fP > \fBGetContainers\fP ()"
+.br
+.ti -1c
+.RI "static \fBFlowWindow\fP \fBGetWindow\fP (int id)"
+.br
+.ti -1c
+.RI "static \fBFlowWindow\fP \fBCreateContainer\fP ()"
+.br
+.ti -1c
+.RI "static \fBFlowWindow\fP \fBCreateWindow\fP ()"
+.br
+.ti -1c
+.RI "static \fBFlowWindow\fP \fBCreateDefaultLink\fP ()"
+.br
+.ti -1c
+.RI "static void \fBSetScrollPosition\fP (Vector2 pos)"
+.br
+.ti -1c
+.RI "static Vector2 \fBGetScrollPosition\fP ()"
+.br
+.ti -1c
+.RI "static void \fBMoveContainerOrWindow\fP (int id, Vector2 delta)"
+.br
+.ti -1c
+.RI "static void \fBForEachContainer\fP (int startId, System\&.Func< \fBFlowWindow\fP, string, string > each, string accumulate='')"
+.br
+.ti -1c
+.RI "static void \fBSelectWindows\fP (params int[] ids)"
+.br
+.ti -1c
+.RI "static void \fBSelectWindowsInRect\fP (Rect rect, System\&.Func< \fBFlowWindow\fP, bool > predicate=null)"
+.br
+.ti -1c
+.RI "static List< int > \fBGetSelected\fP ()"
+.br
+.ti -1c
+.RI "static void \fBResetSelection\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBFlowData\fP \fBdata\fP"
+.br
+.in -1c
+.SS "Static Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "static Vector2 \fBgrid\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 15 of file FlowSystem\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.AddTag (\fBFlowWindow\fP window, \fBFlowTag\fP tag)\fC [static]\fP"
+
+.PP
+Definition at line 80 of file FlowSystem\&.cs\&.
+.SS "static \fBFlowWindow\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.CreateContainer ()\fC [static]\fP"
+
+.PP
+Definition at line 146 of file FlowSystem\&.cs\&.
+.SS "static \fBFlowWindow\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.CreateDefaultLink ()\fC [static]\fP"
+
+.PP
+Definition at line 158 of file FlowSystem\&.cs\&.
+.SS "static \fBFlowWindow\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.CreateWindow ()\fC [static]\fP"
+
+.PP
+Definition at line 152 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.ForEachContainer (int startId, System\&.Func< \fBFlowWindow\fP, string, string > each, string accumulate = \fC''\fP)\fC [static]\fP"
+
+.PP
+Definition at line 226 of file FlowSystem\&.cs\&.
+.SS "static IEnumerable<\fBFlowWindow\fP> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetContainers ()\fC [static]\fP"
+
+.PP
+Definition at line 130 of file FlowSystem\&.cs\&.
+.SS "static \fBFlowData\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetData ()\fC [static]\fP"
+
+.PP
+Definition at line 54 of file FlowSystem\&.cs\&.
+.SS "static List<int> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetDefaultWindows ()\fC [static]\fP"
+
+.PP
+Definition at line 108 of file FlowSystem\&.cs\&.
+.SS "static int UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetRootWindow ()\fC [static]\fP"
+
+.PP
+Definition at line 100 of file FlowSystem\&.cs\&.
+.SS "static Vector2 UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetScrollPosition ()\fC [static]\fP"
+
+.PP
+Definition at line 198 of file FlowSystem\&.cs\&.
+.SS "static List<int> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetSelected ()\fC [static]\fP"
+
+.PP
+Definition at line 260 of file FlowSystem\&.cs\&.
+.SS "static List<\fBFlowTag\fP> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetTags ()\fC [static]\fP"
+
+.PP
+Definition at line 72 of file FlowSystem\&.cs\&.
+.SS "static \fBFlowWindow\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetWindow (int id)\fC [static]\fP"
+
+.PP
+Definition at line 138 of file FlowSystem\&.cs\&.
+.SS "static IEnumerable<\fBFlowWindow\fP> UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.GetWindows ()\fC [static]\fP"
+
+.PP
+Definition at line 122 of file FlowSystem\&.cs\&.
+.SS "static Rect UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.Grid (Rect rect)\fC [static]\fP"
+
+.PP
+Definition at line 33 of file FlowSystem\&.cs\&.
+.SS "static bool UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.HasData ()\fC [static]\fP"
+
+.PP
+Definition at line 66 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.MoveContainerOrWindow (int id, Vector2 delta)\fC [static]\fP"
+
+.PP
+Definition at line 206 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.RemoveTag (\fBFlowWindow\fP window, \fBFlowTag\fP tag)\fC [static]\fP"
+
+.PP
+Definition at line 86 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.ResetSelection ()\fC [static]\fP"
+
+.PP
+Definition at line 266 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.Save ()\fC [static]\fP"
+
+.PP
+Definition at line 42 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.SelectWindows (params int[] ids)\fC [static]\fP"
+
+.PP
+Definition at line 244 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.SelectWindowsInRect (Rect rect, System\&.Func< \fBFlowWindow\fP, bool > predicate = \fCnull\fP)\fC [static]\fP"
+
+.PP
+Definition at line 252 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.SetData (\fBFlowData\fP data)\fC [static]\fP"
+
+.PP
+Definition at line 60 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.SetDefaultWindows (List< int > list)\fC [static]\fP"
+
+.PP
+Definition at line 116 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.SetDirty ()\fC [static]\fP"
+
+.PP
+Definition at line 48 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.SetRootWindow (int id)\fC [static]\fP"
+
+.PP
+Definition at line 92 of file FlowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.SetScrollPosition (Vector2 pos)\fC [static]\fP"
+
+.PP
+Definition at line 190 of file FlowSystem\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBFlowData\fP UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.data"
+
+.PP
+Definition at line 17 of file FlowSystem\&.cs\&.
+.SS "Vector2 UnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowSystem\&.grid\fC [static]\fP"
+
+.PP
+Definition at line 31 of file FlowSystem\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 

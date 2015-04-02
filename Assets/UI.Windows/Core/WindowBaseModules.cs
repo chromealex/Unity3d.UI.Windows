@@ -3,223 +3,229 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Extensions;
+using UnityEngine.UI.Windows.Animations;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEngine.UI.Windows {
-	
-	[System.Serializable]
-	public class Modules : IWindowEventsAsync {
-		
+
+	namespace Modules {
+
 		[System.Serializable]
-		public class ModuleInfo : IWindowEventsAsync {
+		public class Modules : IWindowEventsAsync {
+			
+			[System.Serializable]
+			public class ModuleInfo : IWindowEventsAsync {
 
-			public WindowModule moduleSource;
-			public int sortingOrder;
-			public bool backgroundLayer;
+				public WindowModule moduleSource;
+				public int sortingOrder;
+				public bool backgroundLayer;
 
-			[HideInInspector][System.NonSerialized]
-			private IWindowAnimation instance;
+				[HideInInspector][System.NonSerialized]
+				private IWindowAnimation instance;
 
-			public ModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
+				public ModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
 
-				this.moduleSource = moduleSource;
-				this.sortingOrder = sortingOrder;
-				this.backgroundLayer = backgroundLayer;
+					this.moduleSource = moduleSource;
+					this.sortingOrder = sortingOrder;
+					this.backgroundLayer = backgroundLayer;
+
+				}
+
+				public void Create(WindowBase window, Transform modulesRoot) {
+					
+					var instance = this.moduleSource.Spawn();
+					instance.transform.SetParent(modulesRoot);
+					instance.transform.localPosition = Vector3.zero;
+					instance.transform.localRotation = Quaternion.identity;
+					instance.transform.localScale = Vector3.one;
+					
+					var rect = instance.transform as RectTransform;
+					rect.sizeDelta = (this.moduleSource.transform as RectTransform).sizeDelta;
+					rect.anchoredPosition = (this.moduleSource.transform as RectTransform).anchoredPosition;
+					
+					instance.transform.SetSiblingIndex(this.backgroundLayer == true ? -this.sortingOrder : this.sortingOrder + 1);
+					
+					instance.Setup(window);
+					
+					this.instance = instance;
+					
+				}
+				
+				public float GetDuration(bool forward) {
+					
+					return this.instance.GetAnimationDuration(forward);
+					
+				}
+				
+				public T Get<T>() where T : WindowModule {
+					
+					return this.instance as T;
+					
+				}
+				
+				public void OnInit() { if (this.instance != null) this.instance.OnInit(); }
+				public void OnDeinit() { if (this.instance != null) this.instance.OnDeinit(); }
+				public void OnShowBegin(System.Action callback) {
+
+					if (this.instance != null) {
+
+						this.instance.OnShowBegin(callback);
+
+					} else {
+
+						if (callback != null) callback();
+
+					}
+
+				}
+
+				public void OnShowEnd() { if (this.instance != null) this.instance.OnShowEnd(); }
+				public void OnHideBegin(System.Action callback) {
+					
+					if (this.instance != null) {
+						
+						this.instance.OnHideBegin(callback);
+						
+					} else {
+						
+						if (callback != null) callback();
+						
+					}
+
+				}
+
+				public void OnHideEnd() { if (this.instance != null) this.instance.OnHideEnd(); }
+				
+			}
+
+			[SerializeField]
+			private ModuleInfo[] elements;
+
+	#if UNITY_EDITOR
+			public void RemoveModule(ModuleInfo moduleInfo) {
+
+				var list = this.elements.ToList();
+				list.Remove(moduleInfo);
+				this.elements = list.ToArray();
 
 			}
+
+			public ModuleInfo AddModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
+
+				var instance = new ModuleInfo(moduleSource, sortingOrder, backgroundLayer);
+
+				var list = this.elements.ToList();
+				list.Add(instance);
+				this.elements = list.ToArray();
+
+				return instance;
+
+			}
+
+			public ModuleInfo[] GetModulesInfo() {
+
+				return this.elements;
+
+			}
+	#endif
 
 			public void Create(WindowBase window, Transform modulesRoot) {
 				
-				var instance = this.moduleSource.Spawn();
-				instance.transform.SetParent(modulesRoot);
-				instance.transform.localPosition = Vector3.zero;
-				instance.transform.localRotation = Quaternion.identity;
-				instance.transform.localScale = Vector3.one;
-				
-				var rect = instance.transform as RectTransform;
-				rect.sizeDelta = (this.moduleSource.transform as RectTransform).sizeDelta;
-				rect.anchoredPosition = (this.moduleSource.transform as RectTransform).anchoredPosition;
-				
-				instance.transform.SetSiblingIndex(this.backgroundLayer == true ? -this.sortingOrder : this.sortingOrder + 1);
-				
-				instance.Setup(window);
-				
-				this.instance = instance;
+				foreach (var element in this.elements) {
+					
+					element.Create(window, modulesRoot);
+					
+				}
 				
 			}
 			
-			public float GetDuration(bool forward) {
+			public float GetAnimationDuration(bool forward) {
 				
-				return this.instance.GetAnimationDuration(forward);
+				var maxDuration = 0f;
+				foreach (var element in this.elements) {
+					
+					var d = element.GetDuration(forward);
+					if (d >= maxDuration) {
+						
+						maxDuration = d;
+						
+					}
+					
+				}
+				
+				return maxDuration;
 				
 			}
 			
 			public T Get<T>() where T : WindowModule {
 				
-				return this.instance as T;
+				foreach (var element in this.elements) {
+					
+					var item = element.Get<T>();
+					if (item != null) return item;
+					
+				}
+				
+				return default(T);
 				
 			}
 			
-			public void OnInit() { if (this.instance != null) this.instance.OnInit(); }
-			public void OnDeinit() { if (this.instance != null) this.instance.OnDeinit(); }
+			// Events
+			public void OnInit() { foreach (var element in this.elements) element.OnInit(); }
+			public void OnDeinit() { foreach (var element in this.elements) element.OnDeinit(); }
 			public void OnShowBegin(System.Action callback) {
-
-				if (this.instance != null) {
-
-					this.instance.OnShowBegin(callback);
-
-				} else {
-
+				
+				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnShowBegin(c); });
+				/*
+				var counter = 0;
+				System.Action callbackItem = () => {
+					
+					++counter;
+					if (counter < this.elements.Length) return;
+					
 					if (callback != null) callback();
-
+					
+				};
+				
+				foreach (var element in this.elements) {
+					
+					element.OnShowBegin(callbackItem);
+					
 				}
 
+				if (this.elements.Length == 0 && callback != null) callback();
+	*/
 			}
-
-			public void OnShowEnd() { if (this.instance != null) this.instance.OnShowEnd(); }
+			public void OnShowEnd() { foreach (var element in this.elements) element.OnShowEnd(); }
 			public void OnHideBegin(System.Action callback) {
 				
-				if (this.instance != null) {
-					
-					this.instance.OnHideBegin(callback);
-					
-				} else {
-					
+				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnHideBegin(c); });
+				/*
+				var counter = 0;
+				System.Action callbackItem = () => {
+
+					++counter;
+					if (counter < this.elements.Length) return;
+
 					if (callback != null) callback();
+
+				};
+
+				foreach (var element in this.elements) {
 					
-				}
+					element.OnHideBegin(callbackItem);
 
-			}
-
-			public void OnHideEnd() { if (this.instance != null) this.instance.OnHideEnd(); }
-			
-		}
-
-		[SerializeField]
-		private ModuleInfo[] elements;
-
-#if UNITY_EDITOR
-		public void RemoveModule(ModuleInfo moduleInfo) {
-
-			var list = this.elements.ToList();
-			list.Remove(moduleInfo);
-			this.elements = list.ToArray();
-
-		}
-
-		public ModuleInfo AddModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
-
-			var instance = new ModuleInfo(moduleSource, sortingOrder, backgroundLayer);
-
-			var list = this.elements.ToList();
-			list.Add(instance);
-			this.elements = list.ToArray();
-
-			return instance;
-
-		}
-
-		public ModuleInfo[] GetModulesInfo() {
-
-			return this.elements;
-
-		}
-#endif
-
-		public void Create(WindowBase window, Transform modulesRoot) {
-			
-			foreach (var element in this.elements) {
-				
-				element.Create(window, modulesRoot);
-				
-			}
-			
-		}
-		
-		public float GetAnimationDuration(bool forward) {
-			
-			var maxDuration = 0f;
-			foreach (var element in this.elements) {
-				
-				var d = element.GetDuration(forward);
-				if (d >= maxDuration) {
-					
-					maxDuration = d;
-					
 				}
 				
+				if (this.elements.Length == 0 && callback != null) callback();
+	*/
 			}
-			
-			return maxDuration;
+			public void OnHideEnd() { foreach (var element in this.elements) element.OnHideEnd(); }
 			
 		}
-		
-		public T Get<T>() where T : WindowModule {
-			
-			foreach (var element in this.elements) {
-				
-				var item = element.Get<T>();
-				if (item != null) return item;
-				
-			}
-			
-			return default(T);
-			
-		}
-		
-		// Events
-		public void OnInit() { foreach (var element in this.elements) element.OnInit(); }
-		public void OnDeinit() { foreach (var element in this.elements) element.OnDeinit(); }
-		public void OnShowBegin(System.Action callback) {
-			
-			ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnShowBegin(c); });
-			/*
-			var counter = 0;
-			System.Action callbackItem = () => {
-				
-				++counter;
-				if (counter < this.elements.Length) return;
-				
-				if (callback != null) callback();
-				
-			};
-			
-			foreach (var element in this.elements) {
-				
-				element.OnShowBegin(callbackItem);
-				
-			}
 
-			if (this.elements.Length == 0 && callback != null) callback();
-*/
-		}
-		public void OnShowEnd() { foreach (var element in this.elements) element.OnShowEnd(); }
-		public void OnHideBegin(System.Action callback) {
-			
-			ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnHideBegin(c); });
-			/*
-			var counter = 0;
-			System.Action callbackItem = () => {
-
-				++counter;
-				if (counter < this.elements.Length) return;
-
-				if (callback != null) callback();
-
-			};
-
-			foreach (var element in this.elements) {
-				
-				element.OnHideBegin(callbackItem);
-
-			}
-			
-			if (this.elements.Length == 0 && callback != null) callback();
-*/
-		}
-		public void OnHideEnd() { foreach (var element in this.elements) element.OnHideEnd(); }
-		
 	}
-	
+
 	[System.Serializable]
 	public class Events : IWindowEventsAsync {
 		

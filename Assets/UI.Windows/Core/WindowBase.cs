@@ -6,6 +6,9 @@ using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
+	/// <summary>
+	/// Window or component object state.
+	/// </summary>
 	public enum WindowObjectState : byte {
 
 		NotInitialized = 0,
@@ -26,12 +29,10 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector]
 		public Camera workCamera;
-		[HideInInspector]
-		public bool initialized = false;
 
 		public Preferences preferences;
 		public Transition transition;
-		public Modules modules;
+		public Modules.Modules modules;
 		public Events events;
 		
 		[HideInInspector]
@@ -40,6 +41,8 @@ namespace UnityEngine.UI.Windows {
 		private bool passParams = false;
 		[HideInInspector]
 		private object[] parameters;
+		[HideInInspector]
+		private bool initialized = false;
 
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 
@@ -115,26 +118,30 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-		
+
+		/// <summary>
+		/// Gets the state.
+		/// </summary>
+		/// <returns>The state.</returns>
 		public WindowObjectState GetState() {
 			
 			return this.currentState;
 			
 		}
 		
-		public void OnRenderImage(RenderTexture source, RenderTexture destination) {
+		private void OnRenderImage(RenderTexture source, RenderTexture destination) {
 			
 			this.transition.OnRenderImage(source, destination);
 			
 		}
 		
-		public void OnPostRender() {
+		private void OnPostRender() {
 			
 			this.transition.OnPostRender();
 			
 		}
 		
-		public void OnPreRender() {
+		private void OnPreRender() {
 			
 			this.transition.OnPreRender();
 			
@@ -155,18 +162,31 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		/// <summary>
+		/// Gets the name of the sorting layer.
+		/// </summary>
+		/// <returns>The sorting layer name.</returns>
 		public virtual string GetSortingLayerName() {
 
 			return string.Empty;
 
 		}
 
+		/// <summary>
+		/// Gets the sorting order.
+		/// </summary>
+		/// <returns>The sorting order.</returns>
 		public virtual int GetSortingOrder() {
 			
 			return 0;
 
 		}
-		
+
+		/// <summary>
+		/// Gets the duration of the animation.
+		/// </summary>
+		/// <returns>The animation duration.</returns>
+		/// <param name="forward">If set to <c>true</c> forward.</param>
 		public float GetAnimationDuration(bool forward) {
 			
 			var layoutDuration = this.GetLayoutAnimationDuration(forward);
@@ -176,26 +196,54 @@ namespace UnityEngine.UI.Windows {
 			return Mathf.Max(layoutDuration, Mathf.Max(moduleDuration, transitionDuration));
 
 		}
-		
+
+		/// <summary>
+		/// Gets the duration of the transition animation.
+		/// </summary>
+		/// <returns>The transition animation duration.</returns>
+		/// <param name="forward">If set to <c>true</c> forward.</param>
 		public virtual float GetTransitionAnimationDuration(bool forward) {
 			
 			return this.transition.GetAnimationDuration(forward);
 			
 		}
 
+		/// <summary>
+		/// Gets the duration of the module animation.
+		/// </summary>
+		/// <returns>The module animation duration.</returns>
+		/// <param name="forward">If set to <c>true</c> forward.</param>
 		public virtual float GetModuleAnimationDuration(bool forward) {
 			
 			return this.modules.GetAnimationDuration(forward);
 			
 		}
 
+		/// <summary>
+		/// Gets the module.
+		/// </summary>
+		/// <returns>The module.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public T GetModule<T>() where T : WindowModule {
 
 			return this.modules.Get<T>();
 
 		}
 
+		/// <summary>
+		/// Show this instance.
+		/// </summary>
 		public void Show() {
+
+			this.Show(null);
+
+		}
+
+		/// <summary>
+		/// Show the specified onShowEnd.
+		/// </summary>
+		/// <param name="onShowEnd">On show end.</param>
+		public void Show(System.Action onShowEnd) {
 			
 			if (this.currentState == WindowObjectState.Showing || this.currentState == WindowObjectState.Shown) return;
 			this.currentState = WindowObjectState.Showing;
@@ -215,6 +263,7 @@ namespace UnityEngine.UI.Windows {
 				this.modules.OnShowEnd();
 				this.events.OnShowEnd();
 				this.transition.OnShowEnd();
+				if (onShowEnd != null) onShowEnd();
 
 			    this.currentState = WindowObjectState.Shown;
 
@@ -229,13 +278,21 @@ namespace UnityEngine.UI.Windows {
 			this.gameObject.SetActive(true);
 			
 		}
-		
+
+		/// <summary>
+		/// Hide this instance.
+		/// </summary>
 		public bool Hide() {
 			
 			return this.Hide(null);
 			
 		}
 
+		/// <summary>
+		/// Hide the specified onHideEnd.
+		/// Wait while all components, animations, events and modules return the callback.
+		/// </summary>
+		/// <param name="onHideEnd">On hide end.</param>
 		public bool Hide(System.Action onHideEnd) {
 
 			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
@@ -276,7 +333,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void OnDestroy() {
+		private void OnDestroy() {
 
 			if (Application.isPlaying == false) return;
 
@@ -292,29 +349,103 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		protected virtual Transform GetLayoutRoot() { return null; }
+
+		/// <summary>
+		/// Gets the duration of the layout animation.
+		/// </summary>
+		/// <returns>The layout animation duration.</returns>
+		/// <param name="forward">If set to <c>true</c> forward.</param>
 		public virtual float GetLayoutAnimationDuration(bool forward) {
 			
 			return 0f;
 			
 		}
 
+		/// <summary>
+		/// Raises the layout init event.
+		/// </summary>
+		/// <param name="depth">Depth.</param>
+		/// <param name="raycastPriority">Raycast priority.</param>
+		/// <param name="orderInLayer">Order in layer.</param>
 		protected virtual void OnLayoutInit(float depth, int raycastPriority, int orderInLayer) {}
+
+		/// <summary>
+		/// Raises the layout deinit event.
+		/// </summary>
 		protected virtual void OnLayoutDeinit() {}
+
+		/// <summary>
+		/// Raises the layout show begin event.
+		/// </summary>
+		/// <param name="callback">Callback.</param>
 		protected virtual void OnLayoutShowBegin(System.Action callback) { if (callback != null) callback(); }
+
+		/// <summary>
+		/// Raises the layout show end event.
+		/// </summary>
 		protected virtual void OnLayoutShowEnd() {}
+
+		/// <summary>
+		/// Raises the layout hide begin event.
+		/// </summary>
+		/// <param name="callback">Callback.</param>
 		protected virtual void OnLayoutHideBegin(System.Action callback) { if (callback != null) callback(); }
+
+		/// <summary>
+		/// Raises the layout hide end event.
+		/// </summary>
 		protected virtual void OnLayoutHideEnd() {}
 
+		/// <summary>
+		/// Raises the parameters pass event.
+		/// Don't override this method - use your own.
+		/// Window will use reflection to determine your method.
+		/// Example: OnParametersPass(T1 param1, T2 param2, etc.)
+		/// You can use any types in any order and call window with them.
+		/// </summary>
 		public virtual void OnParametersPass() {}
+
+		/// <summary>
+		/// Raises the empty pass event.
+		/// </summary>
 		public virtual void OnEmptyPass() {}
+
+		/// <summary>
+		/// Raises the init event.
+		/// </summary>
 		public virtual void OnInit() {}
+
+		/// <summary>
+		/// Raises the deinit event.
+		/// </summary>
 		public virtual void OnDeinit() {}
+
+		/// <summary>
+		/// Raises the show begin event.
+		/// </summary>
+		/// <param name="callback">Callback.</param>
 		public virtual void OnShowBegin(System.Action callback) { if (callback != null) callback(); }
+
+		/// <summary>
+		/// Raises the show end event.
+		/// </summary>
 		public virtual void OnShowEnd() {}
+
+		/// <summary>
+		/// Raises the hide begin event.
+		/// </summary>
+		/// <param name="callback">Callback.</param>
 		public virtual void OnHideBegin(System.Action callback) { if (callback != null) callback(); }
+
+		/// <summary>
+		/// Raises the hide end event.
+		/// </summary>
 		public virtual void OnHideEnd() {}
 		
 		#if UNITY_EDITOR
+		/// <summary>
+		/// Raises the validate event. Editor only.
+		/// </summary>
 		public virtual void OnValidate() {
 
 			this.SetupCamera();

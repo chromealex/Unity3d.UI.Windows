@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Extensions;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 using System.IO;

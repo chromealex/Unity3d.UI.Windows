@@ -4,11 +4,12 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows.Components;
 using System.Linq;
 using ME;
 
-namespace UnityEditor.UI.Windows {
+namespace UnityEditor.UI.Windows.Types {
 	
 	[CustomEditor(typeof(LayoutWindowType), true)]
 	public class LayoutWindowTypeEditor : Editor, IPreviewEditor {

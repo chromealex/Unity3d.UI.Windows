@@ -1,0 +1,204 @@
+.TH "UnityEngine.UI.Windows.Components.List" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.Components.List \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBUnityEngine\&.UI\&.Windows\&.WindowComponent\fP\&.
+.PP
+Inherited by \fBUnityEngine\&.UI\&.Windows\&.Components\&.Table\&.Table\fP, \fBUnityEngine\&.UI\&.Windows\&.Components\&.Tabs\fP, and \fBUnityEngine\&.UI\&.Windows\&.Components\&.ToggleComponent\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnInit\fP ()"
+.br
+.RI "\fIRaises the init event\&. You can override this method but call it's base\&. \fP"
+.ti -1c
+.RI "void \fBInitPool\fP (int capacity)"
+.br
+.ti -1c
+.RI "void \fBSetupAsDropdown\fP (float maxHeight)"
+.br
+.ti -1c
+.RI "virtual T \fBAddItem< T >\fP ()"
+.br
+.ti -1c
+.RI "int \fBGetIndexOf< T >\fP (T item)"
+.br
+.ti -1c
+.RI "\fBList\fP< \fBWindowComponent\fP > \fBGetItems\fP ()"
+.br
+.ti -1c
+.RI "\fBList\fP< T > \fBGetItems< T >\fP ()"
+.br
+.ti -1c
+.RI "T \fBGetItem< T >\fP (int index)"
+.br
+.ti -1c
+.RI "virtual void \fBSetItems\fP (int capacity, UnityAction< \fBIComponent\fP > onItem=null)"
+.br
+.ti -1c
+.RI "virtual void \fBSetItems< T >\fP (int capacity, UnityAction< T, int > onItem=null)"
+.br
+.ti -1c
+.RI "virtual void \fBSetItemsAsync< T >\fP (int capacity, UnityAction onComplete, UnityAction< T, int > onItem=null)"
+.br
+.ti -1c
+.RI "virtual void \fBClear\fP ()"
+.br
+.ti -1c
+.RI "override void \fBOnHideBegin\fP (System\&.Action callback)"
+.br
+.RI "\fIRaises the hide begin event\&. Wait while all sub components return the callback\&. You can override this method but call it's base\&. \fP"
+.ti -1c
+.RI "void \fBRefresh\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBWindowComponent\fP \fBsource\fP"
+.br
+.ti -1c
+.RI "\fBExtensions\&.ScrollRect\fP \fBscrollRect\fP"
+.br
+.ti -1c
+.RI "GameObject \fBcontent\fP"
+.br
+.ti -1c
+.RI "GameObject \fBnoElements\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 11 of file List\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual T UnityEngine\&.UI\&.Windows\&.Components\&.List\&.AddItem< T > ()\fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBUnityEngine\&.UI\&.Windows\&.Components\&.ToggleComponent\fP\&.
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIIComponent\fP
+.PP
+Definition at line 48 of file List\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.Clear ()\fC [virtual]\fP"
+
+.PP
+Reimplemented in \fBUnityEngine\&.UI\&.Windows\&.Components\&.ToggleComponent\fP\&.
+.PP
+Definition at line 166 of file List\&.cs\&.
+.SS "int UnityEngine\&.UI\&.Windows\&.Components\&.List\&.GetIndexOf< T > (T item)"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIIComponent\fP
+.PP
+Definition at line 79 of file List\&.cs\&.
+.SS "T UnityEngine\&.UI\&.Windows\&.Components\&.List\&.GetItem< T > (int index)"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIIComponent\fP
+.PP
+Definition at line 107 of file List\&.cs\&.
+.SS "\fBList\fP<\fBWindowComponent\fP> UnityEngine\&.UI\&.Windows\&.Components\&.List\&.GetItems ()"
+
+.PP
+Definition at line 95 of file List\&.cs\&.
+.SS "\fBList\fP<T> \fBUnityEngine\&.UI\&.Windows\&.Components\&.List\&.GetItems\fP< T > ()"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIIComponent\fP
+.PP
+Definition at line 101 of file List\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.InitPool (int capacity)"
+
+.PP
+Definition at line 31 of file List\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.OnHideBegin (System\&.Action callback)\fC [virtual]\fP"
+
+.PP
+Raises the hide begin event\&. Wait while all sub components return the callback\&. You can override this method but call it's base\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowComponent\fP\&.
+.PP
+Definition at line 182 of file List\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.OnInit ()\fC [virtual]\fP"
+
+.PP
+Raises the init event\&. You can override this method but call it's base\&. 
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowComponent\fP\&.
+.PP
+Reimplemented in \fBUnityEngine\&.UI\&.Windows\&.Components\&.Tabs\fP, and \fBUnityEngine\&.UI\&.Windows\&.Components\&.ToggleComponent\fP\&.
+.PP
+Definition at line 23 of file List\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.Refresh ()"
+
+.PP
+Definition at line 190 of file List\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.SetItems (int capacity, UnityAction< \fBIComponent\fP > onItem = \fCnull\fP)\fC [virtual]\fP"
+
+.PP
+Definition at line 119 of file List\&.cs\&.
+.SS "virtual void \fBUnityEngine\&.UI\&.Windows\&.Components\&.List\&.SetItems\fP< T > (int capacity, UnityAction< T, int > onItem = \fCnull\fP)\fC [virtual]\fP"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIIComponent\fP
+.PP
+Definition at line 129 of file List\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.SetItemsAsync< T > (int capacity, UnityAction onComplete, UnityAction< T, int > onItem = \fCnull\fP)\fC [virtual]\fP"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIIComponent\fP
+.PP
+Definition at line 142 of file List\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.List\&.SetupAsDropdown (float maxHeight)"
+
+.PP
+Definition at line 42 of file List\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "GameObject UnityEngine\&.UI\&.Windows\&.Components\&.List\&.content"
+
+.PP
+Definition at line 20 of file List\&.cs\&.
+.SS "GameObject UnityEngine\&.UI\&.Windows\&.Components\&.List\&.noElements"
+
+.PP
+Definition at line 21 of file List\&.cs\&.
+.SS "\fBExtensions\&.ScrollRect\fP UnityEngine\&.UI\&.Windows\&.Components\&.List\&.scrollRect"
+
+.PP
+Definition at line 19 of file List\&.cs\&.
+.SS "\fBWindowComponent\fP UnityEngine\&.UI\&.Windows\&.Components\&.List\&.source"
+
+.PP
+Definition at line 16 of file List\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

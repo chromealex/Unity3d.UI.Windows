@@ -6,7 +6,7 @@ using UnityEditorInternal;
 
 namespace UnityEditor.UI.Windows {
 
-	[CustomPropertyDrawer(typeof(UnityEngine.UI.Windows.Modules))]
+	[CustomPropertyDrawer(typeof(UnityEngine.UI.Windows.Modules.Modules))]
 	public class WindowBaseModulesProperty : PropertyDrawer {
 
 		private bool inited = false;

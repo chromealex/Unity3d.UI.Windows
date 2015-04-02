@@ -1,0 +1,287 @@
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}{}\section{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component Class Reference}
+\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}\index{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component@{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component}}
+
+
+Inherits \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component\+Base}, and \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_i_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+I\+Component}.
+
+
+
+Inherited by \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_colored_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Colored\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_dummy_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Dummy\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_image_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Image\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_input_field_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Input\+Field\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Linker\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_popup_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Popup\+Component}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_table_1_1_table_item}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Table.\+Table\+Item}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list}{List}$<$ \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}{Window\+Component} $>$ \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a750e8651ae76d508f14519ebc2c22b8f}{Get\+Sub\+Components} ()
+\begin{DoxyCompactList}\small\item\em Gets the sub components. \end{DoxyCompactList}\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_layout_base}{Window\+Layout\+Base} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_adb60a76d7445f8dcd124308a7f8ef089}{Get\+Layout\+Root} ()
+\begin{DoxyCompactList}\small\item\em Gets the layout root. Basicaly it\textquotesingle{}s the parent transform from current. But it\textquotesingle{}s not always so. Sometimes you need to get layout element where this component (or it\textquotesingle{}s parent) stored to play animation (for example). \end{DoxyCompactList}\item 
+void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_ad6b58c3dad696c51edc18b02c9f92054}{Register\+Sub\+Component} (\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}{Window\+Component} sub\+Component)
+\begin{DoxyCompactList}\small\item\em Registers the sub component. If you want to instantiate new component manualy but wants the window events -\/ register this component here. \end{DoxyCompactList}\item 
+void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_ab7ddc6b16f344d08d45ba1011c9dc92a}{Unregister\+Sub\+Component} (\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}{Window\+Component} sub\+Component)
+\begin{DoxyCompactList}\small\item\em Unregisters the sub component. \end{DoxyCompactList}\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a1bbe16844e4db2b628587023bcc45117}{On\+Init} ()
+\begin{DoxyCompactList}\small\item\em Raises the init event. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_aeecca9f3f46bb2cef3425c9d8b6b7618}{On\+Deinit} ()
+\begin{DoxyCompactList}\small\item\em Raises the deinit event. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a7565d701351e1569d51ab4122ecfcaa0}{On\+Show\+End} ()
+\begin{DoxyCompactList}\small\item\em Raises the show end event. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a7f130d48dc990f69f45b35a7ebcd915a}{On\+Hide\+End} ()
+\begin{DoxyCompactList}\small\item\em Raises the hide end event. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a3851b1765a8aca39a5b410043d858d3a}{On\+Show\+Begin} (System.\+Action callback)
+\begin{DoxyCompactList}\small\item\em Raises the show begin event. Wait while all sub components return the callback. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_abbe2f59e0cb9c39d864bfe28c0de743a}{On\+Hide\+Begin} (System.\+Action callback)
+\begin{DoxyCompactList}\small\item\em Raises the hide begin event. Wait while all sub components return the callback. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a82120711be2778a8ebbf46328b7c4292}{auto\+Register\+Sub\+Components} = true
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 8 of file Window\+Component.\+cs.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_adb60a76d7445f8dcd124308a7f8ef089}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!Get\+Layout\+Root@{Get\+Layout\+Root}}
+\index{Get\+Layout\+Root@{Get\+Layout\+Root}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{Get\+Layout\+Root}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Window\+Layout\+Base} Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+Get\+Layout\+Root (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_adb60a76d7445f8dcd124308a7f8ef089}
+
+
+Gets the layout root. Basicaly it\textquotesingle{}s the parent transform from current. But it\textquotesingle{}s not always so. Sometimes you need to get layout element where this component (or it\textquotesingle{}s parent) stored to play animation (for example). 
+
+\begin{DoxyReturn}{Returns}
+The layout root.
+\end{DoxyReturn}
+
+
+Definition at line 49 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a750e8651ae76d508f14519ebc2c22b8f}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!Get\+Sub\+Components@{Get\+Sub\+Components}}
+\index{Get\+Sub\+Components@{Get\+Sub\+Components}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{Get\+Sub\+Components}]{\setlength{\rightskip}{0pt plus 5cm}{\bf List}$<${\bf Window\+Component}$>$ Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+Get\+Sub\+Components (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a750e8651ae76d508f14519ebc2c22b8f}
+
+
+Gets the sub components. 
+
+\begin{DoxyReturn}{Returns}
+The sub components.
+\end{DoxyReturn}
+
+
+Definition at line 21 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_aeecca9f3f46bb2cef3425c9d8b6b7618}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!On\+Deinit@{On\+Deinit}}
+\index{On\+Deinit@{On\+Deinit}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{On\+Deinit}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+On\+Deinit (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_aeecca9f3f46bb2cef3425c9d8b6b7618}
+
+
+Raises the deinit event. You can override this method but call it\textquotesingle{}s base. 
+
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base_a191d5e3d4b11f768a8b9608ecce35b3b}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component\+Base}.
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_tabs_a12746cec82ef3172a7bdc75683de7389}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Tabs}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_popup_component_a20976ce235a7ac78fdff867d4249840a}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Popup\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_button_component_a375e393586ef3f2475e44e64ed395dd3}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Button\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component_ace9cdc3dc7abebb32198cc935eda3164}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Linker\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_input_field_component_a003d6f467f3211b3b55e03ad488f9a40}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Input\+Field\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_button_hover_component_a998b7123aa963e0f17f0c6748554da76}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Button\+Hover\+Component}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_button_with_tip_component_ab641deb8b76f185620ccd16aba85a205}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Button\+With\+Tip\+Component}.
+
+
+
+Definition at line 139 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_abbe2f59e0cb9c39d864bfe28c0de743a}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!On\+Hide\+Begin@{On\+Hide\+Begin}}
+\index{On\+Hide\+Begin@{On\+Hide\+Begin}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{On\+Hide\+Begin}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+On\+Hide\+Begin (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{callback}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_abbe2f59e0cb9c39d864bfe28c0de743a}
+
+
+Raises the hide begin event. Wait while all sub components return the callback. You can override this method but call it\textquotesingle{}s base. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base_a93b0765e7b12d7142972d8156fb102c9}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component\+Base}.
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a01005cc650377159aeb3ed105b7769c1}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component_a57df78e71e945af1de85e8d59dc277ff}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Linker\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_progress_with_particles_component_aa1d51df4e80e88cdfff29587710d3846}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Progress\+With\+Particles\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_progress_component_a13024370395e3748b049d062c8499d8a}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Progress\+Component}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_button_hover_component_ac57b714951ea3676e216f61f1f86e6b1}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Button\+Hover\+Component}.
+
+
+
+Definition at line 180 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a7f130d48dc990f69f45b35a7ebcd915a}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!On\+Hide\+End@{On\+Hide\+End}}
+\index{On\+Hide\+End@{On\+Hide\+End}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{On\+Hide\+End}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+On\+Hide\+End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a7f130d48dc990f69f45b35a7ebcd915a}
+
+
+Raises the hide end event. You can override this method but call it\textquotesingle{}s base. 
+
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base_af89642b3187cba97f0db61de15f7e914}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component\+Base}.
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component_a8e908f86dfd4361c8a177b57860e8962}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Linker\+Component}.
+
+
+
+Definition at line 155 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a1bbe16844e4db2b628587023bcc45117}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!On\+Init@{On\+Init}}
+\index{On\+Init@{On\+Init}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{On\+Init}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+On\+Init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a1bbe16844e4db2b628587023bcc45117}
+
+
+Raises the init event. You can override this method but call it\textquotesingle{}s base. 
+
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base_a1bf684e75f1715bde930ed07d7ee6d5c}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component\+Base}.
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_popup_component_adb7f8bbc410364dd63947a1e9c6ae220}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Popup\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component_a39072092da7a1f52ca8a4e14785b6daf}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Linker\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_progress_component_adfd87984504db6aff87ff639cc32310d}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Progress\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a50035039b166c81742c9446b6eb72b70}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_tabs_a09878546b509e7b25a479278f45f5b26}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Tabs}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_toggle_component_a5974ccee306a24708d91ed697f9e7015}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Toggle\+Component}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_button_with_tip_component_a093c510ecbdfbb5440a976320fde9ebf}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Button\+With\+Tip\+Component}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_progress_with_particles_component_a695aed65b8ae5dc7d929f3d8a6e1a71c}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Progress\+With\+Particles\+Component}.
+
+
+
+Definition at line 131 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a3851b1765a8aca39a5b410043d858d3a}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!On\+Show\+Begin@{On\+Show\+Begin}}
+\index{On\+Show\+Begin@{On\+Show\+Begin}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{On\+Show\+Begin}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+On\+Show\+Begin (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{callback}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a3851b1765a8aca39a5b410043d858d3a}
+
+
+Raises the show begin event. Wait while all sub components return the callback. You can override this method but call it\textquotesingle{}s base. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base_ae63f5d36266e22077b383f1264767afe}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component\+Base}.
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_popup_component_a04489b8cc465678d6140530c6e9a430e}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Popup\+Component}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component_a421e90af11df6be04808bb34d0641289}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Linker\+Component}.
+
+
+
+Definition at line 163 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a7565d701351e1569d51ab4122ecfcaa0}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!On\+Show\+End@{On\+Show\+End}}
+\index{On\+Show\+End@{On\+Show\+End}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{On\+Show\+End}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+On\+Show\+End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a7565d701351e1569d51ab4122ecfcaa0}
+
+
+Raises the show end event. You can override this method but call it\textquotesingle{}s base. 
+
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base_a9d378437182e59de3af2baeddace996c}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component\+Base}.
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component_a81ed02e416deb23e30f1cf994acaaf2c}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Linker\+Component}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_progress_with_particles_component_ae98d77007cefaafc7f19977c8c52f937}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Progress\+With\+Particles\+Component}.
+
+
+
+Definition at line 147 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_ad6b58c3dad696c51edc18b02c9f92054}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!Register\+Sub\+Component@{Register\+Sub\+Component}}
+\index{Register\+Sub\+Component@{Register\+Sub\+Component}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{Register\+Sub\+Component}]{\setlength{\rightskip}{0pt plus 5cm}void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+Register\+Sub\+Component (
+\begin{DoxyParamCaption}
+\item[{{\bf Window\+Component}}]{sub\+Component}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_ad6b58c3dad696c51edc18b02c9f92054}
+
+
+Registers the sub component. If you want to instantiate new component manualy but wants the window events -\/ register this component here. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sub\+Component} & Sub component.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 60 of file Window\+Component.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_ab7ddc6b16f344d08d45ba1011c9dc92a}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!Unregister\+Sub\+Component@{Unregister\+Sub\+Component}}
+\index{Unregister\+Sub\+Component@{Unregister\+Sub\+Component}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{Unregister\+Sub\+Component}]{\setlength{\rightskip}{0pt plus 5cm}void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+Unregister\+Sub\+Component (
+\begin{DoxyParamCaption}
+\item[{{\bf Window\+Component}}]{sub\+Component}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_ab7ddc6b16f344d08d45ba1011c9dc92a}
+
+
+Unregisters the sub component. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sub\+Component} & Sub component.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 96 of file Window\+Component.\+cs.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a82120711be2778a8ebbf46328b7c4292}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}!auto\+Register\+Sub\+Components@{auto\+Register\+Sub\+Components}}
+\index{auto\+Register\+Sub\+Components@{auto\+Register\+Sub\+Components}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Component}}
+\subsubsection[{auto\+Register\+Sub\+Components}]{\setlength{\rightskip}{0pt plus 5cm}bool Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component.\+auto\+Register\+Sub\+Components = true}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a82120711be2778a8ebbf46328b7c4292}
+
+
+Definition at line 11 of file Window\+Component.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Unity3d.\+U\+I.\+Windows/\+Assets/\+U\+I.\+Windows/\+Components/\+Core/\hyperlink{_window_component_8cs}{Window\+Component.\+cs}\end{DoxyCompactItemize}

@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System;
 
-public class FilterAttribute : PropertyAttribute {
-	
-	public readonly Type type;
-	
-	public FilterAttribute(Type type) {
+namespace UnityEngine.UI.Windows.Extensions {
+
+	public class FilterAttribute : PropertyAttribute {
 		
-		this.type = type;
+		public readonly Type type;
+		
+		public FilterAttribute(Type type) {
+			
+			this.type = type;
+
+		}
 
 	}
 

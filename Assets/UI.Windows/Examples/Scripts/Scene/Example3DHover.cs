@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Types;
 
 public class Example3DHover : MonoBehaviour {
 	

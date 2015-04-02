@@ -2,6 +2,7 @@
 using System.Collections;
 
 namespace UnityEngine.UI {
+
 	public class ButtonExtended : Button {
 
 		public enum Transition {

@@ -2,19 +2,23 @@
 using System.Collections;
 using UnityEngine.UI.Windows;
 
-public class WindowAnimationTransitionSlideParameters : TransitionInputParameters {
+namespace UnityEngine.UI.Windows.Animations {
 
-	public WindowAnimationTransitionSlide.Parameters parameters;
-	
-	public override void SetDefaultParameters(TransitionBase.ParametersBase parameters) {
+	public class WindowAnimationTransitionSlideParameters : TransitionInputParameters {
+
+		public WindowAnimationTransitionSlide.Parameters parameters;
 		
-		this.parameters = new WindowAnimationTransitionSlide.Parameters(parameters);
-		
-	}
+		public override void SetDefaultParameters(TransitionBase.ParametersBase parameters) {
+			
+			this.parameters = new WindowAnimationTransitionSlide.Parameters(parameters);
+			
+		}
 
-	public override TransitionBase.ParametersBase GetParameters() {
+		public override TransitionBase.ParametersBase GetParameters() {
 
-		return this.parameters;
+			return this.parameters;
+
+		}
 
 	}
 

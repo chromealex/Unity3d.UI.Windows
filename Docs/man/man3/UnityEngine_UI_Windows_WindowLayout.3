@@ -1,0 +1,219 @@
+.TH "UnityEngine.UI.Windows.WindowLayout" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.WindowLayout \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBUnityEngine\&.UI\&.Windows\&.WindowObject\fP, ICanvasElement, and \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Inherited by \fBUnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowWindowLayoutTemplate\fP\&.
+.SS "Public Types"
+
+.in +1c
+.ti -1c
+.RI "enum \fBScaleMode\fP { \fBScaleMode\&.Normal\fP, \fBScaleMode\&.Fixed\fP, \fBScaleMode\&.Custom\fP }"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBInit\fP (float depth, int raycastPriority, int orderInLayer, \fBWindowLayout\&.ScaleMode\fP scaleMode)"
+.br
+.ti -1c
+.RI "bool \fBValidateCanvasScaler\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetNoScale\fP ()"
+.br
+.ti -1c
+.RI "void \fBSetScale\fP (\fBWindowLayout\&.ScaleMode\fP scaleMode)"
+.br
+.ti -1c
+.RI "void \fBRebuild\fP (CanvasUpdate executing)"
+.br
+.ti -1c
+.RI "bool \fBIsDestroyed\fP ()"
+.br
+.ti -1c
+.RI "\fBWindowLayoutElement\fP \fBGetRootByTag\fP (\fBLayoutTag\fP tag)"
+.br
+.ti -1c
+.RI "void \fBGetTags\fP (List< \fBLayoutTag\fP > tags, List< string > descriptions)"
+.br
+.ti -1c
+.RI "virtual void \fBOnShowBegin\fP (System\&.Action callback)"
+.br
+.ti -1c
+.RI "virtual void \fBOnHideEnd\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBOnInit\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBOnDeinit\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBOnShowEnd\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBOnHideBegin\fP (System\&.Action callback)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "CanvasScaler \fBcanvasScaler\fP"
+.br
+.ti -1c
+.RI "\fBWindowLayoutRoot\fP \fBroot\fP"
+.br
+.ti -1c
+.RI "List< \fBWindowLayoutElement\fP > \fBelements\fP = new List<\fBWindowLayoutElement\fP>()"
+.br
+.ti -1c
+.RI "bool \fBshowGrid\fP = false"
+.br
+.ti -1c
+.RI "Vector2 \fBgridSize\fP = Vector2\&.one * 5f"
+.br
+.ti -1c
+.RI "Canvas \fBcanvas\fP"
+.br
+.ti -1c
+.RI "UnityEngine\&.EventSystems\&.BaseRaycaster \fBraycaster\fP"
+.br
+.ti -1c
+.RI "bool \fBinitialized\fP = false"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 10 of file WindowLayout\&.cs\&.
+.SH "Member Enumeration Documentation"
+.PP 
+.SS "enum \fBUnityEngine\&.UI\&.Windows\&.WindowLayout\&.ScaleMode\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fINormal \fP\fP
+.TP
+\fB\fIFixed \fP\fP
+.TP
+\fB\fICustom \fP\fP
+.PP
+Definition at line 12 of file WindowLayout\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "\fBWindowLayoutElement\fP UnityEngine\&.UI\&.Windows\&.WindowLayout\&.GetRootByTag (\fBLayoutTag\fP tag)"
+
+.PP
+Definition at line 147 of file WindowLayout\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.GetTags (List< \fBLayoutTag\fP > tags, List< string > descriptions)"
+
+.PP
+Definition at line 153 of file WindowLayout\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.Init (float depth, int raycastPriority, int orderInLayer, \fBWindowLayout\&.ScaleMode\fP scaleMode)"
+
+.PP
+Definition at line 56 of file WindowLayout\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.WindowLayout\&.IsDestroyed ()"
+
+.PP
+Definition at line 141 of file WindowLayout\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.OnDeinit ()\fC [virtual]\fP"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 192 of file WindowLayout\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.OnHideBegin (System\&.Action callback)\fC [virtual]\fP"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 194 of file WindowLayout\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.OnHideEnd ()\fC [virtual]\fP"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 182 of file WindowLayout\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.OnInit ()\fC [virtual]\fP"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 191 of file WindowLayout\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.OnShowBegin (System\&.Action callback)\fC [virtual]\fP"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 171 of file WindowLayout\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.OnShowEnd ()\fC [virtual]\fP"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 193 of file WindowLayout\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.Rebuild (CanvasUpdate executing)"
+
+.PP
+Definition at line 135 of file WindowLayout\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.SetNoScale ()"
+
+.PP
+Definition at line 97 of file WindowLayout\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.WindowLayout\&.SetScale (\fBWindowLayout\&.ScaleMode\fP scaleMode)"
+
+.PP
+Definition at line 106 of file WindowLayout\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.WindowLayout\&.ValidateCanvasScaler ()"
+
+.PP
+Definition at line 75 of file WindowLayout\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "Canvas UnityEngine\&.UI\&.Windows\&.WindowLayout\&.canvas"
+
+.PP
+Definition at line 31 of file WindowLayout\&.cs\&.
+.SS "CanvasScaler UnityEngine\&.UI\&.Windows\&.WindowLayout\&.canvasScaler"
+
+.PP
+Definition at line 18 of file WindowLayout\&.cs\&.
+.SS "List<\fBWindowLayoutElement\fP> UnityEngine\&.UI\&.Windows\&.WindowLayout\&.elements = new List<\fBWindowLayoutElement\fP>()"
+
+.PP
+Definition at line 25 of file WindowLayout\&.cs\&.
+.SS "Vector2 UnityEngine\&.UI\&.Windows\&.WindowLayout\&.gridSize = Vector2\&.one * 5f"
+
+.PP
+Definition at line 28 of file WindowLayout\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.WindowLayout\&.initialized = false"
+
+.PP
+Definition at line 35 of file WindowLayout\&.cs\&.
+.SS "UnityEngine\&.EventSystems\&.BaseRaycaster UnityEngine\&.UI\&.Windows\&.WindowLayout\&.raycaster"
+
+.PP
+Definition at line 33 of file WindowLayout\&.cs\&.
+.SS "\fBWindowLayoutRoot\fP UnityEngine\&.UI\&.Windows\&.WindowLayout\&.root"
+
+.PP
+Definition at line 23 of file WindowLayout\&.cs\&.
+.SS "bool UnityEngine\&.UI\&.Windows\&.WindowLayout\&.showGrid = false"
+
+.PP
+Definition at line 27 of file WindowLayout\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

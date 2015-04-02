@@ -1,0 +1,246 @@
+.TH "UnityEngine.UI.Windows.Types.LayoutWindowType" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.Types.LayoutWindowType \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Inherited by \fBExampleProject\&.UI\&.Gameplay\&.EndGame\&.EndGameScreenBase\fP, \fBExampleProject\&.UI\&.Gameplay\&.GameplayHUD\&.GameplayHUDScreenBase\fP, \fBExampleProject\&.UI\&.Gameplay\&.GameplayView\&.GameplayViewScreenBase\fP, \fBExampleProject\&.UI\&.Menu\&.GameTypeChooser\&.GameTypeChooserScreenBase\fP, \fBExampleProject\&.UI\&.Menu\&.GlobalMap\&.GlobalMapScreenBase\fP, \fBExampleProject\&.UI\&.Menu\&.ShopOperations\&.Shop\&.ShopScreenBase\fP, \fBExampleProject\&.UI\&.Other\&.Background\&.BackgroundScreenBase\fP, \fBExampleProject\&.UI\&.Other\&.GameplayLoader\&.GameplayLoaderScreenBase\fP, \fBExampleProject\&.UI\&.Other\&.MainLoader\&.MainLoaderScreenBase\fP, \fBExampleProject\&.UI\&.Other\&.MenuLoader\&.MenuLoaderScreenBase\fP, and \fBUnityEngine\&.UI\&.Windows\&.Plugins\&.Flow\&.FlowLayoutWindowTypeTemplate\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "new \fBLayoutWindowType\fP \fBGetWindow\fP ()"
+.br
+.ti -1c
+.RI "void \fBGetLayoutComponent< T >\fP (out T component, \fBLayoutTag\fP tag=LayoutTag\&.None)"
+.br
+.ti -1c
+.RI "T \fBGetLayoutComponent< T >\fP (\fBLayoutTag\fP tag=LayoutTag\&.None)"
+.br
+.ti -1c
+.RI "\fBWindowLayoutElement\fP \fBGetLayoutContainer\fP (\fBLayoutTag\fP tag)"
+.br
+.ti -1c
+.RI "override string \fBGetSortingLayerName\fP ()"
+.br
+.RI "\fIGets the name of the sorting layer\&. \fP"
+.ti -1c
+.RI "override int \fBGetSortingOrder\fP ()"
+.br
+.RI "\fIGets the sorting order\&. \fP"
+.ti -1c
+.RI "override float \fBGetLayoutAnimationDuration\fP (bool forward)"
+.br
+.RI "\fIGets the duration of the layout animation\&. \fP"
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBLayout\fP \fBlayout\fP"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override Transform \fBGetLayoutRoot\fP ()"
+.br
+.ti -1c
+.RI "override void \fBOnLayoutInit\fP (float depth, int raycastPriority, int orderInLayer)"
+.br
+.RI "\fIRaises the layout init event\&. \fP"
+.ti -1c
+.RI "override void \fBOnLayoutDeinit\fP ()"
+.br
+.RI "\fIRaises the layout deinit event\&. \fP"
+.ti -1c
+.RI "override void \fBOnLayoutShowBegin\fP (System\&.Action callback)"
+.br
+.RI "\fIRaises the layout show begin event\&. \fP"
+.ti -1c
+.RI "override void \fBOnLayoutShowEnd\fP ()"
+.br
+.RI "\fIRaises the layout show end event\&. \fP"
+.ti -1c
+.RI "override void \fBOnLayoutHideBegin\fP (System\&.Action callback)"
+.br
+.RI "\fIRaises the layout hide begin event\&. \fP"
+.ti -1c
+.RI "override void \fBOnLayoutHideEnd\fP ()"
+.br
+.RI "\fIRaises the layout hide end event\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 12 of file LayoutWindowType\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "override float UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetLayoutAnimationDuration (bool forward)\fC [virtual]\fP"
+
+.PP
+Gets the duration of the layout animation\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+The layout animation duration\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIforward\fP If set to \fCtrue\fP forward\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 52 of file LayoutWindowType\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetLayoutComponent< T > (out T component, \fBLayoutTag\fP tag = \fCLayoutTag\&.None\fP)"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIWindowComponent\fP
+.PP
+Definition at line 22 of file LayoutWindowType\&.cs\&.
+.SS "T UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetLayoutComponent< T > (\fBLayoutTag\fP tag = \fCLayoutTag\&.None\fP)"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIWindowComponent\fP
+.PP
+Definition at line 28 of file LayoutWindowType\&.cs\&.
+.SS "\fBWindowLayoutElement\fP UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetLayoutContainer (\fBLayoutTag\fP tag)"
+
+.PP
+Definition at line 34 of file LayoutWindowType\&.cs\&.
+.SS "override Transform UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetLayoutRoot ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 58 of file LayoutWindowType\&.cs\&.
+.SS "override string UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetSortingLayerName ()\fC [virtual]\fP"
+
+.PP
+Gets the name of the sorting layer\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+The sorting layer name\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 40 of file LayoutWindowType\&.cs\&.
+.SS "override int UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetSortingOrder ()\fC [virtual]\fP"
+
+.PP
+Gets the sorting order\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+The sorting order\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 46 of file LayoutWindowType\&.cs\&.
+.SS "new \fBLayoutWindowType\fP UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.GetWindow ()"
+
+.PP
+Definition at line 16 of file LayoutWindowType\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.OnLayoutDeinit ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the layout deinit event\&. 
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 70 of file LayoutWindowType\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.OnLayoutHideBegin (System\&.Action callback)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the layout hide begin event\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 85 of file LayoutWindowType\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.OnLayoutHideEnd ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the layout hide end event\&. 
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 90 of file LayoutWindowType\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.OnLayoutInit (float depth, int raycastPriority, int orderInLayer)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the layout init event\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIdepth\fP Depth\&.
+.br
+\fIraycastPriority\fP Raycast priority\&.
+.br
+\fIorderInLayer\fP Order in layer\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 64 of file LayoutWindowType\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.OnLayoutShowBegin (System\&.Action callback)\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the layout show begin event\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 75 of file LayoutWindowType\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.OnLayoutShowEnd ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Raises the layout show end event\&. 
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowBase\fP\&.
+.PP
+Definition at line 80 of file LayoutWindowType\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBLayout\fP UnityEngine\&.UI\&.Windows\&.Types\&.LayoutWindowType\&.layout"
+
+.PP
+Definition at line 14 of file LayoutWindowType\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

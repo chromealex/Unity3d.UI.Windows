@@ -6,6 +6,7 @@
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Types;
 
 namespace ExampleProject.UI.Gameplay.GameplayHUD {
 

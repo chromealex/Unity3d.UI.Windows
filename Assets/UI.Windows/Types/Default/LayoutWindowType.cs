@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Components;
+using UnityEngine.UI.Windows.Extensions;
 
-namespace UnityEngine.UI.Windows {
+namespace UnityEngine.UI.Windows.Types {
 
 	[ExecuteInEditMode()]
 	public class LayoutWindowType : WindowBase {

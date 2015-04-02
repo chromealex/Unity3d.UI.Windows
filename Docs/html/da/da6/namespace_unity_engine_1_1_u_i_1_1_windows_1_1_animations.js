@@ -1,0 +1,12 @@
+var namespace_unity_engine_1_1_u_i_1_1_windows_1_1_animations =
+[
+    [ "TransitionBase", "dc/d87/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_transition_base.html", "dc/d87/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_transition_base" ],
+    [ "TransitionInputParameters", "de/d2f/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_transition_input_parameters.html", "de/d2f/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_transition_input_parameters" ],
+    [ "WindowAnimationBase", "d8/d2b/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_base.html", "d8/d2b/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_base" ],
+    [ "WindowAnimationTransitionAlpha", "df/dd6/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_alpha.html", "df/dd6/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_alpha" ],
+    [ "WindowAnimationTransitionAlphaParameters", "d5/da3/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_alpha_parameters.html", "d5/da3/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_alpha_parameters" ],
+    [ "WindowAnimationTransitionSlide", "dd/d68/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_slide.html", "dd/d68/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_slide" ],
+    [ "WindowAnimationTransitionSlideParameters", "dc/d2a/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_slide_parameters.html", "dc/d2a/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_transition_slide_parameters" ],
+    [ "WindowTransitionBasic", "d8/dc7/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_transition_basic.html", "d8/dc7/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_transition_basic" ],
+    [ "WindowTransitionBasicParameters", "d0/d22/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_transition_basic_parameters.html", "d0/d22/class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_transition_basic_parameters" ]
+];

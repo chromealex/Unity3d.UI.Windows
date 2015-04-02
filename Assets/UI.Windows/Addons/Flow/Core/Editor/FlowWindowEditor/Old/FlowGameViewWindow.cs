@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 

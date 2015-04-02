@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI.Windows.Components;
 
-namespace UnityEngine.UI.Windows {
+namespace UnityEngine.UI.Windows.Animations {
 
 	public class WindowAnimationTransitionSlide : TransitionBase {
 		

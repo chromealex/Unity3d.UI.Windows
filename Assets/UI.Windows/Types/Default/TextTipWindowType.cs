@@ -3,13 +3,17 @@ using System.Collections;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI;
 
-public class TextTipWindowType : TipWindowType {
-	
-	public Text text;
+namespace UnityEngine.UI.Windows.Types {
 
-	public void OnParametersPass(string text) {
+	public class TextTipWindowType : TipWindowType {
+		
+		public Text text;
 
-		this.text.text = text;
+		public void OnParametersPass(string text) {
+
+			this.text.text = text;
+
+		}
 
 	}
 

@@ -1,0 +1,107 @@
+.TH "UnityEngine.UI.Windows.Components.Tabs" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.Components.Tabs \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBUnityEngine\&.UI\&.Windows\&.Components\&.List\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "override void \fBOnInit\fP ()"
+.br
+.RI "\fIRaises the init event\&. You can override this method but call it's base\&. \fP"
+.ti -1c
+.RI "void \fBSetCallback\fP (UnityAction< \fBWindowComponent\fP, int > onChangeBefore=null, UnityAction< \fBWindowComponent\fP, int > onChangeAfter=null)"
+.br
+.ti -1c
+.RI "void \fBSetCallbacks\fP (UnityAction< \fBWindowComponent\fP, int > onChangeBefore, UnityAction< \fBWindowComponent\fP, int > onChangeAfter)"
+.br
+.ti -1c
+.RI "void \fBSetContent\fP (\fBWindowLayoutElement\fP layoutContent)"
+.br
+.ti -1c
+.RI "T1 \fBAddItem< T1, T2 >\fP (T2 component, UnityAction< T1 > onClick=null, bool autoEvents=true)"
+.br
+.ti -1c
+.RI "T1 \fBAddItem< T1 >\fP (UnityAction< \fBButtonComponent\fP, int > onClick, bool autoEvents)"
+.br
+.ti -1c
+.RI "void \fBSelect\fP (int index)"
+.br
+.ti -1c
+.RI "void \fBLoad\fP (int index, bool immediately=false, UnityAction callback=null)"
+.br
+.ti -1c
+.RI "override void \fBOnDeinit\fP ()"
+.br
+.RI "\fIRaises the deinit event\&. You can override this method but call it's base\&. \fP"
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 8 of file Tabs\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "T1 UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.AddItem< T1 > (UnityAction< \fBButtonComponent\fP, int > onClick, bool autoEvents)"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT1\fP : \fIButtonComponent\fP
+.PP
+Definition at line 69 of file Tabs\&.cs\&.
+.SS "T1 UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.AddItem< T1, T2 > (T2 component, UnityAction< T1 > onClick = \fCnull\fP, bool autoEvents = \fCtrue\fP)"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT1\fP : \fIButtonComponent\fP
+.TP
+\fIT2\fP : \fIWindowComponent\fP
+.PP
+Definition at line 47 of file Tabs\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.Load (int index, bool immediately = \fCfalse\fP, UnityAction callback = \fCnull\fP)"
+
+.PP
+Definition at line 127 of file Tabs\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.OnDeinit ()\fC [virtual]\fP"
+
+.PP
+Raises the deinit event\&. You can override this method but call it's base\&. 
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.WindowComponent\fP\&.
+.PP
+Definition at line 180 of file Tabs\&.cs\&.
+.SS "override void UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.OnInit ()\fC [virtual]\fP"
+
+.PP
+Raises the init event\&. You can override this method but call it's base\&. 
+.PP
+Reimplemented from \fBUnityEngine\&.UI\&.Windows\&.Components\&.List\fP\&.
+.PP
+Definition at line 19 of file Tabs\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.Select (int index)"
+
+.PP
+Definition at line 97 of file Tabs\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.SetCallback (UnityAction< \fBWindowComponent\fP, int > onChangeBefore = \fCnull\fP, UnityAction< \fBWindowComponent\fP, int > onChangeAfter = \fCnull\fP)"
+
+.PP
+Definition at line 27 of file Tabs\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.SetCallbacks (UnityAction< \fBWindowComponent\fP, int > onChangeBefore, UnityAction< \fBWindowComponent\fP, int > onChangeAfter)"
+
+.PP
+Definition at line 34 of file Tabs\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Components\&.Tabs\&.SetContent (\fBWindowLayoutElement\fP layoutContent)"
+
+.PP
+Definition at line 41 of file Tabs\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.
