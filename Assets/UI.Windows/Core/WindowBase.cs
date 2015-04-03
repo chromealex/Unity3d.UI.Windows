@@ -29,6 +29,8 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector]
 		public Camera workCamera;
+		[HideInInspector]
+		public bool initialized = false;
 
 		public Preferences preferences;
 		public Transition transition;
@@ -41,8 +43,6 @@ namespace UnityEngine.UI.Windows {
 		private bool passParams = false;
 		[HideInInspector]
 		private object[] parameters;
-		[HideInInspector]
-		private bool initialized = false;
 
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 
