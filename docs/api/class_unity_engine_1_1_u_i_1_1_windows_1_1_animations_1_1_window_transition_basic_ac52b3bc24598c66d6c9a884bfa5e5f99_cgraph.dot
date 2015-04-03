@@ -1,0 +1,11 @@
+digraph "UnityEngine.UI.Windows.Animations.WindowTransitionBasic.OnPlay"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Animations.\lWindowTransitionBasic.OnPlay",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Window\lSystem.GetPreviousWindow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_system.html#a69d9a23346d37a2343f14ef27ea0c46d",tooltip="Gets the last window in history with the Shown state. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Transition.\lSaveToCache",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_transition.html#a55383533f2b5c29d5bf3bd3e039e56a4"];
+}

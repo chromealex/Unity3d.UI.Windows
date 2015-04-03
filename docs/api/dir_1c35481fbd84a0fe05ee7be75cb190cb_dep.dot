@@ -1,0 +1,15 @@
+digraph "Animations" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_840d7d22eff27a012a388f4c953ffb27 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="UI.Windows" fontname="FreeSans", fontsize="10", URL="dir_840d7d22eff27a012a388f4c953ffb27.html"]
+  subgraph clusterdir_1c35481fbd84a0fe05ee7be75cb190cb {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_1c35481fbd84a0fe05ee7be75cb190cb.html"];
+    dir_1c35481fbd84a0fe05ee7be75cb190cb [shape=plaintext label="Animations"];
+    dir_fded36942769d6b26909d3480f35f6cc [shape=box label="CameraFullScreenTransitions" color="red" fillcolor="white" style="filled" URL="dir_fded36942769d6b26909d3480f35f6cc.html"];
+    dir_5fd3728ec578402907c6eef534baa407 [shape=box label="Core" color="black" fillcolor="white" style="filled" URL="dir_5fd3728ec578402907c6eef534baa407.html"];
+    dir_4a8f13b57e5491278545ebbf4732e03c [shape=box label="LayoutTransitions" color="red" fillcolor="white" style="filled" URL="dir_4a8f13b57e5491278545ebbf4732e03c.html"];
+  }
+  }
+}

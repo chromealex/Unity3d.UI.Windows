@@ -1,0 +1,13 @@
+digraph "Assets" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_17091247df6930ac95b868ee9f966bda {
+    graph [ bgcolor="#ddddee", pencolor="black", label="UI.Windows" fontname="FreeSans", fontsize="10", URL="dir_17091247df6930ac95b868ee9f966bda.html"]
+  subgraph clusterdir_2a8c73e93c71fc24504a57b4dab72380 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_2a8c73e93c71fc24504a57b4dab72380.html"];
+    dir_2a8c73e93c71fc24504a57b4dab72380 [shape=plaintext label="Assets"];
+    dir_840d7d22eff27a012a388f4c953ffb27 [shape=box label="UI.Windows" color="red" fillcolor="white" style="filled" URL="dir_840d7d22eff27a012a388f4c953ffb27.html"];
+  }
+  }
+}

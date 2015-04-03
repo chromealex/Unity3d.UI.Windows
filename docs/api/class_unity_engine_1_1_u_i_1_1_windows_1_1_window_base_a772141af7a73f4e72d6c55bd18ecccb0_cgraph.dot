@@ -1,0 +1,21 @@
+digraph "UnityEngine.UI.Windows.WindowBase.Hide"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Window\lBase.Hide",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Window\lSystem.AddToHistory",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_system.html#a1c7fc4aee9e94334a9070d43f8dc609c",tooltip="Adds to history. "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Events.\lOnHideEnd",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_events.html#aa5ec2dd5969666e93474324f5b12b8e1"];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Transition.\lOnHideEnd",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_transition.html#a4be92f1d5d46bc445b616dec28eb51d2"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="UnityEngine.UI.Windows.Events.\lClear",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_events.html#a0cbaa244f8b360edff7c082a08955cbf"];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="UnityEngine.UI.Windows.Transition.\lOnHideBegin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_transition.html#ad963bbec4a1539030779248bb9a11f77"];
+  Node6 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node7 [label="UnityEngine.UI.Windows.Animations.\lTransitionBase.Play",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_transition_base.html#a1cc0e3b72daf7c194a50a58d7dac6dc6"];
+  Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node8 [label="UnityEngine.UI.Windows.Events.\lOnHideBegin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_events.html#a25a942b6f95fb6f5b511bd10465155f2"];
+}

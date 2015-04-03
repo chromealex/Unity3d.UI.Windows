@@ -1,0 +1,15 @@
+digraph "UnityEngine.UI.Windows.WindowSystemSettings"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Window\lSystemSettings",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine::ScriptableObject",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" camera" ,fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Window\lSystemSettings.Camera",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_system_settings_1_1_camera.html"];
+  Node4 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" baseInfo" ,fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Window\lSystemSettings.Base",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_system_settings_1_1_base.html"];
+  Node5 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" sortingLayer" ,fontname="FreeSans"];
+  Node5 [label="UnityEngine.UI.Windows.Window\lSystemSettings.SortingLayer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_system_settings_1_1_sorting_layer.html"];
+}

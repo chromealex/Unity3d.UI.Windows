@@ -1,0 +1,13 @@
+digraph "CameraFullScreenTransitions" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_1c35481fbd84a0fe05ee7be75cb190cb {
+    graph [ bgcolor="#ddddee", pencolor="black", label="Animations" fontname="FreeSans", fontsize="10", URL="dir_1c35481fbd84a0fe05ee7be75cb190cb.html"]
+  subgraph clusterdir_fded36942769d6b26909d3480f35f6cc {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_fded36942769d6b26909d3480f35f6cc.html"];
+    dir_fded36942769d6b26909d3480f35f6cc [shape=plaintext label="CameraFullScreenTransitions"];
+    dir_0a9eaf48a93c18e2c263e1a7bcf7d507 [shape=box label="Basic" color="black" fillcolor="white" style="filled" URL="dir_0a9eaf48a93c18e2c263e1a7bcf7d507.html"];
+  }
+  }
+}

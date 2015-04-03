@@ -1,0 +1,13 @@
+digraph "UnityEngine.UI.Windows.WindowComponent.OnInit"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Window\lComponent.OnInit",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Components.\lLinkerComponent.OnInit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_linker_component.html#a39072092da7a1f52ca8a4e14785b6daf",tooltip="Raises the init event. "];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Window\lComponent.RegisterSubComponent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component.html#ad6b58c3dad696c51edc18b02c9f92054",tooltip="Registers the sub component. "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Window\lLayoutBase.Load",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_layout_base.html#aac50cd6a58463638209fc5178ca54456"];
+}

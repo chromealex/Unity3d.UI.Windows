@@ -1,0 +1,10 @@
+digraph "UI.Windows" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_17091247df6930ac95b868ee9f966bda {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_17091247df6930ac95b868ee9f966bda.html"];
+    dir_17091247df6930ac95b868ee9f966bda [shape=plaintext label="UI.Windows"];
+    dir_2a8c73e93c71fc24504a57b4dab72380 [shape=box label="Assets" color="red" fillcolor="white" style="filled" URL="dir_2a8c73e93c71fc24504a57b4dab72380.html"];
+  }
+}

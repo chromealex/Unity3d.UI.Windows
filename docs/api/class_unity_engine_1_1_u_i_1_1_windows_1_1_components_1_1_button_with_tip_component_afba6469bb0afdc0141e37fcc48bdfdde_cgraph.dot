@@ -1,0 +1,21 @@
+digraph "UnityEngine.UI.Windows.Components.ButtonWithTipComponent.OnStateChanged"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Components.\lButtonWithTipComponent.OnStateChanged",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Types.\lTipWindowType.OnHover",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type.html#a79d8fd90d97a16d37f7490f963c8fecd"];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Window\lComponentBase.SetInState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base.html#a28395cfba5ca1276ce2f97efb3643058",tooltip="Set up in state to animation. "];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Animations.\lWindowAnimationBase.SetInState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_base.html#ad9f07ee171d3b7f3b4be453d116838c6"];
+  Node2 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="UnityEngine.UI.Windows.Window\lComponentBase.SetResetState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base.html#a0d98ef7654b23c3c86d6e1201607090c",tooltip="Set up reset state to animation. "];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="UnityEngine.UI.Windows.Animations.\lWindowAnimationBase.SetResetState",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_animations_1_1_window_animation_base.html#a49f245bfea7fcdcbaa87a91c2896028b"];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node7 [label="UnityEngine.UI.Windows.Types.\lTipWindowType.OnLeave",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type.html#a1eaf6118022b720b5c19302b083b0336"];
+  Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node8 [label="UnityEngine.UI.Windows.Window\lBase.Hide",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base.html#a249ae5824081d5e6834c6564aba51190",tooltip="Hide this instance. "];
+}

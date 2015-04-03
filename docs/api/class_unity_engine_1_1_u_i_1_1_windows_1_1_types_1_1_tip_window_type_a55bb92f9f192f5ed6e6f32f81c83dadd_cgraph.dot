@@ -1,0 +1,9 @@
+digraph "UnityEngine.UI.Windows.Types.TipWindowType.OnLayoutInit"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Types.\lTipWindowType.OnLayoutInit",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Window\lComponentBase.OnInit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_base.html#a1bf684e75f1715bde930ed07d7ee6d5c",tooltip="Raises the init event. "];
+}

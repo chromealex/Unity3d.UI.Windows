@@ -1,0 +1,15 @@
+digraph "DevicePreview" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_3c040b8b22672e643d51bd813fd60ebe {
+    graph [ bgcolor="#ddddee", pencolor="black", label="Addons" fontname="FreeSans", fontsize="10", URL="dir_3c040b8b22672e643d51bd813fd60ebe.html"]
+  subgraph clusterdir_497a4e34deb19e8e48963cef256d3089 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_497a4e34deb19e8e48963cef256d3089.html"];
+    dir_497a4e34deb19e8e48963cef256d3089 [shape=plaintext label="DevicePreview"];
+    dir_a7452d6bd5c8b9ab03d141a1dd661172 [shape=box label="Core" color="red" fillcolor="white" style="filled" URL="dir_a7452d6bd5c8b9ab03d141a1dd661172.html"];
+    dir_5fcde5c80cd769ff672793cc87858322 [shape=box label="DevicesOutput" color="red" fillcolor="white" style="filled" URL="dir_5fcde5c80cd769ff672793cc87858322.html"];
+    dir_bb255e507b713d4276929a3b6cd33459 [shape=box label="Editor" color="black" fillcolor="white" style="filled" URL="dir_bb255e507b713d4276929a3b6cd33459.html"];
+  }
+  }
+}

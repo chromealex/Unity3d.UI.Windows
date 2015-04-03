@@ -1,0 +1,13 @@
+digraph "UnityEngine.UI.Windows.Components.PopupComponent.Select"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Components.\lPopupComponent.Select",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Components.\lButtonWithTextComponent.SetText",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_button_with_text_component.html#a592fdd78729d3c116663716c1f314441"];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Components.\lISelectable.Deselect",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$interface_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_i_selectable.html#a9823f3914e9abdd2680c35e42909ec62"];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Components.\lISelectable.Select",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$interface_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_i_selectable.html#aa9b93538c2920bc16350da1e5e327916"];
+}

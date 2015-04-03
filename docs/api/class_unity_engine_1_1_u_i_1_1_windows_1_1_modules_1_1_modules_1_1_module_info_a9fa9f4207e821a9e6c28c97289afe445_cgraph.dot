@@ -1,0 +1,9 @@
+digraph "UnityEngine.UI.Windows.Modules.Modules.ModuleInfo.OnHideBegin"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Modules.\lModules.ModuleInfo.OnHideBegin",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.IWindow\lEventsAsync.OnHideBegin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async.html#ab7001f0f16a724caa315f45a8493f068"];
+}

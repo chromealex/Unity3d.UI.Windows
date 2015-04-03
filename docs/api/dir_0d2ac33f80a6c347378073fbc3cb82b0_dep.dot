@@ -1,0 +1,14 @@
+digraph "UI.Windows" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_f2161341da0c2838c2d943d4603ba5b1 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="Flow" fontname="FreeSans", fontsize="10", URL="dir_f2161341da0c2838c2d943d4603ba5b1.html"]
+  subgraph clusterdir_0d2ac33f80a6c347378073fbc3cb82b0 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_0d2ac33f80a6c347378073fbc3cb82b0.html"];
+    dir_0d2ac33f80a6c347378073fbc3cb82b0 [shape=plaintext label="UI.Windows"];
+    dir_f378fc7beed038c3d9caabc27f461fe0 [shape=box label="Layouts" color="black" fillcolor="white" style="filled" URL="dir_f378fc7beed038c3d9caabc27f461fe0.html"];
+    dir_bec11062698018a735efe2f0a9ef58d0 [shape=box label="Types" color="black" fillcolor="white" style="filled" URL="dir_bec11062698018a735efe2f0a9ef58d0.html"];
+  }
+  }
+}

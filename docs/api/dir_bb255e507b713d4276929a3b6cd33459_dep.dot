@@ -1,0 +1,9 @@
+digraph "Editor" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_497a4e34deb19e8e48963cef256d3089 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="DevicePreview" fontname="FreeSans", fontsize="10", URL="dir_497a4e34deb19e8e48963cef256d3089.html"]
+  dir_bb255e507b713d4276929a3b6cd33459 [shape=box, label="Editor", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_bb255e507b713d4276929a3b6cd33459.html"];
+  }
+}

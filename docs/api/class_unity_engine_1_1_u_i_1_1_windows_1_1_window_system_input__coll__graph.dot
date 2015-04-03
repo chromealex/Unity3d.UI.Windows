@@ -1,0 +1,10 @@
+digraph "UnityEngine.UI.Windows.WindowSystemInput"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  Node1 [label="UnityEngine.UI.Windows.Window\lSystemInput",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node2 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="MonoBehaviour",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" onPointerUp\nonPointerDown\nonPointerClick" ,fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Components.\lEvents.ComponentEvent",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_events_1_1_component_event.html"];
+}

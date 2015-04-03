@@ -1,0 +1,9 @@
+digraph "Wizard" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_c4c9964ce036dbb8b096ab544bd08443 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="Editor" fontname="FreeSans", fontsize="10", URL="dir_c4c9964ce036dbb8b096ab544bd08443.html"]
+  dir_644bb120fdfb188ec7df421859de034d [shape=box, label="Wizard", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_644bb120fdfb188ec7df421859de034d.html"];
+  }
+}

@@ -1,0 +1,7 @@
+digraph "Graphical Class Hierarchy"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.ComponentLink",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$struct_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window_1_1_component_link.html"];
+}

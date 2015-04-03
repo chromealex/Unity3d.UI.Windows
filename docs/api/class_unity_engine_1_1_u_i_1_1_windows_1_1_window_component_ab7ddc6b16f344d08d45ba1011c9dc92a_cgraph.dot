@@ -1,0 +1,15 @@
+digraph "UnityEngine.UI.Windows.WindowComponent.UnregisterSubComponent"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Window\lComponent.UnregisterSubComponent",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Window\lComponent.OnHideBegin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component.html#abbe2f59e0cb9c39d864bfe28c0de743a",tooltip="Raises the hide begin event. "];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Components.\lList.OnHideBegin",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list.html#a01005cc650377159aeb3ed105b7769c1",tooltip="Raises the hide begin event. "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Window\lComponent.OnHideEnd",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component.html#a7f130d48dc990f69f45b35a7ebcd915a",tooltip="Raises the hide end event. "];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="UnityEngine.UI.Windows.Window\lComponent.OnDeinit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component.html#aeecca9f3f46bb2cef3425c9d8b6b7618",tooltip="Raises the deinit event. "];
+}

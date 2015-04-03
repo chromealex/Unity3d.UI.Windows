@@ -1,0 +1,19 @@
+digraph "UI.Windows" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_2a8c73e93c71fc24504a57b4dab72380 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="Assets" fontname="FreeSans", fontsize="10", URL="dir_2a8c73e93c71fc24504a57b4dab72380.html"]
+  subgraph clusterdir_840d7d22eff27a012a388f4c953ffb27 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_840d7d22eff27a012a388f4c953ffb27.html"];
+    dir_840d7d22eff27a012a388f4c953ffb27 [shape=plaintext label="UI.Windows"];
+    dir_3c040b8b22672e643d51bd813fd60ebe [shape=box label="Addons" color="red" fillcolor="white" style="filled" URL="dir_3c040b8b22672e643d51bd813fd60ebe.html"];
+    dir_1c35481fbd84a0fe05ee7be75cb190cb [shape=box label="Animations" color="red" fillcolor="white" style="filled" URL="dir_1c35481fbd84a0fe05ee7be75cb190cb.html"];
+    dir_f68a76eac7ed4ad64c7d44c6039248e8 [shape=box label="Components" color="red" fillcolor="white" style="filled" URL="dir_f68a76eac7ed4ad64c7d44c6039248e8.html"];
+    dir_4cb8c97036e71ca88d8efd487d68cec5 [shape=box label="Core" color="red" fillcolor="white" style="filled" URL="dir_4cb8c97036e71ca88d8efd487d68cec5.html"];
+    dir_360e8b977adf1ce153b078e1c63c4f40 [shape=box label="Layouts" color="red" fillcolor="white" style="filled" URL="dir_360e8b977adf1ce153b078e1c63c4f40.html"];
+    dir_df99ed299ed670be6e47a47f398c6226 [shape=box label="Modules" color="red" fillcolor="white" style="filled" URL="dir_df99ed299ed670be6e47a47f398c6226.html"];
+    dir_cbc9753bd454e06ea6619db6af990353 [shape=box label="Types" color="red" fillcolor="white" style="filled" URL="dir_cbc9753bd454e06ea6619db6af990353.html"];
+  }
+  }
+}

@@ -1,0 +1,13 @@
+digraph "Editor" {
+  compound=true
+  node [ fontsize="10", fontname="FreeSans"];
+  edge [ labelfontsize="10", labelfontname="FreeSans"];
+  subgraph clusterdir_052648f5ed64cd022673d1e51b5fe592 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="Core" fontname="FreeSans", fontsize="10", URL="dir_052648f5ed64cd022673d1e51b5fe592.html"]
+  subgraph clusterdir_8054722468a5767d77fe2686200a126c {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_8054722468a5767d77fe2686200a126c.html"];
+    dir_8054722468a5767d77fe2686200a126c [shape=plaintext label="Editor"];
+    dir_6ad3b6e37947a3c6c16ff9abd24d99a1 [shape=box label="FlowWindowEditor" color="red" fillcolor="white" style="filled" URL="dir_6ad3b6e37947a3c6c16ff9abd24d99a1.html"];
+  }
+  }
+}

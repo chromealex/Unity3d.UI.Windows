@@ -1,0 +1,19 @@
+digraph "UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetWindow",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.MoveContainerOrWindow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a436ac02d60d711ae484b91ec52cf5531"];
+  Node2 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.ForEachContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a49aba3010ff83a0d7fdb943812c7b723"];
+  Node3 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.GetContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#af0cb878b2d86ddf34f876455dc5486d6"];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.HasContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#ad4f26422d47d3fcf0f0d67c90bf1ff13"];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.GetAttachedWindows",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#a7f5dc0816a3c486d5e66cf6c1aa3cd93"];
+}

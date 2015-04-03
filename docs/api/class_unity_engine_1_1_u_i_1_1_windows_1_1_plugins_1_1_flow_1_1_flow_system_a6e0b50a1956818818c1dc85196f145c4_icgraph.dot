@@ -1,0 +1,46 @@
+digraph "UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.HasData"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.HasData",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node2 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetTags",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a40ab09f93abd3eec523208b6d256a27c"];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node3 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.IsEnabled",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#a81335a6f9543ee07677afb8b1779480a"];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node4 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.SetRootWindow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#ac3b82325b7c739c3c55ce3914a7b0869"];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node5 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetRootWindow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a1b60c6a6ca7d4013128a740d7f321ebe"];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node6 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.GetEditorStyle",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#adaff0fc00efc85d4011869f04417d47d"];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node7 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetDefaultWindows",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a8b11ed555963d22e491d53b509f954ec"];
+  Node7 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node8 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetWindows",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#aefa40bb5348f886a5b41a2eb42cb0492"];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node9 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetContainers",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#aac0b39f5f5606bba7f76e755ef4b82fb"];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node10 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetWindow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a5dacc5b20d09de3aef611fda0122ed6a"];
+  Node10 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node11 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.MoveContainerOrWindow",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a436ac02d60d711ae484b91ec52cf5531"];
+  Node11 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node10 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node12 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.ForEachContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a49aba3010ff83a0d7fdb943812c7b723"];
+  Node12 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node10 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node13 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.GetContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#af0cb878b2d86ddf34f876455dc5486d6"];
+  Node10 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node14 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.HasContainer",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#ad4f26422d47d3fcf0f0d67c90bf1ff13"];
+  Node10 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node15 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowWindow.GetAttachedWindows",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_window.html#a7f5dc0816a3c486d5e66cf6c1aa3cd93"];
+  Node1 -> Node16 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node16 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.SetScrollPosition",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a2f801ceccec17ed2fad569177a1fd997"];
+  Node1 -> Node17 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node17 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.GetScrollPosition",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#acba2af60aa521ac0eaf383dadc77d3af"];
+  Node1 -> Node18 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node18 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.SelectWindows",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#affee97514b8017d31231580d27ebfd79"];
+  Node1 -> Node19 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node19 [label="UnityEngine.UI.Windows.Plugins.\lFlow.FlowSystem.SelectWindowsInRect",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_unity_engine_1_1_u_i_1_1_windows_1_1_plugins_1_1_flow_1_1_flow_system.html#a3d0dc83b3e5ef06d319bee31193a5b8c"];
+}
