@@ -1,0 +1,171 @@
+.TH "UnityEngine.UI.Windows.Types.Layout" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.Types.Layout \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBComponent\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBCreate\fP (\fBWindowBase\fP window, Transform root, float depth, int raycastPriority, int orderInLayer)"
+.br
+.ti -1c
+.RI "\fBWindowLayout\fP \fBGetLayoutInstance\fP ()"
+.br
+.ti -1c
+.RI "float \fBGetAnimationDuration\fP (bool forward)"
+.br
+.ti -1c
+.RI "Transform \fBGetRoot\fP ()"
+.br
+.ti -1c
+.RI "\fBWindowLayoutElement\fP \fBGetContainer\fP (\fBLayoutTag\fP tag)"
+.br
+.ti -1c
+.RI "T \fBGet< T >\fP (\fBLayoutTag\fP tag=LayoutTag\&.None)"
+.br
+.ti -1c
+.RI "string \fBGetSortingLayerName\fP ()"
+.br
+.ti -1c
+.RI "int \fBGetSortingOrder\fP ()"
+.br
+.ti -1c
+.RI "void \fBOnInit\fP ()"
+.br
+.ti -1c
+.RI "void \fBOnDeinit\fP ()"
+.br
+.ti -1c
+.RI "void \fBOnShowBegin\fP (System\&.Action callback)"
+.br
+.ti -1c
+.RI "void \fBOnShowEnd\fP ()"
+.br
+.ti -1c
+.RI "void \fBOnHideBegin\fP (System\&.Action callback)"
+.br
+.ti -1c
+.RI "void \fBOnHideEnd\fP ()"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBWindowLayout\&.ScaleMode\fP \fBscaleMode\fP"
+.br
+.ti -1c
+.RI "\fBWindowLayout\fP \fBlayout\fP"
+.br
+.ti -1c
+.RI "\fBComponent\fP[] \fBcomponents\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 109 of file LayoutWindowType\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.Create (\fBWindowBase\fP window, Transform root, float depth, int raycastPriority, int orderInLayer)"
+
+.PP
+Definition at line 299 of file LayoutWindowType\&.cs\&.
+.SS "T UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.Get< T > (\fBLayoutTag\fP tag = \fCLayoutTag\&.None\fP)"
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIWindowComponent\fP
+.PP
+Definition at line 359 of file LayoutWindowType\&.cs\&.
+.SS "float UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.GetAnimationDuration (bool forward)"
+
+.PP
+Definition at line 326 of file LayoutWindowType\&.cs\&.
+.SS "\fBWindowLayoutElement\fP UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.GetContainer (\fBLayoutTag\fP tag)"
+
+.PP
+Definition at line 350 of file LayoutWindowType\&.cs\&.
+.SS "\fBWindowLayout\fP UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.GetLayoutInstance ()"
+
+.PP
+Definition at line 320 of file LayoutWindowType\&.cs\&.
+.SS "Transform UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.GetRoot ()"
+
+.PP
+Definition at line 344 of file LayoutWindowType\&.cs\&.
+.SS "string UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.GetSortingLayerName ()"
+
+.PP
+Definition at line 372 of file LayoutWindowType\&.cs\&.
+.SS "int UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.GetSortingOrder ()"
+
+.PP
+Definition at line 378 of file LayoutWindowType\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.OnDeinit ()"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 386 of file LayoutWindowType\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.OnHideBegin (System\&.Action callback)"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 405 of file LayoutWindowType\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.OnHideEnd ()"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 422 of file LayoutWindowType\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.OnInit ()"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 385 of file LayoutWindowType\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.OnShowBegin (System\&.Action callback)"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 387 of file LayoutWindowType\&.cs\&.
+.SS "void UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.OnShowEnd ()"
+
+.PP
+Implements \fBUnityEngine\&.UI\&.Windows\&.IWindowEventsAsync\fP\&.
+.PP
+Definition at line 404 of file LayoutWindowType\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBComponent\fP [] UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.components"
+
+.PP
+Definition at line 294 of file LayoutWindowType\&.cs\&.
+.SS "\fBWindowLayout\fP UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.layout"
+
+.PP
+Definition at line 293 of file LayoutWindowType\&.cs\&.
+.SS "\fBWindowLayout\&.ScaleMode\fP UnityEngine\&.UI\&.Windows\&.Types\&.Layout\&.scaleMode"
+
+.PP
+Definition at line 291 of file LayoutWindowType\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

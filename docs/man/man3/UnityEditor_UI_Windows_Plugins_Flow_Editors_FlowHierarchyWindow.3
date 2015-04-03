@@ -1,0 +1,153 @@
+.TH "UnityEditor.UI.Windows.Plugins.Flow.Editors.FlowHierarchyWindow" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEditor.UI.Windows.Plugins.Flow.Editors.FlowHierarchyWindow \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits \fBUnityEditor\&.EditorWindowExt\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "float \fBGetWidth\fP ()"
+.br
+.ti -1c
+.RI "new void \fBFocus\fP ()"
+.br
+.ti -1c
+.RI "void \fBOnSelected\fP (GameObject go)"
+.br
+.ti -1c
+.RI "void \fBShowView\fP ()"
+.br
+.ti -1c
+.RI "void \fBHideView\fP ()"
+.br
+.ti -1c
+.RI "void \fBUpdateSize\fP (float \fBprogress\fP)"
+.br
+.ti -1c
+.RI "new void \fBUpdate\fP ()"
+.br
+.ti -1c
+.RI "void \fBOnGUI\fP ()"
+.br
+.ti -1c
+.RI "void \fBRemoveLayoutElement\fP (Transform element)"
+.br
+.ti -1c
+.RI "void \fBCreateLayoutElement\fP (Transform element)"
+.br
+.ti -1c
+.RI "override void \fBOnClose\fP ()"
+.br
+.ti -1c
+.RI "void \fBTraverse\fP (Transform root, System\&.Action< Transform, int > handler)"
+.br
+.ti -1c
+.RI "void \fBIterateGameObject\fP (Transform root, System\&.Action< Transform, int > handler, bool recursive)"
+.br
+.ti -1c
+.RI "void \fBDoIterate\fP (Transform root, System\&.Action< Transform, int > handler, bool recursive, int depthLevel)"
+.br
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBFlowSystemEditorWindow\fP \fBrootWindow\fP"
+.br
+.ti -1c
+.RI "const float \fBMIN_WIDTH\fP = 200f"
+.br
+.ti -1c
+.RI "const float \fBMAX_WIDTH\fP = 300f"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+Definition at line 8 of file FlowHierarchyWindow\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.CreateLayoutElement (Transform element)"
+
+.PP
+Definition at line 331 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.DoIterate (Transform root, System\&.Action< Transform, int > handler, bool recursive, int depthLevel)"
+
+.PP
+Definition at line 361 of file FlowHierarchyWindow\&.cs\&.
+.SS "new void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.Focus ()"
+
+.PP
+Definition at line 24 of file FlowHierarchyWindow\&.cs\&.
+.SS "float UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.GetWidth ()"
+
+.PP
+Definition at line 18 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.HideView ()"
+
+.PP
+Definition at line 64 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.IterateGameObject (Transform root, System\&.Action< Transform, int > handler, bool recursive)"
+
+.PP
+Definition at line 355 of file FlowHierarchyWindow\&.cs\&.
+.SS "override void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.OnClose ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBUnityEditor\&.EditorWindowExt\fP\&.
+.PP
+Definition at line 343 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.OnGUI ()"
+
+.PP
+Definition at line 143 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.OnSelected (GameObject go)"
+
+.PP
+Definition at line 36 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.RemoveLayoutElement (Transform element)"
+
+.PP
+Definition at line 316 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.ShowView ()"
+FlowSystem\&.GetData()\&.editorWindowAsPopup; 
+.PP
+Definition at line 42 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.Traverse (Transform root, System\&.Action< Transform, int > handler)"
+
+.PP
+Definition at line 349 of file FlowHierarchyWindow\&.cs\&.
+.SS "new void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.Update ()\fC [virtual]\fP"
+
+.PP
+Reimplemented from \fBUnityEditor\&.EditorWindowExt\fP\&.
+.PP
+Definition at line 82 of file FlowHierarchyWindow\&.cs\&.
+.SS "void UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.UpdateSize (float progress)"
+
+.PP
+Definition at line 70 of file FlowHierarchyWindow\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "const float UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.MAX_WIDTH = 300f"
+
+.PP
+Definition at line 16 of file FlowHierarchyWindow\&.cs\&.
+.SS "const float UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.MIN_WIDTH = 200f"
+
+.PP
+Definition at line 15 of file FlowHierarchyWindow\&.cs\&.
+.SS "\fBFlowSystemEditorWindow\fP UnityEditor\&.UI\&.Windows\&.Plugins\&.Flow\&.Editors\&.FlowHierarchyWindow\&.rootWindow"
+
+.PP
+Definition at line 10 of file FlowHierarchyWindow\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

@@ -1,0 +1,425 @@
+.TH "UnityEngine.UI.Windows.WindowSystem" 3 "Fri Apr 3 2015" "Version version 0.8a" "Unity3D UI Windows Extension" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+UnityEngine.UI.Windows.WindowSystem \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+Inherits MonoBehaviour\&.
+.PP
+Inherited by \fBUnityEngine\&.UI\&.Windows\&.WindowSystemFlow\fP, and \fBUnityEngine\&.UI\&.Windows\&.WindowSystemPlatforms\fP\&.
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBHistoryItem\fP"
+.br
+.ti -1c
+.RI "class \fBSettings\fP"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static bool \fBIsUIHovered\fP ()"
+.br
+.RI "\fIDetermines if is user interface hovered\&. \fP"
+.ti -1c
+.RI "static void \fBApplyToSettings\fP (Camera camera)"
+.br
+.RI "\fIApplies settings file (or default) to camera\&. \fP"
+.ti -1c
+.RI "static void \fBApplyToSettings\fP (Canvas canvas)"
+.br
+.RI "\fIApplies settings file (or default) to canvas\&. \fP"
+.ti -1c
+.RI "static void \fBAddToHistory\fP (\fBWindowBase\fP window)"
+.br
+.RI "\fIAdds to history\&. \fP"
+.ti -1c
+.RI "static void \fBRefreshHistory\fP ()"
+.br
+.RI "\fIRefreshes the history\&. \fP"
+.ti -1c
+.RI "static \fBWindowBase\fP \fBGetPreviousWindow\fP (\fBWindowBase\fP current)"
+.br
+.RI "\fIGets the last window in history with the \fCShown\fP state\&. \fP"
+.ti -1c
+.RI "static void \fBShowDefault\fP (params object[] parameters)"
+.br
+.RI "\fIShows the default list windows\&. \fP"
+.ti -1c
+.RI "static void \fBHideAllAndClean\fP (\fBWindowBase\fP except=null, System\&.Action callback=null)"
+.br
+.RI "\fIHides all and clean\&. \fP"
+.ti -1c
+.RI "static void \fBHideAllAndClean\fP (List< \fBWindowBase\fP > except, System\&.Action callback=null)"
+.br
+.RI "\fIHides all and clean\&. \fP"
+.ti -1c
+.RI "static void \fBClean\fP (\fBWindowBase\fP except=null)"
+.br
+.RI "\fIClean the specified except\&. \fP"
+.ti -1c
+.RI "static void \fBClean\fP (List< \fBWindowBase\fP > except)"
+.br
+.RI "\fIClean the specified except\&. \fP"
+.ti -1c
+.RI "static void \fBHideAll\fP (\fBWindowBase\fP except=null, System\&.Action callback=null)"
+.br
+.RI "\fIHides all\&. \fP"
+.ti -1c
+.RI "static void \fBHideAll\fP (List< \fBWindowBase\fP > except, System\&.Action callback)"
+.br
+.RI "\fIHides all\&. \fP"
+.ti -1c
+.RI "static T \fBCreate< T >\fP (params object[] parameters)"
+.br
+.RI "\fICreate the specified parameters\&. \fP"
+.ti -1c
+.RI "static T \fBShow< T >\fP (params object[] parameters)"
+.br
+.RI "\fIShows window of T type\&. Returns null if window not registered\&. \fP"
+.ti -1c
+.RI "static T \fBShow< T >\fP (T source, params object[] parameters)"
+.br
+.RI "\fIShows window of T type\&. Returns null if window not registered\&. \fP"
+.ti -1c
+.RI "static float \fBGetDepthStep\fP ()"
+.br
+.RI "\fIGets the depth step\&. \fP"
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBSettings\fP \fBsettings\fP = new \fBSettings\fP()"
+.br
+.ti -1c
+.RI "List< \fBWindowBase\fP > \fBdefaults\fP = new List<\fBWindowBase\fP>()"
+.br
+.RI "\fIDefault windows list\&. Use \fBWindowSystem\&.ShowDefault()\fP to show them\&. \fP"
+.ti -1c
+.RI "List< \fBWindowBase\fP > \fBwindows\fP = new List<\fBWindowBase\fP>()"
+.br
+.RI "\fIAll registered windows\&. If you want to use \fBWindowSystem\&.Show<T>()\fP you must register window here\&. \fP"
+.ti -1c
+.RI "List< \fBWindowBase\fP > \fBcurrentWindows\fP = new List<\fBWindowBase\fP>()"
+.br
+.ti -1c
+.RI "List< \fBHistoryItem\fP > \fBhistory\fP = new List<\fBHistoryItem\fP>()"
+.br
+.RI "\fIThe history of windows\&. \fP"
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBInit\fP ()"
+.br
+.RI "\fIInit this instance\&. \fP"
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line 11 of file WindowSystem\&.cs\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.AddToHistory (\fBWindowBase\fP window)\fC [static]\fP"
+
+.PP
+Adds to history\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIwindow\fP Window\&.
+.RE
+.PP
+
+.PP
+Definition at line 228 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.ApplyToSettings (Camera camera)\fC [static]\fP"
+
+.PP
+Applies settings file (or default) to camera\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcamera\fP Camera\&.
+.RE
+.PP
+
+.PP
+Definition at line 185 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.ApplyToSettings (Canvas canvas)\fC [static]\fP"
+
+.PP
+Applies settings file (or default) to canvas\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcanvas\fP Canvas\&.
+.RE
+.PP
+
+.PP
+Definition at line 208 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.Clean (\fBWindowBase\fP except = \fCnull\fP)\fC [static]\fP"
+
+.PP
+Clean the specified except\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIexcept\fP Except\&.
+.RE
+.PP
+
+.PP
+Definition at line 350 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.Clean (List< \fBWindowBase\fP > except)\fC [static]\fP"
+
+.PP
+Clean the specified except\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIexcept\fP Except\&.
+.RE
+.PP
+
+.PP
+Definition at line 379 of file WindowSystem\&.cs\&.
+.SS "static T UnityEngine\&.UI\&.Windows\&.WindowSystem\&.Create< T > (params object[] parameters)\fC [static]\fP"
+
+.PP
+Create the specified parameters\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIparameters\fP Parameters\&.
+.RE
+.PP
+\fBTemplate Parameters:\fP
+.RS 4
+\fIT\fP The 1st type parameter\&.
+.RE
+.PP
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIWindowBase\fP
+.PP
+Definition at line 447 of file WindowSystem\&.cs\&.
+.SS "static float UnityEngine\&.UI\&.Windows\&.WindowSystem\&.GetDepthStep ()\fC [static]\fP"
+
+.PP
+Gets the depth step\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+The depth step\&.
+.RE
+.PP
+
+.PP
+Definition at line 531 of file WindowSystem\&.cs\&.
+.SS "static \fBWindowBase\fP UnityEngine\&.UI\&.Windows\&.WindowSystem\&.GetPreviousWindow (\fBWindowBase\fP current)\fC [static]\fP"
+
+.PP
+Gets the last window in history with the \fCShown\fP state\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+The previous window\&.
+.RE
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcurrent\fP Current\&.
+.RE
+.PP
+
+.PP
+Definition at line 248 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.HideAll (\fBWindowBase\fP except = \fCnull\fP, System\&.Action callback = \fCnull\fP)\fC [static]\fP"
+
+.PP
+Hides all\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIexcept\fP Except\&.
+.br
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Definition at line 409 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.HideAll (List< \fBWindowBase\fP > except, System\&.Action callback)\fC [static]\fP"
+
+.PP
+Hides all\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIexcept\fP Except\&.
+.br
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Definition at line 428 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.HideAllAndClean (\fBWindowBase\fP except = \fCnull\fP, System\&.Action callback = \fCnull\fP)\fC [static]\fP"
+
+.PP
+Hides all and clean\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIexcept\fP Except\&.
+.br
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Definition at line 317 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.HideAllAndClean (List< \fBWindowBase\fP > except, System\&.Action callback = \fCnull\fP)\fC [static]\fP"
+
+.PP
+Hides all and clean\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIexcept\fP Except\&.
+.br
+\fIcallback\fP Callback\&.
+.RE
+.PP
+
+.PP
+Definition at line 334 of file WindowSystem\&.cs\&.
+.SS "virtual void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.Init ()\fC [protected]\fP, \fC [virtual]\fP"
+
+.PP
+Init this instance\&. 
+.PP
+Reimplemented in \fBUnityEngine\&.UI\&.Windows\&.WindowSystemPlatforms\fP, and \fBUnityEngine\&.UI\&.Windows\&.WindowSystemFlow\fP\&.
+.PP
+Definition at line 155 of file WindowSystem\&.cs\&.
+.SS "static bool UnityEngine\&.UI\&.Windows\&.WindowSystem\&.IsUIHovered ()\fC [static]\fP"
+
+.PP
+Determines if is user interface hovered\&. 
+.PP
+\fBReturns:\fP
+.RS 4
+\fCtrue\fP if is user interface hovered; otherwise, \fCfalse\fP\&.
+.RE
+.PP
+
+.PP
+Definition at line 175 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.RefreshHistory ()\fC [static]\fP"
+
+.PP
+Refreshes the history\&. 
+.PP
+Definition at line 237 of file WindowSystem\&.cs\&.
+.SS "static T UnityEngine\&.UI\&.Windows\&.WindowSystem\&.Show< T > (params object[] parameters)\fC [static]\fP"
+
+.PP
+Shows window of T type\&. Returns null if window not registered\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIparameters\fP OnParametersPass() values\&.
+.RE
+.PP
+\fBTemplate Parameters:\fP
+.RS 4
+\fIT\fP The 1st type parameter\&.
+.RE
+.PP
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIWindowBase\fP
+.PP
+Definition at line 483 of file WindowSystem\&.cs\&.
+.SS "static T UnityEngine\&.UI\&.Windows\&.WindowSystem\&.Show< T > (T source, params object[] parameters)\fC [static]\fP"
+
+.PP
+Shows window of T type\&. Returns null if window not registered\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIsource\fP Source\&.
+.br
+\fIparameters\fP OnParametersPass() values\&.
+.RE
+.PP
+\fBTemplate Parameters:\fP
+.RS 4
+\fIT\fP The 1st type parameter\&.
+.RE
+.PP
+
+.PP
+\fBType Constraints\fP
+.TP
+\fIT\fP : \fIWindowBase\fP
+.PP
+Definition at line 499 of file WindowSystem\&.cs\&.
+.SS "static void UnityEngine\&.UI\&.Windows\&.WindowSystem\&.ShowDefault (params object[] parameters)\fC [static]\fP"
+
+.PP
+Shows the default list windows\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIparameters\fP Parameters\&.
+.RE
+.PP
+
+.PP
+Definition at line 271 of file WindowSystem\&.cs\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "List<\fBWindowBase\fP> UnityEngine\&.UI\&.Windows\&.WindowSystem\&.currentWindows = new List<\fBWindowBase\fP>()"
+
+.PP
+Definition at line 89 of file WindowSystem\&.cs\&.
+.SS "List<\fBWindowBase\fP> UnityEngine\&.UI\&.Windows\&.WindowSystem\&.defaults = new List<\fBWindowBase\fP>()"
+
+.PP
+Default windows list\&. Use \fBWindowSystem\&.ShowDefault()\fP to show them\&. 
+.PP
+Definition at line 80 of file WindowSystem\&.cs\&.
+.SS "List<\fBHistoryItem\fP> UnityEngine\&.UI\&.Windows\&.WindowSystem\&.history = new List<\fBHistoryItem\fP>()"
+
+.PP
+The history of windows\&. 
+.PP
+Definition at line 95 of file WindowSystem\&.cs\&.
+.SS "\fBSettings\fP UnityEngine\&.UI\&.Windows\&.WindowSystem\&.settings = new \fBSettings\fP()"
+
+.PP
+Definition at line 74 of file WindowSystem\&.cs\&.
+.SS "List<\fBWindowBase\fP> UnityEngine\&.UI\&.Windows\&.WindowSystem\&.windows = new List<\fBWindowBase\fP>()"
+
+.PP
+All registered windows\&. If you want to use \fBWindowSystem\&.Show<T>()\fP you must register window here\&. 
+.PP
+Definition at line 86 of file WindowSystem\&.cs\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Unity3D UI Windows Extension from the source code\&.

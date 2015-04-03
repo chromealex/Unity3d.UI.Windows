@@ -1,0 +1,313 @@
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list}{}\section{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List Class Reference}
+\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list}\index{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List@{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List}}
+
+
+Inherits \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component}.
+
+
+
+Inherited by \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_table_1_1_table}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Table.\+Table}, \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_tabs}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Tabs}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_toggle_component}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Toggle\+Component}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a50035039b166c81742c9446b6eb72b70}{On\+Init} ()
+\begin{DoxyCompactList}\small\item\em Raises the init event. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\item 
+void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a7e2aa5d44dc315b373daa0a01cf6a4f0}{Init\+Pool} (int capacity)
+\item 
+void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_ae0592aea23ea27e696796c402ec0352b}{Setup\+As\+Dropdown} (float max\+Height)
+\item 
+virtual T \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a393c7313e14e0e948dd6e5e8d5726dad}{Add\+Item$<$ T $>$} ()
+\item 
+int \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a74308d8047e06098d6fa55220a126c90}{Get\+Index\+Of$<$ T $>$} (T item)
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list}{List}$<$ \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}{Window\+Component} $>$ \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_aa873bcbe8435fffde196cb53fec0ee71}{Get\+Items} ()
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list}{List}$<$ T $>$ \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a9c07d898d5eb45dac0c42055933ec787}{Get\+Items$<$ T $>$} ()
+\item 
+T \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a087aa3586d7a187f1d1418468942ccd4}{Get\+Item$<$ T $>$} (int index)
+\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_af419418812677fa56f8df46306abde61}{Set\+Items} (int capacity, Unity\+Action$<$ \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_i_component}{I\+Component} $>$ on\+Item=null)
+\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a222569f231b3f8d035d276a215b81ceb}{Set\+Items$<$ T $>$} (int capacity, Unity\+Action$<$ T, int $>$ on\+Item=null)
+\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a4db763aa2b1cfdb4391d64710f34d530}{Set\+Items\+Async$<$ T $>$} (int capacity, Unity\+Action on\+Complete, Unity\+Action$<$ T, int $>$ on\+Item=null)
+\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_aee0e2014056a8eb9fd3b32b0bdc9d74f}{Clear} ()
+\item 
+override void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a01005cc650377159aeb3ed105b7769c1}{On\+Hide\+Begin} (System.\+Action callback)
+\begin{DoxyCompactList}\small\item\em Raises the hide begin event. Wait while all sub components return the callback. You can override this method but call it\textquotesingle{}s base. \end{DoxyCompactList}\item 
+void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a716234b7e483983d7f34fb4b276fb678}{Refresh} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component}{Window\+Component} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a0acb8436079981b08f09de21df87a1e9}{source}
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_extensions_1_1_scroll_rect}{Extensions.\+Scroll\+Rect} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a45ce7be170ae2faf8057c3d459badd95}{scroll\+Rect}
+\item 
+Game\+Object \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a81f15cdef647cfffb1bb017742f1f353}{content}
+\item 
+Game\+Object \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a375bbc3a6fada2fa041b31d5abe2ca65}{no\+Elements}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 11 of file List.\+cs.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a393c7313e14e0e948dd6e5e8d5726dad}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Add\+Item$<$ T $>$@{Add\+Item$<$ T $>$}}
+\index{Add\+Item$<$ T $>$@{Add\+Item$<$ T $>$}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Add\+Item$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}virtual T Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Add\+Item$<$ T $>$ (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a393c7313e14e0e948dd6e5e8d5726dad}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_toggle_component_aedda58ae99096e767eeb2d32a7cb435d}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Toggle\+Component}.
+
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em I\+Component}]\end{description}
+\end{Desc}
+
+
+Definition at line 48 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_aee0e2014056a8eb9fd3b32b0bdc9d74f}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Clear@{Clear}}
+\index{Clear@{Clear}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Clear}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Clear (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_aee0e2014056a8eb9fd3b32b0bdc9d74f}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_toggle_component_aba8d5c73c9cfd22bf2e86a53a10430f5}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Toggle\+Component}.
+
+
+
+Definition at line 166 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a74308d8047e06098d6fa55220a126c90}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Get\+Index\+Of$<$ T $>$@{Get\+Index\+Of$<$ T $>$}}
+\index{Get\+Index\+Of$<$ T $>$@{Get\+Index\+Of$<$ T $>$}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Get\+Index\+Of$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}int Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Get\+Index\+Of$<$ T $>$ (
+\begin{DoxyParamCaption}
+\item[{T}]{item}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a74308d8047e06098d6fa55220a126c90}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em I\+Component}]\end{description}
+\end{Desc}
+
+
+Definition at line 79 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a087aa3586d7a187f1d1418468942ccd4}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Get\+Item$<$ T $>$@{Get\+Item$<$ T $>$}}
+\index{Get\+Item$<$ T $>$@{Get\+Item$<$ T $>$}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Get\+Item$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}T Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Get\+Item$<$ T $>$ (
+\begin{DoxyParamCaption}
+\item[{int}]{index}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a087aa3586d7a187f1d1418468942ccd4}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em I\+Component}]\end{description}
+\end{Desc}
+
+
+Definition at line 107 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_aa873bcbe8435fffde196cb53fec0ee71}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Get\+Items@{Get\+Items}}
+\index{Get\+Items@{Get\+Items}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Get\+Items}]{\setlength{\rightskip}{0pt plus 5cm}{\bf List}$<${\bf Window\+Component}$>$ Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Get\+Items (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_aa873bcbe8435fffde196cb53fec0ee71}
+
+
+Definition at line 95 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a9c07d898d5eb45dac0c42055933ec787}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Get\+Items$<$ T $>$@{Get\+Items$<$ T $>$}}
+\index{Get\+Items$<$ T $>$@{Get\+Items$<$ T $>$}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Get\+Items$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}{\bf List}$<$T$>$ {\bf Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Get\+Items}$<$ T $>$ (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a9c07d898d5eb45dac0c42055933ec787}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em I\+Component}]\end{description}
+\end{Desc}
+
+
+Definition at line 101 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a7e2aa5d44dc315b373daa0a01cf6a4f0}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Init\+Pool@{Init\+Pool}}
+\index{Init\+Pool@{Init\+Pool}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Init\+Pool}]{\setlength{\rightskip}{0pt plus 5cm}void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Init\+Pool (
+\begin{DoxyParamCaption}
+\item[{int}]{capacity}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a7e2aa5d44dc315b373daa0a01cf6a4f0}
+
+
+Definition at line 31 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a01005cc650377159aeb3ed105b7769c1}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!On\+Hide\+Begin@{On\+Hide\+Begin}}
+\index{On\+Hide\+Begin@{On\+Hide\+Begin}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{On\+Hide\+Begin}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+On\+Hide\+Begin (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{callback}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a01005cc650377159aeb3ed105b7769c1}
+
+
+Raises the hide begin event. Wait while all sub components return the callback. You can override this method but call it\textquotesingle{}s base. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_abbe2f59e0cb9c39d864bfe28c0de743a}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component}.
+
+
+
+Definition at line 182 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a50035039b166c81742c9446b6eb72b70}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!On\+Init@{On\+Init}}
+\index{On\+Init@{On\+Init}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{On\+Init}]{\setlength{\rightskip}{0pt plus 5cm}override void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+On\+Init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a50035039b166c81742c9446b6eb72b70}
+
+
+Raises the init event. You can override this method but call it\textquotesingle{}s base. 
+
+
+
+Reimplemented from \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_component_a1bbe16844e4db2b628587023bcc45117}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Component}.
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_tabs_a09878546b509e7b25a479278f45f5b26}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Tabs}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_toggle_component_a5974ccee306a24708d91ed697f9e7015}{Unity\+Engine.\+U\+I.\+Windows.\+Components.\+Toggle\+Component}.
+
+
+
+Definition at line 23 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a716234b7e483983d7f34fb4b276fb678}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Refresh@{Refresh}}
+\index{Refresh@{Refresh}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Refresh}]{\setlength{\rightskip}{0pt plus 5cm}void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Refresh (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a716234b7e483983d7f34fb4b276fb678}
+
+
+Definition at line 190 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_af419418812677fa56f8df46306abde61}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Set\+Items@{Set\+Items}}
+\index{Set\+Items@{Set\+Items}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Set\+Items}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Set\+Items (
+\begin{DoxyParamCaption}
+\item[{int}]{capacity, }
+\item[{Unity\+Action$<$ {\bf I\+Component} $>$}]{on\+Item = {\ttfamily null}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_af419418812677fa56f8df46306abde61}
+
+
+Definition at line 119 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a222569f231b3f8d035d276a215b81ceb}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Set\+Items$<$ T $>$@{Set\+Items$<$ T $>$}}
+\index{Set\+Items$<$ T $>$@{Set\+Items$<$ T $>$}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Set\+Items$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Set\+Items}$<$ T $>$ (
+\begin{DoxyParamCaption}
+\item[{int}]{capacity, }
+\item[{Unity\+Action$<$ T, int $>$}]{on\+Item = {\ttfamily null}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a222569f231b3f8d035d276a215b81ceb}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em I\+Component}]\end{description}
+\end{Desc}
+
+
+Definition at line 129 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a4db763aa2b1cfdb4391d64710f34d530}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Set\+Items\+Async$<$ T $>$@{Set\+Items\+Async$<$ T $>$}}
+\index{Set\+Items\+Async$<$ T $>$@{Set\+Items\+Async$<$ T $>$}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Set\+Items\+Async$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Set\+Items\+Async$<$ T $>$ (
+\begin{DoxyParamCaption}
+\item[{int}]{capacity, }
+\item[{Unity\+Action}]{on\+Complete, }
+\item[{Unity\+Action$<$ T, int $>$}]{on\+Item = {\ttfamily null}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a4db763aa2b1cfdb4391d64710f34d530}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em I\+Component}]\end{description}
+\end{Desc}
+
+
+Definition at line 142 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_ae0592aea23ea27e696796c402ec0352b}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!Setup\+As\+Dropdown@{Setup\+As\+Dropdown}}
+\index{Setup\+As\+Dropdown@{Setup\+As\+Dropdown}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{Setup\+As\+Dropdown}]{\setlength{\rightskip}{0pt plus 5cm}void Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+Setup\+As\+Dropdown (
+\begin{DoxyParamCaption}
+\item[{float}]{max\+Height}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_ae0592aea23ea27e696796c402ec0352b}
+
+
+Definition at line 42 of file List.\+cs.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a81f15cdef647cfffb1bb017742f1f353}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!content@{content}}
+\index{content@{content}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{content}]{\setlength{\rightskip}{0pt plus 5cm}Game\+Object Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+content}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a81f15cdef647cfffb1bb017742f1f353}
+
+
+Definition at line 20 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a375bbc3a6fada2fa041b31d5abe2ca65}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!no\+Elements@{no\+Elements}}
+\index{no\+Elements@{no\+Elements}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{no\+Elements}]{\setlength{\rightskip}{0pt plus 5cm}Game\+Object Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+no\+Elements}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a375bbc3a6fada2fa041b31d5abe2ca65}
+
+
+Definition at line 21 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a45ce7be170ae2faf8057c3d459badd95}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!scroll\+Rect@{scroll\+Rect}}
+\index{scroll\+Rect@{scroll\+Rect}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{scroll\+Rect}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Extensions.\+Scroll\+Rect} Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+scroll\+Rect}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a45ce7be170ae2faf8057c3d459badd95}
+
+
+Definition at line 19 of file List.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a0acb8436079981b08f09de21df87a1e9}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}!source@{source}}
+\index{source@{source}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Components\+::\+List}}
+\subsubsection[{source}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Window\+Component} Unity\+Engine.\+U\+I.\+Windows.\+Components.\+List.\+source}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_components_1_1_list_a0acb8436079981b08f09de21df87a1e9}
+
+
+Definition at line 16 of file List.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Unity3d.\+U\+I.\+Windows/\+Assets/\+U\+I.\+Windows/\+Components/\+Default/\+Advanced/\+List/\hyperlink{_list_8cs}{List.\+cs}\end{DoxyCompactItemize}

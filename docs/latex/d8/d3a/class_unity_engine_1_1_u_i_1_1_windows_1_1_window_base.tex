@@ -1,0 +1,695 @@
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base}{}\section{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base Class Reference}
+\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base}\index{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base@{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base}}
+
+
+Inherits \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_object}{Unity\+Engine.\+U\+I.\+Windows.\+Window\+Object}, and \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async}{Unity\+Engine.\+U\+I.\+Windows.\+I\+Window\+Events\+Async}.
+
+
+
+Inherited by \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespace_unity_engine_1_1_u_i_1_1_windows_aa2b8efef4db5d0280e4019ea89bb63ec}{Window\+Object\+State} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a7f3a8dd20bf459be36c2310291bd1976}{Get\+State} ()
+\begin{DoxyCompactList}\small\item\em Gets the state. \end{DoxyCompactList}\item 
+virtual string \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a17722d97d983d1a1ef2fd8ca2611dcde}{Get\+Sorting\+Layer\+Name} ()
+\begin{DoxyCompactList}\small\item\em Gets the name of the sorting layer. \end{DoxyCompactList}\item 
+virtual int \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae1a26ecd23c220198447de1e51ace960}{Get\+Sorting\+Order} ()
+\begin{DoxyCompactList}\small\item\em Gets the sorting order. \end{DoxyCompactList}\item 
+float \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae454bb12e1f4b9f756ddf31aa33677ee}{Get\+Animation\+Duration} (bool forward)
+\begin{DoxyCompactList}\small\item\em Gets the duration of the animation. \end{DoxyCompactList}\item 
+virtual float \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a1f7d1d4a4712bf82dc5a11ea54aa3bf4}{Get\+Transition\+Animation\+Duration} (bool forward)
+\begin{DoxyCompactList}\small\item\em Gets the duration of the transition animation. \end{DoxyCompactList}\item 
+virtual float \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a6fa8883696c18133230291831d87e628}{Get\+Module\+Animation\+Duration} (bool forward)
+\begin{DoxyCompactList}\small\item\em Gets the duration of the module animation. \end{DoxyCompactList}\item 
+T \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a20e15e7d12e794179f5ccadd865804c5}{Get\+Module$<$ T $>$} ()
+\begin{DoxyCompactList}\small\item\em Gets the module. \end{DoxyCompactList}\item 
+void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ac66327fe6340171175667db975f4b162}{Show} ()
+\begin{DoxyCompactList}\small\item\em Show this instance. \end{DoxyCompactList}\item 
+void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a82a73cfeb4b44bd915e79ead77e33fd5}{Show} (System.\+Action on\+Show\+End)
+\begin{DoxyCompactList}\small\item\em Show the specified on\+Show\+End. \end{DoxyCompactList}\item 
+bool \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a249ae5824081d5e6834c6564aba51190}{Hide} ()
+\begin{DoxyCompactList}\small\item\em Hide this instance. \end{DoxyCompactList}\item 
+bool \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a772141af7a73f4e72d6c55bd18ecccb0}{Hide} (System.\+Action on\+Hide\+End)
+\begin{DoxyCompactList}\small\item\em Hide the specified on\+Hide\+End. Wait while all components, animations, events and modules return the callback. \end{DoxyCompactList}\item 
+virtual float \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa0b1c8f3e8b81da8c342365ed0fcf49a}{Get\+Layout\+Animation\+Duration} (bool forward)
+\begin{DoxyCompactList}\small\item\em Gets the duration of the layout animation. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a5704019a21853e82d8e72677f5b6f63c}{On\+Parameters\+Pass} ()
+\begin{DoxyCompactList}\small\item\em Raises the parameters pass event. Don\textquotesingle{}t override this method -\/ use your own. Window will use reflection to determine your method. Example\+: On\+Parameters\+Pass(T1 param1, T2 param2, etc.) You can use any types in any order and call window with them. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a4ff7f30ad10cbb64111894374443d7f1}{On\+Empty\+Pass} ()
+\begin{DoxyCompactList}\small\item\em Raises the empty pass event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a563afef8016deb1af1c04e3e2f479bbf}{On\+Init} ()
+\begin{DoxyCompactList}\small\item\em Raises the init event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae2b1948daf5cc1550c7c08b1b07a7a74}{On\+Deinit} ()
+\begin{DoxyCompactList}\small\item\em Raises the deinit event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a607752def34c9c15b10b3332cb0b6d24}{On\+Show\+Begin} (System.\+Action callback)
+\begin{DoxyCompactList}\small\item\em Raises the show begin event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ab93d409e0efb521d9c3699a24d95ac83}{On\+Show\+End} ()
+\begin{DoxyCompactList}\small\item\em Raises the show end event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa3a09eb58f08f2a288ac70c54284cf95}{On\+Hide\+Begin} (System.\+Action callback)
+\begin{DoxyCompactList}\small\item\em Raises the hide begin event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_acc0ee8819895df9969ab0644771bc692}{On\+Hide\+End} ()
+\begin{DoxyCompactList}\small\item\em Raises the hide end event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Camera \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa93dccb3de920a0e06ba97de7ae2e4dc}{work\+Camera}
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_preferences}{Preferences} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a7c74809d23787abcc881dc6854445901}{preferences}
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_transition}{Transition} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a43b6f33af24b9cac722fd76c6536277f}{transition}
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_modules_1_1_modules}{Modules.\+Modules} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a982de7908673f89e04ad26f47201fe88}{modules}
+\item 
+\hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_events}{Events} \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a909061c155ed8d2aed9ed32ef8e4654d}{events}
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual Transform \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a85c7fb357a0ad3269bc4ec10e75c34b1}{Get\+Layout\+Root} ()
+\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a8462e586646fe4ef6840b43e4b66e1e7}{On\+Layout\+Init} (float depth, int raycast\+Priority, int order\+In\+Layer)
+\begin{DoxyCompactList}\small\item\em Raises the layout init event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a63633433dc341ba795cb2cdb5121b287}{On\+Layout\+Deinit} ()
+\begin{DoxyCompactList}\small\item\em Raises the layout deinit event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a76681fb77d5c3908a907a8f07747cefe}{On\+Layout\+Show\+Begin} (System.\+Action callback)
+\begin{DoxyCompactList}\small\item\em Raises the layout show begin event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ad2b2d98d6f7bd72cf1a70973861df195}{On\+Layout\+Show\+End} ()
+\begin{DoxyCompactList}\small\item\em Raises the layout show end event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa4e23dbf20e969b8ec3437dfc94346ff}{On\+Layout\+Hide\+Begin} (System.\+Action callback)
+\begin{DoxyCompactList}\small\item\em Raises the layout hide begin event. \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ad35319b94cabc46485bbadedabcf0473}{On\+Layout\+Hide\+End} ()
+\begin{DoxyCompactList}\small\item\em Raises the layout hide end event. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+Definition at line 28 of file Window\+Base.\+cs.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae454bb12e1f4b9f756ddf31aa33677ee}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Animation\+Duration@{Get\+Animation\+Duration}}
+\index{Get\+Animation\+Duration@{Get\+Animation\+Duration}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Animation\+Duration}]{\setlength{\rightskip}{0pt plus 5cm}float Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Animation\+Duration (
+\begin{DoxyParamCaption}
+\item[{bool}]{forward}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae454bb12e1f4b9f756ddf31aa33677ee}
+
+
+Gets the duration of the animation. 
+
+\begin{DoxyReturn}{Returns}
+The animation duration.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em forward} & If set to {\ttfamily true} forward.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 190 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa0b1c8f3e8b81da8c342365ed0fcf49a}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Layout\+Animation\+Duration@{Get\+Layout\+Animation\+Duration}}
+\index{Get\+Layout\+Animation\+Duration@{Get\+Layout\+Animation\+Duration}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Layout\+Animation\+Duration}]{\setlength{\rightskip}{0pt plus 5cm}virtual float Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Layout\+Animation\+Duration (
+\begin{DoxyParamCaption}
+\item[{bool}]{forward}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa0b1c8f3e8b81da8c342365ed0fcf49a}
+
+
+Gets the duration of the layout animation. 
+
+\begin{DoxyReturn}{Returns}
+The layout animation duration.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em forward} & If set to {\ttfamily true} forward.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_a9ddfaa16efc362406bd143e533adef14}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a9e3c2e951162462c333a9d936e39bd23}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}.
+
+
+
+Definition at line 358 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a85c7fb357a0ad3269bc4ec10e75c34b1}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Layout\+Root@{Get\+Layout\+Root}}
+\index{Get\+Layout\+Root@{Get\+Layout\+Root}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Layout\+Root}]{\setlength{\rightskip}{0pt plus 5cm}virtual Transform Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Layout\+Root (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a85c7fb357a0ad3269bc4ec10e75c34b1}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_a6e1932332fddf565c987c10386de5dee}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_aaf0d9668fd474249fcd8f6f0bc7039e6}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}.
+
+
+
+Definition at line 351 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a20e15e7d12e794179f5ccadd865804c5}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Module$<$ T $>$@{Get\+Module$<$ T $>$}}
+\index{Get\+Module$<$ T $>$@{Get\+Module$<$ T $>$}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Module$<$ T $>$}]{\setlength{\rightskip}{0pt plus 5cm}T Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Module$<$ T $>$ (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a20e15e7d12e794179f5ccadd865804c5}
+
+
+Gets the module. 
+
+\begin{DoxyReturn}{Returns}
+The module.
+\end{DoxyReturn}
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & The 1st type parameter.\\
+\hline
+\end{DoxyTemplParams}
+\begin{Desc}
+\item[Type Constraints]\begin{description}
+\item[{\em T} : {\em Window\+Module}]\end{description}
+\end{Desc}
+
+
+Definition at line 227 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a6fa8883696c18133230291831d87e628}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Module\+Animation\+Duration@{Get\+Module\+Animation\+Duration}}
+\index{Get\+Module\+Animation\+Duration@{Get\+Module\+Animation\+Duration}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Module\+Animation\+Duration}]{\setlength{\rightskip}{0pt plus 5cm}virtual float Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Module\+Animation\+Duration (
+\begin{DoxyParamCaption}
+\item[{bool}]{forward}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a6fa8883696c18133230291831d87e628}
+
+
+Gets the duration of the module animation. 
+
+\begin{DoxyReturn}{Returns}
+The module animation duration.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em forward} & If set to {\ttfamily true} forward.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 216 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a17722d97d983d1a1ef2fd8ca2611dcde}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Sorting\+Layer\+Name@{Get\+Sorting\+Layer\+Name}}
+\index{Get\+Sorting\+Layer\+Name@{Get\+Sorting\+Layer\+Name}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Sorting\+Layer\+Name}]{\setlength{\rightskip}{0pt plus 5cm}virtual string Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Sorting\+Layer\+Name (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a17722d97d983d1a1ef2fd8ca2611dcde}
+
+
+Gets the name of the sorting layer. 
+
+\begin{DoxyReturn}{Returns}
+The sorting layer name.
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a9c6e229390ee7210532d9a0a4cf17664}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}.
+
+
+
+Definition at line 169 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae1a26ecd23c220198447de1e51ace960}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Sorting\+Order@{Get\+Sorting\+Order}}
+\index{Get\+Sorting\+Order@{Get\+Sorting\+Order}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Sorting\+Order}]{\setlength{\rightskip}{0pt plus 5cm}virtual int Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Sorting\+Order (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae1a26ecd23c220198447de1e51ace960}
+
+
+Gets the sorting order. 
+
+\begin{DoxyReturn}{Returns}
+The sorting order.
+\end{DoxyReturn}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a7bf7a76e67c3d4b2aafb144595c7baeb}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}.
+
+
+
+Definition at line 179 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a7f3a8dd20bf459be36c2310291bd1976}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+State@{Get\+State}}
+\index{Get\+State@{Get\+State}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+State}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Window\+Object\+State} Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+State (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a7f3a8dd20bf459be36c2310291bd1976}
+
+
+Gets the state. 
+
+\begin{DoxyReturn}{Returns}
+The state.
+\end{DoxyReturn}
+
+
+Definition at line 126 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a1f7d1d4a4712bf82dc5a11ea54aa3bf4}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Get\+Transition\+Animation\+Duration@{Get\+Transition\+Animation\+Duration}}
+\index{Get\+Transition\+Animation\+Duration@{Get\+Transition\+Animation\+Duration}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Get\+Transition\+Animation\+Duration}]{\setlength{\rightskip}{0pt plus 5cm}virtual float Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Get\+Transition\+Animation\+Duration (
+\begin{DoxyParamCaption}
+\item[{bool}]{forward}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a1f7d1d4a4712bf82dc5a11ea54aa3bf4}
+
+
+Gets the duration of the transition animation. 
+
+\begin{DoxyReturn}{Returns}
+The transition animation duration.
+\end{DoxyReturn}
+
+\begin{DoxyParams}{Parameters}
+{\em forward} & If set to {\ttfamily true} forward.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 205 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a249ae5824081d5e6834c6564aba51190}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Hide@{Hide}}
+\index{Hide@{Hide}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Hide}]{\setlength{\rightskip}{0pt plus 5cm}bool Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Hide (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a249ae5824081d5e6834c6564aba51190}
+
+
+Hide this instance. 
+
+
+
+Definition at line 285 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a772141af7a73f4e72d6c55bd18ecccb0}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Hide@{Hide}}
+\index{Hide@{Hide}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Hide}]{\setlength{\rightskip}{0pt plus 5cm}bool Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Hide (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{on\+Hide\+End}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a772141af7a73f4e72d6c55bd18ecccb0}
+
+
+Hide the specified on\+Hide\+End. Wait while all components, animations, events and modules return the callback. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em on\+Hide\+End} & On hide end.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 296 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae2b1948daf5cc1550c7c08b1b07a7a74}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Deinit@{On\+Deinit}}
+\index{On\+Deinit@{On\+Deinit}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Deinit}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Deinit (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ae2b1948daf5cc1550c7c08b1b07a7a74}
+
+
+Raises the deinit event. 
+
+
+
+Implements \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async_a1a90ca9625c29a00b37e6a56b1939133}{Unity\+Engine.\+U\+I.\+Windows.\+I\+Window\+Events\+Async}.
+
+
+
+Definition at line 421 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a4ff7f30ad10cbb64111894374443d7f1}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Empty\+Pass@{On\+Empty\+Pass}}
+\index{On\+Empty\+Pass@{On\+Empty\+Pass}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Empty\+Pass}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Empty\+Pass (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a4ff7f30ad10cbb64111894374443d7f1}
+
+
+Raises the empty pass event. 
+
+
+
+Definition at line 411 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa3a09eb58f08f2a288ac70c54284cf95}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Hide\+Begin@{On\+Hide\+Begin}}
+\index{On\+Hide\+Begin@{On\+Hide\+Begin}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Hide\+Begin}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Hide\+Begin (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{callback}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa3a09eb58f08f2a288ac70c54284cf95}
+
+
+Raises the hide begin event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async_ab7001f0f16a724caa315f45a8493f068}{Unity\+Engine.\+U\+I.\+Windows.\+I\+Window\+Events\+Async}.
+
+
+
+Definition at line 438 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_acc0ee8819895df9969ab0644771bc692}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Hide\+End@{On\+Hide\+End}}
+\index{On\+Hide\+End@{On\+Hide\+End}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Hide\+End}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Hide\+End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_acc0ee8819895df9969ab0644771bc692}
+
+
+Raises the hide end event. 
+
+
+
+Implements \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async_a01e75bf78dfd04eedc03897a6b934e93}{Unity\+Engine.\+U\+I.\+Windows.\+I\+Window\+Events\+Async}.
+
+
+
+Definition at line 443 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a563afef8016deb1af1c04e3e2f479bbf}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Init@{On\+Init}}
+\index{On\+Init@{On\+Init}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Init}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a563afef8016deb1af1c04e3e2f479bbf}
+
+
+Raises the init event. 
+
+
+
+Implements \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async_acaafc4d171a9c7dc24924f0760883fd0}{Unity\+Engine.\+U\+I.\+Windows.\+I\+Window\+Events\+Async}.
+
+
+
+Definition at line 416 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a63633433dc341ba795cb2cdb5121b287}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Layout\+Deinit@{On\+Layout\+Deinit}}
+\index{On\+Layout\+Deinit@{On\+Layout\+Deinit}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Layout\+Deinit}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Layout\+Deinit (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a63633433dc341ba795cb2cdb5121b287}
+
+
+Raises the layout deinit event. 
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a3b98f0986a1e0ec4afeb6291857100cd}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_a7a5938ea02a65ea8f8b0b9650e13a6a1}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}.
+
+
+
+Definition at line 375 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa4e23dbf20e969b8ec3437dfc94346ff}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Layout\+Hide\+Begin@{On\+Layout\+Hide\+Begin}}
+\index{On\+Layout\+Hide\+Begin@{On\+Layout\+Hide\+Begin}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Layout\+Hide\+Begin}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Layout\+Hide\+Begin (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{callback}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa4e23dbf20e969b8ec3437dfc94346ff}
+
+
+Raises the layout hide begin event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_ad84aceea0b90fcd10efb0a83b3e1871c}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a594801f0ca4e21c1e088ddb2fec3336f}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}.
+
+
+
+Definition at line 392 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ad35319b94cabc46485bbadedabcf0473}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Layout\+Hide\+End@{On\+Layout\+Hide\+End}}
+\index{On\+Layout\+Hide\+End@{On\+Layout\+Hide\+End}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Layout\+Hide\+End}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Layout\+Hide\+End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ad35319b94cabc46485bbadedabcf0473}
+
+
+Raises the layout hide end event. 
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a2881e84b2905bbfb5850f413f948fe3e}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_a308f7f04e9d50607a312da594bd96e2f}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}.
+
+
+
+Definition at line 397 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a8462e586646fe4ef6840b43e4b66e1e7}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Layout\+Init@{On\+Layout\+Init}}
+\index{On\+Layout\+Init@{On\+Layout\+Init}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Layout\+Init}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Layout\+Init (
+\begin{DoxyParamCaption}
+\item[{float}]{depth, }
+\item[{int}]{raycast\+Priority, }
+\item[{int}]{order\+In\+Layer}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a8462e586646fe4ef6840b43e4b66e1e7}
+
+
+Raises the layout init event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em depth} & Depth.\\
+\hline
+{\em raycast\+Priority} & Raycast priority.\\
+\hline
+{\em order\+In\+Layer} & Order in layer.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_ab2749bd8b74360304b44be574ad7825e}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_a55bb92f9f192f5ed6e6f32f81c83dadd}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}.
+
+
+
+Definition at line 370 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a76681fb77d5c3908a907a8f07747cefe}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Layout\+Show\+Begin@{On\+Layout\+Show\+Begin}}
+\index{On\+Layout\+Show\+Begin@{On\+Layout\+Show\+Begin}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Layout\+Show\+Begin}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Layout\+Show\+Begin (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{callback}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a76681fb77d5c3908a907a8f07747cefe}
+
+
+Raises the layout show begin event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback.\\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_a349cfa3ec876c285a081715f6896a0c9}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a63ea1b1a9fc020e1b4c559f037069c6e}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}.
+
+
+
+Definition at line 381 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ad2b2d98d6f7bd72cf1a70973861df195}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Layout\+Show\+End@{On\+Layout\+Show\+End}}
+\index{On\+Layout\+Show\+End@{On\+Layout\+Show\+End}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Layout\+Show\+End}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Layout\+Show\+End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ad2b2d98d6f7bd72cf1a70973861df195}
+
+
+Raises the layout show end event. 
+
+
+
+Reimplemented in \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_layout_window_type_a7ccf902193f6a7531f414f2ad1952711}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Layout\+Window\+Type}, and \hyperlink{class_unity_engine_1_1_u_i_1_1_windows_1_1_types_1_1_tip_window_type_ab1d7733c936e2fd1dc0584f5b7c5260f}{Unity\+Engine.\+U\+I.\+Windows.\+Types.\+Tip\+Window\+Type}.
+
+
+
+Definition at line 386 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a5704019a21853e82d8e72677f5b6f63c}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Parameters\+Pass@{On\+Parameters\+Pass}}
+\index{On\+Parameters\+Pass@{On\+Parameters\+Pass}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Parameters\+Pass}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Parameters\+Pass (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a5704019a21853e82d8e72677f5b6f63c}
+
+
+Raises the parameters pass event. Don\textquotesingle{}t override this method -\/ use your own. Window will use reflection to determine your method. Example\+: On\+Parameters\+Pass(T1 param1, T2 param2, etc.) You can use any types in any order and call window with them. 
+
+
+
+Definition at line 406 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a607752def34c9c15b10b3332cb0b6d24}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Show\+Begin@{On\+Show\+Begin}}
+\index{On\+Show\+Begin@{On\+Show\+Begin}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Show\+Begin}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Show\+Begin (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{callback}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a607752def34c9c15b10b3332cb0b6d24}
+
+
+Raises the show begin event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & Callback.\\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async_a15013b6c87a653f2872d082c9b589912}{Unity\+Engine.\+U\+I.\+Windows.\+I\+Window\+Events\+Async}.
+
+
+
+Definition at line 427 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ab93d409e0efb521d9c3699a24d95ac83}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!On\+Show\+End@{On\+Show\+End}}
+\index{On\+Show\+End@{On\+Show\+End}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{On\+Show\+End}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+On\+Show\+End (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ab93d409e0efb521d9c3699a24d95ac83}
+
+
+Raises the show end event. 
+
+
+
+Implements \hyperlink{interface_unity_engine_1_1_u_i_1_1_windows_1_1_i_window_events_async_a4cd2bac250f3edfedfd43fbb0bca2a3c}{Unity\+Engine.\+U\+I.\+Windows.\+I\+Window\+Events\+Async}.
+
+
+
+Definition at line 432 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ac66327fe6340171175667db975f4b162}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Show@{Show}}
+\index{Show@{Show}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Show}]{\setlength{\rightskip}{0pt plus 5cm}void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Show (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_ac66327fe6340171175667db975f4b162}
+
+
+Show this instance. 
+
+
+
+Definition at line 236 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a82a73cfeb4b44bd915e79ead77e33fd5}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!Show@{Show}}
+\index{Show@{Show}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{Show}]{\setlength{\rightskip}{0pt plus 5cm}void Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+Show (
+\begin{DoxyParamCaption}
+\item[{System.\+Action}]{on\+Show\+End}
+\end{DoxyParamCaption}
+)}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a82a73cfeb4b44bd915e79ead77e33fd5}
+
+
+Show the specified on\+Show\+End. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em on\+Show\+End} & On show end.\\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 246 of file Window\+Base.\+cs.
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a909061c155ed8d2aed9ed32ef8e4654d}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!events@{events}}
+\index{events@{events}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{events}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Events} Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+events}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a909061c155ed8d2aed9ed32ef8e4654d}
+
+
+Definition at line 36 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a982de7908673f89e04ad26f47201fe88}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!modules@{modules}}
+\index{modules@{modules}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{modules}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Modules.\+Modules} Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+modules}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a982de7908673f89e04ad26f47201fe88}
+
+
+Definition at line 35 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a7c74809d23787abcc881dc6854445901}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!preferences@{preferences}}
+\index{preferences@{preferences}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{preferences}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Preferences} Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+preferences}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a7c74809d23787abcc881dc6854445901}
+
+
+Definition at line 33 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a43b6f33af24b9cac722fd76c6536277f}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!transition@{transition}}
+\index{transition@{transition}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{transition}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Transition} Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+transition}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_a43b6f33af24b9cac722fd76c6536277f}
+
+
+Definition at line 34 of file Window\+Base.\+cs.
+
+\hypertarget{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa93dccb3de920a0e06ba97de7ae2e4dc}{}\index{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}!work\+Camera@{work\+Camera}}
+\index{work\+Camera@{work\+Camera}!Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base@{Unity\+Engine\+::\+U\+I\+::\+Windows\+::\+Window\+Base}}
+\subsubsection[{work\+Camera}]{\setlength{\rightskip}{0pt plus 5cm}Camera Unity\+Engine.\+U\+I.\+Windows.\+Window\+Base.\+work\+Camera}\label{class_unity_engine_1_1_u_i_1_1_windows_1_1_window_base_aa93dccb3de920a0e06ba97de7ae2e4dc}
+
+
+Definition at line 31 of file Window\+Base.\+cs.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Unity3d.\+U\+I.\+Windows/\+Assets/\+U\+I.\+Windows/\+Core/\hyperlink{_window_base_8cs}{Window\+Base.\+cs}\end{DoxyCompactItemize}
