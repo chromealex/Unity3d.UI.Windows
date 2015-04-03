@@ -11,4 +11,4 @@ http://chromealex.github.io/Unity3d.UI.Windows/
 
 ### Documentation
 
-http://chromealex.github.io/Unity3d.UI.Windows/docs/html/
+http://chromealex.github.io/Unity3d.UI.Windows/docs/api/
