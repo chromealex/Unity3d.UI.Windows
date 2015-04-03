@@ -15,18 +15,20 @@ namespace UnityEngine.UI.Windows.Extensions {
 		}
 		
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-			
-			GUI.BeginGroup(position);
+
+			var offset = new Vector2(position.x, position.y);
+
+			//GUI.BeginGroup(position);
 			{
 				
 				var width = 30f;
-				var offset = 5f;
+				var margin = 5f;
 
-				property.serializedObject.Update();
+				//property.serializedObject.Update();
 
-				EditorGUI.PropertyField(new Rect(0f, 0f, position.width - width - offset, position.height), property, label, true);
+				EditorGUI.PropertyField(new Rect(offset.x, offset.y, position.width - width - margin, position.height), property, label, true);
 				
-				if (GUI.Button(new Rect(position.width - width, 0f, width, position.height), "...") == true) {
+				if (GUI.Button(new Rect(position.width - width + offset.x, offset.y, width, position.height), "...") == true) {
 
 					WindowComponentLibraryChooser.Show((element) => {
 
@@ -37,8 +39,10 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 				}
 				
+				//property.serializedObject.ApplyModifiedProperties();
+
 			}
-			GUI.EndGroup();
+			//GUI.EndGroup();
 			
 		}
 		

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.Extensions;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class LinkerComponent : WindowComponent {
 
+		[ComponentChooser]
 		public WindowComponent prefab;
 
 		[HideInInspector]

@@ -4,7 +4,8 @@ using System.Collections;
 namespace UnityEngine.UI.Windows.Components {
 
 	public class ColoredComponent : WindowComponent {
-		
+
+		[Header("Colored Sprites")]
 		public Image[] images;
 
 		private Color color;

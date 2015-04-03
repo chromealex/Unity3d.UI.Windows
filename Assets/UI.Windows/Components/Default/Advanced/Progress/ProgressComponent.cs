@@ -8,10 +8,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class ProgressComponent : ColoredComponent {
 		
+		[Header("Base")]
 		public float duration = 0f;
 		public float minNormalizedValue = 0f;
 		public Extensions.Slider bar;
-
+		
+		[Header("Continious")]
 		public bool continious;
 		[Range(0f, 1f)]
 		public float continiousWidth = 0.4f;

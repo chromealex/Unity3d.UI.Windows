@@ -9,7 +9,7 @@ namespace UnityEngine.UI.Windows {
 
 		[Header("Sub Components")]
 		public bool autoRegisterSubComponents = true;
-		[SerializeField]
+		[SerializeField][ReadOnly]
 		private List<WindowComponent> subComponents = new List<WindowComponent>();
 
 		private WindowLayoutBase layoutRoot;
