@@ -282,6 +282,10 @@ namespace UnityEngine.UI.Windows {
 		public virtual void Update_EDITOR() {
 
 			this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
+			
+			this.canvas = this.GetComponent<CanvasGroup>();
+
+			if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) return;
 
 			this.componentsToDestroy.Clear();
 
@@ -310,15 +314,13 @@ namespace UnityEngine.UI.Windows {
 			UnityEditor.EditorApplication.delayCall = () => {
 				
 				foreach (var c in this.componentsToDestroy) {
-					
+
 					Component.DestroyImmediate(c);
 					this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
 					
 				}
 				
 			};
-			
-			this.canvas = this.GetComponent<CanvasGroup>();
 
 		}
 		#endif

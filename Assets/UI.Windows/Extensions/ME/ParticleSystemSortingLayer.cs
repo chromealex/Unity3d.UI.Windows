@@ -59,8 +59,10 @@ public class ParticleSystemSortingLayer : MonoBehaviour {
 			var window = this.windowObject.GetWindow();
 			if (window == null) return;
 
-			this.particleSystem.renderer.sortingLayerName = window.GetSortingLayerName();
-			this.particleSystem.renderer.sortingOrder = window.GetSortingOrder() + this.orderDelta;
+			var renderer = this.particleSystem.GetComponent<Renderer>();
+
+			renderer.sortingLayerName = window.GetSortingLayerName();
+			renderer.sortingOrder = window.GetSortingOrder() + this.orderDelta;
 
 			//Debug.Log("Layer `" + window.GetSortingLayerName() + "` updated: " + this.particleSystem.renderer.sortingOrder);
 
