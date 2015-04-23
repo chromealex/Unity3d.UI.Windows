@@ -1,5 +1,5 @@
 ﻿
-namespace ME {
+using System.Text.RegularExpressions;namespace ME {
 
 	public static class StringUtilities {
 		
@@ -45,6 +45,33 @@ namespace ME {
 			}
 
 			return new string(array);
+
+		}
+		
+		public static string ToSentenceCase(this string str) {
+			
+			return Regex.Replace(str, "[a-z][A-Z]", m => m.Value[0] + " " + char.ToLower(m.Value[1]));
+			
+		}
+		
+		public static string ToPopupSentenceCase(this string str) {
+
+			var k = 0;
+			return Regex.Replace(str, "[a-z][A-Z]", m => {
+
+				++k;
+
+				if (k == 1) {
+					
+					return m.Value[0] + "/" + char.ToUpper(m.Value[1]);
+
+				} else {
+
+					return m.Value[0] + " " + char.ToLower(m.Value[1]);
+
+				}
+
+			});
 
 		}
 

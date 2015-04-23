@@ -70,6 +70,32 @@ namespace ME {
 			return false;
 
 		}
+		
+		public static T CreatePrefab<T>() where T : MonoBehaviour {
+
+			var go = new GameObject();
+			var asset = go.AddComponent<T>();
+
+			string path = AssetDatabase.GetAssetPath( Selection.activeObject );
+			if ( path == "" ) {
+				path = "Assets";
+			} else if ( Path.GetExtension( path ) != "" ) {
+				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( Selection.activeObject ) ), "" );
+			}
+			
+			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath( path + "/New " + typeof( T ).ToString() + ".prefab" );
+
+			PrefabUtility.CreatePrefab(assetPathAndName, go, ReplacePrefabOptions.ConnectToPrefab);
+
+			AssetDatabase.SaveAssets();
+			EditorUtility.FocusProjectWindow();
+			Selection.activeObject = asset;
+
+			GameObject.DestroyImmediate(go);
+
+			return asset;
+			
+		}
 
 		public static T CreateAsset<T>() where T : ScriptableObject {
 
@@ -110,7 +136,7 @@ namespace ME {
 			
 		}
 
-		public static void CreateAsset( System.Type type ) {
+		public static Object CreateAsset( System.Type type ) {
 
 			var asset = ScriptableObject.CreateInstance( type ) as Object;
 
@@ -128,6 +154,8 @@ namespace ME {
 			AssetDatabase.SaveAssets();
 			EditorUtility.FocusProjectWindow();
 			Selection.activeObject = asset;
+
+			return asset;
 
 		}
 		
