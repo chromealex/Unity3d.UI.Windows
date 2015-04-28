@@ -2,6 +2,7 @@
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine;
+using ME;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
@@ -28,7 +29,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public static void DrawModuleSettingsGUI(string caption, System.Action onGUI) {
 			
-			GUILayout.Label(caption, EditorStyles.boldLabel);
+			GUILayout.Label(caption.ToSentenceCase().UppercaseWords(), EditorStyles.boldLabel);
 			
 			GUILayout.BeginVertical(FlowSystemEditorWindow.defaultSkin.box);//GUI.skin.box);
 			{

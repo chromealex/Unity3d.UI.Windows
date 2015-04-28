@@ -175,6 +175,8 @@ namespace UnityEditor.UI.Windows {
 
 				GUI.color = oldColor;
 
+				var boxColor = EditorGUIUtility.isProSkin ? oldColor : new Color(1f, 1f, 1f, 0.2f);
+
 				var marginX = 4f;
 				var marginY = 2f;
 
@@ -185,8 +187,10 @@ namespace UnityEditor.UI.Windows {
 					vRect.y = vRect.y + vRect.height * 0.5f - vertArrowsStyle.fixedHeight * 0.5f;
 					vRect.width -= marginX * 2f;
 					vRect.height = vertArrowsStyle.fixedHeight;
-					
+
+					GUI.color = oldColor;
 					GUI.Label(vRect, string.Empty, vertArrowsStyle);
+					GUI.color = boxColor;
 					GUI.Label(vRect, string.Empty, vertStyle);
 					
 				}
@@ -198,8 +202,10 @@ namespace UnityEditor.UI.Windows {
 					vRect.y += marginY;
 					vRect.width = horArrowsStyle.fixedWidth;
 					vRect.height -= marginY * 2f;
-
+					
+					GUI.color = oldColor;
 					GUI.Label(vRect, string.Empty, horArrowsStyle);
+					GUI.color = boxColor;
 					GUI.Label(vRect, string.Empty, horStyle);
 					
 				}

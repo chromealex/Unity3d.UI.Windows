@@ -2033,6 +2033,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (window.isDefaultLink == false && FlowSceneView.IsActive() == false) {
 
 					if (GUILayout.Button("Select", buttonStyle) == true) {
+						
+						for (int i = 0; i < window.states.Length; ++i) window.SetCompletedState(i, CompletedState.NotReady);
 
 						if (window.compiled == false) {
 							
@@ -2043,29 +2045,59 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							Selection.activeObject = AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
 							EditorGUIUtility.PingObject(Selection.activeObject);
 
-							if (window.screen == null) {
+							//if (window.screen == null) {
 
-								var files = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory + "Screens" });
-								foreach (var file in files) {
+							window.SetCompletedState(0, CompletedState.NotReady);
 
-									var path = AssetDatabase.GUIDToAssetPath(file);
-									
-									var go = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
-									if (go != null) {
+							var files = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
+							foreach (var file in files) {
 
-										var screen = go.GetComponent<WindowBase>();
-										if (screen != null) {
+								var path = AssetDatabase.GUIDToAssetPath(file);
+								
+								var go = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+								if (go != null) {
 
-											window.SetScreen(screen);
-											break;
+									var screen = go.GetComponent<WindowBase>();
+									if (screen != null) {
+
+										window.SetScreen(screen);
+										window.SetCompletedState(0, CompletedState.Ready);
+
+										var lWin = screen as LayoutWindowType;
+										if (lWin != null) {
+
+											if (lWin.layout.layout != null) {
+
+												window.SetCompletedState(1, CompletedState.Ready);
+												window.SetCompletedState(2, (lWin.layout.components.Any((c) => c == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
+
+											} else {
+												
+												window.SetCompletedState(0, CompletedState.NotReady);
+												window.SetCompletedState(1, CompletedState.NotReady);
+												window.SetCompletedState(2, CompletedState.NotReady);
+
+											}
+
+										} else {
+
+											window.SetCompletedState(1, CompletedState.Ready);
 
 										}
+
+										break;
+
+									} else {
+
+										window.SetCompletedState(0, CompletedState.ReadyButWarnings);
 
 									}
 
 								}
 
 							}
+
+							//}
 
 						}
 
@@ -2383,16 +2415,25 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var toRect = to.rect;
 			Rect centerEnd = toRect;
 
+			var fromComponent = false;
+			var toComponent = false;
+
 			if (FlowSystem.GetData().flowWindowWithLayout == true) {
 
-				var comp = from.attachedComponents.FirstOrDefault((c) => c.targetWindowId == to.id);
-				if (comp.sourceComponentTag != LayoutTag.None) {
+				var comps = from.attachedComponents.Where((c) => c.targetWindowId == to.id && c.sourceComponentTag != LayoutTag.None);
+				foreach (var comp in comps) {
 
 					var component = from.GetLayoutComponent(comp.sourceComponentTag);
 					if (component != null) {
 
+						fromRect = centerStart;
+
 						var rect = component.tempEditorRect;
 						fromRect = new Rect(fromRect.x + rect.x, fromRect.y + rect.y, rect.width, rect.height);
+
+						this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
+
+						fromComponent = true;
 
 					}
 
@@ -2400,14 +2441,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (doubleSide == true) {
 
-					comp = to.attachedComponents.FirstOrDefault((c) => c.targetWindowId == from.id);
-					if (comp.sourceComponentTag != LayoutTag.None) {
+					comps = to.attachedComponents.Where((c) => c.targetWindowId == from.id && c.sourceComponentTag != LayoutTag.None);
+					foreach (var comp in comps) {
 						
 						var component = to.GetLayoutComponent(comp.sourceComponentTag);
 						if (component != null) {
 							
+							toRect = centerEnd;
+
 							var rect = component.tempEditorRect;
 							toRect = new Rect(toRect.x + rect.x, toRect.y + rect.y, rect.width, rect.height);
+
+							this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
+							
+							toComponent = true;
 
 						}
 						
@@ -2417,19 +2464,25 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
+			if (fromComponent == false && toComponent == false) this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide);
+
+		}
+
+		private void DrawNodeCurve(FlowWindow fromContainer, FlowWindow toContainer, Rect centerStart, Rect centerEnd, Rect fromRect, Rect toRect, bool doubleSide, float size = 6f) {
+
 			Rect start = fromRect;
 			Rect end = toRect;
 
 			var color1 = Color.white;
 			var color2 = Color.white;
 
-			if (from.GetContainer() != to.GetContainer()) {
+			if (fromContainer != toContainer) {
 				
 				color1 = Color.gray;
 				color2 = Color.gray;
 
-				if (to.GetContainer() != null) color1 = to.GetContainer().randomColor;
-				if (from.GetContainer() != null) color2 = from.GetContainer().randomColor;
+				if (toContainer != null) color1 = toContainer.randomColor;
+				if (fromContainer != null) color2 = fromContainer.randomColor;
 
 			}
 
@@ -2437,8 +2490,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (doubleSide == true) {
 
-				var size = 6f;
-				
 				var rot = Quaternion.AngleAxis(90f, Vector3.back);
 				var ray = new Ray(Vector3.zero, (rot * (end.center - start.center)).normalized);
 

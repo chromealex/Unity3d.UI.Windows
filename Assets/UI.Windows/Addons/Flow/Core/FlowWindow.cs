@@ -42,7 +42,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		private const int STATES_COUNT = 5;
+		private const int STATES_COUNT = 3;
 
 		public int id;
 		public string title = string.Empty;
