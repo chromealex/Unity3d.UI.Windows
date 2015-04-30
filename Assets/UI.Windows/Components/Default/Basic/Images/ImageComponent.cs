@@ -41,6 +41,22 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
+		public void SetMaterial(Material material) {
+
+			if (this.image != null) {
+
+				this.image.material = material;
+				this.image.SetMaterialDirty();
+
+			} else if (this.rawImage != null) {
+
+				this.rawImage.material = material;
+				this.rawImage.SetMaterialDirty();
+
+			}
+
+		}
+
 		#if UNITY_EDITOR
 		public override void OnValidateEditor() {
 

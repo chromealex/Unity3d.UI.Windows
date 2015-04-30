@@ -382,8 +382,20 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 		
 		// Events
-		public void OnInit() { this.instance.OnInit(); foreach (var component in this.components) component.OnInit(); }
-		public void OnDeinit() { this.instance.OnDeinit(); foreach (var component in this.components) component.OnDeinit(); }
+		public void OnInit() {
+			
+			this.instance.OnInit();
+			foreach (var component in this.components) component.OnInit();
+
+		}
+
+		public void OnDeinit() {
+			
+			if (this.instance != null) this.instance.OnDeinit();
+			foreach (var component in this.components) component.OnDeinit();
+
+		}
+
 		public void OnShowBegin(System.Action callback) {
 
 			var counter = 0;
@@ -401,7 +413,14 @@ namespace UnityEngine.UI.Windows.Types {
 			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnShowBegin(c); });
 
 		}
-		public void OnShowEnd() { this.instance.OnShowEnd(); foreach (var component in this.components) component.OnShowEnd(); }
+
+		public void OnShowEnd() {
+
+			this.instance.OnShowEnd();
+			foreach (var component in this.components) component.OnShowEnd();
+		
+		}
+
 		public void OnHideBegin(System.Action callback) {
 			
 			var counter = 0;
@@ -419,7 +438,13 @@ namespace UnityEngine.UI.Windows.Types {
 			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnHideBegin(c); });
 
 		}
-		public void OnHideEnd() { this.instance.OnHideEnd(); foreach (var component in this.components) component.OnHideEnd(); }
+
+		public void OnHideEnd() {
+
+			this.instance.OnHideEnd();
+			foreach (var component in this.components) component.OnHideEnd();
+
+		}
 		
 		#if UNITY_EDITOR
 		private List<LayoutTag> tags = new List<LayoutTag>();

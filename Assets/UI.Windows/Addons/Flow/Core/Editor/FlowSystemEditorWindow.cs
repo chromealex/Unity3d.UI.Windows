@@ -407,8 +407,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				}
 
-				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
-				
 				if (FlowSystem.GetData() != null && FlowSystem.GetData().flowWindowWithLayout == true) {
 
 					foreach (var window in windows) {
@@ -435,6 +433,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.DragBackground(TOOLBAR_HEIGHT);
 
 				GUI.enabled = true;
+
+				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
 
 			}
 
@@ -1059,7 +1059,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var color = Color.black;
 			color.a = backAlpha;
 			GUI.color = color;
-			GUI.Box(FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+			GUI.Box(FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
 
 			if (containers != null) {
 				
@@ -1068,7 +1068,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					color = container.randomColor;
 					color.a = elementAlpha;
 					GUI.color = color;
-					GUI.Box(FlowSystemEditor.Scale(container.rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+					GUI.Box(FlowSystemEditor.Scale(container.rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
 					
 				}
 				
@@ -1084,7 +1084,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					var rect = window.rect;
 					if (rect.height < 60f) rect.height = 60f;
-					GUI.Box(FlowSystemEditor.Scale(rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+					GUI.Box(FlowSystemEditor.Scale(rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
 					
 				}
 				
@@ -1095,7 +1095,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.color = color;
 
 			var scrollPos = FlowSystem.GetScrollPosition();
-			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width, this.scrollRect.height), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, FlowSystem.GetScrollPosition()), string.Empty, elementStyle);
+			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width, this.scrollRect.height), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
 			
 			GUI.color = oldColor;
 
@@ -2069,7 +2069,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 											if (lWin.layout.layout != null) {
 
 												window.SetCompletedState(1, CompletedState.Ready);
-												window.SetCompletedState(2, (lWin.layout.components.Any((c) => c == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
+												window.SetCompletedState(2, (lWin.layout.components.Any((c) => c.component == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
 
 											} else {
 												

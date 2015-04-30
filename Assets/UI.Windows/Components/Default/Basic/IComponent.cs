@@ -25,6 +25,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		void SetImage(Sprite sprite, bool withPivotsAndSize = false);
 		void SetImage(Texture2D texture);
+		void SetMaterial(Material material);
 
 	}
 
