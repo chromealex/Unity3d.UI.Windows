@@ -232,7 +232,9 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			#if !UNITY_WEBPLAYER
 			folder = folder.Trim('/');
 			root = root.Trim('/');
-			
+
+			Debug.Log(root + " :: " + folder);
+
 			var path = Path.Combine(root, folder);
 			path = path.Replace("//", "/");
 
@@ -469,6 +471,12 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var newInfo = new Tpl.Info(Tpl.GetNamespace(window), Tpl.GetDerivedClassName(window), Tpl.GetBaseClassName(window), window.directory);
 			var oldInfo = new Tpl.Info(window);
 
+			if (string.IsNullOrEmpty(oldPath) == true) {
+
+				oldPath = newPath;
+
+			}
+
 			var path = oldPath;
 
 			if (window.compiled == true && (oldPath != newPath)) {
@@ -550,7 +558,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 					var windows = FlowSystem.GetWindows().Where(w => !w.isDefaultLink && predicate(w));
 
 					foreach (var each in windows) {
-						
+
 						var relativePath = IO.GetRelativePath(each, "/");
 						FlowCompilerSystem.GenerateWindow(basePath + relativePath + "/", each, recompile);
 
