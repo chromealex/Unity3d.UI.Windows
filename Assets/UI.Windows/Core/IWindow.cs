@@ -38,9 +38,9 @@ namespace UnityEngine.UI.Windows {
 		
 		void OnInit();
 		void OnDeinit();
-		void OnShowBegin(System.Action callback);
+		void OnShowBegin(System.Action callback, bool resetAnimation = true);
 		void OnShowEnd();
-		void OnHideBegin(System.Action callback);
+		void OnHideBegin(System.Action callback, bool immediately = false);
 		void OnHideEnd();
 
 	}

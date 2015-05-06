@@ -28,6 +28,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnHideBegin(System.Action callback, bool immediately = false) {
+
+			base.OnHideBegin(callback, immediately);
+
+			this.OnStateChanged(state: false);
+			this.infoWindow = null;
+
+		}
+
 		public void OnStateChanged(bool state) {
 
 			if (state == true) {

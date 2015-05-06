@@ -160,7 +160,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public override void OnShowBegin(System.Action callback) {
+		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 			
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -172,12 +172,12 @@ namespace UnityEngine.UI.Windows {
 				
 			};
 
-			base.OnShowBegin(callbackItem);
-			ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnShowBegin(c); });
+			base.OnShowBegin(callbackItem, resetAnimation);
+			ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnShowBegin(c, resetAnimation); });
 
 		}
 		
-		public override void OnHideBegin(System.Action callback) {		
+		public override void OnHideBegin(System.Action callback, bool immediately = false) {		
 			
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -189,8 +189,8 @@ namespace UnityEngine.UI.Windows {
 				
 			};
 
-			base.OnHideBegin(callbackItem);
-			ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnHideBegin(c); });
+			base.OnHideBegin(callbackItem, immediately);
+			ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnHideBegin(c, immediately); });
 
 		}
 

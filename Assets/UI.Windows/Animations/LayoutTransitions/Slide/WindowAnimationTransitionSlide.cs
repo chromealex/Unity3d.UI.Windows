@@ -93,12 +93,8 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 			}
 
-			//var component = (root is LinkerComponent ? (root as LinkerComponent).Get<WindowComponent>() : (root is WindowLayoutBase ? (root as WindowLayoutBase).GetCurrentComponent() : (root as WindowComponent ? root is WindowComponent : null)));
 			if (component == null && parameters == null) return null;
-
-
 			if (component == null || parameters.moveRoot == true) return root.transform as RectTransform;
-
 			if (parameters == null) return component.transform as RectTransform;
 
 			return component.transform as RectTransform;

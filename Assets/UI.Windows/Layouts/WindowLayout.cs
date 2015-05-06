@@ -168,7 +168,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public virtual void OnShowBegin(System.Action callback) {
+		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
 			this.isAlive = true;
 			CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
@@ -191,7 +191,7 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
-		public virtual void OnHideBegin(System.Action callback) { if (callback != null) callback(); }
+		public virtual void OnHideBegin(System.Action callback, bool immediately = false) { if (callback != null) callback(); }
 		/*
 		public virtual void OnShowBeginEvent() {}
 		public virtual void OnHideEndEvent() {}

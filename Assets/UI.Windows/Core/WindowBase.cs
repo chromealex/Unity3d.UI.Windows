@@ -327,7 +327,7 @@ namespace UnityEngine.UI.Windows {
 			this.modules.OnHideBegin(callback);
 			this.transition.OnHideBegin(callback);
 			this.events.OnHideBegin(callback);
-			this.OnHideBegin(callback);
+			this.OnHideBegin(callback, immediately: false);
 
 			return true;
 
@@ -424,7 +424,7 @@ namespace UnityEngine.UI.Windows {
 		/// Raises the show begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnShowBegin(System.Action callback) { if (callback != null) callback(); }
+		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) { if (callback != null) callback(); }
 
 		/// <summary>
 		/// Raises the show end event.
@@ -435,7 +435,7 @@ namespace UnityEngine.UI.Windows {
 		/// Raises the hide begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnHideBegin(System.Action callback) { if (callback != null) callback(); }
+		public virtual void OnHideBegin(System.Action callback, bool immediately = false) { if (callback != null) callback(); }
 
 		/// <summary>
 		/// Raises the hide end event.

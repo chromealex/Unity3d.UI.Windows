@@ -47,11 +47,19 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnHideBegin(System.Action callback) {
+		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
-			base.OnHideBegin(callback);
+			base.OnShowBegin(callback, resetAnimation);
 
-			this.getValue = null;
+			this.getValueActive = true;
+
+		}
+
+		public override void OnHideEnd() {
+
+			base.OnHideEnd();
+
+			this.getValueActive = false;
 
 		}
 		
@@ -155,19 +163,21 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		private bool getValueActive = false;
 		private System.Func<float> getValue;
 		private bool getValueImmediately;
 		public void SetValue(System.Func<float> getValue, bool immediately = false) {
 
 			this.getValue = getValue;
 			this.getValueImmediately = immediately;
+			this.getValueActive = true;
 
 		}
 
 		public virtual void LateUpdate() {
 
-			if (this.getValue != null) {
-
+			if (this.getValueActive == true && this.getValue != null) {
+				
 				this.SetValue(this.getValue(), this.getValueImmediately);
 
 			}

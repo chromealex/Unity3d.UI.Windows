@@ -567,7 +567,7 @@ namespace UnityEngine.UI.Windows {
 			
 			foreach (var input in inputParameters) {
 				
-				key.Append(input.GetType().Name);
+				key.Append(input == null ?  null : input.GetType().Name);
 				key.Append(comma);
 				
 			}
@@ -596,14 +596,14 @@ namespace UnityEngine.UI.Windows {
 							
 							var parameter = parameters[i];
 							var par = inputParameters[i];
-							
-							var equal = (parameter.ParameterType == par.GetType());
+
+							var equal = par == null || (parameter.ParameterType == par.GetType());
 							if (equal == true) {
 								
 								++count;
 								
 							}
-							
+
 						}
 						
 						if (count == parameters.Length) {

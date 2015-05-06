@@ -135,9 +135,9 @@ namespace UnityEngine.UI.Windows {
 		/// You can override this method but call it's base.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnShowBegin(System.Action callback) {
+		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 			
-			this.OnShowBegin(callback, resetAnimation: true);
+			this.OnShowBegin_INTERNAL(callback, resetAnimation);
 			
 		}
 
@@ -147,23 +147,37 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="callback">Callback.</param>
 		/// <param name="resetAnimation">If set to <c>true</c> reset animation.</param>
-		private void OnShowBegin(System.Action callback, bool resetAnimation) {
-			
+		private void OnShowBegin_INTERNAL(System.Action callback, bool resetAnimation, bool immediately = false) {
+
+			var go = this.gameObject;
+
 			System.Action callbackInner = () => {
 				
 				this.currentState = WindowObjectState.Shown;
-				
+				if (go != null) go.SetActive(true);
+
 				if (callback != null) callback();
 				
 			};
 
+			if (go != null) go.SetActive(true);
 			this.currentState = WindowObjectState.Showing;
 			
 			if (this.animation != null) {
 				
 				if (resetAnimation == true) this.SetResetState();
-				this.animation.Play(this.animationInputParams, this, true, callbackInner);
-				
+
+				if (immediately == true) {
+
+					this.animation.SetInState(this.animationInputParams, this);
+					if (callbackInner != null) callbackInner();
+
+				} else {
+
+					this.animation.Play(this.animationInputParams, this, true, callbackInner);
+
+				}
+
 			} else {
 				
 				callbackInner();
@@ -178,9 +192,9 @@ namespace UnityEngine.UI.Windows {
 		/// You can override this method but call it's base.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnHideBegin(System.Action callback) {
+		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {
 
-			this.OnHideBegin(callback, immediately: false);
+			this.OnHideBegin_INTERNAL(callback, immediately);
 
 		}
 
@@ -190,11 +204,14 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="callback">Callback.</param>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		private void OnHideBegin(System.Action callback, bool immediately) {
+		private void OnHideBegin_INTERNAL(System.Action callback, bool immediately) {
+
+			var go = this.gameObject;
 
 			System.Action callbackInner = () => {
 				
 				this.currentState = WindowObjectState.Hidden;
+				if (go != null) go.SetActive(false);
 
 				if (callback != null) callback();
 
@@ -207,7 +224,7 @@ namespace UnityEngine.UI.Windows {
 				if (immediately == true) {
 
 					this.animation.SetOutState(this.animationInputParams, this);
-					if (callback != null) callback();
+					if (callbackInner != null) callbackInner();
 
 				} else {
 

@@ -16,7 +16,59 @@ namespace UnityEngine.UI.Windows.Components {
 		private ComponentEvent callback = new ComponentEvent();
 		private ComponentEvent<ButtonComponent> callbackButton = new ComponentEvent<ButtonComponent>();
 
-		public void SetEnabledState(bool state) {
+		private System.Func<bool> onState;
+		private bool oldState = false;
+		private bool onStateActive = false;
+
+		public override void OnDeinit() {
+
+			base.OnDeinit();
+
+			this.onState = null;
+
+			this.button.onClick.RemoveListener(this.OnClick);
+			this.callback.RemoveAllListeners();
+			this.callbackButton.RemoveAllListeners();
+
+		}
+
+		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+
+			base.OnShowBegin(callback, resetAnimation);
+
+			this.onStateActive = true;
+
+		}
+
+		public override void OnHideEnd() {
+
+			base.OnHideEnd();
+
+			this.onStateActive = false;
+
+		}
+
+		public void SetEnabledState(System.Func<bool> onState) {
+
+			this.onState = onState;
+			this.oldState = this.onState();
+			this.onStateActive = true;
+
+		}
+
+		public void LateUpdate() {
+
+			if (this.onStateActive == true && this.onState != null) {
+
+				var newState = this.onState();
+				if (newState != this.oldState) this.SetEnabledState(newState);
+				this.oldState = newState;
+
+			}
+
+		}
+
+		public virtual void SetEnabledState(bool state) {
 
 			if (state == true) {
 
@@ -30,13 +82,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetDisabled() {
+		public virtual void SetDisabled() {
 		
 			if (this.button != null) this.button.interactable = false;
 
 		}
 
-		public void SetEnabled() {
+		public virtual void SetEnabled() {
 			
 			if (this.button != null) this.button.interactable = true;
 
@@ -83,16 +135,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
-
-		}
-
-		public override void OnDeinit() {
-
-			base.OnDeinit();
-
-			this.button.onClick.RemoveListener(this.OnClick);
-			this.callback.RemoveAllListeners();
-			this.callbackButton.RemoveAllListeners();
 
 		}
 

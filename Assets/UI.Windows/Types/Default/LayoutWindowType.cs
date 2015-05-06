@@ -260,9 +260,9 @@ namespace UnityEngine.UI.Windows.Types {
 				
 			}
 			
-			public void OnShowBegin(System.Action callback) {
+			public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
-				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnShowBegin(c); }, this.instance, this.root);
+				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnShowBegin(c, resetAnimation); }, this.instance, this.root);
 
 			}
 			
@@ -273,9 +273,9 @@ namespace UnityEngine.UI.Windows.Types {
 				
 			}
 			
-			public void OnHideBegin(System.Action callback) {
+			public void OnHideBegin(System.Action callback, bool immediately = false) {
 
-				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnHideBegin(c); }, this.instance, this.root);
+				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnHideBegin(c, immediately); }, this.instance, this.root);
 
 			}
 			
@@ -396,7 +396,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		public void OnShowBegin(System.Action callback) {
+		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -408,9 +408,9 @@ namespace UnityEngine.UI.Windows.Types {
 				
 			};
 
-			this.instance.OnShowBegin(callbackItem); 
+			this.instance.OnShowBegin(callbackItem, resetAnimation);
 			
-			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnShowBegin(c); });
+			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnShowBegin(c, resetAnimation); });
 
 		}
 
@@ -421,7 +421,7 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		}
 
-		public void OnHideBegin(System.Action callback) {
+		public void OnHideBegin(System.Action callback, bool immediately = false) {
 			
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -433,9 +433,9 @@ namespace UnityEngine.UI.Windows.Types {
 				
 			};
 
-			this.instance.OnHideBegin(callbackItem); 
+			this.instance.OnHideBegin(callbackItem, immediately); 
 			
-			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnHideBegin(c); });
+			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnHideBegin(c, immediately); });
 
 		}
 

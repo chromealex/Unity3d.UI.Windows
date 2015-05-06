@@ -74,7 +74,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public override void OnShowBegin(System.Action callback) {
+		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 			
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -86,8 +86,8 @@ namespace UnityEngine.UI.Windows.Components {
 				
 			};
 			
-			base.OnShowBegin(callbackItem);
-			this.instance.OnShowBegin(callbackItem);
+			base.OnShowBegin(callbackItem, resetAnimation);
+			this.instance.OnShowBegin(callbackItem, resetAnimation);
 
 		}
 		
@@ -100,7 +100,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public override void OnHideBegin(System.Action callback) {
+		public override void OnHideBegin(System.Action callback, bool immediately = false) {
 			
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -112,8 +112,8 @@ namespace UnityEngine.UI.Windows.Components {
 				
 			};
 			
-			base.OnHideBegin(callbackItem);
-			this.instance.OnHideBegin(callbackItem);
+			base.OnHideBegin(callbackItem, immediately);
+			this.instance.OnHideBegin(callbackItem, immediately);
 
 		}
 		

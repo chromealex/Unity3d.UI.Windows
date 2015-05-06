@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 	
@@ -10,6 +11,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		void Select();
 		void Deselect();
+		void SetCallback(UnityAction callback);
+		void SetCallback(UnityAction<ButtonComponent> callback);
 
 	}
 	

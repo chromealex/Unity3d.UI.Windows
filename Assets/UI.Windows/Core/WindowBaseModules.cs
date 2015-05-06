@@ -65,11 +65,11 @@ namespace UnityEngine.UI.Windows {
 				
 				public void OnInit() { if (this.instance != null) this.instance.OnInit(); }
 				public void OnDeinit() { if (this.instance != null) this.instance.OnDeinit(); }
-				public void OnShowBegin(System.Action callback) {
+				public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
 					if (this.instance != null) {
 
-						this.instance.OnShowBegin(callback);
+						this.instance.OnShowBegin(callback, resetAnimation);
 
 					} else {
 
@@ -80,11 +80,11 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				public void OnShowEnd() { if (this.instance != null) this.instance.OnShowEnd(); }
-				public void OnHideBegin(System.Action callback) {
+				public void OnHideBegin(System.Action callback, bool immediately = false) {
 					
 					if (this.instance != null) {
 						
-						this.instance.OnHideBegin(callback);
+						this.instance.OnHideBegin(callback, immediately);
 						
 					} else {
 						
@@ -173,52 +173,16 @@ namespace UnityEngine.UI.Windows {
 			// Events
 			public void OnInit() { foreach (var element in this.elements) element.OnInit(); }
 			public void OnDeinit() { foreach (var element in this.elements) element.OnDeinit(); }
-			public void OnShowBegin(System.Action callback) {
+			public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 				
-				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnShowBegin(c); });
-				/*
-				var counter = 0;
-				System.Action callbackItem = () => {
-					
-					++counter;
-					if (counter < this.elements.Length) return;
-					
-					if (callback != null) callback();
-					
-				};
-				
-				foreach (var element in this.elements) {
-					
-					element.OnShowBegin(callbackItem);
-					
-				}
+				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnShowBegin(c, resetAnimation); });
 
-				if (this.elements.Length == 0 && callback != null) callback();
-	*/
 			}
 			public void OnShowEnd() { foreach (var element in this.elements) element.OnShowEnd(); }
-			public void OnHideBegin(System.Action callback) {
+			public void OnHideBegin(System.Action callback, bool immediately = false) {
 				
-				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnHideBegin(c); });
-				/*
-				var counter = 0;
-				System.Action callbackItem = () => {
+				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnHideBegin(c, immediately); });
 
-					++counter;
-					if (counter < this.elements.Length) return;
-
-					if (callback != null) callback();
-
-				};
-
-				foreach (var element in this.elements) {
-					
-					element.OnHideBegin(callbackItem);
-
-				}
-				
-				if (this.elements.Length == 0 && callback != null) callback();
-	*/
 			}
 			public void OnHideEnd() { foreach (var element in this.elements) element.OnHideEnd(); }
 			
@@ -254,9 +218,9 @@ namespace UnityEngine.UI.Windows {
 		// Events
 		public void OnInit() { this.ReleaseEvents(WindowEventType.OnInit); }
 		public void OnDeinit() { this.ReleaseEvents(WindowEventType.OnDeinit); }
-		public void OnShowBegin(System.Action callback) { this.ReleaseEvents(WindowEventType.OnShowBegin); if (callback != null) callback(); }
+		public void OnShowBegin(System.Action callback, bool resetAnimation = true) { this.ReleaseEvents(WindowEventType.OnShowBegin); if (callback != null) callback(); }
 		public void OnShowEnd() { this.ReleaseEvents(WindowEventType.OnShowEnd); }
-		public void OnHideBegin(System.Action callback) { this.ReleaseEvents(WindowEventType.OnHideBegin); if (callback != null) callback(); }
+		public void OnHideBegin(System.Action callback, bool immediately = false) { this.ReleaseEvents(WindowEventType.OnHideBegin); if (callback != null) callback(); }
 		public void OnHideEnd() { this.ReleaseEvents(WindowEventType.OnHideEnd); }
 		
 	}
@@ -302,7 +266,7 @@ namespace UnityEngine.UI.Windows {
 		public void OnDeinit() {}
 		public void OnShowEnd() {}
 		public void OnHideEnd() {}
-		public void OnShowBegin(System.Action callback) {
+		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 			
 			if (this.transition != null) {
 				
@@ -316,7 +280,7 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
-		public void OnHideBegin(System.Action callback) {
+		public void OnHideBegin(System.Action callback, bool immediately = false) {
 			
 			if (this.transition != null) {
 				

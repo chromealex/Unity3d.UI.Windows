@@ -135,14 +135,14 @@ MonoBehaviour:
   lastAnimation: {fileID: 0}
   autoRegisterSubComponents: 1
   subComponents: []
+  images:
+  - {fileID: 11427966}
   duration: 1
   minNormalizedValue: .0500000007
   bar: {fileID: 11427968}
   continious: 1
   continiousWidth: 1
   continiousAngleStep: 45
-  images:
-  - {fileID: 11427966}
 --- !u!222 &22227966
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -205,4 +205,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 175672}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

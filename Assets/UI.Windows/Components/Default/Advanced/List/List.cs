@@ -28,6 +28,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnDeinit() {
+
+			this.Clear();
+
+			base.OnDeinit();
+
+		}
+
 		public void InitPool(int capacity) {
 
 			this.source.CreatePool(capacity, this.transform);
@@ -63,7 +71,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 				//instance.OnInit();
 				instance.gameObject.SetActive(true);
-
 				instance = (instance as LinkerComponent).Get<WindowComponent>();
 
 			}
@@ -89,6 +96,12 @@ namespace UnityEngine.UI.Windows.Components {
 				return (item as WindowComponent) == c;
 
 			});
+
+		}
+
+		public int Count() {
+
+			return this.list.Count;
 
 		}
 
@@ -176,14 +189,6 @@ namespace UnityEngine.UI.Windows.Components {
 			this.list.Clear();
 
 			this.Refresh();
-
-		}
-
-		public override void OnHideBegin(System.Action callback) {
-			
-			this.Clear();
-
-			base.OnHideBegin(callback);
 
 		}
 

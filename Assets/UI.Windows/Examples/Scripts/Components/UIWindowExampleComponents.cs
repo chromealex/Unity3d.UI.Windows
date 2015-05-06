@@ -30,9 +30,9 @@ public class UIWindowExampleComponents : LayoutWindowType {
 
 	}
 
-	public override void OnShowBegin(System.Action callback) {
+	public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
-		base.OnShowBegin(callback);
+		base.OnShowBegin(callback, resetAnimation);
 		
 		this.tabs.Load(0, immediately: true);
 

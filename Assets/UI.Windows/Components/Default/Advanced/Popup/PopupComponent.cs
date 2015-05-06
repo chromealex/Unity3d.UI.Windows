@@ -55,10 +55,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		[Header("Popup Component")]
 		public LinkerComponent buttonWithText;
 		public LinkerComponent list;
 
-		private ButtonWithTextComponent label;
+		private ITextComponent label;
 		private List items;
 
 		private bool opened;
@@ -94,7 +95,7 @@ namespace UnityEngine.UI.Windows.Components {
 			canvas.sortingLayerName = this.GetWindow().GetSortingLayerName();
 
 			this.label.SetText(string.Empty);
-			this.label.SetCallback(this.Toggle);
+			if (this.label is ISelectable) (this.label as ISelectable).SetCallback(this.Toggle);
 
 			this.items.SetupAsDropdown(this.maxHeight);
 
@@ -112,9 +113,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnShowBegin(System.Action callback) {
+		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
-			base.OnShowBegin(callback);
+			base.OnShowBegin(callback, resetAnimation);
 
 			this.SetState(this.opened, immediately: true);
 
@@ -133,7 +134,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.opened == false) return;
 
 			var current = EventSystem.current.currentSelectedGameObject;
-			if (current == this.label.gameObject) return;
+			if (current == (this.label as Component).gameObject) return;
 
 			if (current == null || current.GetComponentsInParent<CanvasGroup>().Contains(this.list.canvas) == false) {
 				
