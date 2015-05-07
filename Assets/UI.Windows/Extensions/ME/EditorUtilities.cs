@@ -183,14 +183,18 @@ namespace ME {
 					
 					var file = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
 					if (file == null) continue;
-					
-					var comp = file.GetComponent<T>();
-					if (comp == null) continue;
-					
-					if (strongType == true && comp.GetType().Name != typeof(T).Name) continue;
-					
-					output.Add(comp);
-					
+
+					var comps = file.GetComponents<T>();
+					foreach (var comp in comps) {
+
+						if (comp == null) continue;
+						
+						if (strongType == true && comp.GetType().Name != typeof(T).Name) continue;
+						
+						output.Add(comp);
+
+					}
+
 				}
 				
 				return output.ToArray();

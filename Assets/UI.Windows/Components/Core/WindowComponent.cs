@@ -59,30 +59,33 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="subComponent">Sub component.</param>
 		public void RegisterSubComponent(WindowComponent subComponent) {
 
-			switch (this.GetWindow().GetState()) {
+			if (this.GetWindow() != null) {
 				
-			case WindowObjectState.Initializing:
-				// after OnInit
-				subComponent.OnInit();
-				break;
-				
-			case WindowObjectState.Showing:
-				// after OnShowBegin
-				subComponent.OnInit();
-				subComponent.OnShowBegin(null);
-				break;
-				
-			case WindowObjectState.Shown:
-				// after OnShowEnd
-				subComponent.OnInit();
-				subComponent.OnShowBegin(() => {
+				switch (this.GetWindow().GetState()) {
+					
+					case WindowObjectState.Initializing:
+						// after OnInit
+						subComponent.OnInit();
+						break;
+					
+					case WindowObjectState.Showing:
+						// after OnShowBegin
+						subComponent.OnInit();
+						subComponent.OnShowBegin(null);
+						break;
+					
+					case WindowObjectState.Shown:
+						// after OnShowEnd
+						subComponent.OnInit();
+						subComponent.OnShowBegin(() => {
 
-					subComponent.OnShowEnd();
+							subComponent.OnShowEnd();
 
-				});
+						});
+						break;
+					
+				}
 
-				break;
-				
 			}
 
 			if (this.subComponents.Contains(subComponent) == false) this.subComponents.Add(subComponent);
@@ -94,34 +97,38 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="subComponent">Sub component.</param>
 		public void UnregisterSubComponent(WindowComponent subComponent) {
-			
-			switch (this.GetWindow().GetState()) {
-				
-			case WindowObjectState.Shown:
-				// after OnShowEnd
-				subComponent.OnHideBegin(() => {
-					
-					subComponent.OnHideEnd();
-					subComponent.OnDeinit();
 
-				});
-				break;
-				
-			case WindowObjectState.Hiding:
-				// after OnHideBegin
-				subComponent.OnHideBegin(null);
-				break;
-				
-			case WindowObjectState.Hidden:
-				// after OnHideEnd
-				subComponent.OnHideBegin(() => {
+			if (this.GetWindow() != null) {
+
+				switch (this.GetWindow().GetState()) {
 					
-					subComponent.OnHideEnd();
-					subComponent.OnDeinit();
+					case WindowObjectState.Shown:
+						// after OnShowEnd
+						subComponent.OnHideBegin(() => {
+						
+							subComponent.OnHideEnd();
+							subComponent.OnDeinit();
+
+						});
+						break;
 					
-				});
-				break;
-				
+					case WindowObjectState.Hiding:
+						// after OnHideBegin
+						subComponent.OnHideBegin(null);
+						break;
+					
+					case WindowObjectState.Hidden:
+						// after OnHideEnd
+						subComponent.OnHideBegin(() => {
+						
+							subComponent.OnHideEnd();
+							subComponent.OnDeinit();
+						
+						});
+						break;
+					
+				}
+
 			}
 
 			this.subComponents.Remove(subComponent);
@@ -219,9 +226,11 @@ namespace UnityEngine.UI.Windows {
 
 			} else {
 
-				this.subComponents.Clear();
+				//this.subComponents.Clear();
 
 			}
+
+			this.subComponents = this.subComponents.Where((c) => c != null).ToList();
 
 		}
 		#endif

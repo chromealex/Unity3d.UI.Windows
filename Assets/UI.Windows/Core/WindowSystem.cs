@@ -119,8 +119,8 @@ namespace UnityEngine.UI.Windows {
 					WindowSystem._instance = GameObject.FindObjectOfType<WindowSystem>();
 					if (WindowSystem._instance == null) {
 
-						var go = new GameObject("WindowSystem");
-						WindowSystem._instance = go.AddComponent<WindowSystem>();
+						var go = new GameObject("[A] WindowSystem", typeof(WindowSystem));
+						WindowSystem._instance = go.GetComponent<WindowSystem>();
 
 					}
 

@@ -28,13 +28,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnDeinit() {
+		/*public override void OnDeinit() {
 
 			this.Clear();
 
 			base.OnDeinit();
 
-		}
+		}*/
 
 		public void InitPool(int capacity) {
 
@@ -204,6 +204,13 @@ namespace UnityEngine.UI.Windows.Components {
 		public override void OnValidateEditor() {
 
 			base.OnValidateEditor();
+
+			if (this.autoRegisterSubComponents == true) {
+
+				this.UnregisterSubComponent(this.source);
+
+			}
+
 			//this.scrollRect = this.GetComponentInChildren<ScrollRect>();
 
 		}
