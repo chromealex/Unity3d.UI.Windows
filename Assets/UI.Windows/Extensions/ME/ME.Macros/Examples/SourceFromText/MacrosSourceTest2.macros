@@ -1,0 +1,4 @@
+﻿#region source macros TEST2
+var a = "Source Test 2";
+Debug.Log(a);
+#endregion

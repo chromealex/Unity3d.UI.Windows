@@ -39,17 +39,18 @@ public class UIWindowExampleComponentsEx1 : WindowComponent {
 
 		});
 
-		var oldColor = this.button3Linker.Get(ref this.button3).GetColor();
-		this.button3Linker.Get(ref this.button3).SetText("Hover to change color");
-		this.button3Linker.Get(ref this.button3).SetCallbackHover((state) => {
+		this.button3Linker.Get(ref this.button3);
+		var oldColor = this.button3.GetColor();
+		this.button3.SetText("Hover to change color");
+		this.button3.SetCallbackHover((state) => {
 
 			if (state == true) {
 
-				this.button3Linker.Get(ref this.button3).SetColor(new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), 1f));
+				this.button3.SetColor(new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), 1f));
 
 			} else {
 
-				this.button3Linker.Get(ref this.button3).SetColor(oldColor);
+				this.button3.SetColor(oldColor);
 
 			}
 
