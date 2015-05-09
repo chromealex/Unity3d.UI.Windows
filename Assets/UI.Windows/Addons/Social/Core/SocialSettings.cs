@@ -40,7 +40,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 
 	public class ModuleSettings : ScriptableObject {
 		
-		[Header("Base Modules")]
+		[Header("Base Settings")]
 		public FriendsSettings standardFriendsSettings;
 		public ProfileSettings standardProfileSettings;
 		public AuthSettings authSettings;

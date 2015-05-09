@@ -32,6 +32,12 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 			GUILayout.Label("Module Installed");
 
+			if (GUILayout.Button("Open Preview") == true) {
+
+				DevicePreview.ShowEditor();
+
+			}
+
 		}
 
 	}
