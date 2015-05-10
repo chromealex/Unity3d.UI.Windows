@@ -3,6 +3,12 @@ using System.Collections;
 
 namespace UnityEngine.UI.Windows.Plugins.Social {
 	
+	public class SubModuleSettings {
+
+		public virtual SocialQuery GetQuery() { return null; }
+
+	}
+
 	public interface ISubModule {
 		
 	}

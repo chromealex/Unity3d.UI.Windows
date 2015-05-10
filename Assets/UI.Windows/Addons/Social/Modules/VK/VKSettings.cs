@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
 
@@ -18,8 +19,10 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
 		
 		public Display display;
 
-		public override HTTPParams Prepare(string token, HTTPParams parameters) {
-			
+		public override HTTPParams Prepare(string token, HTTPParams parameters, Dictionary<string, string> values = null) {
+
+			parameters = base.Prepare(token, parameters, values);
+
 			foreach (var item in parameters.items) {
 				
 				if (item.key.ToLower() == "display") {

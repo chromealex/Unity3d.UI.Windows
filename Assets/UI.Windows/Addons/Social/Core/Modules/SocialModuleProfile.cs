@@ -4,11 +4,25 @@ using System;
 
 namespace UnityEngine.UI.Windows.Plugins.Social {
 	
+	[System.Serializable]
+	public class ProfileSettings : SubModuleSettings {
+		
+		public SocialQuery loadProfileQuery;
+		
+		public override SocialQuery GetQuery() {
+			
+			return this.loadProfileQuery;
+			
+		}
+
+	}
+
 	public interface IProfile : ISubModule {
 		
 		ISocialUser user { get; set; }
 		void LoadInfo(Action<bool> callback);
 		void LoadInfo(SubModuleSettings settings, Action<bool> callback);
+		void LoadInfo(SocialQuery query, Action<bool> callback);
 		
 	}
 	
@@ -34,11 +48,17 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 		
 		public virtual void LoadInfo(SubModuleSettings settings, Action<bool> callback) {
 			
+			this.LoadInfo(settings.GetQuery(), callback);
+
+		}
+
+		public virtual void LoadInfo(SocialQuery query, Action<bool> callback) {
+
 			new SocialHttp(
 				this.moduleSettings,
-				settings.url,
-				this.moduleSettings.Prepare((this.socialModule.auth as IAuth).token, settings.parameters),
-				settings.method,
+				query.url,
+				this.moduleSettings.Prepare((this.socialModule.auth as IAuth).token, query.parameters),
+				query.method,
 				(data, result) => {
 				
 				Debug.Log(result + " :: " + data);

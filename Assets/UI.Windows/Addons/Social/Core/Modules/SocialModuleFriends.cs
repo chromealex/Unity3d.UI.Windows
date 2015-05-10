@@ -4,11 +4,25 @@ using System;
 
 namespace UnityEngine.UI.Windows.Plugins.Social {
 	
+	[System.Serializable]
+	public class FriendsSettings : SubModuleSettings {
+		
+		public SocialQuery loadFriendsQuery;
+		
+		public override SocialQuery GetQuery() {
+			
+			return this.loadFriendsQuery;
+			
+		}
+
+	}
+
 	public interface IFriends : ISubModule {
 
 		void LoadInfo(Action<bool> callback);
 		void LoadInfo(SubModuleSettings settings, Action<bool> callback);
-		
+		void LoadInfo(SocialQuery query, Action<bool> callback);
+
 	}
 	
 	public class Friends<TSettings> : SubModule<TSettings>, IFriends where TSettings : SubModuleSettings {
@@ -27,22 +41,30 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 		}
 		
 		public virtual void LoadInfo(SubModuleSettings settings, Action<bool> callback) {
-			
+
+			this.LoadInfo(settings.GetQuery(), callback);
+
+		}
+		
+		public virtual void LoadInfo(SocialQuery query, Action<bool> callback) {
+
 			new SocialHttp(
 				this.moduleSettings,
-				settings.url,
-				this.moduleSettings.Prepare((this.socialModule.auth as IAuth).token, settings.parameters),
-				settings.method,
+				query.url,
+				this.moduleSettings.Prepare((this.socialModule.auth as IAuth).token, query.parameters),
+				query.method,
 				(data, result) => {
 				
 				Debug.Log(result + " :: " + data);
 				
 				this.socialModule.profile.user.ParseFriendsData(this.socialModule, data);
+
+				callback(result);
 				
 			});
 			
 		}
-		
+
 	}
 
 }

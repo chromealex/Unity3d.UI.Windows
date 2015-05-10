@@ -15,7 +15,6 @@ namespace UnityEngine.UI.Windows.Components.Social {
 
 			var vk = social.GetModule<VKModule>();
 
-			Debug.Log("AUTH");
 			vk.Authenticate(this.token, (result) => {
 
 				Debug.Log(vk.profile.user);

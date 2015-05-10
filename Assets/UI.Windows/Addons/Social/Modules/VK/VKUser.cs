@@ -138,31 +138,39 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
 		}
 		
 		protected override void OnFriendsParse() {
+
+			var friends = this.ParseUsers(this.friendsData);
+			foreach (var friend in friends) (friend as SocialUser).SetIsFriend(true);
+			this.SetFriends(friends.ToArray());
+
+		}
+		
+		public override List<ISocialUser> ParseUsers(string inputData) {
 			
-			var data = new JSONObject(this.friendsData);
-			
+			var result = new List<ISocialUser>();
+
+			var data = new JSONObject(inputData);
+
 			var field = data.GetField("response");
 			if (field.IsArray == true) {
 
-				var friends = new List<IUserProfile>();
 				foreach (var item in field.list) {
 					
-					var friend = new VKLocalUser();
-					friend.socialModule = this.socialModule;
-					friend.userData = item.ToString();
-					friend.ParseData(item);
-					friend.SetIsFriend(true);
+					var user = new VKLocalUser();
+					user.socialModule = this.socialModule;
+					user.userData = item.ToString();
+					user.ParseData(item);
 
-					friends.Add(friend);
+					result.Add(user);
 					
 				}
 
-				this.SetFriends(friends.ToArray());
-				
 			}
+
+			return result;
 			
 		}
-		
+
 		private void ParseData(JSONObject item) {
 			
 			this.SetSex((int)item.GetField("sex").n);

@@ -11,7 +11,7 @@ namespace UnityEditor.UI.Windows.Components.Social {
 
 		public override void OnFlowSettingsGUI() {
 			
-			GUILayout.Label("Module Installed");
+			GUILayout.Label("(BETA) Module Installed");
 			
 		}
 

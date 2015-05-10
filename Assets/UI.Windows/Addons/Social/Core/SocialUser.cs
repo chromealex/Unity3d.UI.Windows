@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.SocialPlatforms.Impl;
 using System;
+using System.Collections.Generic;
 
 namespace UnityEngine.UI.Windows.Plugins.Social {
 	
@@ -23,6 +24,8 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 		new void Authenticate(Action<bool> callback);
 		
 		new void LoadFriends(Action<bool> callback);
+
+		List<ISocialUser> ParseUsers(string inputData);
 
 	}
 	
@@ -87,10 +90,16 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 			}
 
 		}
-		
+
+		public virtual List<ISocialUser> ParseUsers(string inputData) {
+
+			return null;
+
+		}
+
 		protected virtual void OnUserParse() {}
 		protected virtual void OnFriendsParse() {}
-		
+
 	}
 
 }
