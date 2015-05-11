@@ -3,24 +3,9 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI.Windows.Plugins.Social.Queries;
 
-namespace UnityEngine.UI.Windows.Plugins.Social {
-
-	[Flags]
-	public enum Platform : byte {
-		
-		None = 0x0,
-		
-		VK = 0x1,
-		Facebook = 0x2,
-		
-		Tweeter = 0x4,
-		Instagram = 0x8,
-
-		GooglePlay = 0x10,
-		GameCenter = 0x20,
-		
-	}
+namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 
 	public class SocialSystem : MonoBehaviour {
 
@@ -96,12 +81,11 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 
 		public void Load(SocialSettings settings) {
 
-			var platforms = System.Enum.GetValues(typeof(Platform));
-			foreach (var platform in platforms) {
+			foreach (var platform in settings.activePlatforms) {
 
-				if ((settings.activePlatforms & (Platform)platform) != 0) {
+				if (platform.active == true) {
 
-					this.LoadPlatform((Platform)platform);
+					this.LoadPlatform(platform);
 
 				}
 
@@ -114,21 +98,19 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 			ISocialModule module = null;
 
 			// Activate social platforms
-			var moduleType = platform.ToString() + "." + platform.ToString() + "Module";
-			var type = System.Type.GetType("UnityEngine.UI.Windows.Plugins.Social.Modules." + moduleType + "", throwOnError: false, ignoreCase: true);
+			var moduleType = string.Format("{0}.{0}Module", platform.GetPlatformClassName());
+			var type = System.Type.GetType(string.Format("UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.{0}", moduleType), throwOnError: false, ignoreCase: true);
 
 			if (type != null) {
 
-				var settings = Resources.Load("UI.Windows/Social/" + platform.ToString() + "Settings") as ModuleSettings;
-
 				module = System.Activator.CreateInstance(type) as ISocialModule;
-				module.OnLoad(settings);
+				module.OnLoad(platform.settings);
 
 				this.modules.Add(module);
 
 			} else {
 
-				Debug.LogWarningFormat("[SOCIAL] Module `{0}` not found.", moduleType);
+				Debug.LogWarningFormat("[SOCIAL] Module `{0}` not found. Skipped.", moduleType);
 
 			}
 

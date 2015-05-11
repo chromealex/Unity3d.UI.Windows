@@ -1,8 +1,14 @@
-﻿using UnityEngine;
+﻿//#define USE_WWW
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows.Plugins.Social.Core;
+using System.Net;
+using System.IO;
+using System;
 
-namespace UnityEngine.UI.Windows.Plugins.Social {
+namespace UnityEngine.UI.Windows.Plugins.Social.Queries {
 
 	public enum HTTPType {
 
@@ -84,6 +90,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 
 		public SocialHttp(ModuleSettings settings, string url, HTTPParams parameters, HTTPType httpType, System.Action<string, bool> onCompleted) {
 
+			#if USE_WWW
 			if (httpType == HTTPType.Post) {
 
 				var form = new WWWForm();
@@ -107,8 +114,6 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 
 			}
 
-			Debug.Log(url);
-
 			SocialSystem.WaitFor(this.Wait(() => {
 
 				if (string.IsNullOrEmpty(this.www.error) == false) {
@@ -126,6 +131,54 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 				}
 
 			}));
+			#else
+			if (httpType == HTTPType.Post) {
+				
+				var form = new WWWForm();
+				foreach (var param in parameters.items) {
+					
+					form.AddField(param.key, param.GetValue(settings));
+					
+				}
+				
+				this.www = new WWW(url, form);
+				
+			} else if (httpType == HTTPType.Get) {
+				
+				foreach (var param in parameters.items) {
+					
+					url = url.Replace("{" + param.key + "}", param.GetValue(settings));
+					
+				}
+
+				ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(delegate { return true; });
+
+				var uri = new Uri(url.Trim() + "/");	// I don't know about last `/` but it works only with it ;(
+
+				WebRequest request = WebRequest.Create (uri);
+				// If required by the server, set the credentials.
+				request.Credentials = CredentialCache.DefaultCredentials;
+				// Get the response.
+				HttpWebResponse response = (HttpWebResponse)request.GetResponse ();
+
+				// Get the stream containing content returned by the server.
+				Stream dataStream = response.GetResponseStream ();
+				// Open the stream using a StreamReader for easy access.
+				StreamReader reader = new StreamReader (dataStream);
+				// Read the content.
+				string responseFromServer = reader.ReadToEnd ();
+
+				// Cleanup the streams and the response.
+				reader.Close ();
+				dataStream.Close ();
+				response.Close ();
+				
+				onCompleted(responseFromServer, response.StatusCode == HttpStatusCode.OK);
+
+			}
+			#endif
+			
+			Debug.Log(url);
 
 		}
 

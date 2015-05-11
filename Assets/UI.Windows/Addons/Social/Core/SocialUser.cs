@@ -5,7 +5,7 @@ using UnityEngine.SocialPlatforms.Impl;
 using System;
 using System.Collections.Generic;
 
-namespace UnityEngine.UI.Windows.Plugins.Social {
+namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 	
 	public interface ISocialUser : ILocalUser {
 		

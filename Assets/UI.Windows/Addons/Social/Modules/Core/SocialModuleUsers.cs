@@ -2,8 +2,10 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows.Plugins.Social.Queries;
+using UnityEngine.UI.Windows.Plugins.Social.Core;
 
-namespace UnityEngine.UI.Windows.Plugins.Social {
+namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Core {
 	
 	[System.Serializable]
 	public class UsersSettings : SubModuleSettings {

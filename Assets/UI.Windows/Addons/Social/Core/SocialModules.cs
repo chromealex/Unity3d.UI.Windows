@@ -5,11 +5,25 @@ using UnityEngine.SocialPlatforms.Impl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI.Windows.Plugins.Social.Modules.Core;
+using UnityEngine.UI.Windows.Plugins.Social.Queries;
 
-namespace UnityEngine.UI.Windows.Plugins.Social {
+namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 	
 	public class ModuleSettings : ScriptableObject {
 		
+		public virtual string GetPlatformName() {
+			
+			return "NoName";
+			
+		}
+		
+		public virtual string GetPlatformClassName() {
+			
+			return "Module";
+			
+		}
+
 		[Header("Base Settings")]
 		public UsersSettings standardUsersSettings;
 		public FriendsSettings standardFriendsSettings;
@@ -39,19 +53,19 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 			return parameters;
 			
 		}
-		
-		public virtual int GetPermissionsMask() {
-			
-			return 0;
-			
-		}
-		
+
 		public virtual string GetPermissions() {
 			
 			return string.Empty;
 			
 		}
-		
+
+#if UNITY_EDITOR
+		public virtual void OnInspectorGUI() {
+
+		}
+#endif
+
 	}
 
 	public interface ISocialModule : ISocialPlatform {
@@ -145,28 +159,28 @@ namespace UnityEngine.UI.Windows.Plugins.Social {
 			profile.LoadInfo(callback);
 
 		}*/
-		
-		public virtual void LoadFriends(Action<bool> callback) {
-			
-			throw new Exception(NOT_IMPLEMENTED_FEATURE);
-
-		}
 
 		public virtual void LoadUsers(string[] userIDs, Action<ISocialUser[]> callback) {
 			
-			throw new Exception(NOT_IMPLEMENTED_FEATURE);
-
+			(this.users as IUsers).LoadInfo(userIDs, callback);
+			
+		}
+		
+		public virtual void LoadFriends(Action<bool> callback) {
+			
+			(this.friends as IFriends).LoadInfo(callback);
+			
 		}
 
 		public virtual void Authenticate(Action<bool> callback) {
 			
-			throw new Exception(NOT_IMPLEMENTED_FEATURE);
+			(this.auth as IAuth).Authenticate(callback);
 
 		}
 		
 		public virtual void Authenticate(string token, Action<bool> callback) {
 			
-			throw new Exception(NOT_IMPLEMENTED_FEATURE);
+			(this.auth as IAuth).Authenticate(token, callback);
 
 		}
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace UnityEngine.UI.Windows.Plugins.Social {
+namespace UnityEngine.UI.Windows.Plugins.Social.Queries {
 
 	public class SocialQuery : ScriptableObject {
 

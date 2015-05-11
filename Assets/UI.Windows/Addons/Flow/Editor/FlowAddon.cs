@@ -15,6 +15,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 	}
 
 	public class FlowAddon : IWindowFlowAddon {
+		
+		public const string MODULE_INSTALLED = "The module is installed properly";
+		public const string MODULE_HAS_ERRORS = "{0} Please, try to re-open Unity and/or reinstall the module.";
 
 		public string name;
 		

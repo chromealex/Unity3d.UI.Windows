@@ -2,11 +2,25 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows.Plugins.Social.Core;
+using UnityEngine.UI.Windows.Plugins.Social.Queries;
 
-namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
+namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK {
 
 	public class VKSettings : ModuleSettings {
+
+		public override string GetPlatformName() {
+
+			return "VK (vk.com)";
+
+		}
 		
+		public override string GetPlatformClassName() {
+
+			return "VK";
+			
+		}
+
 		[Header("VK Settings")]
 		public string profileMainPhoto;
 
@@ -88,13 +102,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
 
 		[BitMask(typeof(Permissions))]
 		public Permissions permissions;
-		
-		public override int GetPermissionsMask() {
-			
-			return (int)this.permissions;
-			
-		}
-		
+
 		public override string GetPermissions() {
 			
 			var scopes = this.permissions.ToString().Split(',');

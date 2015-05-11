@@ -2,8 +2,10 @@
 using System.Collections;
 using System;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI.Windows.Plugins.Social.Modules.Core;
+using UnityEngine.UI.Windows.Plugins.Social.Core;
 
-namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
+namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK {
 
 	public class VKUsers<TSettings> : Users<TSettings> where TSettings : SubModuleSettings {
 
@@ -23,30 +25,6 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
 	}
 
 	public class VKModule : SocialModule {
-
-		public override void LoadUsers(string[] userIDs, Action<ISocialUser[]> callback) {
-
-			(this.users as IUsers).LoadInfo(userIDs, callback);
-
-		}
-
-		public override void LoadFriends(Action<bool> callback) {
-
-			(this.friends as IFriends).LoadInfo(callback);
-
-		}
-
-		public override void Authenticate(Action<bool> callback) {
-			
-			(this.auth as IAuth).Authenticate(callback);
-
-		}
-		
-		public override void Authenticate(string token, Action<bool> callback) {
-			
-			(this.auth as IAuth).Authenticate(token, callback);
-
-		}
 
 		public override void OnLoadUser() {
 

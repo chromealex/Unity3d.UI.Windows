@@ -3,17 +3,12 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.UI.Windows.Plugins.Social.Core;
 
-namespace UnityEngine.UI.Windows.Plugins.Social.Modules.VK {
+namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK {
 
 	public class VKLocalUser : SocialUser {
-		
-		public enum Sex : byte {
-			NotSpecified = 0,
-			Female = 1,
-			Male = 2,
-		}
-		
+
 		private bool _verified;
 		public void SetVerified(int value) { this._verified = value == 1 ? true : false; }
 		public void SetVerified(bool value) { this._verified = value; }

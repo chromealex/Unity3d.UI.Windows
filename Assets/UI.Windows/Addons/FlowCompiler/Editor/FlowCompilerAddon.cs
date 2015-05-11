@@ -22,29 +22,36 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		public override void OnFlowSettingsGUI() {
 			
-			#region NAMESPACE
+			GUILayout.Label(FlowAddon.MODULE_INSTALLED);
 
-			EditorGUIUtility.labelWidth = 70f;
-			
-			var namespaceName = EditorGUILayout.TextField("Namespace: ", FlowSystem.GetData().namespaceName);
-			if (namespaceName != FlowSystem.GetData().namespaceName) {
+			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+			{
 				
-				FlowSystem.GetData().namespaceName = namespaceName;
-				FlowSystem.SetDirty();
+				#region NAMESPACE
+				EditorGUIUtility.labelWidth = 70f;
 				
+				var namespaceName = EditorGUILayout.TextField("Namespace: ", FlowSystem.GetData().namespaceName);
+				if (namespaceName != FlowSystem.GetData().namespaceName) {
+					
+					FlowSystem.GetData().namespaceName = namespaceName;
+					FlowSystem.SetDirty();
+					
+				}
+				
+				EditorGUIUtility.LookLikeControls();
+				
+				var forceRecompile = GUILayout.Toggle(FlowSystem.GetData().forceRecompile, "Force Recompile");
+				if (forceRecompile != FlowSystem.GetData().forceRecompile) {
+					
+					FlowSystem.GetData().forceRecompile = forceRecompile;
+					FlowSystem.SetDirty();
+					
+				}
+				
+				#endregion
+
 			}
-			
-			EditorGUIUtility.LookLikeControls();
-
-			var forceRecompile = GUILayout.Toggle(FlowSystem.GetData().forceRecompile, "Force Recompile");
-			if (forceRecompile != FlowSystem.GetData().forceRecompile) {
-				
-				FlowSystem.GetData().forceRecompile = forceRecompile;
-				FlowSystem.SetDirty();
-				
-			}
-
-			#endregion
+			EditorGUILayout.EndVertical();
 
 		}
 

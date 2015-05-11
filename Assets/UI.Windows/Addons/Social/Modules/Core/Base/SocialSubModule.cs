@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI.Windows.Plugins.Social.Queries;
+using UnityEngine.UI.Windows.Plugins.Social.Core;
 
-namespace UnityEngine.UI.Windows.Plugins.Social {
+namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Core {
 	
 	public class SubModuleSettings {
 
