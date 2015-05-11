@@ -57,62 +57,125 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK {
 			
 		}
 
-		[Flags]
-		public enum Permissions : int {
-			Notify = 1,
-			//(+1)	User allowed to send notifications to him/her.
-			Friends = 2, 
-			//(+2)	Access to friends.
-			Photos = 4, 
-			//(+4)	Access to photos.
-			Audio = 8, 
-			//(+8)	Access to audios.
-			Video = 16,
-			//(+16)	Access to videos.
-			Docs = 131072,
-			//(+131072)	Access to documents.
-			Notes = 2048, 
-			//(+2048)	Access to user notes.
-			Pages = 128,
-			//(+128)	Access to wiki pages.
-			//+256	Addition of link to the application in the left menu.
-			Status = 1024, 
-			//(+1024)	Access to user status.
-			//Offers = 32,
-			//(+32)	Access to offers (obsolete methods).
-			//Questions = 64, 
-			//(+64)	Access to questions (obsolete methods).
-			Wall = 8192,
-			//(+8192)	Access to standard and advanced methods for the wall. Note that this access permission is unavailable for sites (it is ignored at attempt of authorization).
-			Groups = 262144, 
-			//(+262144)	Access to user groups.
-			Messages = 4096, 
-			//(+4096)	(for Standalone applications) Access to advanced methods for messaging.
-			Email = 4194304,
-			//(+4194304)	User e-mail access. Available only for sites.
-			Notifications = 524288,
-			//(+524288)	Access to notifications about answers to the user.
-			Stats = 1048576,
-			//(+1048576)	Access to statistics of user groups and applications where he/she is an administrator.
-			Ads = 32768,
-			//(+32768)	Access to advanced methods for Ads API.
-			//Offline, //	Access to API at any time from a third party server.
-			//Nohttps, //	Possibility to make API requests without HTTPS. Note that this functionality is under testing and can be changed.
-		}
+		[HideInInspector]
+		public List<string> declaredPermissionsGroup1 = new List<string>() {
+			"friends", 
+			"status",
+			"email",
+		};
+		
+		[HideInInspector]
+		public List<string> declaredPermissionsGroup2 = new List<string>() {
+			"photos",
+			"audio",
+			"video",
+			"docs",
+			"notes",
+			"pages",
+			"wall",
+			"groups",
+			"messages"
 
-		[BitMask(typeof(Permissions))]
-		public Permissions permissions;
-
+		};
+		
+		[HideInInspector]
+		public List<string> declaredPermissionsGroup3 = new List<string>() {
+			"notify",
+			"notifications",
+			"stats",
+			"ads"
+		};
+		
+		[HideInInspector]
+		public List<string> declaredPermissionsGroup4 = new List<string>() {
+			"offline",
+			"nohttps"
+		};
+		
+		[HideInInspector]
+		public List<string> permissions = new List<string>();
+		
 		public override string GetPermissions() {
 			
-			var scopes = this.permissions.ToString().Split(',');
-			for (int i = 0; i < scopes.Length; ++i) scopes[i] = scopes[i].Trim().ToLower();
-
-			return string.Join(",", scopes);
-
+			return string.Join(",", this.permissions.ToArray());
+			
 		}
 
 		#if UNITY_EDITOR
+		public override void OnInspectorGUI() {
+			
+			base.OnInspectorGUI();
+			
+			UnityEditor.EditorGUILayout.LabelField("Permissions", UnityEditor.EditorStyles.boldLabel);
+			this.DrawPermissionGroup(this.declaredPermissionsGroup1);
+			this.DrawPermissionGroup(this.declaredPermissionsGroup2);
+			this.DrawPermissionGroup(this.declaredPermissionsGroup3);
+			this.DrawPermissionGroup(this.declaredPermissionsGroup4);
+			
+			UnityEditor.EditorGUILayout.HelpBox("Be sure that you have added `https://oauth.vk.com/blank.html` url into your auth as `REDIRECT_URI`.", UnityEditor.MessageType.Info);
+			
+		}
+		
+		private void DrawPermissionGroup(List<string> permissions) {
+			
+			var columns = 2;
+			var column = 2;
+			var rows = 0;
+			var opened = false;
+			
+			UnityEditor.EditorGUILayout.BeginVertical(UnityEditor.EditorStyles.helpBox);
+			{
+				
+				foreach (var perm in permissions) {
+					
+					if (column == columns) {
+						
+						column = 0;
+						++rows;
+						
+						if (rows > 1) {
+							
+							UnityEditor.EditorGUILayout.EndHorizontal();
+							opened = false;
+							
+						}
+						
+						UnityEditor.EditorGUILayout.BeginHorizontal();
+						opened = true;
+						
+					}
+					
+					{
+						
+						var oldValue = this.permissions.Contains(perm);
+						var flag = UnityEditor.EditorGUILayout.ToggleLeft(perm, oldValue);
+						if (flag != oldValue) {
+							
+							if (flag == true) {
+								
+								this.permissions.Add(perm);
+								
+							} else {
+								
+								this.permissions.Remove(perm);
+								
+							}
+							
+						}
+						
+					}
+					
+					++column;
+					
+				}
+				
+				if (opened == true) UnityEditor.EditorGUILayout.EndHorizontal();
+				
+			}
+			UnityEditor.EditorGUILayout.EndVertical();
+			
+		}
+
 		[UnityEditor.MenuItem("Assets/Create/UI Windows/Social/VK Settings")]
 		public static void CreateInstance() {
 			

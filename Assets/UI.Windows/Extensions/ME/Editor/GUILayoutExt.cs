@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using UnityEditor.UI.Windows.Plugins.Flow;
 
 namespace ME {
 
-	public class GUILayoutExt {
+	public partial class GUILayoutExt {
 
 		public static T ObjectField<T>(T data, bool allowSceneObjects, GUIStyle style) where T : ScriptableObject {
 

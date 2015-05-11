@@ -12,13 +12,18 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 		private static ModuleSettings[] socials;
 
 		public void OnEnable() {
-			
+
+			var dataPath = AssetDatabase.GetAssetPath(this.target);
+			var directory = System.IO.Path.GetDirectoryName(dataPath);
+
 			// Scan for the installed socials
-			SocialSettingsEditor.socials = ME.EditorUtilities.GetAssetsOfType<ModuleSettings>(useCache: false);
+			SocialSettingsEditor.socials = ME.EditorUtilities.GetAssetsOfType<ModuleSettings>(directory, useCache: false);
 
 		}
 
 		public override void OnInspectorGUI() {
+
+			GUILayout.Label("Platforms", EditorStyles.boldLabel);
 
 			var target = this.target as SocialSettings;
 			var socials = SocialSettingsEditor.socials;
@@ -28,6 +33,8 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			if (target.activePlatforms.Length != socials.Length) {
 
 				System.Array.Resize(ref target.activePlatforms, socials.Length);
+				
+				EditorUtility.SetDirty(target);
 
 			}
 

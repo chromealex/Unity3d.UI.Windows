@@ -135,30 +135,50 @@ namespace ME {
 			return AssetDatabase.LoadAssetAtPath(assetPathAndName, typeof(T)) as T;
 			
 		}
-
+		
 		public static Object CreateAsset( System.Type type ) {
-
+			
 			var asset = ScriptableObject.CreateInstance( type ) as Object;
-
+			
 			string path = AssetDatabase.GetAssetPath( Selection.activeObject );
 			if ( path == "" ) {
 				path = "Assets";
 			} else if ( Path.GetExtension( path ) != "" ) {
 				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( Selection.activeObject ) ), "" );
 			}
-
+			
 			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath( path + "/New " + type.ToString() + ".asset" );
-
+			
 			AssetDatabase.CreateAsset( asset, assetPathAndName );
-
+			
 			AssetDatabase.SaveAssets();
 			EditorUtility.FocusProjectWindow();
 			Selection.activeObject = asset;
-
+			
 			return asset;
-
+			
 		}
 		
+		public static Object CreateAsset(System.Type type, string path, string filename) {
+			
+			var asset = ScriptableObject.CreateInstance(type) as Object;
+
+			if ( path == "" ) {
+				path = "Assets";
+			} else if ( Path.GetExtension( path ) != "" ) {
+				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( Selection.activeObject ) ), "" );
+			}
+			
+			string assetPathAndName = path + "/" + filename + ".asset";
+			
+			AssetDatabase.CreateAsset( asset, assetPathAndName );
+			
+			AssetDatabase.SaveAssets();
+			
+			return asset;
+			
+		}
+
 		public static T[] GetPrefabsOfType<T>(bool strongType = true, string directory = null, bool useCache = true) where T : Component {
 			
 			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory, useCache).Cast<T>().ToArray();
