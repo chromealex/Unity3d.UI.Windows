@@ -115,7 +115,7 @@ namespace UnityEngine.UI.Windows {
 
 				#if UNITY_EDITOR
 				if (WindowSystem._instance == null) {
-
+					
 					WindowSystem._instance = GameObject.FindObjectOfType<WindowSystem>();
 					if (WindowSystem._instance == null) {
 
