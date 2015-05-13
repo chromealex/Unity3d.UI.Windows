@@ -8,7 +8,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Colored Sprites")]
 		public Image[] images;
 
-		private Color color;
+		private Color color = new Color(1f, 1f, 1f, 1f);
 		
 		public virtual void SetColor(Color color) {
 			

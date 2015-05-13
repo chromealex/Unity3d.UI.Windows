@@ -14,12 +14,19 @@ public class BitMaskAttribute : PropertyAttribute
 }
 
 #if UNITY_EDITOR
-public static class EditorExtension
-{
-	public static int DrawBitMaskField (Rect aPosition, int aMask, System.Type aType, GUIContent aLabel)
-	{
+public static class EditorExtension {
+
+	public static int DrawBitMaskField(Rect aPosition, int aMask, System.Type aType, GUIContent aLabel) {
+
 		var itemNames = System.Enum.GetNames(aType);
-		var itemValues = System.Enum.GetValues(aType) as byte[];
+		var itemValues = System.Enum.GetValues(aType) as int[];
+		if (itemValues == null) {
+
+			var bytes = System.Enum.GetValues(aType) as byte[];
+			itemValues = new int[bytes.Length];
+			for (int i = 0; i < itemValues.Length; ++i) itemValues[i] = (int)bytes[i];
+
+		}
 
 		if (itemValues == null) return 0;
 

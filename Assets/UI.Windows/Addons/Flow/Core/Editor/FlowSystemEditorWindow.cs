@@ -647,7 +647,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				CustomGUI.Splitter();
 
 				#region ROOT WINDOW
-				Flow.DrawModuleSettingsGUI("Root Window", () => {
+				Flow.DrawModuleSettingsGUI(null, "Root Window", () => {
 
 					var rootWindow = FlowSystem.GetWindow(FlowSystem.GetRootWindow());
 					if (rootWindow != null) {
@@ -669,7 +669,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				#endregion
 				
 				#region DEFAULT WINDOWS
-				Flow.DrawModuleSettingsGUI("Default Windows", () => {
+				Flow.DrawModuleSettingsGUI(null, "Default Windows", () => {
 
 					if (this.defaultWindows == null) {
 						
@@ -692,7 +692,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				#endregion
 				
 				#region TAGS
-				Flow.DrawModuleSettingsGUI("Tags", () => {
+				Flow.DrawModuleSettingsGUI(null, "Tags", () => {
 
 					if (this.tagsList == null) {
 						
@@ -787,7 +787,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				#endregion
 				
 				#region FLOW
-				Flow.DrawModuleSettingsGUI("Flow Settings", () => {
+				Flow.DrawModuleSettingsGUI(null, "Flow Settings", () => {
 
 					var flowWindowWithLayout = GUILayout.Toggle(FlowSystem.GetData().flowWindowWithLayout, "Window With Layout");
 					if (flowWindowWithLayout != FlowSystem.GetData().flowWindowWithLayout) {

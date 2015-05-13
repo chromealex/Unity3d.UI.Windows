@@ -30,7 +30,19 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		public override void OnFlowSettingsGUI() {
 
-			GUILayout.Label("Module Installed");
+			GUILayout.Label(FlowAddon.MODULE_INSTALLED);
+
+			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+			{
+
+				if (GUILayout.Button("Open Preview") == true) {
+
+					DevicePreview.ShowEditor();
+
+				}
+
+			}
+			EditorGUILayout.EndVertical();
 
 		}
 
