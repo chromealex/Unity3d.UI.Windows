@@ -74,6 +74,9 @@ namespace UnityEngine.UI.Windows.Components {
 		private Transform currentParent;
 		private int currentParentIndex;
 
+		private ComponentEvent callback = new ComponentEvent();
+		private ComponentEvent<ButtonComponent> callbackButton = new ComponentEvent<ButtonComponent>();
+
 		public override void OnInit() {
 
 			base.OnInit();
@@ -106,8 +109,11 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public override void OnDeinit() {
-
+			
 			base.OnDeinit();
+
+			this.callback.RemoveAllListeners();
+			this.callbackButton.RemoveAllListeners();
 
 			WindowSystemInput.onPointerDown.RemoveListener(this.OnPressDown);
 
@@ -194,6 +200,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public virtual void SetCallback(UnityAction callback) {
+
+			this.callback.AddListenerDistinct(callback);
+			this.callbackButton.RemoveAllListeners();
+
+		}
+
+		public virtual void SetCallback(UnityAction<ButtonComponent> callback) {
+
+			this.callbackButton.AddListenerDistinct(callback);
+			this.callback.RemoveAllListeners();
+
+		}
+
 		public T AddItem<T>() where T : ITextComponent {
 
 			return this.items.AddItem<T>();
@@ -240,7 +260,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private int selectedIndex = -1;
 		public void Select(int index, bool closePopup = true) {
-
+			
 			ISelectable prevText = null;
 			if (this.selectedIndex >= 0) prevText = this.items.GetItem<ISelectable>(this.selectedIndex);
 			var text = this.items.GetItem<ITextComponent>(index);
@@ -266,6 +286,9 @@ namespace UnityEngine.UI.Windows.Components {
 				this.SetState(opened: false, immediately: false);
 
 			}
+
+			if (this.callback != null) this.callback.Invoke();
+			if (this.callbackButton != null) this.callbackButton.Invoke(this.GetItem<ITextComponent>(index) as ButtonComponent);
 
 		}
 

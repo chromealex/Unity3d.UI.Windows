@@ -310,9 +310,9 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				
 				EditorGUILayout.HelpBox("All tags included by default.", MessageType.Info);
 
-			}
+				this.DrawSaveToDefaultToggle();
 
-			//this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
+			}
 
 			this.DrawBottom();
 
@@ -337,11 +337,9 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			CustomGUI.Splitter();
 			
 			this.forceRecompile = GUILayout.Toggle(this.forceRecompile, "Force to recompile all");
-			EditorGUILayout.HelpBox("By default all not compiled windows will be compiled. If you want to recompile all *ScreenBase windows - turn on this flag. Your *Screen code will not be changed in any case.", MessageType.Info);
-			
-			CustomGUI.Splitter();
+			EditorGUILayout.HelpBox("By default all not compiled windows will be compiled. If you want to recompile all ScreenBase* windows - turn on this flag. Your Screen* code will not be changed in any case.", MessageType.Info);
 
-			this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
+			this.DrawSaveToDefaultToggle();
 			#endif
 
 			this.DrawBottom();
@@ -351,6 +349,14 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			#else
 			this.readyToNext = true;
 			#endif
+
+		}
+
+		private void DrawSaveToDefaultToggle() {
+
+			CustomGUI.Splitter();
+
+			this.saveDefaultSettings = GUILayout.Toggle(this.saveDefaultSettings, "Save as default compiler module settings");
 
 		}
 

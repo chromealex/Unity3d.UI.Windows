@@ -233,8 +233,6 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			folder = folder.Trim('/');
 			root = root.Trim('/');
 
-			Debug.Log(root + " :: " + folder);
-
 			var path = Path.Combine(root, folder);
 			path = path.Replace("//", "/");
 
