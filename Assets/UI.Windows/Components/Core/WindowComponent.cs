@@ -86,6 +86,9 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 
+				subComponent.Setup(this.GetWindow());
+				subComponent.Setup(this.GetLayoutRoot());
+
 			}
 
 			if (this.subComponents.Contains(subComponent) == false) this.subComponents.Add(subComponent);

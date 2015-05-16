@@ -179,8 +179,24 @@ namespace UnityEngine.Extensions {
 				obj.gameObject.SetActive(false);
 			} else {
 
+				#if UNITY_EDITOR
+
+				if (Application.isPlaying == false) {
+
+					Object.DestroyImmediate(obj.gameObject);
+
+				} else {
+
+					Object.Destroy(obj.gameObject);
+
+				}
+
+				#else
+
 				Object.Destroy(obj.gameObject);
-				
+
+				#endif
+
 			}
 		}
 

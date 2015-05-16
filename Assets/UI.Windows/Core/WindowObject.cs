@@ -13,13 +13,19 @@ namespace UnityEngine.UI.Windows {
 			this.window = window;
 
 		}
-		
+
 		public WindowBase GetWindow() {
-			
+
 			return this.window;
-			
+
 		}
-		
+
+		public T GetWindow<T>() where T : WindowBase {
+
+			return this.window as T;
+
+		}
+
 		public void HideCurrentWindow() {
 			
 			this.GetWindow().Hide();

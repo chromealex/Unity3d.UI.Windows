@@ -205,7 +205,7 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="callback">Callback.</param>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
 		private void OnHideBegin_INTERNAL(System.Action callback, bool immediately) {
-
+			
 			var go = this.gameObject;
 
 			System.Action callbackInner = () => {

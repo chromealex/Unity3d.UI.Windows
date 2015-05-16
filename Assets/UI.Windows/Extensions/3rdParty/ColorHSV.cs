@@ -134,13 +134,19 @@ namespace UnityEngine.UI.Windows.Extensions {
 			ColorHSV col = new ColorHSV(h,s,v);
 			return col.ToColor();
 		}
-		
+
 		public static Color GetDistinctColor() {
-			
+
 			return ColorHSV.GetRandomColor(Random.Range(0.0f, 360f), 1, 1);
-			
+
 		}
-		
+
+		public static Color GetDistinctColor(int value, int min, int max) {
+
+			return ColorHSV.GetRandomColor(((value - min) / (float)max) * 360f, 1, 1);
+
+		}
+
 	}
 
 }
