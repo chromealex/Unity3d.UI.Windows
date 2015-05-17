@@ -44,16 +44,51 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		private const int STATES_COUNT = 3;
 
+		public enum Flags : int {
+
+			Default = 0x0,
+
+			IsContainer = 0x1,
+			IsSmall = 0x2,
+			
+			CantCompiled = 0x4,
+			
+			ShowDefault = 0x8,
+			Reserved1 = 0x10,
+			Reserved2 = 0x20,
+			Reserved3 = 0x40,
+			Reserved4 = 0x80,
+			
+			Tag1 = 0x100,
+			Tag2 = 0x200,
+			Tag3 = 0x400,
+			Tag4 = 0x800,
+			Tag5 = 0x1000,
+			Tag6 = 0x2000,
+			Tag7 = 0x4000,
+			Tag8 = 0x8000,
+			Tag9 = 0x10000,
+			Tag10 = 0x20000,
+			Tag11 = 0x40000,
+			Tag12 = 0x80000,
+
+		};
+
 		public int id;
+		[BitMask(typeof(Flags))]
+		public Flags flags;
 		public string title = string.Empty;
 		public string directory = string.Empty;
 		public Rect rect;
 		public List<int> attaches;
 		public List<ComponentLink> attachedComponents;
-		public bool isContainer = false;
-		public bool isDefaultLink = false;
 		public Color randomColor;
-		
+
+		[System.Obsolete("Bool isContainer does not exists anymore. Use Flags.IsContainer instead.")]
+		public bool isContainer = false;
+		[System.Obsolete("Bool isDefaultLink does not exists anymore. Use Flags.IsSmall | Flags.NotCompiled | Flags.ShowDefault instead.")]
+		public bool isDefaultLink = false;
+
 		public List<int> tags = new List<int>();
 
 		public bool compiled = false;
@@ -62,25 +97,107 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public string compiledScreenName = string.Empty;
 		public string compiledBaseClassName = string.Empty;
 		public string compiledDerivedClassName = string.Empty;
+		
+		public string smallStyleDefault = "flow node 4";
+		public string smallStyleSelected = "flow node 4 on";
 
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 
 		public WindowBase screen;
 
-		public FlowWindow(int id, bool isContainer = false, bool isDefaultLink = false) {
+		public FlowWindow(int id, bool isContainer = false, bool isDefaultLink = false, FlowWindow.Flags flags = Flags.Default) {
+			
+			if (isContainer == true) {
+				
+				flags |= Flags.IsContainer;
+				
+			}
+			
+			if (isDefaultLink == true) {
+				
+				flags |= Flags.IsSmall;
+				flags |= Flags.CantCompiled;
+				flags |= Flags.ShowDefault;
+				
+			}
 
+			this.Init(id, flags);
+
+		}
+		
+		public FlowWindow(int id, FlowWindow.Flags flags) {
+
+			this.Init(id, flags: flags);
+
+		}
+		
+		public bool IsContainer() {
+
+			// For old version compability only
+			#pragma warning disable 618
+			if (this.isContainer == true) this.flags |= Flags.IsContainer;
+			#pragma warning restore 618
+
+			return (this.flags & Flags.IsContainer) != 0;
+			
+		}
+
+		public bool IsSmall() {
+			
+			// For old version compability only
+			#pragma warning disable 618
+			if (this.isDefaultLink == true) {
+
+				this.flags |= Flags.IsSmall;
+				this.flags |= Flags.CantCompiled;
+				this.flags |= Flags.ShowDefault;
+				
+			}
+			#pragma warning restore 618
+
+			return (this.flags & Flags.IsSmall) != 0;
+			
+		}
+
+		public bool IsShowDefault() {
+			
+			// For old version compability only
+			#pragma warning disable 618
+			if (this.isDefaultLink == true) {
+				
+				this.flags |= Flags.IsSmall;
+				this.flags |= Flags.CantCompiled;
+				this.flags |= Flags.ShowDefault;
+				
+			}
+			#pragma warning restore 618
+
+			return (this.flags & Flags.ShowDefault) != 0;
+
+		}
+		
+		public bool CanCompiled() {
+			
+			return (this.flags & Flags.CantCompiled) == 0;
+			
+		}
+
+		public void Init(int id, FlowWindow.Flags flags = Flags.Default) {
+			
 			this.states = new CompletedState[STATES_COUNT];
 			this.tags = new List<int>();
-
+			
 			this.id = id;
+			this.flags = flags;
 			this.attaches = new List<int>();
 			this.attachedComponents = new List<ComponentLink>();
 			this.rect = new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 200f, 200f);
-			this.isContainer = isContainer;
-			this.isDefaultLink = isDefaultLink;
-			this.title = (this.isContainer == true ? "Container" : "Window " + this.id.ToString());
-			this.directory = (this.isContainer == true ? "ContainerDirectory" : "Window" + this.id.ToString() + "Directory");
+			this.title = (this.IsContainer() == true ? "Container" : "Window " + this.id.ToString());
+			this.directory = (this.IsContainer() == true ? "ContainerDirectory" : "Window" + this.id.ToString() + "Directory");
 			this.randomColor = ColorHSV.GetDistinctColor();
+			
+			this.smallStyleDefault = "flow node 4";
+			this.smallStyleSelected = "flow node 4 on";
 
 			this.compiled = false;
 
@@ -183,7 +300,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				var pattern = string.Empty;
 				var directory = this.directory;
-				if (this.isContainer == false) {
+				if (this.IsContainer() == false) {
 
 					pattern = @"^([A-Z]+[a-zA-Z0-9]*)$";
 
@@ -202,31 +319,34 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public GUIStyle GetEditorStyle(bool selected) {
 
-			if (this.isDefaultLink == true) {
+			if (this.IsSmall() == true) {
 
 				// Yellow
+				
+				if (string.IsNullOrEmpty(this.smallStyleDefault) == true) this.smallStyleDefault = "flow node 4";
+				if (string.IsNullOrEmpty(this.smallStyleSelected) == true) this.smallStyleSelected = "flow node 4 on";
 
-				var defaultLinkStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.NotSelected", "flow node 4", (styleName) => {
+				var defaultLinkStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.NotSelected", this.smallStyleDefault, (styleName) => {
 					
 					var _style = new GUIStyle(styleName);
 					_style.padding = new RectOffset(0, 0, 14, 1);
 					_style.contentOffset = new Vector2(0f, -15f);
 					_style.fontStyle = FontStyle.Bold;
-					_style.alignment = TextAnchor.MiddleCenter;
-					_style.normal.textColor = Color.white;
+					_style.alignment = TextAnchor.UpperCenter;
+					_style.normal.textColor = Color.black;
 
 					return _style;
 
 				});
 
-				var defaultLinkStyleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.Selected", "flow node 4 on", (styleName) => {
+				var defaultLinkStyleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.Selected", this.smallStyleSelected, (styleName) => {
 					
 					var _style = new GUIStyle(styleName);
 					_style.padding = new RectOffset(0, 0, 14, 1);
 					_style.contentOffset = new Vector2(0f, -15f);
 					_style.fontStyle = FontStyle.Bold;
-					_style.alignment = TextAnchor.MiddleCenter;
-					_style.normal.textColor = Color.white;
+					_style.alignment = TextAnchor.UpperCenter;
+					_style.normal.textColor = Color.black;
 					
 					return _style;
 					
@@ -234,7 +354,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				return selected ? defaultLinkStyleSelected : defaultLinkStyle;
 
-			} else if (this.isContainer == true) {
+			} else if (this.IsContainer() == true) {
 
 				var styleNormal = string.Empty;
 				//var styleSelected = string.Empty;
@@ -351,19 +471,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		
 		public FlowWindow GetContainer() {
 			
-			return ME.Utilities.CacheByFrame("FlowWindow." + this.id.ToString() + ".GetContainer", () => FlowSystem.GetWindow(this.attaches.FirstOrDefault((id) => FlowSystem.GetWindow(id).isContainer)));
+			return ME.Utilities.CacheByFrame("FlowWindow." + this.id.ToString() + ".GetContainer", () => FlowSystem.GetWindow(this.attaches.FirstOrDefault((id) => FlowSystem.GetWindow(id).IsContainer())));
 			
 		}
 		
 		public bool HasContainer() {
 			
-			return this.attaches.Any((id) => FlowSystem.GetWindow(id).isContainer);
+			return this.attaches.Any((id) => FlowSystem.GetWindow(id).IsContainer());
 			
 		}
 		
 		public bool HasContainer(FlowWindow predicate) {
 			
-			return this.attaches.Any((id) => id == predicate.id && FlowSystem.GetWindow(id).isContainer);
+			return this.attaches.Any((id) => id == predicate.id && FlowSystem.GetWindow(id).IsContainer());
 			
 		}
 
@@ -373,7 +493,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			foreach (var attachId in this.attaches) {
 				
 				var window = FlowSystem.GetWindow(attachId);
-				if (window.isContainer == true) continue;
+				if (window.IsContainer() == true) continue;
 				
 				output.Add(window);
 				

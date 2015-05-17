@@ -330,6 +330,8 @@ namespace UnityEngine.Extensions {
 					var sourceRect = source as RectTransform;
 					
 					instanceRect.anchoredPosition3D = sourceRect.anchoredPosition3D;
+					instanceRect.anchorMin = sourceRect.anchorMin;
+					instanceRect.anchorMax = sourceRect.anchorMax;
 					instanceRect.sizeDelta = sourceRect.sizeDelta;
 
 				}

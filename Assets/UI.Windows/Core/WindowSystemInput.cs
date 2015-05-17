@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Components.Events;
+using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows {
 
 	public class WindowSystemInput : MonoBehaviour {
-		
+
 		public static ComponentEvent onPointerUp = new ComponentEvent();
 		public static ComponentEvent onPointerDown = new ComponentEvent();
-		public static ComponentEvent onPointerClick = new ComponentEvent();
 		
 		public void LateUpdate() {
 			
@@ -23,6 +23,11 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public static Vector2 GetPointerPosition() {
+
+			return Input.mousePosition;
+
+		}
 
 	}
 

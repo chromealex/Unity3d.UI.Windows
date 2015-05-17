@@ -7,10 +7,19 @@ using ME;
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
 	public interface IWindowFlowAddon : IWindowAddon {
-
+		
+		FlowSystemEditorWindow flowEditor { get; set; }
+		
 		void OnFlowWindowGUI(FlowWindow window);
+		void OnFlowWindowLayoutGUI(Rect rect, FlowWindow window);
 		void OnFlowSettingsGUI();
 		void OnFlowToolbarGUI(GUIStyle toolbarButton);
+		void OnFlowCreateMenuGUI(GenericMenu menu);
+		void OnFlowToolsMenuGUI(GenericMenu menu);
+		
+		string OnCompilerTransitionGeneration(FlowWindow window);
+		string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName);
+		bool IsCompilerTransitionAttachedGeneration(FlowWindow window);
 
 		void Install();
 		bool InstallationNeeded();
@@ -23,12 +32,21 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public const string MODULE_HAS_ERRORS = "{0} Please, try to re-open Unity and/or reinstall the module.";
 
 		public string name;
-		
+
+		public FlowSystemEditorWindow flowEditor { get; set; }
+
 		public virtual void Show(System.Action onClose) {}
 		public virtual void OnFlowSettingsGUI() {}
 		public virtual void OnFlowWindowGUI(FlowWindow window) {}
+		public virtual void OnFlowWindowLayoutGUI(Rect rect, FlowWindow window) {}
 		public virtual void OnFlowToolbarGUI(GUIStyle buttonStyle) {}
+		public virtual void OnFlowCreateMenuGUI(GenericMenu menu) {}
+		public virtual void OnFlowToolsMenuGUI(GenericMenu menu) {}
 		
+		public virtual string OnCompilerTransitionGeneration(FlowWindow window) { return string.Empty; }
+		public virtual string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) { return string.Empty; }
+		public virtual bool IsCompilerTransitionAttachedGeneration(FlowWindow window) { return false; }
+
 		public virtual void Install() {}
 		public virtual void Reinstall() {}
 		public virtual bool InstallationNeeded() { return false; }
@@ -101,20 +119,32 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 		
-		public static void OnDrawWindowGUI(FlowWindow window) {
+		public static void OnDrawWindowGUI(FlowSystemEditorWindow flowEditor, FlowWindow window) {
 			
-			var flowAddons = WindowUtilities.GetAddons<IWindowFlowAddon>();
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
 			foreach (var addon in flowAddons) {
 				
+				addon.flowEditor = flowEditor;
 				addon.OnFlowWindowGUI(window);
 				
 			}
 			
 		}
 		
-		public static void OnDrawSettingsGUI() {
+		public static void OnDrawWindowLayoutGUI(Rect rect, FlowWindow window) {
 			
-			var flowAddons = WindowUtilities.GetAddons<FlowAddon>((name, item) => item.name = name);
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+
+				addon.OnFlowWindowLayoutGUI(rect, window);
+				
+			}
+			
+		}
+
+		public static void OnDrawSettingsGUI(FlowSystemEditorWindow flowEditor) {
+			
+			var flowAddons = CoreUtilities.GetAddons<FlowAddon>((name, item) => item.name = name);
 			if (flowAddons.Count == 0) {
 
 				GUILayout.Label("No Modules Have Been Installed.");
@@ -122,7 +152,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			} else {
 
 				foreach (var addon in flowAddons) {
-
+					
+					addon.flowEditor = flowEditor;
 					Flow.DrawModuleSettingsGUI(addon, addon.name, () => { addon.OnFlowSettingsGUI(); });
 
 				}
@@ -148,15 +179,81 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.EndHorizontal();
 
 		}
-		
-		public static void OnDrawToolbarGUI(GUIStyle buttonStyle) {
+
+		public static void OnDrawToolbarGUI(FlowSystemEditorWindow flowEditor, GUIStyle buttonStyle) {
 			
-			var flowAddons = WindowUtilities.GetAddons<IWindowFlowAddon>();
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
 			foreach (var addon in flowAddons) {
 				
+				addon.flowEditor = flowEditor;
 				addon.OnFlowToolbarGUI(buttonStyle);
 				
 			}
+			
+		}
+		
+		public static void OnDrawCreateMenuGUI(FlowSystemEditorWindow flowEditor, GenericMenu menu) {
+			
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				addon.OnFlowCreateMenuGUI(menu);
+				
+			}
+			
+		}
+		
+		public static void OnDrawToolsMenuGUI(FlowSystemEditorWindow flowEditor, GenericMenu menu) {
+			
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				addon.OnFlowToolsMenuGUI(menu);
+				
+			}
+			
+		}
+
+		public static string OnCompilerTransitionGeneration(FlowWindow window) {
+			
+			var result = string.Empty;
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				result += addon.OnCompilerTransitionGeneration(window);
+				
+			}
+			
+			return result;
+			
+		}
+		
+		public static bool IsCompilerTransitionAttachedGeneration(FlowWindow window) {
+
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+
+				if (addon.IsCompilerTransitionAttachedGeneration(window) == true) return true;
+
+			}
+
+			return false;
+			
+		}
+
+		public static string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) {
+			
+			var result = string.Empty;
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				result += addon.OnCompilerTransitionAttachedGeneration(window, everyPlatformHasUniqueName);
+				
+			}
+			
+			return result;
 			
 		}
 

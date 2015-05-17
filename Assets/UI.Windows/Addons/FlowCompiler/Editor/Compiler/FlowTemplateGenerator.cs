@@ -83,19 +83,32 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 							.Replace( "{CLASS_NAME}", className )
 							.Replace( "{BASE_CLASS_NAME}", baseClassName );
 		}
-
+		
 		public static string GenerateWindowLayoutTransitionMethod( string targetClassName, string targetClassNameWithNamespace ) {
-
+			
 			var file = Resources.Load( "UI.Windows/Templates/TemplateTransitionMethod" ) as TextAsset;
 			if ( file == null ) {
-
+				
 				Debug.LogError( "Template Loading Error: Could not load template 'TemplateTransitionMethod'" );
-
+				
 				return null;
 			}
-
+			
 			return file.text.Replace( "{CLASS_NAME}", targetClassName )
-							.Replace( "{CLASS_NAME_WITH_NAMESPACE}", targetClassNameWithNamespace );
+				.Replace( "{CLASS_NAME_WITH_NAMESPACE}", targetClassNameWithNamespace );
+		}
+		
+		public static string GenerateWindowLayoutTransitionMethodDefault() {
+			
+			var file = Resources.Load( "UI.Windows/Templates/TemplateDefaultTransitionMethod" ) as TextAsset;
+			if ( file == null ) {
+				
+				Debug.LogError( "Template Loading Error: Could not load template 'TemplateDefaultTransitionMethod'" );
+				
+				return null;
+			}
+			
+			return file.text;
 		}
 	}
 

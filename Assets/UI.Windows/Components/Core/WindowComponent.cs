@@ -1,11 +1,18 @@
-﻿using UnityEngine;
+﻿#define FLOW_PLUGIN_HEATMAP
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
-	public class WindowComponent : WindowComponentBase, IComponent {
+	public class WindowComponent : 
+			#if FLOW_PLUGIN_HEATMAP
+			UnityEngine.UI.Windows.Plugins.Heatmap.Components.HeatmapWindowComponent
+			#else
+			WindowComponentBase
+			#endif
+			, IComponent {
 
 		[Header("Sub Components")]
 		public bool autoRegisterSubComponents = true;

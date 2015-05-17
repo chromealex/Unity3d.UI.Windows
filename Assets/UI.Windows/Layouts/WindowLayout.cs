@@ -72,6 +72,99 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public Vector2 GetSize() {
+
+			this.ValidateCanvasScaler();
+
+			var scaleFactor = 1f;
+			var width = Screen.width;
+			var height = Screen.height;
+
+			if (this.canvasScaler != null) {
+				
+				//scaleFactor = this.canvasScaler.scaleFactor;
+
+				if (this.canvasScaler.uiScaleMode == CanvasScaler.ScaleMode.ConstantPixelSize) {
+
+					scaleFactor = this.GetConstantPixelSize();
+
+				} else if (this.canvasScaler.uiScaleMode == CanvasScaler.ScaleMode.ConstantPhysicalSize) {
+					
+					scaleFactor = this.GetConstantPhysicalSize();
+
+				} else if (this.canvasScaler.uiScaleMode == CanvasScaler.ScaleMode.ScaleWithScreenSize) {
+					
+					scaleFactor = this.GetScaleWithScreenSize();
+
+				}
+
+			}
+
+			return new Vector2(width * scaleFactor, height * scaleFactor);
+
+		}
+
+		#region GET SIZE
+		protected float GetConstantPhysicalSize() {
+
+			float dpi = Screen.dpi;
+			float num = (dpi != 0f) ? dpi : this.canvasScaler.fallbackScreenDPI;
+			float num2 = 1f;
+			switch (this.canvasScaler.physicalUnit) {
+				case CanvasScaler.Unit.Centimeters:
+					num2 = 2.54f;
+					break;
+				case CanvasScaler.Unit.Millimeters:
+					num2 = 25.4f;
+					break;
+				case CanvasScaler.Unit.Inches:
+					num2 = 1f;
+					break;
+				case CanvasScaler.Unit.Points:
+					num2 = 72f;
+					break;
+				case CanvasScaler.Unit.Picas:
+					num2 = 6f;
+					break;
+			}
+			var scaleFactor = num / num2;
+
+			return scaleFactor;
+
+		}
+		
+		protected float GetConstantPixelSize() {
+			
+			return this.canvasScaler.scaleFactor;
+
+		}
+		
+		protected float GetScaleWithScreenSize() {
+
+			Vector2 vector = new Vector2(Screen.width, Screen.height);
+			float scaleFactor = 0f;
+			switch (this.canvasScaler.screenMatchMode) {
+				case CanvasScaler.ScreenMatchMode.MatchWidthOrHeight:
+					{
+						float num = Mathf.Log (vector.x / this.canvasScaler.referenceResolution.x, 2f);
+						float num2 = Mathf.Log (vector.y / this.canvasScaler.referenceResolution.y, 2f);
+						float num3 = Mathf.Lerp (num, num2, this.canvasScaler.matchWidthOrHeight);
+						scaleFactor = Mathf.Pow (2f, num3);
+						break;
+					}
+				case CanvasScaler.ScreenMatchMode.Expand:
+					scaleFactor = Mathf.Min (vector.x / this.canvasScaler.referenceResolution.x, vector.y / this.canvasScaler.referenceResolution.y);
+					break;
+				case CanvasScaler.ScreenMatchMode.Shrink:
+					scaleFactor = Mathf.Max (vector.x / this.canvasScaler.referenceResolution.x, vector.y / this.canvasScaler.referenceResolution.y);
+					break;
+			}
+
+			return scaleFactor;
+
+		}
+		#endregion
+
 		public bool ValidateCanvasScaler() {
 
 			var changed = false;
@@ -199,4 +292,3 @@ namespace UnityEngine.UI.Windows {
 	}
 
 }
-

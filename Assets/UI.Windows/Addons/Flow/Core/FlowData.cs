@@ -70,7 +70,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var list = new List<WindowBase>();
 			foreach (var window in this.windows) {
 
-				if (window.isDefaultLink == true) continue;
+				if (window.IsSmall() == true) continue;
 
 				if (predicate != null && predicate(window) == false) continue;
 
@@ -197,7 +197,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			this.selected.Clear();
 			foreach (var window in this.windows) {
 				
-				if (window.isContainer == false && ids.Contains(window.id) == true) {
+				if (window.IsContainer() == false && ids.Contains(window.id) == true) {
 					
 					this.selected.Add(window.id);
 					
@@ -214,7 +214,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			this.selected.Clear();
 			foreach (var window in this.windows) {
 
-				if (window.isContainer == false && rect.Overlaps(window.rect, true) == true && (predicate == null || predicate(window) == true)) {
+				if (window.IsContainer() == false && rect.Overlaps(window.rect, true) == true && (predicate == null || predicate(window) == true)) {
 
 					this.selected.Add(window.id);
 
@@ -285,12 +285,29 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		#endif
+		
+		public FlowWindow CreateWindow(FlowWindow.Flags flags) {
+			
+			var newId = this.AllocateId();
+			var window = new FlowWindow(newId, flags);
+			
+			this.windows.Add(window);
+			
+			this.isDirty = true;
+			
+			return window;
+
+		}
 
 		public FlowWindow CreateDefaultLink() {
 			
 			var newId = this.AllocateId();
 			var window = new FlowWindow(newId, isDefaultLink: true);
+			window.title = "Default Link";
 			
+			window.rect.width = 150f;
+			window.rect.height = 30f;
+
 			this.windows.Add(window);
 			
 			this.isDirty = true;
@@ -299,19 +316,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public FlowWindow CreateWindow() {
-			
-			var newId = this.AllocateId();
-			var window = new FlowWindow(newId, isContainer: false);
-			
-			this.windows.Add(window);
-			
-			this.isDirty = true;
-			
-			return window;
-			
-		}
-		
 		public FlowWindow CreateContainer() {
 			
 			var newId = this.AllocateId();
@@ -324,17 +328,48 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return window;
 			
 		}
+		
+		public FlowWindow CreateWindow() {
+			
+			var newId = this.AllocateId();
+			var window = new FlowWindow(newId, isContainer: false);
+			
+			this.windows.Add(window);
+			
+			this.isDirty = true;
+			
+			return window;
+			
+		}
 
 		public IEnumerable<FlowWindow> GetWindows() {
 			
-			return this.windows.Where((w) => w.isContainer == false && w.IsEnabled());
+			return this.windows.Where((w) => w.IsContainer() == false && w.IsEnabled());
 			
 		}
 		
 		public IEnumerable<FlowWindow> GetContainers() {
 			
-			return this.windows.Where((w) => w.isContainer == true && w.IsEnabled());
+			return this.windows.Where((w) => w.IsContainer() == true && w.IsEnabled());
 			
+		}
+		
+		public FlowWindow GetWindow(WindowBase window) {
+
+			if (window == null) return null;
+
+			return this.windows.FirstOrDefault((w) => {
+
+				if (w.screen != null) {
+
+					return w.screen.SourceEquals(window);
+
+				}
+
+				return window.SourceEquals(w.screen);
+
+			});
+
 		}
 
 		public FlowWindow GetWindow(int id) {

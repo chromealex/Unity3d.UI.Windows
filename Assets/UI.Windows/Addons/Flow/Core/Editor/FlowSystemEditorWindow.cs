@@ -158,7 +158,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			WindowUtilities.LoadAddons();
+			CoreUtilities.LoadAddons();
 
 			//var draw = !FlowSceneView.IsActive();
 
@@ -221,7 +221,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						var attaches = window.attaches;
 						foreach (var attachId in attaches) {
 							
-							if (FlowSystem.GetWindow(attachId).isContainer == true) continue;
+							if (FlowSystem.GetWindow(attachId).IsContainer() == true) continue;
 							
 							var doubleSided = FlowSystem.AlreadyAttached(attachId, window.id);
 							if (this.tempAttaches.Contains(attachId) == true && doubleSided == true) continue;
@@ -330,12 +330,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					foreach (var window in windows) {
 
 						var title = string.Empty;
-						if (window.isDefaultLink == true) {
+						if (window.IsSmall() == true) {
 
-							window.rect.width = 150f;
-							window.rect.height = 30f;
-
-							title = "Default Link";
+							title = window.title;
 
 						} else {
 
@@ -399,7 +396,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					var defaultColor = GUI.color;
 					//var selectedColor = new Color(0.8f, 0.8f, 1f, 1f);
 
-					if (selectionMain >= 0 && FlowSystem.GetWindow(selectionMain).isContainer == true) FlowSystem.ResetSelection();
+					if (selectionMain >= 0 && FlowSystem.GetWindow(selectionMain).IsContainer() == true) FlowSystem.ResetSelection();
 
 					GUI.color = defaultColor;
 
@@ -492,6 +489,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						WindowLayoutElement.waitForComponentConnectionTemp = false;
 
 					}
+					
+					UnityEditor.UI.Windows.Plugins.Flow.Flow.OnDrawWindowLayoutGUI(rect, window);
 
 				}
 
@@ -838,7 +837,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				GUILayout.Label("Installed Modules:", EditorStyles.whiteLargeLabel);
 				CustomGUI.Splitter();
 
-				Flow.OnDrawSettingsGUI();
+				Flow.OnDrawSettingsGUI(this);
 
 				GUILayout.EndScrollView();
 
@@ -1055,11 +1054,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			minMax.yMin -= backOffset;
 			minMax.xMax += backOffset;
 			minMax.yMax += backOffset;
+			
+			var nullOffset = FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero);
+			var offset = new Vector2(Screen.width * 0.5f - SETTINGS_WIDTH * 0.5f - nullOffset.width * 0.5f, 0f);
+
+			var backRect = FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset);
 
 			var color = Color.black;
 			color.a = backAlpha;
 			GUI.color = color;
-			GUI.Box(FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
+			GUI.Box(backRect, string.Empty, elementStyle);
 
 			if (containers != null) {
 				
@@ -1068,7 +1072,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					color = container.randomColor;
 					color.a = elementAlpha;
 					GUI.color = color;
-					GUI.Box(FlowSystemEditor.Scale(container.rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
+					GUI.Box(FlowSystemEditor.Scale(container.rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset), string.Empty, elementStyle);
 					
 				}
 				
@@ -1084,7 +1088,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					var rect = window.rect;
 					if (rect.height < 60f) rect.height = 60f;
-					GUI.Box(FlowSystemEditor.Scale(rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
+					GUI.Box(FlowSystemEditor.Scale(rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset), string.Empty, elementStyle);
 					
 				}
 				
@@ -1095,7 +1099,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.color = color;
 
 			var scrollPos = FlowSystem.GetScrollPosition();
-			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width, this.scrollRect.height), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero), string.Empty, elementStyle);
+			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width, this.scrollRect.height), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset), string.Empty, elementStyle);
 			
 			GUI.color = oldColor;
 
@@ -1321,7 +1325,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private void CreateNewItem(System.Func<FlowWindow> predicate) {
+		public void CreateNewItem(System.Func<FlowWindow> predicate) {
 			
 			var scrollPos = FlowSystem.GetScrollPosition();
 			
@@ -1345,36 +1349,61 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private void DrawToolbar(GUIStyle buttonStyle) {
+			
+			var result = GUILayout.Button("Create", buttonStyle);
+			var rect = GUILayoutUtility.GetLastRect();
+			
+			if (result == true) {
+				
+				var menu = new GenericMenu();
+				menu.AddItem(new GUIContent("Window"), on: false, func: () => {
+					
+					this.CreateNewItem(() => FlowSystem.CreateWindow());
+					
+				});
+				menu.AddItem(new GUIContent("Container"), on: false, func: () => {
+					
+					this.CreateNewItem(() => FlowSystem.CreateContainer());
+					
+				});
+				menu.AddItem(new GUIContent("Default Link"), on: false, func: () => {
+					
+					this.CreateNewItem(() => FlowSystem.CreateDefaultLink());
+					
+				});
 
-			if (GUILayout.Button("New Window", buttonStyle) == true) {
+				Flow.OnDrawCreateMenuGUI(this, menu);
 
-				this.CreateNewItem(() => FlowSystem.CreateWindow());
-
+				menu.DropDown(new Rect(rect.x, rect.y + TOOLBAR_HEIGHT, rect.width, rect.height));
+				
 			}
 			
-			if (GUILayout.Button("New Container", buttonStyle) == true) {
+			result = GUILayout.Button("Tools", buttonStyle);
+			rect = GUILayoutUtility.GetLastRect();
+			
+			if (result == true) {
 				
-				this.CreateNewItem(() => FlowSystem.CreateContainer());
+				var menu = new GenericMenu();
+				menu.AddItem(new GUIContent("Center Screen"), on: false, func: () => {
+					
+					FlowSystem.SetScrollPosition(Vector2.one * -1f);
 
+				});
+
+				Flow.OnDrawToolsMenuGUI(this, menu);
+
+				menu.DropDown(new Rect(rect.x, rect.y + TOOLBAR_HEIGHT, rect.width, rect.height));
+				
 			}
 			
-			if (GUILayout.Button("New Default Link", buttonStyle) == true) {
-				
-				this.CreateNewItem(() => FlowSystem.CreateDefaultLink());
-
-			}
-			   
-			if (GUILayout.Button("Center Screen", buttonStyle)) {
-				
-				FlowSystem.SetScrollPosition(Vector2.one * -1f);
-				
-			}
-
-			Flow.OnDrawToolbarGUI(buttonStyle);
+			Flow.OnDrawToolbarGUI(this, buttonStyle);
 
 			GUILayout.FlexibleSpace();
 
+			var oldColor = GUI.color;
+			GUI.color = Color.gray;
 			GUILayout.Label("Current Data: " + AssetDatabase.GetAssetPath(this.cachedData), buttonStyle);
+			GUI.color = oldColor;
 
 			if (GUILayout.Button("Change", buttonStyle) == true) {
 				
@@ -1410,13 +1439,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							var hasContainer = currentAttach.HasContainer();
 							var container = currentAttach.GetContainer();
 
-							if ((attachTo.isContainer == true && currentAttach.isContainer == true && attachTo == container) || (hasContainer == true && container.id != id)) {
+							if ((attachTo.IsContainer() == true && currentAttach.IsContainer() == true && attachTo == container) || (hasContainer == true && container.id != id)) {
 								
 								
 								
 							} else {
 
-								if (attachTo.isContainer == true && currentAttach.isContainer == true) {
+								if (attachTo.IsContainer() == true && currentAttach.IsContainer() == true) {
 
 									if (FlowSystem.AlreadyAttached(id, this.currentAttachId) == true) {
 										
@@ -1919,7 +1948,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							//var attachTo = FlowSystem.GetWindow(id);
 							//var hasContainer = currentAttach.HasContainer();
 							
-							if (currentAttach.isContainer == true) {
+							if (currentAttach.IsContainer() == true) {
 								
 								
 								
@@ -1961,7 +1990,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				} else {
 					
-					if (window.isDefaultLink == false) {
+					if (window.IsSmall() == false) {
 
 						if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
 							
@@ -1986,7 +2015,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				}
 
-				if (window.isDefaultLink == false) {
+				if (window.IsSmall() == false) {
 
 					var isRoot = (FlowSystem.GetRootWindow() == id);
 					if (GUILayout.Toggle(isRoot, new GUIContent("R", "Set as root"), buttonStyle) != isRoot) {
@@ -2030,7 +2059,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				GUILayout.FlexibleSpace();
 
-				if (window.isDefaultLink == false && FlowSceneView.IsActive() == false) {
+				if (window.IsSmall() == false && FlowSceneView.IsActive() == false) {
 
 					if (GUILayout.Button("Select", buttonStyle) == true) {
 						
@@ -2136,7 +2165,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				} else {
 
 					// If it's other window
-					if (window.isDefaultLink == false) {
+					if (window.IsSmall() == false) {
 						
 						if (FlowSystem.AlreadyAttached(this.currentAttachId, id, this.currentAttachComponent) == true) {
 							
@@ -2183,9 +2212,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			var window = FlowSystem.GetWindow(id);
 
-			if (window.isDefaultLink == true) {
+			if (window.IsSmall() == true) {
 				
 				this.DrawWindowToolbar(window);
+				Flow.OnDrawWindowGUI(this, window);
+
 				this.DragWindow(headerOnly: false);
 
 			} else {
@@ -2209,7 +2240,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				this.DrawWindowLayout(window);
 
-				Flow.OnDrawWindowGUI(window);
+				Flow.OnDrawWindowGUI(this, window);
 				
 				this.DrawTags(window);
 

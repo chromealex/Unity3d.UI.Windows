@@ -1,0 +1,11 @@
+﻿		
+		/// <summary>
+		/// Flows to the Default.
+		/// </summary>
+		/// <returns>Default</returns>
+		public virtual void FlowDefault(params object[] parameters) {
+			
+			WindowSystem.ShowDefault(parameters);
+			
+		}
+		

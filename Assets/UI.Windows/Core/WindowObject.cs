@@ -3,7 +3,15 @@ using System.Collections;
 
 namespace UnityEngine.UI.Windows {
 
-	public class WindowObject : MonoBehaviour {
+	public interface IWindowObject {
+
+		T GetWindow<T>() where T : WindowBase;
+		WindowBase GetWindow();
+		void HideCurrentWindow();
+
+	};
+
+	public class WindowObject : MonoBehaviour, IWindowObject {
 
 		[HideInInspector]
 		private WindowBase window;

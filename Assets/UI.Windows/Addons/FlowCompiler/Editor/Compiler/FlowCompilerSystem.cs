@@ -117,18 +117,47 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			var flowData = FlowSystem.GetData();
 			
-			var transitions = flowData.windows.Where(w => window.attaches.Contains(w.id) && !w.isDefaultLink && !w.isContainer);
-			
+			var transitions = flowData.windows.Where(w => window.attaches.Contains(w.id) && w.CanCompiled() && !w.IsContainer());
+
 			var result = string.Empty;
 			foreach (var each in transitions) {
 				
 				var className = each.directory;
-				var classNameWithNamespace = Tpl.GetNamespace(each) + "." + Tpl.GetDerivedClassName(each);//GetBaseClassName( each );
+				var classNameWithNamespace = Tpl.GetNamespace(each) + "." + Tpl.GetDerivedClassName(each);
 				
-				result = result + FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod(className, classNameWithNamespace);
+				result += FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod(className, classNameWithNamespace);
 
 			}
-			
+
+			// Make FlowDefault() method if exists
+			var c = 0;
+			var everyPlatformHasUniqueName = false;
+			foreach (var attachId in window.attaches) {
+				
+				var attachedWindow = FlowSystem.GetWindow(attachId);
+				var tmp = UnityEditor.UI.Windows.Plugins.Flow.Flow.IsCompilerTransitionAttachedGeneration(attachedWindow);
+				if (tmp == true) ++c;
+
+			}
+
+			everyPlatformHasUniqueName = c > 1;
+
+			foreach (var attachId in window.attaches) {
+
+				var attachedWindow = FlowSystem.GetWindow(attachId);
+				if (attachedWindow.IsShowDefault() == true) {
+
+					result += FlowTemplateGenerator.GenerateWindowLayoutTransitionMethodDefault();
+
+				}
+
+				result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(attachedWindow, everyPlatformHasUniqueName);
+
+			}
+
+			// Run addons transition logic
+			result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionGeneration(window);
+
 			return result;
 
 		}
@@ -553,7 +582,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				try {
 
-					var windows = FlowSystem.GetWindows().Where(w => !w.isDefaultLink && predicate(w));
+					var windows = FlowSystem.GetWindows().Where(w => w.CanCompiled() && predicate(w));
 
 					foreach (var each in windows) {
 

@@ -135,6 +135,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
+		public static FlowWindow GetWindow(WindowBase window) {
+			
+			if (FlowSystem.HasData() == false) return null;
+			
+			return FlowSystem.instance.data.GetWindow(window);
+
+		}
+
 		public static FlowWindow GetWindow(int id) {
 			
 			if (FlowSystem.HasData() == false) return null;
@@ -148,13 +156,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data.CreateContainer();
 			
 		}
-
+		
 		public static FlowWindow CreateWindow() {
-
+			
 			return FlowSystem.instance.data.CreateWindow();
-
+			
 		}
 		
+		public static FlowWindow CreateWindow(FlowWindow.Flags flags) {
+			
+			return FlowSystem.instance.data.CreateWindow(flags);
+			
+		}
+
 		public static FlowWindow CreateDefaultLink() {
 			
 			return FlowSystem.instance.data.CreateDefaultLink();
@@ -206,7 +220,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public static void MoveContainerOrWindow(int id, Vector2 delta) {
 			
 			var window = FlowSystem.GetWindow(id);
-			if (window.isContainer == true) {
+			if (window.IsContainer() == true) {
 				
 				var childs = window.attaches;
 				foreach (var child in childs) {
@@ -226,7 +240,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public static void ForEachContainer(int startId, System.Func<FlowWindow, string, string> each, string accumulate = "") {
 			
 			var window = FlowSystem.GetWindow(startId);
-			if (window.isContainer == true) {
+			if (window.IsContainer() == true) {
 
 				accumulate += each(window, accumulate);
 

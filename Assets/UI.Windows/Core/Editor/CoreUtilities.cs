@@ -13,7 +13,7 @@ namespace UnityEditor.UI.Windows {
 
 	}
 
-	public class WindowUtilities {
+	public class CoreUtilities {
 
 		private static Dictionary<string, bool> cacheAvailable = new Dictionary<string, bool>();
 		private static Dictionary<string, IWindowAddon> cache = new Dictionary<string, IWindowAddon>();
@@ -21,7 +21,7 @@ namespace UnityEditor.UI.Windows {
 		private static bool addonsLoaded = false;
 		public static void LoadAddons() {
 
-			if (WindowUtilities.addonsLoaded == true) return;
+			if (CoreUtilities.addonsLoaded == true) return;
 
 			cache.Clear();
 			cacheAvailable.Clear();
@@ -32,13 +32,13 @@ namespace UnityEditor.UI.Windows {
 				var addonName = item.ToString().Trim();
 				if (string.IsNullOrEmpty(addonName) == false) {
 
-					WindowUtilities.IsAddonAvailable(addonName);
+					CoreUtilities.IsAddonAvailable(addonName);
 
 				}
 
 			}
 			
-			WindowUtilities.addonsLoaded = true;
+			CoreUtilities.addonsLoaded = true;
 
 		}
 
@@ -72,7 +72,7 @@ namespace UnityEditor.UI.Windows {
 
 			}
 
-			var type = WindowUtilities.GetTypeFromAllAssemblies(addonName);
+			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName);
 			if (type != null) {
 
 				var addon = System.Activator.CreateInstance(type) as IWindowAddon;
@@ -90,11 +90,11 @@ namespace UnityEditor.UI.Windows {
 
 			if (cacheAvailable.ContainsKey(addonName) == true) return cacheAvailable[addonName];
 
-			var type = WindowUtilities.GetTypeFromAllAssemblies(addonName);
+			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName);
 			var isActive = type != null;
 
 			cacheAvailable.Add(addonName, isActive);
-			WindowUtilities.GetAddon(addonName);
+			CoreUtilities.GetAddon(addonName);
 
 			return isActive;
 

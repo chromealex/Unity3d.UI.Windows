@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
@@ -723,7 +723,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private void ShowPreview() {
 
-			var addon = WindowUtilities.GetAddon("DevicePreview");
+			var addon = CoreUtilities.GetAddon("DevicePreview");
 			if (addon != null) {
 
 				addon.Show(() => {

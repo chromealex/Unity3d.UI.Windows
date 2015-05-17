@@ -6,6 +6,16 @@ using System.Linq;
 using UnityEngine.UI.Windows.Plugins.Social.Queries;
 
 namespace UnityEngine.UI.Windows.Plugins.Social.Core {
+	
+	public static class FlowWindowSocialExt {
+		
+		public static bool IsSocial(this UnityEngine.UI.Windows.Plugins.Flow.FlowWindow window) {
+			
+			return (window.flags & UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.Flags.Tag1) != 0;
+			
+		}
+		
+	}
 
 	public class SocialSystem : MonoBehaviour {
 

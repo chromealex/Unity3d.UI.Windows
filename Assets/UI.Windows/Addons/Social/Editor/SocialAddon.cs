@@ -7,8 +7,45 @@ using UnityEngine.UI.Windows.Plugins.Social.Core;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.IO;
 using System.Collections.Generic;
+using ME;
 
-namespace UnityEditor.UI.Windows.Components.Social {
+namespace UnityEditor.UI.Windows.Plugins.Social {
+	
+	public static class FlowSocialTemplateGenerator {
+		
+		public static string GenerateTransitionMethod(ModuleSettings settings, bool everyPlatformHasUniqueName) {
+			
+			var platformName = settings.GetPlatformName();
+			var className = settings.GetPlatformClassName();
+
+			var file = Resources.Load("UI.Windows/Social/Templates/TemplateTransitionMethod") as TextAsset;
+			if (file == null) {
+				
+				Debug.LogError("Social Template Loading Error: Could not load template 'TemplateTransitionMethod'");
+				
+				return string.Empty;
+
+			}
+			
+			var result = string.Empty;
+			var multiModules = string.Empty;
+			if (everyPlatformHasUniqueName == true) multiModules = className;
+
+			var part = file.text;
+
+			var moduleName = string.Format("UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.{0}.{0}Module", className);
+
+			result +=
+				part.Replace("{MODULE_NAME}", moduleName)
+					.Replace("{CLASS_NAME}", className)
+					.Replace("{MULTI_MODULES_CLASS_NAME}", multiModules)
+					.Replace("{PLATFORM_NAME}", platformName);
+
+			return result;
+
+		}
+
+	}
 
 	public class Social : FlowAddon {
 
@@ -17,8 +54,13 @@ namespace UnityEditor.UI.Windows.Components.Social {
 		private Editor editor;
 
 		public override void OnFlowSettingsGUI() {
-
-			if (Social.settings == null) Social.settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(useCache: false).FirstOrDefault();
+			
+			if (Social.settings == null) {
+				
+				Social.settings = this.GetSettingsFile();
+				if (Social.settings == null) Social.settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(useCache: false).FirstOrDefault();
+				
+			}
 
 			var settings = Social.settings;
 			if (settings == null) {
@@ -37,6 +79,142 @@ namespace UnityEditor.UI.Windows.Components.Social {
 				}
 
 			}
+
+		}
+		
+		public override void OnFlowCreateMenuGUI(GenericMenu menu) {
+			
+			menu.AddSeparator(string.Empty);
+
+			menu.AddItem(new GUIContent("Social"), on: false, func: () => {
+
+				this.flowEditor.CreateNewItem(() => {
+
+					var window = FlowSystem.CreateWindow(FlowWindow.Flags.IsSmall | FlowWindow.Flags.CantCompiled | FlowWindow.Flags.Tag1);
+					window.smallStyleDefault = "flow node 1";
+					window.smallStyleSelected = "flow node 1 on";
+					window.title = "Social";
+					
+					window.rect.width = 150f;
+					window.rect.height = 100f;
+
+					return window;
+
+				});
+
+			});
+			
+		}
+
+		public override bool IsCompilerTransitionAttachedGeneration(FlowWindow window) {
+
+			var settings = Social.settings;
+			if (settings != null) {
+				
+				var data = settings.data.Get(window);
+				if (data != null && data.settings != null && settings.IsPlatformActive(data.settings) == true) {
+
+					return true;
+
+				}
+
+			}
+
+			return false;
+
+		}
+
+		public override string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) {
+
+			var settings = Social.settings;
+			if (settings != null) {
+
+				var data = settings.data.Get(window);
+				if (data != null && data.settings != null && settings.IsPlatformActive(data.settings) == true) {
+
+					return FlowSocialTemplateGenerator.GenerateTransitionMethod(data.settings, everyPlatformHasUniqueName);
+				
+				}
+
+			}
+
+			return base.OnCompilerTransitionGeneration(window);
+			
+		} 
+
+		public override void OnFlowWindowGUI(FlowWindow window) {
+
+			var socialFlag = (window.flags & FlowWindow.Flags.Tag1) == FlowWindow.Flags.Tag1;
+			if (socialFlag == true) {
+
+				var settings = Social.settings;
+				if (settings == null) return;
+				
+				var data = settings.data.Get(window);
+				var isActiveSelected = settings.IsPlatformActive(data.settings);
+
+				var oldColor = GUI.color;
+				GUI.color = isActiveSelected ? Color.white : Color.grey;
+				var result = GUILayoutExt.LargeButton(data.settings ? data.settings.GetPlatformName() : "None", 60f, 150f);
+				GUI.color = oldColor;
+				var rect = GUILayoutUtility.GetLastRect();
+				rect.y += rect.height;
+
+				if (result == true) {
+
+					var menu = new GenericMenu();
+					menu.AddItem(new GUIContent("None"), data.settings == null, () => {
+
+						data.settings = null;
+
+					});
+
+					foreach (var platform in settings.activePlatforms) {
+
+						if (platform.active == true) {
+
+							var item = platform.settings;
+							menu.AddItem(new GUIContent(platform.GetPlatformName()), data.settings == platform.settings, () => {
+
+								data.settings = item;
+
+							});
+							
+						} else {
+
+							menu.AddDisabledItem(new GUIContent(platform.GetPlatformName()));
+
+						}
+						
+					}
+
+					menu.DropDown(rect);
+
+				}
+
+			}
+
+		}
+
+		private SocialSettings GetSettingsFile() {
+			
+			var data = FlowSystem.GetData();
+			if (data == null) return null;
+			
+			var dataPath = AssetDatabase.GetAssetPath(data);
+			var directory = Path.GetDirectoryName(dataPath);
+			var projectName = data.name;
+			var modulesPath = Path.Combine(directory, projectName + ".Modules");
+			
+			var settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(modulesPath, useCache: true);
+			
+			if (settings != null && settings.Length > 0) {
+				
+				return settings[0];
+
+			}
+
+			return null;
 
 		}
 
@@ -72,7 +250,7 @@ namespace UnityEditor.UI.Windows.Components.Social {
 
 			}
 
-			var settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(modulesPath, useCache: false);
+			var settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(modulesPath, useCache: false).FirstOrDefault();;
 
 			return settings == null;
 

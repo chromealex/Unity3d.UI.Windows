@@ -59,7 +59,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				this.RegisterSubComponent(this.instance);
 
-				this.instance.OnInit();
+				//this.instance.OnInit();
 
 			}
 

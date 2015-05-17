@@ -1,3 +1,4 @@
+#define FLOW_PLUGIN_HEATMAP
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
@@ -20,6 +21,16 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool oldState = false;
 		private bool onStateActive = false;
 
+		public override void OnInit() {
+
+			base.OnInit();
+
+			#if FLOW_PLUGIN_HEATMAP
+			//this.button.onClick.AddListener(this.HeatmapSendComponentClick);
+			#endif
+
+		}
+
 		public override void OnDeinit() {
 
 			base.OnDeinit();
@@ -29,6 +40,10 @@ namespace UnityEngine.UI.Windows.Components {
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.callback.RemoveAllListeners();
 			this.callbackButton.RemoveAllListeners();
+
+			#if FLOW_PLUGIN_HEATMAP
+			//this.button.onClick.RemoveListener(this.HeatmapSendComponentClick);
+			#endif
 
 		}
 
@@ -154,7 +169,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.callbackButton != null) this.callbackButton.Invoke(this);
 
 		}
-		
+
 		#if UNITY_EDITOR
 		public override void OnValidateEditor() {
 

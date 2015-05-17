@@ -241,6 +241,19 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		/// <summary>
+		/// Gets the current window (Basicaly the last window in history).
+		/// </summary>
+		/// <returns>The current window.</returns>
+		public static WindowBase GetCurrentWindow() {
+
+			var last = WindowSystem.instance.history.LastOrDefault();
+			if (last == null) return null;
+
+			return last.window;
+
+		}
+
+		/// <summary>
 		/// Gets the last window in history with the `Shown` state.
 		/// </summary>
 		/// <returns>The previous window.</returns>
@@ -466,7 +479,7 @@ namespace UnityEngine.UI.Windows {
 			#endif
 
 			instance.SetParameters(parameters);
-			instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
+			instance.Init(source, WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
 
 			if (WindowSystem.instance.currentWindows.Contains(instance) == false) WindowSystem.instance.currentWindows.Add(instance);
 

@@ -13,10 +13,29 @@
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Components;
 
 namespace ExampleProject.UI.Other.MainLoader {
 
 	public class MainLoaderScreen : MainLoaderScreenBase {
+
+		private ButtonWithTextComponent button;
+
+		public override void OnInit() {
+
+			base.OnInit();
+
+			this.FlowBackground();
+
+			this.GetLayoutComponent(out this.button);
+			this.button.SetText("Open Next Screen");
+			this.button.SetCallback(() => {
+
+				//this.FlowGlobalMap();
+
+			});
+
+		}
 
 	}
 

@@ -24,6 +24,7 @@ namespace UnityEngine.UI.Windows {
 		protected override void Init() {
 
 			var flow = this.flow;
+			FlowSystem.SetData(flow);
 
 			#if UNITY_MOBILE
 			if (this.flowMobileOnly != null) flow = this.flowMobileOnly;

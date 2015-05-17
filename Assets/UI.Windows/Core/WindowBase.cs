@@ -45,6 +45,25 @@ namespace UnityEngine.UI.Windows {
 		private object[] parameters;
 
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
+		private WindowBase source;
+		
+		public bool SourceEquals(WindowBase y) {
+
+			if (y == null) return false;
+			
+			if (this.source == null) return y.source == this;
+			if (y.source == null) return y == this.source;
+
+			return this.source == y.source;
+			
+		}
+
+		internal void Init(WindowBase source, float depth, float zDepth, int raycastPriority, int orderInLayer) {
+
+			this.source = source;
+			this.Init(depth, zDepth, raycastPriority, orderInLayer);
+
+		}
 
 		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer) {
 			

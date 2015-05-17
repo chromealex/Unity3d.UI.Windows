@@ -27,6 +27,18 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			DevicePreview.ShowEditor(onClose);
 
 		}
+		
+		public override void OnFlowToolsMenuGUI(GenericMenu menu) {
+			
+			menu.AddSeparator(string.Empty);
+
+			menu.AddItem(new GUIContent("Open Device Preview"), on: false, func: () => {
+				
+				DevicePreview.ShowEditor();
+
+			});
+			
+		}
 
 		public override void OnFlowSettingsGUI() {
 

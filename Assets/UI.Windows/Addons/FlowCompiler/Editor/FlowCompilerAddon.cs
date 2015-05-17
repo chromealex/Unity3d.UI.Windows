@@ -20,6 +20,22 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		}
 
+		public override void OnFlowToolsMenuGUI(GenericMenu menu) {
+			
+			menu.AddSeparator(string.Empty);
+			
+			#if WEBPLAYER
+			menu.AddDisabledItem(new GUIContent("Compile UI..."));
+			#else
+			menu.AddItem(new GUIContent("Compile UI..."), on: false, func: () => {
+				
+				this.Show(null);
+				
+			});
+			#endif
+
+		}
+
 		public override void OnFlowSettingsGUI() {
 			
 			GUILayout.Label(FlowAddon.MODULE_INSTALLED);
@@ -57,6 +73,8 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		public override void OnFlowWindowGUI(FlowWindow window) {
 
+			if (window.CanCompiled() == false) return;
+
 			if (string.IsNullOrEmpty(window.compiledDirectory) == false) {
 				
 				window.compiled = System.IO.File.Exists(window.compiledDirectory + "/" + window.compiledBaseClassName + ".cs");
@@ -81,7 +99,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		public override void OnFlowToolbarGUI(GUIStyle buttonStyle) {
 			
-			var disabledDescr = string.Empty;
+			/*var disabledDescr = string.Empty;
 			#if WEBPLAYER
 			GUI.enabled = false;
 			disabledDescr = " (WebPlayer Restriction)";
@@ -91,21 +109,9 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 				this.Show(null);
 				
 			}
-			/*
-			if (GUILayout.Button("Compile UI" + disabledDescr, buttonStyle)) {
-				
-				FlowCompiler.GenerateUI(AssetDatabase.GetAssetPath(this.cachedData));
-
-			}
-			
-			if (GUILayout.Button("Force Recompile UI" + disabledDescr, buttonStyle)) {
-
-				FlowCompiler.GenerateUI( AssetDatabase.GetAssetPath( this.cachedData ), recompile: true );
-				
-			}*/
 			#if WEBPLAYER
 			GUI.enabled = true;
-			#endif
+			#endif*/
 
 		}
 

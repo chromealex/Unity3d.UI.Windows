@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace UnityEditor.UI.Windows {
 
@@ -26,7 +26,7 @@ namespace UnityEditor.UI.Windows {
 
 			var result = false;
 
-			if (WindowUtilities.IsAddonAvailable(addonName) == true) {
+			if (CoreUtilities.IsAddonAvailable(addonName) == true) {
 				
 				if (GUILayout.Button(buttonCaption, buttonStyle, options) == true) {
 

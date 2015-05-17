@@ -1,0 +1,12 @@
+﻿		
+		/// <summary>
+		/// Request Social Module.
+		/// Platform: {PLATFORM_NAME}
+		/// </summary>
+		/// <returns>Social {CLASS_NAME} Module</returns>
+		public virtual {MODULE_NAME} GetSocial{MULTI_MODULES_CLASS_NAME}Module() {
+			
+			return UnityEngine.UI.Windows.Plugins.Social.Core.SocialSystem.instance.GetModule<{MODULE_NAME}>();
+			
+		}
+		
