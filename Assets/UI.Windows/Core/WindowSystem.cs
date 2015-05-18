@@ -644,6 +644,46 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public static Vector3 ConvertPoint(Vector3 point, WindowBase from, WindowBase to, bool withoutCamera = false) {
+
+			var fromCamera = from.workCamera;
+			var toCamera = to.workCamera;
+
+			var fromLayout = from as UnityEngine.UI.Windows.Types.LayoutWindowType;
+			var toLayout = to as UnityEngine.UI.Windows.Types.LayoutWindowType;
+
+			if (fromLayout != null && toLayout != null) {
+
+				var scaleFrom = fromLayout.layout.GetLayoutInstance().transform.localScale.x;
+				var scaleTo = toLayout.layout.GetLayoutInstance().transform.localScale.x;
+
+				var scaleK = 1f;
+				if (withoutCamera == true) {
+
+					scaleK = scaleTo / scaleFrom;
+
+				} else {
+
+					var orthoK = toCamera.orthographicSize / fromCamera.orthographicSize;
+					scaleK = orthoK / (scaleTo / scaleFrom);
+
+				}
+
+				return new Vector3(point.x * scaleK, point.y * scaleK, point.z * scaleK);
+
+			}
+
+			return point;
+
+		}
+
+		public static Vector2 ConvertPoint(Vector2 point, WindowBase from, WindowBase to, bool withoutCamera = false) {
+			
+			var p = WindowSystem.ConvertPoint(new Vector3(point.x, point.y, 0f), from, to, withoutCamera);
+			return new Vector2(p.x, p.y);
+
+		}
+
 	}
 
 }

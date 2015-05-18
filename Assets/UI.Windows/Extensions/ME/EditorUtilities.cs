@@ -186,7 +186,9 @@ namespace ME {
 		}
 
 		public static Component[] GetPrefabsOfTypeRaw<T>(bool strongType, string directory = null, bool useCache = true) where T : Component {
-			
+
+			if (directory != null && System.IO.Directory.Exists(directory) == false) return new Component[0] {};
+
 			System.Func<T[]> action = () => {
 				
 				var folder = (directory == null) ? null : new string[] { directory };
@@ -239,11 +241,13 @@ namespace ME {
 
 		public static ScriptableObject[] GetAssetsOfTypeRaw<T>(string directory = null, System.Func<ScriptableObject, bool> predicate = null, bool useCache = true) where T : ScriptableObject {
 
+			if (directory != null && System.IO.Directory.Exists(directory) == false) return new ScriptableObject[0] {};
+
 			System.Func<T[]> action = () => {
 
 				var folder = (directory == null) ? null : new string[] { directory };
 
-				AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+				//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 				var objects = AssetDatabase.FindAssets("t:ScriptableObject", folder);
 				
 				var output = new List<T>();
