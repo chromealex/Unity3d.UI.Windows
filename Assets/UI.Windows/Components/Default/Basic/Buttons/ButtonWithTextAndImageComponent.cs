@@ -8,7 +8,6 @@ namespace UnityEngine.UI.Windows.Components {
 	public class ButtonWithTextAndImageComponent : ButtonComponent, IImageComponent, ITextComponent {
 
 		[Header("Text (Optional)")]
-
 		public Text text;
 
 		public void SetValue(int value, TextComponent.ValueFormat format = TextComponent.ValueFormat.None) {
@@ -30,38 +29,57 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		[Header("Images (Optional)")]
-
 		//[HideInInspector][SerializeField]
 		public Image image;
-		
+
 		//[HideInInspector][SerializeField]
 		public RawImage rawImage;
-		
+
+		public bool preserveAspect;
+
 		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {
-			
+
+			this.SetImage(sprite, this.preserveAspect, withPivotsAndSize);
+
+		}
+
+		public void SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false) {
+
 			if (this.image != null) {
-				
+
 				this.image.sprite = sprite;
-				
+				this.image.preserveAspect = preserveAspect;
+
 				if (withPivotsAndSize == true && sprite != null) {
-					
+
 					var rect = (this.transform as RectTransform);
-					
+
 					rect.sizeDelta = sprite.rect.size;
-					
+
 					rect.pivot = sprite.GetPivot();
 					rect.anchoredPosition = Vector2.zero;
-					
+
 				}
-				
+
 			}
-			
+
 		}
-		
-		public void SetImage(Texture2D texture) {
-			
-			if (this.rawImage != null) this.rawImage.texture = texture;
-			
+
+		public void SetImage(Texture texture) {
+
+			this.SetImage(texture, this.preserveAspect);
+
+		}
+
+		public void SetImage(Texture texture, bool preserveAspect) {
+
+			if (this.rawImage != null) {
+
+				this.rawImage.texture = texture;
+				if (this.preserveAspect == true) ME.Utilities.PreserveAspect(this.rawImage);
+
+			}
+
 		}
 
 		public void SetMaterial(Material material) {

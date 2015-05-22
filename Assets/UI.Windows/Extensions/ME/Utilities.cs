@@ -2,11 +2,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace ME {
 
 	public partial class Utilities {
-		
+
+		public static void PreserveAspect(RawImage image) {
+
+			var texture = image.texture;
+			if (texture != null) {
+
+				var width = texture.width;
+				var height = texture.height;
+
+				var size = new Vector2(width, height);
+				if (size.sqrMagnitude > 0f) {
+
+					var r = image.GetPixelAdjustedRect();
+
+					/*
+					var spriteRatio = size.x / size.y;
+					var rectRatio = r.width / r.height;
+
+					if (spriteRatio > rectRatio) {
+						
+						var oldHeight = r.height;
+						r.height = r.width * (1f / spriteRatio);
+						r.y += (oldHeight - r.height) * image.rectTransform.pivot.y;
+
+					} else {
+						
+						var oldWidth = r.width;
+						r.width = r.height * spriteRatio;
+						r.x += (oldWidth - r.width) * image.rectTransform.pivot.x;
+
+					}
+
+					r.width /= size.x;
+					r.x /= size.x;
+					r.height /= size.y;
+					r.y /= size.y;
+
+					image.uvRect = r;
+*/
+				}
+
+			}
+
+		}
+
 		public static void FindReferenceParent<T>(Component root, ref T link) where T : Component {
 			
 			var items = root.GetComponentsInParent<T>(true);

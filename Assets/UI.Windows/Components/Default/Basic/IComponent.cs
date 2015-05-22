@@ -27,7 +27,9 @@ namespace UnityEngine.UI.Windows.Components {
 	public interface IImageComponent : IComponent {
 		
 		void SetImage(Sprite sprite, bool withPivotsAndSize = false);
-		void SetImage(Texture2D texture);
+		void SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false);
+		void SetImage(Texture texture);
+		void SetImage(Texture texture, bool preserveAspect);
 		void SetMaterial(Material material);
 
 	}

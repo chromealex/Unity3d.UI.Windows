@@ -7,25 +7,34 @@ using UnityEngine.UI.Windows.Extensions;
 namespace UnityEngine.UI.Windows.Components {
 
 	public class ImageComponent : WindowComponent, IImageComponent {
-		
+
+		[Header("Properties")]
+		public bool preserveAspect;
+
 		[HideInInspector][SerializeField]
 		public Image image;
 		
 		[HideInInspector][SerializeField]
 		public RawImage rawImage;
-		
+
 		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {
+
+			this.SetImage(sprite, this.preserveAspect, withPivotsAndSize);
+
+		}
+
+		public void SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false) {
 			
 			if (this.image != null) {
 
 				this.image.sprite = sprite;
+				this.image.preserveAspect = preserveAspect;
 
 				if (withPivotsAndSize == true && sprite != null) {
 
 					var rect = (this.transform as RectTransform);
 
 					rect.sizeDelta = sprite.rect.size;
-
 					rect.pivot = sprite.GetPivot();
 					rect.anchoredPosition = Vector2.zero;
 
@@ -34,10 +43,21 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			
 		}
-		
-		public void SetImage(Texture2D texture) {
+
+		public void SetImage(Texture texture) {
+
+			this.SetImage(texture, this.preserveAspect);
+
+		}
+
+		public void SetImage(Texture texture, bool preserveAspect) {
 			
-			if (this.rawImage != null) this.rawImage.texture = texture;
+			if (this.rawImage != null) {
+
+				this.rawImage.texture = texture;
+				if (this.preserveAspect == true) ME.Utilities.PreserveAspect(this.rawImage);
+
+			}
 			
 		}
 
