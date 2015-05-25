@@ -118,7 +118,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			Flow.ShowEditor(onClose);
 
 		}
-		
+
+		public static FlowData FindProjectForPath(string root, string path) {
+
+			var topPath = path.Split('/')[0];
+			var datas = ME.EditorUtilities.GetAssetsOfType<FlowData>(root + "/" + topPath, useCache: false);
+
+			if (datas.Length > 0) return datas[0];
+
+			return null;
+
+		}
+
 		public static void OnDrawWindowGUI(FlowSystemEditorWindow flowEditor, FlowWindow window) {
 			
 			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();

@@ -1,0 +1,3 @@
+void OnEnable() This function is called when the object is loaded.
+void OnDisable() This function is called when the scriptable object goes out of scope.
+void OnDestroy() This function is called when the scriptable object will be destroyed.

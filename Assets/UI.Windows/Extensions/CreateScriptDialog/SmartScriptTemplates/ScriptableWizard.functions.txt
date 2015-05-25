@@ -1,0 +1,13 @@
+DEFAULT void OnWizardCreate() This is called when the user clicks on the Create button.
+DEFAULT void OnWizardOtherButton () Allows you to provide an action when the user clicks on the other button.
+void OnWizardUpdate() This is called when the wizard is opened or whenever the user changes something in the wizard.
+void OnSelectionChange() Called whenever the selection has changed.
+void OnHierarchyChange() Called whenever the scene hierarchy has changed.
+void OnProjectChange() Called whenever the project has changed.
+void OnInspectorUpdate() OnInspectorUpdate is called at 10 frames per second to give the inspector a chance to update.
+void Update() Called 100 times per second on all visible windows.
+void OnDrawGizmos()  Called every frame when the wizard is visible.
+void OnEnable() This function is called when the object is loaded.
+void OnDisable() This function is called when the scriptable object goes out of scope.
+void OnFocus() Called when the window gets keyboard focus.
+void OnLostFocus() Called when the window loses keyboard focus.

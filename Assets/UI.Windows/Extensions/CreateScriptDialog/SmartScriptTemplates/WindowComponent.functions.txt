@@ -1,0 +1,6 @@
+override void OnInit() Raises the init event. You can override this method but call it's base.
+override void OnDeinit() Raises the deinit event. You can override this method but call it's base.
+override void OnHideBegin(System.Action callback, bool immediately = false) Raises the hide begin event. Wait while all sub components return the callback. You can override this method but call it's base.
+override void OnHideEnd() Raises the hide end event. You can override this method but call it's base.
+override void OnShowBegin(System.Action callback, bool resetAnimation = true) Raises the show begin event. Wait while all sub components return the callback. You can override this method but call it's base.
+override void OnShowEnd() Raises the show end event. You can override this method but call it's base.

@@ -1,0 +1,56 @@
+void Awake() Awake is called when the script instance is being loaded.
+DEFAULT void Start() Start is called just before any of the Update methods is called the first time.
+DEFAULT void Update() Update is called every frame, if the MonoBehaviour is enabled.
+void LateUpdate() LateUpdate is called every frame, if the Behaviour is enabled.
+void FixedUpdate() This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
+void OnGUI() OnGUI is called for rendering and handling GUI events.
+void OnEnable() This function is called when the object becomes enabled and active.
+void OnDisable() This function is called when the behaviour becomes disabled () or inactive.
+void OnDestroy() This function is called when the MonoBehaviour will be destroyed.
+void Reset() Reset to default values.
+HEADER Physics
+void OnTriggerEnter(Collider other) OnTriggerEnter is called when the Collider other enters the trigger.
+void OnTriggerExit(Collider other) OnTriggerExit is called when the Collider other has stopped touching the trigger.
+void OnTriggerStay(Collider other) OnTriggerStay is called once per frame for every Collider other that is touching the trigger.
+void OnCollisionEnter(Collision collision) OnCollisionEnter is called when this collider/rigidbody has begun touching another rigidbody/collider.
+void OnCollisionExit(Collision collisionInfo) OnCollisionExit is called when this collider/rigidbody has stopped touching another rigidbody/collider.
+void OnCollisionStay(Collision collisionInfo) OnCollisionStay is called once per frame for every collider/rigidbody that is touching rigidbody/collider.
+void OnControllerColliderHit(ControllerColliderHit hit) OnControllerColliderHit is called when the controller hits a collider while performing a Move.
+void OnJointBreak(float breakForce) Called when a joint attached to the same game object broke.
+void OnParticleCollision(GameObject other) OnParticleCollision is called when a particle hits a collider.
+HEADER Mouse
+void OnMouseEnter() OnMouseEnter is called when the mouse entered the GUIElement or Collider.
+void OnMouseOver() OnMouseOver is called every frame while the mouse is over the GUIElement or Collider.
+void OnMouseExit() OnMouseExit is called when the mouse is not any longer over the GUIElement or Collider.
+void OnMouseDown() OnMouseDown is called when the user has pressed the mouse button while over the GUIElement or Collider.
+void OnMouseUp() OnMouseUp is called when the user has released the mouse button.
+void OnMouseUpAsButton() OnMouseUpAsButton is only called when the mouse is released over the same GUIElement or Collider as it was pressed.
+void OnMouseDrag() OnMouseDrag is called when the user has clicked on a GUIElement or Collider and is still holding down the mouse.
+HEADER Playback
+void OnLevelWasLoaded(int level) This function is called after a new level was loaded.
+void OnApplicationFocus(bool focus) Sent to all game objects when the player gets or looses focus.
+void OnApplicationPause(bool pause) Sent to all game objects when the player pauses.
+void OnApplicationQuit() Sent to all game objects before the application is quit.
+HEADER Rendering
+void OnBecameVisible() OnBecameVisible is called when the renderer became visible by any camera.
+void OnBecameInvisible() OnBecameInvisible is called when the renderer is no longer visible by any camera.
+void OnPreCull() OnPreCull is called before a camera culls the scene.
+void OnPreRender() OnPreRender is called before a camera starts rendering the scene.
+void OnPostRender() OnPostRender is called after a camera finished rendering the scene.
+void OnRenderObject() OnRenderObject is called after camera has rendered the scene.
+void OnWillRenderObject() OnWillRenderObject is called once for each camera if the object is visible.
+void OnRenderImage(RenderTexture source, RenderTexture destination) OnRenderImage is called after all rendering is complete to render image
+HEADER Gizmos
+void OnDrawGizmosSelected() Implement this OnDrawGizmosSelected if you want to draw gizmos only if the object is selected.
+void OnDrawGizmos() Implement this OnDrawGizmos if you want to draw gizmos that are also pickable and always drawn.
+HEADER Network
+void OnPlayerConnected(NetworkPlayer player) Called on the server whenever a new player has successfully connected.
+void OnServerInitialized() Called on the server whenever a Network.InitializeServer was invoked and has completed.
+void OnConnectedToServer() Called on the client when you have successfully connected to a server.
+void OnPlayerDisconnected(NetworkPlayer player) Called on the server whenever a player disconnected from the server.
+void OnDisconnectedFromServer(NetworkDisconnection info) Called on the client when the connection was lost or you disconnected from the server.
+void OnFailedToConnect(NetworkConnectionError error) Called on the client when a connection attempt fails for some reason.
+void OnFailedToConnectToMasterServer(NetworkConnectionError info) Called on clients or servers when there is a problem connecting to the MasterServer.
+void OnMasterServerEvent(MasterServerEvent msEvent) Called on clients or servers when reporting events from the MasterServer. 
+void OnNetworkInstantiate(NetworkMessageInfo info) Called on objects which have been network instantiated with Network.Instantiate
+void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) Used to customize synchronization of variables in a script watched by a network view.

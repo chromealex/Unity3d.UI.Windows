@@ -1,0 +1,11 @@
+BASECLASS=Editor
+using UnityEngine;
+using UnityEditor;
+using System.Collections;
+using System.Collections.Generic;
+
+[CustomEditor(typeof($TargetClassName))]
+public class $ClassName : Editor {
+	
+	$Functions
+}

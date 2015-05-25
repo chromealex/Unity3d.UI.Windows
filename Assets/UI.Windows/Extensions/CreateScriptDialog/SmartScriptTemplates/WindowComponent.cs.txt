@@ -1,0 +1,13 @@
+BASECLASS=WindowComponent
+using UnityEngine;
+using UnityEngine.UI.Windows;
+
+namespace $Namespace {
+
+	public class $ClassName : WindowComponent {
+		
+		$Functions
+
+	}
+
+}

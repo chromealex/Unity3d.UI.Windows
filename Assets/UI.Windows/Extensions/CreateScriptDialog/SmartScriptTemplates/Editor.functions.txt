@@ -1,0 +1,10 @@
+DEFAULT override void OnInspectorGUI() Implement this function to make a custom inspector.
+void OnSceneGUI() Lets the Editor handle an event in the scene view.
+void OnEnable() This function is called when the object is loaded.
+void OnDisable() This function is called when the scriptable object goes out of scope.
+void OnDestroy() This function is called when the scriptable object will be destroyed.
+HEADER Preview
+override bool HasPreviewGUI() return true; Override this method in subclasses if you implement OnPreviewGUI.
+override void OnPreviewGUI(Rect r, GUIStyle background) Implement this method in a subclass if you want to have a preview field in the inspector.
+override void OnPreviewSettings() Override this method if you want to show custom controls in the preview header.
+override string GetInfoString() return target.name; Implement this method to show asset information on top of the asset preview.

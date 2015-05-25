@@ -249,7 +249,7 @@ namespace ME {
 
 				//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 				var objects = AssetDatabase.FindAssets("t:ScriptableObject", folder);
-				
+
 				var output = new List<T>();
 				foreach (var obj in objects) {
 					

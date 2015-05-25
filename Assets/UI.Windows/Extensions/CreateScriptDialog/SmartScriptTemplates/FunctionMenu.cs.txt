@@ -1,0 +1,23 @@
+BASECLASS=MenuItem
+using UnityEditor;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+class $ClassName {
+	
+	// Add menu item to the menu.
+	[MenuItem ("GameObject/$NicifiedClassName")]
+	static void $ClassNameFunction () {
+		
+	}
+	
+	// Validate the menu item.
+	// The item will be disabled if this function returns false.
+	[MenuItem ("GameObject/$NicifiedClassName", true)]
+	static bool Validate$ClassNameFunction () {
+		return true;
+	}
+		
+	$Functions
+}

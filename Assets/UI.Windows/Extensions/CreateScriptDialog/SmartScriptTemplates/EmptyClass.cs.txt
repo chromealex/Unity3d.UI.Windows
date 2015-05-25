@@ -1,0 +1,13 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class $ClassName {
+	
+	// The class constructor is called when the class instance is created
+	public $ClassName () {
+		
+	}
+	
+	$Functions
+}

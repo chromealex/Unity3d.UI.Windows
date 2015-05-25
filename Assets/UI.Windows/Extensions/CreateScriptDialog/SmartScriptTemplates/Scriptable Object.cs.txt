@@ -1,0 +1,9 @@
+BASECLASS=ScriptableObject
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+class $ClassName : ScriptableObject {
+	
+	$Functions
+}
