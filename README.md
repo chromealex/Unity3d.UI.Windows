@@ -12,3 +12,7 @@ http://chromealex.github.io/Unity3d.UI.Windows/
 ### Documentation
 
 http://chromealex.github.io/Unity3d.UI.Windows/docs/api/
+
+### Code Style
+
+(RU): https://github.com/chromealex/Unity3d.UI.Windows/wiki/Code-Style-(RU)
