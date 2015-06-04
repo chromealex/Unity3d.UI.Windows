@@ -19,6 +19,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			}
 
 			public bool moveRoot = false;
+			public RectTransform root;
 
 			public State resetState;
 			public State inState;
@@ -73,6 +74,8 @@ namespace UnityEngine.UI.Windows.Animations {
 		public Parameters defaultInputParams;
 
 		private RectTransform GetRoot(Parameters parameters, WindowComponentBase root) {
+
+			if (parameters != null && parameters.root != null) return parameters.root;
 
 			WindowComponent component = null;
 			if (root is LinkerComponent && !component) {

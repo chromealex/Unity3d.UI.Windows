@@ -11,10 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99839ddb8ee5849c1be9ef77fbe191fa, type: 3}
   m_Name: ExampleProject
   m_EditorClassIdentifier: 
-  lastModified: 17.05.2015 10:55
+  lastModified: 03.06.2015 06:58
   namespaceName: ExampleProject.UI
   forceRecompile: 1
-  scrollPos: {x: 2743, y: 4282.5}
+  scrollPos: {x: 2702.00098, y: 4019.5481}
   rootWindow: 18
   defaultWindows: 20000000
   windows:
@@ -34,7 +34,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/GlobalMap/
     compiledNamespace: ExampleProject.UI.Menu.GlobalMap
     compiledScreenName: GlobalMap
@@ -86,7 +86,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/GameTypeChooser/
     compiledNamespace: ExampleProject.UI.Menu.GameTypeChooser
     compiledScreenName: GameTypeChooser
@@ -114,8 +114,8 @@ MonoBehaviour:
     randomColor: {r: .488009095, g: 1, b: 0, a: 1}
     isContainer: 0
     isDefaultLink: 0
-    tags: 
-    compiled: 1
+    tags: 01000000
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/MainLoader/
     compiledNamespace: ExampleProject.UI.Other.MainLoader
     compiledScreenName: MainLoader
@@ -124,7 +124,7 @@ MonoBehaviour:
     smallStyleDefault: 
     smallStyleSelected: 
     states: 020000000200000001000000
-    screen: {fileID: 11418250, guid: 155bb5228733221478f598ddd4110edc, type: 2}
+    screen: {fileID: 11431942, guid: 25e0d25ac00714749b0cbb0e882e309b, type: 2}
   - id: 23
     flags: 1
     title: Shop Operations
@@ -167,7 +167,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/ShopOperations/Shop/
     compiledNamespace: ExampleProject.UI.Menu.ShopOperations.Shop
     compiledScreenName: Shop
@@ -193,7 +193,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayView/
     compiledNamespace: ExampleProject.UI.Gameplay.GameplayView
     compiledScreenName: GameplayView
@@ -245,7 +245,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/GameplayLoader/
     compiledNamespace: ExampleProject.UI.Other.GameplayLoader
     compiledScreenName: GameplayLoader
@@ -271,7 +271,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/EndGame/
     compiledNamespace: ExampleProject.UI.Gameplay.EndGame
     compiledScreenName: EndGame
@@ -297,7 +297,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayHUD/
     compiledNamespace: ExampleProject.UI.Gameplay.GameplayHUD
     compiledScreenName: GameplayHUD
@@ -323,7 +323,7 @@ MonoBehaviour:
     isContainer: 0
     isDefaultLink: 0
     tags: 
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/MenuLoader/
     compiledNamespace: ExampleProject.UI.Other.MenuLoader
     compiledScreenName: MenuLoader
@@ -374,8 +374,8 @@ MonoBehaviour:
     randomColor: {r: 0, g: 1, b: .124795437, a: 1}
     isContainer: 0
     isDefaultLink: 0
-    tags: 
-    compiled: 1
+    tags: 02000000
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/Background/
     compiledNamespace: ExampleProject.UI.Other.Background
     compiledScreenName: Background

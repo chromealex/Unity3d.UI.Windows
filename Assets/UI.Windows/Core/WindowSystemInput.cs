@@ -25,7 +25,13 @@ namespace UnityEngine.UI.Windows {
 
 		public static Vector2 GetPointerPosition() {
 
+			// TODO: Make it crossplatform
+
+			#if UNITY_STANDALONE || UNITY_WEBPLAYER
 			return Input.mousePosition;
+			#else
+			return Vector2.zero;
+			#endif
 
 		}
 

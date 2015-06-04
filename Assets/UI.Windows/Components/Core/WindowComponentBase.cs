@@ -48,7 +48,12 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="resetAnimation">If set to <c>true</c> reset animation.</param>
 		public virtual void Show(System.Action callback, bool resetAnimation) {
 			
-			this.OnShowBegin(callback, resetAnimation);
+			this.OnShowBegin(() => {
+
+				this.OnShowEnd();
+				if (callback != null) callback();
+
+			}, resetAnimation);
 			
 		}
 
@@ -81,7 +86,12 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
 		public virtual void Hide(System.Action callback, bool immediately) {
 
-			this.OnHideBegin(callback, immediately);
+			this.OnHideBegin(() => {
+
+				this.OnHideEnd();
+				if (callback != null) callback();
+
+			}, immediately);
 			
 		}
 

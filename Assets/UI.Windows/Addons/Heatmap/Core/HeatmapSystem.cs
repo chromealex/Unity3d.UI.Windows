@@ -29,11 +29,11 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			(wComp.transform as RectTransform).GetWorldCorners(corners);
 			
 			var leftBottom = HeatmapSystem.GetScreenPoint(wComp, corners[0]);
-			var topRight = HeatmapSystem.GetScreenPoint(wComp, corners[2]);
+			//var topRight = HeatmapSystem.GetScreenPoint(wComp, corners[2]);
 
 			var inputPosition = WindowSystemInput.GetPointerPosition();
-			var w = topRight.x - leftBottom.x;
-			var h = topRight.y - leftBottom.y;
+			//var w = topRight.x - leftBottom.x;
+			//var h = topRight.y - leftBottom.y;
 
 			var pos = new Vector2(inputPosition.x - leftBottom.x, inputPosition.y - leftBottom.y);
 

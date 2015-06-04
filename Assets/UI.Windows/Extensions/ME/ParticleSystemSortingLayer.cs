@@ -46,6 +46,8 @@ public class ParticleSystemSortingLayer : MonoBehaviour {
 
 	public void OnValidate() {
 
+		if (this.particleSystem == null) this.particleSystem = this.GetComponent<ParticleSystem>();
+
 		this.FindRootWindowObject();
 		this.UpdateLayer();
 		

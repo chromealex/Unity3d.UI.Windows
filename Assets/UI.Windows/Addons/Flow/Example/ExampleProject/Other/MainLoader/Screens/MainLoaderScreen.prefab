@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 458946}
   - 20: {fileID: 2058946}
-  - 114: {fileID: 11418250}
+  - 114: {fileID: 11431942}
   m_Layer: 5
   m_Name: MainLoaderScreen
   m_TagString: Untagged
@@ -61,7 +61,7 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
---- !u!114 &11418250
+--- !u!114 &11431942
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -83,15 +83,15 @@ MonoBehaviour:
     elements: []
   layout:
     scaleMode: 0
-    layout: {fileID: 11452286, guid: 058752c24ef3cbc45bd0aafc9c72d204, type: 2}
+    layout: {fileID: 11429864, guid: 30f31546a037f4bf793463c31774f453, type: 2}
     components:
     - description: CONTENT BORDER
       tag: 1
       component: {fileID: 0}
       sortingOrder: 0
-    - description: Button
+    - description: CONTENT INNER
       tag: 2
-      component: {fileID: 11476240, guid: 3d5b9924423c843e0a12d8060b02680f, type: 2}
+      component: {fileID: 11469228, guid: 7316bb163107c4c4daa818336140eaf9, type: 2}
       sortingOrder: 0
 --- !u!1001 &100100000
 Prefab:

@@ -23,16 +23,16 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _ClearScreen
+          name: _Mask
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: 233012e8896d74811970387f4fdf3da8, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Mask
+          name: _ClearScreen
         second:
-          m_Texture: {fileID: 2800000, guid: 233012e8896d74811970387f4fdf3da8, type: 3}
+          m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:

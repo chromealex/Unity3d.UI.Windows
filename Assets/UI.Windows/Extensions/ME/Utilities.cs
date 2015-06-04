@@ -19,7 +19,7 @@ namespace ME {
 				var size = new Vector2(width, height);
 				if (size.sqrMagnitude > 0f) {
 
-					var r = image.GetPixelAdjustedRect();
+					//var r = image.GetPixelAdjustedRect();
 
 					/*
 					var spriteRatio = size.x / size.y;
