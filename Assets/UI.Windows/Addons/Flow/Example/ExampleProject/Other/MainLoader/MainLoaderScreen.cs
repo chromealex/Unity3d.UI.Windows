@@ -31,7 +31,7 @@ namespace ExampleProject.UI.Other.MainLoader {
 			this.button.SetText("Open Next Screen");
 			this.button.SetCallback(() => {
 
-				//this.FlowGlobalMap();
+				this.FlowGlobalMap();
 
 			});
 

@@ -33,7 +33,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					this.w = 0f;
 					this.h = 0f;
 
-					var rect = (component.transform as RectTransform).rect;
+					//var rect = (component.transform as RectTransform).rect;
 
 					var corners = new Vector3[4];
 					(component.transform as RectTransform).GetWorldCorners(corners);

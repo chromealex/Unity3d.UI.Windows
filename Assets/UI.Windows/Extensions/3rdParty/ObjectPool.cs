@@ -208,8 +208,19 @@ namespace UnityEngine.Extensions {
 		public static ObjectPool instance {
 			
 			get {
-
+				
 				#if UNITY_EDITOR
+				if (Application.isPlaying == false) {
+					
+					var items = ObjectPool.FindObjectsOfType<ObjectPool>();
+					if (items.Length > 0) {
+
+						foreach (var item in items) GameObject.DestroyImmediate(item);
+
+					}
+
+				}
+
 				if (_instance == null) _instance = ObjectPool.FindObjectOfType<ObjectPool>();
 				#endif
 
