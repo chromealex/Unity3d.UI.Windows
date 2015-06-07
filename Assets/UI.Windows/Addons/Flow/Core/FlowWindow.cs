@@ -17,6 +17,20 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	};
 
 	[System.Serializable]
+	public class DefaultElement {
+
+		// Where is the element located?
+		public LayoutTag tag;
+		public string comment;
+
+		// Whats the element?
+		public WindowComponentLibraryLinker library;
+		public string elementPath;
+		public WindowComponent elementComponent;
+
+	}
+
+	[System.Serializable]
 	public class FlowWindow {
 
 		[System.Serializable]
@@ -90,6 +104,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public bool isDefaultLink = false;
 
 		public List<int> tags = new List<int>();
+
+		public List<DefaultElement> comments = new List<DefaultElement>();
 
 		public bool compiled = false;
 		public string compiledDirectory = string.Empty;
