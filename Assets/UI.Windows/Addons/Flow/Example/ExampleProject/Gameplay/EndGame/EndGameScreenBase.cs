@@ -14,16 +14,19 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 	public class EndGameScreenBase : LayoutWindowType {
 		
 		/// <summary>
-		/// Flows to the MenuLoader.
-		/// Full Name: ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen
+		/// Call the Function Loader.
+		/// Function: Loading
 		/// </summary>
-		/// <returns>MenuLoader</returns>
-		public virtual ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen FlowMenuLoader(params object[] parameters) {
+		/// <returns>Function root window</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(UnityEngine.Events.UnityAction onFunctionEnds, params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Other.MenuLoader.MenuLoaderScreen>(parameters);
+			var functionRoot = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(parameters);
+			WindowSystem.RegisterFunctionCallback(functionRoot, onFunctionEnds);
+			
+			return functionRoot;
 			
 		}
-		
+
 	}
 
 }

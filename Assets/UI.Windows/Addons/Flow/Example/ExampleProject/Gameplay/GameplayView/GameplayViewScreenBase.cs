@@ -20,7 +20,10 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// <returns>EndGame</returns>
 		public virtual ExampleProject.UI.Gameplay.EndGame.EndGameScreen FlowEndGame(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 				
@@ -31,7 +34,10 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// <returns>GameplayHUD</returns>
 		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowGameplayHUD(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 		

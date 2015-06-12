@@ -20,21 +20,27 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 		/// <returns>Shop</returns>
 		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowShop(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 				
 		/// <summary>
-		/// Flows to the GameplayLoader.
-		/// Full Name: ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen
+		/// Call the Function Loader.
+		/// Function: Loading
 		/// </summary>
-		/// <returns>GameplayLoader</returns>
-		public virtual ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen FlowGameplayLoader(params object[] parameters) {
+		/// <returns>Function root window</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(UnityEngine.Events.UnityAction onFunctionEnds, params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen>(parameters);
+			var functionRoot = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(parameters);
+			WindowSystem.RegisterFunctionCallback(functionRoot, onFunctionEnds);
+			
+			return functionRoot;
 			
 		}
-		
+
 	}
 
 }

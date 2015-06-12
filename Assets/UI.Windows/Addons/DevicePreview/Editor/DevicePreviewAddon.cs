@@ -28,11 +28,11 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		}
 		
-		public override void OnFlowToolsMenuGUI(GenericMenu menu) {
+		public override void OnFlowToolsMenuGUI(string prefix, GenericMenu menu) {
 			
 			menu.AddSeparator(string.Empty);
 
-			menu.AddItem(new GUIContent("Open Device Preview"), on: false, func: () => {
+			menu.AddItem(new GUIContent(prefix + "Open Device Preview"), on: false, func: () => {
 				
 				DevicePreview.ShowEditor();
 

@@ -94,7 +94,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.view = FlowSceneViewWindow.CreateInstance<FlowSceneViewWindow>();
 			FlowSceneView.recompileChecker = this.view;
 
-			this.view.title = "UI.Windows Flow Screen Editor ('" + this.window.title + "')";
+			var title = "UI.Windows Flow Screen Editor ('{0}')";
+			title = string.Format(title, this.window.title);
+			#if !UNITY_4
+			this.view.titleContent = new GUIContent(string.Format(title, this.window.title));
+			#else
+			this.view.title = string.Format(title, this.window.title);
+			#endif
 			this.view.position = popupRect;
 			this.view.rootWindow = rootWindow;
 			

@@ -156,7 +156,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data.CreateContainer();
 			
 		}
-		
+
 		public static FlowWindow CreateWindow() {
 			
 			return FlowSystem.instance.data.CreateWindow();

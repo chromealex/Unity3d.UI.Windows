@@ -315,7 +315,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return window;
 			
 		}
-
+		
 		public FlowWindow CreateContainer() {
 			
 			var newId = this.AllocateId();
@@ -328,7 +328,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return window;
 			
 		}
-		
+
 		public FlowWindow CreateWindow() {
 			
 			var newId = this.AllocateId();
@@ -360,13 +360,13 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			return this.windows.FirstOrDefault((w) => {
 
-				if (w.screen != null) {
+				if (w.GetScreen() != null) {
 
-					return w.screen.SourceEquals(window);
+					return w.GetScreen().SourceEquals(window);
 
 				}
 
-				return window.SourceEquals(w.screen);
+				return window.SourceEquals(w.GetScreen());
 
 			});
 

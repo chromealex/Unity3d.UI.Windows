@@ -20,14 +20,14 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		}
 
-		public override void OnFlowToolsMenuGUI(GenericMenu menu) {
+		public override void OnFlowToolsMenuGUI(string prefix, GenericMenu menu) {
 			
-			menu.AddSeparator(string.Empty);
+			menu.AddSeparator(prefix);
 			
 			#if WEBPLAYER
 			menu.AddDisabledItem(new GUIContent("Compile UI..."));
 			#else
-			menu.AddItem(new GUIContent("Compile UI..."), on: false, func: () => {
+			menu.AddItem(new GUIContent(prefix + "Compile UI..."), on: false, func: () => {
 				
 				this.Show(null);
 				

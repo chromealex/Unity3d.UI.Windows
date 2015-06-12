@@ -20,7 +20,10 @@ namespace ExampleProject.UI.Menu.GlobalMap {
 		/// <returns>GameTypeChooser</returns>
 		public virtual ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen FlowGameTypeChooser(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 				
@@ -31,18 +34,21 @@ namespace ExampleProject.UI.Menu.GlobalMap {
 		/// <returns>Shop</returns>
 		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowShop(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 				
 		/// <summary>
 		/// Request Social Module.
-		/// Platform: VK (vk.com)
+		/// Platform: Facebook (facebook.com)
 		/// </summary>
-		/// <returns>Social VK Module</returns>
-		public virtual UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK.VKModule GetSocialModule() {
+		/// <returns>Social FB Module</returns>
+		public virtual UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.FB.FBModule GetSocialModule() {
 			
-			return UnityEngine.UI.Windows.Plugins.Social.Core.SocialSystem.instance.GetModule<UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK.VKModule>();
+			return UnityEngine.UI.Windows.Plugins.Social.Core.SocialSystem.instance.GetModule<UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.FB.FBModule>();
 			
 		}
 		

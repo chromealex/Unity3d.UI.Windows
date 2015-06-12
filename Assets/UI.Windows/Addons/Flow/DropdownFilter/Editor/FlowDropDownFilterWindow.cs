@@ -20,7 +20,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public static void Show<T>(Rect buttonRect, Vector2 windowSize, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, bool strongType = true) where T : Component {
 
 			var editor = FlowDropDownFilterWindow.CreateInstance<FlowDropDownFilterWindow>();
-			editor.title = "UI.Windows Flow Filter";
+			var title = "UI.Windows: Flow Filter";
+			#if !UNITY_4
+			editor.titleContent = new GUIContent(title);
+			#else
+			editor.title = title;
+			#endif
 			editor.ShowAsDropDown(new Rect(buttonRect.x, buttonRect.y, buttonRect.width, 1), windowSize);
 
 			editor.onSelect = (c) => {

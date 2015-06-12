@@ -14,13 +14,16 @@ namespace ExampleProject.UI.Menu.ShopOperations.Shop {
 	public class ShopScreenBase : LayoutWindowType {
 		
 		/// <summary>
-		/// Request Social Module.
-		/// Platform: VK (vk.com)
+		/// Flows to the GameTypeChooser.
+		/// Full Name: ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen
 		/// </summary>
-		/// <returns>Social VK Module</returns>
-		public virtual UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK.VKModule GetSocialModule() {
+		/// <returns>GameTypeChooser</returns>
+		public virtual ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen FlowGameTypeChooser(params object[] parameters) {
 			
-			return UnityEngine.UI.Windows.Plugins.Social.Core.SocialSystem.instance.GetModule<UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.VK.VKModule>();
+			var instance = WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 		

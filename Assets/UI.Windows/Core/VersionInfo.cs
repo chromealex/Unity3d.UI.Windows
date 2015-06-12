@@ -5,7 +5,7 @@ namespace UnityEditor.UI.Windows {
 
 		public const string downloadLink = "https://github.com/chromealex/Unity3d.UI.Windows";
 
-		public const string bundleVersion = "0.9a";
+		public const string bundleVersion = "0.9.1a";
 
 	}
 
