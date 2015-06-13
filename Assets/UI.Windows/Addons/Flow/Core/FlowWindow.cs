@@ -274,12 +274,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		#if UNITY_EDITOR
 		private IPreviewEditor editorCache;
-		public bool OnPreviewGUI(Rect rect, GUIStyle background, bool drawInfo, bool selectable) {
+		public bool OnPreviewGUI(Rect rect, GUIStyle buttonStyle, GUIStyle background, bool drawInfo, bool selectable, System.Action onCreateScreen, System.Action onCreateLayout) {
 
 			WindowLayoutElement.waitForComponentConnectionTemp = false;
 
 			var screen = this.GetScreen() as LayoutWindowType;
-			if (screen != null) {
+			if (screen != null && screen.layout.layout != null) {
 
 				var layout = screen.layout.layout;
 				if (layout != null) {
@@ -290,6 +290,58 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 					if (WindowLayoutElement.waitForComponentConnectionTemp == true) {
 
 						return true;
+
+					}
+
+				}
+
+			} else {
+
+				this.editorCache = null;
+
+				GUI.Box(rect, string.Empty, background);
+				if (this.compiled == false) {
+
+					GUI.Label(rect, "You need to compile window to start using layout functions.", buttonStyle);
+
+				} else {
+
+					if (screen != null) {
+
+						var layout = screen.layout.layout;
+						if (layout == null) {
+							
+							GUI.BeginGroup(rect);
+							{
+								
+								var width = rect.width * 0.7f;
+								var height = 50f;
+								if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Layout", buttonStyle) == true) {
+									
+									onCreateLayout();
+									
+								}
+								
+							}
+							GUI.EndGroup();
+
+						}
+
+					} else {
+
+						GUI.BeginGroup(rect);
+						{
+
+							var width = rect.width * 0.7f;
+							var height = 50f;
+							if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Screen", buttonStyle) == true) {
+
+								onCreateScreen();
+
+							}
+
+						}
+						GUI.EndGroup();
 
 					}
 

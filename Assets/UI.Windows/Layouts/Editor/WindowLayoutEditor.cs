@@ -49,7 +49,7 @@ namespace UnityEditor.UI.Windows {
 			
 			//var color = new Color(0.8f, 0.8f, 1f, 1f);
 			//color.a = 0.7f;
-			this.OnPreviewGUI(Color.white, r, background, true, false);
+			this.OnPreviewGUI(Color.white, r, GUI.skin.box, true, false);
 
 		}
 
@@ -68,7 +68,11 @@ namespace UnityEditor.UI.Windows {
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, System.Action<WindowLayoutElement, Rect, bool> onElementGUI) {
 
 			var oldColor = GUI.color;
-			GUI.Box(r, string.Empty);
+			var c = Color.white;
+			c.a = 1f;
+			GUI.color = c;
+			GUI.Box(r, string.Empty, background);
+			GUI.color = oldColor;
 
 			var _target = this.target as UnityEngine.UI.Windows.WindowLayout;
 			if (_target == null) return;

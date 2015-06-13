@@ -13,15 +13,32 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 
 	public class EndGameScreenBase : LayoutWindowType {
 		
+		public class FlowFunctionLoaderRoutes : WindowRoutes {
+			
+			public FlowFunctionLoaderRoutes(int index) : base(index) {}
+			
+					
+			/// <summary>
+			/// Flows to the Default.
+			/// </summary>
+			/// <returns>Default</returns>
+			public virtual void FlowDefault(params object[] parameters) {
+				
+				WindowSystem.ShowDefault(parameters);
+				
+			}
+			
+		}
+		
 		/// <summary>
 		/// Call the Function Loader.
 		/// Function: Loading
 		/// </summary>
 		/// <returns>Function root window</returns>
-		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(UnityEngine.Events.UnityAction onFunctionEnds, params object[] parameters) {
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, params object[] parameters) {
 			
 			var functionRoot = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(parameters);
-			WindowSystem.RegisterFunctionCallback(functionRoot, onFunctionEnds);
+			WindowSystem.RegisterFunctionCallback(functionRoot, (index) => { onFunctionEnds(new FlowFunctionLoaderRoutes(index)); });
 			
 			return functionRoot;
 			

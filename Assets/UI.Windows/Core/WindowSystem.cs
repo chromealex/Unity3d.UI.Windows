@@ -8,26 +8,44 @@ using System.Text;
 using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows {
+	
+	public class WindowRoutes {
+
+		private int index;
+
+		public WindowRoutes(int index) {
+
+			this.index = index;
+
+		}
+
+		public int GetFunctionIterationIndex() {
+
+			return this.index;
+
+		}
+
+	}
 
 	public class WindowSystem : MonoBehaviour {
 
 		public class Functions {
 
-			private Dictionary<int, List<UnityAction>> items = new Dictionary<int, List<UnityAction>>();
+			private Dictionary<int, List<UnityAction<int>>> items = new Dictionary<int, List<UnityAction<int>>>();
 			private int iteration = 0;
 
-			public void Register(WindowBase instance, UnityAction action) {
+			public void Register(WindowBase instance, UnityAction<int> action) {
 				
 				instance.SetFunctionIterationIndex(++this.iteration);
 
-				List<UnityAction> list;
+				List<UnityAction<int>> list;
 				if (this.items.TryGetValue(this.iteration, out list) == true) {
 
 					list.Add(action);
 
 				} else {
 
-					this.items.Add(this.iteration, new List<UnityAction>() { action });
+					this.items.Add(this.iteration, new List<UnityAction<int>>() { action });
 
 				}
 
@@ -37,10 +55,10 @@ namespace UnityEngine.UI.Windows {
 
 				var iteration = instance.GetFunctionIterationIndex();
 
-				List<UnityAction> list;
+				List<UnityAction<int>> list;
 				if (this.items.TryGetValue(iteration, out list) == true) {
 
-					foreach (var item in list) item.Invoke();
+					foreach (var item in list) item.Invoke(iteration);
 					this.items.Remove(iteration);
 
 				}
@@ -211,7 +229,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public static void RegisterFunctionCallback(WindowBase instance, UnityEngine.Events.UnityAction onFunctionEnds) {
+		public static void RegisterFunctionCallback(WindowBase instance, UnityAction<int> onFunctionEnds) {
 
 			WindowSystem.instance.functions.Register(instance, onFunctionEnds);
 

@@ -1,13 +1,19 @@
 ﻿		
+		public class FlowFunction{FUNCTION_CALL_NAME}Routes : WindowRoutes {
+			
+			public FlowFunction{FUNCTION_CALL_NAME}Routes(int index) : base(index) {}
+			{TRANSITION_METHODS}
+		}
+		
 		/// <summary>
 		/// Call the Function {FUNCTION_CALL_NAME}.
 		/// Function: {FUNCTION_NAME}
 		/// </summary>
 		/// <returns>Function root window</returns>
-		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction onFunctionEnds, params object[] parameters) {
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, params object[] parameters) {
 			
 			var functionRoot = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(parameters);
-			WindowSystem.RegisterFunctionCallback(functionRoot, onFunctionEnds);
+			WindowSystem.RegisterFunctionCallback(functionRoot, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(index)); });
 			
 			return functionRoot;
 			

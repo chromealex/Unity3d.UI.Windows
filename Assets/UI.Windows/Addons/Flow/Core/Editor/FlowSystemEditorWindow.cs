@@ -492,12 +492,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var flowWindowWithLayoutScaleFactor = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
 			if (flowWindowWithLayout == true) {
 
-				var screen = window.GetScreen() as LayoutWindowType;
-				if (screen != null && screen.layout.layout != null) {
+				//var screen = window.GetScreen() as LayoutWindowType;
+				//if (screen != null && screen.layout.layout != null) {
 
-					return new Vector2(250f, 250f) * (1f + flowWindowWithLayoutScaleFactor);
+				return new Vector2(250f, 250f) * (1f + flowWindowWithLayoutScaleFactor);
 
-				}
+				//}
 
 			}
 
@@ -517,32 +517,125 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
+		private GUIStyle layoutBoxStyle;
 		public void DrawWindowLayout(FlowWindow window) {
 
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			if (flowWindowWithLayout == true) {
-				
-				var screen = window.GetScreen() as LayoutWindowType;
-				if (screen != null && screen.layout.layout != null) {
+
+				this.layoutBoxStyle = FlowSystemEditorWindow.defaultSkin.FindStyle("LayoutBox");
+
+				GUILayout.Box(string.Empty, this.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+				var rect = GUILayoutUtility.GetLastRect();
+
+				if (window.OnPreviewGUI(rect,
+				                        FlowSystemEditorWindow.defaultSkin.button,
+				                        this.layoutBoxStyle,
+				                        drawInfo: true,
+				                        selectable: true,
+				                        onCreateScreen: () => {
+
+					this.SelectWindow(window);
+					FlowChooserFilter.CreateScreen(Selection.activeObject, "/Screens", () => {
+
+						this.SelectWindow(window);
+
+					});
+
+				}, onCreateLayout: () => {
 					
-					GUILayout.Box(string.Empty, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
-					var rect = GUILayoutUtility.GetLastRect();
+					this.SelectWindow(window);
+					Selection.activeObject = window.GetScreen();
+					FlowChooserFilter.CreateLayout(Selection.activeObject, Selection.activeGameObject, () => {
+						
+						this.SelectWindow(window);
+						
+					});
 
-					if (window.OnPreviewGUI(rect, GUI.skin.box, drawInfo: true, selectable: true) == true) {
+				}) == true) {
 
-						// Set for waiting connection
-						var element = WindowLayoutElement.waitForComponentConnectionElementTemp;
+					// Set for waiting connection
+					var element = WindowLayoutElement.waitForComponentConnectionElementTemp;
 
-						this.WaitForAttach(window.id, element);
+					this.WaitForAttach(window.id, element);
 
-						WindowLayoutElement.waitForComponentConnectionTemp = false;
-
-					}
-					
-					UnityEditor.UI.Windows.Plugins.Flow.Flow.OnDrawWindowLayoutGUI(rect, window);
+					WindowLayoutElement.waitForComponentConnectionTemp = false;
 
 				}
+				
+				UnityEditor.UI.Windows.Plugins.Flow.Flow.OnDrawWindowLayoutGUI(rect, window);
 
+			}
+
+		}
+
+		private void SelectWindow(FlowWindow window) {
+
+			for (int i = 0; i < window.states.Length; ++i) window.SetCompletedState(i, CompletedState.NotReady);
+			
+			if (window.compiled == false) {
+				
+				this.ShowNotification(new GUIContent("You need to compile this window to use 'Select' command"));
+				
+			} else {
+				
+				Selection.activeObject = AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
+				EditorGUIUtility.PingObject(Selection.activeObject);
+				
+				//if (window.screen == null) {
+				
+				window.SetCompletedState(0, CompletedState.NotReady);
+				
+				var files = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
+				foreach (var file in files) {
+					
+					var path = AssetDatabase.GUIDToAssetPath(file);
+					
+					var go = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+					if (go != null) {
+						
+						var screen = go.GetComponent<WindowBase>();
+						if (screen != null) {
+							
+							window.SetScreen(screen);
+							window.SetCompletedState(0, CompletedState.Ready);
+							
+							var lWin = screen as LayoutWindowType;
+							if (lWin != null) {
+								
+								if (lWin.layout.layout != null) {
+									
+									window.SetCompletedState(1, CompletedState.Ready);
+									window.SetCompletedState(2, (lWin.layout.components.Any((c) => c.component == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
+									
+								} else {
+									
+									window.SetCompletedState(0, CompletedState.NotReady);
+									window.SetCompletedState(1, CompletedState.NotReady);
+									window.SetCompletedState(2, CompletedState.NotReady);
+									
+								}
+								
+							} else {
+								
+								window.SetCompletedState(1, CompletedState.Ready);
+								
+							}
+							
+							break;
+							
+						} else {
+							
+							window.SetCompletedState(0, CompletedState.ReadyButWarnings);
+							
+						}
+						
+					}
+					
+				}
+				
+				//}
+				
 			}
 
 		}
@@ -2246,73 +2339,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (window.IsSmall() == false && FlowSceneView.IsActive() == false && window.storeType == FlowWindow.StoreType.NewScreen) {
 
 					if (GUILayout.Button("Select", buttonStyle) == true) {
-						
-						for (int i = 0; i < window.states.Length; ++i) window.SetCompletedState(i, CompletedState.NotReady);
 
-						if (window.compiled == false) {
-							
-							this.ShowNotification(new GUIContent("You need to compile this window to use 'Select' command"));
-							
-						} else {
-
-							Selection.activeObject = AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
-							EditorGUIUtility.PingObject(Selection.activeObject);
-
-							//if (window.screen == null) {
-
-							window.SetCompletedState(0, CompletedState.NotReady);
-
-							var files = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
-							foreach (var file in files) {
-
-								var path = AssetDatabase.GUIDToAssetPath(file);
-								
-								var go = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
-								if (go != null) {
-
-									var screen = go.GetComponent<WindowBase>();
-									if (screen != null) {
-
-										window.SetScreen(screen);
-										window.SetCompletedState(0, CompletedState.Ready);
-
-										var lWin = screen as LayoutWindowType;
-										if (lWin != null) {
-
-											if (lWin.layout.layout != null) {
-
-												window.SetCompletedState(1, CompletedState.Ready);
-												window.SetCompletedState(2, (lWin.layout.components.Any((c) => c.component == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
-
-											} else {
-												
-												window.SetCompletedState(0, CompletedState.NotReady);
-												window.SetCompletedState(1, CompletedState.NotReady);
-												window.SetCompletedState(2, CompletedState.NotReady);
-
-											}
-
-										} else {
-
-											window.SetCompletedState(1, CompletedState.Ready);
-
-										}
-
-										break;
-
-									} else {
-
-										window.SetCompletedState(0, CompletedState.ReadyButWarnings);
-
-									}
-
-								}
-
-							}
-
-							//}
-
-						}
+						this.SelectWindow(window);
 
 					}
 
@@ -2349,7 +2377,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				} else {
 
 					// If it's other window
-					if (window.IsSmall() == false) {
+					if (window.IsSmall() == false ||
+					    window.IsFunction() == true) {
 						
 						if (FlowSystem.AlreadyAttached(this.currentAttachId, id, this.currentAttachComponent) == true) {
 							

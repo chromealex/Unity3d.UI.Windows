@@ -12,6 +12,14 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 
 	public class GameTypeChooserScreen : GameTypeChooserScreenBase {
 
+		public override void OnInit() {
+
+			base.OnInit();
+
+			this.FlowFunctionLoader((routes) => routes.FlowGameplayView());
+
+		}
+
 	}
 
 }

@@ -80,9 +80,13 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var functionName = functionContainer.title;
 			var functionCallName = functionContainer.directory;
 			var classNameWithNamespace = Tpl.GetNamespace(root) + "." + Tpl.GetDerivedClassName(root);
-			
+			var transitionMethods = Tpl.GenerateTransitionMethods(window);
+			transitionMethods = transitionMethods.Replace("\r\n", "\r\n\t")
+												 .Replace("\n", "\n\t");
+
 			result +=
-				part.Replace("{FUNCTION_NAME}", functionName)
+				part.Replace("{TRANSITION_METHODS}", transitionMethods)
+					.Replace("{FUNCTION_NAME}", functionName)
 					.Replace("{FUNCTION_CALL_NAME}", functionCallName)
 					.Replace("{CLASS_NAME_WITH_NAMESPACE}", classNameWithNamespace);
 			
