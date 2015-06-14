@@ -212,6 +212,43 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		#if UNITY_EDITOR
+		private UnityEditor.Editor[] graphicEditors;
+		public void OnPreviewGUI(Rect r, GUIStyle background) {
+
+			var i = 0;
+
+			var graphics = this.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
+			this.graphicEditors = new UnityEditor.Editor[graphics.Length];
+			foreach (var graphic in graphics) {
+				
+				this.graphicEditors[i] = (this.graphicEditors[i] == null) ? UnityEditor.Editor.CreateEditor(graphic) : null;
+				if (this.graphicEditors[i] != null && this.graphicEditors[i].HasPreviewGUI() == true) {
+
+					var rectSize = graphic.rectTransform.sizeDelta;
+					if (rectSize.x < r.width && rectSize.x > 0f) {
+
+						r.x += r.width * 0.5f - rectSize.x * 0.5f;
+						r.width = rectSize.x;
+
+					}
+
+					if (rectSize.y < r.height && rectSize.y > 0f) {
+						
+						r.y += r.height * 0.5f - rectSize.y * 0.5f;
+						r.height = rectSize.y;
+
+					}
+
+					this.graphicEditors[i].OnPreviewGUI(r, background);
+					
+				}
+
+				++i;
+				
+			}
+
+		}
+
 		public override void OnValidateEditor() {
 
 			base.OnValidateEditor();

@@ -868,7 +868,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							this.isScreenDirty = true;
 							this.isLayoutDirty = true;
 
-							this.layoutInstance.SetScale(scaleMode);
+							this.layoutInstance.SetScale(scaleMode, layoutScreen.layout.fixedScaleResolution);
 
 						}
 

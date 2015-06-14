@@ -362,41 +362,23 @@ namespace UnityEditor.UI.Windows {
 			
 		}
 		
-		private void Update_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
+		private void Setup_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
 			
-			foreach (var element in _target.elements) element.Update_EDITOR();
+			var elements = _target.GetComponentsInChildren<WindowLayoutElement>(true);
 			
-			#region COMPONENTS
-			_target.canvas = _target.GetComponentsInChildren<Canvas>(true)[0];
-			var raycasters = _target.GetComponentsInChildren<UnityEngine.EventSystems.BaseRaycaster>(true);
-			if (raycasters != null && raycasters.Length > 0) _target.raycaster = raycasters[0];
-			#endregion
-			
-			_target.initialized = (_target.canvas != null);
-			
-			#region SETUP
-			if (_target.initialized == true) {
+			_target.elements = _target.elements.Where((e) => e != null).ToList();
+			foreach (var e in elements) {
 				
-				WindowSystem.ApplyToSettings(_target.canvas);
-				
-				// Raycaster
-				if ((_target.raycaster as GraphicRaycaster) != null) {
+				if (_target.elements.Contains(e) == false) {
 					
-					(_target.raycaster as GraphicRaycaster).GetType().GetField("m_BlockingMask", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue((_target.raycaster as GraphicRaycaster), (LayerMask)(1 << _target.gameObject.layer));
+					// New elements will be added
+					e.tag = LayoutTag.None;
 					
 				}
 				
 			}
-			#endregion
-			
-		}
-		
-		private void Setup_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
-			
-			_target.elements = _target.elements.Where((e) => e != null).ToList();
 			
 			var usedTags = new List<LayoutTag>();
-			var elements = _target.GetComponentsInChildren<WindowLayoutElement>(true);
 			_target.elements = _target.elements.Where((e) => elements.Contains(e)).ToList();
 			
 			foreach (var element in elements) {
@@ -436,7 +418,36 @@ namespace UnityEditor.UI.Windows {
 			}
 			
 		}
-		
+
+		private void Update_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
+			
+			foreach (var element in _target.elements) element.Update_EDITOR();
+			
+			#region COMPONENTS
+			_target.canvas = _target.GetComponentsInChildren<Canvas>(true)[0];
+			var raycasters = _target.GetComponentsInChildren<UnityEngine.EventSystems.BaseRaycaster>(true);
+			if (raycasters != null && raycasters.Length > 0) _target.raycaster = raycasters[0];
+			#endregion
+			
+			_target.initialized = (_target.canvas != null);
+			
+			#region SETUP
+			if (_target.initialized == true) {
+				
+				WindowSystem.ApplyToSettings(_target.canvas);
+				
+				// Raycaster
+				if ((_target.raycaster as GraphicRaycaster) != null) {
+					
+					(_target.raycaster as GraphicRaycaster).GetType().GetField("m_BlockingMask", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue((_target.raycaster as GraphicRaycaster), (LayerMask)(1 << _target.gameObject.layer));
+					
+				}
+				
+			}
+			#endregion
+			
+		}
+
 		private LayoutTag GetTag(List<LayoutTag> used) {
 			
 			var tags = System.Enum.GetValues(typeof(LayoutTag));

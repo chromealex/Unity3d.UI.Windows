@@ -98,7 +98,7 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			base.OnValidate();
 
-			this.layout.Update_EDITOR();
+			this.layout.Update_EDITOR(this);
 			
 		}
 		#endif
@@ -135,18 +135,29 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			#if UNITY_EDITOR
 			public string description;
+			public string GetDescription(LayoutWindowType layoutWindow) {
+
+				if (layoutWindow != null &&
+				    layoutWindow.layout.layout != null) {
+
+					var element = layoutWindow.layout.layout.GetRootByTag(this.tag);
+					if (element != null) return element.comment;
+
+				}
+
+				return string.Empty;
+
+			}
 			#endif
+
 			[ReadOnly]
 			public LayoutTag tag;
 			[ComponentChooser]
 			public WindowComponent component;
 			public int sortingOrder = 0;
 			
-			public Component(LayoutTag tag, string description) {
-				
-				#if UNITY_EDITOR
-				this.description = description;
-				#endif
+			public Component(LayoutTag tag) {
+
 				this.tag = tag;
 				
 			}
@@ -154,7 +165,7 @@ namespace UnityEngine.UI.Windows.Types {
 			#if UNITY_EDITOR
 			private IPreviewEditor editor;
 			public void OnPreviewGUI(Rect rect, GUIStyle background) {
-				
+
 				if (this.component != null) {
 
 					if (this.editor == null) this.editor = UnityEditor.Editor.CreateEditor(this.component) as IPreviewEditor;
@@ -289,6 +300,7 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		public WindowLayout.ScaleMode scaleMode;
+		public Vector2 fixedScaleResolution = new Vector2(1024f, 768f);
 
 		public WindowLayout layout;
 		public Component[] components;
@@ -309,7 +321,7 @@ namespace UnityEngine.UI.Windows.Types {
 			rect.anchoredPosition = (this.layout.transform as RectTransform).anchoredPosition;
 			
 			instance.Setup(window);
-			instance.Init(depth, raycastPriority, orderInLayer, this.scaleMode);
+			instance.Init(depth, raycastPriority, orderInLayer, this.scaleMode, this.fixedScaleResolution);
 			
 			this.instance = instance;
 			
@@ -448,16 +460,17 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		#if UNITY_EDITOR
 		private List<LayoutTag> tags = new List<LayoutTag>();
-		private List<string> descriptions = new List<string>();
-		internal void Update_EDITOR() {
+		internal void Update_EDITOR(LayoutWindowType layoutWindow) {
 			
 			if (this.layout == null) return;
 			
-			this.layout.GetTags(this.tags, this.descriptions);
+			this.layout.GetTags(this.tags);
 			
 			// Used
 			for (int i = 0; i < this.components.Length; ++i) {
 				
+				this.components[i].description = this.components[i].GetDescription(layoutWindow);
+
 				var index = this.tags.IndexOf(this.components[i].tag);
 				if (index == -1) {
 					
@@ -466,19 +479,17 @@ namespace UnityEngine.UI.Windows.Types {
 					
 				}
 				this.tags.RemoveAt(index);
-				this.descriptions.RemoveAt(index);
-				
+
 			}
-			
-			var j = 0;
+
 			foreach (var tag in this.tags) {
 				
-				this.AddComponentLink(tag, this.descriptions[j++]);
+				this.AddComponentLink(tag);
 				
 			}
 			
 			this.components = this.components.Distinct(new ComponentComparer()).ToArray();
-			
+
 		}
 		
 		private void RemoveComponentLink(LayoutTag tag) {
@@ -487,10 +498,10 @@ namespace UnityEngine.UI.Windows.Types {
 			
 		}
 		
-		private void AddComponentLink(LayoutTag tag, string description) {
+		private void AddComponentLink(LayoutTag tag) {
 			
 			var list = this.components.ToList();
-			list.Add(new Component(tag, description));
+			list.Add(new Component(tag));
 			this.components = list.ToArray();
 			
 		}

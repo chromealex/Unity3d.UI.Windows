@@ -7,6 +7,7 @@ using UnityEngine.UI.Windows.Components;
 
 namespace UnityEditor.UI.Windows {
 
+	// Uncomment below line to enable preview functionality
 	//[CustomEditor(typeof(WindowComponent), true)]
 	public class WindowComponentEditor : Editor, IPreviewEditor {
 
@@ -18,13 +19,13 @@ namespace UnityEditor.UI.Windows {
 
 		public override void OnPreviewGUI(Rect r, GUIStyle background) {
 			
-			this.OnPreviewGUI(Color.white, r, background);
+			//this.OnPreviewGUI(Color.white, r, background);
 			
 		}
 		
 		public virtual void OnPreviewGUI(Color color, Rect r, GUIStyle background) {
 			
-			this.OnPreviewGUI(color, r, background, false, false);
+			//this.OnPreviewGUI(color, r, background, false, false);
 			
 		}
 
@@ -77,17 +78,7 @@ namespace UnityEditor.UI.Windows {
 			
 			if (Event.current.type != EventType.Layout) {
 
-				var graphics = comp.GetComponentsInChildren<UnityEngine.UI.Graphic>(true);
-				foreach (var graphic in graphics) {
-					
-					var editor = Editor.CreateEditor(graphic) as GraphicEditor;
-					if (editor != null && editor.HasPreviewGUI() == true) {
-						
-						editor.OnPreviewGUI(r, background);
-						
-					}
-					
-				}
+				comp.OnPreviewGUI(r, background);
 
 			}
 

@@ -40,7 +40,7 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR
 		public virtual void OnValidate() {
 
-			this.elements = this.GetComponentsInChildren<WindowLayoutElement>(true).ToList();
+			//this.elements = this.GetComponentsInChildren<WindowLayoutElement>(true).ToList();
 
 			if (this.canvasScaler == null || this.GetComponents<CanvasScaler>().Length > 1) {
 
@@ -53,7 +53,7 @@ namespace UnityEngine.UI.Windows {
 		}
 		#endif
 
-		public void Init(float depth, int raycastPriority, int orderInLayer, WindowLayout.ScaleMode scaleMode) {
+		public void Init(float depth, int raycastPriority, int orderInLayer, WindowLayout.ScaleMode scaleMode, Vector2 fixedScaleResolution) {
 			
 			if (this.initialized == false) {
 				
@@ -66,7 +66,7 @@ namespace UnityEngine.UI.Windows {
 			this.canvas.planeDistance = 10f;// * orderInLayer;
 			this.canvas.worldCamera = this.GetWindow().workCamera;
 
-			this.SetScale(scaleMode);
+			this.SetScale(scaleMode, fixedScaleResolution);
 
 			for (int i = 0; i < this.elements.Count; ++i) this.elements[i].Setup(this.GetWindow());
 
@@ -196,7 +196,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public void SetScale(WindowLayout.ScaleMode scaleMode) {
+		public void SetScale(WindowLayout.ScaleMode scaleMode, Vector2 fixedResolution) {
 
 			this.ValidateCanvasScaler();
 
@@ -213,7 +213,7 @@ namespace UnityEngine.UI.Windows {
 					this.canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
 					this.canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
 					this.canvasScaler.matchWidthOrHeight = 0f;
-					this.canvasScaler.referenceResolution = new Vector2(1024f, 768f);	// TODO: Add to flow data settings
+					this.canvasScaler.referenceResolution = new Vector2(fixedResolution.x, fixedResolution.y);
 
 				} else if (scaleMode == ScaleMode.Custom) {
 
@@ -243,19 +243,15 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public void GetTags(List<LayoutTag> tags, List<string> descriptions) {
+		public void GetTags(List<LayoutTag> tags) {
 			
 			tags.Clear();
-			descriptions.Clear();
 			
 			foreach (var element in this.elements) {
 
 				if (element == null) continue;
 
 				tags.Add(element.tag);
-#if UNITY_EDITOR
-				descriptions.Add(element.comment);
-#endif
 				
 			}
 			
