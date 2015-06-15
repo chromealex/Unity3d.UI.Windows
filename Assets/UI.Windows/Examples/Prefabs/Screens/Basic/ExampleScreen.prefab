@@ -61,6 +61,7 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!114 &11426760
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -125,7 +125,9 @@ namespace UnityEngine.Extensions {
 					
 				}
 
-				obj = (T)Object.Instantiate(prefab, position, rotation);
+				obj = Object.Instantiate<T>(prefab);
+				obj.transform.position = position;
+				obj.transform.rotation = rotation;
 				obj.transform.SetParent(prefab.transform.parent);
 				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
@@ -135,8 +137,11 @@ namespace UnityEngine.Extensions {
 
 				return (T)obj;
 			} else {
+				
 				T obj = null;
-				obj = (T)Object.Instantiate(prefab, position, rotation);
+				obj = Object.Instantiate<T>(prefab);
+				obj.transform.position = position;
+				obj.transform.rotation = rotation;
 				obj.transform.SetParent(prefab.transform.parent);
 				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;

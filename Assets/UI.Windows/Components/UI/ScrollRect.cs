@@ -43,14 +43,14 @@ namespace UnityEngine.UI.Windows.Extensions {
 			
 			if (this.horizontalScrollbar != null) this.horizontalScrollbar.interactable = this.horizontal;
 			if (this.verticalScrollbar != null) this.verticalScrollbar.interactable = this.vertical;
-			
+
 			this.horizontalLast = this.horizontal;
 			this.verticalLast = this.vertical;
 
 		}
 		
 		protected override void OnRectTransformDimensionsChange() {
-			
+
 			base.OnRectTransformDimensionsChange();
 			
 			this.UpdateDropdown();

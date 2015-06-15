@@ -135,6 +135,7 @@ namespace UnityEditor.Utilities {
 			string overrideString;
 			string returnTypeString;
 			string functionContentString;
+			string paramStringWithoutTypes = string.Empty;
 			
 			switch (m_ScriptPrescription.m_Lang) {
 			/*case Language.JavaScript:
@@ -162,22 +163,44 @@ namespace UnityEditor.Utilities {
 				break;*/
 				
 				case Language.CSharp:
-				// Comment
+					
+					// Comment
 					WriteComment(function.comment);
 				
-				// Function header
+					// Function header
 					for (int i = 0; i < function.parameters.Length; i++) {
+						
 						paramString += function.parameters[i].type + " " + function.parameters[i].name;
-						if (i < function.parameters.Length - 1) paramString += ", ";
+						paramStringWithoutTypes += function.parameters[i].name;
+						if (i < function.parameters.Length - 1) {
+
+							paramString += ", ";
+							paramStringWithoutTypes += ", ";
+
+						}
+
 					}
 					overrideString = (function.isVirtual ? "public override " : string.Empty);
 					returnTypeString = (function.returnType == null ? "void " : function.returnType + " ");
-					m_Writer.WriteLine(m_Indentation + overrideString + returnTypeString + function.name + " (" + paramString + ") {");
+					m_Writer.WriteLine(m_Indentation + overrideString + returnTypeString + function.name + "(" + paramString + ") {");
 				
-				// Function content
+					// Function content
 					IndentLevel++;
-					functionContentString = (function.returnType == null ? string.Empty : function.returnDefault + ";");
-					m_Writer.WriteLine(m_Indentation + functionContentString);
+					{
+
+						if (function.isVirtual == true) {
+
+							WriteBlankLine();
+							m_Writer.WriteLine(m_Indentation + "base." + function.name + "(" + paramStringWithoutTypes + ");");
+							WriteBlankLine();
+
+						}
+
+						functionContentString = (function.returnType == null ? string.Empty : function.returnDefault + ";");
+						m_Writer.WriteLine(m_Indentation + functionContentString);
+						WriteBlankLine();
+
+					}
 					IndentLevel--;
 					m_Writer.WriteLine(m_Indentation + "}");
 				

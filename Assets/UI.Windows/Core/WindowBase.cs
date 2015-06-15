@@ -73,7 +73,7 @@ namespace UnityEngine.UI.Windows {
 				
 				this.currentState = WindowObjectState.NotInitialized;
 
-				Debug.LogError("Can't initialize window instance because of some components was not installed properly.");
+				Debug.LogError("Can't initialize window instance because of some components was not installed properly.", this);
 				return;
 
 			}
@@ -96,7 +96,7 @@ namespace UnityEngine.UI.Windows {
 				} else {
 
 					// Method not found
-					Debug.LogWarning("Method `OnParametersPass` was not found with input parameters.");
+					Debug.LogWarning("Method `OnParametersPass` was not found with input parameters.", this);
 
 				}
 

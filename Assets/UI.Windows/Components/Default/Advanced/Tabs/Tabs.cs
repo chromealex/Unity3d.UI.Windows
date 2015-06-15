@@ -94,7 +94,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public void Select(int index) {
+		public void Select(int index, bool forced = false) {
 
 			if (this.lastIndex >= 0) {
 				
@@ -112,7 +112,7 @@ namespace UnityEngine.UI.Windows.Components {
 				if (lastItem != null) {
 					
 					lastItem.SetDisabled();
-					if (prevLastIndex != index) {
+					if (forced == true || prevLastIndex != index) {
 
 						lastItem.OnClick();
 

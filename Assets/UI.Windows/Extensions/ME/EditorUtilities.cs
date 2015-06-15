@@ -179,13 +179,13 @@ namespace ME {
 			
 		}
 
-		public static T[] GetPrefabsOfType<T>(bool strongType = true, string directory = null, bool useCache = true) where T : Component {
+		public static T[] GetPrefabsOfType<T>(bool strongType = true, string directory = null, bool useCache = true, System.Func<T, bool> predicate = null) where T : Component {
 			
-			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory, useCache).Cast<T>().ToArray();
+			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory, useCache, (p) => { if (predicate != null && p is T) { return predicate(p as T); } else { return true; } }).Cast<T>().ToArray();
 			
 		}
 
-		public static Component[] GetPrefabsOfTypeRaw<T>(bool strongType, string directory = null, bool useCache = true) where T : Component {
+		public static Component[] GetPrefabsOfTypeRaw<T>(bool strongType, string directory = null, bool useCache = true, System.Func<T, bool> predicate = null) where T : Component {
 
 			if (directory != null && System.IO.Directory.Exists(directory) == false) return new Component[0] {};
 
@@ -210,7 +210,9 @@ namespace ME {
 					foreach (var comp in comps) {
 
 						if (comp == null) continue;
-						
+
+						if (predicate != null && predicate(comp) == false) continue;
+
 						if (strongType == true && comp.GetType().Name != typeof(T).Name) continue;
 						
 						output.Add(comp);
