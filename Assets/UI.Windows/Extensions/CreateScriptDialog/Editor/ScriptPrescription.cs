@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
 
-namespace UnityEditor.Utilities {
+namespace UnityEditor.UI.Windows.Extensions.Utilities {
 
 	[Serializable]
 	internal class ScriptPrescription {

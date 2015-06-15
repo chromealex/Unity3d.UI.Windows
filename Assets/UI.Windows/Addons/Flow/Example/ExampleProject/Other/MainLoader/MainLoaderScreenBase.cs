@@ -20,7 +20,10 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// <returns>GlobalMap</returns>
 		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowGlobalMap(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 				
@@ -31,7 +34,10 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// <returns>Background</returns>
 		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowBackground(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 		

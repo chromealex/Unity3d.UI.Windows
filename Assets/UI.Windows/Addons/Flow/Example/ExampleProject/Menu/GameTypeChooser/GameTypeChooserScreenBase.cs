@@ -20,21 +20,48 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 		/// <returns>Shop</returns>
 		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowShop(params object[] parameters) {
 			
-			return WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
+			var instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 				
-		/// <summary>
-		/// Flows to the GameplayLoader.
-		/// Full Name: ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen
-		/// </summary>
-		/// <returns>GameplayLoader</returns>
-		public virtual ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen FlowGameplayLoader(params object[] parameters) {
+		public class FlowFunctionLoaderRoutes : WindowRoutes {
 			
-			return WindowSystem.Show<ExampleProject.UI.Other.GameplayLoader.GameplayLoaderScreen>(parameters);
+			public FlowFunctionLoaderRoutes(int index) : base(index) {}
+			
+					
+			/// <summary>
+			/// Flows to the GameplayView.
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
+			/// </summary>
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowGameplayView(params object[] parameters) {
+				
+				var instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>(parameters);
+				instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+				
+				return instance;
+				
+			}
 			
 		}
 		
+		/// <summary>
+		/// Call the Function Loader.
+		/// Function: Loading
+		/// </summary>
+		/// <returns>Function root window</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, params object[] parameters) {
+			
+			var functionRoot = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(parameters);
+			WindowSystem.RegisterFunctionCallback(functionRoot, (index) => { onFunctionEnds(new FlowFunctionLoaderRoutes(index)); });
+			
+			return functionRoot;
+			
+		}
+
 	}
 
 }

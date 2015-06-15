@@ -5,10 +5,67 @@ using System.Collections.Generic;
 using UnityEngine.Extensions;
 using System.Reflection;
 using System.Text;
+using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows {
+	
+	public class WindowRoutes {
+
+		private int index;
+
+		public WindowRoutes(int index) {
+
+			this.index = index;
+
+		}
+
+		public int GetFunctionIterationIndex() {
+
+			return this.index;
+
+		}
+
+	}
 
 	public class WindowSystem : MonoBehaviour {
+
+		public class Functions {
+
+			private Dictionary<int, List<UnityAction<int>>> items = new Dictionary<int, List<UnityAction<int>>>();
+			private int iteration = 0;
+
+			public void Register(WindowBase instance, UnityAction<int> action) {
+				
+				instance.SetFunctionIterationIndex(++this.iteration);
+
+				List<UnityAction<int>> list;
+				if (this.items.TryGetValue(this.iteration, out list) == true) {
+
+					list.Add(action);
+
+				} else {
+
+					this.items.Add(this.iteration, new List<UnityAction<int>>() { action });
+
+				}
+
+			}
+
+			public void Call(WindowBase instance) {
+
+				var iteration = instance.GetFunctionIterationIndex();
+
+				List<UnityAction<int>> list;
+				if (this.items.TryGetValue(iteration, out list) == true) {
+
+					foreach (var item in list) item.Invoke(iteration);
+					this.items.Remove(iteration);
+
+				}
+
+			}
+
+		}
 
 		[System.Serializable]
 		public class HistoryItem {
@@ -94,6 +151,8 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public List<HistoryItem> history = new List<HistoryItem>();
 
+		public Functions functions = new Functions();
+
 		[HideInInspector]
 		private float depthStep;
 		[HideInInspector]
@@ -155,7 +214,9 @@ namespace UnityEngine.UI.Windows {
 		protected virtual void Init() {
 
 			foreach (var window in this.windows) window.CreatePool(0);
-			
+
+			this.functions = new Functions();
+
 			this.depthStep = (this.settings.maxDepth - this.settings.minDepth) / this.settings.poolSize;
 			this.zDepthStep = 200f;
 			WindowSystem.ResetDepth();
@@ -165,6 +226,18 @@ namespace UnityEngine.UI.Windows {
 		internal static void WaitCoroutine(IEnumerator routine) {
 
 			WindowSystem.instance.StartCoroutine(routine);
+
+		}
+		
+		public static void RegisterFunctionCallback(WindowBase instance, UnityAction<int> onFunctionEnds) {
+
+			WindowSystem.instance.functions.Register(instance, onFunctionEnds);
+
+		}
+
+		public static void CallFunction(WindowBase instance) {
+
+			WindowSystem.instance.functions.Call(instance);
 
 		}
 

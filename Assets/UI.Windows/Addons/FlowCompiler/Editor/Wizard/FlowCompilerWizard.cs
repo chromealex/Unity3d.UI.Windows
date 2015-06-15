@@ -32,7 +32,12 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			if (editor == null) {
 
 				editor = FlowCompilerWizard.CreateInstance<FlowCompilerWizard>();
-				editor.title = "Flow Compiler Wizard";
+				var title = "UI.Windows: Flow Compiler Wizard";
+				#if !UNITY_4
+				editor.titleContent = new GUIContent(title);
+				#else
+				editor.title = title;
+				#endif
 				editor.ShowUtility();
 
 			}

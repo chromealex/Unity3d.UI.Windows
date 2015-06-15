@@ -24,7 +24,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private static FlowChooserFilterWindow GetInstance(EditorWindow root) {
 			
 			var editor = FlowChooserFilterWindow.CreateInstance<FlowChooserFilterWindow>();
-			editor.title = "UI.Windows Flow Filter";
+			var title = "UI.Windows Flow Filter";
+			#if !UNITY_4
+			editor.titleContent = new GUIContent(title);
+			#else
+			editor.title = title;
+			#endif
 			editor.position = new Rect(0f, 0f, 1f, 1f);
 			
 			editor.isLocked = false;

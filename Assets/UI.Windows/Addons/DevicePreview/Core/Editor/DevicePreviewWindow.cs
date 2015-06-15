@@ -248,7 +248,12 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		public static DevicePreviewWindow ShowEditor(System.Action onClose) {
 			
 			var editor = DevicePreviewWindow.CreateInstance<DevicePreviewWindow>();
-			editor.title = "UI.Windows: Device Preview";
+			var title = "UI.Windows: Device Preview";
+			#if !UNITY_4
+			editor.titleContent = new GUIContent(title);
+			#else
+			editor.title = title;
+			#endif
 			editor.position = new Rect(0f, 0f, 1f, 1f);
 
 			editor.gameView = new GameView(editor);

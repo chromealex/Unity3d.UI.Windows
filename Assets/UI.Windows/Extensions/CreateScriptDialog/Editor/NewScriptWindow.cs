@@ -8,7 +8,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using Object = UnityEngine.Object;
 
-namespace UnityEditor.Utilities {
+namespace UnityEditor.UI.Windows.Extensions.Utilities {
 
 	public class NewScriptWindow : EditorWindow {
 		private const int kButtonWidth = 120;

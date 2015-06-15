@@ -69,7 +69,7 @@ namespace UnityEngine.UI.Windows {
 
 			private IPreviewEditor editor;
 			public void OnPreviewGUI(Color color, Rect rect, GUIStyle background) {
-				
+
 				if (this.editor == null) this.editor = Editor.CreateEditor(this.mainComponent) as IPreviewEditor;
 				if (this.editor != null && this.editor.HasPreviewGUI() == true) {
 

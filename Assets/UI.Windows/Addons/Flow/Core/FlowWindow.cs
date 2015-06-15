@@ -17,6 +17,20 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	};
 
 	[System.Serializable]
+	public class DefaultElement {
+
+		// Where is the element located?
+		public LayoutTag tag;
+		public string comment;
+
+		// Whats the element?
+		public WindowComponentLibraryLinker library;
+		public string elementPath;
+		public WindowComponent elementComponent;
+
+	}
+
+	[System.Serializable]
 	public class FlowWindow {
 
 		[System.Serializable]
@@ -54,7 +68,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			CantCompiled = 0x4,
 			
 			ShowDefault = 0x8,
-			Reserved1 = 0x10,
+			IsFunction = 0x10,
 			Reserved2 = 0x20,
 			Reserved3 = 0x40,
 			Reserved4 = 0x80,
@@ -74,6 +88,13 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		};
 
+		public enum StoreType : byte {
+
+			NewScreen,
+			ReUseScreen,
+
+		};
+
 		public int id;
 		[BitMask(typeof(Flags))]
 		public Flags flags;
@@ -83,6 +104,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public List<int> attaches;
 		public List<ComponentLink> attachedComponents;
 		public Color randomColor;
+		
+		public int functionRootId = 0;
+		public int functionExitId = 0;
+		public int functionId = 0;
+
+		public StoreType storeType = StoreType.NewScreen;
 
 		[System.Obsolete("Bool isContainer does not exists anymore. Use Flags.IsContainer instead.")]
 		public bool isContainer = false;
@@ -90,6 +117,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public bool isDefaultLink = false;
 
 		public List<int> tags = new List<int>();
+
+		public List<DefaultElement> comments = new List<DefaultElement>();
 
 		public bool compiled = false;
 		public string compiledDirectory = string.Empty;
@@ -103,7 +132,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 
-		public WindowBase screen;
+		public int screenWindowId;	// used when storeType == ReUseScreen
+		[SerializeField]
+		private WindowBase screen;
 
 		public FlowWindow(int id, bool isContainer = false, bool isDefaultLink = false, FlowWindow.Flags flags = Flags.Default) {
 			
@@ -130,7 +161,39 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			this.Init(id, flags: flags);
 
 		}
-		
+
+		public FlowWindow GetFunctionContainer() {
+
+			// If current window attached to function
+			var attaches = this.attaches;
+			foreach (var attach in attaches) {
+				
+				var win = FlowSystem.GetWindow(attach);
+				if (win.IsContainer() == true && win.IsFunction() == true) {
+					
+					// We are inside a function
+					return win;
+					
+				}
+				
+			}
+
+			return null;
+
+		}
+
+		public int GetFunctionId() {
+
+			return this.functionId;
+
+		}
+
+		public bool IsFunction() {
+
+			return (this.flags & Flags.IsFunction) != 0;
+			
+		}
+
 		public bool IsContainer() {
 
 			// For old version compability only
@@ -211,12 +274,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		#if UNITY_EDITOR
 		private IPreviewEditor editorCache;
-		public bool OnPreviewGUI(Rect rect, GUIStyle background, bool drawInfo, bool selectable) {
+		public bool OnPreviewGUI(Rect rect, GUIStyle buttonStyle, GUIStyle background, bool drawInfo, bool selectable, System.Action onCreateScreen, System.Action onCreateLayout) {
 
 			WindowLayoutElement.waitForComponentConnectionTemp = false;
 
 			var screen = this.GetScreen() as LayoutWindowType;
-			if (screen != null) {
+			if (screen != null && screen.layout.layout != null) {
 
 				var layout = screen.layout.layout;
 				if (layout != null) {
@@ -227,6 +290,58 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 					if (WindowLayoutElement.waitForComponentConnectionTemp == true) {
 
 						return true;
+
+					}
+
+				}
+
+			} else {
+
+				this.editorCache = null;
+
+				GUI.Box(rect, string.Empty, background);
+				if (this.compiled == false) {
+
+					GUI.Label(rect, "You need to compile window to start using layout functions.", buttonStyle);
+
+				} else {
+
+					if (screen != null) {
+
+						var layout = screen.layout.layout;
+						if (layout == null) {
+							
+							GUI.BeginGroup(rect);
+							{
+								
+								var width = rect.width * 0.7f;
+								var height = 50f;
+								if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Layout", buttonStyle) == true) {
+									
+									onCreateLayout();
+									
+								}
+								
+							}
+							GUI.EndGroup();
+
+						}
+
+					} else {
+
+						GUI.BeginGroup(rect);
+						{
+
+							var width = rect.width * 0.7f;
+							var height = 50f;
+							if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Screen", buttonStyle) == true) {
+
+								onCreateScreen();
+
+							}
+
+						}
+						GUI.EndGroup();
 
 					}
 
@@ -246,7 +361,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		public WindowBase GetScreen() {
-			
+
+			if (this.storeType == StoreType.ReUseScreen) {
+
+				var win = FlowSystem.GetWindow(this.screenWindowId);
+				if (win == null) return null;
+
+				return win.GetScreen();
+
+			}
+
 			return this.screen;
 			
 		}
@@ -326,7 +450,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				if (string.IsNullOrEmpty(this.smallStyleDefault) == true) this.smallStyleDefault = "flow node 4";
 				if (string.IsNullOrEmpty(this.smallStyleSelected) == true) this.smallStyleSelected = "flow node 4 on";
 
-				var defaultLinkStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.NotSelected", this.smallStyleDefault, (styleName) => {
+				var style = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.SmallStyle.NotSelected", this.smallStyleDefault, (styleName) => {
 					
 					var _style = new GUIStyle(styleName);
 					_style.padding = new RectOffset(0, 0, 14, 1);
@@ -339,7 +463,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				});
 
-				var defaultLinkStyleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.DefaultLinkStyle.Selected", this.smallStyleSelected, (styleName) => {
+				var styleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.SmallStyle.Selected", this.smallStyleSelected, (styleName) => {
 					
 					var _style = new GUIStyle(styleName);
 					_style.padding = new RectOffset(0, 0, 14, 1);
@@ -352,7 +476,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 					
 				});
 
-				return selected ? defaultLinkStyleSelected : defaultLinkStyle;
+				return selected ? styleSelected : style;
 
 			} else if (this.IsContainer() == true) {
 
@@ -392,11 +516,31 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				//if (this.compiled == true) {
 
-				if (FlowSystem.GetRootWindow() == this.id) {
-					
-					// Root - Orange
-					styleNormal = "flow node 5";
-					styleSelected = "flow node 5 on";
+				var functionWindow = this.GetFunctionContainer();
+				var isFunction = functionWindow != null;
+				var isRoot = (isFunction == true && functionWindow.functionRootId == this.id);
+				var isExit = (isFunction == true && functionWindow.functionExitId == id);
+				if (FlowSystem.GetRootWindow() == this.id || (isFunction == true && (isRoot == true || isExit == true))) {
+
+					if (isFunction == true && isExit == true) {
+
+						// Function exit point - Green
+						styleNormal = "flow node 3";
+						styleSelected = "flow node 3 on";
+
+					} else if (isFunction == true && isRoot == true) {
+
+						// Function root - Yellow
+						styleNormal = "flow node 4";
+						styleSelected = "flow node 4 on";
+
+					} else {
+
+						// Root - Orange
+						styleNormal = "flow node 5";
+						styleSelected = "flow node 5 on";
+
+					}
 
 				} else if (FlowSystem.GetDefaultWindows().Contains(this.id) == true) {
 

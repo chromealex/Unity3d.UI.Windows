@@ -6,7 +6,10 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} Flow{CLASS_NAME}(params object[] parameters) {
 			
-			return WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(parameters);
+			var instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(parameters);
+			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			
+			return instance;
 			
 		}
 		

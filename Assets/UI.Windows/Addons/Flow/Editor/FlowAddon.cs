@@ -14,8 +14,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		void OnFlowWindowLayoutGUI(Rect rect, FlowWindow window);
 		void OnFlowSettingsGUI();
 		void OnFlowToolbarGUI(GUIStyle toolbarButton);
-		void OnFlowCreateMenuGUI(GenericMenu menu);
-		void OnFlowToolsMenuGUI(GenericMenu menu);
+		void OnFlowCreateMenuGUI(string prefix, GenericMenu menu);
+		void OnFlowToolsMenuGUI(string prefix, GenericMenu menu);
 		
 		string OnCompilerTransitionGeneration(FlowWindow window);
 		string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName);
@@ -34,14 +34,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public string name;
 
 		public FlowSystemEditorWindow flowEditor { get; set; }
+		
+		public virtual GenericMenu GetSettingsMenu(GenericMenu menu) { return menu; }
 
 		public virtual void Show(System.Action onClose) {}
 		public virtual void OnFlowSettingsGUI() {}
 		public virtual void OnFlowWindowGUI(FlowWindow window) {}
 		public virtual void OnFlowWindowLayoutGUI(Rect rect, FlowWindow window) {}
 		public virtual void OnFlowToolbarGUI(GUIStyle buttonStyle) {}
-		public virtual void OnFlowCreateMenuGUI(GenericMenu menu) {}
-		public virtual void OnFlowToolsMenuGUI(GenericMenu menu) {}
+		public virtual void OnFlowCreateMenuGUI(string prefix, GenericMenu menu) {}
+		public virtual void OnFlowToolsMenuGUI(string prefix, GenericMenu menu) {}
 		
 		public virtual string OnCompilerTransitionGeneration(FlowWindow window) { return string.Empty; }
 		public virtual string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) { return string.Empty; }
@@ -55,12 +57,34 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class Flow : IWindowAddon {
 
-		public static void DrawModuleSettingsGUI(IWindowFlowAddon addon, string caption, System.Action onGUI) {
+		public static void DrawModuleSettingsGUI(IWindowFlowAddon addon, string caption, GenericMenu settingsMenu, System.Action onGUI) {
 			
-			GUILayout.Label(caption.ToSentenceCase().UppercaseWords(), EditorStyles.boldLabel);
+			CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
 
-			GUILayout.BeginVertical(FlowSystemEditorWindow.defaultSkin.box);//GUI.skin.box);
+			GUILayout.BeginHorizontal();
 			{
+
+				GUILayout.Label(caption.ToSentenceCase().UppercaseWords(), EditorStyles.boldLabel);
+
+				if (settingsMenu != null) {
+
+					var settingsStyle = new GUIStyle("PaneOptions");
+					if (GUILayout.Button(string.Empty, settingsStyle) == true) {
+
+						settingsMenu.ShowAsContext();
+
+					}
+
+				}
+
+			}
+			GUILayout.EndHorizontal();
+			
+			CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
+
+			GUILayout.BeginVertical(FlowSystemEditorWindow.defaultSkin.box);
+			{
+
 				if (addon != null && addon.InstallationNeeded() == true) {
 					
 					if (GUILayoutExt.LargeButton("Install", 40f, 200f) == true) {
@@ -74,6 +98,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					onGUI();
 
 				}
+
 			}
 			GUILayout.EndVertical();
 
@@ -90,6 +115,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private static bool ContextMenuValidate() {
 			
 			return Selection.activeObject is FlowData;
+
 		}
 		
 		[MenuItem("Assets/Open In Flow Editor")]
@@ -165,7 +191,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				foreach (var addon in flowAddons) {
 					
 					addon.flowEditor = flowEditor;
-					Flow.DrawModuleSettingsGUI(addon, addon.name, () => { addon.OnFlowSettingsGUI(); });
+					Flow.DrawModuleSettingsGUI(addon, addon.name, addon.GetSettingsMenu(null), () => { addon.OnFlowSettingsGUI(); });
 
 				}
 			
@@ -203,25 +229,25 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public static void OnDrawCreateMenuGUI(FlowSystemEditorWindow flowEditor, GenericMenu menu) {
+		public static void OnDrawCreateMenuGUI(FlowSystemEditorWindow flowEditor, string prefix, GenericMenu menu) {
 			
 			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
 			foreach (var addon in flowAddons) {
 				
 				addon.flowEditor = flowEditor;
-				addon.OnFlowCreateMenuGUI(menu);
+				addon.OnFlowCreateMenuGUI(prefix, menu);
 				
 			}
 			
 		}
 		
-		public static void OnDrawToolsMenuGUI(FlowSystemEditorWindow flowEditor, GenericMenu menu) {
+		public static void OnDrawToolsMenuGUI(FlowSystemEditorWindow flowEditor, string prefix, GenericMenu menu) {
 			
 			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
 			foreach (var addon in flowAddons) {
 				
 				addon.flowEditor = flowEditor;
-				addon.OnFlowToolsMenuGUI(menu);
+				addon.OnFlowToolsMenuGUI(prefix, menu);
 				
 			}
 			

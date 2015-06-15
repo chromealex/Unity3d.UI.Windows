@@ -1,0 +1,10 @@
+﻿		
+		/// <summary>
+		/// Call the end of current function {FUNCTION_CALL_NAME}.
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		public void FlowFunctionReturn() {
+			
+			WindowSystem.CallFunction(this);
+			
+		}

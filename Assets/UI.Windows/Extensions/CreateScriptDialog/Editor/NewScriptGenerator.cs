@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
 
-namespace UnityEditor.Utilities {
+namespace UnityEditor.UI.Windows.Extensions.Utilities {
 
 	internal class NewScriptGenerator {
 		private const int kCommentWrapLength = 35;

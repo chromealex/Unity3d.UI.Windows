@@ -76,6 +76,15 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 		}
 		
+		public override GenericMenu GetSettingsMenu(GenericMenu menu) {
+			
+			if (menu == null) menu = new GenericMenu();
+			menu.AddItem(new GUIContent("Reinstall"), false, () => { this.Reinstall(); });
+			
+			return menu;
+			
+		}
+
 		private HeatmapSettings GetSettingsFile() {
 			
 			var data = FlowSystem.GetData();

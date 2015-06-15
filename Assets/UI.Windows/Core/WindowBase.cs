@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Extensions;
+using UnityEngine.UI.Windows.Plugins.Flow;
 
 namespace UnityEngine.UI.Windows {
 
@@ -36,7 +37,9 @@ namespace UnityEngine.UI.Windows {
 		public Transition transition;
 		public Modules.Modules modules;
 		public Events events;
-		
+
+		private int functionIterationIndex = 0;
+
 		[HideInInspector]
 		private bool setup = false;
 		[HideInInspector]
@@ -121,6 +124,18 @@ namespace UnityEngine.UI.Windows {
 
 			this.currentState = WindowObjectState.Initialized;
 
+		}
+		
+		public void SetFunctionIterationIndex(int iteration) {
+			
+			this.functionIterationIndex = iteration;
+			
+		}
+		
+		public int GetFunctionIterationIndex() {
+			
+			return this.functionIterationIndex;
+			
 		}
 
 		internal void SetParameters(params object[] parameters) {

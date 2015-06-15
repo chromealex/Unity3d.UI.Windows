@@ -82,13 +82,13 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		}
 		
-		public override void OnFlowCreateMenuGUI(GenericMenu menu) {
+		public override void OnFlowCreateMenuGUI(string prefix, GenericMenu menu) {
 
 			if (this.InstallationNeeded() == false) {
 
-				menu.AddSeparator(string.Empty);
+				menu.AddSeparator(prefix);
 
-				menu.AddItem(new GUIContent("Social"), on: false, func: () => {
+				menu.AddItem(new GUIContent(prefix + "Social"), on: false, func: () => {
 
 					this.flowEditor.CreateNewItem(() => {
 
@@ -257,6 +257,15 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			var settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(modulesPath, useCache: false).FirstOrDefault();;
 
 			return settings == null;
+
+		}
+
+		public override GenericMenu GetSettingsMenu(GenericMenu menu) {
+
+			if (menu == null) menu = new GenericMenu();
+			menu.AddItem(new GUIContent("Reinstall"), false, () => { this.Reinstall(); });
+
+			return menu;
 
 		}
 
