@@ -84,7 +84,8 @@ MonoBehaviour:
     elements: []
   layout:
     scaleMode: 0
-    layout: {fileID: 11498314, guid: edea40a5f4272904587387a492121b07, type: 2}
+    fixedScaleResolution: {x: 1024, y: 768}
+    layout: {fileID: 0}
     components:
     - description: CONTENT BORDER
       tag: 1

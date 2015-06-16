@@ -125,7 +125,9 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 			if (this.functions.Count == 0) {
 
-				GUILayout.Label("No function found in current project. Add new one by clicking on Create->Function menu.");
+				var style = new GUIStyle(GUI.skin.label);
+				style.wordWrap = true;
+				GUILayout.Label("No function found in current project. Add new one by clicking on Create->Function menu.", style);
 
 			} else {
 

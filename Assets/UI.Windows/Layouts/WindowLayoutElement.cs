@@ -22,6 +22,8 @@ namespace UnityEngine.UI.Windows {
 		public bool autoStretchX = false;
 		public bool autoStretchY = false;
 
+		public bool fillable = true;
+
 		public bool showFullDescription = false;
 
 		[HideInInspector]

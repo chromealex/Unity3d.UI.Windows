@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine.UI.Windows;
 using UnityEditorInternal;
 using UnityEngine.UI.Windows.Types;
+using System.Collections.Generic;
 
 namespace UnityEditor.UI.Windows {
 
@@ -19,7 +20,18 @@ namespace UnityEditor.UI.Windows {
 
 			if (this.inited == false) {
 
-				this.elements = new ReorderableList(property.serializedObject, property, true, true, false, false);
+				var window = (property.serializedObject.targetObject as LayoutWindowType);
+
+				var elements = new List<SerializedProperty>();
+				for (int i = 0; i < property.arraySize; ++i) {
+
+					var element = property.GetArrayElementAtIndex(i);
+					var rootElement = window.layout.layout.GetRootByTag(window.layout.components[i].tag);
+					if (rootElement.fillable == true) elements.Add(element);
+
+				}
+
+				this.elements = new ReorderableList(elements, typeof(SerializedProperty), true, true, false, false);
 				this.elements.elementHeight = 70f;
 
 				this.elements.drawHeaderCallback += (rect) => GUI.Label(rect, label);
@@ -33,10 +45,16 @@ namespace UnityEditor.UI.Windows {
 
 					if (index >= property.arraySize) return;
 
+					var item = elements[index];
+					var descr = item.FindPropertyRelative("description");
+					var tag = item.FindPropertyRelative("tag");
+					var component = item.FindPropertyRelative("component");
+					var sortingOrder = item.FindPropertyRelative("sortingOrder");
+
 					if (active == true && focused == true) {
 						
-						var window = (property.serializedObject.targetObject as LayoutWindowType);
-						WindowLayoutElement.waitForComponentConnectionElementTemp = window.layout.layout.GetRootByTag(window.layout.components[index].tag);
+						//var window = (property.serializedObject.targetObject as LayoutWindowType);
+						WindowLayoutElement.waitForComponentConnectionElementTemp = window.layout.layout.GetRootByTag((LayoutTag)tag.enumValueIndex);
 						WindowLayoutElement.waitForComponentConnectionTemp = true;
 
 					} else {
@@ -49,13 +67,6 @@ namespace UnityEditor.UI.Windows {
 						}
 
 					}
-
-					var item = property.GetArrayElementAtIndex(index);
-
-					var descr = item.FindPropertyRelative("description");
-					var tag = item.FindPropertyRelative("tag");
-					var component = item.FindPropertyRelative("component");
-					var sortingOrder = item.FindPropertyRelative("sortingOrder");
 
 					var title = "Description";
 					var height = this.GetPropertyHeight(descr, new GUIContent(title)) + offset;
@@ -178,9 +189,15 @@ namespace UnityEditor.UI.Windows {
 				}
 				
 				--EditorGUI.indentLevel;
-				
+
 				if (this.inited == true && window != null && window.layout.layout != null) {
-					
+
+					if (GUILayout.Button("Reset") == true) {
+
+						this.inited = false;
+
+					}
+
 					this.elements.DoLayoutList();
 					
 				}
