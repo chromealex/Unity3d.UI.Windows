@@ -1,3 +1,4 @@
+//#define TRANSITION_ENABLED
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -86,7 +87,11 @@ namespace UnityEngine.UI.Windows {
 			this.transform.position = pos;
 
 			this.workCamera.depth = depth;
-			if (this.preferences.dontDestroyOnLoad == true) GameObject.DontDestroyOnLoad(this.gameObject);
+			if (this.preferences.IsDontDestroySceneChange() == true) {
+
+				GameObject.DontDestroyOnLoad(this.gameObject);
+
+			}
 			
 			if (this.passParams == true) {
 
@@ -162,7 +167,8 @@ namespace UnityEngine.UI.Windows {
 			return this.currentState;
 			
 		}
-		
+
+		#if TRANSITION_ENABLED
 		private void OnRenderImage(RenderTexture source, RenderTexture destination) {
 			
 			this.transition.OnRenderImage(source, destination);
@@ -180,6 +186,7 @@ namespace UnityEngine.UI.Windows {
 			this.transition.OnPreRender();
 			
 		}
+		#endif
 
 		private void OnTransitionInit() {
 			
@@ -352,7 +359,7 @@ namespace UnityEngine.UI.Windows {
 				if (onHideEnd != null) onHideEnd();
 				
 				this.events.Clear();
-						
+
 				this.currentState = WindowObjectState.Hidden;
 
 			};
@@ -482,6 +489,8 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public virtual void OnValidate() {
 
+			this.preferences.OnValidate();
+
 			this.SetupCamera();
 
 		}
@@ -499,10 +508,14 @@ namespace UnityEngine.UI.Windows {
 
 				// Camera
 				WindowSystem.ApplyToSettings(this.workCamera);
-				
-				this.workCamera.cullingMask = 0x0;
-				this.workCamera.cullingMask |= 1 << this.gameObject.layer;
-				
+
+				if ((this.workCamera.cullingMask & (1 << this.gameObject.layer)) == 0) {
+
+					this.workCamera.cullingMask = 0x0;
+					this.workCamera.cullingMask |= 1 << this.gameObject.layer;
+
+				}
+
 				this.workCamera.backgroundColor = new Color(0f, 0f, 0f, 0f);
 
 			}

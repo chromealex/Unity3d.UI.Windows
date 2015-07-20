@@ -195,6 +195,8 @@ MonoBehaviour:
   preferences:
     depth: 1
     dontDestroyOnLoad: 1
+    editorValidate: 1
+    dontDestroy: 1
   transition:
     transition: {fileID: 0}
   modules:
@@ -217,6 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsHideMode: 1
   animationInputParams:
   - {fileID: 11456504}
   - {fileID: 11456506}

@@ -78,6 +78,8 @@ MonoBehaviour:
   preferences:
     depth: 0
     dontDestroyOnLoad: 1
+    editorValidate: 1
+    dontDestroy: 1
   transition:
     transition: {fileID: 11400000, guid: aa46d1b822c0b4b3c9425f3bc0bc89fb, type: 2}
   modules:

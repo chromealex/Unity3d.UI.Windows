@@ -24,6 +24,11 @@ public static class TweenerExt
 		return tweener.addTween(image, duration, start, end)
 			.onUpdate((c, t) => { if (c != null) c.color = new Color(c.color.r, c.color.g, c.color.b, t); });
 	}
+
+    public static ME.Tweener.Tween<SpriteRenderer> addTweenAlpha(this ME.Tweener tweener, SpriteRenderer spriteRenderer, float duration, float start, float end) {
+        return tweener.addTween(spriteRenderer, duration, start, end)
+            .onUpdate((c, t) => { if (c != null) c.color = new Color(c.color.r, c.color.g, c.color.b, t); });
+    }
 	
 	public static ME.Tweener.Tween<CanvasGroup> addTweenAlpha(this ME.Tweener tweener, CanvasGroup canvasGroup, float duration, float end)
 	{

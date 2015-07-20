@@ -9,49 +9,25 @@ using UnityEditorInternal;
 using ME;
 using System.Reflection;
 using UnityEngine.UI.Windows.Types;
+using UnityEditor.UI.Windows.Extensions;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
-
-	public class FlowSystemEditor {
-		
-		public static Rect GetCenterRect(EditorWindow editorWindow, float width, float height) {
-			
-			var size = editorWindow.position;
-			
-			return new Rect(size.width * 0.5f - width * 0.5f, size.height * 0.5f - height * 0.5f, width, height);
-			
-		}
-		
-		public static Rect GetCenterRect(Rect rect, float width, float height) {
-			
-			var size = rect;
-			
-			return new Rect(size.width * 0.5f - width * 0.5f, size.height * 0.5f - height * 0.5f, width, height);
-			
-		}
-
-		public static Rect Scale(Rect realRect, Rect minMaxRect, Rect toPosition, Vector2 offset) {
-
-			var width = minMaxRect.width;
-			var height = minMaxRect.height;
-
-			return new Rect(realRect.x / width * toPosition.width + offset.x, realRect.y / height * toPosition.height + offset.y, realRect.width / width * toPosition.width, realRect.height / height * toPosition.height);
-
-		}
-
-	}
-
+	
 	public class FlowSystemEditorWindow : EditorWindowExt {
 		
 		public static GUISkin defaultSkin;
 		private static bool loaded = false;
 		private static bool loading = false;
 
-		public static FlowSystemEditorWindow ShowEditor(System.Action onClose) {
+		private GUIDrawer guiDrawer;
+		public EditorZoomArea zoomDrawer;
 
+		public static FlowSystemEditorWindow ShowEditor(System.Action onClose) {
+			
 			var editor = FlowSystemEditorWindow.GetWindow<FlowSystemEditorWindow>(typeof(SceneView));
 			editor.autoRepaintOnSceneChange = true;
 			editor.onClose = onClose;
+			editor.wantsMouseMove = true;
 			
 			var title = "UIW Flow";
 			#if !UNITY_4
@@ -59,74 +35,74 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			#else
 			editor.title = title;
 			#endif
-
+			
 			var width = 800f;
 			var height = 600f;
 
 			var fullBinding = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
 			var isDockedMethod = typeof(EditorWindow).GetProperty("docked", fullBinding).GetGetMethod(true);
 			if ((bool)isDockedMethod.Invoke(editor, null) == false) {
-
+				
 				var rect = new Rect(Screen.width * 0.5f - width * 0.5f, Screen.height * 0.5f - height * 0.5f, width, height);
 				if (rect.x < 120f) rect.x = 120f;
 				if (rect.y < 120f) rect.y = 120f;
-
+				
 				editor.position = rect;
 				
 				editor.Focus();
-
+				
 			}
-			
+
 			editor.minSize = new Vector2(width, height);
 			editor.ChangeFlowData();
-			
+
 			FlowSystemEditorWindow.loaded = false;
 			FlowSystemEditorWindow.loading = false;
-
+			
 			return editor;
-
+			
 		}
-
+		
 		private System.Action onClose;
-
-		private Rect scrollRect;
+		
+		public Rect scrollRect;
 		private Rect contentRect;
 		
 		private const float scrollSize = 18f;
-
+		
 		public override void OnActive() {
-
+			
 			FlowSceneView.Show();
-
+			
 		}
 		
 		public override void OnInactive() {
-
+			
 			FlowSceneView.Hide();
-
+			
 		}
-
+		
 		public override void OnClose() {
-
+			
 			FlowSceneView.Reset(this.OnItemProgress);
-
+			
 			if (this.onClose != null) this.onClose();
-
+			
 		}
-
-		private int focusedGUIWindow {
+		
+		public int focusedGUIWindow {
 			
 			get;
-			set;
-
+			private set;
+			
 		}
-
+		
 		public override void Update() {
-
+			
 			if (FlowSystemEditorWindow.loading == true) {
-
+				
 				return;
-
+				
 			}
 			
 			if (FlowSystemEditorWindow.loaded == false) {
@@ -135,6 +111,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				EditorApplication.delayCall += () => {
 					
+					if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
+
 					// Cache
 					ME.EditorUtilities.GetAssetsOfType<FlowData>();
 					ME.EditorUtilities.GetPrefabsOfType<FlowWindowLayoutTemplate>();
@@ -151,397 +129,452 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			} else {
 				
 				CoreUtilities.LoadAddons();
-
+				
 			}
-
+			
 		}
-
-		private const float SETTINGS_WIDTH = 280f;
-		private const float TOOLBAR_HEIGHT = 18f;
-
+		
+		public const float SETTINGS_WIDTH = 280f;
+		public const float TOOLBAR_HEIGHT = 18f;
+		
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
 			
 			if (FlowSystemEditorWindow.defaultSkin == null) FlowSystemEditorWindow.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
-
+			
 			if (FlowSystemEditorWindow.loaded == false) {
-
+				
 				this.DrawLoader();
 				return;
-
+				
 			}
+			
+			if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
+			if (this.zoomDrawer == null) this.zoomDrawer = new EditorZoomArea();
 
 			//var draw = !FlowSceneView.IsActive();
-
+			
 			//if (draw == true) {
-
+			
 			this.contentRect = this.position;
 			this.contentRect.x = 0f;
 			this.contentRect.y = 0f;
 			this.contentRect.width = 10000f;
 			this.contentRect.height = 10000f;
 			this.contentRect.height -= scrollSize;
-
+			
 			GUI.enabled = true;//!FlowSceneView.IsActive();
 			
 			var hasData = FlowSystem.HasData();
-
+			
 			if (hasData == false) {
-
+				
 				this.BeginWindows();
 				
 				this.DrawDataSelection();
 				
 				this.EndWindows();
-
+				
 			} else {
-
+				
 				var oldEnabled = GUI.enabled;
 				GUI.enabled = FlowSystem.HasData() && GUI.enabled;
 				this.DrawToolbar();
 				GUI.enabled = oldEnabled;
 				
 				this.DrawSettings(TOOLBAR_HEIGHT);
-
+				
 				IEnumerable<FlowWindow> windows = null;
 				IEnumerable<FlowWindow> containers = null;
 				if (hasData == true) {
 					
 					windows = FlowSystem.GetWindows();
 					containers = FlowSystem.GetContainers();
-
+					
 				}
-
+				
 				this.scrollRect = this.position;
 				this.scrollRect.x = SETTINGS_WIDTH;
 				this.scrollRect.y = TOOLBAR_HEIGHT;
 				this.scrollRect.width -= SETTINGS_WIDTH;
 				this.scrollRect.height -= TOOLBAR_HEIGHT;
-
+				
 				var scrollPos = FlowSystem.GetScrollPosition();
 				if (scrollPos == -Vector2.one) scrollPos = new Vector2(this.contentRect.width * 0.5f - this.scrollRect.width * 0.5f, this.contentRect.height * 0.5f - this.scrollRect.height * 0.5f);
-				FlowSystem.SetScrollPosition(GUI.BeginScrollView(this.scrollRect, scrollPos, this.contentRect));
+				//FlowSystem.SetScrollPosition(GUI.BeginScrollView(this.scrollRect, scrollPos, this.contentRect));
+				{
 
-				this.DrawBackground();
+					//this.zoomDrawer.SetZoom(FlowSystem.GetZoom());
+					//FlowSystem.SetScrollPosition(this.zoomDrawer.SetRect(this.scrollRect, scrollPos));
+					//FlowSystem.SetZoom(this.zoomDrawer.GetZoom());
+					//FlowSystem.SetScrollPosition(this.zoomDrawer.GetOrigin());
 
-				if (hasData == true && windows != null) {
-					
-					this.tempAttaches.Clear();
-					foreach (var window in windows) {
+					this.zoomDrawer.SetZoom(FlowSystem.GetZoom());
+					FlowSystem.SetScrollPosition(this.zoomDrawer.Begin(this.scrollRect, scrollPos, this.contentRect));
+					FlowSystem.SetZoom(this.zoomDrawer.GetZoom());
+					{
 
-						var attaches = window.attaches;
-						foreach (var attachId in attaches) {
+						this.DrawBackground();
 
-							var curWindow = FlowSystem.GetWindow(attachId);
-							if (curWindow.IsContainer() == true &&
-							    curWindow.IsFunction() == false) continue;
+						if (hasData == true && windows != null) {
+							
+							this.tempAttaches.Clear();
+							foreach (var window in windows) {
 
-							if (curWindow.IsFunction() == true &&
-							    curWindow.IsContainer() == true) {
+								var attaches = window.attaches;
+								foreach (var attachId in attaches) {
+									
+									var curWindow = FlowSystem.GetWindow(attachId);
+									if (curWindow.IsContainer() == true &&
+									    curWindow.IsFunction() == false) continue;
+									
+									//if (this.IsVisible(window) == false) continue;
 
-								if (curWindow.functionRootId == window.id) {
-
-									// Find entrance window
-									var rootWindow = FlowSystem.GetWindow(curWindow.functionRootId);
-									if (rootWindow != null) {
+									if (curWindow.IsFunction() == true &&
+									    curWindow.IsContainer() == true) {
 										
-										// Draw entrance point
-										this.DrawNodeCurve(new Vector3(curWindow.rect.x + 6f, curWindow.rect.y + curWindow.rect.height * 0.5f + 25f, -10f),
-										                   new Vector3(rootWindow.rect.x + rootWindow.rect.width * 0.5f, rootWindow.rect.y + rootWindow.rect.height * 0.5f, -10f),
-										                   Color.yellow);
+										if (curWindow.functionRootId == window.id) {
+											
+											// Find entrance window
+											var rootWindow = FlowSystem.GetWindow(curWindow.functionRootId);
+											if (rootWindow != null) {
+												
+												// Draw entrance point
+												this.guiDrawer.DrawNodeCurve(new Vector3(curWindow.rect.x + 6f, curWindow.rect.y + curWindow.rect.height * 0.5f + 25f, -10f),
+												                   			 new Vector3(rootWindow.rect.x + rootWindow.rect.width * 0.5f, rootWindow.rect.y + rootWindow.rect.height * 0.5f, -10f),
+												                   			 Color.yellow);
+												
+											}
+											
+										}
+										
+										if (curWindow.functionExitId == window.id) {
+											
+											// Draw exit point
+											var exitWindow = FlowSystem.GetWindow(curWindow.functionExitId);
+											if (exitWindow != null) {
+												
+												// Draw entrance point
+												this.guiDrawer.DrawNodeCurve(new Vector3(exitWindow.rect.x + exitWindow.rect.width * 0.5f, exitWindow.rect.y + exitWindow.rect.height * 0.5f, -10f),
+												                   			 new Vector3(curWindow.rect.x + curWindow.rect.width - 6f, curWindow.rect.y + curWindow.rect.height * 0.5f + 25f, -10f),
+												                  			 Color.green);
+												
+											}
+											
+										}
+										
+									} else {
+										
+										var doubleSided = FlowSystem.AlreadyAttached(attachId, window.id);
+										if (this.tempAttaches.Contains(attachId) == true && doubleSided == true) continue;
+										
+										this.guiDrawer.DrawNodeCurve(window, curWindow, doubleSided);
 										
 									}
-
+									
 								}
 								
-								if (curWindow.functionExitId == window.id) {
-
-									// Draw exit point
-									var exitWindow = FlowSystem.GetWindow(curWindow.functionExitId);
-									if (exitWindow != null) {
-										
-										// Draw entrance point
-										this.DrawNodeCurve(new Vector3(exitWindow.rect.x + exitWindow.rect.width * 0.5f, exitWindow.rect.y + exitWindow.rect.height * 0.5f, -10f),
-										                   new Vector3(curWindow.rect.x + curWindow.rect.width - 6f, curWindow.rect.y + curWindow.rect.height * 0.5f + 25f, -10f),
-										                   Color.green);
-										
-									}
-
-								}
-
-							} else {
-
-								var doubleSided = FlowSystem.AlreadyAttached(attachId, window.id);
-								if (this.tempAttaches.Contains(attachId) == true && doubleSided == true) continue;
-
-								this.DrawNodeCurve(window, curWindow, doubleSided);
-
-							}
-
-						}
-
-						this.tempAttaches.Add(window.id);
-						
-					}
-
-					var oldColor = GUI.backgroundColor;
-
-					this.bringFront.Clear();
-					
-					var selectionMain = -1;
-					var selected = FlowSystem.GetSelected();
-
-					this.BeginWindows();
-
-					var containerPadding = new Vector4(50f, 100f, 50f, 50f);
-					foreach (var container in containers) {
-						
-						var backColor = container.randomColor;
-						backColor.a = 0.3f;
-						GUI.backgroundColor = backColor;
-
-						var rootContainer = container.GetContainer();
-						if (rootContainer != null) {
-
-							// If container has other container
-
-						}
-
-						var attaches = container.attaches;
-						if (attaches.Count == 0) {
-
-							container.rect.width = 200f;
-							container.rect.height = 200f;
-
-						} else {
-							
-							var minX = float.MaxValue;
-							var minY = float.MaxValue;
-							var maxX = float.MinValue;
-							var maxY = float.MinValue;
-							foreach (var attachId in attaches) {
+								this.tempAttaches.Add(window.id);
 								
-								var window = FlowSystem.GetWindow(attachId);
-
-								minX = Mathf.Min(minX, window.rect.xMin);
-								minY = Mathf.Min(minY, window.rect.yMin);
-								maxX = Mathf.Max(maxX, window.rect.xMax);
-								maxY = Mathf.Max(maxY, window.rect.yMax);
-
 							}
 							
-							container.rect.xMin = minX - containerPadding.x;
-							container.rect.yMin = minY - containerPadding.y;
-							container.rect.xMax = maxX + containerPadding.z;
-							container.rect.yMax = maxY + containerPadding.w;
+							var oldColor = GUI.backgroundColor;
+							
+							this.bringFront.Clear();
+							
+							var selectionMain = -1;
+							var selected = FlowSystem.GetSelected();
+							
+							this.BeginWindows();
+							
+							var containerPadding = new Vector4(50f, 100f, 50f, 50f);
+							foreach (var container in containers) {
+								
+								if (this.IsVisible(container) == false) continue;
 
-						}
-
-						var style = container.GetEditorStyle(false);
-
-						var rect = GUI.Window(container.id, container.rect, this.DrawNodeContainer, container.title, style);
-						this.BringBackOrFront(container, containers);
-
-						if (selectionMain == -1 || selectionMain == container.id) {
-
-							var isMoving = (rect != container.rect);
-							var newRect = FlowSystem.Grid(rect);
-							if (newRect != container.rect && isMoving == true) {
-
-								if (selected.Count > 0 && selected.Contains(container.id) == false) {
-
-									// nothing to do
-
-								} else {
-
-									var delta = new Vector2(newRect.x - container.rect.x, newRect.y - container.rect.y);
-									if (delta != Vector2.zero) {
-
-										selected.Clear();
-										if (selected.Contains(container.id) == false) selected.Add(container.id);
-										
-										container.rect = newRect;
-
-										FlowSystem.MoveContainerOrWindow(container.id, delta);
-
-										selectionMain = container.id;
-
-									}
-
+								var backColor = container.randomColor;
+								backColor.a = 0.3f;
+								GUI.backgroundColor = backColor;
+								
+								var rootContainer = container.GetContainer();
+								if (rootContainer != null) {
+									
+									// If container has other container
+									
 								}
-
-							}
-
-						}
-
-					}
-					GUI.backgroundColor = oldColor;
-
-					foreach (var window in windows) {
-
-						var title = string.Empty;
-						if (window.IsSmall() == true) {
-
-							title = window.title;
-
-						} else {
-
-							var size = this.GetWindowSize(window);
-
-							window.rect.width = size.x;
-							window.rect.height = size.y;
-
-						}
-
-						var isSelected = selected.Contains(window.id) || (selected.Count == 0 && this.focusedGUIWindow == window.id);
-						var style = window.GetEditorStyle(isSelected);
-
-						var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, title, style/*, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)*/);
-						GUI.BringWindowToFront(window.id);
-
-						var isMoving = (rect != window.rect);
-
-						if (selectionMain == -1 || selectionMain == window.id) {
-
-							var newRect = FlowSystem.Grid(rect);
-							if (newRect != window.rect && isMoving == true) {
-
-								// If selected contains
-								if (selected.Count > 0 && selected.Contains(window.id) == false) {
-
-									// nothing to do
-
+								
+								var attaches = container.attaches;
+								if (attaches.Count == 0) {
+									
+									container.rect.width = 200f;
+									container.rect.height = 200f;
+									
 								} else {
 									
-									var delta = new Vector2(newRect.x - window.rect.x, newRect.y - window.rect.y);
-									if (delta != Vector2.zero) {
-
-										window.rect = newRect;
-
-										// Move all selected windows
-										foreach (var selectedId in selected) {
-
-											if (selectedId != window.id) {
-
-												FlowSystem.GetWindow(selectedId).Move(delta);
-
-											}
-
-										}
-
-										selectionMain = window.id;
-
+									var minX = float.MaxValue;
+									var minY = float.MaxValue;
+									var maxX = float.MinValue;
+									var maxY = float.MinValue;
+									foreach (var attachId in attaches) {
+										
+										var window = FlowSystem.GetWindow(attachId);
+										
+										minX = Mathf.Min(minX, window.rect.xMin);
+										minY = Mathf.Min(minY, window.rect.yMin);
+										maxX = Mathf.Max(maxX, window.rect.xMax);
+										maxY = Mathf.Max(maxY, window.rect.yMax);
+										
 									}
-
+									
+									container.rect.xMin = minX - containerPadding.x;
+									container.rect.yMin = minY - containerPadding.y;
+									container.rect.xMax = maxX + containerPadding.z;
+									container.rect.yMax = maxY + containerPadding.w;
+									
 								}
+								
+								var style = container.GetEditorStyle(false);
+								
+								var rect = GUI.Window(container.id, container.rect, this.DrawNodeContainer, container.title, style);
+								this.BringBackOrFront(container, containers);
+								
+								if (selectionMain == -1 || selectionMain == container.id) {
+									
+									var isMoving = (rect != container.rect);
+									var newRect = FlowSystem.Grid(rect);
+									if (newRect != container.rect && isMoving == true) {
+										
+										if (selected.Count > 0 && selected.Contains(container.id) == false) {
+											
+											// nothing to do
+											
+										} else {
+											
+											var delta = new Vector2(newRect.x - container.rect.x, newRect.y - container.rect.y);
+											if (delta != Vector2.zero) {
+												
+												selected.Clear();
+												if (selected.Contains(container.id) == false) selected.Add(container.id);
+												
+												container.rect = newRect;
+												
+												FlowSystem.MoveContainerOrWindow(container.id, delta);
+												
+												selectionMain = container.id;
+												
+											}
+											
+										}
+										
+									}
+									
+								}
+								
+							}
+							GUI.backgroundColor = oldColor;
+							
+							foreach (var window in windows) {
 
+								if (this.IsVisible(window) == false) continue;
+
+								var title = string.Empty;
+								if (window.IsSmall() == true) {
+									
+									title = window.title;
+									
+								} else {
+									
+									var size = this.GetWindowSize(window);
+									
+									window.rect.width = size.x;
+									window.rect.height = size.y;
+									
+								}
+								
+								var isSelected = selected.Contains(window.id) || (selected.Count == 0 && this.focusedGUIWindow == window.id);
+								var style = window.GetEditorStyle(isSelected);
+								
+								var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, title, style/*, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)*/);
+								GUI.BringWindowToFront(window.id);
+								
+								var isMoving = (rect != window.rect);
+								
+								if (selectionMain == -1 || selectionMain == window.id) {
+									
+									var newRect = FlowSystem.Grid(rect);
+									if (newRect != window.rect && isMoving == true) {
+										
+										// If selected contains
+										if (selected.Count > 0 && selected.Contains(window.id) == false) {
+											
+											// nothing to do
+											
+										} else {
+											
+											var delta = new Vector2(newRect.x - window.rect.x, newRect.y - window.rect.y);
+											if (delta != Vector2.zero) {
+												
+												window.rect = newRect;
+												
+												// Move all selected windows
+												foreach (var selectedId in selected) {
+													
+													if (selectedId != window.id) {
+														
+														FlowSystem.GetWindow(selectedId).Move(delta);
+														
+													}
+													
+												}
+												
+												selectionMain = window.id;
+												
+											}
+											
+										}
+										
+									}
+									
+								}
+								
+							}
+							
+							this.EndWindows();
+							
+							var defaultColor = GUI.color;
+							//var selectedColor = new Color(0.8f, 0.8f, 1f, 1f);
+							
+							if (selectionMain >= 0 && FlowSystem.GetWindow(selectionMain).IsContainer() == true) FlowSystem.ResetSelection();
+							
+							GUI.color = defaultColor;
+							
+							FlowSystem.Save();
+							
+						}
+						
+						if (FlowSystem.GetZoom() >= 0.3f) {
+
+							if (FlowSystem.GetData() != null && FlowSystem.GetData().flowWindowWithLayout == true) {
+								
+								foreach (var window in windows) {
+
+									if (this.IsVisible(window) == false) continue;
+
+									var components = window.attachedComponents;
+									for (int i = 0; i < components.Count; ++i) {
+										
+										var component = components[i];
+										this.guiDrawer.DrawComponentCurve(window, ref component, FlowSystem.GetWindow (component.targetWindowId));
+										components[i] = component;
+										
+									}
+									
+								}
+								
 							}
 
 						}
 
 					}
-
-					this.EndWindows();
-
-					var defaultColor = GUI.color;
-					//var selectedColor = new Color(0.8f, 0.8f, 1f, 1f);
-
-					if (selectionMain >= 0 && FlowSystem.GetWindow(selectionMain).IsContainer() == true) FlowSystem.ResetSelection();
-
-					GUI.color = defaultColor;
-
-					FlowSystem.Save();
+					this.zoomDrawer.End();
 
 				}
-
-				if (FlowSystem.GetData() != null && FlowSystem.GetData().flowWindowWithLayout == true) {
-
-					foreach (var window in windows) {
-						
-						var components = window.attachedComponents;
-						for (int i = 0; i < components.Count; ++i) {
-
-							var component = components[i];
-							this.DrawComponentCurve(window, ref component, FlowSystem.GetWindow (component.targetWindowId));
-							components[i] = component;
-
-						}
-
-					}
-
-				}
-
-				GUI.EndScrollView();
+				//GUI.EndScrollView();
 
 				this.DrawWaitForConnection();
 				this.DrawTagsPopup();
-				this.DragBackground(TOOLBAR_HEIGHT);
-
+				this.HandleEvents(TOOLBAR_HEIGHT);
+				
 				GUI.enabled = true;
-
+				
 				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
+				
+			}
+			
+		}
+
+		public bool IsVisible(FlowWindow window) {
+
+			/*var scrollPos = FlowSystem.GetScrollPosition();
+			var rect = new Rect(scrollPos.x - this.scrollRect.width * 0.5f + this.scrollRect.x,
+			                    scrollPos.y + this.scrollRect.y,
+			                    this.scrollRect.width,
+			                    this.scrollRect.height);
+
+			var newState = true;//rect.ScaleSizeBy(this.zoomDrawer.GetZoom()).Overlaps(window.rect.ScaleSizeBy(this.zoomDrawer.GetZoom()));
+
+			if (newState == true &&
+				window.isVisibleState == false) {
+
+				window.isVisibleState = true;
+				this.Repaint();
+				return false;
 
 			}
 
-		}
+			return newState;*/
 
+			return true;
+
+		}
+		
 		public Vector2 GetWindowSize(FlowWindow window) {
 			
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			var flowWindowWithLayoutScaleFactor = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
 			if (flowWindowWithLayout == true) {
-
+				
 				//var screen = window.GetScreen() as LayoutWindowType;
 				//if (screen != null && screen.layout.layout != null) {
-
+				
 				return new Vector2(250f, 250f) * (1f + flowWindowWithLayoutScaleFactor);
-
+				
 				//}
-
+				
 			}
-
+			
 			return new Vector2(250f, 80f + (Mathf.CeilToInt(window.tags.Count / 3f)) * 15f);
-
+			
 		}
-
+		
 		public void OnLostFocus() {
-
+			
 			//FlowSceneView.Reset();
 			
 		}
 		
 		private void OnFocus() {
-
+			
 			//FlowSceneView.Reset();
 			
 		}
-
+		
 		private GUIStyle layoutBoxStyle;
 		public void DrawWindowLayout(FlowWindow window) {
-
+			
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			if (flowWindowWithLayout == true) {
-
-				this.layoutBoxStyle = FlowSystemEditorWindow.defaultSkin.FindStyle("LayoutBox");
-
+				
+				if (this.layoutBoxStyle == null) this.layoutBoxStyle = FlowSystemEditorWindow.defaultSkin.FindStyle("LayoutBox");
+				
 				GUILayout.Box(string.Empty, this.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 				var rect = GUILayoutUtility.GetLastRect();
-
+				
 				if (window.OnPreviewGUI(rect,
 				                        FlowSystemEditorWindow.defaultSkin.button,
 				                        this.layoutBoxStyle,
 				                        drawInfo: true,
 				                        selectable: true,
 				                        onCreateScreen: () => {
-
+					
 					this.SelectWindow(window);
 					FlowChooserFilter.CreateScreen(Selection.activeObject, "/Screens", () => {
-
+						
 						this.SelectWindow(window);
-
+						
 					});
-
+					
 				}, onCreateLayout: () => {
 					
 					this.SelectWindow(window);
@@ -551,31 +584,31 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.SelectWindow(window);
 						
 					});
-
+					
 				}) == true) {
-
+					
 					// Set for waiting connection
 					var element = WindowLayoutElement.waitForComponentConnectionElementTemp;
-
+					
 					this.WaitForAttach(window.id, element);
-
+					
 					WindowLayoutElement.waitForComponentConnectionTemp = false;
-
+					
 				}
 				
 				UnityEditor.UI.Windows.Plugins.Flow.Flow.OnDrawWindowLayoutGUI(rect, window);
-
+				
 			}
-
+			
 		}
-
+		
 		private void SelectWindow(FlowWindow window) {
-
+			
 			for (int i = 0; i < window.states.Length; ++i) window.SetCompletedState(i, CompletedState.NotReady);
 			
 			if (window.compiled == false) {
 				
-				this.ShowNotification(new GUIContent("You need to compile this window to use 'Select' command"));
+				this.ShowNotification(new GUIContent("You need to compile this window to use `Select` command"));
 				
 			} else {
 				
@@ -637,61 +670,73 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				//}
 				
 			}
-
+			
 		}
-
+		
 		public void DrawWaitForConnection() {
-
+			
 			if (this.waitForAttach == true && this.currentAttachId >= 0) {
-
+				
 				GUIStyle style = null;
 				string label = string.Empty;
-
+				
 				var window = FlowSystem.GetWindow(this.currentAttachId);
-
+				
 				if (this.currentAttachComponent != null) {
-
+					
 					var element = this.currentAttachComponent;
-
+					
 					const int maxDepth = 6;
-					var styles = new GUIStyle[maxDepth] {
-						
-						new GUIStyle("flow node 0"),
-						new GUIStyle("flow node 1"),
-						new GUIStyle("flow node 2"),
-						new GUIStyle("flow node 3"),
-						new GUIStyle("flow node 4"),
-						new GUIStyle("flow node 5")
-						
-					};
+					var styles = ME.Utilities.Cache<GUIStyle[]>("FlowEditor.Styles", () => {
+
+						var _styles = new GUIStyle[maxDepth] {
+							
+							new GUIStyle("flow node 0"),
+							new GUIStyle("flow node 1"),
+							new GUIStyle("flow node 2"),
+							new GUIStyle("flow node 3"),
+							new GUIStyle("flow node 4"),
+							new GUIStyle("flow node 5")
+							
+						};
+
+						return _styles;
+
+					});
 
 					style = styles[Mathf.Clamp(element.editorDrawDepth, 0, maxDepth - 1)];
 					label = window.title + ": " + element.comment;
-
+					
 				} else {
-
-					style = new GUIStyle("flow node 6");
+					
+					style = ME.Utilities.CacheStyle("FlowEditor.Styles", "flow node 6");
 					label = window.title;
-
+					
 				}
 				
 				var offset = 10f;
 				var width = 60f;
 				var height = 60f;
+				
+				var boxStyle = ME.Utilities.CacheStyle("FlowEditor.Styles", "flow node 6 on", (styleName) => {
 
-				var boxStyle = new GUIStyle("flow node 0 on");
-				boxStyle.padding = new RectOffset(20 + (int)width + (int)offset, 20, 20, 20);
-				boxStyle.wordWrap = true;
-				boxStyle.alignment = TextAnchor.MiddleCenter;
-				boxStyle.contentOffset = Vector2.zero;
-				boxStyle.stretchHeight = true;
+					var _boxStyle = new GUIStyle(styleName);
+					_boxStyle.padding = new RectOffset(20 + (int)width + (int)offset, 20, 20, 20);
+					_boxStyle.wordWrap = true;
+					_boxStyle.alignment = TextAnchor.MiddleCenter;
+					_boxStyle.contentOffset = Vector2.zero;
+					_boxStyle.stretchHeight = true;
+
+					return _boxStyle;
+
+				});
 
 				var rect = this.scrollRect;
 				rect.x += offset;
 				rect.y = rect.height - height - offset;
 				rect.width = width;
 				rect.height = height;
-
+				
 				var boxRect = rect;
 				boxRect.height -= 20f;
 				boxRect.y += 10f;
@@ -703,197 +748,207 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				GUI.backgroundColor = color;
 				GUI.Box(boxRect, label, boxStyle);
 				GUI.backgroundColor = backColor;
-
+				
 				if (GUI.Button(rect, string.Empty, style) == true) {
 					
 					// Cancel
 					this.WaitForAttach(-1);
 					
 				}
-
+				
 			}
-
+			
 		}
-
+		
 		private Dictionary<int, List<FlowWindow>> bringFront = new Dictionary<int, List<FlowWindow>>();
-
+		
 		private void BringBackOrFront(FlowWindow current, IEnumerable<FlowWindow> windows) {
-
+			
 			// Is any of other window has bigger size and collide current
 			foreach (var window in windows) {
-
-				if (window != current) {
-
+				
+				if (window.id != current.id) {
+					
 					var p1 = window.rect.width * window.rect.height;
 					var p2 = current.rect.width * current.rect.height;
-
+					
 					if (p1 > p2 && window.rect.Overlaps(current.rect) == true) {
-
+						
 						// Bring window to front
 						GUI.BringWindowToFront(current.id);
-
+						
 						if (this.bringFront.ContainsKey(current.id) == true) {
-
+							
 							foreach (var item in this.bringFront[current.id]) {
-
+								
 								GUI.BringWindowToFront(item.id);
-
+								
 							}
-
+							
 						}
-
+						
 						if (this.bringFront.ContainsKey(window.id) == true) {
-
+							
 							this.bringFront[window.id].Add(current);
-
+							
 						} else {
-
+							
 							this.bringFront.Add(window.id, new List<FlowWindow>() { current });
-
+							
 						}
-
+						
 					}
-
+					
 				}
-
+				
 			}
-
+			
 		}
-
+		
 		private Vector2 settingsWindowScroll;
 		private ReorderableList defaultWindows;
 		private ReorderableList tagsList;
 		private void DrawSettings(float offsetY) {
-
+			
 			//var scrollPos = FlowSystem.GetScrollPosition();
-
+			
 			//var wRect = new Rect(10f + scrollPos.x, 20f + scrollPos.y, 200f, 200f);
 			//GUI.Window(-1, wRect, (id) => {
-				
+			
 			if (FlowSystem.HasData() == false) return;
+			
+			var boxStyle = ME.Utilities.CacheStyle("FlowEditor.Settings.Styles", "miniButton", (styleName) => {
 
-			var boxStyle = new GUIStyle(FlowSystemEditorWindow.defaultSkin.button);//"AnimationCurveEditorBackground");
-			boxStyle.margin = new RectOffset(10, 10, 10, 10);
+				var _boxStyle = new GUIStyle(FlowSystemEditorWindow.defaultSkin.button);
+				_boxStyle.margin = new RectOffset(10, 10, 10, 10);
+
+				return _boxStyle;
+
+			});
 
 			GUILayout.BeginArea(new Rect(0f, offsetY, SETTINGS_WIDTH, this.position.height - offsetY), boxStyle);
 			{
 				
 				//var buttonStyle = new GUIStyle(EditorStyles.miniButton);
 				//this.DrawToolbar(buttonStyle);
-
+				
 				this.settingsWindowScroll = GUILayout.BeginScrollView(this.settingsWindowScroll, false, false);
 				
 				CustomGUI.Splitter();
 				GUILayout.Label("Base Modules:", EditorStyles.largeLabel);
 				CustomGUI.Splitter();
-
+				
 				#region ROOT WINDOW
 				Flow.DrawModuleSettingsGUI(null, "Root Window", null, () => {
-
+					
 					var rootWindow = FlowSystem.GetWindow(FlowSystem.GetRootWindow());
 					if (rootWindow != null) {
-
+						
 						if (GUILayout.Button(rootWindow.title, FlowSystemEditorWindow.defaultSkin.button) == true) {
+
+							this.SetCenterTo(rootWindow);
 
 							this.focusedGUIWindow = rootWindow.id;
 							FlowSystem.ResetSelection();
-
+							
 						}
-
+						
 					} else {
-
+						
 						GUILayout.Label("No root window selected.");
-
+						
 					}
-
+					
 				});
 				#endregion
 				
 				#region DEFAULT WINDOWS
 				Flow.DrawModuleSettingsGUI(null, "Default Windows", null, () => {
-
+					
 					if (this.defaultWindows == null) {
 						
 						var label = "Default Windows";
 						
 						this.defaultWindows = new ReorderableList(FlowSystem.GetDefaultWindows(), typeof(int), true, true, false, true);
-
+						
 						this.defaultWindows.drawHeaderCallback += rect => GUI.Label(rect, label);
 						this.defaultWindows.drawElementCallback += (rect, index, active, focused) => {
 							
 							GUI.Label(rect, FlowSystem.GetWindow(FlowSystem.GetDefaultWindows()[index]).title);
 							
 						};
+						this.defaultWindows.onSelectCallback += (list) => {
+
+							var index = list.index;
+							this.SetCenterTo(FlowSystem.GetWindow(FlowSystem.GetDefaultWindows()[index]));
+
+						};
 						
 					}
 					
 					if (this.defaultWindows != null) this.defaultWindows.DoLayoutList();
-
+					
 				});
 				#endregion
 				
 				#region TAGS
 				Flow.DrawModuleSettingsGUI(null, "Tags", null, () => {
-
+					
 					if (this.tagsList == null) {
 						
 						var label = "Tags";
 
-						var styles = new GUIStyle[7] {
-							
-							new GUIStyle("sv_label_1"),
-							new GUIStyle("sv_label_2"),
-							new GUIStyle("sv_label_3"),
-							new GUIStyle("sv_label_4"),
-							new GUIStyle("sv_label_5"),
-							new GUIStyle("sv_label_6"),
-							new GUIStyle("sv_label_7")
+						var styles = FlowSystemEditor.GetTagStyles();
 
-						};
+						var selected = ME.Utilities.CacheStyle("FlowEditor.Settings.Styles", "U2D.pivotDotActive");
+						
+						var buttonStyle = ME.Utilities.CacheStyle("FlowEditor.Settings.Styles", "miniButton", (styleName) => {
 
-						var selected = new GUIStyle("U2D.pivotDotActive");
+							var _buttonStyle = new GUIStyle(EditorStyles.miniButton);
+							_buttonStyle.normal.background = _buttonStyle.active.background;
+							_buttonStyle.active.background = null;
+							_buttonStyle.focused.background = null;
+							_buttonStyle.wordWrap = false;
 
-						var buttonStyle = new GUIStyle(EditorStyles.miniButton);
-						buttonStyle.normal.background = buttonStyle.active.background;
-						buttonStyle.active.background = null;
-						buttonStyle.focused.background = null;
-						buttonStyle.wordWrap = false;
+							return _buttonStyle;
+
+						});
 
 						var tagsSource = FlowSystem.GetTags();
 						if (tagsSource != null) {
-
+							
 							this.tagsList = new ReorderableList(tagsSource, typeof(FlowTag), true, true, false, true);
-
+							
 							this.tagsList.drawHeaderCallback += rect => GUI.Label(rect, label);
 							this.tagsList.drawElementCallback += (rect, index, active, focused) => {
-
+								
 								var tags = FlowSystem.GetTags();
 								if (index < 0 || index >= tags.Count) return;
-
+								
 								var tag = tags[index];
-
+								
 								var itemRect = new Rect(rect);
 								itemRect.x += itemRect.width;
 								itemRect.width = 14f;
-
+								
 								var i = 0;
 								foreach (var style in styles) {
-
+									
 									itemRect.x -= itemRect.width;
 									if (GUI.Button(itemRect, " ", style) == true) {
-
+										
 										tag.color = i;
-
+										
 									}
-
+									
 									if (tag.color == i) GUI.Label(new Rect(itemRect.x - 2f, itemRect.y - 2f, itemRect.width, itemRect.height), string.Empty, selected);
-
+									
 									++i;
-
+									
 								}
-
+								
 								var toggleWidth = rect.height;
-
+								
 								rect.width = itemRect.x - rect.x - 5f - toggleWidth;
 								rect.height -= 2f;
 								rect.x += toggleWidth;
@@ -904,46 +959,46 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									FlowSystem.SetDirty();
 									
 								}
-
+								
 								rect.x -= toggleWidth;
 								rect.width = toggleWidth;
-
+								
 								var enabled = GUI.Toggle(rect, tag.enabled, string.Empty);
 								if (enabled != tag.enabled) {
-
+									
 									tag.enabled = enabled;
 									FlowSystem.SetDirty();
-
+									
 								}
-
+								
 							};
 							
 						}
-
+						
 					}
 					
 					if (this.tagsList != null) this.tagsList.DoLayoutList();
-						
+					
 				});
 				#endregion
 				
 				#region FLOW
 				Flow.DrawModuleSettingsGUI(null, "Flow Settings", null, () => {
-
+					
 					var flowWindowWithLayout = GUILayout.Toggle(FlowSystem.GetData().flowWindowWithLayout, "Window With Layout");
 					if (flowWindowWithLayout != FlowSystem.GetData().flowWindowWithLayout) {
 						
 						FlowSystem.GetData().flowWindowWithLayout = flowWindowWithLayout;
 						FlowSystem.SetDirty();
-
+						
 						this.Repaint();
 						
 					}
-
+					
 					if (flowWindowWithLayout == true) {
-
+						
 						EditorGUIUtility.labelWidth = 50f;
-
+						
 						var flowWindowWithLayoutScaleFactor = EditorGUILayout.Slider("Scale", FlowSystem.GetData().flowWindowWithLayoutScaleFactor, 0f, 1f);
 						if (flowWindowWithLayoutScaleFactor != FlowSystem.GetData().flowWindowWithLayoutScaleFactor) {
 							
@@ -953,14 +1008,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							this.Repaint();
 							
 						}
-
+						
 						EditorGUIUtility.LookLikeControls();
-
+						
 					}
-
+					
 				});
 				#endregion
-
+				
 				#region WINDOW EDITOR
 				
 				//GUILayout.Label("Window Editor", EditorStyles.boldLabel);
@@ -974,46 +1029,54 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				*/
 				#endregion
-
+				
 				CustomGUI.Splitter();
 				GUILayout.Label("Installed Modules:", EditorStyles.largeLabel);
 				CustomGUI.Splitter();
-
+				
 				Flow.OnDrawSettingsGUI(this);
 
-				var copyrightLabel = new GUIStyle(EditorStyles.miniLabel);
-				copyrightLabel.alignment = TextAnchor.MiddleCenter;
-				copyrightLabel.wordWrap = true;
+				var copyright = ME.Utilities.CacheStyle("FlowEditor.Styles", "copyright", (styleName) => {
+					
+					var copyrightLabel = new GUIStyle(EditorStyles.miniLabel);
+					copyrightLabel.alignment = TextAnchor.MiddleCenter;
+					copyrightLabel.wordWrap = true;
 
-				GUILayout.Label("Version " + VersionInfo.bundleVersion + ". MIT license Alex Feer <chrome.alex@gmail.com>", copyrightLabel);
+					return copyrightLabel;
 
+				});
+
+				GUILayout.Label(string.Format("Version {0}. MIT license Alex Feer <chrome.alex@gmail.com>", VersionInfo.BUNDLE_VERSION), copyright);
+				
 				GUILayout.EndScrollView();
-
+				
 			}
 			GUILayout.EndArea();
-
+			
 			//}, "Settings");
-
+			
 			//GUI.BringWindowToFront(-1);
-
+			
 		}
-
+		
 		private bool scrollingMouse = false;
 		private bool selectionRectWait;
 		private Rect selectionRect;
-		private void DragBackground(float offset) {
-
+		private void HandleEvents(float offset) {
+			
 			var button = Event.current.button;
-			var position = Event.current.mousePosition + FlowSystem.GetScrollPosition() + new Vector2(-SETTINGS_WIDTH, -offset);
-
+			var position =
+				this.zoomDrawer.ConvertScreenCoordsToZoomCoords(Event.current.mousePosition, topLeft: true) + 
+				-FlowSystem.GetScrollPosition() * 2f;
+			
 			if (Event.current.type == EventType.MouseDown && button == 1) {
-
+				
 				this.DrawContextMenu();
-
+				
 			}
-
+			
 			if (Event.current.type == EventType.MouseDown && button == 2) {
-
+				
 				this.scrollingMouse = true;
 				
 				this.scrollingMouseAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
@@ -1023,20 +1086,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				});
 				this.scrollingMouseAnimation.speed = 2f;
 				this.scrollingMouseAnimation.target = 1f;
-
+				
 			}
 			
 			if (Event.current.type == EventType.MouseDrag && this.scrollingMouse == true) {
-
+				
 				this.Repaint();
 				
 				this.showTagsPopup = false;
 				this.showTagsPopupId = -1;
-
+				
 			}
 			
 			if (Event.current.type == EventType.MouseUp && this.scrollingMouse == true) {
-
+				
 				this.scrollingMouse = false;
 				
 				this.scrollingMouseAnimation.value = 1f;
@@ -1046,96 +1109,98 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.Repaint();
 				
 			}
-
+			
 			if (Event.current.type == EventType.MouseDown && button == 0) {
 				
 				this.selectionRect = new Rect(position.x, position.y, 0f, 0f);
 				this.selectionRectWait = true;
-
+				
 				this.selectionRectAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
 					
 					this.Repaint();
-
+					
 				});
 				this.selectionRectAnimation.speed = 2f;
 				this.selectionRectAnimation.target = 1f;
-
+				
 			}
-
+			
 			if (Event.current.type == EventType.MouseDrag && this.selectionRectWait == true) {
-
+				
 				var p1x = this.selectionRect.x;
 				var p1y = this.selectionRect.y;
 				var p2x = position.x;
 				var p2y = position.y;
-
+				
 				this.selectionRect.width = p2x - p1x;
 				this.selectionRect.height = p2y - p1y;
-
+				
 				FlowSystem.SelectWindowsInRect(this.selectionRect);
-
+				
 				this.Repaint();
 				
 				this.showTagsPopup = false;
 				this.showTagsPopupId = -1;
-
+				
 			}
-
+			
 			if (Event.current.type == EventType.MouseUp && this.selectionRectWait == true) {
 				
 				// Select in rect
 				FlowSystem.SelectWindowsInRect(this.selectionRect);
-
+				
 				this.selectionRectWait = false;
 				
 				this.selectionRectAnimation.value = 1f;
 				this.selectionRectAnimation.speed = 2f;
 				this.selectionRectAnimation.target = 0f;
-
+				
 				this.Repaint();
-
+				
 			}
-
-			if (Event.current.type == EventType.MouseDrag && Event.current.button == 2) {
-
+			
+			/*if (Event.current.type == EventType.MouseDrag &&
+			    (Event.current.button == 0 && Event.current.modifiers == EventModifiers.Alt) ||
+			    Event.current.button == 2) {
+				
 				var scrollPos = FlowSystem.GetScrollPosition();
-				scrollPos -= Event.current.delta;
+				scrollPos -= Event.current.delta / this.zoomDrawer.GetZoom();
 				FlowSystem.SetScrollPosition(scrollPos);
-
+				
 				Event.current.Use();
-
-			}
-
+				
+			}*/
+			
 		}
-
+		
 		private AnimatedValues.AnimFloat selectionRectAnimation;
 		private void DrawBackground() {
 			
-			if (this._background == null) this._background = Resources.Load("UI.Windows/Flow/Background") as Texture2D;
+			if (this._background == null) this._background = Resources.Load<Texture2D>("UI.Windows/Flow/Background");
 			
 			FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f);
-
+			
 			var oldColor = GUI.color;
-
+			
 			var color = new Color(1f, 1f, 1f, 0.2f);
 			GUI.color = color;
-
+			
 			var size = new Vector2(this._background.width, this._background.height);
 			var drawSize = new Vector2(this.contentRect.width, this.contentRect.height);
-
+			
 			GUI.DrawTextureWithTexCoords(new Rect(0f, 0f, drawSize.x, drawSize.y), this._background, new Rect(0f, 0f, drawSize.x / size.x, drawSize.y / size.y), true);
-
+			
 			if (this.selectionRect.size != Vector2.zero && (this.selectionRectAnimation.isAnimating == true || this.selectionRectWait == true)) {
-
+				
 				var normalRect = this.selectionRect;
-
+				
 				if (normalRect.width < 0f) {
 					
 					normalRect.x += normalRect.width;
 					normalRect.width = -normalRect.width;
 					
 				}
-
+				
 				if (normalRect.height < 0f) {
 					
 					normalRect.y += normalRect.height;
@@ -1143,38 +1208,44 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				}
 
-				var selectionBoxStyle = new GUIStyle("SelectionRect");
-				selectionBoxStyle.margin = new RectOffset();
-				selectionBoxStyle.padding = new RectOffset();
-				selectionBoxStyle.contentOffset = Vector2.zero;
+				var selectionBoxStyle = ME.Utilities.CacheStyle("FlowEditor.Styles", "SelectionRect", (styleName) => {
+					
+					var _selectionBoxStyle = new GUIStyle(styleName);
+					_selectionBoxStyle.margin = new RectOffset();
+					_selectionBoxStyle.padding = new RectOffset();
+					_selectionBoxStyle.contentOffset = Vector2.zero;
+
+					return _selectionBoxStyle;
+
+				});
 
 				color = new Color(1f, 1f, 1f, this.selectionRectAnimation.value);
-
+				
 				GUI.color = color;
 				GUI.Box(normalRect, string.Empty, selectionBoxStyle);
 				
 			}
-
+			
 			GUI.color = oldColor;
-
+			
 		}
 		
 		private AnimatedValues.AnimFloat scrollingMouseAnimation;
 		private void DrawMinimap() {
-			
+
 			var oldColor = GUI.color;
-
-			var elementStyle = new GUIStyle(GUI.skin.FindStyle("button"));
-
+			
+			var elementStyle = ME.Utilities.CacheStyle("FlowEditor.Minimap.Styles", "button", (styleName) => new GUIStyle(GUI.skin.FindStyle(styleName)));
+			
 			var minMax = Rect.MinMaxRect(10000f, 10000f, -10000f, -10000f);
 			var backOffset = 300f;
-
+			
 			var factor = this.scrollingMouseAnimation.value;
-
+			
 			var backAlpha = 0.3f * factor;
 			var cameraAlpha = 0.5f * factor;
 			var elementAlpha = 0.6f * factor;
-
+			
 			var windows = FlowSystem.GetWindows();
 			var containers = FlowSystem.GetContainers();
 			
@@ -1211,14 +1282,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			var nullOffset = FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero);
 			var offset = new Vector2(Screen.width * 0.5f - SETTINGS_WIDTH * 0.5f - nullOffset.width * 0.5f, 0f);
-
+			
 			var backRect = FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset);
-
+			
 			var color = Color.black;
 			color.a = backAlpha;
 			GUI.color = color;
 			GUI.Box(backRect, string.Empty, elementStyle);
-
+			
 			if (containers != null) {
 				
 				foreach (var container in containers) {
@@ -1235,11 +1306,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			color = Color.white;
 			color.a = elementAlpha;
 			GUI.color = color;
-
+			
 			if (windows != null) {
 				
 				foreach (var window in windows) {
-
+					
 					var rect = window.rect;
 					if (rect.height < 60f) rect.height = 60f;
 					GUI.Box(FlowSystemEditor.Scale(rect, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset), string.Empty, elementStyle);
@@ -1252,32 +1323,47 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			color.a = cameraAlpha;
 			GUI.color = color;
 
-			var scrollPos = FlowSystem.GetScrollPosition();
-			GUI.Box(FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width, this.scrollRect.height), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset), string.Empty, elementStyle);
+			var zoom = this.zoomDrawer.GetZoom();
+			var scrollPos = -FlowSystem.GetScrollPosition();
+			var r = FlowSystemEditor.Scale(new Rect(scrollPos.x, scrollPos.y, this.scrollRect.width / zoom, this.scrollRect.height / zoom), new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset);
+			GUI.Box(r, string.Empty, elementStyle);
 			
 			GUI.color = oldColor;
-
+			
 		}
-
+		
 		private void DrawLoader() {
 			
 			this.DrawBackground();
 			
-			if (this.splash == null) this.splash = Resources.Load("UI.Windows/Flow/Splash") as Texture;
-			
-			var darkLabel = FlowSystemEditorWindow.defaultSkin.FindStyle("DarkLabel");
-			darkLabel.alignment = TextAnchor.MiddleCenter;
-			darkLabel.stretchWidth = true;
-			darkLabel.stretchHeight = true;
-			darkLabel.fixedWidth = 0f;
-			darkLabel.fixedHeight = 0f;
+			if (this.splash == null) this.splash = Resources.Load<Texture>("UI.Windows/Flow/Splash");
+
+			var darkLabel = ME.Utilities.CacheStyle("FlowEditor.Minimap.Styles", "DarkLabel", (styleName) => {
+
+			    var _darkLabel = FlowSystemEditorWindow.defaultSkin.FindStyle(styleName);
+				_darkLabel.alignment = TextAnchor.MiddleCenter;
+				_darkLabel.stretchWidth = true;
+				_darkLabel.stretchHeight = true;
+				_darkLabel.fixedWidth = 0f;
+				_darkLabel.fixedHeight = 0f;
+
+				return _darkLabel;
+				
+			});
 
 			var rect = FlowSystemEditor.GetCenterRect(this.position, this.splash.width, this.splash.height);
+			
+			var boxStyle = ME.Utilities.CacheStyle("FlowEditor.Minimap.Styles", "boxStyle", (styleName) => {
 
-			var boxStyle = new GUIStyle(GUI.skin.box);
-			boxStyle.margin = new RectOffset(0, 0, 0, 0);
-			boxStyle.padding = new RectOffset(0, 0, 0, 0);
-			boxStyle.normal.background = null;
+				var _boxStyle = new GUIStyle(GUI.skin.box);
+				_boxStyle.margin = new RectOffset(0, 0, 0, 0);
+				_boxStyle.padding = new RectOffset(0, 0, 0, 0);
+				_boxStyle.normal.background = null;
+
+				return _boxStyle;
+
+			});
+
 			GUI.Box(rect, this.splash, boxStyle);
 			
 			var width = 730f;
@@ -1294,90 +1380,94 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				var borderWidth = width - marginLeft - margin;
 				var borderHeight = height - margin * 2f;
-				
-				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), new GUIStyle("sv_iconselector_labelselection"));
+
+				var labelStyle = ME.Utilities.CacheStyle("FlowEditor.Minimap.Styles", "sv_iconselector_labelselection");
+
+				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), labelStyle);
 				{
 					
 					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f));
 					{
-
+						
 						GUILayout.Label("Loading...", darkLabel);
-
+						
 					}
 					GUILayout.EndArea();
-
+					
 				}
 				GUILayout.EndArea();
-
+				
 			}
 			GUILayout.EndArea();
-
+			
 		}
-
+		
 		private Vector2 dataSelectionScroll;
 		private Texture splash;
 		private FlowData cachedData;
 		private FlowData[] scannedData;
 		private void DrawDataSelection() {
-
+			
 			this.DrawBackground();
-
-			if (this.splash == null) this.splash = Resources.Load("UI.Windows/Flow/Splash") as Texture;
+			
+			if (this.splash == null) this.splash = Resources.Load<Texture>("UI.Windows/Flow/Splash");
 			
 			var darkLabel = FlowSystemEditorWindow.defaultSkin.FindStyle("DarkLabel");
-
+			
 			var rect = FlowSystemEditor.GetCenterRect(this.position, this.splash.width, this.splash.height);
-
+			
 			var boxStyle = new GUIStyle(GUI.skin.box);
 			boxStyle.margin = new RectOffset(0, 0, 0, 0);
 			boxStyle.padding = new RectOffset(0, 0, 0, 0);
 			boxStyle.normal.background = null;
 			GUI.Box(rect, this.splash, boxStyle);
-
+			
 			var width = 730f;
 			var height = 456f;
 			var rectOffset = FlowSystemEditor.GetCenterRect(this.position, width, height);
-
+			
 			var marginLeft = 240f;
 			var margin = 20f;
-
+			
 			var padding = 20f;
-
+			
 			GUILayout.BeginArea(rectOffset);
 			{
-
+				
 				var borderWidth = width - marginLeft - margin;
 				var borderHeight = height - margin * 2f;
+				
+				var labelStyle = ME.Utilities.CacheStyle("FlowEditor.DataSelection.Styles", "sv_iconselector_labelselection");
 
-				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), new GUIStyle("sv_iconselector_labelselection"));
+				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), labelStyle);
 				{
-
+					
 					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f));
 					{
-
+						
 						var headerStyle = new GUIStyle("LODLevelNotifyText");
 						headerStyle.fontSize = 18;
 						headerStyle.alignment = TextAnchor.MiddleCenter;
-
-						GUILayoutExt.LabelWithShadow("UI.Windows Flow Extension v" + VersionInfo.bundleVersion, headerStyle);
+						
+						GUILayoutExt.LabelWithShadow("UI.Windows Flow Extension v" + VersionInfo.BUNDLE_VERSION, headerStyle);
 						
 						GUILayout.Space(10f);
-
+						
 						GUILayout.Label("Open one of your projects:", darkLabel);
-
+						
 						var backStyle = new GUIStyle("sv_iconselector_labelselection");
-
+						
 						var skin = GUI.skin;
 						GUI.skin = FlowSystemEditorWindow.defaultSkin;
 						this.dataSelectionScroll = GUILayout.BeginScrollView(this.dataSelectionScroll, false, true, GUI.skin.horizontalScrollbar, GUI.skin.verticalScrollbar, backStyle);
 						{
-
+							
 							GUI.skin = skin;
-
+							
 							this.scannedData = EditorUtilities.GetAssetsOfType<FlowData>();
-
+							
 							if (this.scannedData.Length == 0) {
-
+								
 								var center = new GUIStyle(darkLabel);
 								center.fixedWidth = 0f;
 								center.fixedHeight = 0f;
@@ -1385,11 +1475,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								center.stretchHeight = true;
 								center.alignment = TextAnchor.MiddleCenter;
 								center.wordWrap = true;
-
+								
 								GUILayout.Label("No projects was found. Create a new one by Right-Click on any folder in Project View and choose Create->UI.Windows->Flow->Graph option.", center);
-
+								
 							} else {
-
+								
 								var buttonStyle = new GUIStyle("U2D.createRect");
 								buttonStyle.padding = new RectOffset(15, 15, 15, 15);
 								buttonStyle.margin = new RectOffset(2, 2, 2, 2);
@@ -1400,47 +1490,47 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								buttonStyle.normal.textColor = Color.black;
 								buttonStyle.fontSize = 12;
 								buttonStyle.richText = true;
-
+								
 								var buttonStyleSelected = new GUIStyle(buttonStyle);
-
+								
 								buttonStyle.normal.background = null;
 								
 								this.scannedData = this.scannedData.OrderByDescending((data) => (data != null ? data.lastModified : string.Empty)).ToArray();
-
+								
 								foreach (var data in this.scannedData) {
-
+									
 									if (data == null) continue;
-
+									
 									var title = data.name + "\n<color=#777><size=10>Modified: " + data.lastModified + "</size></color>";
-
+									
 									if (GUILayout.Button(title, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
-
+										
 										this.cachedData = data;
-
+										
 									}
-
+									
 								}
-
+								
 							}
-
+							
 							GUILayout.FlexibleSpace();
-
+							
 						}
 						GUILayout.EndScrollView();
 						
 						GUILayout.Space(10f);
-
+						
 						GUILayout.Label("Or select the project file:", darkLabel);
-
+						
 						this.cachedData = GUILayoutExt.ObjectField<FlowData>(this.cachedData, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ObjectField"));
-
+						
 						CustomGUI.Splitter();
-
+						
 						GUILayout.BeginHorizontal();
 						{
 							
 							GUILayout.FlexibleSpace();
-
+							
 							var oldState = GUI.enabled;
 							GUI.enabled = oldState && this.cachedData != null;
 							if (GUILayout.Button("Open", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
@@ -1452,33 +1542,33 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 						}
 						GUILayout.EndHorizontal();
-
+						
 					}
 					GUILayout.EndArea();
-
+					
 				}
 				GUILayout.EndArea();
-
+				
 			}
 			GUILayout.EndArea();
-
+			
 		}
-
+		
 		public void OpenFlowData(FlowData flowData) {
-
+			
 			this.cachedData = flowData;
 			FlowSystem.SetData(flowData);
-
+			
 		}
-
+		
 		public void ChangeFlowData() {
-
+			
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;
 			this.tagsList = null;
-
+			
 		}
-
+		
 		public void CreateNewItem(System.Func<FlowWindow> predicate) {
 			
 			var scrollPos = FlowSystem.GetScrollPosition();
@@ -1486,67 +1576,74 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var window = predicate();
 			window.rect.x = scrollPos.x + this.scrollRect.width * 0.5f - window.rect.width * 0.5f;
 			window.rect.y = scrollPos.y + this.scrollRect.height * 0.5f - window.rect.height * 0.5f;
-
+			
 		}
 		
 		private void DrawToolbar() {
-
+			
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
 			
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
-
+			
 			this.DrawToolbar(buttonStyle);
 			
 			GUILayout.EndHorizontal();
-
+			
 		}
-
+		
 		private void DrawContextMenu() {
-
+			
 			var menu = new GenericMenu();
-
+			
 			this.SetupCreateMenu("Create/", menu);
 			this.SetupToolsMenu(string.Empty, menu);
-
+			
 			menu.ShowAsContext();
-
+			
 		}
-
+		
 		private void SetupCreateMenu(string prefix, GenericMenu menu) {
-
-			menu.AddItem(new GUIContent(prefix + "Window"), on: false, func: () => {
+			
+			menu.AddItem(new GUIContent(string.Format("{0}Window", prefix)), on: false, func: () => {
 				
 				this.CreateNewItem(() => FlowSystem.CreateWindow());
 				
 			});
-			menu.AddItem(new GUIContent(prefix + "Container"), on: false, func: () => {
+			menu.AddItem(new GUIContent(string.Format("{0}Container", prefix)), on: false, func: () => {
 				
 				this.CreateNewItem(() => FlowSystem.CreateContainer());
 				
 			});
-			menu.AddItem(new GUIContent(prefix + "Default Link"), on: false, func: () => {
+			menu.AddItem(new GUIContent(string.Format("{0}Default Link", prefix)), on: false, func: () => {
 				
 				this.CreateNewItem(() => FlowSystem.CreateDefaultLink());
 				
 			});
 			
 			Flow.OnDrawCreateMenuGUI(this, prefix, menu);
-
+			
 		}
-
+		
 		private void SetupToolsMenu(string prefix, GenericMenu menu) {
-
-			menu.AddItem(new GUIContent(prefix + "Center Screen"), on: false, func: () => {
+			
+			menu.AddItem(new GUIContent(string.Format("{0}Center Screen", prefix)), on: false, func: () => {
 				
 				FlowSystem.SetScrollPosition(Vector2.one * -1f);
 				
 			});
 			
 			Flow.OnDrawToolsMenuGUI(this, prefix, menu);
-
+			
 		}
 
+		public void SetCenterTo(FlowWindow window) {
+
+			FlowSystem.SetZoom(1f);
+			FlowSystem.SetScrollPosition(-new Vector2(window.rect.x - this.scrollRect.width * 0.5f, window.rect.y - this.scrollRect.height * 0.5f));
+
+		}
+		
 		private void DrawToolbar(GUIStyle buttonStyle) {
 			
 			var result = GUILayout.Button("Create", buttonStyle);
@@ -1556,7 +1653,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				var menu = new GenericMenu();
 				this.SetupCreateMenu(string.Empty, menu);
-
+				
 				menu.DropDown(new Rect(rect.x, rect.y + TOOLBAR_HEIGHT, rect.width, rect.height));
 				
 			}
@@ -1568,63 +1665,63 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				var menu = new GenericMenu();
 				this.SetupToolsMenu(string.Empty, menu);
-
+				
 				menu.DropDown(new Rect(rect.x, rect.y + TOOLBAR_HEIGHT, rect.width, rect.height));
 				
 			}
 			
 			Flow.OnDrawToolbarGUI(this, buttonStyle);
-
+			
 			GUILayout.FlexibleSpace();
-
+			
 			var oldColor = GUI.color;
 			GUI.color = Color.gray;
-			GUILayout.Label("Current Data: " + AssetDatabase.GetAssetPath(this.cachedData), buttonStyle);
+			GUILayout.Label(string.Format("Current Data: {0}", AssetDatabase.GetAssetPath(this.cachedData)), buttonStyle);
 			GUI.color = oldColor;
-
+			
 			if (GUILayout.Button("Change", buttonStyle) == true) {
 				
 				this.ChangeFlowData();
-
+				
 			}
-
+			
 		}
 		
 		private void DrawNodeContainer(int id) {
-
+			
 			EditorGUIUtility.labelWidth = 65f;
-
+			
 			GUI.enabled = true;//!FlowSceneView.IsActive();
-
+			
 			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 			buttonStyle.stretchWidth = false;
 			
 			var window = FlowSystem.GetWindow(id);
-
+			
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
 			{
-
+				
 				if (this.waitForAttach == true) {
-
+					
 					if (this.currentAttachComponent == null) {
-
+						
 						if (id != this.currentAttachId) {
 							
 							var currentAttach = FlowSystem.GetWindow(this.currentAttachId);
 							if (currentAttach != null) {
-
+								
 								var attachTo = FlowSystem.GetWindow(id);
 								var hasContainer = currentAttach.HasContainer();
 								var container = currentAttach.GetContainer();
-
+								
 								if ((attachTo.IsContainer() == true && currentAttach.IsContainer() == true && attachTo == container) || (hasContainer == true && container.id != id)) {
 									
 									
 									
 								} else {
-
+									
 									if (attachTo.IsContainer() == true && currentAttach.IsContainer() == true) {
-
+										
 										if (FlowSystem.AlreadyAttached(id, this.currentAttachId) == true) {
 											
 											if (GUILayout.Button("Detach Here", buttonStyle) == true) {
@@ -1637,20 +1734,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 										} else {
 											
 											if (GUILayout.Button("Attach Here", buttonStyle) == true) {
-
+												
 												FlowSystem.Attach(id, this.currentAttachId, oneWay: true);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
 											}
 											
 										}
-
+										
 									} else {
-
+										
 										if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
 											
 											if (GUILayout.Button("Detach Here", buttonStyle) == true) {
-
+												
 												FlowSystem.Detach(this.currentAttachId, id, oneWay: false);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
@@ -1659,20 +1756,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 										} else {
 											
 											if (GUILayout.Button("Attach Here", buttonStyle) == true) {
-
+												
 												FlowSystem.Attach(this.currentAttachId, id, oneWay: false);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
 											}
 											
 										}
-
+										
 									}
-
+									
 								}
-
+								
 							}
-
+							
 						} else {
 							
 							if (GUILayout.Button("Cancel", buttonStyle) == true) {
@@ -1682,9 +1779,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							}
 							
 						}
-					
+						
 					}
-
+					
 				} else {
 					
 					if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
@@ -1693,211 +1790,201 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.WaitForAttach(id);
 						
 					}
-
+					
 					if (GUILayout.Button("Destroy", buttonStyle) == true) {
 						
 						if (EditorUtility.DisplayDialog("Are you sure?", "Current container will be destroyed with all links (All windows will be saved)", "Yes, destroy", "No") == true) {
 							
-							this.ShowNotification(new GUIContent("The container '" + window.title + "' was successfully destroyed"));
+							this.ShowNotification(new GUIContent(string.Format("The container `{0}` was successfully destroyed", window.title)));
 							FlowSystem.DestroyWindow(id);
 							return;
-
+							
 						}
 						
 					}
-
+					
 				}
 				
 				GUILayout.FlexibleSpace();
-
+				
 			}
 			GUILayout.EndHorizontal();
-
+			
 			GUILayout.BeginHorizontal();
 			{
-
+				
 				GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 				window.title = GUILayout.TextField(window.title);
-
+				
 			}
 			GUILayout.EndHorizontal();
-
+			
 			GUILayout.BeginHorizontal();
 			{
-
+				
 				GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 				window.directory = GUILayout.TextField(window.directory);
-
+				
 			}
 			GUILayout.EndHorizontal();
 			
 			this.DrawTags(window);
-
+			
 			if (window.IsFunction() == true) {
-
+				
 				// Draw entrance point and an exit point
 				//window.rect.x;
 				
-				var rootStyle = new GUIStyle("flow node hex 4");
+				var rootStyle = ME.Utilities.CacheStyle("FlowEditor.DrawNodeContainer.Styles", "flow node hex 4");
 				var rect = new Rect(-rootStyle.normal.background.width * 0.5f, window.rect.height * 0.5f, rootStyle.normal.background.width, rootStyle.normal.background.height);
 				
 				if (GUI.Button(rect, string.Empty, rootStyle) == true) {
-
+					
 					// Setup for wait for attach
-
+					
 				}
 				
-				var exitStyle = new GUIStyle(this.waitForAttach == true ? "flow node hex 6 on" : "flow node hex 3");
+				var exitStyle = ME.Utilities.CacheStyle("FlowEditor.DrawNodeContainer.Styles", this.waitForAttach == true ? "flow node hex 6 on" : "flow node hex 3");
 				rect = new Rect(-exitStyle.normal.background.width * 0.5f + window.rect.width, window.rect.height * 0.5f, exitStyle.normal.background.width, exitStyle.normal.background.height);
 				
 				if (GUI.Button(rect, string.Empty, exitStyle) == true) {
-
+					
 					if (this.waitForAttach == true) {
-
+						
 						// Attach/Detach window from this function
 						window.functionExitId = this.currentAttachId;
-
+						
 						this.currentAttachId = 0;
 						this.waitForAttach = false;
-
+						
 					}
-
+					
 				}
-
+				
 			}
-
+			
 			var attaches = window.attaches.Count;
 			if (attaches == 0) {
-
+				
 				this.DragWindow(headerOnly: false);
-
+				
 			} else {
 				
 				this.DragWindow(headerOnly: true);
-
+				
 			}
-
+			
 			GUI.enabled = true;
-
+			
 			EditorGUIUtility.LookLikeControls();
-
+			
 		}
-
+		
 		private void DragWindow(bool headerOnly) {
 			
 			GUI.enabled = true;//!FlowSceneView.IsActive();
 			if (GUI.enabled == false) return;
-
+			
 			if (Event.current.button != 2) {
-
+				
 				if (headerOnly == false) {
-
+					
 					GUI.DragWindow();
-
+					
 				} else {
-
+					
 					var dragRect = new Rect(0f, 0f, 5000f, 20f);
 					GUI.DragWindow(dragRect);
-
+					
 				}
-
+				
 			}
-
+			
 			GUI.enabled = true;
-
+			
 		}
-
+		
 		private void UpdateFocus(int id) {
-
+			
 			if ((Event.current.button == 0) && (Event.current.type == EventType.MouseDown)) {
-
+				
 				this.focusedGUIWindow = id;
-
+				
 			}
-
+			
 		}
-
+		
 		private void DrawTagsPopup() {
-
+			
 			if (this.showTagsPopup == false) return;
-
+			
 			if (string.IsNullOrEmpty(this.tagCaption) == true) return;
-
+			
 			var oldColor = GUI.color;
-
-			var tagStyles = new GUIStyle[7] {
-				
-				new GUIStyle("sv_label_1"),
-				new GUIStyle("sv_label_2"),
-				new GUIStyle("sv_label_3"),
-				new GUIStyle("sv_label_4"),
-				new GUIStyle("sv_label_5"),
-				new GUIStyle("sv_label_6"),
-				new GUIStyle("sv_label_7")
-				
-			};
+			
+			var tagStyles = FlowSystemEditor.GetTagStyles();
 
 			var tagStyle = tagStyles[0];
 			tagStyle.stretchWidth = false;
 			tagStyle.margin = new RectOffset(0, 0, 2, 2);
-
-			var shadow = new GUIStyle("ObjectPickerPreviewBackground");
-
+			
+			var shadow = ME.Utilities.CacheStyle("FlowEditor.DrawTagsPopup.Styles", "ObjectPickerPreviewBackground");
+			
 			var allTags = FlowSystem.GetTags();
 			if (allTags != null) {
 				
 				var window = FlowSystem.GetWindow(this.showTagsPopupId);
-
+				
 				var topOffset = 15f;
 				var backTopOffset = 12f;
 				var offset = 5f;
-
+				
 				var count = 0;
 				foreach (var tag in allTags) {
 					
 					if (tag.title.ToLower().Contains(this.tagCaption.ToLower()) == true && window != null && window.tags.Contains(tag.id) == false) {
-
+						
 						++count;
-
+						
 					}
-
+					
 				}
-
+				
 				if (count > 0) {
-
+					
 					var r = this.showTagsPopupRect;
 					var elementHeight = r.height + tagStyle.margin.top + tagStyle.margin.bottom;
 					
 					r.y += this.showTagsPopupRect.height * 2f + offset;
 					r.height = elementHeight * count + topOffset;
-
+					
 					var scrollPos = FlowSystem.GetScrollPosition();
-
+					
 					var drawRect = new Rect(r.x - scrollPos.x, r.y - scrollPos.y - topOffset, r.width, r.height);
-
+					
 					tagStyle.fixedWidth = drawRect.width;
-
+					
 					GUILayout.BeginArea(drawRect);
 					{
 						GUI.color = Color.black;
 						GUI.Label(new Rect(10f, backTopOffset, drawRect.width - 10f * 2f, drawRect.height - backTopOffset * 2f), string.Empty, shadow);
-
+						
 						GUILayout.Space(topOffset);
-
+						
 						GUI.color = oldColor;
 						foreach (var tag in allTags) {
 							
 							if (tag.title.ToLower().Contains(this.tagCaption.ToLower()) == true && window != null && window.tags.Contains(tag.id) == false) {
-
+								
 								var style = tagStyles[tag.color];
 								style.margin = tagStyle.margin;
 								style.fixedWidth = tagStyle.fixedWidth;
-
+								
 								if (GUILayout.Button(tag.title, style) == true) {
-
+									
 									this.tagCaption = string.Empty;
 									this.showTagsPopupId = -1;
-
+									
 									window.AddTag(tag);
 									
 								}
@@ -1907,63 +1994,72 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						}
 					}
 					GUILayout.EndArea();
-
+					
 				}
-
+				
 			}
-
+			
 			GUI.color = oldColor;
 			
 			this.Repaint();
-
+			
 		}
-
+		
 		private bool showTagsPopup = false;
 		private Rect showTagsPopupRect;
 		private int showTagsPopupId;
 		private string tagCaption = string.Empty;
 		private void DrawTags(FlowWindow window) {
-
-			EditorGUIUtility.labelWidth = 35f;
-
-			var tagStyles = new GUIStyle[7] {
-				
-				new GUIStyle("sv_label_1"),
-				new GUIStyle("sv_label_2"),
-				new GUIStyle("sv_label_3"),
-				new GUIStyle("sv_label_4"),
-				new GUIStyle("sv_label_5"),
-				new GUIStyle("sv_label_6"),
-				new GUIStyle("sv_label_7")
-				
-			};
 			
-			var tagCaptionStyleText = new GUIStyle("sv_label_0");
-			var tagCaptionStyle = new GUIStyle(GUI.skin.textField);
-			tagCaptionStyle.alignment = TextAnchor.MiddleCenter;
-			tagCaptionStyle.fixedWidth = 90f;
-			tagCaptionStyle.fixedHeight = tagCaptionStyleText.fixedHeight;
-			tagCaptionStyle.stretchWidth = false;
-			tagCaptionStyle.font = tagCaptionStyleText.font;
-			tagCaptionStyle.fontStyle = tagCaptionStyleText.fontStyle;
-			tagCaptionStyle.fontSize = tagCaptionStyleText.fontSize;
-			tagCaptionStyle.normal = tagCaptionStyleText.normal;
-			tagCaptionStyle.focused = tagCaptionStyleText.normal;
-			tagCaptionStyle.active = tagCaptionStyleText.normal;
-			tagCaptionStyle.hover = tagCaptionStyleText.normal;
-			tagCaptionStyle.border = tagCaptionStyleText.border;
-			//tagCaptionStyle.padding = tagCaptionStyleText.padding;
-			//tagCaptionStyle.margin = tagCaptionStyleText.margin;
-			tagCaptionStyle.margin = new RectOffset();
+			EditorGUIUtility.labelWidth = 35f;
+			
+			var tagStyles = FlowSystemEditor.GetTagStyles();
 
-			var tagStyleAdd = new GUIStyle("sv_label_3");
-			tagStyleAdd.stretchWidth = false;
+			var tagCaptionStyleText = ME.Utilities.CacheStyle("FlowEditor.DrawTags.Styles", "sv_label_0");
 
-			var tagsLabel = new GUIStyle(FlowSystemEditorWindow.defaultSkin.label);
-			tagsLabel.padding = new RectOffset(tagsLabel.padding.left, tagsLabel.padding.right, tagsLabel.padding.top, tagsLabel.padding.bottom + 4);
+			var tagCaptionStyle = ME.Utilities.CacheStyle("FlowEditor.DrawTags.Styles", "tagCaptionStyle", (styleName) => {
+
+				var _tagCaptionStyle = new GUIStyle(GUI.skin.textField);
+				_tagCaptionStyle.alignment = TextAnchor.MiddleCenter;
+				_tagCaptionStyle.fixedWidth = 90f;
+				_tagCaptionStyle.fixedHeight = tagCaptionStyleText.fixedHeight;
+				_tagCaptionStyle.stretchWidth = false;
+				_tagCaptionStyle.font = tagCaptionStyleText.font;
+				_tagCaptionStyle.fontStyle = tagCaptionStyleText.fontStyle;
+				_tagCaptionStyle.fontSize = tagCaptionStyleText.fontSize;
+				_tagCaptionStyle.normal = tagCaptionStyleText.normal;
+				_tagCaptionStyle.focused = tagCaptionStyleText.normal;
+				_tagCaptionStyle.active = tagCaptionStyleText.normal;
+				_tagCaptionStyle.hover = tagCaptionStyleText.normal;
+				_tagCaptionStyle.border = tagCaptionStyleText.border;
+				//_tagCaptionStyle.padding = tagCaptionStyleText.padding;
+				//_tagCaptionStyle.margin = tagCaptionStyleText.margin;
+				_tagCaptionStyle.margin = new RectOffset();
+
+				return _tagCaptionStyle;
+
+			});
+			
+			var tagStyleAdd = ME.Utilities.CacheStyle("FlowEditor.DrawTags.Styles", "sv_label_3", (styleName) => {
+				
+				var _tagStyleAdd = new GUIStyle(styleName);
+				_tagStyleAdd.stretchWidth = false;
+
+				return _tagStyleAdd;
+
+			});
+
+			var tagsLabel = ME.Utilities.CacheStyle("FlowEditor.DrawTags.Styles", "defaultLabel", (styleName) => {
+				
+				var _tagsLabel = new GUIStyle(FlowSystemEditorWindow.defaultSkin.label);
+				_tagsLabel.padding = new RectOffset(_tagsLabel.padding.left, _tagsLabel.padding.right, _tagsLabel.padding.top, _tagsLabel.padding.bottom + 4);
+
+				return _tagsLabel;
+
+			});
 
 			var changed = false;
-
+			
 			GUILayout.BeginHorizontal();
 			{
 				GUILayoutExt.LabelWithShadow("Tags:", tagsLabel, GUILayout.Width(EditorGUIUtility.labelWidth));
@@ -1976,13 +2072,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					if (this.showTagsPopupId == window.id) tagCaption = this.tagCaption;
 					
 					var isEnter = (Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.Return);
-
+					
 					GUILayout.BeginVertical();
 					{
-
+						
 						GUILayout.BeginHorizontal();
 						{
-
+							
 							var columns = 3;
 							var i = 0;
 							foreach (var tag in window.tags) {
@@ -2014,18 +2110,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							}
 							
 							if (i % columns != 0) GUILayout.FlexibleSpace();
-
+							
 						}
 						GUILayout.EndHorizontal();
-
+						
 						GUILayout.BeginHorizontal();
 						{
-
+							
 							var newTagCaption = string.Empty;
 							var rect = new Rect();
 							GUILayout.BeginHorizontal();
 							{
-
+								
 								var oldEnabled = GUI.enabled;
 								GUI.enabled = !string.IsNullOrEmpty(this.tagCaption) && (this.showTagsPopupId == window.id);
 								if ((GUILayout.Button(new GUIContent("+"), tagStyleAdd) == true || isEnter == true) && GUI.enabled == true) {
@@ -2035,13 +2131,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									
 								}
 								GUI.enabled = oldEnabled;
-
+								
 								newTagCaption = GUILayout.TextField(tagCaption, tagCaptionStyle);
 								rect = GUILayoutUtility.GetLastRect();
-
+								
 							}
 							GUILayout.EndHorizontal();
-
+							
 							if (tagCaption != newTagCaption) {
 								
 								this.showTagsPopupId = window.id;
@@ -2049,80 +2145,80 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								
 								this.showTagsPopup = false;
 								changed = true;
-
+								
 							}
-
+							
 							if (this.showTagsPopupId == window.id && newTagCaption.Length > 0) {
-
+								
 								// Show Tags Popup
 								var allTags = FlowSystem.GetTags();
 								if (allTags != null) {
-
+									
 									this.showTagsPopup = true;
 									if (Event.current.type == EventType.Repaint) {
-
+										
 										this.showTagsPopupRect = new Rect(window.rect.x + rect.x + SETTINGS_WIDTH, window.rect.y + rect.y, rect.width, rect.height);
-
+										
 									}
-
+									
 									if (changed == true) this.Repaint();
-
+									
 								}
-
+								
 							}
-
+							
 						}
 						GUILayout.EndHorizontal();
-
+						
 					}
 					GUILayout.EndVertical();
-
+					
 				}
 				GUILayout.EndVertical();
-
+				
 			}
 			GUILayout.EndHorizontal();
-
+			
 			if (changed == true) {
-
+				
 				this.Repaint();
-
+				
 			}
-
+			
 			EditorGUIUtility.LookLikeControls();
-
+			
 		}
-
+		
 		private void DrawStates(CompletedState[] states, FlowWindow window) {
-
+			
 			if (states == null) return;
-
+			
 			var oldColor = GUI.color;
-			var style = new GUIStyle("Grad Down Swatch");
-
+			var style = ME.Utilities.CacheStyle("FlowEditor.DrawStates.Styles", "Grad Down Swatch");
+			
 			var elemWidth = style.fixedWidth - 3f;
 			var width = window.rect.width - 6f;
-
+			
 			var posY = -9f;
-
+			
 			var color = Color.black;
 			color.a = 0.6f;
 			var posX = width - elemWidth;
-
+			
 			var shadowOffset = 1f;
 			for (int i = states.Length - 1; i >= 0; --i) {
-
+				
 				GUI.color = color;
 				GUI.Label(new Rect(posX + shadowOffset, posY + shadowOffset, elemWidth, style.fixedHeight), string.Empty, style);
 				posX -= elemWidth;
-
+				
 			}
 			
 			posX = width - elemWidth;
 			for (int i = states.Length - 1; i >= 0; --i) {
-
+				
 				var state = states[i];
-
+				
 				if (state == CompletedState.NotReady) {
 					
 					color = new Color(1f, 0.3f, 0.3f, 1f);
@@ -2136,68 +2232,70 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					color = new Color(1f, 1f, 0.3f, 1f);
 					
 				}
-
+				
 				GUI.color = color;
 				GUI.Label(new Rect(posX, posY, elemWidth, style.fixedHeight), string.Empty, style);
 				posX -= elemWidth;
-
+				
 			}
-
+			
 			GUI.color = oldColor;
-
+			
 		}
-
+		
 		private void DrawWindowToolbar(FlowWindow window) {
 			
 			//var edit = false;
 			var id = window.id;
 
-			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
-			buttonStyle.stretchWidth = false;
+			var buttonStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "toolbarButton", (name) => {
+
+				var _buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
+				_buttonStyle.stretchWidth = false;
+
+				return _buttonStyle;
+
+			});
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
 			if (this.waitForAttach == false || this.currentAttachComponent == null) {
-
+				
 				if (this.waitForAttach == true) {
 					
 					if (id != this.currentAttachId) {
 						
 						var currentAttach = FlowSystem.GetWindow(this.currentAttachId);
 						if (currentAttach != null) {
-
+							
 							//var attachTo = FlowSystem.GetWindow(id);
 							//var hasContainer = currentAttach.HasContainer();
 							
-							if (currentAttach.IsContainer() == true) {
-								
-								
-								
-							} else {
+							if (currentAttach.IsContainer() == false) {
 								
 								if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
 									
-									if (GUILayout.Button("Detach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
+									if (GUILayout.Button(string.Format("Detach Here{0}", (Event.current.alt == true ? " (Double Direction)" : string.Empty)), buttonStyle) == true) {
 										
-										FlowSystem.Detach(this.currentAttachId, id, oneWay: !Event.current.alt);
-										if (!Event.current.shift) this.WaitForAttach(-1);
+										FlowSystem.Detach(this.currentAttachId, id, oneWay: Event.current.alt == false);
+										if (Event.current.shift == false) this.WaitForAttach(-1);
 										
 									}
 									
 								} else {
 									
-									if (GUILayout.Button("Attach Here" + (Event.current.alt ? " (Double Direction)" : ""), buttonStyle) == true) {
+									if (GUILayout.Button(string.Format("Attach Here{0}", (Event.current.alt == true ? " (Double Direction)" : string.Empty)), buttonStyle) == true) {
 										
-										FlowSystem.Attach(this.currentAttachId, id, oneWay: !Event.current.alt);
-										if (!Event.current.shift) this.WaitForAttach(-1);
+										FlowSystem.Attach(this.currentAttachId, id, oneWay: Event.current.alt == false);
+										if (Event.current.shift == false) this.WaitForAttach(-1);
 										
 									}
 									
 								}
 								
 							}
-
+							
 						}
-
+						
 					} else {
 						
 						if (GUILayout.Button("Cancel", buttonStyle) == true) {
@@ -2212,44 +2310,44 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					if (window.IsSmall() == false ||
 					    window.IsFunction() == true) {
-
+						
 						if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
 							
-							this.ShowNotification(new GUIContent("Use Attach/Detach buttons to connect/disconnect the window"));
+							this.ShowNotification(new GUIContent("Use Attach/Detach buttons to Connect/Disconnect a window"));
 							this.WaitForAttach(id);
 							
 						}
-
+						
 					}
 					
 					if (GUILayout.Button("Destroy", buttonStyle) == true) {
 						
 						if (EditorUtility.DisplayDialog("Are you sure?", "Current window will be destroyed with all links", "Yes, destroy", "No") == true) {
 							
-							this.ShowNotification(new GUIContent("The window '" + window.title + "' was successfully destroyed"));
+							this.ShowNotification(new GUIContent(string.Format("The window `{0}` was successfully destroyed", window.title)));
 							FlowSystem.DestroyWindow(id);
 							return;
 							
 						}
 						
 					}
-
+					
 				}
-
+				
 				if (window.IsSmall() == false) {
-
+					
 					//var isExit = false;
-
+					
 					var functionWindow = window.GetFunctionContainer();
 					if (functionWindow != null) {
 						
 						if (functionWindow.functionRootId == 0) functionWindow.functionRootId = id;
 						if (functionWindow.functionExitId == 0) functionWindow.functionExitId = id;
-
+						
 						//isExit = (functionWindow.functionExitId == id);
-
+						
 					}
-
+					
 					var isRoot = (FlowSystem.GetRootWindow() == id || (functionWindow != null && functionWindow.functionRootId == id));
 					if (GUILayout.Toggle(isRoot, new GUIContent("R", "Set as root"), buttonStyle) != isRoot) {
 						
@@ -2312,7 +2410,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						}
 
 					}*/
-
+					
 					var isDefault = FlowSystem.GetDefaultWindows().Contains(id);
 					if (GUILayout.Toggle(isDefault, new GUIContent("D", "Set as default"), buttonStyle) != isDefault) {
 						
@@ -2331,19 +2429,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						FlowSystem.SetDirty();
 						
 					}
-
+					
 				}
-
+				
 				GUILayout.FlexibleSpace();
-
+				
 				if (window.IsSmall() == false && FlowSceneView.IsActive() == false && window.storeType == FlowWindow.StoreType.NewScreen) {
-
+					
 					if (GUILayout.Button("Select", buttonStyle) == true) {
-
+						
 						this.SelectWindow(window);
-
+						
 					}
-
+					
 					/*
 					if (GUILayout.Button("Edit", buttonStyle) == true) {
 						
@@ -2358,15 +2456,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						}
 						
 					}*/
-
+					
 				}
-
+				
 			} else {
-
+				
 				// Draw Attach/Detach component link
-
+				
 				if (this.currentAttachId == id) {
-
+					
 					// Cancel
 					if (GUILayout.Button("Cancel", buttonStyle) == true) {
 						
@@ -2375,7 +2473,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					}
 					
 				} else {
-
+					
 					// If it's other window
 					if (window.IsSmall() == false ||
 					    window.IsFunction() == true) {
@@ -2385,7 +2483,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							if (GUILayout.Button("Detach Here", buttonStyle) == true) {
 								
 								FlowSystem.Detach(this.currentAttachId, id, oneWay: true, component: this.currentAttachComponent);
-								if (!Event.current.shift) this.WaitForAttach(-1);
+								if (Event.current.shift == false) this.WaitForAttach(-1);
 								
 							}
 							
@@ -2394,18 +2492,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							if (GUILayout.Button("Attach Here", buttonStyle) == true) {
 								
 								FlowSystem.Attach(this.currentAttachId, id, oneWay: true, component: this.currentAttachComponent);
-								if (!Event.current.shift) this.WaitForAttach(-1);
+								if (Event.current.shift == false) this.WaitForAttach(-1);
 								
 							}
 							
 						}
-
+						
 					}
 					
 				}
 				
 				GUILayout.FlexibleSpace();
-
+				
 			}
 			GUILayout.EndHorizontal();
 			
@@ -2414,605 +2512,170 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				FlowSceneView.SetControl(this, window, this.OnItemProgress);
 
 			}*/
-
+			
 		}
-
+		
 		private void DrawNodeWindow(int id) {
-
-			EditorGUIUtility.labelWidth = 65f;
-
-			this.UpdateFocus(id);
 			
 			var window = FlowSystem.GetWindow(id);
 
-			if (window.IsSmall() == true) {
-				
-				this.DrawWindowToolbar(window);
-				Flow.OnDrawWindowGUI(this, window);
+			EditorGUIUtility.labelWidth = 65f;
+			
+			this.UpdateFocus(id);
 
-				this.DragWindow(headerOnly: false);
+			var zoom = this.zoomDrawer.GetZoom();
+			if (zoom <= 0.3f) {
+
+				var style = ME.Utilities.CacheStyle("FlowEditor.NodeWindow.Styles", "NodeWindow", (name) => {
+
+					var _style = new GUIStyle(FlowSystemEditorWindow.defaultSkin.button);
+					_style.fontSize = 40;
+
+					return _style;
+
+				});
+
+				GUI.Label(new Rect(0f, 0f, window.rect.width, window.rect.height), window.title, style);
 
 			} else {
 
-				if (window.storeType == FlowWindow.StoreType.NewScreen) {
-
-					this.DrawStates(window.states, window);
-
+				if (window.IsSmall() == true) {
+					
+					this.DrawWindowToolbar(window);
+					Flow.OnDrawWindowGUI(this, window);
+					
+					this.DragWindow(headerOnly: false);
+					
 				} else {
 
-					var win = FlowSystem.GetWindow(window.screenWindowId);
-					if (win != null) this.DrawStates(win.states, win);
-
-				}
-
-				GUI.enabled = true;//!FlowSceneView.IsActive();
-
-				this.DrawWindowToolbar(window);
-
-				GUILayout.BeginHorizontal();
-				{
-
-					GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-					window.title = GUILayout.TextField(window.title);
-
-				}
-				GUILayout.EndHorizontal();
-				
-				GUILayout.BeginHorizontal();
-				{
-
-					var typeId = (int)window.storeType;
-					typeId = GUILayoutExt.Popup(typeId, new string[1] { "Directory:"/*, "Re-use Screen:"*/ }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-					if (typeId == 0) {
-
-						// Directory choosed
-
-						window.flags &= (~FlowWindow.Flags.CantCompiled);
-						window.storeType = FlowWindow.StoreType.NewScreen;
-
-						if (string.IsNullOrEmpty(window.directory) == true) window.directory = string.Empty;
-						window.directory = GUILayout.TextField(window.directory);
-
-					} else if (typeId == 1) {
-
-						// Re-use screen choosed
-
-						window.flags |= FlowWindow.Flags.CantCompiled;
-						window.storeType = FlowWindow.StoreType.ReUseScreen;
+					if (window.storeType == FlowWindow.StoreType.NewScreen) {
 						
-						var linkIndex = -1;
-						var index = 0;
-						var values = new List<string>();
-						var list = new List<FlowWindow>();
-						var windows = FlowSystem.GetWindows();
-						foreach (var win in windows) {
-
-							if (win.storeType == FlowWindow.StoreType.NewScreen &&
-							    win.IsSmall() == false &&
-							    win.IsContainer() == false) {
-
-								values.Add(win.title.Replace("/", " "));
-								list.Add(win);
-
-								if (window.screenWindowId == win.id) linkIndex = index;
-								
-								++index;
-
-							}
-
-						}
-
-						linkIndex = EditorGUILayout.Popup(linkIndex, values.ToArray()/*, new GUIStyle("ExposablePopupMenu")*/);
-						if (linkIndex >= 0 && linkIndex < list.Count) {
-
-							window.screenWindowId = list[linkIndex].id;
-
-						}
-
-						//window.screen = GUILayoutExt.ScreenField(window.screen, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ScreenField"));
-						//window.directory = GUILayout.TextField(window.directory);
-
+						this.DrawStates(window.states, window);
+						
+					} else {
+						
+						var win = FlowSystem.GetWindow(window.screenWindowId);
+						if (win != null)
+							this.DrawStates(win.states, win);
+						
 					}
-					//GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+					
+					GUI.enabled = true;//!FlowSceneView.IsActive();
+					
+					this.DrawWindowToolbar(window);
+					
+					GUILayout.BeginHorizontal();
+					{
+						
+						GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+						window.title = GUILayout.TextField(window.title);
+						
+					}
+					GUILayout.EndHorizontal();
+					
+					GUILayout.BeginHorizontal();
+					{
+						
+						var typeId = (int)window.storeType;
+						typeId = GUILayoutExt.Popup(typeId, new string[1] { "Directory:"/*, "Re-use Screen:"*/ }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+						if (typeId == 0) {
+							
+							// Directory choosed
+							
+							window.flags &= (~FlowWindow.Flags.CantCompiled);
+							window.storeType = FlowWindow.StoreType.NewScreen;
+							
+							if (string.IsNullOrEmpty(window.directory) == true)
+								window.directory = string.Empty;
+							window.directory = GUILayout.TextField(window.directory);
+							
+						} else if (typeId == 1) {
+							
+								// Re-use screen choosed
+							
+								window.flags |= FlowWindow.Flags.CantCompiled;
+								window.storeType = FlowWindow.StoreType.ReUseScreen;
+							
+								var linkIndex = -1;
+								var index = 0;
+								var values = new List<string>();
+								var list = new List<FlowWindow>();
+								var windows = FlowSystem.GetWindows();
+								foreach (var win in windows) {
+								
+									if (win.storeType == FlowWindow.StoreType.NewScreen &&
+										win.IsSmall() == false &&
+										win.IsContainer() == false) {
+									
+										values.Add(win.title.Replace("/", " "));
+										list.Add(win);
+									
+										if (window.screenWindowId == win.id)
+											linkIndex = index;
+									
+										++index;
+									
+									}
+								
+								}
+							
+								linkIndex = EditorGUILayout.Popup(linkIndex, values.ToArray()/*, new GUIStyle("ExposablePopupMenu")*/);
+								if (linkIndex >= 0 && linkIndex < list.Count) {
+								
+									window.screenWindowId = list[linkIndex].id;
+								
+								}
+							
+								//window.screen = GUILayoutExt.ScreenField(window.screen, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ScreenField"));
+								//window.directory = GUILayout.TextField(window.directory);
+							
+							}
+						//GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+						
+					}
+					GUILayout.EndHorizontal();
+
+					this.DrawWindowLayout(window);
+					Flow.OnDrawWindowGUI(this, window);
+					this.DrawTags(window);
 
 				}
-				GUILayout.EndHorizontal();
-
-				this.DrawWindowLayout(window);
-				Flow.OnDrawWindowGUI(this, window);
-				this.DrawTags(window);
-				this.DragWindow(headerOnly: false);
-
-				if (GUI.changed == true) this.cachedData.isDirty = true;
-
-				GUI.enabled = true;
-
+			
 			}
+			
+			this.DragWindow(headerOnly: false);
+			
+			if (GUI.changed == true) this.cachedData.isDirty = true;
+			
+			GUI.enabled = true;
 
 			EditorGUIUtility.LookLikeControls();
-
+			
 		}
 		
 		//private float itemProgress;
 		public void OnItemProgress(float value) {
-
+			
 			//this.itemProgress = value;
 			this.Repaint();
-
+			
 		}
-
+		
 		private int currentAttachId = -1;
 		private bool waitForAttach = false;
 		private WindowLayoutElement currentAttachComponent;
 		private void WaitForAttach(int id, WindowLayoutElement currentAttachComponent = null) {
-
+			
 			this.currentAttachId = id;
 			this.currentAttachComponent = currentAttachComponent;
 			this.waitForAttach = id >= 0;
-
+			
 			if (this.waitForAttach == false) {
-
+				
 				WindowLayoutElement.waitForComponentConnectionElementTemp = null;
-
-			}
-
-		}
-
-		private void DrawComponentCurve(FlowWindow from, ref UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.ComponentLink link, FlowWindow to) {
-
-			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
-
-			var component = from.GetLayoutComponent(link.sourceComponentTag);
-			if (component != null) {
-
-				var rect = component.tempEditorRect;
-
-				var start = new Rect(from.rect.x + rect.x, from.rect.y + rect.y, rect.width, rect.height);
-				var end = to.rect;
-
-				var zOffset = -4f;
-
-				var offset = Vector2.zero;
-				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
-				var endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
-
-				var scale = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
-
-				var side1 = from.rect.size.x * 0.5f;
-				var side2 = from.rect.size.y * 0.5f;
-				var stopDistance = Mathf.Sqrt(side1 * side1 + side2 * side2);
-
-				var color = Color.white;
-				if (from.GetContainer() != to.GetContainer()) {
-					
-					color = Color.gray;
-					if (to.GetContainer() != null) color = to.GetContainer().randomColor;
-					
-				}
-				var comment = this.DrawComponentCurve(startPos, endPos, color, stopDistance + 50f * scale, link.comment);
-				if (link.comment != comment) {
-
-					link.comment = comment;
-					FlowSystem.SetDirty();
-
-				}
-
-			}
-
-		}
-		
-		private string DrawComponentCurve(Vector3 startPos, Vector3 endPos, Color color, float stopDistance, string label) {
-			
-			var shadowColor = new Color(0f, 0f, 0f, 0.5f);
-			var lineColor = color;//new Color(1f, 1f, 1f, 1f);
-			
-			var shadowOffset = Vector3.one * 2f;
-			shadowOffset.z = 0f;
-
-			var ray = new Ray(startPos, (endPos - startPos).normalized);
-			var rot = Quaternion.LookRotation(endPos - startPos);
-
-			var centerPoint = (startPos + endPos) * 0.5f;
-
-			endPos = ray.GetPoint(stopDistance);
-			var fullDistance = Vector3.Distance(endPos, startPos);
-			
-			Handles.BeginGUI();
-			
-			Handles.color = shadowColor;
-			Handles.DrawSolidDisc(startPos + shadowOffset, Vector3.back, 5f);
-
-			Handles.color = lineColor;
-			Handles.DrawSolidDisc(startPos, Vector3.back, 5f);
-
-			Handles.color = shadowColor;
-			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos + shadowOffset, endPos + shadowOffset });
-			
-			Handles.color = lineColor;
-			Handles.DrawAAPolyLine(4f, new Vector3[] { startPos, endPos });
-
-			var labelStyle = new GUIStyle(GUI.skin.label);
-			labelStyle.stretchWidth = false;
-			
-			var backOverStyle = new GUIStyle("flow node 0");
-			backOverStyle.stretchWidth = false;
-			backOverStyle.stretchHeight = false;
-
-			var backStyle = new GUIStyle("flow node hex 5");
-
-			var style = new GUIStyle(GUI.skin.textField);
-			style.stretchWidth = true;
-			style.stretchHeight = true;
-			style.wordWrap = true;
-			//style.contentOffset = new Vector2(0f, -15f);
-			style.contentOffset = new Vector2(0f, 5f);
-			style.alignment = TextAnchor.MiddleCenter;
-			style.border = backStyle.border;
-			style.normal = backStyle.normal;
-			style.focused = backStyle.normal;
-			style.active = backStyle.normal;
-			style.hover = backStyle.normal;
-
-			var content = new GUIContent(label);
-			var contentRect = GUILayoutUtility.GetRect(content, labelStyle);
-
-			contentRect.width = Mathf.Max(contentRect.width, 40f);
-
-			contentRect.width += 40f;
-			contentRect.height += 20f;
-
-			centerPoint.x -= contentRect.width * 0.5f;
-			centerPoint.y -= contentRect.height * 0.5f;
-
-			var boxRect = new Rect(centerPoint.x, centerPoint.y, contentRect.width, contentRect.height);
-
-			style.fixedWidth = contentRect.width;// + 20f;
-			style.fixedHeight = contentRect.height;
-
-			var boxRectBack = boxRect;
-			backOverStyle.fixedWidth = style.fixedWidth;
-			backOverStyle.fixedHeight = style.fixedHeight + 10f;
-
-			var oldColor = GUI.backgroundColor;
-			var bColor = color;
-			bColor.a = 0.4f;
-			GUI.backgroundColor = bColor;
-			GUI.Box(boxRectBack, "Test", backOverStyle);
-			GUI.backgroundColor = oldColor;
-
-			label = GUI.TextField(boxRect, label, style);
-
-			var every = 300f;
-			if (fullDistance < every * 2f) {
-				
-				var pos = ray.GetPoint(fullDistance * 0.5f);
-				
-				this.DrawCap(pos, startPos, endPos, rot, shadowColor, lineColor);
-				
-				//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
-				//GUIExt.DrawTextureRotated(pos, arrow, Vector3.Angle(startPos, endPos));
-				
-			} else {
-				
-				for (float distance = every; distance < fullDistance; distance += every) {
-					
-					var pos = ray.GetPoint(distance);
-					
-					this.DrawCap(pos, startPos, endPos, rot, shadowColor, lineColor);
-					
-					//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
-					//GUIExt.DrawTextureRotated(pos, arrow, rot);
-					
-				}
 				
 			}
 			
-			Handles.EndGUI();
-
-			return label;
-
-		}
-
-		private void DrawNodeCurve(FlowWindow from, FlowWindow to, bool doubleSide) {
-			
-			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
-
-			var fromRect = from.rect;
-			Rect centerStart = fromRect;
-
-			var toRect = to.rect;
-			Rect centerEnd = toRect;
-
-			var fromComponent = false;
-			var toComponent = false;
-
-			if (from.IsFunction() == true &&
-			    from.IsContainer() == false) {
-
-				var func = FlowSystem.GetWindow(from.GetFunctionId());
-				if (func != null) {
-
-					var selected = FlowSystem.GetSelected();
-					var isSelected = selected.Contains(from.id) || (selected.Count == 0 && this.focusedGUIWindow == from.id);
-					if (isSelected == true) {
-						
-						var color = new Color(0f, 0f, 0f, 0.1f);
-						var backColor = new Color(0.5f, 0.5f, 0.5f, 0.1f);
-
-						this.DrawPolygon(new Vector3(from.rect.xMin, from.rect.yMin, 0f),
-						                 new Vector3(func.rect.xMin, func.rect.yMin, 0f),
-						                 new Vector3(func.rect.xMin, func.rect.yMax, 0f),
-						                 new Vector3(from.rect.xMin, from.rect.yMax, 0f),
-						                 backColor);
-						
-						this.DrawPolygon(new Vector3(from.rect.xMin, from.rect.yMin, 0f),
-						                 new Vector3(func.rect.xMin, func.rect.yMin, 0f),
-						                 new Vector3(func.rect.xMax, func.rect.yMin, 0f),
-						                 new Vector3(from.rect.xMax, from.rect.yMin, 0f),
-						                 backColor);
-						
-						this.DrawPolygon(new Vector3(from.rect.xMax, from.rect.yMin, 0f),
-						                 new Vector3(func.rect.xMax, func.rect.yMin, 0f),
-						                 new Vector3(func.rect.xMax, func.rect.yMax, 0f),
-						                 new Vector3(from.rect.xMax, from.rect.yMax, 0f),
-						                 backColor);
-						
-						this.DrawPolygon(new Vector3(from.rect.xMax, from.rect.yMax, 0f),
-						                 new Vector3(func.rect.xMax, func.rect.yMax, 0f),
-						                 new Vector3(func.rect.xMin, func.rect.yMax, 0f),
-						                 new Vector3(from.rect.xMin, from.rect.yMax, 0f),
-						                 backColor);
-						
-						this.DrawNodeCurveDotted(new Vector3(from.rect.xMin, from.rect.yMin, 0f),
-						                         new Vector3(func.rect.xMin, func.rect.yMin, 0f),
-						                         color
-						                         );
-						
-						this.DrawNodeCurveDotted(new Vector3(from.rect.xMin, from.rect.yMax, 0f),
-						                         new Vector3(func.rect.xMin, func.rect.yMax, 0f),
-						                         color
-						                         );
-						
-						this.DrawNodeCurveDotted(new Vector3(from.rect.xMax, from.rect.yMin, 0f),
-						                         new Vector3(func.rect.xMax, func.rect.yMin, 0f),
-						                         color
-						                         );
-						
-						this.DrawNodeCurveDotted(new Vector3(from.rect.xMax, from.rect.yMax, 0f),
-						                         new Vector3(func.rect.xMax, func.rect.yMax, 0f),
-						                         color
-						                         );
-
-					}
-
-				}
-
-			}
-
-			if (FlowSystem.GetData().flowWindowWithLayout == true) {
-
-				var comps = from.attachedComponents.Where((c) => c.targetWindowId == to.id && c.sourceComponentTag != LayoutTag.None);
-				foreach (var comp in comps) {
-
-					var component = from.GetLayoutComponent(comp.sourceComponentTag);
-					if (component != null) {
-
-						fromRect = centerStart;
-
-						var rect = component.tempEditorRect;
-						fromRect = new Rect(fromRect.x + rect.x, fromRect.y + rect.y, rect.width, rect.height);
-
-						this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
-
-						fromComponent = true;
-
-					}
-
-				}
-
-				if (doubleSide == true) {
-
-					comps = to.attachedComponents.Where((c) => c.targetWindowId == from.id && c.sourceComponentTag != LayoutTag.None);
-					foreach (var comp in comps) {
-						
-						var component = to.GetLayoutComponent(comp.sourceComponentTag);
-						if (component != null) {
-							
-							toRect = centerEnd;
-
-							var rect = component.tempEditorRect;
-							toRect = new Rect(toRect.x + rect.x, toRect.y + rect.y, rect.width, rect.height);
-
-							this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
-							
-							toComponent = true;
-
-						}
-						
-					}
-
-				}
-
-			}
-
-			if (fromComponent == false && toComponent == false) this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide);
-
-		}
-
-		private void DrawNodeCurve(FlowWindow fromContainer, FlowWindow toContainer, Rect centerStart, Rect centerEnd, Rect fromRect, Rect toRect, bool doubleSide, float size = 6f) {
-
-			Rect start = fromRect;
-			Rect end = toRect;
-
-			var color1 = Color.white;
-			var color2 = Color.white;
-
-			if (fromContainer != toContainer) {
-				
-				color1 = Color.gray;
-				color2 = Color.gray;
-
-				if (toContainer != null) color1 = toContainer.randomColor;
-				if (fromContainer != null) color2 = fromContainer.randomColor;
-
-			}
-
-			var zOffset = -4f;
-
-			if (doubleSide == true) {
-
-				var rot = Quaternion.AngleAxis(90f, Vector3.back);
-				var ray = new Ray(Vector3.zero, (rot * (end.center - start.center)).normalized);
-
-				var offset = ray.GetPoint(size);
-				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
-				var endPos = new Vector3(centerEnd.center.x + offset.x, centerEnd.center.y + offset.y, zOffset);
-				
-				this.DrawNodeCurve(startPos, endPos, color1);
-				
-				offset = ray.GetPoint(-size);
-				startPos = new Vector3(centerStart.center.x + offset.x, centerStart.center.y + offset.y, zOffset);
-				endPos = new Vector3(end.center.x + offset.x, end.center.y + offset.y, zOffset);
-				
-				this.DrawNodeCurve(endPos, startPos, color2);
-
-			} else {
-
-				var offset = Vector2.zero;
-				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
-				var endPos = new Vector3(centerEnd.center.x + offset.x, centerEnd.center.y + offset.y, zOffset);
-
-				this.DrawNodeCurve(startPos, endPos, color1);
-
-			}
-
-		}
-
-		private void DrawNodeCurveDotted(Vector3 startPos, Vector3 endPos, Color color) {
-			
-			Handles.BeginGUI();
-			
-			Handles.color = color;
-			//Handles.DrawAAPolyLine(3f, new Vector3[] { startPos, endPos });
-			
-			var space = 5f;
-			var length = 10f;
-			var ray = new Ray(startPos, (endPos - startPos).normalized);
-			var fullDistance = Vector3.Distance(endPos, startPos);
-
-			for (float distance = 0f; distance < fullDistance; distance += space) {
-
-				var pos = ray.GetPoint(distance);
-				distance += length;
-				if (distance > fullDistance) distance = fullDistance;
-				var toPos = ray.GetPoint(distance);
-
-				Handles.DrawAAPolyLine(2f, new Vector3[] { pos, toPos });
-
-			}
-
-			Handles.EndGUI();
-
-		}
-
-		private void DrawPolygon(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, Color color) {
-			
-			Handles.BeginGUI();
-			
-			Handles.color = color;
-			
-			Handles.DrawAAConvexPolygon(new Vector3[4] { p1, p2, p3, p4 });
-
-			Handles.EndGUI();
-
-		}
-
-		private void DrawNodeCurve(Vector3 startPos, Vector3 endPos, Color color) {
-			
-			var shadowColor = new Color(0f, 0f, 0f, 0.5f);
-			var lineColor = color;//new Color(1f, 1f, 1f, 1f);
-			
-			var shadowOffset = Vector3.one * 1f;
-			shadowOffset.z = 0f;
-			
-			Handles.BeginGUI();
-			
-			Handles.color = shadowColor;
-			Handles.DrawAAPolyLine(3f, new Vector3[] { startPos + shadowOffset, endPos + shadowOffset });
-			
-			Handles.color = lineColor;
-			Handles.DrawAAPolyLine(3f, new Vector3[] { startPos, endPos });
-
-			var ray = new Ray(startPos, (endPos - startPos).normalized);
-			var rot = Quaternion.LookRotation(endPos - startPos);
-			
-			var every = 300f;
-			var fullDistance = Vector3.Distance(endPos, startPos);
-			if (fullDistance < every * 2f) {
-				
-				var pos = ray.GetPoint(fullDistance * 0.5f);
-				
-				this.DrawCap(pos, startPos, endPos, rot, shadowColor, lineColor);
-				
-				//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
-				//GUIExt.DrawTextureRotated(pos, arrow, Vector3.Angle(startPos, endPos));
-				
-			} else {
-				
-				for (float distance = every; distance < fullDistance; distance += every) {
-					
-					var pos = ray.GetPoint(distance);
-					
-					this.DrawCap(pos, startPos, endPos, rot, shadowColor, lineColor);
-					
-					//var arrow = (new GUIStyle("StaticDropdown")).normal.background;
-					//GUIExt.DrawTextureRotated(pos, arrow, rot);
-					
-				}
-				
-			}
-			
-			Handles.EndGUI();
-			
-		}
-
-		private Texture2D arrow;
-		private void DrawCap(Vector3 pos, Vector3 startPos, Vector3 endPos, Quaternion rot, Color shadowColor, Color lineColor) {
-			
-			if (this.arrow == null) this.arrow = Resources.Load<Texture2D>("UI.Windows/Flow/Arrow");
-
-			var scrollPos = FlowSystem.GetScrollPosition();
-			var offset = -8f;
-
-			if (this.scrollRect.Contains(new Vector3(pos.x - scrollPos.x + SETTINGS_WIDTH + offset, pos.y - scrollPos.y + TOOLBAR_HEIGHT + offset, 0f)) == false) return;
-
-			var shadowOffset = Vector3.one * 1f;
-			shadowOffset.z = 0f;
-			
-			var v1 = startPos - endPos;
-			v1.x = -v1.x;
-			var v2 = Vector3.left;
-
-			var angle = Mathf.Atan2(
-				Vector3.Dot(Vector3.back, Vector3.Cross(v1, v2)),
-				Vector3.Dot(v1, v2)) * Mathf.Rad2Deg;
-
-			var size = 12f;
-
-			var oldColor = GUI.color;
-
-			GUI.color = shadowColor;
-			GUIExt.DrawTextureRotated(new Rect(pos.x - size * 0.5f + shadowOffset.x, pos.y - size * 0.5f + shadowOffset.y, size, size), arrow, -angle + 180f);
-			GUI.color = lineColor;
-			GUIExt.DrawTextureRotated(new Rect(pos.x - size * 0.5f, pos.y - size * 0.5f, size, size), arrow, -angle + 180f);
-
-			GUI.color = oldColor;
-
-			/*Handles.color = shadowColor;
-			Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
-			Handles.color = lineColor;
-			Handles.ConeCap(-1, pos, rot, 15f);*/
-
 		}
 
 	}

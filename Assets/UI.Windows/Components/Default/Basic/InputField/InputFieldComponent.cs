@@ -23,10 +23,28 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void SetText(string text) {
 
-			if (this.inputField != null) this.inputField.text = text;
+			if (this.inputField != null) {
+				
+				this.inputField.enabled = false;
+				this.inputField.text = string.Empty;
+				this.inputField.text = text;
+				this.inputField.enabled = true;
+
+			}
 
 		}
-		
+
+		public void SetFocus() {
+
+			if (this.inputField != null) {
+
+				this.inputField.Select();
+				this.inputField.ActivateInputField();
+
+			}
+
+		}
+
 		public void SetContentType(InputField.ContentType contentType) {
 
 			if (this.inputField != null) this.inputField.contentType = contentType;
@@ -47,8 +65,29 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void SetCallbacks(UnityAction<string> onChange, UnityAction<string> onEditEnd) {
 			
-			this.onChange.AddListenerDistinct(onChange);
-			this.onEditEnd.AddListenerDistinct(onEditEnd);
+			if (onChange != null) this.onChange.AddListenerDistinct(onChange);
+			if (onEditEnd != null) this.onEditEnd.AddListenerDistinct(onEditEnd);
+
+		}
+		
+		private void OnChange(string input) {
+			
+			this.onChange.Invoke(input);
+			
+		}
+		
+		private void OnEditEnd(string input) {
+
+			this.onEditEnd.Invoke(input);
+			
+		}
+
+		public override void OnInit() {
+
+			base.OnInit();
+			
+			this.inputField.onValueChange.AddListener(this.OnChange);
+			this.inputField.onEndEdit.AddListener(this.OnEditEnd);
 
 		}
 
@@ -56,6 +95,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnDeinit();
 			
+			this.inputField.onValueChange.RemoveListener(this.OnChange);
+			this.inputField.onEndEdit.RemoveListener(this.OnEditEnd);
+
 			this.onChange.RemoveAllListeners();
 			this.onEditEnd.RemoveAllListeners();
 

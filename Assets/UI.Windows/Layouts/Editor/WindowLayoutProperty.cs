@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using UnityEngine.UI.Windows;
@@ -27,7 +27,7 @@ namespace UnityEditor.UI.Windows {
 
 					var element = property.GetArrayElementAtIndex(i);
 					var rootElement = window.layout.layout.GetRootByTag(window.layout.components[i].tag);
-					if (rootElement.fillable == true) elements.Add(element);
+					if (rootElement != null && rootElement.showInComponentsList == true) elements.Add(element);
 
 				}
 

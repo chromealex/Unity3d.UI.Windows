@@ -11,10 +11,10 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Properties")]
 		public bool preserveAspect;
 
-		[HideInInspector][SerializeField]
+		//[HideInInspector][SerializeField]
 		public Image image;
 		
-		[HideInInspector][SerializeField]
+		//[HideInInspector][SerializeField]
 		public RawImage rawImage;
 
 		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {
@@ -59,6 +59,33 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 			
+		}
+		
+		public void SetAlpha(float value) {
+
+			Color color = Color.white;
+			if (this.image != null) {
+				
+				color = this.image.color;
+				
+			} else if (this.rawImage != null) {
+				
+				color = this.rawImage.color;
+
+			}
+
+			color.a = value;
+
+			if (this.image != null) {
+				
+				this.image.color = color;
+				
+			} else if (this.rawImage != null) {
+				
+				this.rawImage.color = color;
+				
+			}
+
 		}
 
 		public void SetMaterial(Material material) {

@@ -194,7 +194,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 					this.list.gameObject.SetActive(false);
 
-				}, immediately);
+				}, immediately, inactiveOnEnd: true);
 
 			}
 

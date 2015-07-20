@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine;
@@ -189,9 +189,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			} else {
 
 				foreach (var addon in flowAddons) {
-					
+
+					Profiler.BeginSample("[ GUI ] Addon " + addon.name);
+
 					addon.flowEditor = flowEditor;
 					Flow.DrawModuleSettingsGUI(addon, addon.name, addon.GetSettingsMenu(null), () => { addon.OnFlowSettingsGUI(); });
+					
+					Profiler.EndSample();
 
 				}
 			
@@ -206,7 +210,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (GUILayoutExt.LargeButton("Install Modules...", 40f, 200f) == true) {
 
-					Application.OpenURL(VersionInfo.downloadLink);
+					Application.OpenURL(VersionInfo.DOWNLOAD_LINK);
 
 				}
 

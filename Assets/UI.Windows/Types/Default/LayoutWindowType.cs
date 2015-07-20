@@ -67,26 +67,31 @@ namespace UnityEngine.UI.Windows.Types {
 			this.layout.OnInit();
 
 		}
+
 		protected override void OnLayoutDeinit() {
 
 			this.layout.OnDeinit();
 
 		}
+
 		protected override void OnLayoutShowBegin(System.Action callback) {
 
 			this.layout.OnShowBegin(callback);
 
 		}
+
 		protected override void OnLayoutShowEnd() {
 
 			this.layout.OnShowEnd();
 
 		}
+
 		protected override void OnLayoutHideBegin(System.Action callback) {
 
 			this.layout.OnHideBegin(callback);
 
 		}
+
 		protected override void OnLayoutHideEnd() {
 
 			this.layout.OnHideEnd();

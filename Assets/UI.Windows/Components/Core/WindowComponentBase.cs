@@ -7,9 +7,19 @@ using UnityEngine.UI.Windows.Animations;
 namespace UnityEngine.UI.Windows {
 
 	public class WindowComponentBase : WindowObject, IWindowAnimation {
-		
+
+		public enum ChildsHideMode : byte {
+
+			Simultaneously,		// Call Hide methods on all childs
+			Consequentially,	// Call Hide after all childs complete hide
+
+		};
+
 		[Header("Animation Info")]
 		new public WindowAnimationBase animation;
+
+		public ChildsHideMode childsHideMode = ChildsHideMode.Consequentially;
+
 		[HideInInspector]
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
 		[HideInInspector]
@@ -63,7 +73,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public void Hide() {
 			
-			this.Hide(null, immediately: false);
+			this.Hide(null, immediately: false, inactiveOnEnd: true);
 			
 		}
 
@@ -72,9 +82,9 @@ namespace UnityEngine.UI.Windows {
 		/// Animation component can use current layout element root or current component root.
 		/// </summary>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		public void Hide(bool immediately) {
+		public void Hide(bool immediately, bool inactiveOnEnd) {
 
-			this.Hide(null, immediately);
+			this.Hide(null, immediately, inactiveOnEnd);
 
 		}
 
@@ -84,14 +94,14 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="callback">Callback.</param>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		public virtual void Hide(System.Action callback, bool immediately) {
+		public virtual void Hide(System.Action callback, bool immediately, bool inactiveOnEnd) {
 
-			this.OnHideBegin(() => {
+			this.OnHideBegin_INTERNAL(() => {
 
 				this.OnHideEnd();
 				if (callback != null) callback();
 
-			}, immediately);
+			}, immediately, inactiveOnEnd);
 			
 		}
 
@@ -162,9 +172,13 @@ namespace UnityEngine.UI.Windows {
 			var go = this.gameObject;
 
 			System.Action callbackInner = () => {
-				
-				this.currentState = WindowObjectState.Shown;
-				if (go != null) go.SetActive(true);
+
+				if (this.currentState == WindowObjectState.Showing) {
+
+					this.currentState = WindowObjectState.Shown;
+					if (go != null) go.SetActive(true);
+
+				}
 
 				if (callback != null) callback();
 				
@@ -172,7 +186,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (go != null) go.SetActive(true);
 			this.currentState = WindowObjectState.Showing;
-			
+
 			if (this.animation != null) {
 				
 				if (resetAnimation == true) this.SetResetState();
@@ -204,7 +218,7 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="callback">Callback.</param>
 		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {
 
-			this.OnHideBegin_INTERNAL(callback, immediately);
+			this.OnHideBegin_INTERNAL(callback, immediately, inactiveOnEnd: true);
 
 		}
 
@@ -214,40 +228,44 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="callback">Callback.</param>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		private void OnHideBegin_INTERNAL(System.Action callback, bool immediately) {
+		private void OnHideBegin_INTERNAL(System.Action callback, bool immediately, bool inactiveOnEnd) {
 			
 			var go = this.gameObject;
 
 			System.Action callbackInner = () => {
 				
-				this.currentState = WindowObjectState.Hidden;
-				if (go != null) go.SetActive(false);
+				if (this.currentState == WindowObjectState.Hiding) {
+
+					this.currentState = WindowObjectState.Hidden;
+					if (inactiveOnEnd == true && go != null) go.SetActive(false);
+
+				}
 
 				if (callback != null) callback();
 
 			};
 			
 			this.currentState = WindowObjectState.Hiding;
-
+			
 			if (this.animation != null) {
-
+				
 				if (immediately == true) {
-
+					
 					this.animation.SetOutState(this.animationInputParams, this);
-					if (callbackInner != null) callbackInner();
-
+					callbackInner();
+					
 				} else {
-
+					
 					this.animation.Play(this.animationInputParams, this, false, callbackInner);
-
+					
 				}
-
+				
 			} else {
-
+				
 				callbackInner();
 				
 			}
-			
+
 		}
 
 		/// <summary>

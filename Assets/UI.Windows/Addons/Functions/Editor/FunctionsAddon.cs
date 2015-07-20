@@ -133,7 +133,11 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				foreach (var function in this.functions) {
 					
-					GUILayout.Button(function.title);
+					if (GUILayoutExt.LargeButton(function.title, 20f, FlowSystemEditorWindow.SETTINGS_WIDTH) == true) {
+
+						this.flowEditor.SetCenterTo(function);
+
+					}
 					
 				}
 

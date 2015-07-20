@@ -130,20 +130,38 @@ namespace ME {
 
 		private static Dictionary<string, GUIStyle> cachedStyles = new Dictionary<string, GUIStyle>();
 
-		public static GUIStyle CacheStyle(string category, string styleName, System.Func<string, GUIStyle> constructor) {
+		public static GUIStyle CacheStyle(string category, string styleName, System.Func<string, GUIStyle> constructor = null) {
 
 			var key = category + "." + styleName;
 
 			GUIStyle style = null;
 			if (Utilities.cachedStyles.TryGetValue(key, out style) == false) {
 
-				style = constructor(styleName);
+				style = constructor == null ? new GUIStyle(styleName) : constructor(styleName);
 				Utilities.cachedStyles.Add(key, style);
 
 			}
 
 			return style;
 
+		}
+		
+		private static Dictionary<string, object> cachedOnce = new Dictionary<string, object>();
+		
+		public static T Cache<T>(string category, System.Func<T> constructor) {
+			
+			var key = category;
+			
+			object data = null;
+			if (Utilities.cachedOnce.TryGetValue(key, out data) == false) {
+				
+				data = constructor();
+				Utilities.cachedOnce.Add(key, data);
+				
+			}
+			
+			return (T)data;
+			
 		}
 
 	}

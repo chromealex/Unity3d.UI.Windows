@@ -81,8 +81,8 @@ namespace UnityEditor.UI.Windows {
 
 			if (ME.EditorUtilities.IsPrefab(_target.gameObject) == false) {
 
-				var pos = (_target.transform as RectTransform).localPosition;
-				(_target.transform as RectTransform).localPosition = Vector3.zero;
+				var pos = _target.transform.localPosition;
+				_target.transform.localPosition = Vector3.zero;
 
 				foreach (var element in elements) {
 					
@@ -108,35 +108,48 @@ namespace UnityEditor.UI.Windows {
 			var scaleFactor = 0f;
 			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(_target.root.editorRect.width, _target.root.editorRect.height), new Vector2(r.width, r.height));
 
-			var selected = new GUIStyle("flow node 6");
+			var selected = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.Selected", "flow node 6", (style) => new GUIStyle(style));
 
 			const int maxDepth = 6;
-			var styles = new GUIStyle[maxDepth] {
-				
-				new GUIStyle("flow node 0"),
-				new GUIStyle("flow node 1"),
-				new GUIStyle("flow node 2"),
-				new GUIStyle("flow node 3"),
-				new GUIStyle("flow node 4"),
-				new GUIStyle("flow node 5")
-				
-			};
-			var stylesSelected = new GUIStyle[maxDepth] {
-				
-				new GUIStyle("flow node 0 on"),
-				new GUIStyle("flow node 1 on"),
-				new GUIStyle("flow node 2 on"),
-				new GUIStyle("flow node 3 on"),
-				new GUIStyle("flow node 4 on"),
-				new GUIStyle("flow node 5 on")
-				
-			};
+			var styles = ME.Utilities.Cache<GUIStyle[]>("WindowLayout.GetEditorStyle.Styles", () => {
+
+				var _styles = new GUIStyle[maxDepth] {
+					
+					new GUIStyle("flow node 0"),
+					new GUIStyle("flow node 1"),
+					new GUIStyle("flow node 2"),
+					new GUIStyle("flow node 3"),
+					new GUIStyle("flow node 4"),
+					new GUIStyle("flow node 5")
+					
+				};
+
+				return _styles;
+
+			});
+
+			var stylesSelected = ME.Utilities.Cache<GUIStyle[]>("WindowLayout.GetEditorStyle.SelectedStyles", () => {
+
+				var _stylesSelected = new GUIStyle[maxDepth] {
+					
+					new GUIStyle("flow node 0 on"),
+					new GUIStyle("flow node 1 on"),
+					new GUIStyle("flow node 2 on"),
+					new GUIStyle("flow node 3 on"),
+					new GUIStyle("flow node 4 on"),
+					new GUIStyle("flow node 5 on")
+					
+				};
+
+				return _stylesSelected;
+
+			});
 			
-			var horArrowsStyle = new GUIStyle("ColorPickerHorizThumb");
-			var vertArrowsStyle = new GUIStyle("ColorPickerVertThumb");
+			var horArrowsStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.horArrowsStyle", "ColorPickerHorizThumb", (style) => new GUIStyle(style));
+			var vertArrowsStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.vertArrowsStyle", "ColorPickerVertThumb", (style) => new GUIStyle(style));
 			
-			var horStyle = new GUIStyle("box");
-			var vertStyle = new GUIStyle("box");
+			var horStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.horStyle", "box", (style) => new GUIStyle(style));
+			var vertStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.vertStyle", "box", (style) => new GUIStyle(style));
 
 			foreach (var element in elements) {
 
@@ -223,7 +236,8 @@ namespace UnityEditor.UI.Windows {
 				WindowLayoutElement maxDepthElement = null;
 				var _maxDepth = -1;
 				foreach (var element in elements) {
-					
+
+					if (element.showInComponentsList == false) continue;
 					if (element.editorHovered == false) continue;
 					
 					if (_maxDepth < element.editorDrawDepth) {
@@ -235,11 +249,9 @@ namespace UnityEditor.UI.Windows {
 					
 				}
 
-				var labelStyle = new GUIStyle(EditorStyles.whiteMiniLabel);
-				labelStyle.alignment = TextAnchor.UpperLeft;
-
 				foreach (var element in elements) {
 					
+					if (element.showInComponentsList == false) continue;
 					if (element.editorHovered == false || maxDepthElement != element) {
 						
 						continue;
@@ -261,41 +273,6 @@ namespace UnityEditor.UI.Windows {
 						
 						if (onElementGUI != null) onElementGUI(element, element.tempEditorRect, false);
 
-					}
-
-					var rect = element.tempEditorRect;
-					rect.y -= 2f;
-					
-					var w = Mathf.Clamp(element.editorMinWidth, 0, element.editorMinWidth);
-					var h = Mathf.Clamp(element.editorMinHeight, 0, element.editorMinHeight);
-
-					if (w > 0 || h > 0) {
-
-						GUI.Label(rect, "min: " + w.ToString() + "x" + h.ToString(), labelStyle);
-
-					}
-
-					rect.y += 8f;
-
-					if (element.autoStretchX == false && element.autoStretchY == false) {
-
-						w = element.editorRect.width;
-						h = element.editorRect.height;
-
-						GUI.Label(rect, "size: " + w.ToString() + "x" + h.ToString(), labelStyle);
-						
-					} else if (element.autoStretchX == false) {
-						
-						w = element.editorRect.width;
-						
-						GUI.Label(rect, "size x: " + w.ToString(), labelStyle);
-						
-					} else if (element.autoStretchY == false) {
-						
-						h = element.editorRect.height;
-						
-						GUI.Label(rect, "size y: " + h.ToString(), labelStyle);
-						
 					}
 
 				}

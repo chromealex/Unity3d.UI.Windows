@@ -145,6 +145,7 @@ namespace UnityEngine.Extensions {
 				obj.transform.SetParent(prefab.transform.parent);
 				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
+				obj.gameObject.SetActive(true);
 				prefab.AddToAll(obj);
 
 				return (T)obj;

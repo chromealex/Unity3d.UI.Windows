@@ -42,7 +42,7 @@ namespace UnityEngine.UI.Windows {
 			return this.component;
 			
 		}
-		
+
 		public override void Show(System.Action callback, bool resetAnimation) {
 
 			var counter = 0;
@@ -74,7 +74,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public override void Hide(System.Action callback, bool immediately) {
+		public override void Hide(System.Action callback, bool immediately, bool inactiveOnEnd) {
 			
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -101,7 +101,7 @@ namespace UnityEngine.UI.Windows {
 				if (this.component != null) this.component.OnHideEnd();
 				callbackItem();
 				
-			}, immediately);
+			}, immediately, inactiveOnEnd);
 			
 		}
 

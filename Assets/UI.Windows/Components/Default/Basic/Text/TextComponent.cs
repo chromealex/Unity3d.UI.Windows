@@ -44,6 +44,24 @@ namespace UnityEngine.UI.Windows.Components {
 			this.SetText(TextComponent.FormatValue(value, format));
 
 		}
+		
+		public void SetTextVerticalOverflow(VerticalWrapMode mode) {
+			
+			if (this.text != null) this.text.verticalOverflow = mode;
+			
+		}
+		
+		public void SetTextHorizontalOverflow(HorizontalWrapMode mode) {
+			
+			if (this.text != null) this.text.horizontalOverflow = mode;
+			
+		}
+
+		public void SetTextAlignment(TextAnchor anchor) {
+			
+			if (this.text != null) this.text.alignment = anchor;
+			
+		}
 
 		public string GetText() {
 

@@ -66,7 +66,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 					} else {
 						
-						GUI.DrawTexture(rect, this.noDataTexture, ScaleMode.StretchToFill, alphaBlend: true);
+						if (this.noDataTexture != null) GUI.DrawTexture(rect, this.noDataTexture, ScaleMode.StretchToFill, alphaBlend: true);
 
 					}
 
@@ -106,12 +106,12 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			return null;
 			
 		}
-		
+
 		public override bool InstallationNeeded() {
 			
 			//var moduleName = "Heatmap";
 
-			var data = FlowSystem.GetData();
+			/*var data = FlowSystem.GetData();
 			if (data == null) return false;
 			
 			// Check directories
@@ -123,7 +123,9 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 			var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(modulesPath, useCache: false).FirstOrDefault();
 			
-			return settings == null;
+			return settings == null;*/
+
+			return this.GetSettingsFile() == null;
 			
 		}
 		

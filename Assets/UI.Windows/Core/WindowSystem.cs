@@ -199,6 +199,15 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private void Awake() {
+			
+			#if UNITY_EDITOR
+			/*if (WindowSystem.instance != null) {
+
+				GameObject.DestroyImmediate(this.gameObject);
+				return;
+
+			}*/
+			#endif
 
 			WindowSystem.instance = this;
 
@@ -437,21 +446,16 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
 				
-				if (window != null) {
+				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, except);
+				
+				if (result == true) {
 					
-					if (except == null || window != except) {
-						
-						WindowBase.DestroyImmediate(window.gameObject);
-						return true;
-						
-					}
-					
-					return false;
+					if (window != null) WindowBase.DestroyImmediate(window.gameObject);
 					
 				}
 				
-				return true;
-				
+				return result;
+
 			});
 			
 			WindowSystem.RefreshHistory();
@@ -465,26 +469,47 @@ namespace UnityEngine.UI.Windows {
 		public static void Clean(List<WindowBase> except) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
-				
-				if (window != null) {
-					
-					if (except == null || !except.Contains(window)) {
-						
-						WindowBase.DestroyImmediate(window.gameObject);
-						return true;
-						
-					}
-					
-					return false;
-					
+
+				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, except, null);
+
+				if (result == true) {
+
+					if (window != null) WindowBase.DestroyImmediate(window.gameObject);
+
 				}
-				
-				return true;
-				
+
+				return result;
+
+
 			});
 			
 			WindowSystem.RefreshHistory();
 			
+		}
+
+		private bool DestroyWindowCheckOnClean_INTERNAL(WindowBase window, List<WindowBase> exceptList, WindowBase exceptItem) {
+			
+			if (window != null) {
+				
+				if (window.preferences.IsDontDestroyClean() == true) {
+
+					return false;
+
+				}
+
+				if ((exceptItem == null || window != exceptItem) &&
+				    (exceptList == null || exceptList.Contains(window) == false)) {
+
+					return true;
+					
+				}
+				
+				return false;
+				
+			}
+
+			return true;
+
 		}
 
 		/// <summary>
@@ -495,9 +520,15 @@ namespace UnityEngine.UI.Windows {
 		public static void HideAll(WindowBase except = null, System.Action callback = null) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
-			
-			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => except == null || w != except), (window, wait) => {
-				
+
+			var list = WindowSystem.instance.currentWindows.Where((w) => {
+
+				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except);
+
+			});
+
+			ME.Utilities.CallInSequence(callback, list, (window, wait) => {
+
 				if (window.Hide(wait) == false) wait.Invoke();
 				
 			});
@@ -515,7 +546,11 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 			
-			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => except == null || !except.Contains(w)), (window, wait) => {
+			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => {
+
+				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, except, null);
+
+			}), (window, wait) => {
 				
 				if (window.Hide(wait) == false) wait.Invoke();
 				

@@ -38,7 +38,7 @@ namespace UnityEditor.UI.Windows {
 
 				if (string.IsNullOrEmpty(description) == false) {
 					
-					EditorGUILayout.HelpBox("Addon `" + addonName + "` not found. Install it from the site: " + VersionInfo.downloadLink, MessageType.None);
+					EditorGUILayout.HelpBox("Addon `" + addonName + "` not found. Install it from the site: " + VersionInfo.DOWNLOAD_LINK, MessageType.None);
 
 					EditorGUILayout.HelpBox(description, MessageType.Info);
 

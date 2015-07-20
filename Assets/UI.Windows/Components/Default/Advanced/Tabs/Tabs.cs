@@ -173,7 +173,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (callback != null) callback.Invoke();
 
-			}, immediately);
+			}, immediately, inactiveOnEnd: true);
 
 		}
 

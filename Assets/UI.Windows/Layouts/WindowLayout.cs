@@ -9,7 +9,7 @@ namespace UnityEngine.UI.Windows {
 	[RequireComponent(typeof(Canvas))]
 	public class WindowLayout : WindowObject, ICanvasElement, IWindowEventsAsync {
 
-		public enum ScaleMode {
+		public enum ScaleMode : byte {
 
 			Normal,
 			Fixed,

@@ -228,15 +228,58 @@ namespace UnityEngine.UI.Windows {
 	[System.Serializable]
 	public class Preferences {
 		
-		public enum Depth {
+		public enum Depth : byte {
 			Auto = 0,
 			AlwaysTop = 1,
 			AlwaysBack = 2,
 		};
-		
+
+		public enum DontDestroy : byte {
+			Auto = 0x0,
+			OnSceneChange = 0x1,
+			OnClean = 0x2,
+			OnCleanAndSceneChange = OnSceneChange | OnClean,
+		};
+
 		public Depth depth;
+		[HideInInspector]
 		public bool dontDestroyOnLoad = true;
+		[HideInInspector]
+		public bool editorValidate = false;
+
+		public DontDestroy dontDestroy = DontDestroy.OnSceneChange;
+
+		public bool IsDontDestroyAuto() {
+			
+			return (this.dontDestroy & DontDestroy.Auto) != 0;
+			
+		}
 		
+		public bool IsDontDestroySceneChange() {
+			
+			return (this.dontDestroy & DontDestroy.OnSceneChange) != 0;
+			
+		}
+		
+		public bool IsDontDestroyClean() {
+			
+			return (this.dontDestroy & DontDestroy.OnClean) != 0;
+			
+		}
+		
+		#if UNITY_EDITOR
+		public void OnValidate() {
+			
+			if (this.editorValidate == false) {
+				
+				this.dontDestroy = this.dontDestroyOnLoad == true ? DontDestroy.OnSceneChange : DontDestroy.Auto;
+				this.editorValidate = true;
+				
+			}
+			
+		}
+		#endif
+
 	}
 	
 	[System.Serializable]

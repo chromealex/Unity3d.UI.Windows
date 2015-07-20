@@ -22,7 +22,7 @@ namespace UnityEngine.UI.Windows {
 		public bool autoStretchX = false;
 		public bool autoStretchY = false;
 
-		public bool fillable = true;
+		public bool showInComponentsList = true;
 
 		public bool showFullDescription = false;
 

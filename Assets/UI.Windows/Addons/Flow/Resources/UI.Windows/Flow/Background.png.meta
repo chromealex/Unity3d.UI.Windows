@@ -5,11 +5,11 @@ TextureImporter:
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     linearTexture: 0
-    correctGamma: 0
-    fadeOut: 0
-    borderMipMap: 0
+    correctGamma: 1
+    fadeOut: 1
+    borderMipMap: 1
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:

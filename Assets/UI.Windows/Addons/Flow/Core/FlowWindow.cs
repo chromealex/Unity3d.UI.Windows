@@ -104,17 +104,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public List<int> attaches;
 		public List<ComponentLink> attachedComponents;
 		public Color randomColor;
-		
+
+		public bool isVisibleState = false;
+
 		public int functionRootId = 0;
 		public int functionExitId = 0;
 		public int functionId = 0;
 
 		public StoreType storeType = StoreType.NewScreen;
-
-		[System.Obsolete("Bool isContainer does not exists anymore. Use Flags.IsContainer instead.")]
-		public bool isContainer = false;
-		[System.Obsolete("Bool isDefaultLink does not exists anymore. Use Flags.IsSmall | Flags.NotCompiled | Flags.ShowDefault instead.")]
-		public bool isDefaultLink = false;
 
 		public List<int> tags = new List<int>();
 
@@ -196,44 +193,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public bool IsContainer() {
 
-			// For old version compability only
-			#pragma warning disable 618
-			if (this.isContainer == true) this.flags |= Flags.IsContainer;
-			#pragma warning restore 618
-
 			return (this.flags & Flags.IsContainer) != 0;
 			
 		}
 
 		public bool IsSmall() {
-			
-			// For old version compability only
-			#pragma warning disable 618
-			if (this.isDefaultLink == true) {
-
-				this.flags |= Flags.IsSmall;
-				this.flags |= Flags.CantCompiled;
-				this.flags |= Flags.ShowDefault;
-				
-			}
-			#pragma warning restore 618
 
 			return (this.flags & Flags.IsSmall) != 0;
 			
 		}
 
 		public bool IsShowDefault() {
-			
-			// For old version compability only
-			#pragma warning disable 618
-			if (this.isDefaultLink == true) {
-				
-				this.flags |= Flags.IsSmall;
-				this.flags |= Flags.CantCompiled;
-				this.flags |= Flags.ShowDefault;
-				
-			}
-			#pragma warning restore 618
 
 			return (this.flags & Flags.ShowDefault) != 0;
 

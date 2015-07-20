@@ -37,7 +37,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.onState = null;
 
-			this.button.onClick.RemoveListener(this.OnClick);
+			if (this.button != null) this.button.onClick.RemoveListener(this.OnClick);
 			this.callback.RemoveAllListeners();
 			this.callbackButton.RemoveAllListeners();
 

@@ -104,6 +104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
+  childsHideMode: 1
   animationInputParams:
   - {fileID: 11431626}
   canvas: {fileID: 22540488}
@@ -114,6 +115,7 @@ MonoBehaviour:
   comment: CONTENT BORDER
   autoStretchX: 1
   autoStretchY: 1
+  showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
   randomColor: {r: 1, g: 0, b: .80907774, a: 1}
@@ -127,10 +129,10 @@ MonoBehaviour:
   editorMinHeight: 0
   tempEditorRect:
     serializedVersion: 2
-    x: 19
-    y: 64
-    width: 212
-    height: 159
+    x: 47.3333282
+    y: 998
+    width: 325.333344
+    height: 244
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11440508
@@ -160,7 +162,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 140492}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 

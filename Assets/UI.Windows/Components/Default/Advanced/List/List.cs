@@ -75,7 +75,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			instance.gameObject.SetActive(true);
+			if (instance != null) instance.gameObject.SetActive(true);
 
 			this.Refresh();
 

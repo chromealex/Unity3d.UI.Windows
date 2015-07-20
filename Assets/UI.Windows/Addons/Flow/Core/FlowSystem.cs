@@ -60,12 +60,28 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public static void SetData(FlowData data) {
 
 			FlowSystem.instance.data = data;
+			if (data != null) data.ResetCache();
 
 		}
 
 		public static bool HasData() {
 
 			return FlowSystem.instance.data != null;
+
+		}
+
+		public static void SetZoom(float value) {
+
+			var changed = (FlowSystem.instance.data.zoom != value);
+
+			FlowSystem.instance.data.zoom = value;
+			if (changed == true) FlowSystem.SetDirty();
+
+		}
+
+		public static float GetZoom() {
+			
+			return FlowSystem.instance.data.zoom;
 
 		}
 

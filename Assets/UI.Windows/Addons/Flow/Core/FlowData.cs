@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 	
@@ -31,6 +32,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public string namespaceName;
 		public bool forceRecompile;
 
+		public float zoom = 1f;
 		public Vector2 scrollPos = new Vector2(-1f, -1f);
 
 		public int rootWindow;
@@ -47,9 +49,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public bool flowWindowWithLayout;
 		public float flowWindowWithLayoutScaleFactor = 0f;
 
-		void OnEnable() {
+		private void OnEnable() {
 
-			namespaceName = string.IsNullOrEmpty( namespaceName ) ? this.name + ".UI" : namespaceName;
+			this.namespaceName = string.IsNullOrEmpty(this.namespaceName) == true ? string.Format("{0}.UI", this.name) : this.namespaceName;
+
 		}
 
 		public WindowBase GetRootScreen() {
@@ -292,6 +295,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var window = new FlowWindow(newId, flags);
 			
 			this.windows.Add(window);
+			this.windowsCache.Clear();
 			
 			this.isDirty = true;
 			
@@ -309,6 +313,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			window.rect.height = 30f;
 
 			this.windows.Add(window);
+			this.windowsCache.Clear();
 			
 			this.isDirty = true;
 			
@@ -322,6 +327,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var window = new FlowWindow(newId, isContainer: true);
 			
 			this.windows.Add(window);
+			this.windowsCache.Clear();
 			
 			this.isDirty = true;
 			
@@ -335,6 +341,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var window = new FlowWindow(newId, isContainer: false);
 			
 			this.windows.Add(window);
+			this.windowsCache.Clear();
 			
 			this.isDirty = true;
 			
@@ -372,9 +379,25 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
+		private Cache windowsCache = new Cache();
 		public FlowWindow GetWindow(int id) {
 
-			return this.windows.FirstOrDefault((w) => w.id == id);
+			if (this.windowsCache.IsEmpty() == true) {
+
+				this.windowsCache.Fill(this.windows, (w, i) => w.id, (w, i) => i);
+
+			}
+
+			var index = this.windowsCache.GetValue(id);
+			if (index == -1) return null;
+
+			return this.windows[index];
+
+		}
+
+		public void ResetCache() {
+
+			this.windowsCache.Clear();
 
 		}
 

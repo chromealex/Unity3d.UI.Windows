@@ -224,7 +224,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		public override bool InstallationNeeded() {
 			
-			var moduleName = "Social";
+			/*var moduleName = "Social";
 			var directories = new List<string>() {
 				"VK",
 				"VK/Queries",
@@ -256,7 +256,9 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 			var settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(modulesPath, useCache: false).FirstOrDefault();;
 
-			return settings == null;
+			return settings == null;*/
+
+			return this.GetSettingsFile() == null;
 
 		}
 
