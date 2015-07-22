@@ -480,7 +480,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 1
   m_OverridePixelPerfect: 0
-  m_SortingLayerID: -992852895
+  m_SortingLayerID: 1
   m_SortingOrder: 0
 --- !u!224 &22456496
 RectTransform:

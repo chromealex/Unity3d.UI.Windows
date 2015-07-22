@@ -62,6 +62,12 @@ namespace UnityEngine.UI.Windows.Components {
 			this.onStateActive = false;
 
 		}
+		
+		public virtual Selectable GetSelectable() {
+			
+			return this.button;
+			
+		}
 
 		public void SetEnabledState(System.Func<bool> onState) {
 

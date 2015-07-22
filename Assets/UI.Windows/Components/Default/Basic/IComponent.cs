@@ -13,6 +13,7 @@ namespace UnityEngine.UI.Windows.Components {
 		void Deselect();
 		void SetCallback(UnityAction callback);
 		void SetCallback(UnityAction<ButtonComponent> callback);
+		Selectable GetSelectable();
 
 	}
 	

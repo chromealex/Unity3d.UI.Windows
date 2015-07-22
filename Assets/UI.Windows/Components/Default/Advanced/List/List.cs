@@ -20,6 +20,10 @@ namespace UnityEngine.UI.Windows.Components {
 		public GameObject content;
 		public GameObject noElements;
 
+		[Header("Navigation")]
+		public Navigation.Mode navigationMode = Navigation.Mode.None;
+		public bool navigationInverse = false;
+
 		public override void OnInit() {
 
 			base.OnInit();
@@ -53,7 +57,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		private ISelectable lastSelectableInstance;
 		public virtual T AddItem<T>() where T : IComponent {
+
+			return this.AddItem<T>(this.navigationMode, this.navigationInverse);
+
+		}
+
+		public virtual T AddItem<T>(Navigation.Mode navigationMode, bool navigationInverse) where T : IComponent {
 
 			if (this.source == null) return default(T);
 
@@ -76,6 +87,125 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			if (instance != null) instance.gameObject.SetActive(true);
+
+			#region Navigation
+			if (this.lastSelectableInstance != instance) {
+
+				if (navigationMode != Navigation.Mode.None) {
+
+					var selectableComp = instance as ISelectable;
+					if (selectableComp != null) {
+
+						var selectable = selectableComp.GetSelectable();
+						if (selectable != null) {
+
+							var nav = selectable.navigation;
+
+							if (navigationMode == Navigation.Mode.Automatic) {
+								
+								nav.mode = Navigation.Mode.Automatic;
+								
+								selectable.navigation = nav;
+
+							} else {
+
+								nav.mode = Navigation.Mode.Explicit;
+
+								if (navigationMode == Navigation.Mode.Vertical ||
+									navigationMode == Navigation.Mode.Horizontal) {
+
+									var prevSelectableComp = this.lastSelectableInstance;
+									if (prevSelectableComp != null) {
+
+										var prevSelectable = prevSelectableComp.GetSelectable();
+										if (prevSelectable != null) {
+
+											nav = new Navigation();
+											nav.mode = Navigation.Mode.Explicit;
+											nav.selectOnDown = selectable.navigation.selectOnDown;
+											nav.selectOnLeft = selectable.navigation.selectOnLeft;
+											nav.selectOnRight = selectable.navigation.selectOnRight;
+											nav.selectOnUp = selectable.navigation.selectOnUp;
+
+											if (navigationInverse == false) {
+
+												if (navigationMode == Navigation.Mode.Horizontal) {
+													
+													nav.selectOnLeft = prevSelectable;
+
+												} else {
+
+													nav.selectOnDown = prevSelectable;
+
+												}
+
+											} else {
+												
+												if (navigationMode == Navigation.Mode.Horizontal) {
+													
+													nav.selectOnRight = prevSelectable;
+
+												} else {
+
+													nav.selectOnUp = prevSelectable;
+
+												}
+
+											}
+											selectable.navigation = nav;
+
+											nav = new Navigation();
+											nav.mode = Navigation.Mode.Explicit;
+											nav.selectOnDown = prevSelectable.navigation.selectOnDown;
+											nav.selectOnLeft = prevSelectable.navigation.selectOnLeft;
+											nav.selectOnRight = prevSelectable.navigation.selectOnRight;
+											nav.selectOnUp = prevSelectable.navigation.selectOnUp;
+
+											if (navigationInverse == false) {
+												
+												if (navigationMode == Navigation.Mode.Horizontal) {
+													
+													nav.selectOnRight = selectable;
+
+												} else {
+
+													nav.selectOnUp = selectable;
+													
+												}
+
+											} else {
+													
+												if (navigationMode == Navigation.Mode.Horizontal) {
+													
+													nav.selectOnLeft = selectable;
+
+												} else {
+
+													nav.selectOnDown = selectable;
+
+												}
+
+											}
+											prevSelectable.navigation = nav;
+
+										} // Last selectable found
+
+									} // Last component not null
+
+								} // Vertical or Horizontal
+
+							} // Mode not Auto
+
+						} // Selectable found
+
+					} // Component not null
+					
+					this.lastSelectableInstance = selectableComp;
+
+				} // Navigation not None
+
+			}
+			#endregion
 
 			this.Refresh();
 
