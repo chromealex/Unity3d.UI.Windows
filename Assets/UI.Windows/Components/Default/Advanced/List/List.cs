@@ -75,7 +75,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.scrollRect != null && this.scrollRect.content != null) instance.SetParent(this.scrollRect.content, setTransformAsSource: false);
 
 			this.list.Add(instance);
-			
+
 			this.RegisterSubComponent(instance);
 
 			if (instance is LinkerComponent) {
@@ -272,9 +272,9 @@ namespace UnityEngine.UI.Windows.Components {
 		public virtual void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
 			
 			this.Clear();
-			
+
 			for (int i = 0; i < capacity; ++i) {
-				
+
 				var instance = this.AddItem<T>();
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 				

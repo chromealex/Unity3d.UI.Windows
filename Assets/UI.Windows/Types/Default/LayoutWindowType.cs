@@ -136,7 +136,7 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		[System.Serializable]
-		public class Component : IWindowEventsAsync {
+		public class Component {
 			
 			#if UNITY_EDITOR
 			public string description;
@@ -218,6 +218,7 @@ namespace UnityEngine.UI.Windows.Types {
 				
 				this.root.Setup(instance, this);
 				instance.Setup(window);
+				root.RegisterSubComponent(instance);
 				
 				instance.transform.SetSiblingIndex(this.sortingOrder);
 				
@@ -262,7 +263,7 @@ namespace UnityEngine.UI.Windows.Types {
 				
 			}
 			
-			public void OnInit() {
+			/*public void OnInit() {
 				
 				if (this.instance != null) this.instance.OnInit();
 				if (this.root != null) this.root.OnInit();
@@ -300,7 +301,7 @@ namespace UnityEngine.UI.Windows.Types {
 				if (this.instance != null) this.instance.OnHideEnd();
 				if (this.root != null) this.root.OnHideEnd();
 				
-			}
+			}*/
 			
 		}
 
@@ -402,20 +403,20 @@ namespace UnityEngine.UI.Windows.Types {
 		public void OnInit() {
 			
 			this.instance.OnInit();
-			foreach (var component in this.components) component.OnInit();
+			//foreach (var component in this.components) component.OnInit();
 
 		}
 
 		public void OnDeinit() {
 			
 			if (this.instance != null) this.instance.OnDeinit();
-			foreach (var component in this.components) component.OnDeinit();
+			//foreach (var component in this.components) component.OnDeinit();
 
 		}
 
 		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
-			var counter = 0;
+			/*var counter = 0;
 			System.Action callbackItem = () => {
 				
 				++counter;
@@ -427,20 +428,22 @@ namespace UnityEngine.UI.Windows.Types {
 
 			this.instance.OnShowBegin(callbackItem, resetAnimation);
 			
-			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnShowBegin(c, resetAnimation); });
+			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnShowBegin(c, resetAnimation); });*/
+
+			this.instance.OnShowBegin(callback, resetAnimation);
 
 		}
 
 		public void OnShowEnd() {
 
 			this.instance.OnShowEnd();
-			foreach (var component in this.components) component.OnShowEnd();
+			//foreach (var component in this.components) component.OnShowEnd();
 		
 		}
 
 		public void OnHideBegin(System.Action callback, bool immediately = false) {
 			
-			var counter = 0;
+			/*var counter = 0;
 			System.Action callbackItem = () => {
 				
 				++counter;
@@ -453,13 +456,16 @@ namespace UnityEngine.UI.Windows.Types {
 			this.instance.OnHideBegin(callbackItem, immediately); 
 			
 			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnHideBegin(c, immediately); });
+*/
+
+			this.instance.OnHideBegin(callback, immediately); 
 
 		}
 
 		public void OnHideEnd() {
 
 			this.instance.OnHideEnd();
-			foreach (var component in this.components) component.OnHideEnd();
+			//foreach (var component in this.components) component.OnHideEnd();
 
 		}
 		

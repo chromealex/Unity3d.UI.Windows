@@ -7,8 +7,8 @@ namespace UnityEngine.UI.Windows.Components {
 		public enum ValueFormat : byte {
 
 			None,		// 1234567890
-			WithSpace,	// 1,234 567 890
-			WithComma,	// 1 234 567 890
+			WithSpace,	// 1 234 567 890
+			WithComma,	// 1,234 567 890
 
 		};
 

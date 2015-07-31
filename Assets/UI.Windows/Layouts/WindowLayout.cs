@@ -7,7 +7,7 @@ using System.Collections;
 namespace UnityEngine.UI.Windows {
 
 	[RequireComponent(typeof(Canvas))]
-	public class WindowLayout : WindowObject, ICanvasElement, IWindowEventsAsync {
+    public class WindowLayout : WindowObjectElement, ICanvasElement, IWindowEventsAsync {
 
 		public enum ScaleMode : byte {
 
@@ -38,7 +38,9 @@ namespace UnityEngine.UI.Windows {
 		private bool isAlive = false;
 		
 		#if UNITY_EDITOR
-		public virtual void OnValidate() {
+		public override void OnValidateEditor() {
+
+			base.OnValidateEditor();
 
 			//this.elements = this.GetComponentsInChildren<WindowLayoutElement>(true).ToList();
 
@@ -257,30 +259,38 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
 			this.isAlive = true;
 			CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
 
-			//this.OnShowBeginEvent();
+			this.SetComponentState(WindowObjectState.Showing);
 
-			if (callback != null) callback();
+			ME.Utilities.CallInSequence(() => base.OnShowBegin(callback, resetAnimation), this.subComponents, (e, c) => e.OnShowBegin(c, resetAnimation));
+
+		}
+		
+		public override void OnHideBegin(System.Action callback, bool immediately = false) {
+			
+			this.SetComponentState(WindowObjectState.Hiding);
+
+			ME.Utilities.CallInSequence(() => base.OnHideBegin(callback, immediately), this.subComponents, (e, c) => e.OnHideBegin(c, immediately));
 
 		}
 
-		public virtual void OnHideEnd() {
+		public override void OnHideEnd() {
 
 			this.isAlive = false;
 			CanvasUpdateRegistry.UnRegisterCanvasElementForRebuild(this);
 
-			//this.OnHideEndEvent();
+			base.OnHideEnd();
 
 		}
 		
-		public virtual void OnInit() {}
+		/*public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
-		public virtual void OnHideBegin(System.Action callback, bool immediately = false) { if (callback != null) callback(); }
+		public virtual void OnHideBegin(System.Action callback, bool immediately = false) { if (callback != null) callback(); }*/
 		/*
 		public virtual void OnShowBeginEvent() {}
 		public virtual void OnHideEndEvent() {}

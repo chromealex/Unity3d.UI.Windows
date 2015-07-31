@@ -24,7 +24,13 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public T Get<T>() where T : IComponent {
-			
+
+			if (this.instance == null) {
+
+				this.InitInstance();
+
+			}
+
 			return (T)(this.instance as IComponent);
 
 		}
@@ -43,6 +49,12 @@ namespace UnityEngine.UI.Windows.Components {
 		public override void OnInit() {
 			
 			base.OnInit();
+
+			this.InitInstance();
+
+		}
+
+		private void InitInstance() {
 
 			if (this.instance != null) {
 
@@ -64,7 +76,7 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 		}
-		
+		/*
 		public override void OnDeinit() {
 			
 			base.OnDeinit();
@@ -124,7 +136,7 @@ namespace UnityEngine.UI.Windows.Components {
 			var instance = this.instance;
 			if (instance != null) instance.OnHideEnd();
 			
-		}
+		}*/
 
 	}
 

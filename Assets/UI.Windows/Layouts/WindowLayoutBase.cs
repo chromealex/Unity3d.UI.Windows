@@ -24,8 +24,8 @@ namespace UnityEngine.UI.Windows {
 		public void Load(WindowComponent component) {
 
 			this.activatorInstance.component = component;
-			var instance = this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement);
-			if (instance != null) instance.OnInit();
+			/*var instance = */this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement);
+			//if (instance != null) instance.OnInit();
 
 		}
 		
@@ -43,6 +43,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		#region TODO: ?
 		public override void Show(System.Action callback, bool resetAnimation) {
 
 			var counter = 0;
@@ -74,7 +75,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public override void Hide(System.Action callback, bool immediately, bool inactiveOnEnd) {
+		public override void Hide(System.Action callback, bool immediately) {
 			
 			var counter = 0;
 			System.Action callbackItem = () => {
@@ -101,9 +102,10 @@ namespace UnityEngine.UI.Windows {
 				if (this.component != null) this.component.OnHideEnd();
 				callbackItem();
 				
-			}, immediately, inactiveOnEnd);
+			}, immediately);
 			
 		}
+		#endregion
 
 	}
 

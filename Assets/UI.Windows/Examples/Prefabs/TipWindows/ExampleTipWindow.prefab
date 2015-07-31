@@ -218,8 +218,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28e10acd087c744fe982ac44c1627fac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  childsHideMode: 1
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams:
   - {fileID: 11456504}
   - {fileID: 11456506}

@@ -134,8 +134,6 @@ namespace UnityEngine.UI.Windows.Types {
 
 		private void Update_EDITOR() {
 
-			if (this.animationRoot != null) this.animationRoot.Update_EDITOR();
-
 			#region COMPONENTS
 			this.canvas = this.GetComponentsInChildren<Canvas>(true)[0];
 			var raycasters = this.GetComponentsInChildren<UnityEngine.EventSystems.BaseRaycaster>(true);

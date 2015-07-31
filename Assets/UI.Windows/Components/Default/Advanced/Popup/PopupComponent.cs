@@ -157,7 +157,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (opened == true) {
 
-				this.list.gameObject.SetActive(true);
+				//this.list.gameObject.SetActive(true);
 
 				this.UpdateDropState();
 
@@ -192,9 +192,9 @@ namespace UnityEngine.UI.Windows.Components {
 				// Hide items
 				this.items.Hide(() => {
 
-					this.list.gameObject.SetActive(false);
+					//this.list.gameObject.SetActive(false);
 
-				}, immediately, inactiveOnEnd: true);
+				}, immediately);
 
 			}
 
@@ -214,21 +214,33 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public int Count() {
+			
+			return this.items.Count();
+
+		}
+
 		public T AddItem<T>() where T : ITextComponent {
 
 			return this.items.AddItem<T>();
 
 		}
 
-		public List<T> GetItems<T>() where T : ITextComponent {
-			
+		public List<T> GetItems<T>() where T : IComponent {
+
 			return this.items.GetItems<T>();
 			
 		}
 		
+		public List<WindowComponent> GetItems() {
+			
+			return this.items.GetItems();
+			
+		}
+
 		public T GetItem<T>(int index) where T : ITextComponent {
 			
-			return this.items.GetItem<T>(index);
+			return (T)(this.items.GetItem<IComponent>(index) as ITextComponent);
 			
 		}
 		
@@ -237,7 +249,13 @@ namespace UnityEngine.UI.Windows.Components {
 			this.items.SetItems(capacity, onItem);
 			
 		}
-		
+
+		public void Clear() {
+
+			this.items.Clear();
+
+		}
+
 		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : ITextComponent {
 
 			this.items.SetItems<T>(capacity, (element, index) => {
@@ -260,7 +278,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private int selectedIndex = -1;
 		public void Select(int index, bool closePopup = true) {
-			
+
+			if (index < 0) {
+
+				this.label.SetText(string.Empty);
+				this.selectedIndex = -1;
+				return;
+
+			}
+
 			ISelectable prevText = null;
 			if (this.selectedIndex >= 0) prevText = this.items.GetItem<ISelectable>(this.selectedIndex);
 			var text = this.items.GetItem<ITextComponent>(index);

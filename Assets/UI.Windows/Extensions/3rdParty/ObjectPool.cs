@@ -86,7 +86,7 @@ namespace UnityEngine.Extensions {
 					var item = prefab.Spawn();
 					if (root != null) item.transform.SetParent(root);
 					preAllocated.Add(item);
-					
+
 				}
 				
 				foreach (var item in preAllocated) item.Recycle();

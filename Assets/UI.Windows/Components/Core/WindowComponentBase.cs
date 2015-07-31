@@ -6,19 +6,20 @@ using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEngine.UI.Windows {
 
-	public class WindowComponentBase : WindowObject, IWindowAnimation {
+    public class WindowComponentBase : WindowObjectElement, IWindowAnimation {
 
-		public enum ChildsHideMode : byte {
+		public enum ChildsBehaviourMode : byte {
 
-			Simultaneously,		// Call Hide methods on all childs
-			Consequentially,	// Call Hide after all childs complete hide
+			Simultaneously = 0,		// Call Show/Hide methods on all childs
+			Consequentially = 1,	// Call Show/Hide after all childs complete hide
 
 		};
 
 		[Header("Animation Info")]
 		new public WindowAnimationBase animation;
-
-		public ChildsHideMode childsHideMode = ChildsHideMode.Consequentially;
+		
+		public ChildsBehaviourMode childsShowMode = ChildsBehaviourMode.Simultaneously;
+		public ChildsBehaviourMode childsHideMode = ChildsBehaviourMode.Simultaneously;
 
 		[HideInInspector]
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
@@ -26,18 +27,6 @@ namespace UnityEngine.UI.Windows {
 		public CanvasGroup canvas;
 		[HideInInspector]
 		public bool animationRefresh = false;
-		
-		private WindowObjectState currentState = WindowObjectState.NotInitialized;
-
-		/// <summary>
-		/// Gets the state of the component.
-		/// </summary>
-		/// <returns>The component state.</returns>
-		public WindowObjectState GetComponentState() {
-			
-			return this.currentState;
-			
-		}
 
 		/// <summary>
 		/// Show component.
@@ -73,7 +62,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public void Hide() {
 			
-			this.Hide(null, immediately: false, inactiveOnEnd: true);
+			this.Hide(null, immediately: false);
 			
 		}
 
@@ -82,9 +71,9 @@ namespace UnityEngine.UI.Windows {
 		/// Animation component can use current layout element root or current component root.
 		/// </summary>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		public void Hide(bool immediately, bool inactiveOnEnd) {
+		public void Hide(bool immediately) {
 
-			this.Hide(null, immediately, inactiveOnEnd);
+			this.Hide(null, immediately);
 
 		}
 
@@ -94,14 +83,16 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="callback">Callback.</param>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		public virtual void Hide(System.Action callback, bool immediately, bool inactiveOnEnd) {
+		public virtual void Hide(System.Action callback, bool immediately) {
 
 			this.OnHideBegin_INTERNAL(() => {
 
+				base.OnHideBegin(callback, immediately);
 				this.OnHideEnd();
+
 				if (callback != null) callback();
 
-			}, immediately, inactiveOnEnd);
+			}, immediately);
 			
 		}
 
@@ -155,10 +146,31 @@ namespace UnityEngine.UI.Windows {
 		/// You can override this method but call it's base.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 			
-			this.OnShowBegin_INTERNAL(callback, resetAnimation);
-			
+			this.SetComponentState(WindowObjectState.Showing);
+
+			if (this.childsShowMode == ChildsBehaviourMode.Simultaneously) {
+
+				var counter = 0;
+				System.Action callbackItem = () => {
+
+					++counter;
+					if (counter < 2) return;
+
+					base.OnShowBegin(callback, resetAnimation);
+
+				};
+
+				this.OnShowBegin_INTERNAL(callback, resetAnimation);
+				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnShowBegin(c, resetAnimation); });
+
+			} else if (this.childsShowMode == ChildsBehaviourMode.Consequentially) {
+
+				ME.Utilities.CallInSequence(() => this.OnShowBegin_INTERNAL(() => base.OnShowBegin(callback, resetAnimation), resetAnimation), this.subComponents, (e, c) => e.OnShowBegin(c, resetAnimation));
+				
+			}
+
 		}
 
 		/// <summary>
@@ -169,23 +181,11 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="resetAnimation">If set to <c>true</c> reset animation.</param>
 		private void OnShowBegin_INTERNAL(System.Action callback, bool resetAnimation, bool immediately = false) {
 
-			var go = this.gameObject;
-
 			System.Action callbackInner = () => {
 
-				if (this.currentState == WindowObjectState.Showing) {
-
-					this.currentState = WindowObjectState.Shown;
-					if (go != null) go.SetActive(true);
-
-				}
-
 				if (callback != null) callback();
-				
-			};
 
-			if (go != null) go.SetActive(true);
-			this.currentState = WindowObjectState.Showing;
+			};
 
 			if (this.animation != null) {
 				
@@ -216,9 +216,30 @@ namespace UnityEngine.UI.Windows {
 		/// You can override this method but call it's base.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {
+		public override void OnHideBegin(System.Action callback, bool immediately = false) {
+			
+			this.SetComponentState(WindowObjectState.Hiding);
 
-			this.OnHideBegin_INTERNAL(callback, immediately, inactiveOnEnd: true);
+            if (this.childsHideMode == ChildsBehaviourMode.Simultaneously) {
+
+				var counter = 0;
+				System.Action callbackItem = () => {
+
+					++counter;
+					if (counter < 2) return;
+					
+					base.OnHideBegin(callback, immediately);
+
+				};
+
+				this.OnHideBegin_INTERNAL(callbackItem, immediately);
+				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnHideBegin(c, immediately); });
+
+			} else if (this.childsHideMode == ChildsBehaviourMode.Consequentially) {
+
+				ME.Utilities.CallInSequence(() => this.OnHideBegin_INTERNAL(() => base.OnHideBegin(callback, immediately), immediately), this.subComponents, (e, c) => e.OnHideBegin(c, immediately));
+
+			}
 
 		}
 
@@ -228,24 +249,23 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="callback">Callback.</param>
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		private void OnHideBegin_INTERNAL(System.Action callback, bool immediately, bool inactiveOnEnd) {
-			
-			var go = this.gameObject;
+        private void OnHideBegin_INTERNAL(System.Action callback, bool immediately) {
+
+			if (this == null) {
+				
+				if (callback != null) callback();
+
+				return;
+
+			}
 
 			System.Action callbackInner = () => {
-				
-				if (this.currentState == WindowObjectState.Hiding) {
-
-					this.currentState = WindowObjectState.Hidden;
-					if (inactiveOnEnd == true && go != null) go.SetActive(false);
-
-				}
 
 				if (callback != null) callback();
 
 			};
 			
-			this.currentState = WindowObjectState.Hiding;
+			this.SetComponentState(WindowObjectState.Hiding);
 			
 			if (this.animation != null) {
 				
@@ -268,63 +288,22 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		/// <summary>
-		/// Raises the init event.
-		/// You can override this method but call it's base.
-		/// </summary>
-		public virtual void OnInit() {
-
-			this.currentState = WindowObjectState.Initialized;
-
-		}
-
-		/// <summary>
-		/// Raises the deinit event.
-		/// You can override this method but call it's base.
-		/// </summary>
-		public virtual void OnDeinit() {
-
-			this.currentState = WindowObjectState.NotInitialized;
-
-		}
-
-		/// <summary>
-		/// Raises the show end event.
-		/// You can override this method but call it's base.
-		/// </summary>
-		public virtual void OnShowEnd() {}
-
-		/// <summary>
-		/// Raises the hide end event.
-		/// You can override this method but call it's base.
-		/// </summary>
-		public virtual void OnHideEnd() {}
-
 		#if UNITY_EDITOR
-		/// <summary>
-		/// Raises the validate event. Editor Only.
-		/// </summary>
-		public void OnValidate() {
+		public override void OnValidateEditor() {
 
-			this.OnValidateEditor();
+			base.OnValidateEditor();
 
-		}
-
-		/// <summary>
-		/// Raises the validate editor event.
-		/// You can override this method but call it's base.
-		/// </summary>
-		public virtual void OnValidateEditor() {
-			
 			this.Update_EDITOR();
-			
+
 		}
 		
+		[HideInInspector]
 		private List<TransitionInputParameters> componentsToDestroy = new List<TransitionInputParameters>();
-		
+
 		[HideInInspector][SerializeField]
-		public WindowAnimationBase lastAnimation;
-		public virtual void Update_EDITOR() {
+		private WindowAnimationBase lastAnimation;
+
+		private void Update_EDITOR() {
 
 			this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
 			

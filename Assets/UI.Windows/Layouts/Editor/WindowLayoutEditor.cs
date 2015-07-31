@@ -398,7 +398,7 @@ namespace UnityEditor.UI.Windows {
 
 		private void Update_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
 			
-			foreach (var element in _target.elements) element.Update_EDITOR();
+			foreach (var element in _target.elements) element.OnValidateEditor();
 			
 			#region COMPONENTS
 			_target.canvas = _target.GetComponentsInChildren<Canvas>(true)[0];
