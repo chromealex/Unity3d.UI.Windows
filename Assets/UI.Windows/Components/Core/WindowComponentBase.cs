@@ -28,6 +28,12 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		public bool animationRefresh = false;
 
+		public override bool NeedToInactive() {
+
+			return this.animation != null;
+
+		}
+
 		/// <summary>
 		/// Show component.
 		/// Animation component can use current layout element root or current component root.

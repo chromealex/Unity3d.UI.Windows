@@ -32,7 +32,7 @@ namespace UnityEditor.UI.Windows {
 				
 			}
 			
-			return false;
+			return true;
 			
 		}
 		

@@ -43,9 +43,15 @@ namespace UnityEngine.UI.Windows {
 			           this.currentState == WindowObjectState.NotInitialized ||
 			           this.currentState == WindowObjectState.Initializing) {
 				
-				if (go != null) go.SetActive(false);
+				if (go != null && this.NeedToInactive() == true) go.SetActive(false);
 
 			}
+
+		}
+		
+		public virtual bool NeedToInactive() {
+
+			return true;
 
 		}
 
