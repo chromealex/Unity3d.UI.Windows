@@ -8,7 +8,7 @@ namespace UnityEngine.UI.Windows.Components.Table {
 	
 	public class Table : Components.List {
 
-		private List<WindowComponent> list = new List<WindowComponent>();
+		/*private List<WindowComponent> list = new List<WindowComponent>();
 
 		public WindowComponent headerSource;
 
@@ -32,7 +32,7 @@ namespace UnityEngine.UI.Windows.Components.Table {
 
 			return instance as T;
 
-		}
+		}*/
 
 	}
 	

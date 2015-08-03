@@ -24,8 +24,8 @@ public class ParticleSystemSortingLayer : MonoBehaviour {
 			var window = this.windowObject.GetWindow();
 			if (window == null) return;
 
-			window.events.eventsInstance.Unregister(WindowEventType.OnShowBegin, this.UpdateLayer);
-			window.events.eventsInstance.Register(WindowEventType.OnShowBegin, this.UpdateLayer);
+			window.events.onEveryInstance.Unregister(WindowEventType.OnShowBegin, this.UpdateLayer);
+			window.events.onEveryInstance.Register(WindowEventType.OnShowBegin, this.UpdateLayer);
 
 			this.UpdateLayer();
 

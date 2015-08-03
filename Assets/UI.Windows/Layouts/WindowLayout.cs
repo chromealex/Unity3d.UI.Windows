@@ -36,7 +36,13 @@ namespace UnityEngine.UI.Windows {
 		
 		[HideInInspector][SerializeField]
 		private bool isAlive = false;
-		
+
+		public override bool NeedToInactive() {
+
+			return false;
+
+		}
+
 		#if UNITY_EDITOR
 		public override void OnValidateEditor() {
 

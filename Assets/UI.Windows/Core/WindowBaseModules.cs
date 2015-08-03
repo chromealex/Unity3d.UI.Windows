@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Animations;
 using UnityEngine.UI.Windows.Types;
+using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows {
 
@@ -192,26 +193,162 @@ namespace UnityEngine.UI.Windows {
 
 	[System.Serializable]
 	public class Events : IWindowEventsAsync {
+
+		[System.Serializable]
+		public class Element {
+
+			[System.Serializable]
+			public class OnInit : UnityEvent {}
+			public OnInit onInit = new OnInit();
+			
+			[System.Serializable]
+			public class OnShowBegin : UnityEvent {}
+			public OnShowBegin onShowBegin = new OnShowBegin();
+			
+			[System.Serializable]
+			public class OnShowEnd : UnityEvent {}
+			public OnShowEnd onShowEnd = new OnShowEnd();
+			
+			[System.Serializable]
+			public class OnHideBegin : UnityEvent {}
+			public OnHideBegin onHideBegin = new OnHideBegin();
+			
+			[System.Serializable]
+			public class OnHideEnd : UnityEvent {}
+			public OnHideEnd onHideEnd = new OnHideEnd();
+			
+			[System.Serializable]
+			public class OnDeinit : UnityEvent {}
+			public OnDeinit onDeinit = new OnDeinit();
+
+			public void Clear() {
+				
+				this.onInit.RemoveAllListeners();
+				this.onShowBegin.RemoveAllListeners();
+				this.onShowEnd.RemoveAllListeners();
+				this.onHideBegin.RemoveAllListeners();
+				this.onHideEnd.RemoveAllListeners();
+				this.onDeinit.RemoveAllListeners();
+
+			}
+			
+			public void Register(WindowEventType eventType, UnityAction callback) {
+				
+				switch (eventType) {
+					
+					case WindowEventType.OnInit:
+						this.onInit.AddListener(callback);
+						break;
+						
+					case WindowEventType.OnShowBegin:
+						this.onShowBegin.AddListener(callback);
+						break;
+						
+					case WindowEventType.OnShowEnd:
+						this.onShowEnd.AddListener(callback);
+						break;
+						
+					case WindowEventType.OnHideBegin:
+						this.onHideBegin.AddListener(callback);
+						break;
+						
+					case WindowEventType.OnHideEnd:
+						this.onHideEnd.AddListener(callback);
+						break;
+						
+					case WindowEventType.OnDeinit:
+						this.onDeinit.AddListener(callback);
+						break;
+						
+				}
+				
+			}
+			
+			public void Unregister(WindowEventType eventType, UnityAction callback) {
+				
+				switch (eventType) {
+					
+					case WindowEventType.OnInit:
+						this.onInit.RemoveListener(callback);
+						break;
+						
+					case WindowEventType.OnShowBegin:
+						this.onShowBegin.RemoveListener(callback);
+						break;
+						
+					case WindowEventType.OnShowEnd:
+						this.onShowEnd.RemoveListener(callback);
+						break;
+						
+					case WindowEventType.OnHideBegin:
+						this.onHideBegin.RemoveListener(callback);
+						break;
+						
+					case WindowEventType.OnHideEnd:
+						this.onHideEnd.RemoveListener(callback);
+						break;
+						
+					case WindowEventType.OnDeinit:
+						this.onDeinit.RemoveListener(callback);
+						break;
+						
+				}
+				
+			}
+
+			public void ReleaseEvents(WindowEventType eventType) {
+				
+				switch (eventType) {
+					
+					case WindowEventType.OnInit:
+						this.onInit.Invoke();
+						break;
+						
+					case WindowEventType.OnShowBegin:
+						this.onShowBegin.Invoke();
+						break;
+						
+					case WindowEventType.OnShowEnd:
+						this.onShowEnd.Invoke();
+						break;
+						
+					case WindowEventType.OnHideBegin:
+						this.onHideBegin.Invoke();
+						break;
+						
+					case WindowEventType.OnHideEnd:
+						this.onHideEnd.Invoke();
+						break;
+						
+					case WindowEventType.OnDeinit:
+						this.onDeinit.Invoke();
+						break;
+
+				}
+
+			}
+
+		}
 		
-		public EventsAction<WindowEventType> events = new EventsAction<WindowEventType>();
-		public EventsAction<WindowEventType> eventsInstance = new EventsAction<WindowEventType>();
-		
+		public Element onEveryInstance = new Element();
+		public Element onType = new Element();
+
 		public void Clear() {
 			
-			this.events.Clear();
+			this.onType.Clear();
 			
 		}
 		
 		public void OnDestroy() {
 			
-			this.eventsInstance.Clear();
+			this.onEveryInstance.Clear();
 			
 		}
 		
 		private void ReleaseEvents(WindowEventType eventType) {
-			
-			this.events.Call(eventType);
-			this.eventsInstance.Call(eventType);
+
+			this.onType.ReleaseEvents(eventType);
+			this.onEveryInstance.ReleaseEvents(eventType);
 			
 		}
 		

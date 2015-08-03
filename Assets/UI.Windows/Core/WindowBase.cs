@@ -35,9 +35,12 @@ namespace UnityEngine.UI.Windows {
 		public bool initialized = false;
 
 		public Preferences preferences;
-		public Transition transition;
 		public Modules.Modules modules;
 		public Events events;
+		#if !TRANSITION_ENABLED
+		[ReadOnly]
+		#endif
+		public Transition transition;
 
 		private int functionIterationIndex = 0;
 

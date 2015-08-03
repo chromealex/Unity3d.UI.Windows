@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
+[System.Serializable]
 public class EventsAction<T> {
-	
+
 	private Dictionary<T, List<System.Action>> events = new Dictionary<T, List<System.Action>>();
 	
 	public void Register(T key, System.Action action) {
