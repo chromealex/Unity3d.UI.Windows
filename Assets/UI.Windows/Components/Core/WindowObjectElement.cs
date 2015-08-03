@@ -26,7 +26,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public void SetComponentState(WindowObjectState state) {
+		public virtual void SetComponentState(WindowObjectState state) {
 
 			this.currentState = state;
 

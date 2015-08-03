@@ -224,7 +224,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			this.flags = flags;
 			this.attaches = new List<int>();
 			this.attachedComponents = new List<ComponentLink>();
-			this.rect = new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 200f, 200f);
+			this.rect = new Rect(0f, 0f, 200f, 200f);//new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 200f, 200f);
 			this.title = (this.IsContainer() == true ? "Container" : "Window " + this.id.ToString());
 			this.directory = (this.IsContainer() == true ? "ContainerDirectory" : "Window" + this.id.ToString() + "Directory");
 			this.randomColor = ColorHSV.GetDistinctColor();

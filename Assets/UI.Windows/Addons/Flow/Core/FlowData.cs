@@ -283,7 +283,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				window.Detach(id, oneWay: true);
 				
 			}
-			
+
+			this.ResetCache();
+
 			this.isDirty = true;
 			
 		}

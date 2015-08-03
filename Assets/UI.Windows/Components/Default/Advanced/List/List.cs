@@ -10,7 +10,8 @@ namespace UnityEngine.UI.Windows.Components {
 	
 	public class List : WindowComponent {
 		
-		private List<WindowComponent> list = new List<WindowComponent>();
+		[Header("List")]
+		public List<WindowComponent> list = new List<WindowComponent>();
 
 		[Header("Required")]
 		public WindowComponent source;
