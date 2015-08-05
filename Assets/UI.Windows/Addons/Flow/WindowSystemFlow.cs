@@ -24,7 +24,6 @@ namespace UnityEngine.UI.Windows {
 		protected override void Init() {
 
 			var flow = this.flow;
-			FlowSystem.SetData(flow);
 
 			#if UNITY_MOBILE
 			if (this.flowMobileOnly != null) flow = this.flowMobileOnly;
@@ -33,14 +32,18 @@ namespace UnityEngine.UI.Windows {
 			if (this.flowStandaloneOnly != null) flow = this.flowStandaloneOnly;
 			#endif
 			
+			FlowSystem.SetData(flow);
+
 			this.defaults.AddRange(flow.GetDefaultScreens());
 			this.windows.AddRange(flow.GetAllScreens());
 
 			base.Init();
 
+			this.OnStart();
+
 		}
 		
-		public void Start() {
+		public void OnStart() {
 			
 			if (this.showRootOnStart == true) {
 

@@ -201,7 +201,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.scrollRect.height -= TOOLBAR_HEIGHT;
 				
 				var scrollPos = FlowSystem.GetScrollPosition();
-				if (scrollPos == -Vector2.one) scrollPos = -new Vector2(this.contentRect.width * 0.5f - this.scrollRect.width * 0.5f, this.contentRect.height * 0.5f - this.scrollRect.height * 0.5f);
+				if (scrollPos.x > 0f || scrollPos.y > 0f) scrollPos = -new Vector2(this.contentRect.width * 0.5f - this.scrollRect.width * 0.5f, this.contentRect.height * 0.5f - this.scrollRect.height * 0.5f);
 				//FlowSystem.SetScrollPosition(GUI.BeginScrollView(this.scrollRect, scrollPos, this.contentRect));
 				{
 

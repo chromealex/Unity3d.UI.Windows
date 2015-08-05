@@ -124,7 +124,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			this.currentWindow = window;
 
-			this.prevWindow = WindowSystem.GetPreviousWindow(window);
+			this.prevWindow = WindowSystem.GetPreviousWindow(window, (item) => item.window.GetState() == WindowObjectState.Shown);
 			if (this.prevWindow == null) {
 
 				window.transition.SaveToCache(this.clearScreen, () => {
@@ -169,7 +169,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 		}
 		
-		public override void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetInState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
@@ -178,7 +178,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 		}
 		
-		public override void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetOutState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
@@ -187,7 +187,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 		}
 		
-		public override void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetResetState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;

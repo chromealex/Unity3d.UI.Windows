@@ -77,7 +77,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void LateUpdate() {
+		public virtual void LateUpdate() {
 
 			if (this.onStateActive == true && this.onState != null) {
 
@@ -159,13 +159,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void OnClick() {
+		public virtual void OnClick() {
 
 			if (this.GetWindow().GetState() != WindowObjectState.Shown &&
 			    this.GetWindow().GetState() != WindowObjectState.Showing) {
 
-				#if UNITY_EDITOR
-				Debug.LogWarning("Can't send the click on " + this.GetWindow().GetState() + " state.");
+				#if UNITY_EDITOR || DEBUGBUILD
+				Debug.LogWarning("Can't send click on `" + this.GetWindow().GetState() + "` state.");
 				#endif
 				return;
 

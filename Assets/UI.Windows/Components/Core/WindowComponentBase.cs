@@ -16,6 +16,7 @@ namespace UnityEngine.UI.Windows {
 		};
 
 		[Header("Animation Info")]
+		[SceneEditOnly]
 		new public WindowAnimationBase animation;
 		
 		public ChildsBehaviourMode childsShowMode = ChildsBehaviourMode.Simultaneously;
@@ -107,7 +108,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public void SetResetState() {
 			
-			if (this.animation != null) this.animation.SetResetState(this.animationInputParams, this);
+			if (this.animation != null) this.animation.SetResetState(this.animationInputParams, this.GetWindow(), this);
 			
 		}
 		
@@ -116,7 +117,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public void SetInState() {
 			
-			if (this.animation != null) this.animation.SetInState(this.animationInputParams, this);
+			if (this.animation != null) this.animation.SetInState(this.animationInputParams, this.GetWindow(), this);
 			
 		}
 		
@@ -125,7 +126,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public void SetOutState() {
 			
-			if (this.animation != null) this.animation.SetOutState(this.animationInputParams, this);
+			if (this.animation != null) this.animation.SetOutState(this.animationInputParams, this.GetWindow(), this);
 			
 		}
 
@@ -199,12 +200,12 @@ namespace UnityEngine.UI.Windows {
 
 				if (immediately == true) {
 
-					this.animation.SetInState(this.animationInputParams, this);
+					this.animation.SetInState(this.animationInputParams, this.GetWindow(), this);
 					if (callbackInner != null) callbackInner();
 
 				} else {
 
-					this.animation.Play(this.animationInputParams, this, true, callbackInner);
+					this.animation.Play(this.GetWindow(), this.animationInputParams, this, true, callbackInner);
 
 				}
 
@@ -277,12 +278,12 @@ namespace UnityEngine.UI.Windows {
 				
 				if (immediately == true) {
 					
-					this.animation.SetOutState(this.animationInputParams, this);
+					this.animation.SetOutState(this.animationInputParams, this.GetWindow(), this);
 					callbackInner();
 					
 				} else {
 					
-					this.animation.Play(this.animationInputParams, this, false, callbackInner);
+					this.animation.Play(this.GetWindow(), this.animationInputParams, this, false, callbackInner);
 					
 				}
 				

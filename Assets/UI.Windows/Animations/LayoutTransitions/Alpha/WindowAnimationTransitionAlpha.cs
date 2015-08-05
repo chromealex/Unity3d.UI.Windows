@@ -14,7 +14,13 @@ namespace UnityEngine.UI.Windows.Animations {
 			public class State {
 
 				public float to;
-				
+
+				public State(State state) {
+
+					this.to = state.to;
+
+				}
+
 			}
 			
 			public State resetState;
@@ -27,9 +33,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				if (param == null) return;
 
 				// Place params installation here
-				this.inState = param.inState;
-				this.outState = param.outState;
-				this.resetState = param.resetState;
+				this.inState = new State(param.inState);
+                this.outState = new State(param.outState);
+                this.resetState = new State(param.resetState);
 
 			}
 			
@@ -100,9 +106,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 
-		public override void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetInState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
-			base.SetInState(parameters, root);
+			base.SetInState(parameters, window, root);
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
@@ -111,9 +117,9 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 		}
 		
-		public override void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetOutState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
-			base.SetOutState(parameters, root);
+			base.SetOutState(parameters, window, root);
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
@@ -122,9 +128,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 		
-		public override void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetResetState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 
-			base.SetResetState(parameters, root);
+			base.SetResetState(parameters, window, root);
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;

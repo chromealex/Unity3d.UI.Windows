@@ -16,6 +16,7 @@ MonoBehaviour:
     maxDepth: 98
     poolSize: 100
     minZDepth: 0
+    preallocatedWindowsPoolSize: 0
   camera:
     orthographic: 1
     orthographicSize: 5

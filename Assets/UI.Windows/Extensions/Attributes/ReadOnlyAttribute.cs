@@ -1,25 +1,32 @@
 ﻿using UnityEngine;
+using System;
+using System.Collections.Generic;
+
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 public class ReadOnlyAttribute : PropertyAttribute {
 
-	public readonly string header;
-	public readonly bool drawHeaderOnly;
+	public readonly string fieldName;
+	public readonly object state;
+	public readonly bool bitMask;
 
 	public ReadOnlyAttribute() {
 
-		this.header = null;
-		this.drawHeaderOnly = false;
+		this.fieldName = null;
+		this.state = false;
+		this.bitMask = false;
 
 	}
-	
-	public ReadOnlyAttribute(string header, bool drawHeaderOnly = false) {
 
-		this.header = header;
-		this.drawHeaderOnly = drawHeaderOnly;
-
+	public ReadOnlyAttribute(string fieldName, object state, bool bitMask = false) {
+		
+		this.fieldName = fieldName;
+		this.state = state;
+		this.bitMask = bitMask;
+		
 	}
 
 }
@@ -30,53 +37,110 @@ public class ReadOnlyDrawer : PropertyDrawer {
 
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
 
-		var h = EditorGUI.GetPropertyHeight(property, label, true) + 2f;
-
-		var attribute = this.attribute as ReadOnlyAttribute;
-		if (string.IsNullOrEmpty(attribute.header) == false) {
-
-			if (attribute.drawHeaderOnly == true) {
-
-				return h;
-
-			} else {
-
-				return h * 2f;
-
-			}
-
-		}
-
-		return h;
+		return EditorGUI.GetPropertyHeight(property, label, true) + 2f;
 
 	}
 
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 
+		var state = false;
+
 		var attribute = this.attribute as ReadOnlyAttribute;
-		if (string.IsNullOrEmpty(attribute.header) == true) {
+		if (string.IsNullOrEmpty(attribute.fieldName) == false) {
 			
-			var oldState = GUI.enabled;
-			GUI.enabled = false;
-			EditorGUI.PropertyField(position, property, label, true);
-			GUI.enabled = oldState;
+			var bitMask = (this.attribute as ReadOnlyAttribute).bitMask;
+
+			var needState = attribute.state;
+			var prop = this.GetRelativeProperty(property, property.propertyPath, attribute.fieldName);
+
+			var value = this.GetRawValue(prop);
+			if (bitMask == true) {
+				
+				state = true;
+				if (((int)value & (int)needState) == 0) state = false;
+
+			} else {
+
+				state = true;
+				if (object.Equals(needState, value) == false) state = false;
+
+			}
+
+		}
+
+		var oldState = GUI.enabled;
+		GUI.enabled = state;
+		EditorGUI.PropertyField(position, property, label, true);
+		GUI.enabled = oldState;
+
+	}
+
+	private SerializedProperty GetRelativeProperty(SerializedProperty property, string path, string fieldName) {
+
+		var splitted = path.Split('.');
+		if (splitted.Length > 1) {
+
+			path = string.Join(".", splitted, 0, splitted.Length - 1) + "." + fieldName;
 
 		} else {
 
-			var posHeader = position;
-			var posContent = new Rect(posHeader.x, posHeader.y + posHeader.height * 0.5f, posHeader.width, posHeader.height * 0.5f);
+			path = fieldName;
 
-			var oldValue = new GUIContent(label);
-			EditorGUI.LabelField(posHeader, attribute.header, EditorStyles.boldLabel);
+		}
 
-			if (attribute.drawHeaderOnly == false) {
+		return property.serializedObject.FindProperty(path);
 
-				var oldState = GUI.enabled;
-				GUI.enabled = false;
-				EditorGUI.PropertyField(posContent, property, oldValue, true);
-				GUI.enabled = oldState;
+	}
 
-			}
+	public object GetRawValue(SerializedProperty thisSP) {
+
+		switch (thisSP.propertyType) {
+			case SerializedPropertyType.Integer:
+				return thisSP.intValue;
+			case SerializedPropertyType.Boolean:
+				return thisSP.boolValue;
+			case SerializedPropertyType.Float:
+				return thisSP.floatValue;
+			case SerializedPropertyType.String:
+				return thisSP.stringValue;
+			case SerializedPropertyType.Color:
+				return thisSP.colorValue;
+			case SerializedPropertyType.ObjectReference:
+				return thisSP.objectReferenceValue;
+			case SerializedPropertyType.LayerMask:
+				return thisSP.intValue;
+			case SerializedPropertyType.Enum:
+
+				if ((this.attribute as ReadOnlyAttribute).bitMask == true) {
+
+					return thisSP.intValue;
+
+				} else {
+
+					int enumI = thisSP.enumValueIndex;
+					return new KeyValuePair<int, string>(enumI, thisSP.enumNames[enumI]);
+
+				}
+
+			case SerializedPropertyType.Vector2:
+				return thisSP.vector2Value;
+			case SerializedPropertyType.Vector3:
+				return thisSP.vector3Value;
+			case SerializedPropertyType.Rect:
+				return thisSP.rectValue;
+			case SerializedPropertyType.ArraySize:
+				return thisSP.intValue;
+			case SerializedPropertyType.Character:
+				return (char)thisSP.intValue;
+			case SerializedPropertyType.AnimationCurve:
+				return thisSP.animationCurveValue;
+			case SerializedPropertyType.Bounds:
+				return thisSP.boundsValue;
+			case SerializedPropertyType.Quaternion:
+				return thisSP.quaternionValue;
+				
+			default:
+				throw new NotImplementedException("Unimplemented propertyType "+thisSP.propertyType+".");
 
 		}
 

@@ -6,7 +6,9 @@ namespace UnityEngine.UI.Windows {
 
 	public class WindowLayoutElement : WindowLayoutBase {
 
-		[ReadOnly("Layout Info")]
+		//[ReadOnly("Layout Info")]
+		[Header("Layout Info")]
+		[ReadOnly]
 		new public LayoutTag tag = LayoutTag.None;
 		
 		[ReadOnly]

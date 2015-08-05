@@ -25,9 +25,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
-			public void Play(TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
+			public void Play(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
-				this.transition.Play(parameters, root, forward, callback);
+				this.transition.Play(window, parameters, root, forward, callback);
 				
 			}
 			
@@ -37,21 +37,21 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 			
-			public void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
+			public void SetInState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 				
-				this.transition.SetInState(parameters, root);
+				this.transition.SetInState(parameters, window, root);
 
 			}
 			
-			public void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
+			public void SetOutState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 				
-				this.transition.SetOutState(parameters, root);
+				this.transition.SetOutState(parameters, window, root);
 
 			}
 			
-			public void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
+			public void SetResetState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 
-				this.transition.SetResetState(parameters, root);
+				this.transition.SetResetState(parameters, window, root);
 
 			}
 
@@ -70,40 +70,40 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 		
-		public void SetInState(List<TransitionInputParameters> parameters, WindowComponentBase root) {
+		public void SetInState(List<TransitionInputParameters> parameters, WindowBase window, WindowComponentBase root) {
 			
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
-				transition.SetInState(parameters[i++], root);
+				transition.SetInState(parameters[i++], window, root);
 				
 			}
 
 		}
 		
-		public void SetOutState(List<TransitionInputParameters> parameters, WindowComponentBase root) {
+		public void SetOutState(List<TransitionInputParameters> parameters, WindowBase window, WindowComponentBase root) {
 			
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
-				transition.SetOutState(parameters[i++], root);
+				transition.SetOutState(parameters[i++], window, root);
 				
 			}
 
 		}
 		
-		public void SetResetState(List<TransitionInputParameters> parameters, WindowComponentBase root) {
+		public void SetResetState(List<TransitionInputParameters> parameters, WindowBase window, WindowComponentBase root) {
 			
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
-				transition.SetResetState(parameters[i++], root);
+				transition.SetResetState(parameters[i++], window, root);
 				
 			}
 
 		}
 
-		public void Play(List<TransitionInputParameters> parameters, WindowComponentBase root, bool forward, System.Action callback) {
+		public void Play(WindowBase window, List<TransitionInputParameters> parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			Transition callbacker = null;
 			var maxDuration = 0f;
@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			i = 0;
 			foreach (var transition in this.transitions) {
 
-				transition.Play(parameters[i++], root, forward, callbacker == transition ? callback : null);
+				transition.Play(window, parameters[i++], root, forward, callbacker == transition ? callback : null);
 
 			}
 

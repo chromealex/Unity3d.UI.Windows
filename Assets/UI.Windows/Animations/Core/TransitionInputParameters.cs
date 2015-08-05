@@ -7,11 +7,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		public bool useDefault = true;
 
-		public virtual void SetDefaultParameters(TransitionBase.ParametersBase parameters) {
-
-
-
-		}
+		public virtual void SetDefaultParameters(TransitionBase.ParametersBase parameters) {}
 		
 		public virtual T GetParameters<T>() where T : TransitionBase.ParametersBase {
 			

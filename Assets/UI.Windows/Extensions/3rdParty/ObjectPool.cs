@@ -36,12 +36,15 @@ namespace UnityEngine.Extensions {
 		}
 
 		public static void Clear() {
+
 			instance.objectLookup.Clear();
 			instance.prefabLookup.Clear();
 			instance.allLookup.Clear();
+
 		}
 
 		public static void RecycleAll<T>(T prefab) where T : Component {
+
 			if (prefab == null) return;
 
 			if (instance.allLookup.ContainsKey(prefab)) {
@@ -57,6 +60,7 @@ namespace UnityEngine.Extensions {
 		}
 
 		public static void ClearPool<T>(T prefab) where T : Component {
+
 			if (prefab == null) return;
 			
 			if (instance.allLookup.ContainsKey(prefab)) {
@@ -73,7 +77,8 @@ namespace UnityEngine.Extensions {
 
 		}
 
-		public static void CreatePool<T>(T prefab, int capacity, Transform root = null) where T : Component {
+		public static void CreatePool<T>(T prefab, int capacity, System.Func<T, T> spawner = null, Transform root = null) where T : Component {
+
 			if (prefab == null) return;
 			
 			if (!instance.objectLookup.ContainsKey(prefab)) {
@@ -83,7 +88,17 @@ namespace UnityEngine.Extensions {
 				var preAllocated = new List<Component>();
 				for (int i = 0; i < capacity; ++i) {
 
-					var item = prefab.Spawn();
+					T item = null;
+					if (spawner != null) {
+
+						item = spawner(prefab);
+
+					}  else {
+
+						item = prefab.Spawn();
+
+					}
+
 					if (root != null) item.transform.SetParent(root);
 					preAllocated.Add(item);
 
@@ -92,6 +107,7 @@ namespace UnityEngine.Extensions {
 				foreach (var item in preAllocated) item.Recycle();
 				
 			}
+
 		}
 
 		public static T Spawn<T>(T prefab, Vector3 position, Quaternion rotation) where T : Component {
@@ -176,13 +192,17 @@ namespace UnityEngine.Extensions {
 		}
 
 		public static void Recycle<T>(T obj) where T : Component {
+
 			if (obj == null) return;
+			if (instance == null) return;
 
 			if (instance.prefabLookup.ContainsKey(obj)) {
+
 				instance.objectLookup[instance.prefabLookup[obj]].Add(obj);
 				instance.prefabLookup.Remove(obj);
 				//obj.transform.parent = instance.transform;
 				obj.gameObject.SetActive(false);
+
 			} else {
 
 				#if UNITY_EDITOR
@@ -204,6 +224,7 @@ namespace UnityEngine.Extensions {
 				#endif
 
 			}
+
 		}
 
 		public static int Count<T>(T prefab) where T : Component {
@@ -216,7 +237,7 @@ namespace UnityEngine.Extensions {
 			get {
 				
 				#if UNITY_EDITOR
-				if (Application.isPlaying == false) {
+				/*if (Application.isPlaying == false) {
 					
 					var items = ObjectPool.FindObjectsOfType<ObjectPool>();
 					if (items.Length > 0) {
@@ -225,19 +246,26 @@ namespace UnityEngine.Extensions {
 
 					}
 
-				}
+					return new ObjectPool();
+
+				}*/
 
 				if (_instance == null) _instance = ObjectPool.FindObjectOfType<ObjectPool>();
 				#endif
 
+				return _instance;
+				/*
+				var go = GameObject.Find("WindowSystemInitializer/ObjectPool");
+				if (go != null) _instance = go.GetComponent<ObjectPool>();
+				
 				if (_instance != null) return _instance;
 
-				var obj = new GameObject("[A] ObjectPool", typeof(ObjectPool));
-				obj.transform.localPosition = Vector3.zero;
+				go = new GameObject("[A] ObjectPool", typeof(ObjectPool));
+				go.transform.localPosition = Vector3.zero;
 
-				_instance = obj.GetComponent<ObjectPool>();
+				_instance = go.GetComponent<ObjectPool>();
 
-				return _instance;
+				return _instance;*/
 
 			}
 
@@ -260,9 +288,13 @@ namespace UnityEngine.Extensions {
 		public static void ClearPool<T>(this T prefab) where T : Component {
 			ObjectPool.ClearPool(prefab);
 		}
-
+		
 		public static void CreatePool<T>(this T prefab, int capacity, Transform root = null) where T : Component {
-			ObjectPool.CreatePool(prefab, capacity, root);
+			ObjectPool.CreatePool(prefab, capacity, root: root);
+		}
+		
+		public static void CreatePool<T>(this T prefab, int capacity, System.Func<T, T> spawner, Transform root = null) where T : Component {
+			ObjectPool.CreatePool(prefab, capacity, spawner, root);
 		}
 
 		public static T Spawn<T>(this T prefab, Vector3 position, Quaternion rotation) where T : Component {

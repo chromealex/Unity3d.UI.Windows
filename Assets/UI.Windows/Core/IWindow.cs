@@ -20,6 +20,7 @@ namespace UnityEngine.UI.Windows {
 		OnShowEnd,
 		OnHideBegin,
 		OnHideEnd,
+		OnBackAction,
 
 	};
 	/*

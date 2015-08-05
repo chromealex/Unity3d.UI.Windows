@@ -116,11 +116,22 @@ namespace UnityEngine.UI.Windows {
 				}
 				
 			}
+			
 			public int poolSize {
 				
 				get {
 					
 					return this.file != null ? this.file.baseInfo.poolSize : 100;
+					
+				}
+				
+			}
+			
+			public int preallocatedWindowsPoolSize {
+				
+				get {
+					
+					return this.file != null ? this.file.baseInfo.preallocatedWindowsPoolSize : 0;
 					
 				}
 				
@@ -178,8 +189,25 @@ namespace UnityEngine.UI.Windows {
 					WindowSystem._instance = GameObject.FindObjectOfType<WindowSystem>();
 					if (WindowSystem._instance == null) {
 
-						var go = new GameObject("[A] WindowSystem", typeof(WindowSystem));
-						WindowSystem._instance = go.GetComponent<WindowSystem>();
+						/*var go = GameObject.Find("WindowSystemInitializer");
+						if (go != null) WindowSystem._instance = go.GetComponent<WindowSystem>();
+
+						if (WindowSystem._instance == null) {
+
+							if (Application.isPlaying == false) {
+
+								WindowSystem._instance = new WindowSystem();
+
+							} else {
+
+								go = new GameObject("[A] WindowSystem", typeof(WindowSystem));
+								WindowSystem._instance = go.GetComponent<WindowSystem>();
+
+							}
+
+						}*/
+
+						return null;
 
 					}
 
@@ -199,15 +227,6 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private void Awake() {
-			
-			#if UNITY_EDITOR
-			/*if (WindowSystem.instance != null) {
-
-				GameObject.DestroyImmediate(this.gameObject);
-				return;
-
-			}*/
-			#endif
 
 			WindowSystem.instance = this;
 
@@ -217,12 +236,44 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		private WindowBase lastInstance;
+		protected virtual void LateUpdate() {
+
+			var lastWindow = this.lastInstance;
+			if (lastWindow != null) {
+
+				lastWindow.events.LateUpdate(lastWindow);
+
+			}
+
+		}
+		
+		public static void UpdateLastInstance() {
+
+			if (WindowSystem.instance == null) return;
+
+			WindowSystem.instance.lastInstance = WindowSystem.GetWindow((item) => item.window.GetState() == WindowObjectState.Shown || item.window.GetState() == WindowObjectState.Showing);
+
+		}
+
 		/// <summary>
 		/// Init this instance.
 		/// </summary>
 		protected virtual void Init() {
 
-			foreach (var window in this.windows) window.CreatePool(0);
+			foreach (var window in this.windows) {
+
+				if (window.preferences.preallocatedCount > 0) {
+					
+					window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source); });
+
+				} else {
+
+					window.CreatePool(this.settings.preallocatedWindowsPoolSize);
+
+				}
+
+			}
 
 			this.functions = new Functions();
 
@@ -309,7 +360,12 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="window">Window.</param>
 		public static void AddToHistory(WindowBase window) {
 
-			WindowSystem.instance.history.Add(new HistoryItem(window));
+			if (window.preferences.IsHistoryActive() == true) {
+
+				if (WindowSystem.instance != null) WindowSystem.instance.history.Add(new HistoryItem(window));
+				WindowSystem.UpdateLastInstance();
+
+			}
 
 		}
 
@@ -319,6 +375,7 @@ namespace UnityEngine.UI.Windows {
 		public static void RefreshHistory() {
 
 			WindowSystem.instance.history.RemoveAll((item) => item.window == null);
+			WindowSystem.UpdateLastInstance();
 
 		}
 
@@ -336,18 +393,18 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		/// <summary>
-		/// Gets the last window in history with the `Shown` state.
+		/// Gets the last window in history with the predicate.
 		/// </summary>
 		/// <returns>The previous window.</returns>
 		/// <param name="current">Current.</param>
-		public static WindowBase GetPreviousWindow(WindowBase current) {
+		public static WindowBase GetPreviousWindow(WindowBase current, System.Func<HistoryItem, bool> predicate = null) {
 
 			WindowBase prev = null;
 			foreach (var item in WindowSystem.instance.history) {
 
 				if (item.window == current) break;
 
-				if (item.window.GetState() == WindowObjectState.Shown) {
+				if (predicate == null || predicate(item) == true) {
 
 					prev = item.window;
 
@@ -357,6 +414,28 @@ namespace UnityEngine.UI.Windows {
 
 			return prev;
 
+		}
+		
+		/// <summary>
+		/// Gets the last window in history with the predicate.
+		/// </summary>
+		/// <returns>The previous window.</returns>
+		/// <param name="current">Current.</param>
+		public static WindowBase GetWindow(System.Func<HistoryItem, bool> predicate = null) {
+			
+			WindowBase last = null;
+			foreach (var item in WindowSystem.instance.history) {
+
+				if (predicate == null || predicate(item) == true) {
+					
+					last = item.window;
+					
+				}
+				
+			}
+			
+			return last;
+			
 		}
 
 		/// <summary>
@@ -604,7 +683,11 @@ namespace UnityEngine.UI.Windows {
 		public static T Show<T>(params object[] parameters) where T : WindowBase {
 
 			var instance = WindowSystem.Create<T>(parameters);
-			if (instance != null) instance.Show();
+			if (instance != null) {
+
+				instance.Show();
+
+			}
 
 			return instance;
 			
@@ -620,7 +703,11 @@ namespace UnityEngine.UI.Windows {
 		public static T Show<T>(T source, params object[] parameters) where T : WindowBase {
 
 			var instance = WindowSystem.instance.Create_INTERNAL(source, parameters) as T;
-			if (instance != null) instance.Show();
+			if (instance != null) {
+				
+				instance.Show();
+				
+			}
 
 			return instance;
 

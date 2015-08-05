@@ -9,6 +9,15 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows {
 
+	public enum MessageType : byte {
+
+		None,
+		Info,
+		Warning,
+		Error,
+
+	}
+
 	namespace Modules {
 
 		[System.Serializable]
@@ -193,6 +202,114 @@ namespace UnityEngine.UI.Windows {
 
 	[System.Serializable]
 	public class Events : IWindowEventsAsync {
+		
+		[System.Serializable]
+		public class BackButtonBehaviour {
+
+			public enum BackAction : byte {
+				None = 0x0,
+				HideCurrentWindow = 0x1,
+				ShowPreviousWindow = 0x2,
+				ShowSpecificWindow = 0x4,
+			};
+			
+			[BitMask(typeof(BackAction))]
+			public BackAction backAction = BackAction.None;
+			
+			[ReadOnly(fieldName: "backAction", state: (int)BackAction.ShowSpecificWindow, bitMask: true)]
+			public WindowBase window;
+
+			[System.Serializable]
+			public class OnBackAction : UnityEvent {}
+			public OnBackAction onBackAction = new OnBackAction();
+
+			public bool IsBackActionShowSpecific() {
+				
+				return (this.backAction & BackAction.ShowSpecificWindow) != 0;
+				
+			}
+			
+			public bool IsBackActionShowPrevious() {
+				
+				return (this.backAction & BackAction.ShowPreviousWindow) != 0;
+				
+			}
+			
+			public bool IsBackActionHide() {
+				
+				return (this.backAction & BackAction.HideCurrentWindow) != 0;
+				
+			}
+			
+			public void LateUpdate(WindowBase window, System.Action callback = null) {
+				
+				if (UnityEngine.Input.GetKeyDown(KeyCode.Escape) == true) {
+					
+					if (callback != null) {
+						
+						callback();
+						
+					} else {
+						
+						this.OnClick(window);
+						
+					}
+					
+				}
+				
+			}
+			
+			public void OnClick(WindowBase window) {
+				
+				var hideCur = this.IsBackActionHide();
+				var showPrev = this.IsBackActionShowPrevious();
+				var showSpec = this.IsBackActionShowSpecific();
+
+				if (window.GetState() == WindowObjectState.Shown) {
+
+					this.onBackAction.Invoke();
+
+					if (hideCur == true || showPrev == true || showSpec == true) {
+
+						if (showPrev == true) {
+							
+							var prev = WindowSystem.GetPreviousWindow(window);
+							if (prev != null) {
+								
+								prev.Show();
+								
+							} else {
+								
+								#if UNITY_EDITOR || DEBUGBUILD
+								Debug.LogWarning("Previous HistoryItem is null. Make sure your history was not cleared.");
+								#endif
+								
+							}
+							
+						}
+						
+						if (hideCur == true) {
+							
+							window.Hide();
+							
+						}
+						
+						if (showSpec == true) {
+							
+							WindowSystem.Show(this.window);
+
+						}
+
+					}
+
+				}
+
+			}
+			
+		}
+		
+		[Header("Back Button Behaviour")]
+		public BackButtonBehaviour backButtonBehaviour = new BackButtonBehaviour();
 
 		[System.Serializable]
 		public class Element {
@@ -259,7 +376,7 @@ namespace UnityEngine.UI.Windows {
 					case WindowEventType.OnDeinit:
 						this.onDeinit.AddListener(callback);
 						break;
-						
+
 				}
 				
 			}
@@ -291,7 +408,7 @@ namespace UnityEngine.UI.Windows {
 					case WindowEventType.OnDeinit:
 						this.onDeinit.RemoveListener(callback);
 						break;
-						
+
 				}
 				
 			}
@@ -330,6 +447,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
+		[Header("Events")]
 		public Element onEveryInstance = new Element();
 		public Element onType = new Element();
 
@@ -345,13 +463,19 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
+		public void LateUpdate(WindowBase window, System.Action callback = null) {
+			
+			this.backButtonBehaviour.LateUpdate(window, callback);
+
+		}
+
 		private void ReleaseEvents(WindowEventType eventType) {
 
 			this.onType.ReleaseEvents(eventType);
 			this.onEveryInstance.ReleaseEvents(eventType);
 			
 		}
-		
+
 		// Events
 		public void OnInit() { this.ReleaseEvents(WindowEventType.OnInit); }
 		public void OnDeinit() { this.ReleaseEvents(WindowEventType.OnDeinit); }
@@ -359,12 +483,14 @@ namespace UnityEngine.UI.Windows {
 		public void OnShowEnd() { this.ReleaseEvents(WindowEventType.OnShowEnd); }
 		public void OnHideBegin(System.Action callback, bool immediately = false) { this.ReleaseEvents(WindowEventType.OnHideBegin); if (callback != null) callback(); }
 		public void OnHideEnd() { this.ReleaseEvents(WindowEventType.OnHideEnd); }
+
+		public void OnBackAction() { this.ReleaseEvents(WindowEventType.OnBackAction); }
 		
 	}
 	
 	[System.Serializable]
 	public class Preferences {
-		
+
 		public enum Depth : byte {
 			Auto = 0,
 			AlwaysTop = 1,
@@ -375,16 +501,31 @@ namespace UnityEngine.UI.Windows {
 			Auto = 0x0,
 			OnSceneChange = 0x1,
 			OnClean = 0x2,
-			OnCleanAndSceneChange = OnSceneChange | OnClean,
+		};
+		
+		public enum History : byte {
+			Auto = 0x0,
+			DontSave = 0x1,
 		};
 
-		public Depth depth;
-		[HideInInspector]
+		[HideInInspector][System.Obsolete("Use dontDestroy parameter.")]
 		public bool dontDestroyOnLoad = true;
-		[HideInInspector]
-		public bool editorValidate = false;
 
+		[Header("Base")]
+		public Depth depth;
+		[BitMask(typeof(DontDestroy))]
 		public DontDestroy dontDestroy = DontDestroy.OnSceneChange;
+		[BitMask(typeof(History))]
+		public History history = History.Auto;
+
+		[Header("Pool")]
+		public int preallocatedCount = 0;
+
+		public bool IsHistoryActive() {
+
+			return (this.history & History.DontSave) == 0;
+
+		}
 
 		public bool IsDontDestroyAuto() {
 			
@@ -403,15 +544,19 @@ namespace UnityEngine.UI.Windows {
 			return (this.dontDestroy & DontDestroy.OnClean) != 0;
 			
 		}
-		
+
 		#if UNITY_EDITOR
+		[HideInInspector]
+		public bool editorValidated = false;
 		public void OnValidate() {
 			
-			if (this.editorValidate == false) {
-				
+			if (this.editorValidated == false) {
+
+				#pragma warning disable 612,618
 				this.dontDestroy = this.dontDestroyOnLoad == true ? DontDestroy.OnSceneChange : DontDestroy.Auto;
-				this.editorValidate = true;
-				
+				this.editorValidated = true;
+				#pragma warning restore 612,618
+
 			}
 			
 		}
@@ -421,9 +566,10 @@ namespace UnityEngine.UI.Windows {
 	
 	[System.Serializable]
 	public class Transition : IWindowEventsAsync {
-		
+
 		public TransitionBase transition;
-		
+		public TransitionInputParameters transitionParameters;
+
 		[HideInInspector]
 		private WindowBase window;
 		
@@ -433,16 +579,17 @@ namespace UnityEngine.UI.Windows {
 			
 			this.window = window;
 			
-			if (this.transition!= null) {
-				
-				this.transition.SetupCamera(this.window.workCamera);
-				
-			}
-			
+			if (this.transition!= null) this.transition.SetupCamera(this.window.workCamera);
+
 		}
 		
 		// Events
-		public void OnInit() { if (this.transition != null) this.transition.OnInit(); }
+		public void OnInit() {
+
+			if (this.transition != null) this.transition.OnInit();
+
+		}
+
 		public void OnDeinit() {}
 		public void OnShowEnd() {}
 		public void OnHideEnd() {}
@@ -450,8 +597,8 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.transition != null) {
 				
-				this.transition.SetResetState(null, null);
-				this.transition.Play(this.window, forward: true, callback: callback);
+				this.transition.SetResetState(this.transitionParameters, this.window, null);
+				this.transition.Play(this.window, this.transitionParameters, null, forward: true, callback: callback);
 				
 			} else {
 				
@@ -463,8 +610,8 @@ namespace UnityEngine.UI.Windows {
 		public void OnHideBegin(System.Action callback, bool immediately = false) {
 			
 			if (this.transition != null) {
-				
-				this.transition.Play(this.window, forward: false, callback: callback);
+
+				this.transition.Play(this.window, this.transitionParameters, null, forward: false, callback: callback);
 				
 			} else {
 				

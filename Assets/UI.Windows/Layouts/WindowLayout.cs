@@ -69,6 +69,8 @@ namespace UnityEngine.UI.Windows {
 				return;
 				
 			}
+			
+			this.transform.localScale = Vector3.zero;
 
 			this.canvas.sortingOrder = orderInLayer;
 			this.canvas.planeDistance = 10f;// * orderInLayer;

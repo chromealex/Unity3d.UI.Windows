@@ -80,7 +80,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		public static float GetZoom() {
-			
+
+			if (FlowSystem.instance.data == null) return 1f;
+
 			return FlowSystem.instance.data.zoom;
 
 		}

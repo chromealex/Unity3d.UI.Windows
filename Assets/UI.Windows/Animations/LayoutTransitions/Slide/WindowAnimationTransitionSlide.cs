@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Components;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEngine.UI.Windows.Animations {
 
@@ -9,21 +10,53 @@ namespace UnityEngine.UI.Windows.Animations {
 		[System.Serializable]
 		public class Parameters : TransitionBase.ParametersBase {
 			
+			public enum ApplyTo : byte {
+				
+				Default = 0x0,
+				Position = 0x1,
+				AnchorMin = 0x2,
+				AnchorMax = 0x4,
+				
+			};
+
 			public Parameters(TransitionBase.ParametersBase baseDefaults) : base(baseDefaults) {}
 
 			[System.Serializable]
 			public class State {
-
+				
+				public Vector2 anchorMin;
+				public Vector2 anchorMax;
 				public Vector2 to;
+
+				public State() {
+				}
+
+				public State(RectTransform rect) {
+
+					this.anchorMin = rect.anchorMin;
+					this.anchorMax = rect.anchorMax;
+					this.to = rect.anchoredPosition;
+
+				}
+
+				public State(State source) {
+
+					this.anchorMin = source.anchorMin;
+					this.anchorMax = source.anchorMax;
+					this.to = source.to;
+
+				}
 
 			}
 
 			public bool moveRoot = false;
 			public RectTransform root;
 
-			public State resetState;
-			public State inState;
-			public State outState;
+			[BitMask(typeof(ApplyTo))]
+			public ApplyTo stateApply = ApplyTo.Default;
+			public State resetState = new State();
+			public State inState = new State();
+			public State outState = new State();
 
 			public override void Setup(TransitionBase.ParametersBase defaults) {
 
@@ -31,33 +64,79 @@ namespace UnityEngine.UI.Windows.Animations {
 				if (param == null) return;
 
 				// Place params installation here
-				this.inState = param.inState;
-				this.outState = param.outState;
-				this.resetState = param.resetState;
+				this.inState = new State(param.inState);
+                this.outState = new State(param.outState);
+                this.resetState = new State(param.resetState);
 
 				this.moveRoot = param.moveRoot;
 
+				this.stateApply = param.stateApply;
+
+			}
+
+			public void Apply(RectTransform rect, State startState, State resultState, float value) {
+
+				if ((this.stateApply & ApplyTo.AnchorMax) != 0) {
+
+					rect.anchorMax = Vector2.Lerp(startState.anchorMax, resultState.anchorMax, value);
+
+				}
+				
+				if ((this.stateApply & ApplyTo.AnchorMin) != 0) {
+					
+					rect.anchorMin = Vector2.Lerp(startState.anchorMin, resultState.anchorMin, value);
+					
+				}
+
+				if ((this.stateApply & ApplyTo.Position) != 0 || (this.stateApply & ApplyTo.Default) == ApplyTo.Default) {
+					
+					rect.anchoredPosition = Vector2.Lerp(startState.to, resultState.to, value);
+					
+				}
+
 			}
 			
-			public Vector2 GetIn() {
+			public void Apply(RectTransform rect, State state) {
 				
-				return this.inState.to;
+				if ((this.stateApply & ApplyTo.AnchorMax) != 0) {
+					
+					rect.anchorMax = state.anchorMax;
+					
+				}
+
+				if ((this.stateApply & ApplyTo.AnchorMin) != 0) {
+					
+					rect.anchorMin = state.anchorMin;
+					
+				}
+
+				if ((this.stateApply & ApplyTo.Position) != 0 || (this.stateApply & ApplyTo.Default) == ApplyTo.Default) {
+					
+					rect.anchoredPosition = state.to;
+					
+				}
+
+			}
+
+			public State GetIn() {
+				
+				return this.inState;
 				
 			}
 
-			public Vector2 GetOut() {
+			public State GetOut() {
 				
-				return this.outState.to;
+				return this.outState;
 				
 			}
 
-			public Vector2 GetReset() {
+			public State GetReset() {
 
-				return this.resetState.to;
+				return this.resetState;
 
 			}
 
-			public Vector2 GetResult(bool forward) {
+			public State GetResult(bool forward) {
 				
 				if (forward == true) {
 					
@@ -78,27 +157,27 @@ namespace UnityEngine.UI.Windows.Animations {
 			if (parameters != null && parameters.root != null) return parameters.root;
 
 			WindowComponent component = null;
-			if (root is LinkerComponent && !component) {
+			if (root is LinkerComponent && component == null) {
 
 				component = (root as LinkerComponent).Get<WindowComponent>();
 				
 			}
 			
-			if (root is WindowLayoutBase && !component) {
+			if (root is WindowLayoutBase && component == null) {
 				
 				component = (root as WindowLayoutBase).GetCurrentComponent();
 				
 			}
 
-			if (root is WindowComponent && !component) {
+			if (root is WindowComponent && component == null) {
 				
 				component = root as WindowComponent;
 				
 			}
 
 			if (component == null && parameters == null) return null;
-			if (component == null || parameters.moveRoot == true) return root.transform as RectTransform;
 			if (parameters == null) return component.transform as RectTransform;
+			if (component == null || parameters.moveRoot == true) return root.transform as RectTransform;
 
 			return component.transform as RectTransform;
 
@@ -121,12 +200,11 @@ namespace UnityEngine.UI.Windows.Animations {
 			}
 
 			var duration = this.GetDuration(parameters, forward);
-			var result = param.GetResult(forward);
+			var resultState = param.GetResult(forward);
 
 			var rect = this.GetRoot(param, root);
-			var startPosition = rect.anchoredPosition;
-			var endPosition = result;
-			
+			var state = new Parameters.State(rect);
+
 			if (TweenerGlobal.instance != null) {
 
 				TweenerGlobal.instance.removeTweens(tag);
@@ -134,7 +212,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 					if (obj != null) {
 
-						obj.anchoredPosition = Vector2.Lerp(startPosition, endPosition, value);
+						param.Apply(obj, state, resultState, value);
 
 					}
 
@@ -142,37 +220,37 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			} else {
 				
-				rect.anchoredPosition = endPosition;
+				param.Apply(rect, resultState);
 				if (callback != null) callback();
 				
 			}
 
 		}
 		
-		public override void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetInState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 			
-			this.GetRoot(param, root).anchoredPosition = param.GetIn();
+			param.Apply(this.GetRoot(param, root), param.GetIn());
 
 		}
 		
-		public override void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetOutState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 
-			this.GetRoot(param, root).anchoredPosition = param.GetOut();
+			param.Apply(this.GetRoot(param, root), param.GetOut());
 
 		}
 		
-		public override void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public override void SetResetState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 
-			this.GetRoot(param, root).anchoredPosition = param.GetReset();
+			param.Apply(this.GetRoot(param, root), param.GetReset());
 
 		}
 

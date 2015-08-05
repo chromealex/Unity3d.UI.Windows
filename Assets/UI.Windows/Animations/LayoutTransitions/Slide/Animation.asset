@@ -17,9 +17,17 @@ MonoBehaviour:
     inDuration: .100000001
     outDuration: .100000001
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 1
     resetState:
-      to: {x: 0, y: 30}
+      to: {x: 0, y: -30}
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
     inState:
       to: {x: 0, y: 0}
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
     outState:
-      to: {x: 0, y: -30}
+      to: {x: 0, y: 30}
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}

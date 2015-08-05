@@ -1,4 +1,5 @@
-//#define TRANSITION_ENABLED
+#define TRANSITION_ENABLED
+//#define TRANSITION_POSTEFFECTS_ENABLED
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,9 +35,9 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		public bool initialized = false;
 
-		public Preferences preferences;
-		public Modules.Modules modules;
-		public Events events;
+		public Preferences preferences = new Preferences();
+		public Modules.Modules modules = new Modules.Modules();
+		public Events events = new Events();
 		#if !TRANSITION_ENABLED
 		[ReadOnly]
 		#endif
@@ -171,7 +172,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		#if TRANSITION_ENABLED
+		#if TRANSITION_POSTEFFECTS_ENABLED
 		private void OnRenderImage(RenderTexture source, RenderTexture destination) {
 			
 			this.transition.OnRenderImage(source, destination);

@@ -14,37 +14,29 @@ namespace UnityEngine.UI {
 
 			if (this.label != null) {
 
-				if (this.interactable == false) {
-
-					this.label.color = this.labelColor.disabledColor;
-
-				} else {
-
-					this.label.color = this.labelColor.normalColor;
+				switch (this.currentSelectionState) {
+					
+					case SelectionState.Disabled:
+						this.label.CrossFadeColor(this.labelColor.disabledColor, this.labelColor.fadeDuration, false, true);
+						break;
+						
+					case SelectionState.Normal:
+						this.label.CrossFadeColor(this.labelColor.normalColor, this.labelColor.fadeDuration, false, true);
+						break;
+						
+					case SelectionState.Highlighted:
+						this.label.CrossFadeColor(this.labelColor.highlightedColor, this.labelColor.fadeDuration, false, true);
+						break;
+						
+					case SelectionState.Pressed:
+						this.label.CrossFadeColor(this.labelColor.pressedColor, this.labelColor.fadeDuration, false, true);
+						break;
 
 				}
 
 			}
 
 		}
-		/*
-		new public bool interactable {
-			
-			set {
-
-				base.interactable = value;
-
-				// On Changed
-
-			}
-			
-			get {
-
-				return base.interactable;
-				
-			}
-			
-		}*/
 
 	}
 

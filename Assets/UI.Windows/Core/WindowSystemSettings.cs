@@ -11,6 +11,8 @@ namespace UnityEngine.UI.Windows {
 			public int poolSize = 100;
 
 			public float minZDepth = 0f;
+			
+			public int preallocatedWindowsPoolSize = 0;
 
 		}
 

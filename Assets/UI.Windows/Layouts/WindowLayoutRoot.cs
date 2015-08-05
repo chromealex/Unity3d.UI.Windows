@@ -11,7 +11,8 @@ namespace UnityEngine.UI.Windows {
 			FlexibleWidth,
 		};
 
-		private RectTransform _rectTransform;
+		[HideInInspector]
+		public RectTransform _rectTransform;
 		public RectTransform rectTransform {
 
 			get {
@@ -29,9 +30,17 @@ namespace UnityEngine.UI.Windows {
 		public float minWidth = 1024f;
 		public float maxWidth = 1920f;
 		public float margin = 100f;
-		
+
 		[HideInInspector]
 		public Rect editorRect;
+
+		#if UNITY_EDITOR
+		public void OnValidate() {
+
+			this._rectTransform = this.transform as RectTransform;
+
+		}
+		#endif
 
 		public void Rebuild() {
 
@@ -45,6 +54,31 @@ namespace UnityEngine.UI.Windows {
 			var size = rect.sizeDelta;
 			size.x = width;
 			rect.sizeDelta = size;
+
+		}
+		
+		public Vector2 GetOffsetNormalized() {
+
+			var pos = this.rectTransform.anchoredPosition;
+			return new Vector2(pos.x / Screen.width, pos.y / Screen.height);
+			
+		}
+
+		public Vector2 GetOffset() {
+
+			return this.rectTransform.anchoredPosition;
+
+		}
+
+		public void SetOffset(Vector2 offset) {
+
+			this.rectTransform.anchoredPosition = offset;
+
+		}
+
+		public void SetOffsetNormalized(Vector2 offset) {
+
+			this.SetOffset(new Vector2(Screen.width * offset.x, Screen.height * offset.y));
 
 		}
 

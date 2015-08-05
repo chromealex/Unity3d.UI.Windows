@@ -843,14 +843,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					EditorGUIUtility.labelWidth = 100f;
 
-					EditorGUILayout.HelpBox("You may need to destroy windows automatic on new scene loaded. Set this toggle off to do it. By default its on.", MessageType.Info);
+					/*EditorGUILayout.HelpBox("You may need to destroy windows automatic on new scene loaded. Set this toggle off to do it. By default its on.", MessageType.Info);
 					var dontDestroyOnLoad = EditorGUILayout.Toggle("Dont Destroy:", prefs.dontDestroyOnLoad, GUILayout.Width(width));
 					if (dontDestroyOnLoad != prefs.dontDestroyOnLoad) {
 						
 						this.isScreenDirty = true;
 						prefs.dontDestroyOnLoad = dontDestroyOnLoad;
 						
-					}
+					}*/
 
 					EditorGUIUtility.LookLikeControls();
 

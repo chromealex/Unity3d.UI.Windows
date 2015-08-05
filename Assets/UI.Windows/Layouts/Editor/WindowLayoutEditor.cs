@@ -79,7 +79,7 @@ namespace UnityEditor.UI.Windows {
 			
 			var elements = _target.elements;
 
-			if (ME.EditorUtilities.IsPrefab(_target.gameObject) == false) {
+			if (ME.EditorUtilities.IsPrefab(_target.gameObject) == false && _target.gameObject.activeInHierarchy == true) {
 
 				var pos = _target.transform.localPosition;
 				_target.transform.localPosition = Vector3.zero;

@@ -40,21 +40,21 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 
-		public virtual void SetInState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public virtual void SetInState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 			
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
-		public virtual void SetOutState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public virtual void SetOutState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
-		public virtual void SetResetState(TransitionInputParameters parameters, WindowComponentBase root) {
+		public virtual void SetResetState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 
 			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
@@ -64,12 +64,6 @@ namespace UnityEngine.UI.Windows.Animations {
 		public void Play(WindowBase window, bool forward, System.Action callback) {
 
 			this.Play(window, null, null, forward, callback);
-
-		}
-		
-		public void Play(TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
-			
-			this.Play(null, parameters, root, forward, callback);
 
 		}
 
@@ -136,12 +130,12 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 			T param = null;
 			if (parameters == null || parameters.useDefault == true) {
-				
+
 				param = this.GetDefaultInputParameters() as T;
 				
 			} else {
 				
-				param = parameters.GetParameters() as T;
+				param = parameters.GetParameters<T>();
 				
 			}
 			
