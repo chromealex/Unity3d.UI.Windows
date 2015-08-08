@@ -11,10 +11,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99839ddb8ee5849c1be9ef77fbe191fa, type: 3}
   m_Name: ExampleProject
   m_EditorClassIdentifier: 
-  lastModified: 14.06.2015 08:20
+  lastModified: 08.08.2015 08:19
+  version:
+    major: 0
+    minor: 9
+    release: 5
+    type: a
   namespaceName: ExampleProject.UI
   forceRecompile: 1
-  scrollPos: {x: 3919, y: 4537.1001}
+  zoom: 1
+  scrollPos: {x: -3017.00146, y: -4399.00049}
   rootWindow: 18
   defaultWindows: 2000000001000000
   windows:
@@ -36,16 +42,28 @@ MonoBehaviour:
     - targetWindowId: 9
       sourceComponentTag: 5
       comment: On Button2 Action
+    attachItems:
+    - targetId: 3
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 9
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 24
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 33
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 0, g: 0, b: 0, a: 0}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 0100000002000000
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/GlobalMap/
     compiledNamespace: ExampleProject.UI.Menu.GlobalMap
     compiledScreenName: GlobalMap
@@ -68,13 +86,22 @@ MonoBehaviour:
       height: 1055.6001
     attaches: 010000000900000017000000
     attachedComponents: []
+    attachItems:
+    - targetId: 1
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 9
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 23
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 1, g: 0, b: .222830772, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 1
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0
@@ -106,16 +133,25 @@ MonoBehaviour:
     - targetWindowId: 39
       sourceComponentTag: 5
       comment: On Button2 Action
+    attachItems:
+    - targetId: 3
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 24
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 39
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 0, g: .85722971, b: 1, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/GameTypeChooser/
     compiledNamespace: ExampleProject.UI.Menu.GameTypeChooser
     compiledScreenName: GameTypeChooser
@@ -141,16 +177,22 @@ MonoBehaviour:
     - targetWindowId: 1
       sourceComponentTag: 2
       comment: Action
+    attachItems:
+    - targetId: 32
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 1
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: .488009095, g: 1, b: 0, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 01000000
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/MainLoader/
     compiledNamespace: ExampleProject.UI.Other.MainLoader
     compiledScreenName: MainLoader
@@ -173,13 +215,16 @@ MonoBehaviour:
       height: 400
     attaches: 18000000
     attachedComponents: []
+    attachItems:
+    - targetId: 24
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: .903448343, g: 1, b: 0, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 1
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0
@@ -205,16 +250,19 @@ MonoBehaviour:
       height: 250
     attaches: 17000000
     attachedComponents: []
+    attachItems:
+    - targetId: 23
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: .76233077, g: 1, b: 0, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/ShopOperations/Shop/
     compiledNamespace: ExampleProject.UI.Menu.ShopOperations.Shop
     compiledScreenName: Shop
@@ -237,16 +285,25 @@ MonoBehaviour:
       height: 250
     attaches: 1a0000001d0000001c000000
     attachedComponents: []
+    attachItems:
+    - targetId: 26
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 29
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 28
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 1, g: 0, b: .559586525, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayView/
     compiledNamespace: ExampleProject.UI.Gameplay.GameplayView
     compiledScreenName: GameplayView
@@ -269,13 +326,22 @@ MonoBehaviour:
       height: 696.799805
     attaches: 190000001d0000001c000000
     attachedComponents: []
+    attachItems:
+    - targetId: 25
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 29
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 28
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: .883602381, g: 1, b: 0, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 1
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0
@@ -301,16 +367,22 @@ MonoBehaviour:
       height: 250
     attaches: 1a00000028000000
     attachedComponents: []
+    attachItems:
+    - targetId: 26
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
+    - targetId: 40
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 0, g: .142874718, b: 1, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/EndGame/
     compiledNamespace: ExampleProject.UI.Gameplay.EndGame
     compiledScreenName: EndGame
@@ -333,16 +405,19 @@ MonoBehaviour:
       height: 250
     attaches: 1a000000
     attachedComponents: []
+    attachItems:
+    - targetId: 26
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 0, g: .220976353, b: 1, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayHUD/
     compiledNamespace: ExampleProject.UI.Gameplay.GameplayHUD
     compiledScreenName: GameplayHUD
@@ -365,16 +440,16 @@ MonoBehaviour:
       height: 250
     attaches: 
     attachedComponents: []
+    attachItems: []
     randomColor: {r: 0, g: 1, b: .124795437, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 01000000
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/Background/
     compiledNamespace: ExampleProject.UI.Other.Background
     compiledScreenName: Background
@@ -397,13 +472,13 @@ MonoBehaviour:
       height: 100
     attaches: 
     attachedComponents: []
+    attachItems: []
     randomColor: {r: 1, g: .726544619, b: 0, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0
@@ -429,13 +504,16 @@ MonoBehaviour:
       height: 400
     attaches: 23000000
     attachedComponents: []
+    attachItems:
+    - targetId: 35
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 0, g: 1, b: .0631012917, a: 1}
+    isVisibleState: 0
     functionRootId: 35
     functionExitId: 35
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0
@@ -461,16 +539,19 @@ MonoBehaviour:
       height: 250
     attaches: 22000000
     attachedComponents: []
+    attachItems:
+    - targetId: 34
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: .720338106, g: 1, b: 0, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
-    compiled: 1
+    compiled: 0
     compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Loader/Loading/
     compiledNamespace: ExampleProject.UI.Loader.Loading
     compiledScreenName: Loading
@@ -493,13 +574,13 @@ MonoBehaviour:
       height: 30
     attaches: 
     attachedComponents: []
+    attachItems: []
     randomColor: {r: 1, g: 0, b: .132748604, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 0
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0
@@ -525,13 +606,16 @@ MonoBehaviour:
       height: 100
     attaches: 19000000
     attachedComponents: []
+    attachItems:
+    - targetId: 25
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: .0739541054, g: 0, b: 1, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 34
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0
@@ -557,13 +641,16 @@ MonoBehaviour:
       height: 100
     attaches: 26000000
     attachedComponents: []
+    attachItems:
+    - targetId: 38
+      transition: {fileID: 0}
+      transitionParameters: {fileID: 0}
     randomColor: {r: 0, g: .428380728, b: 1, a: 1}
+    isVisibleState: 0
     functionRootId: 0
     functionExitId: 0
     functionId: 34
     storeType: 0
-    isContainer: 0
-    isDefaultLink: 0
     tags: 
     comments: []
     compiled: 0

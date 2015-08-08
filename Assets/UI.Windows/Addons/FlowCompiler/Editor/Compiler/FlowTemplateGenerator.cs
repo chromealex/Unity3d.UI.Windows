@@ -12,6 +12,7 @@ using UnityEngine.UI.Windows.Plugins.FlowCompiler;
  * {CLASS_NAME_WITH_NAMESPACE}
  */
 using System.Text.RegularExpressions;
+using UnityEngine.UI.Windows.Plugins.Flow;
 
 namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
@@ -84,18 +85,22 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 							.Replace( "{BASE_CLASS_NAME}", baseClassName );
 		}
 		
-		public static string GenerateWindowLayoutTransitionMethod( string targetClassName, string targetClassNameWithNamespace ) {
+		public static string GenerateWindowLayoutTransitionMethod(FlowWindow from, FlowWindow to, string targetClassName, string targetClassNameWithNamespace) {
 			
-			var file = Resources.Load( "UI.Windows/Templates/TemplateTransitionMethod" ) as TextAsset;
-			if ( file == null ) {
+			var file = Resources.Load("UI.Windows/Templates/TemplateTransitionMethod") as TextAsset;
+			if (file == null) {
 				
-				Debug.LogError( "Template Loading Error: Could not load template 'TemplateTransitionMethod'" );
+				Debug.LogError("Template Loading Error: Could not load template 'TemplateTransitionMethod'");
 				
 				return null;
+
 			}
 			
-			return file.text.Replace( "{CLASS_NAME}", targetClassName )
-				.Replace( "{CLASS_NAME_WITH_NAMESPACE}", targetClassNameWithNamespace );
+			return file.text.Replace("{CLASS_NAME}", targetClassName)
+							.Replace("{FLOW_FROM_ID}", from.id.ToString())
+							.Replace("{FLOW_TO_ID}", to.id.ToString())
+							.Replace("{CLASS_NAME_WITH_NAMESPACE}", targetClassNameWithNamespace);
+
 		}
 		
 		public static string GenerateWindowLayoutTransitionMethodDefault() {

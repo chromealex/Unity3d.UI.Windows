@@ -73,6 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d32d123d76d61429ba21e2b69df175ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  editorInfoFold: 0
   workCamera: {fileID: 2058946}
   initialized: 1
   preferences:
@@ -93,67 +94,37 @@ MonoBehaviour:
           m_Calls: []
         m_TypeName: UnityEngine.UI.Windows.Events+BackButtonBehaviour+OnBackAction,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    once:
+      onInit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnInit, Assembly-CSharp, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      onDeinit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnDeinit, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     onEveryInstance:
-      onInit:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnInit, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       onShowBegin:
         m_PersistentCalls:
           m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnShowBegin, Assembly-CSharp,
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowBegin, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       onShowEnd:
         m_PersistentCalls:
           m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnShowEnd, Assembly-CSharp,
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowEnd, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       onHideBegin:
         m_PersistentCalls:
           m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnHideBegin, Assembly-CSharp,
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideBegin, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
       onHideEnd:
         m_PersistentCalls:
           m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnHideEnd, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      onDeinit:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnDeinit, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-    onType:
-      onInit:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnInit, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      onShowBegin:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnShowBegin, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      onShowEnd:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnShowEnd, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      onHideBegin:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnHideBegin, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      onHideEnd:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnHideEnd, Assembly-CSharp,
-          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      onDeinit:
-        m_PersistentCalls:
-          m_Calls: []
-        m_TypeName: UnityEngine.UI.Windows.Events+Element+OnDeinit, Assembly-CSharp,
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEnd, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   transition:
     transition: {fileID: 0}

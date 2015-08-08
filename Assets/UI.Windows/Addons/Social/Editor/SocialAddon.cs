@@ -53,6 +53,12 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		private Editor editor;
 
+		public override string GetName() {
+
+			return "Social (pre-alpha)";
+
+		}
+
 		public override void OnFlowSettingsGUI() {
 			
 			if (Social.settings == null) {

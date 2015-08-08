@@ -118,7 +118,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					ME.EditorUtilities.GetPrefabsOfType<FlowWindowLayoutTemplate>();
 					ME.EditorUtilities.GetPrefabsOfType<FlowLayoutWindowTypeTemplate>();
 					ME.EditorUtilities.GetPrefabsOfType<WindowModule>(strongType: false);
-					
+
 					FlowSystemEditorWindow.loading = false;
 					FlowSystemEditorWindow.loaded = true;
 					
@@ -222,9 +222,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							this.tempAttaches.Clear();
 							foreach (var window in windows) {
 
-								var attaches = window.attaches;
-								foreach (var attachId in attaches) {
-									
+								var attaches = window.attachItems;
+								foreach (var attachItem in attaches) {
+
+									var attachId = attachItem.targetId;
+
 									var curWindow = FlowSystem.GetWindow(attachId);
 									if (curWindow.IsContainer() == true &&
 									    curWindow.IsFunction() == false) continue;
@@ -270,7 +272,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 										if (this.tempAttaches.Contains(attachId) == true && doubleSided == true) continue;
 										
 										this.guiDrawer.DrawNodeCurve(window, curWindow, doubleSided);
-										
+
+										// Draw Transition Chooser
+										this.DrawTransitionChooser(attachItem, window, curWindow, doubleSided);
+
 									}
 									
 								}
@@ -304,7 +309,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									
 								}
 								
-								var attaches = container.attaches;
+								var attaches = container.attachItems;
 								if (attaches.Count == 0) {
 									
 									container.rect.width = 200f;
@@ -316,8 +321,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									var minY = float.MaxValue;
 									var maxX = float.MinValue;
 									var maxY = float.MinValue;
-									foreach (var attachId in attaches) {
-										
+									foreach (var attachItem in attaches) {
+
+										var attachId = attachItem.targetId;
 										var window = FlowSystem.GetWindow(attachId);
 										
 										minX = Mathf.Min(minX, window.rect.xMin);
@@ -550,6 +556,100 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
+		public void DrawTransitionChooser(UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.AttachItem attach, FlowWindow fromWindow, FlowWindow toWindow, bool doubleSided) {
+
+			// TODO: Add function transitions support
+			if (toWindow.IsSmall() == true) return;
+
+			const float size = 64f;
+
+			if (doubleSided == true) {
+
+				var q = Quaternion.LookRotation(toWindow.rect.center - fromWindow.rect.center, Vector3.back);
+
+				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.left * size, size);
+				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.right * size, size);
+
+			} else {
+
+				this.DrawTransitionChooser(attach, fromWindow, toWindow, Vector2.zero, size);
+
+			}
+
+		}
+
+		public void DrawTransitionChooser(UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.AttachItem attach, FlowWindow fromWindow, FlowWindow toWindow, Vector2 offset, float size) {
+
+			var _size = Vector2.one * size;
+			var rect = new Rect(Vector2.Lerp(fromWindow.rect.center, toWindow.rect.center, 0.5f) + offset - _size * 0.5f, _size);
+
+			var transitionStyle = ME.Utilities.CacheStyle("UI.Windows.Styles.DefaultSkin", "TransitionIcon", (name) => FlowSystemEditorWindow.defaultSkin.FindStyle("TransitionIcon"));
+			var transitionStyleBorder = ME.Utilities.CacheStyle("UI.Windows.Styles.DefaultSkin", "TransitionIconBorder", (name) => FlowSystemEditorWindow.defaultSkin.FindStyle("TransitionIconBorder"));
+			if (transitionStyle != null && transitionStyleBorder != null) {
+
+				if (fromWindow.GetScreen() != null) {
+
+					System.Action onClick = () => {
+						
+						FlowChooserFilter.CreateTransition(fromWindow, toWindow, "/Transitions", (element) => {
+							
+							FlowSystem.Save();
+							
+						});
+
+					};
+
+					// Has transition or not?
+					var hasTransition = attach.transition != null && attach.transitionParameters != null;
+					if (hasTransition == true) {
+
+						var hovered = rect.Contains(Event.current.mousePosition);
+						if (attach.editor == null) {
+
+							attach.editor = Editor.CreateEditor(attach.transitionParameters) as IPreviewEditor;
+							hovered = true;
+
+						}
+						if (attach.editor.HasPreviewGUI() == true) {
+
+							if (hovered == false) {
+
+								attach.editor.OnDisable();
+
+							} else {
+
+								attach.editor.OnEnable();
+								
+							}
+
+							var style = new GUIStyle(EditorStyles.toolbarButton);
+							attach.editor.OnPreviewGUI(Color.white, rect, style, false, false, hovered);
+
+						}
+
+						if (GUI.Button(rect, string.Empty, transitionStyleBorder) == true) {
+
+							onClick();
+
+						}
+
+					} else {
+						
+						GUI.Box(rect, string.Empty, transitionStyle);
+						if (GUI.Button(rect, string.Empty, transitionStyleBorder) == true) {
+							
+							onClick();
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
 		private GUIStyle layoutBoxStyle;
 		public void DrawWindowLayout(FlowWindow window) {
 			
@@ -1501,7 +1601,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									
 									if (data == null) continue;
 									
-									var title = data.name + "\n<color=#777><size=10>Modified: " + data.lastModified + "</size></color>";
+									var title = data.name + "\n";
+									title += "<color=#777><size=10>Modified: " + data.lastModified + "</size></color>\n";
+									title += "<color=#888><size=10>Version: " + data.version + "</size></color>";
 									
 									if (GUILayout.Button(title, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
 										
@@ -1533,11 +1635,72 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							var oldState = GUI.enabled;
 							GUI.enabled = oldState && this.cachedData != null;
-							if (GUILayout.Button("Open", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+
+							if (this.cachedData != null && this.cachedData.version < VersionInfo.BUNDLE_VERSION) {
+
+								// Need to upgrade
 								
-								FlowSystem.SetData(this.cachedData);
-								
+								if (GUILayout.Button("Upgrade to " + VersionInfo.BUNDLE_VERSION, FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(150f), GUILayout.Height(40f)) == true) {
+									
+									UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, VersionInfo.BUNDLE_VERSION), 0f);
+									var type = this.cachedData.GetType();
+
+									while (this.cachedData.version < VersionInfo.BUNDLE_VERSION) {
+
+										// Try to find upgrade method
+										var methodName = "UpgradeTo" + VersionInfo.BUNDLE_VERSION.ToSmallString();
+										var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
+										if (methodInfo != null) {
+
+											methodInfo.Invoke(this.cachedData, null);
+
+											//this.cachedData.version = VersionInfo.BUNDLE_VERSION;
+
+										} else {
+
+											//Debug.Log("Method `" + methodName + "` was not found: version " + this.cachedData.version + " skipped");
+
+										}
+
+										var nextVersion = this.cachedData.version.Increase();
+										
+										UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, nextVersion), 0.5f);
+
+										this.cachedData.version = nextVersion;
+										UnityEditor.EditorUtility.SetDirty(this.cachedData);
+
+									}
+									
+									UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, VersionInfo.BUNDLE_VERSION), 1f);
+									UnityEditor.EditorUtility.ClearProgressBar();
+
+								}
+
+							} else if (this.cachedData != null && this.cachedData.version > VersionInfo.BUNDLE_VERSION) {
+
+								EditorGUILayout.BeginHorizontal();
+								{
+
+									EditorGUILayout.HelpBox(string.Format("Selected Project has {0} version while UI.Windows System has {1} version number. Please, download a new version.", this.cachedData.version, VersionInfo.BUNDLE_VERSION), MessageType.Warning);
+									if (GUILayout.Button("Download", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+										
+										Application.OpenURL(VersionInfo.DOWNLOAD_LINK);
+										
+									}
+
+								}
+								EditorGUILayout.EndHorizontal();
+
+							} else {
+
+								if (GUILayout.Button("Open", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+									
+									FlowSystem.SetData(this.cachedData);
+									
+								}
+
 							}
+
 							GUI.enabled = oldState;
 							
 						}
@@ -1863,7 +2026,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			var attaches = window.attaches.Count;
+			var attaches = window.attachItems.Count;
 			if (attaches == 0) {
 				
 				this.DragWindow(headerOnly: false);

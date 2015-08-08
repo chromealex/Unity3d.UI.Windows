@@ -11,6 +11,11 @@ namespace UnityEditor.UI.Windows {
 	public class WindowLayoutEditor : Editor, IPreviewEditor {
 
 		private bool isDirty = false;
+		
+		public void OnEnable() {
+		}
+
+		public void OnDisable() {}
 
 		public override void OnInspectorGUI() {
 
@@ -62,6 +67,12 @@ namespace UnityEditor.UI.Windows {
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
 
 			this.OnPreviewGUI(color, r, background, drawInfo, selectable, null);
+
+		}
+		
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
+			
+			this.OnPreviewGUI(color, r, style, drawInfo, selectable, null);
 
 		}
 

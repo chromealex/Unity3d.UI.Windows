@@ -307,17 +307,78 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
-		
-		[Header("Back Button Behaviour")]
-		public BackButtonBehaviour backButtonBehaviour = new BackButtonBehaviour();
 
 		[System.Serializable]
-		public class Element {
-
+		public class Once {
+			
 			[System.Serializable]
 			public class OnInit : UnityEvent {}
 			public OnInit onInit = new OnInit();
 			
+			[System.Serializable]
+			public class OnDeinit : UnityEvent {}
+			public OnDeinit onDeinit = new OnDeinit();
+			
+			public void Clear() {
+				
+				this.onInit.RemoveAllListeners();
+				this.onDeinit.RemoveAllListeners();
+				
+			}
+			
+			public void Register(WindowEventType eventType, UnityAction callback) {
+				
+				switch (eventType) {
+					
+					case WindowEventType.OnInit:
+						this.onInit.AddListener(callback);
+						break;
+
+					case WindowEventType.OnDeinit:
+						this.onDeinit.AddListener(callback);
+						break;
+						
+				}
+				
+			}
+			
+			public void Unregister(WindowEventType eventType, UnityAction callback) {
+				
+				switch (eventType) {
+					
+					case WindowEventType.OnInit:
+						this.onInit.RemoveListener(callback);
+						break;
+
+					case WindowEventType.OnDeinit:
+						this.onDeinit.RemoveListener(callback);
+						break;
+						
+				}
+				
+			}
+			
+			public void ReleaseEvents(WindowEventType eventType) {
+				
+				switch (eventType) {
+					
+					case WindowEventType.OnInit:
+						this.onInit.Invoke();
+						break;
+
+					case WindowEventType.OnDeinit:
+						this.onDeinit.Invoke();
+						break;
+						
+				}
+				
+			}
+
+		}
+
+		[System.Serializable]
+		public class EveryInstance {
+
 			[System.Serializable]
 			public class OnShowBegin : UnityEvent {}
 			public OnShowBegin onShowBegin = new OnShowBegin();
@@ -333,30 +394,20 @@ namespace UnityEngine.UI.Windows {
 			[System.Serializable]
 			public class OnHideEnd : UnityEvent {}
 			public OnHideEnd onHideEnd = new OnHideEnd();
-			
-			[System.Serializable]
-			public class OnDeinit : UnityEvent {}
-			public OnDeinit onDeinit = new OnDeinit();
 
 			public void Clear() {
-				
-				this.onInit.RemoveAllListeners();
+
 				this.onShowBegin.RemoveAllListeners();
 				this.onShowEnd.RemoveAllListeners();
 				this.onHideBegin.RemoveAllListeners();
 				this.onHideEnd.RemoveAllListeners();
-				this.onDeinit.RemoveAllListeners();
 
 			}
 			
 			public void Register(WindowEventType eventType, UnityAction callback) {
 				
 				switch (eventType) {
-					
-					case WindowEventType.OnInit:
-						this.onInit.AddListener(callback);
-						break;
-						
+
 					case WindowEventType.OnShowBegin:
 						this.onShowBegin.AddListener(callback);
 						break;
@@ -372,10 +423,6 @@ namespace UnityEngine.UI.Windows {
 					case WindowEventType.OnHideEnd:
 						this.onHideEnd.AddListener(callback);
 						break;
-						
-					case WindowEventType.OnDeinit:
-						this.onDeinit.AddListener(callback);
-						break;
 
 				}
 				
@@ -384,11 +431,7 @@ namespace UnityEngine.UI.Windows {
 			public void Unregister(WindowEventType eventType, UnityAction callback) {
 				
 				switch (eventType) {
-					
-					case WindowEventType.OnInit:
-						this.onInit.RemoveListener(callback);
-						break;
-						
+
 					case WindowEventType.OnShowBegin:
 						this.onShowBegin.RemoveListener(callback);
 						break;
@@ -404,10 +447,6 @@ namespace UnityEngine.UI.Windows {
 					case WindowEventType.OnHideEnd:
 						this.onHideEnd.RemoveListener(callback);
 						break;
-						
-					case WindowEventType.OnDeinit:
-						this.onDeinit.RemoveListener(callback);
-						break;
 
 				}
 				
@@ -416,11 +455,7 @@ namespace UnityEngine.UI.Windows {
 			public void ReleaseEvents(WindowEventType eventType) {
 				
 				switch (eventType) {
-					
-					case WindowEventType.OnInit:
-						this.onInit.Invoke();
-						break;
-						
+
 					case WindowEventType.OnShowBegin:
 						this.onShowBegin.Invoke();
 						break;
@@ -436,10 +471,6 @@ namespace UnityEngine.UI.Windows {
 					case WindowEventType.OnHideEnd:
 						this.onHideEnd.Invoke();
 						break;
-						
-					case WindowEventType.OnDeinit:
-						this.onDeinit.Invoke();
-						break;
 
 				}
 
@@ -447,22 +478,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		[Header("Events")]
-		public Element onEveryInstance = new Element();
-		public Element onType = new Element();
+		[Header("Back Button Behaviour")]
+		public BackButtonBehaviour backButtonBehaviour = new BackButtonBehaviour();
 
-		public void Clear() {
-			
-			this.onType.Clear();
-			
-		}
-		
-		public void OnDestroy() {
-			
-			this.onEveryInstance.Clear();
-			
-		}
-		
+		[Header("Events")]
+		public Once once = new Once();
+		public EveryInstance onEveryInstance = new EveryInstance();
+
 		public void LateUpdate(WindowBase window, System.Action callback = null) {
 			
 			this.backButtonBehaviour.LateUpdate(window, callback);
@@ -470,21 +492,51 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private void ReleaseEvents(WindowEventType eventType) {
-
-			this.onType.ReleaseEvents(eventType);
+			
+			this.once.ReleaseEvents(eventType);
 			this.onEveryInstance.ReleaseEvents(eventType);
 			
 		}
 
 		// Events
-		public void OnInit() { this.ReleaseEvents(WindowEventType.OnInit); }
-		public void OnDeinit() { this.ReleaseEvents(WindowEventType.OnDeinit); }
-		public void OnShowBegin(System.Action callback, bool resetAnimation = true) { this.ReleaseEvents(WindowEventType.OnShowBegin); if (callback != null) callback(); }
-		public void OnShowEnd() { this.ReleaseEvents(WindowEventType.OnShowEnd); }
-		public void OnHideBegin(System.Action callback, bool immediately = false) { this.ReleaseEvents(WindowEventType.OnHideBegin); if (callback != null) callback(); }
-		public void OnHideEnd() { this.ReleaseEvents(WindowEventType.OnHideEnd); }
+		public void OnInit() {
 
-		public void OnBackAction() { this.ReleaseEvents(WindowEventType.OnBackAction); }
+			this.ReleaseEvents(WindowEventType.OnInit);
+
+		}
+
+		public void OnDeinit() {
+
+			this.ReleaseEvents(WindowEventType.OnDeinit);
+			
+			this.once.Clear();
+			this.onEveryInstance.Clear();
+
+		}
+
+		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+
+			this.ReleaseEvents(WindowEventType.OnShowBegin);
+			if (callback != null) callback();
+
+		}
+
+		public void OnShowEnd() {
+
+			this.ReleaseEvents(WindowEventType.OnShowEnd);
+
+		}
+		public void OnHideBegin(System.Action callback, bool immediately = false) {
+
+			this.ReleaseEvents(WindowEventType.OnHideBegin);
+			if (callback != null) callback();
+
+		}
+		public void OnHideEnd() {
+
+			this.ReleaseEvents(WindowEventType.OnHideEnd);
+
+		}
 		
 	}
 	
@@ -567,6 +619,7 @@ namespace UnityEngine.UI.Windows {
 	[System.Serializable]
 	public class Transition : IWindowEventsAsync {
 
+		[Header("Default")]
 		public TransitionBase transition;
 		public TransitionInputParameters transitionParameters;
 
@@ -582,7 +635,7 @@ namespace UnityEngine.UI.Windows {
 			if (this.transition!= null) this.transition.SetupCamera(this.window.workCamera);
 
 		}
-		
+
 		// Events
 		public void OnInit() {
 
@@ -593,25 +646,19 @@ namespace UnityEngine.UI.Windows {
 		public void OnDeinit() {}
 		public void OnShowEnd() {}
 		public void OnHideEnd() {}
+		
 		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-			
-			if (this.transition != null) {
-				
-				this.transition.SetResetState(this.transitionParameters, this.window, null);
-				this.transition.Play(this.window, this.transitionParameters, null, forward: true, callback: callback);
-				
-			} else {
-				
-				if (callback != null) callback();
-				
-			}
-			
-		}
-		public void OnHideBegin(System.Action callback, bool immediately = false) {
-			
-			if (this.transition != null) {
 
-				this.transition.Play(this.window, this.transitionParameters, null, forward: false, callback: callback);
+			this.OnShowBegin(this.transition, this.transitionParameters, callback);
+
+		}
+
+		public void OnShowBegin(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action callback) {
+
+			if (transition != null) {
+				
+				transition.SetResetState(transitionParameters, this.window, null);
+				transition.Play(this.window, transitionParameters, null, forward: true, callback: callback);
 				
 			} else {
 				
@@ -621,6 +668,33 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
+		public void OnHideBegin(System.Action callback, bool immediately = false) {
+			
+			this.OnHideBegin(this.transition, this.transitionParameters, callback);
+
+		}
+
+		public void OnHideBegin(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action callback) {
+
+			if (transition != null) {
+
+				transition.Play(this.window, transitionParameters, null, forward: false, callback: callback);
+				
+			} else {
+				
+				if (callback != null) callback();
+				
+			}
+			
+		}
+
+		public void Apply(TransitionBase transition, TransitionInputParameters parameters, bool forward, float value, bool reset) {
+
+			if (reset == true) transition.SetResetState(parameters, this.window, null);
+			transition.Set(this.window, parameters, null, forward: forward, value: value);
+
+		}
+
 		private bool waitCapture = false;
 		private bool grabEveryFrame = false;
 		private Texture2D screen;

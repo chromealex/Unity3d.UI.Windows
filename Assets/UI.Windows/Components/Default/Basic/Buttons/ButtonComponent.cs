@@ -182,7 +182,7 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnValidateEditor();
 
 			if (this.gameObject.activeSelf == false) return;
-			
+
 			var buttons = this.GetComponentsInChildren<Button>(true);
 			if (buttons.Length == 1) this.button = buttons[0];
 

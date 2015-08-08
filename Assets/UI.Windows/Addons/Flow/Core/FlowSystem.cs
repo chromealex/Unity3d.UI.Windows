@@ -72,6 +72,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public static void SetZoom(float value) {
 
+			if (FlowSystem.instance == null ||
+				FlowSystem.instance.data == null) return;
+
 			var changed = (FlowSystem.instance.data.zoom != value);
 
 			FlowSystem.instance.data.zoom = value;
@@ -84,6 +87,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			if (FlowSystem.instance.data == null) return 1f;
 
 			return FlowSystem.instance.data.zoom;
+
+		}
+
+		public static FlowWindow.AttachItem GetAttachItem(int from, int to) {
+
+			return FlowSystem.instance.data.GetAttachItem(from, to);
 
 		}
 
@@ -240,10 +249,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var window = FlowSystem.GetWindow(id);
 			if (window.IsContainer() == true) {
 				
-				var childs = window.attaches;
+				var childs = window.attachItems;
 				foreach (var child in childs) {
 					
-					FlowSystem.MoveContainerOrWindow(child, delta);
+					FlowSystem.MoveContainerOrWindow(child.targetId, delta);
 					
 				}
 				
@@ -262,10 +271,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				accumulate += each(window, accumulate);
 
-				var childs = window.attaches;
+				var childs = window.attachItems;
 				foreach (var child in childs) {
 
-					FlowSystem.ForEachContainer(child, each, accumulate);
+					FlowSystem.ForEachContainer(child.targetId, each, accumulate);
 					
 				}
 				

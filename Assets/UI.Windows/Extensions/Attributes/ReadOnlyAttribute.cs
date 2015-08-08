@@ -21,7 +21,7 @@ public class ReadOnlyAttribute : PropertyAttribute {
 
 	}
 
-	public ReadOnlyAttribute(string fieldName, object state, bool bitMask = false) {
+	public ReadOnlyAttribute(string fieldName, object state = null, bool bitMask = false) {
 		
 		this.fieldName = fieldName;
 		this.state = state;
@@ -49,7 +49,7 @@ public class ReadOnlyDrawer : PropertyDrawer {
 		if (string.IsNullOrEmpty(attribute.fieldName) == false) {
 			
 			var bitMask = (this.attribute as ReadOnlyAttribute).bitMask;
-
+			
 			var needState = attribute.state;
 			var prop = this.GetRelativeProperty(property, property.propertyPath, attribute.fieldName);
 

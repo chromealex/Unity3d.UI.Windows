@@ -208,7 +208,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			if (TweenerGlobal.instance != null) {
 
 				TweenerGlobal.instance.removeTweens(tag);
-				TweenerGlobal.instance.addTween<RectTransform>(rect, duration, 0f, 1f).onUpdate((obj, value) => {
+				TweenerGlobal.instance.addTween<RectTransform>(rect, duration, 0f, 1f).ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase)).onUpdate((obj, value) => {
 
 					if (obj != null) {
 

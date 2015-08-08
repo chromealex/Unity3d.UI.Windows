@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEngine.UI.Windows {
 
@@ -29,6 +30,11 @@ namespace UnityEngine.UI.Windows {
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
 	public class WindowBase : WindowObject, IWindowEventsAsync {
+
+		#if UNITY_EDITOR
+		[HideInInspector]
+		public bool editorInfoFold = false;
+		#endif
 
 		[HideInInspector]
 		public Camera workCamera;
@@ -289,6 +295,27 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="onShowEnd">On show end.</param>
 		public void Show(System.Action onShowEnd) {
+
+			this.Show(onShowEnd, null, null);
+
+		}
+		
+		/// <summary>
+		/// Show window with specific transition.
+		/// </summary>
+		/// <param name="transition">Transition.</param>
+		/// <param name="transitionParameters">Transition parameters.</param>
+		public void Show(TransitionBase transition, TransitionInputParameters transitionParameters) {
+			
+			this.Show(null, transition, transitionParameters);
+			
+		}
+
+		/// <summary>
+		/// Show the specified onShowEnd.
+		/// </summary>
+		/// <param name="onShowEnd">On show end.</param>
+		public void Show(System.Action onShowEnd, TransitionBase transition, TransitionInputParameters transitionParameters) {
 			
 			if (this.currentState == WindowObjectState.Showing || this.currentState == WindowObjectState.Shown) return;
 			this.currentState = WindowObjectState.Showing;
@@ -316,7 +343,17 @@ namespace UnityEngine.UI.Windows {
 
 			this.OnLayoutShowBegin(callback);
 			this.modules.OnShowBegin(callback);
-			this.transition.OnShowBegin(callback);
+
+			if (transition != null) {
+
+				this.transition.OnShowBegin(transition, transitionParameters, callback);
+
+			} else {
+
+				this.transition.OnShowBegin(callback);
+
+			}
+
 			this.events.OnShowBegin(callback);
 			this.OnShowBegin(callback);
 
@@ -332,13 +369,36 @@ namespace UnityEngine.UI.Windows {
 			return this.Hide(null);
 			
 		}
-
+		
+		/// <summary>
+		/// Hide window with specific transition.
+		/// </summary>
+		/// <param name="transition">Transition.</param>
+		/// <param name="transitionParameters">Transition parameters.</param>
+		public bool Hide(TransitionBase transition, TransitionInputParameters transitionParameters) {
+			
+			return this.Hide(null, transition, transitionParameters);
+			
+		}
 		/// <summary>
 		/// Hide the specified onHideEnd.
 		/// Wait while all components, animations, events and modules return the callback.
 		/// </summary>
 		/// <param name="onHideEnd">On hide end.</param>
 		public bool Hide(System.Action onHideEnd) {
+
+			return this.Hide(onHideEnd, null, null);
+
+		}
+
+		/// <summary>
+		/// Hide the specified onHideEnd with specific transition.
+		/// Wait while all components, animations, events and modules return the callback.
+		/// </summary>
+		/// <param name="onHideEnd">On hide end.</param>
+		/// <param name="transition">Transition.</param>
+		/// <param name="transitionParameters">Transition parameters.</param>
+		public bool Hide(System.Action onHideEnd, TransitionBase transition, TransitionInputParameters transitionParameters) {
 
 			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
 			this.currentState = WindowObjectState.Hiding;
@@ -361,8 +421,6 @@ namespace UnityEngine.UI.Windows {
 				this.events.OnHideEnd();
 				this.transition.OnHideEnd();
 				if (onHideEnd != null) onHideEnd();
-				
-				this.events.Clear();
 
 				this.currentState = WindowObjectState.Hidden;
 
@@ -370,7 +428,17 @@ namespace UnityEngine.UI.Windows {
 
 			this.OnLayoutHideBegin(callback);
 			this.modules.OnHideBegin(callback);
-			this.transition.OnHideBegin(callback);
+			
+			if (transition != null) {
+				
+				this.transition.OnHideBegin(transition, transitionParameters, callback);
+				
+			} else {
+				
+				this.transition.OnHideBegin(callback);
+				
+			}
+
 			this.events.OnHideBegin(callback);
 			this.OnHideBegin(callback, immediately: false);
 
@@ -387,7 +455,7 @@ namespace UnityEngine.UI.Windows {
 			this.modules.OnDeinit();
 			this.transition.OnDeinit();
 
-			this.events.OnDestroy();
+			this.events.OnDeinit();
 
 			this.OnDeinit();
 

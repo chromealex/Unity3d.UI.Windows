@@ -37,6 +37,7 @@ namespace UnityEngine.UI.Extensions {
 			for (int i = 0; i < items.Count; ++i) {
 
 				items[i].anchoredPosition3D = this.GetPosition(i, items.Count, items[i].anchoredPosition3D.z);
+				this.m_Tracker.Add(this, items[i], DrivenTransformProperties.AnchoredPosition3D);
 
 			}
 			

@@ -6,6 +6,7 @@ using UnityEngine.Extensions;
 using System.Reflection;
 using System.Text;
 using UnityEngine.Events;
+using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEngine.UI.Windows {
 	
@@ -252,7 +253,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (WindowSystem.instance == null) return;
 
-			WindowSystem.instance.lastInstance = WindowSystem.GetWindow((item) => item.window.GetState() == WindowObjectState.Shown || item.window.GetState() == WindowObjectState.Showing);
+			WindowSystem.instance.lastInstance = WindowSystem.GetWindow((item) => item.window != null && (item.window.GetState() == WindowObjectState.Shown || item.window.GetState() == WindowObjectState.Showing));
 
 		}
 
@@ -301,6 +302,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static WindowBase GetByType<T>() where T : WindowBase {
+
+			return WindowSystem.instance.windows.FirstOrDefault((w) => w is T) as T;
+
+		}
+
 		/// <summary>
 		/// Determines if is user interface hovered.
 		/// </summary>
@@ -317,7 +324,7 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="camera">Camera.</param>
 		public static void ApplyToSettings(Camera camera) {
 			
-			if (WindowSystem.instance.settings.file == null) {
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
 				
 				camera.orthographic = true;
 				camera.orthographicSize = 5f;
@@ -673,6 +680,27 @@ namespace UnityEngine.UI.Windows {
 			return instance;
 			
 		}
+		
+		/// <summary>
+		/// Shows window of T type with specific transition.
+		/// Returns null if window not registered.
+		/// </summary>
+		/// <param name="transition">Transition.</param>
+		/// <param name="transitionParameters">Transition parameters.</param>
+		/// <param name="parameters">OnParametersPass() values.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T Show<T>(TransitionBase transition, TransitionInputParameters transitionParameters, params object[] parameters) where T : WindowBase {
+			
+			var instance = WindowSystem.Create<T>(parameters);
+			if (instance != null) {
+
+				instance.Show(transition, transitionParameters);
+				
+			}
+			
+			return instance;
+			
+		}
 
 		/// <summary>
 		/// Shows window of T type.
@@ -689,6 +717,28 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Shows window of T type.
+		/// Returns null if window not registered.
+		/// </summary>
+		/// <param name="transition">Transition.</param>
+		/// <param name="transitionParameters">Transition parameters.</param>
+		/// <param name="source">Source.</param>
+		/// <param name="parameters">OnParametersPass() values.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T Show<T>(TransitionBase transition, TransitionInputParameters transitionParameters, T source, params object[] parameters) where T : WindowBase {
+			
+			var instance = WindowSystem.instance.Create_INTERNAL(source, parameters) as T;
+			if (instance != null) {
+				
+				instance.Show(transition, transitionParameters);
+				
+			}
+			
 			return instance;
 			
 		}

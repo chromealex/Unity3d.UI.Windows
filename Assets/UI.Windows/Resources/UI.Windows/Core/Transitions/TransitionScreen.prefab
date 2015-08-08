@@ -1,0 +1,209 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &194784
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 465396}
+  - 20: {fileID: 2020200}
+  - 114: {fileID: 11406856}
+  m_Layer: 5
+  m_Name: TransitionScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &465396
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194784}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!20 &2020200
+Camera:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194784}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 3
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: -100
+  far clip plane: 100
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 32
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_HDR: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
+--- !u!114 &11406856
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43cead2012edd4f35a9a8a0861b68e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  editorInfoFold: 0
+  workCamera: {fileID: 2020200}
+  initialized: 1
+  preferences:
+    dontDestroyOnLoad: 1
+    depth: 0
+    dontDestroy: 3
+    history: 1
+    preallocatedCount: 0
+    editorValidated: 1
+  modules:
+    elements: []
+  events:
+    backButtonBehaviour:
+      backAction: 0
+      window: {fileID: 0}
+      onBackAction:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_MethodName: 
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+        m_TypeName: UnityEngine.UI.Windows.Events+BackButtonBehaviour+OnBackAction,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    once:
+      onInit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnInit, Assembly-CSharp, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      onDeinit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnDeinit, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    onEveryInstance:
+      onShowBegin:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowBegin, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onShowEnd:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowEnd, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideBegin:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideBegin, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideEnd:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEnd, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  transition:
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  layout:
+    scaleMode: 2
+    fixedScaleResolution: {x: 1024, y: 768}
+    layout: {fileID: 11450648, guid: ac1895e43ebf4428b961faae98f5dc17, type: 2}
+    components:
+    - description: BACKGROUND
+      tag: 1
+      component: {fileID: 11476878, guid: 5b08b3d5db8c1455f86b23370ad389d4, type: 2}
+      sortingOrder: 0
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.layout
+      value: 
+      objectReference: {fileID: 11450648, guid: ac1895e43ebf4428b961faae98f5dc17,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[0].description
+      value: BACKGROUND
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[0].component
+      value: 
+      objectReference: {fileID: 11476878, guid: 5b08b3d5db8c1455f86b23370ad389d4,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[1].description
+      value: EXIT
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[1].tag
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[1].component
+      value: 
+      objectReference: {fileID: 11476240, guid: 6b2d6adf1f61f4b3d8ce738b1697e3b1,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[2].tag
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[3].tag
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: preferences.history
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: preferences.dontDestroy
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 194784}
+  m_IsPrefabParent: 1

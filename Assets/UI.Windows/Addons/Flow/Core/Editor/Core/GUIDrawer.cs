@@ -9,6 +9,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class GUIDrawer {
 
+		public const float DRAW_EVERY_ARROW = 140f;
+
 		private readonly FlowSystemEditorWindow editor;
 
 		public GUIDrawer(FlowSystemEditorWindow editor) {
@@ -144,7 +146,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			label = GUI.TextField(boxRect, label, style);
 			
-			var every = 300f;
+			var every = DRAW_EVERY_ARROW;
 			if (fullDistance < every * 2f) {
 				
 				var pos = ray.GetPoint(fullDistance * 0.5f);
@@ -414,7 +416,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var ray = new Ray(startPos, (endPos - startPos).normalized);
 			var rot = Quaternion.LookRotation(endPos - startPos);
 			
-			var every = 300f;
+			var every = DRAW_EVERY_ARROW;
 			var fullDistance = Vector3.Distance(endPos, startPos);
 			if (fullDistance < every * 2f) {
 				

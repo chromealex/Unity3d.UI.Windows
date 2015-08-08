@@ -4,8 +4,9 @@ using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Animations {
 
-	public class WindowAnimationTransitionCameraSlideParameters : TransitionInputParameters {
+	public class WindowAnimationTransitionCameraSlideParameters : TransitionInputTemplateParameters {
 		
+		[Header("Parameters")]
 		[ReadOnly(fieldName: "useDefault", state: false)]
 		public WindowAnimationTransitionCameraSlide.Parameters parameters;
 		

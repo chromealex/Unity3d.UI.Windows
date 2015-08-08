@@ -28,6 +28,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	public class FlowData : ScriptableObject {
 
 		public string lastModified = "-";
+		public UnityEditor.UI.Windows.Version version;
 
 		public string namespaceName;
 		public bool forceRecompile;
@@ -48,6 +49,27 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public bool flowWindowWithLayout;
 		public float flowWindowWithLayoutScaleFactor = 0f;
+
+		#if UNITY_EDITOR
+		#region UPGRADES
+		public void UpgradeTo094a() {
+			
+			#pragma warning disable 612,618
+			foreach (var window in this.windows) {
+
+				window.attachItems = new List<FlowWindow.AttachItem>();
+				foreach (var attachId in window.attaches) {
+
+					window.attachItems.Add(new FlowWindow.AttachItem(attachId));
+
+				}
+
+			}
+			#pragma warning restore 612,618
+
+		}
+		#endregion
+		#endif
 
 		private void OnEnable() {
 
@@ -99,10 +121,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 #if UNITY_EDITOR
 			if (this.isDirty == true) {
 
-				UnityEditor.EditorUtility.SetDirty(this);
-				
 				var dateTime = System.DateTime.Now;
 				this.lastModified = dateTime.ToString("dd.MM.yyyy hh:mm");
+
+				UnityEditor.EditorUtility.SetDirty(this);
 
 			}
 #endif
@@ -122,6 +144,13 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			return maxId + 1;
 			
+		}
+		
+		public FlowWindow.AttachItem GetAttachItem(int from, int to) {
+			
+			var fromWindow = this.GetWindow(from);
+			return fromWindow.attachItems.FirstOrDefault((item) => item.targetId == to);
+
 		}
 
 		public FlowTag GetTag(int id) {
@@ -392,6 +421,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			var index = this.windowsCache.GetValue(id);
 			if (index == -1) return null;
+			if (index < 0 || index >= this.windows.Count) return null;
 
 			return this.windows[index];
 

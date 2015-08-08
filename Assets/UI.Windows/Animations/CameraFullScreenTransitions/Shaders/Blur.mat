@@ -33,7 +33,7 @@ Material:
       data:
         first:
           name: _Value
-        second: 0
+        second: 1
       data:
         first:
           name: _MaxSize

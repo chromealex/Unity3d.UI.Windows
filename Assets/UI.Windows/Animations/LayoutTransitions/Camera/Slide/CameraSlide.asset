@@ -16,6 +16,8 @@ MonoBehaviour:
     outDelay: 0
     inDuration: 1
     outDuration: 1
+    inEase: 0
+    outEase: 0
     resetState:
       offset: {x: 0, y: -1}
     inState:

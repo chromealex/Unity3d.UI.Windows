@@ -322,25 +322,34 @@ namespace ME {
 	}
 	
 	public class EaseTransition: Tweener.ITransition {
+
 		private System.Func<float, float, float, float, float> _func;
 	
 		public EaseTransition(System.Func<float, float, float, float, float> func) {
 			_func = func;
+
 		}
 		
 		public float interpolate(float start, float distance, float elapsedTime, float duration) {
+
 			return _func(start, distance, elapsedTime, duration);
+
 		}
+
 	}
 	
 	public class CurveTransition: Tweener.ITransition {
+
 		AnimationCurve _curve;
 	
 		public CurveTransition(AnimationCurve curve) {
+
 			_curve = curve;
+
 		}
 		
 		public float interpolate(float start, float distance, float elapsedTime, float duration) {
+
 			float curveDuration = 0.0f;
 			if (_curve.length > 0)
 				curveDuration = _curve.keys[_curve.length - 1].time;
@@ -348,10 +357,55 @@ namespace ME {
 			float t = _curve.Evaluate(curveDuration * elapsedTime / duration);
 	
 			return start + t * distance;
+
 		}
+
 	}
 	
 	public class Ease {
+		
+		public enum Type : byte {
+			
+			Linear = 0,
+			InQuad,
+			OutQuad,
+			InOutQuad,
+			InCubic,
+			OutCubic,
+			InOutCubic,
+			InQuart,
+			OutQuart,
+			InOutQuart,
+			InQuint,
+			OutQuint,
+			InOutQuint,
+			InSine,
+			OutSine, 
+			InOutSine, 
+			InExpo,
+			OutExpo, 
+			InOutExpo, 
+			InCirc,
+			OutCirc, 
+			InOutCirc,
+			InElastic,
+			OutElastic,
+			InOutElastic,
+			InBack,
+			OutBack,
+			InOutBack,
+			InBounce,
+			OutBounce,
+			InOutBounce
+			
+		};
+		
+		public static Tweener.ITransition GetByType(Type type) {
+			
+			return easings[(byte)type];
+			
+		}
+		
 		public static EaseTransition Linear = new EaseTransition(_linear);
 		public static EaseTransition InQuad = new EaseTransition(_inQuad);
 		public static EaseTransition OutQuad = new EaseTransition(_outQuad);
@@ -374,7 +428,7 @@ namespace ME {
 		public static EaseTransition InCirc = new EaseTransition(_inCirc);
 		public static EaseTransition OutCirc = new EaseTransition(_outCirc);
 		public static EaseTransition InOutCirc = new EaseTransition(_inOutCirc);
-	
+		
 		// TODO: implement
 		public static EaseTransition InElastic = new EaseTransition(_inExpo);
 		public static EaseTransition OutElastic = new EaseTransition(_outExpo);
@@ -386,6 +440,40 @@ namespace ME {
 		public static EaseTransition OutBounce = new EaseTransition(_outBounce);
 		public static EaseTransition InOutBounce = new EaseTransition(_inOutBounce);
 		
+		private static Tweener.ITransition[] easings = new Tweener.ITransition[] {
+			Linear,
+			InQuad,
+			OutQuad,
+			InOutQuad,
+			InCubic,
+			OutCubic,
+			InOutCubic,
+			InQuart,
+			OutQuart,
+			InOutQuart,
+			InQuint,
+			OutQuint,
+			InOutQuint,
+			InSine,
+			OutSine, 
+			InOutSine, 
+			InExpo,
+			OutExpo, 
+			InOutExpo, 
+			InCirc,
+			OutCirc, 
+			InOutCirc,
+			InElastic,
+			OutElastic,
+			InOutElastic,
+			InBack,
+			OutBack,
+			InOutBack,
+			InBounce,
+			OutBounce,
+			InOutBounce
+		};
+
 		static float _inBounce(float startValue, float changeValue, float time, float duration) {
 			return changeValue - _outBounce(duration - time, changeValue, 0f, duration) + startValue;
 		}

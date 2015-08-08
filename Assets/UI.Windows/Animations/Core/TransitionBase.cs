@@ -3,6 +3,9 @@ using System.Collections;
 
 namespace UnityEngine.UI.Windows.Animations {
 
+	public class TransitionCameraAttribute : System.Attribute {
+	};
+
 	public class TransitionBase : ScriptableObject {
 
 		[System.Serializable]
@@ -13,6 +16,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			public float inDuration;
 			public float outDuration;
+			
+			public ME.Ease.Type inEase;
+			public ME.Ease.Type outEase;
 
 			public ParametersBase() {}
 
@@ -64,6 +70,12 @@ namespace UnityEngine.UI.Windows.Animations {
 		public void Play(WindowBase window, bool forward, System.Action callback) {
 
 			this.Play(window, null, null, forward, callback);
+
+		}
+
+		public virtual void Set(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, float value) {
+
+
 
 		}
 

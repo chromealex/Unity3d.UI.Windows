@@ -10,6 +10,12 @@ namespace UnityEditor.UI.Windows {
 	// Uncomment below line to enable preview functionality
 	//[CustomEditor(typeof(WindowComponent), true)]
 	public class WindowComponentEditor : Editor, IPreviewEditor {
+		
+		public void OnEnable() {
+		}
+
+		public void OnDisable() {
+		}
 
 		public override bool HasPreviewGUI() {
 
@@ -30,6 +36,12 @@ namespace UnityEditor.UI.Windows {
 		}
 
 		public virtual void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
+
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false);
+
+		}
+
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered) {
 
 			var _target = this.target as WindowComponent;
 

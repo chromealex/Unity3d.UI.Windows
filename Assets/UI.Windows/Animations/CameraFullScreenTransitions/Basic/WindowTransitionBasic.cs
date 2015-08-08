@@ -3,6 +3,7 @@ using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Animations {
 
+	[TransitionCamera]
 	public class WindowTransitionBasic : TransitionBase {
 		
 		[System.Serializable]
@@ -124,7 +125,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			this.currentWindow = window;
 
-			this.prevWindow = WindowSystem.GetPreviousWindow(window, (item) => item.window.GetState() == WindowObjectState.Shown);
+			this.prevWindow = WindowSystem.GetPreviousWindow(window, (item) => item.window != null && item.window.GetState() == WindowObjectState.Shown);
 			if (this.prevWindow == null) {
 
 				window.transition.SaveToCache(this.clearScreen, () => {

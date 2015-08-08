@@ -12,7 +12,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		private EditorWindow root;
 		private bool isLocked;
-		
+		private bool updateRedraw;
+
 		private System.Action<Component> onSelect;
 		private System.Action<Component> onEveryGUI;
 		private List<Component> items = new List<Component>();
@@ -21,7 +22,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private System.Func<ScriptableObject, bool> onEveryGUIAsset;
 		private List<ScriptableObject> itemsAsset = new List<ScriptableObject>();
 
-		private static FlowChooserFilterWindow GetInstance(EditorWindow root) {
+		private static FlowChooserFilterWindow GetInstance(EditorWindow root, bool updateRedraw = false) {
 			
 			var editor = FlowChooserFilterWindow.CreateInstance<FlowChooserFilterWindow>();
 			var title = "UI.Windows Flow Filter";
@@ -31,7 +32,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			editor.title = title;
 			#endif
 			editor.position = new Rect(0f, 0f, 1f, 1f);
-			
+
+			editor.updateRedraw = updateRedraw;
+
 			editor.isLocked = false;
 			if (editor.isLocked == true) {
 				
@@ -52,9 +55,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public static void Show<T>(EditorWindow root, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, bool strongType = false, string directory = null) where T : Component {
+		public void OnDisable() {
 
-			var editor = FlowChooserFilterWindow.GetInstance(root);
+			if (this.editors != null) {
+
+				for (int i = 0; i < this.editors.Length; ++i) {
+
+					if (this.editors[i] != null) this.editors[i].OnDisable();
+
+				}
+
+			}
+
+		}
+
+		public static void Show<T>(EditorWindow root, System.Action<T> onSelect, System.Action<T> onEveryGUI = null, System.Func<T, bool> predicate = null, bool strongType = false, string directory = null, bool useCache = true, bool drawNoneOption = false, bool updateRedraw = false) where T : Component {
+
+			var editor = FlowChooserFilterWindow.GetInstance(root, updateRedraw);
 			
 			editor.onSelect = (c) => {
 				
@@ -69,7 +86,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			};
 
-			editor.Scan<T>(strongType, directory);
+			editor.Scan<T>(strongType, predicate, directory, useCache, drawNoneOption);
 
 		}
 		
@@ -102,10 +119,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 		
-		public void Scan<T>(bool strongType, string directory = null) where T : Component {
+		public void Scan<T>(bool strongType, System.Func<T, bool> predicate = null, string directory = null, bool useCache = true, bool drawNoneOption = false) where T : Component {
 			
-			this.items = ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory).ToList();
-			
+			var items = ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory, useCache, predicate: predicate).ToList();
+
+			if (drawNoneOption == true) {
+
+				items.Insert(0, null);
+
+			}
+
+			this.items = items;
+
 		}
 		
 		public void ScanAssets<T>(string directory = null, System.Func<T, bool> predicate = null) where T : ScriptableObject {
@@ -134,6 +159,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		public void Update() {
+			
+			if (this.updateRedraw == true) {
+				
+				this.Repaint();
+				
+			}
 
 			if (this.isLocked == true) {
 
@@ -245,13 +276,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
+		private IPreviewEditor[] editors;
 		private void DrawComponents(int xCount, float width, float height, GUIStyle itemBox, GUIStyle style) {
-			
+
+			if (this.editors == null) this.editors = new IPreviewEditor[0];
+			if (this.items.Count != this.editors.Length) this.editors = new IPreviewEditor[this.items.Count];
+
 			var i = 0;
 			foreach (var item in this.items) {
 				
-				if (item == null) continue;
-				
+				//if (item == null) continue;
+
 				if (i % xCount == 0) {
 					
 					if (i != 0) GUILayout.EndHorizontal();
@@ -267,23 +302,32 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.onSelect(item);
 						
 					}
-					
-					var lastRect = GUILayoutUtility.GetLastRect();
-					lastRect.width = width;
-					lastRect.height = height;
-					
-					{
+
+					if (item != null) {
+
+						var lastRect = GUILayoutUtility.GetLastRect();
+						lastRect.width = width;
+						lastRect.height = height;
 						
-						var editor = Editor.CreateEditor(item) as IPreviewEditor;
-						if (editor.HasPreviewGUI() == true) {
+						{
 							
-							Color color = Color.white;
-							editor.OnPreviewGUI(color, lastRect, style, false, false);
-							
+							var hovered = lastRect.Contains(Event.current.mousePosition);
+							var editor = (this.editors[i] != null) ? this.editors[i] : this.editors[i] = Editor.CreateEditor(item) as IPreviewEditor;
+							if (editor != null && editor.HasPreviewGUI() == true) {
+								
+								Color color = Color.white;
+								editor.OnPreviewGUI(color, lastRect, style, false, false, hovered);
+								
+							} else {
+
+								EditorGUI.HelpBox(lastRect, "No Editor was found. Override OnPreviewGUI method to use rect.", MessageType.Warning);
+
+							}
+
 						}
-						
+
 					}
-					
+
 					this.onEveryGUI(item);
 					
 				}

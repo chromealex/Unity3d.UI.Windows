@@ -33,6 +33,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public string name;
 
+		public virtual string GetName() {
+
+			return this.name;
+
+		}
+
 		public FlowSystemEditorWindow flowEditor { get; set; }
 		
 		public virtual GenericMenu GetSettingsMenu(GenericMenu menu) { return menu; }
@@ -193,7 +199,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					Profiler.BeginSample("[ GUI ] Addon " + addon.name);
 
 					addon.flowEditor = flowEditor;
-					Flow.DrawModuleSettingsGUI(addon, addon.name, addon.GetSettingsMenu(null), () => { addon.OnFlowSettingsGUI(); });
+					Flow.DrawModuleSettingsGUI(addon, addon.GetName(), addon.GetSettingsMenu(null), () => { addon.OnFlowSettingsGUI(); });
 					
 					Profiler.EndSample();
 

@@ -6,6 +6,7 @@ using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows.Animations {
 
+	[TransitionCamera]
 	public class WindowAnimationTransitionCameraSlide : TransitionBase {
 		
 		[System.Serializable]
@@ -15,21 +16,33 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			[System.Serializable]
 			public class State {
-				
-				public Vector2 offset;
+
+				public Vector2 anchorMin;
+				public Vector2 anchorMax;
+				public Vector2 anchoredPosition;
+				public Vector2 sizeDelta;
+				public Vector2 pivot;
 
 				public State() {
 				}
 
 				public State(WindowLayoutRoot root) {
-
-					this.offset = root.GetOffsetNormalized();
+					
+					this.anchorMin = root.rectTransform.anchorMin;
+					this.anchorMax = root.rectTransform.anchorMax;
+					this.anchoredPosition = root.rectTransform.anchoredPosition;
+					this.sizeDelta = root.rectTransform.sizeDelta;
+					this.pivot = root.rectTransform.pivot;
 
 				}
 
 				public State(State source) {
-
-					this.offset = source.offset;
+					
+					this.anchorMin = source.anchorMin;
+					this.anchorMax = source.anchorMax;
+					this.anchoredPosition = source.anchoredPosition;
+					this.sizeDelta = source.sizeDelta;
+					this.pivot = source.pivot;
 
 				}
 
@@ -52,8 +65,14 @@ namespace UnityEngine.UI.Windows.Animations {
 			}
 
 			public void Apply(WindowLayoutRoot root, State startState, State resultState, float value) {
+				
+				CanvasUpdater.ForceUpdate();
 
-				root.SetOffsetNormalized(Vector2.Lerp(startState.offset, resultState.offset, value));
+				root.rectTransform.anchorMin = Vector2.Lerp(startState.anchorMin, resultState.anchorMin, value);
+				root.rectTransform.anchorMax = Vector2.Lerp(startState.anchorMax, resultState.anchorMax, value);
+				root.rectTransform.anchoredPosition = Vector2.Lerp(startState.anchoredPosition, resultState.anchoredPosition, value);
+				root.rectTransform.sizeDelta = Vector2.Lerp(startState.sizeDelta, resultState.sizeDelta, value);
+				root.rectTransform.pivot = Vector2.Lerp(startState.pivot, resultState.pivot, value);
 				
 				CanvasUpdater.ForceUpdate();
 
@@ -61,8 +80,14 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 			public void Apply(WindowLayoutRoot root, State state) {
 				
-				root.SetOffsetNormalized(state.offset);
-				
+				CanvasUpdater.ForceUpdate();
+
+				root.rectTransform.anchorMin = state.anchorMin;
+				root.rectTransform.anchorMax = state.anchorMax;
+				root.rectTransform.anchoredPosition = state.anchoredPosition;
+				root.rectTransform.sizeDelta = state.sizeDelta;
+				root.rectTransform.pivot = state.pivot;
+
 				CanvasUpdater.ForceUpdate();
 
 			}
@@ -112,6 +137,25 @@ namespace UnityEngine.UI.Windows.Animations {
 			return this.defaultInputParams;
 
 		}
+
+		public override void Set(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, float value) {
+
+			var param = this.GetParams<Parameters>(parameters);
+			if (param == null) {
+
+				return;
+				
+			}
+			
+			var duration = this.GetDuration(parameters, forward);
+			var rect = this.GetRoot(param, window);
+
+			var state = new Parameters.State(rect);
+			var resultState = param.GetResult(forward);
+
+			param.Apply(rect, state, resultState, ME.Ease.GetByType(forward == true ? param.inEase : param.outEase).interpolate(0f, 1f, value, 1f));
+
+		}
 		
 		public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
@@ -150,7 +194,7 @@ namespace UnityEngine.UI.Windows.Animations {
 					if (callback != null) callback();
 					CanvasUpdater.ForceUpdate();
 
-				}).tag(tag);
+				}).tag(tag).ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase));
 
 			} else {
 				

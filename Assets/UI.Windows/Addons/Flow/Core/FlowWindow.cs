@@ -7,10 +7,12 @@ using System.Globalization;
 using ME;
 using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows.Types;
+using UnityEngine.UI.Windows.Animations;
+using System;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 
-	public enum CompletedState {
+	public enum CompletedState : byte {
 		NotReady,
 		ReadyButWarnings,
 		Ready,
@@ -32,6 +34,27 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 	[System.Serializable]
 	public class FlowWindow {
+		
+		[System.Serializable]
+		public class AttachItem {
+			
+			public int targetId;
+			
+			public TransitionBase transition;
+			public TransitionInputParameters transitionParameters;
+
+			#if UNITY_EDITOR
+			[HideInInspector]
+			public IPreviewEditor editor;
+			#endif
+
+			public AttachItem(int targetId) {
+
+				this.targetId = targetId;
+
+			}
+
+		}
 
 		[System.Serializable]
 		public struct ComponentLink {
@@ -101,8 +124,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public string title = string.Empty;
 		public string directory = string.Empty;
 		public Rect rect;
-		public List<int> attaches;
-		public List<ComponentLink> attachedComponents;
+
+		[Obsolete("Attaches not supported. Use FlowData.Upgrade() context function to fix it.")]
+		public List<int> attaches = new List<int>();
+		public List<ComponentLink> attachedComponents = new List<ComponentLink>();
+		public List<AttachItem> attachItems = new List<AttachItem>();
+
 		public Color randomColor;
 
 		public bool isVisibleState = false;
@@ -162,10 +189,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public FlowWindow GetFunctionContainer() {
 
 			// If current window attached to function
-			var attaches = this.attaches;
-			foreach (var attach in attaches) {
+			var attaches = this.attachItems;
+			foreach (var attachItem in attaches) {
 				
-				var win = FlowSystem.GetWindow(attach);
+				var win = FlowSystem.GetWindow(attachItem.targetId);
 				if (win.IsContainer() == true && win.IsFunction() == true) {
 					
 					// We are inside a function
@@ -222,8 +249,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			this.id = id;
 			this.flags = flags;
-			this.attaches = new List<int>();
+
+			//this.attaches = new List<int>();
+			this.attachItems = new List<AttachItem>();
 			this.attachedComponents = new List<ComponentLink>();
+
 			this.rect = new Rect(0f, 0f, 200f, 200f);//new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 200f, 200f);
 			this.title = (this.IsContainer() == true ? "Container" : "Window " + this.id.ToString());
 			this.directory = (this.IsContainer() == true ? "ContainerDirectory" : "Window" + this.id.ToString() + "Directory");
@@ -585,28 +615,35 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		
 		public FlowWindow GetContainer() {
 			
-			return ME.Utilities.CacheByFrame("FlowWindow." + this.id.ToString() + ".GetContainer", () => FlowSystem.GetWindow(this.attaches.FirstOrDefault((id) => FlowSystem.GetWindow(id).IsContainer())));
+			return ME.Utilities.CacheByFrame("FlowWindow." + this.id.ToString() + ".GetContainer", () => {
+
+				var container = this.attachItems.FirstOrDefault((item) => FlowSystem.GetWindow(item.targetId).IsContainer());
+				if (container == null) return null;
+
+				return FlowSystem.GetWindow(container.targetId);
+
+			});
 			
 		}
 		
 		public bool HasContainer() {
 			
-			return this.attaches.Any((id) => FlowSystem.GetWindow(id).IsContainer());
+			return this.attachItems.Any((item) => FlowSystem.GetWindow(item.targetId).IsContainer());
 			
 		}
 		
 		public bool HasContainer(FlowWindow predicate) {
 			
-			return this.attaches.Any((id) => id == predicate.id && FlowSystem.GetWindow(id).IsContainer());
+			return this.attachItems.Any((item) => item.targetId == predicate.id && FlowSystem.GetWindow(item.targetId).IsContainer());
 			
 		}
 
 		public List<FlowWindow> GetAttachedWindows() {
 			
 			List<FlowWindow> output = new List<FlowWindow>();
-			foreach (var attachId in this.attaches) {
+			foreach (var attachItem in this.attachItems) {
 				
-				var window = FlowSystem.GetWindow(attachId);
+				var window = FlowSystem.GetWindow(attachItem.targetId);
 				if (window.IsContainer() == true) continue;
 				
 				output.Add(window);
@@ -615,6 +652,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			return output;
 			
+		}
+
+		public AttachItem GetAttachItem(FlowWindow window) {
+
+			return this.attachItems.FirstOrDefault((item) => item.targetId == window.id);
+
 		}
 
 		#if UNITY_EDITOR
@@ -626,7 +669,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			return this.attaches.Contains(id);
+			return this.attachItems.Any((item) => item.targetId == id);
 			
 		}
 
@@ -655,9 +698,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			}
 
-			if (this.attaches.Contains(id) == false) {
+			if (this.attachItems.Any((item) => item.targetId == id) == false) {
 				
-				this.attaches.Add(id);
+				this.attachItems.Add(new AttachItem(id));
 				
 				if (oneWay == false) {
 					
@@ -692,9 +735,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			} else {
 
-				if (this.attaches.Contains(id) == true) {
+				if (this.attachItems.Any((item) => item.targetId == id) == true) {
 					
-					this.attaches.Remove(id);
+					this.attachItems.RemoveAll((item) => item.targetId == id);
 					this.attachedComponents.RemoveAll((c) => c.targetWindowId == id);
 					
 					result = true;

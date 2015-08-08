@@ -95,7 +95,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			if (TweenerGlobal.instance != null) {
 
 				TweenerGlobal.instance.removeTweens(tag);
-				TweenerGlobal.instance.addTweenAlpha(root.canvas, duration, result).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
+				TweenerGlobal.instance.addTweenAlpha(root.canvas, duration, result).ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase)).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
 
 			} else {
 

@@ -12,13 +12,12 @@ using ME;
 namespace UnityEditor.UI.Windows.Types {
 	
 	[CustomEditor(typeof(LayoutWindowType), true)]
-	public class LayoutWindowTypeEditor : Editor, IPreviewEditor {
-
-		public override void OnInspectorGUI() {
-
-			this.DrawDefaultInspector();
-
+	public class LayoutWindowTypeEditor : WindowBaseInspector, IPreviewEditor {
+		
+		public void OnEnable() {
 		}
+
+		public void OnDisable() {}
 
 		public override bool HasPreviewGUI() {
 			
@@ -36,6 +35,12 @@ namespace UnityEditor.UI.Windows.Types {
 			
 			this.OnPreviewGUI(color, r, background, false, false);
 			
+		}
+		
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
+			
+			this.OnPreviewGUI(color, r, style, false, false);
+
 		}
 
 		private Layout.Component selectedComponent;

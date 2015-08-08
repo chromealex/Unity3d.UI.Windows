@@ -16,6 +16,12 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 		
 		private Editor editor;
 		private Texture noDataTexture;
+		
+		public override string GetName() {
+			
+			return "Heatmap (pre-alpha)";
+			
+		}
 
 		public override void OnFlowSettingsGUI() {
 			

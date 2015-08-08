@@ -56,31 +56,6 @@ namespace UnityEngine.UI.Windows {
 			rect.sizeDelta = size;
 
 		}
-		
-		public Vector2 GetOffsetNormalized() {
-
-			var pos = this.rectTransform.anchoredPosition;
-			return new Vector2(pos.x / Screen.width, pos.y / Screen.height);
-			
-		}
-
-		public Vector2 GetOffset() {
-
-			return this.rectTransform.anchoredPosition;
-
-		}
-
-		public void SetOffset(Vector2 offset) {
-
-			this.rectTransform.anchoredPosition = offset;
-
-		}
-
-		public void SetOffsetNormalized(Vector2 offset) {
-
-			this.SetOffset(new Vector2(Screen.width * offset.x, Screen.height * offset.y));
-
-		}
 
 	}
 

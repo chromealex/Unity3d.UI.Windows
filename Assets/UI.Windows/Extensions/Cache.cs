@@ -86,7 +86,6 @@ namespace UnityEngine.UI.Windows.Extensions {
 			this.keys.Clear();
 			this.values.Clear();
 
-			// TODO: Create keys array for every key[index] = value[index] to avoid IndexOf
 			for (int i = 0; i < sources.Count; ++i) {
 
 				this.keys.Add(getKey(sources[i], i));

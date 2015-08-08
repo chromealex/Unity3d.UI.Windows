@@ -6,9 +6,12 @@ namespace UnityEngine.UI.Windows {
 	public interface IPreviewEditor {
 		
 		bool HasPreviewGUI();
+		void OnEnable();
+		void OnDisable();
 		void OnPreviewGUI(Rect rect, GUIStyle style);
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style);
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable);
+		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered);
 		
 	}
 
@@ -20,7 +23,6 @@ namespace UnityEngine.UI.Windows {
 		OnShowEnd,
 		OnHideBegin,
 		OnHideEnd,
-		OnBackAction,
 
 	};
 	/*

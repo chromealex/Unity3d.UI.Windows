@@ -4,8 +4,9 @@ using System.Collections;
 namespace UnityEngine.UI.Extensions {
 
 	public class CanvasUpdater : MonoBehaviour {
-
+		
 		public Canvas canvas;
+		public CanvasScaler canvasScaler;
 
 		public delegate void OnUpdateHandler();
 		public static event OnUpdateHandler onUpdate;
@@ -22,16 +23,35 @@ namespace UnityEngine.UI.Extensions {
 			
 		}
 
-		public void OnUpdate() {
-
-			this.canvas.scaleFactor = 0f;
-			this.canvas.scaleFactor = 1f;
+		public void OnValidate() {
 			
+			this.canvas = this.GetComponent<Canvas>();
+			this.canvasScaler = this.GetComponent<CanvasScaler>();
+
 		}
 
-		public static void ForceUpdate() {
+		public void OnUpdate() {
 
+			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
+			
+		}
+		
+		public static void ForceUpdate() {
+			
 			if (CanvasUpdater.onUpdate != null) CanvasUpdater.onUpdate.Invoke();
+			
+		}
+		
+		public static void ForceUpdate(Canvas canvas, CanvasScaler canvasScaler) {
+			
+			canvas.scaleFactor = 0.99f;
+			canvas.scaleFactor = 1f;
+
+			if (canvasScaler != null) {
+
+				canvasScaler.scaleFactor = 1f;
+
+			}
 
 		}
 
