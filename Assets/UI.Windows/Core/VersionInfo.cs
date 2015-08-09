@@ -31,8 +31,6 @@ namespace UnityEditor.UI.Windows {
 
 		public override string ToString() {
 
-			if (this == null) return base.ToString();
-
 			return string.Format("{0}.{1}.{2}{3}", this.major, this.minor, this.release, this.type.ToString());
 
 		}
@@ -43,26 +41,92 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public Version Increase() {
+		public override bool Equals(object obj) {
 
+			var version = (Version)obj;
+			return version == this;
+
+		}
+
+		public override int GetHashCode() {
+
+			return this.major + this.major + this.release + this.type.GetHashCode();
+
+		}
+		
+		private Version Increase() {
+			
 			++this.release;
 			if (this.release > 9) {
-
+				
 				this.release = 0;
-
+				
 				++this.minor;
 				if (this.minor > 9) {
-
+					
 					this.minor = 0;
-
+					
 					++this.major;
+					
+				}
+				
+			}
+			
+			return new Version(this.major, this.minor, this.release, this.type);
+			
+		}
+		
+		private Version Decrease() {
+			
+			--this.release;
+			if (this.release < 0) {
+				
+				this.release = 9;
+				
+				--this.minor;
+				if (this.minor < 0) {
+					
+					this.minor = 9;
+					
+					--this.major;
+					if (this.major < 0) {
+
+						this.major = 0;
+
+					}
 
 				}
-
+				
 			}
-
+			
 			return new Version(this.major, this.minor, this.release, this.type);
+			
+		}
 
+		public static Version operator +(Version v, int value) {
+			
+			if (value < 0) value = 0;
+			for (int i = 0; i < value; ++i) {
+				
+				v.Increase();
+				
+			}
+			
+			return v;
+			
+		}
+		
+		public static Version operator -(Version v, int value) {
+
+			if (value < 0) value = 0;
+			for (int i = 0; i < value; ++i) {
+				
+				v.Decrease();
+				
+			}
+			
+			return v;
+			
 		}
 
 		public static bool operator <(Version v1, Version v2) {

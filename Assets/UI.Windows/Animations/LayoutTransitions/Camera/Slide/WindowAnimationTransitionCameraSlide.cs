@@ -147,7 +147,7 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 			}
 			
-			var duration = this.GetDuration(parameters, forward);
+			//var duration = this.GetDuration(parameters, forward);
 			var rect = this.GetRoot(param, window);
 
 			var state = new Parameters.State(rect);

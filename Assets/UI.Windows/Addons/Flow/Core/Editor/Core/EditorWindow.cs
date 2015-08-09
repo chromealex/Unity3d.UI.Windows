@@ -562,13 +562,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			if (toWindow.IsSmall() == true) return;
 
 			const float size = 64f;
+			const float offset = size * 0.5f + 5f;
 
 			if (doubleSided == true) {
 
 				var q = Quaternion.LookRotation(toWindow.rect.center - fromWindow.rect.center, Vector3.back);
 
-				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.left * size, size);
-				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.right * size, size);
+				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.left * offset, size);
+				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.right * offset, size);
 
 			} else {
 
@@ -1662,7 +1663,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 										}
 
-										var nextVersion = this.cachedData.version.Increase();
+										var nextVersion = this.cachedData.version + 1;
 										
 										UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, nextVersion), 0.5f);
 
