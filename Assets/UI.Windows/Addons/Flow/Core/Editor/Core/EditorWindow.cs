@@ -401,9 +401,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								var isSelected = selected.Contains(window.id) || (selected.Count == 0 && this.focusedGUIWindow == window.id);
 								var style = window.GetEditorStyle(isSelected);
 								
-								var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, title, style/*, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true)*/);
+								var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, title, style);
 								GUI.BringWindowToFront(window.id);
-								
+
+								GUI.Window(-window.id, new Rect(rect.x, rect.y + rect.height, rect.width, rect.height), (id) => {
+
+									this.DrawTags(FlowSystem.GetWindow(-id), true);
+
+								}, string.Empty, GUIStyle.none);
+								GUI.BringWindowToFront(-window.id);
+
 								var isMoving = (rect != window.rect);
 								
 								if (selectionMain == -1 || selectionMain == window.id) {
@@ -530,14 +537,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			var flowWindowWithLayoutScaleFactor = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
 			if (flowWindowWithLayout == true) {
-				
-				//var screen = window.GetScreen() as LayoutWindowType;
-				//if (screen != null && screen.layout.layout != null) {
-				
+
 				return new Vector2(250f, 250f) * (1f + flowWindowWithLayoutScaleFactor);
-				
-				//}
-				
+
 			}
 			
 			return new Vector2(250f, 80f + (Mathf.CeilToInt(window.tags.Count / 3f)) * 15f);
@@ -557,9 +559,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		public void DrawTransitionChooser(UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.AttachItem attach, FlowWindow fromWindow, FlowWindow toWindow, bool doubleSided) {
+			
+			if (toWindow.IsEnabled() == false) return;
 
-			// TODO: Add function transitions support
-			if (toWindow.IsSmall() == true) return;
+			if (toWindow.IsContainer() == true) return;
+
+			if (toWindow.IsSmall() == true) {
+
+				if (toWindow.IsFunction() == false) return;
+
+			}
 
 			const float size = 64f;
 			const float offset = size * 0.5f + 5f;
@@ -932,9 +941,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				//var buttonStyle = new GUIStyle(EditorStyles.miniButton);
 				//this.DrawToolbar(buttonStyle);
-				
+
+				var oldSkin = GUI.skin;
+				GUI.skin = FlowSystemEditorWindow.defaultSkin;
 				this.settingsWindowScroll = GUILayout.BeginScrollView(this.settingsWindowScroll, false, false);
-				
+				GUI.skin = oldSkin;
+
 				CustomGUI.Splitter();
 				GUILayout.Label("Base Modules:", EditorStyles.largeLabel);
 				CustomGUI.Splitter();
@@ -2086,7 +2098,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			var oldColor = GUI.color;
 			
-			var tagStyles = FlowSystemEditor.GetTagStyles();
+			var tagStyles = FlowSystemEditor.GetTagStylesEdited();
 
 			var tagStyle = tagStyles[0];
 			tagStyle.stretchWidth = false;
@@ -2115,36 +2127,32 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				
 				if (count > 0) {
-					
+
 					var r = this.showTagsPopupRect;
 					var elementHeight = r.height + tagStyle.margin.top + tagStyle.margin.bottom;
 					
 					r.y += this.showTagsPopupRect.height * 2f + offset;
 					r.height = elementHeight * count + topOffset;
 					
-					var scrollPos = FlowSystem.GetScrollPosition();
-					
+					var scrollPos = -FlowSystem.GetScrollPosition();
 					var drawRect = new Rect(r.x - scrollPos.x, r.y - scrollPos.y - topOffset, r.width, r.height);
 					
 					tagStyle.fixedWidth = drawRect.width;
 					
-					GUILayout.BeginArea(drawRect);
+					GUI.BeginGroup(drawRect);
 					{
 						GUI.color = Color.black;
 						GUI.Label(new Rect(10f, backTopOffset, drawRect.width - 10f * 2f, drawRect.height - backTopOffset * 2f), string.Empty, shadow);
-						
-						GUILayout.Space(topOffset);
-						
+
+						var buttonRect = new Rect(0f, topOffset, drawRect.width, elementHeight);
+
 						GUI.color = oldColor;
 						foreach (var tag in allTags) {
 							
 							if (tag.title.ToLower().Contains(this.tagCaption.ToLower()) == true && window != null && window.tags.Contains(tag.id) == false) {
 								
 								var style = tagStyles[tag.color];
-								style.margin = tagStyle.margin;
-								style.fixedWidth = tagStyle.fixedWidth;
-								
-								if (GUILayout.Button(tag.title, style) == true) {
+								if (GUI.Button(buttonRect, tag.title, style) == true) {
 									
 									this.tagCaption = string.Empty;
 									this.showTagsPopupId = -1;
@@ -2152,12 +2160,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									window.AddTag(tag);
 									
 								}
+
+								buttonRect.y += elementHeight;
 								
 							}
 							
 						}
 					}
-					GUILayout.EndArea();
+					GUI.EndGroup();
 					
 				}
 				
@@ -2173,8 +2183,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Rect showTagsPopupRect;
 		private int showTagsPopupId;
 		private string tagCaption = string.Empty;
-		private void DrawTags(FlowWindow window) {
-			
+		private void DrawTags(FlowWindow window, bool defaultWindow = false) {
+
 			EditorGUIUtility.labelWidth = 35f;
 			
 			var tagStyles = FlowSystemEditor.GetTagStyles();
@@ -2207,6 +2217,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var tagStyleAdd = ME.Utilities.CacheStyle("FlowEditor.DrawTags.Styles", "sv_label_3", (styleName) => {
 				
 				var _tagStyleAdd = new GUIStyle(styleName);
+				_tagStyleAdd.margin = new RectOffset(0, 0, 0, 0);
+				_tagStyleAdd.padding = new RectOffset(3, 5, 0, 2);
+				_tagStyleAdd.alignment = TextAnchor.MiddleCenter;
 				_tagStyleAdd.stretchWidth = false;
 
 				return _tagStyleAdd;
@@ -2321,7 +2334,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									this.showTagsPopup = true;
 									if (Event.current.type == EventType.Repaint) {
 										
-										this.showTagsPopupRect = new Rect(window.rect.x + rect.x + SETTINGS_WIDTH, window.rect.y + rect.y, rect.width, rect.height);
+										this.showTagsPopupRect = new Rect(window.rect.x + rect.x + SETTINGS_WIDTH, window.rect.y + rect.y + (defaultWindow == true ? window.rect.height : 0f), rect.width, rect.height);
 										
 									}
 									
@@ -2719,8 +2732,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					} else {
 						
 						var win = FlowSystem.GetWindow(window.screenWindowId);
-						if (win != null)
-							this.DrawStates(win.states, win);
+						if (win != null) this.DrawStates(win.states, win);
 						
 					}
 					
@@ -2801,10 +2813,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					this.DrawWindowLayout(window);
 					Flow.OnDrawWindowGUI(this, window);
-					this.DrawTags(window);
 
 				}
-			
+
 			}
 			
 			this.DragWindow(headerOnly: false);

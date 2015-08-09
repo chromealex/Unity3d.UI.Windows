@@ -12,6 +12,13 @@ namespace ME {
 			return GUILayout.Button(content, FlowSystemEditorWindow.defaultSkin.button, GUILayout.Height(height), GUILayout.MaxWidth(maxWidth));
 			
 		}
+		
+		public static bool LargeButton(string caption, params GUILayoutOption[] layouts) {
+			
+			var content = new GUIContent(caption);
+			return GUILayout.Button(content, FlowSystemEditorWindow.defaultSkin.button, layouts);
+			
+		}
 
 	}
 

@@ -13,9 +13,9 @@ using UnityEngine.UI.Windows.Types;
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowSystemEditor {
-
+		
 		public static GUIStyle[] GetTagStyles() {
-
+			
 			return ME.Utilities.Cache<GUIStyle[]>("FlowEditor.Styles.Tags", () => {
 				
 				return new GUIStyle[7] {
@@ -31,7 +31,27 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				};
 				
 			});
-
+			
+		}
+		
+		public static GUIStyle[] GetTagStylesEdited() {
+			
+			return ME.Utilities.Cache<GUIStyle[]>("FlowEditor.Styles.TagsEdit", () => {
+				
+				return new GUIStyle[7] {
+					
+					new GUIStyle("sv_label_1"),
+					new GUIStyle("sv_label_2"),
+					new GUIStyle("sv_label_3"),
+					new GUIStyle("sv_label_4"),
+					new GUIStyle("sv_label_5"),
+					new GUIStyle("sv_label_6"),
+					new GUIStyle("sv_label_7")
+						
+				};
+				
+			});
+			
 		}
 
 		public static Rect GetCenterRect(EditorWindow editorWindow, float width, float height) {

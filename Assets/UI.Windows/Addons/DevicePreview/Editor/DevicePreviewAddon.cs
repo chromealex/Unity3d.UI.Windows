@@ -41,8 +41,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		}
 
 		public override void OnFlowSettingsGUI() {
-
-			GUILayout.Label(FlowAddon.MODULE_INSTALLED);
+			
+			GUILayout.Label(FlowAddon.MODULE_INSTALLED, EditorStyles.centeredGreyMiniLabel);
 
 			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 			{

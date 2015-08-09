@@ -18,8 +18,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		void OnFlowToolsMenuGUI(string prefix, GenericMenu menu);
 		
 		string OnCompilerTransitionGeneration(FlowWindow window);
-		string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName);
-		bool IsCompilerTransitionAttachedGeneration(FlowWindow window);
+		string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName);
+		bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo);
 
 		void Install();
 		bool InstallationNeeded();
@@ -52,8 +52,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public virtual void OnFlowToolsMenuGUI(string prefix, GenericMenu menu) {}
 		
 		public virtual string OnCompilerTransitionGeneration(FlowWindow window) { return string.Empty; }
-		public virtual string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) { return string.Empty; }
-		public virtual bool IsCompilerTransitionAttachedGeneration(FlowWindow window) { return false; }
+		public virtual string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) { return string.Empty; }
+		public virtual bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo) { return false; }
 
 		public virtual void Install() {}
 		public virtual void Reinstall() {}
@@ -277,12 +277,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public static bool IsCompilerTransitionAttachedGeneration(FlowWindow window) {
+		public static bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo) {
 
 			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
 			foreach (var addon in flowAddons) {
 
-				if (addon.IsCompilerTransitionAttachedGeneration(window) == true) return true;
+				if (addon.IsCompilerTransitionAttachedGeneration(windowFrom, windowTo) == true) return true;
 
 			}
 
@@ -290,13 +290,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public static string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) {
+		public static string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) {
 			
 			var result = string.Empty;
 			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
 			foreach (var addon in flowAddons) {
 				
-				result += addon.OnCompilerTransitionAttachedGeneration(window, everyPlatformHasUniqueName);
+				result += addon.OnCompilerTransitionAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName);
 				
 			}
 			

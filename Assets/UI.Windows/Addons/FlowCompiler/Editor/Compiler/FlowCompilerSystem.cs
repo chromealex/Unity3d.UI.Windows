@@ -137,7 +137,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				var attachId = attachItem.targetId;
 
 				var attachedWindow = FlowSystem.GetWindow(attachId);
-				var tmp = UnityEditor.UI.Windows.Plugins.Flow.Flow.IsCompilerTransitionAttachedGeneration(attachedWindow);
+				var tmp = UnityEditor.UI.Windows.Plugins.Flow.Flow.IsCompilerTransitionAttachedGeneration(window, attachedWindow);
 				if (tmp == true) ++c;
 
 			}
@@ -155,7 +155,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				}
 
-				result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(attachedWindow, everyPlatformHasUniqueName);
+				result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(window, attachedWindow, everyPlatformHasUniqueName);
 
 			}
 

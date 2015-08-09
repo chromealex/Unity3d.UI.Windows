@@ -52,9 +52,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		#if UNITY_EDITOR
 		#region UPGRADES
+		#pragma warning disable 612,618
 		public void UpgradeTo094a() {
-			
-			#pragma warning disable 612,618
+
 			foreach (var window in this.windows) {
 
 				window.attachItems = new List<FlowWindow.AttachItem>();
@@ -65,9 +65,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				}
 
 			}
-			#pragma warning restore 612,618
 
 		}
+		#pragma warning restore 612,618
 		#endregion
 		#endif
 
@@ -118,7 +118,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public void Save() {
 
-#if UNITY_EDITOR
+			#if UNITY_EDITOR
 			if (this.isDirty == true) {
 
 				var dateTime = System.DateTime.Now;
@@ -127,7 +127,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				UnityEditor.EditorUtility.SetDirty(this);
 
 			}
-#endif
+			#endif
 
 			this.isDirty = false;
 

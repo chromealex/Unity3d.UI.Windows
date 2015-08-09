@@ -74,8 +74,8 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 				EditorGUILayout.HelpBox(string.Format(FlowAddon.MODULE_HAS_ERRORS, "Settings file not found (SocialSettings)."), MessageType.Error);
 
 			} else {
-
-				GUILayout.Label(FlowAddon.MODULE_INSTALLED);
+				
+				GUILayout.Label(FlowAddon.MODULE_INSTALLED, EditorStyles.centeredGreyMiniLabel);
 
 				if (this.editor == null) this.editor = Editor.CreateEditor(settings);
 				if (this.editor != null) {
@@ -98,7 +98,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 					this.flowEditor.CreateNewItem(() => {
 
-						var window = FlowSystem.CreateWindow(FlowWindow.Flags.IsSmall | FlowWindow.Flags.CantCompiled | FlowWindow.Flags.Tag1);
+						var window = FlowSystem.CreateWindow(FlowWindow.Flags.IsSmall | FlowWindow.Flags.CantCompiled | Social.settings.uniqueTag);
 						window.smallStyleDefault = "flow node 1";
 						window.smallStyleSelected = "flow node 1 on";
 						window.title = "Social";
@@ -116,12 +116,12 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		}
 
-		public override bool IsCompilerTransitionAttachedGeneration(FlowWindow window) {
+		public override bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo) {
 
 			var settings = Social.settings;
 			if (settings != null) {
 				
-				var data = settings.data.Get(window);
+				var data = settings.data.Get(windowTo);
 				if (data != null && data.settings != null && settings.IsPlatformActive(data.settings) == true) {
 
 					return true;
@@ -134,12 +134,12 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		}
 
-		public override string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) {
+		public override string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) {
 
 			var settings = Social.settings;
 			if (settings != null) {
 
-				var data = settings.data.Get(window);
+				var data = settings.data.Get(windowTo);
 				if (data != null && data.settings != null && settings.IsPlatformActive(data.settings) == true) {
 
 					return FlowSocialTemplateGenerator.GenerateTransitionMethod(data.settings, everyPlatformHasUniqueName);
@@ -148,13 +148,13 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 			}
 
-			return base.OnCompilerTransitionGeneration(window);
+			return base.OnCompilerTransitionAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName);
 			
 		} 
 
 		public override void OnFlowWindowGUI(FlowWindow window) {
 
-			var socialFlag = (window.flags & FlowWindow.Flags.Tag1) == FlowWindow.Flags.Tag1;
+			var socialFlag = (window.flags & Social.settings.uniqueTag) == Social.settings.uniqueTag;
 			if (socialFlag == true) {
 
 				var settings = Social.settings;

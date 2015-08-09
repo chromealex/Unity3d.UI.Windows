@@ -44,7 +44,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			
 		}
 		
-		public static string GenerateTransitionMethod(FlowSystemEditorWindow flowEditor, FlowWindow window) {
+		public static string GenerateTransitionMethod(FlowSystemEditorWindow flowEditor, FlowWindow windowFrom, FlowWindow windowTo) {
 			
 			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
@@ -62,7 +62,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var part = file.text;
 			
 			// Function link
-			var functionId = window.GetFunctionId();
+			var functionId = windowTo.GetFunctionId();
 			
 			// Find function container
 			var functionContainer = data.GetWindow(functionId);
@@ -80,7 +80,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var functionName = functionContainer.title;
 			var functionCallName = functionContainer.directory;
 			var classNameWithNamespace = Tpl.GetNamespace(root) + "." + Tpl.GetDerivedClassName(root);
-			var transitionMethods = Tpl.GenerateTransitionMethods(window);
+			var transitionMethods = Tpl.GenerateTransitionMethods(windowTo);
 			transitionMethods = transitionMethods.Replace("\r\n", "\r\n\t")
 												 .Replace("\n", "\n\t");
 
@@ -88,6 +88,8 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 				part.Replace("{TRANSITION_METHODS}", transitionMethods)
 					.Replace("{FUNCTION_NAME}", functionName)
 					.Replace("{FUNCTION_CALL_NAME}", functionCallName)
+					.Replace("{FLOW_FROM_ID}", windowFrom.id.ToString())
+					.Replace("{FLOW_TO_ID}", windowTo.id.ToString())
 					.Replace("{CLASS_NAME_WITH_NAMESPACE}", classNameWithNamespace);
 			
 			return result;
@@ -104,7 +106,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 		public override void OnFlowSettingsGUI() {
 			
-			GUILayout.Label(FlowAddon.MODULE_INSTALLED);
+			GUILayout.Label(FlowAddon.MODULE_INSTALLED, EditorStyles.centeredGreyMiniLabel);
 			
 			GUILayout.Label("Functions", EditorStyles.boldLabel);
 			
@@ -127,7 +129,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				var style = new GUIStyle(GUI.skin.label);
 				style.wordWrap = true;
-				GUILayout.Label("No function found in current project. Add new one by clicking on Create->Function menu.", style);
+				GUILayout.Label("No functions ware found in the current project. Add new one by clicking on `Create->Functions` menu.", style);
 
 			} else {
 
@@ -151,7 +153,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				menu.AddSeparator(prefix);
 
-				menu.AddItem(new GUIContent(prefix + "Function Container"), on: false, func: () => {
+				menu.AddItem(new GUIContent(prefix + "Functions/Container"), on: false, func: () => {
 					
 					this.flowEditor.CreateNewItem(() => {
 						
@@ -164,7 +166,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				});
 
-				menu.AddItem(new GUIContent(prefix + "Function Link"), on: false, func: () => {
+				menu.AddItem(new GUIContent(prefix + "Functions/Link"), on: false, func: () => {
 					
 					this.flowEditor.CreateNewItem(() => {
 						
@@ -186,12 +188,12 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 		}
 
-		public override bool IsCompilerTransitionAttachedGeneration(FlowWindow window) {
+		public override bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo) {
 
-			return window.IsFunction() == true && 
-					window.IsSmall() == true &&
-					window.IsContainer() == false &&
-					window.GetFunctionId() > 0;
+			return windowTo.IsFunction() == true && 
+					windowTo.IsSmall() == true &&
+					windowTo.IsContainer() == false &&
+					windowTo.GetFunctionId() > 0;
 
 		}
 
@@ -213,18 +215,18 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 		}
 
-		public override string OnCompilerTransitionAttachedGeneration(FlowWindow window, bool everyPlatformHasUniqueName) {
+		public override string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) {
 
-			if (window.IsFunction() == true && 
-			    window.IsSmall() == true &&
-			    window.IsContainer() == false &&
-			    window.GetFunctionId() > 0) {
+			if (windowTo.IsFunction() == true && 
+			    windowTo.IsSmall() == true &&
+			    windowTo.IsContainer() == false &&
+			    windowTo.GetFunctionId() > 0) {
 				
-				return FlowFunctionsTemplateGenerator.GenerateTransitionMethod(this.flowEditor, window);
+				return FlowFunctionsTemplateGenerator.GenerateTransitionMethod(this.flowEditor, windowFrom, windowTo);
 				
 			}
 
-			return base.OnCompilerTransitionGeneration(window);
+			return base.OnCompilerTransitionAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName);
 			
 		} 
 
@@ -233,19 +235,57 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var data = FlowSystem.GetData();
 			if (data == null) return;
 
-			var flag = window.IsFunction() == true && 
+			var flag = (window.IsFunction() == true && 
 					window.IsSmall() == true &&
-					window.IsContainer() == false;
+					window.IsContainer() == false);
 
 			if (flag == true) {
+				
+				var alreadyConnectedFunctionIds = new List<int>();
+
+				// Find caller window
+				var windowFrom = data.windows.FirstOrDefault((item) => item.HasAttach(window.id));
+				if (windowFrom != null) {
+					
+					var attaches = windowFrom.GetAttachedWindows();
+					foreach (var attachWindow in attaches) {
+						
+						if (attachWindow.IsFunction() == true) {
+							
+							alreadyConnectedFunctionIds.Add(attachWindow.GetFunctionId());
+							
+						}
+						
+					}
+					
+				}
+				
+				foreach (var win in data.windows) {
+					
+					if (win.IsFunction() == true &&
+					    win.IsContainer() == true) {
+						
+						var count = alreadyConnectedFunctionIds.Count((e) => e == win.id);
+						if ((window.GetFunctionId() == win.id && count == 1) || count == 0) {
+							
+						} else {
+							
+							if (win.id == window.functionId) window.functionId = 0;
+							alreadyConnectedFunctionIds.Remove(win.id);
+							
+						}
+						
+					}
+					
+				}
 
 				var functionId = window.GetFunctionId();
-				var functionContainer = data.GetWindow(functionId);
+				var functionContainer = functionId == 0 ? null : data.GetWindow(functionId);
 				var isActiveSelected = true;
 
 				var oldColor = GUI.color;
 				GUI.color = isActiveSelected ? Color.white : Color.grey;
-				var result = GUILayoutExt.LargeButton(functionContainer != null ? functionContainer.title : "None", 60f, 150f);
+				var result = GUILayoutExt.LargeButton(functionContainer != null ? functionContainer.title : "None", GUILayout.MaxHeight(60f), GUILayout.MaxWidth(150f));
 				GUI.color = oldColor;
 				var rect = GUILayoutUtility.GetLastRect();
 				rect.y += rect.height;
@@ -259,17 +299,44 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 					});
 
+					if (windowFrom != null) {
+
+						alreadyConnectedFunctionIds.Clear();
+						var attaches = windowFrom.GetAttachedWindows();
+						foreach (var attachWindow in attaches) {
+							
+							if (attachWindow.IsFunction() == true) {
+								
+								alreadyConnectedFunctionIds.Add(attachWindow.GetFunctionId());
+								
+							}
+							
+						}
+						
+					}
 					foreach (var win in data.windows) {
 						
 						if (win.IsFunction() == true &&
 						    win.IsContainer() == true) {
 
-							var id = win.id;
-							menu.AddItem(new GUIContent(win.title), win.id == window.functionId, () => {
+							var count = alreadyConnectedFunctionIds.Count((e) => e == win.id);
+							if ((window.GetFunctionId() == win.id && count == 1) || count == 0) {
 
-								window.functionId = id;
+								var id = win.id;
+								menu.AddItem(new GUIContent(win.title), win.id == window.functionId, () => {
 
-							});
+									window.functionId = id;
+
+								});
+
+							} else {
+
+								if (win.id == window.functionId) window.functionId = 0;
+
+								alreadyConnectedFunctionIds.Remove(win.id);
+								menu.AddDisabledItem(new GUIContent(win.title));
+
+							}
 
 						}
 						

@@ -41,8 +41,8 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 				
 			} else {
 				
-				GUILayout.Label(FlowAddon.MODULE_INSTALLED);
-				
+				GUILayout.Label(FlowAddon.MODULE_INSTALLED, EditorStyles.centeredGreyMiniLabel);
+
 				if (this.editor == null) this.editor = Editor.CreateEditor(settings);
 				if (this.editor != null) {
 					

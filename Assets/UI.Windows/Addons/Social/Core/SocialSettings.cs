@@ -84,6 +84,8 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 
 		}
 
+		public FlowWindow.Flags uniqueTag = FlowWindow.Flags.Tag1;
+
 		public Platform[] activePlatforms;
 
 		public WindowsData data;

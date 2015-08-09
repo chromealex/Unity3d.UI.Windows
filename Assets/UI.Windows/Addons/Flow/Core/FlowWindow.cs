@@ -92,9 +92,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			ShowDefault = 0x8,
 			IsFunction = 0x10,
-			Reserved2 = 0x20,
-			Reserved3 = 0x40,
-			Reserved4 = 0x80,
+			Reserved1 = 0x20,
+			Reserved2 = 0x40,
+			Reserved3 = 0x80,
 			
 			Tag1 = 0x100,
 			Tag2 = 0x200,
@@ -368,6 +368,20 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				if (win == null) return null;
 
 				return win.GetScreen();
+
+			}
+
+			if (this.IsFunction() == true) {
+
+				var func = FlowSystem.GetWindow(this.GetFunctionId());
+				if (func != null) {
+
+					var win = FlowSystem.GetWindow(func.functionExitId);
+					if (win == null) return null;
+
+					return win.GetScreen();
+
+				}
 
 			}
 
@@ -651,6 +665,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			}
 			
 			return output;
+			
+		}
+		
+		public bool HasAttach(int windowId) {
+			
+			return this.attachItems.Any((item) => item.targetId == windowId);
 			
 		}
 

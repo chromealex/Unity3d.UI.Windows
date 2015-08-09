@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine.UI.Windows.Plugins.Social;
 using UnityEngine.UI.Windows.Plugins.Social.Core;
+using UnityEngine.UI.Windows.Plugins.Flow;
 
 namespace UnityEditor.UI.Windows.Plugins.Social {
 
@@ -23,10 +24,12 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		public override void OnInspectorGUI() {
 
-			GUILayout.Label("Platforms", EditorStyles.boldLabel);
-
 			var target = this.target as SocialSettings;
 			var socials = SocialSettingsEditor.socials;
+
+			target.uniqueTag = (FlowWindow.Flags)EditorGUILayout.EnumPopup("Unique Tag:", target.uniqueTag);
+			
+			GUILayout.Label("Platforms", EditorStyles.boldLabel);
 
 			if (target.activePlatforms == null) target.activePlatforms = new Platform[0];
 
