@@ -46,6 +46,7 @@ GameObject:
   - 114: {fileID: 11440482}
   - 114: {fileID: 11442514}
   - 114: {fileID: 11428896}
+  - 114: {fileID: 11401724}
   m_Layer: 5
   m_Name: EndGameLayout
   m_TagString: Untagged
@@ -53,6 +54,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11401724
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 140492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5b23a0262a548f09dea1c5333626ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 22340482}
+  canvasScaler: {fileID: 11442514}
 --- !u!114 &11428896
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -64,6 +78,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74f7df60ebd248f2be4c19cd9458e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents:
+  - {fileID: 11440506}
   canvasScaler: {fileID: 11442514}
   root: {fileID: 11440508}
   elements:
@@ -72,6 +90,7 @@ MonoBehaviour:
   gridSize: {x: 5, y: 5}
   canvas: {fileID: 22340482}
   raycaster: {fileID: 11440482}
+  canvasUpdater: {fileID: 11401724}
   initialized: 1
   isAlive: 0
 --- !u!114 &11431626
@@ -91,6 +110,8 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
     resetState:
       to: 0
     inState:
@@ -124,7 +145,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams:
   - {fileID: 11431626}
   canvas: {fileID: 22540488}
@@ -135,6 +161,7 @@ MonoBehaviour:
   comment: CONTENT BORDER
   autoStretchX: 1
   autoStretchY: 1
+  showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
   randomColor: {r: 1, g: 0, b: .80907774, a: 1}
@@ -165,6 +192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 22440490}
   mode: 0
   minWidth: 1024
   maxWidth: 1920
@@ -256,16 +284,16 @@ RectTransform:
   m_GameObject: {fileID: 140492}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 22440490}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: .5, y: .5}
 --- !u!225 &22540488
 CanvasGroup:
   m_ObjectHideFlags: 1

@@ -64,6 +64,7 @@ GameObject:
   - 114: {fileID: 11499832}
   - 114: {fileID: 11499836}
   - 114: {fileID: 11452842}
+  - 114: {fileID: 11452338}
   m_Layer: 5
   m_Name: ExampleTransitionsListLayout
   m_TagString: Untagged
@@ -71,6 +72,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11452338
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 199824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5b23a0262a548f09dea1c5333626ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 22399816}
+  canvasScaler: {fileID: 11452842}
 --- !u!114 &11452842
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -109,12 +123,22 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
     moveRoot: 1
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: -400, y: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: -400, y: 0}
 --- !u!114 &11499816
 MonoBehaviour:
@@ -145,7 +169,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams: []
   canvas: {fileID: 22599816}
   animationRefresh: 0
@@ -155,6 +184,7 @@ MonoBehaviour:
   comment: BUTTONS LIST
   autoStretchX: 0
   autoStretchY: 0
+  showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
   randomColor: {r: 0, g: 0, b: 0, a: 0}
@@ -185,7 +215,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents:
+  - {fileID: 11499818}
   animation: {fileID: 11400000, guid: 730d9c6e7d6b442569da096113e3741f, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams:
   - {fileID: 11484808}
   canvas: {fileID: 22599820}
@@ -196,6 +232,7 @@ MonoBehaviour:
   comment: CONTENT BORDER EXAMPLE
   autoStretchX: 0
   autoStretchY: 0
+  showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
   randomColor: {r: 0, g: 0, b: 0, a: 0}
@@ -242,6 +279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 22499824}
   mode: 0
   minWidth: 1024
   maxWidth: 1920
@@ -263,6 +301,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74f7df60ebd248f2be4c19cd9458e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents:
+  - {fileID: 11499830}
   canvasScaler: {fileID: 11452842}
   root: {fileID: 11499834}
   elements:
@@ -272,6 +314,7 @@ MonoBehaviour:
   gridSize: {x: 5, y: 5}
   canvas: {fileID: 22399816}
   raycaster: {fileID: 11499832}
+  canvasUpdater: {fileID: 11452338}
   initialized: 1
   isAlive: 0
 --- !u!223 &22399816
@@ -289,7 +332,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
-  m_SortingLayerID: 2855772853
+  m_SortingLayerID: -1439194443
   m_SortingOrder: 0
 --- !u!224 &22499816
 RectTransform:
@@ -395,4 +438,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 199824}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

@@ -34,6 +34,8 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector][SerializeField]
 		public UnityEngine.EventSystems.BaseRaycaster raycaster;
 		[HideInInspector][SerializeField]
+		public CanvasUpdater canvasUpdater;
+		[HideInInspector][SerializeField]
 		public bool initialized = false;
 		
 		[HideInInspector][SerializeField]
@@ -50,7 +52,16 @@ namespace UnityEngine.UI.Windows {
 
 			base.OnValidateEditor();
 
-			//this.elements = this.GetComponentsInChildren<WindowLayoutElement>(true).ToList();
+			if (Application.isPlaying == true) return;
+
+			if (this.canvasUpdater == null || this.GetComponents<CanvasUpdater>().Length > 1) {
+
+				if (this.GetComponent<CanvasUpdater>() != null) Component.DestroyImmediate(this.GetComponent<CanvasUpdater>());
+				this.canvasUpdater = this.GetComponent<CanvasUpdater>();
+				if (this.canvasUpdater == null) this.canvasUpdater = this.gameObject.AddComponent<CanvasUpdater>();
+				if (this.canvasUpdater != null) this.canvasUpdater.OnValidate();
+
+			}
 
 			if (this.canvasScaler == null || this.GetComponents<CanvasScaler>().Length > 1) {
 
@@ -59,6 +70,14 @@ namespace UnityEngine.UI.Windows {
 				if (this.canvasScaler == null) this.canvasScaler = this.gameObject.AddComponent<CanvasScaler>();
 
 			}
+
+			var rectTransform = (this.transform as RectTransform);
+			rectTransform.anchorMin = Vector2.zero;
+			rectTransform.anchorMax = Vector2.one;
+			rectTransform.pivot = Vector2.one * 0.5f;
+			rectTransform.localScale = Vector3.one;
+			rectTransform.localRotation = Quaternion.identity;
+			rectTransform.anchoredPosition3D = Vector3.zero;
 
 		}
 		#endif
@@ -81,6 +100,8 @@ namespace UnityEngine.UI.Windows {
 			this.SetScale(scaleMode, fixedScaleResolution);
 
 			for (int i = 0; i < this.elements.Count; ++i) this.elements[i].Setup(this.GetWindow());
+			
+			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 
 		}
 

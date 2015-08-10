@@ -85,6 +85,7 @@ GameObject:
   - 114: {fileID: 11487306}
   - 114: {fileID: 11487310}
   - 114: {fileID: 11452842}
+  - 114: {fileID: 11476220}
   m_Layer: 5
   m_Name: ExampleAlertLayoutNoSlide
   m_TagString: Untagged
@@ -113,6 +114,19 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!114 &11476220
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 187310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5b23a0262a548f09dea1c5333626ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 22387310}
+  canvasScaler: {fileID: 11452842}
 --- !u!114 &11487286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,7 +156,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams: []
   canvas: {fileID: 22587306}
   animationRefresh: 0
@@ -152,6 +171,7 @@ MonoBehaviour:
   comment: BUTTON OK EXAMPLE
   autoStretchX: 0
   autoStretchY: 0
+  showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
   randomColor: {r: 0, g: 0, b: 0, a: 0}
@@ -202,7 +222,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams: []
   canvas: {fileID: 22587308}
   animationRefresh: 0
@@ -212,6 +237,7 @@ MonoBehaviour:
   comment: CONTENT INNER EXAMPLE
   autoStretchX: 0
   autoStretchY: 0
+  showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
   randomColor: {r: 0, g: 0, b: 0, a: 0}
@@ -293,7 +319,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents:
+  - {fileID: 11487292}
+  - {fileID: 11487288}
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams:
   - {fileID: 11494764}
   canvas: {fileID: 22587310}
@@ -304,6 +337,7 @@ MonoBehaviour:
   comment: CONTENT BORDER EXAMPLE
   autoStretchX: 0
   autoStretchY: 0
+  showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
   randomColor: {r: 0, g: 0, b: 0, a: 0}
@@ -350,6 +384,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 22487310}
   mode: 0
   minWidth: 1024
   maxWidth: 1920
@@ -371,6 +406,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74f7df60ebd248f2be4c19cd9458e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents:
+  - {fileID: 11487304}
   canvasScaler: {fileID: 11452842}
   root: {fileID: 11487308}
   elements:
@@ -381,6 +420,7 @@ MonoBehaviour:
   gridSize: {x: 5, y: 5}
   canvas: {fileID: 22387310}
   raycaster: {fileID: 11487306}
+  canvasUpdater: {fileID: 11476220}
   initialized: 1
   isAlive: 0
 --- !u!114 &11494764
@@ -400,6 +440,8 @@ MonoBehaviour:
     outDelay: 0
     inDuration: 1
     outDuration: 1
+    inEase: 0
+    outEase: 0
     resetState:
       to: 0
     inState:
@@ -421,7 +463,7 @@ Canvas:
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
-  m_SortingLayerID: 2855772853
+  m_SortingLayerID: -1439194443
   m_SortingOrder: 0
 --- !u!224 &22487302
 RectTransform:
@@ -556,4 +598,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 187310}
   m_IsPrefabParent: 1
-  m_IsExploded: 1
