@@ -229,8 +229,15 @@ namespace UnityEngine.Extensions {
 		}
 
 		public static int Count<T>(T prefab) where T : Component {
-			if (instance.objectLookup.ContainsKey(prefab)) return instance.objectLookup[prefab].Count;
-			else return 0;
+
+			if (instance.objectLookup.ContainsKey(prefab)) {
+
+				return instance.objectLookup[prefab].Count;
+
+			}
+
+			return 0;
+
 		}
 
 		public static ObjectPool instance {

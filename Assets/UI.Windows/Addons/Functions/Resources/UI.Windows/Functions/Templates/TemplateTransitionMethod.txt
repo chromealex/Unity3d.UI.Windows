@@ -16,15 +16,21 @@
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
 			if (item == null || item.transition == null) {
 				
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(parameters);
+				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
+					
+					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(index)); });
+					
+				}, parameters);
 				
 			} else {
 				
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(item.transition, item.transitionParameters, parameters);
+				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
+					
+					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(index)); });
+					
+				}, item.transition, item.transitionParameters, parameters);
 				
 			}
-			
-			WindowSystem.RegisterFunctionCallback(instance, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(index)); });
 			
 			return instance;
 			
