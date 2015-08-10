@@ -9,6 +9,7 @@ using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows.Animations;
 using System;
+using UnityEngine.UI.Windows.Styles;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 
@@ -466,7 +467,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				var style = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.SmallStyle.NotSelected", this.smallStyleDefault, (styleName) => {
 					
-					var _style = new GUIStyle(styleName);
+					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
 					_style.padding = new RectOffset(0, 0, 14, 1);
 					_style.contentOffset = new Vector2(0f, -15f);
 					_style.fontStyle = FontStyle.Bold;
@@ -479,7 +480,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				var styleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.SmallStyle.Selected", this.smallStyleSelected, (styleName) => {
 					
-					var _style = new GUIStyle(styleName);
+					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
 					_style.padding = new RectOffset(0, 0, 14, 1);
 					_style.contentOffset = new Vector2(0f, -15f);
 					_style.fontStyle = FontStyle.Bold;
@@ -511,10 +512,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 				var containerStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Container", styleNormal, (styleName) => {
 					
-					var _style = new GUIStyle(styleName);
+					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
 					_style.padding = new RectOffset(0, 0, 16, 1);
 					_style.contentOffset = new Vector2(0f, -15f);
 					_style.fontStyle = FontStyle.Bold;
+					_style.alignment = TextAnchor.UpperCenter;
 					_style.normal.textColor = Color.white;
 					
 					return _style;
@@ -588,7 +590,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 				var windowStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Window.Selected", styleNormal, (styleName) => {
 					
-					var _style = new GUIStyle(styleName);
+					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
 					_style.fontStyle = FontStyle.Bold;
 					_style.margin = new RectOffset(0, 0, 0, 0);
 					_style.padding = new RectOffset(0, 0, 5, 4);
@@ -601,7 +603,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 				var windowStyleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Window.NotSelected", styleSelected, (styleName) => {
 					
-					var _style = new GUIStyle(styleName);
+					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
 					_style.fontStyle = FontStyle.Bold;
 					_style.margin = new RectOffset(0, 0, 0, 0);
 					_style.padding = new RectOffset(0, -1, 5, 4);

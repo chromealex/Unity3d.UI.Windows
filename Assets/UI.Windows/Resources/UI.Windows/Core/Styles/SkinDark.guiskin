@@ -1949,7 +1949,7 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: flow node 5
     m_Normal:
-      m_Background: {fileID: 2800000, guid: fadbea85f0b6f4156b041b6f263789cb, type: 3}
+      m_Background: {fileID: 2800000, guid: 63da8126d026f4830a61ad684d5917ec, type: 3}
       m_TextColor: {r: 1, g: 1, b: 1, a: 1}
     m_Hover:
       m_Background: {fileID: 0}
@@ -2007,7 +2007,7 @@ MonoBehaviour:
     m_StretchHeight: 0
   - m_Name: flow node 6
     m_Normal:
-      m_Background: {fileID: 2800000, guid: 63da8126d026f4830a61ad684d5917ec, type: 3}
+      m_Background: {fileID: 2800000, guid: fadbea85f0b6f4156b041b6f263789cb, type: 3}
       m_TextColor: {r: 1, g: 1, b: 1, a: 1}
     m_Hover:
       m_Background: {fileID: 0}
@@ -2121,7 +2121,7 @@ MonoBehaviour:
     m_FixedHeight: 0
     m_StretchWidth: 1
     m_StretchHeight: 0
-  - m_Name: flow node 7
+  - m_Name: flow node 8
     m_Normal:
       m_Background: {fileID: 2800000, guid: 0b12997fe822c4521a9f0ec5062aad68, type: 3}
       m_TextColor: {r: 1, g: 1, b: 1, a: 1}

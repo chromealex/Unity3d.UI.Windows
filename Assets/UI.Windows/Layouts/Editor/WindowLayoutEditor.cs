@@ -3,53 +3,13 @@ using UnityEngine.UI.Windows;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.UI.Windows.Styles;
 
 namespace UnityEditor.UI.Windows {
 
 	[CustomEditor(typeof(WindowLayout), true)]
 	[CanEditMultipleObjects()]
 	public class WindowLayoutEditor : Editor, IPreviewEditor {
-		
-		public const int MAX_DEPTH = 6;
-
-		private class Styles {
-			
-			public GUISkin skin;
-			public GUIStyle[] boxes;
-			public GUIStyle[] boxesSelected;
-			public GUIStyle boxSelected;
-
-			public Styles() {
-				
-				this.skin = Resources.Load<GUISkin>("UI.Windows/Core/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
-				this.boxes = new GUIStyle[WindowLayoutEditor.MAX_DEPTH] {
-					
-					this.skin.FindStyle("flow node 0"),
-					this.skin.FindStyle("flow node 1"),
-					this.skin.FindStyle("flow node 2"),
-					this.skin.FindStyle("flow node 3"),
-					this.skin.FindStyle("flow node 4"),
-					this.skin.FindStyle("flow node 5")
-					
-				};
-				this.boxesSelected = new GUIStyle[WindowLayoutEditor.MAX_DEPTH] {
-					
-					this.skin.FindStyle("flow node 0"), // on
-					this.skin.FindStyle("flow node 1"),
-					this.skin.FindStyle("flow node 2"),
-					this.skin.FindStyle("flow node 3"),
-					this.skin.FindStyle("flow node 4"),
-					this.skin.FindStyle("flow node 5")
-					
-				};
-
-				this.boxSelected = this.skin.FindStyle("flow node 5");
-
-			}
-			
-		}
-		
-		private Styles styles;
 
 		private bool isDirty = false;
 		
@@ -119,8 +79,6 @@ namespace UnityEditor.UI.Windows {
 
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, System.Action<WindowLayoutElement, Rect, bool> onElementGUI) {
 
-			if (this.styles == null) this.styles = new Styles();
-
 			var oldColor = GUI.color;
 			var c = Color.white;
 			c.a = 1f;
@@ -162,9 +120,9 @@ namespace UnityEditor.UI.Windows {
 			var scaleFactor = 0f;
 			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(_target.root.editorRect.width, _target.root.editorRect.height), new Vector2(r.width, r.height));
 
-			var selected = this.styles.boxSelected;
-			var styles = this.styles.boxes;
-			var stylesSelected = this.styles.boxesSelected;
+			var selected = WindowLayoutStyles.styles.boxSelected;
+			var styles = WindowLayoutStyles.styles.boxes;
+			var stylesSelected = WindowLayoutStyles.styles.boxesSelected;
 			
 			var horArrowsStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.horArrowsStyle", "ColorPickerHorizThumb", (style) => new GUIStyle(style));
 			var vertArrowsStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.vertArrowsStyle", "ColorPickerVertThumb", (style) => new GUIStyle(style));
@@ -187,10 +145,10 @@ namespace UnityEditor.UI.Windows {
 				rect.width *= scaleFactor;
 				rect.height *= scaleFactor;
 				
-				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, WindowLayoutEditor.MAX_DEPTH - 1)];
+				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, WindowLayoutStyles.MAX_DEPTH - 1)];
 				if (rect.Contains(Event.current.mousePosition) == true) {
 
-					style = stylesSelected[Mathf.Clamp(element.editorDrawDepth, 0, WindowLayoutEditor.MAX_DEPTH - 1)];
+					style = stylesSelected[Mathf.Clamp(element.editorDrawDepth, 0, WindowLayoutStyles.MAX_DEPTH - 1)];
 
 					element.editorHovered = true;
 					this.Repaint();

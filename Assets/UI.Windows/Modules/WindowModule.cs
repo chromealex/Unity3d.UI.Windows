@@ -9,9 +9,9 @@ namespace UnityEngine.UI.Windows {
 		[Header("Module")]
 		public int defaultSortingOrder;
 		public bool defaultBackgroundLayer;
-		
-		[Header("Module Editor")]
+
 		#if UNITY_EDITOR
+		[Header("Module Editor")]
 		public string comment;
 		#endif
 
