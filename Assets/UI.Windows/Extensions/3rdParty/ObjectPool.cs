@@ -32,8 +32,6 @@ namespace UnityEngine.Extensions {
 
 		public void Init() {
 
-			if (ObjectPool._instance != null) return;
-
 			ObjectPool._instance = this;
 			
 		}

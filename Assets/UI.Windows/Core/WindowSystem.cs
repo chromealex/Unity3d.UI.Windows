@@ -225,7 +225,6 @@ namespace UnityEngine.UI.Windows {
 
 		private void Awake() {
 
-			if (WindowSystem.instance != null) return;
 			WindowSystem.instance = this;
 
 			if (this.objectPool == null) {
