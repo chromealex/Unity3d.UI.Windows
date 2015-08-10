@@ -145,6 +145,7 @@ namespace UnityEditor.UI.Windows.Animations {
 				this.windowB.transition.Apply(_target.transition, _target, forward: true, value: this.sliderPosition, reset: true);
 				
 				// Take screenshot
+				Graphics.Blit(Texture2D.blackTexture, this.targetTexture);
 				Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture);
 				Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture);
 				

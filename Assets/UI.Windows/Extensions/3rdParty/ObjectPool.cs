@@ -282,40 +282,59 @@ namespace UnityEngine.Extensions {
 		}
 
 		public static void RecycleAll<T>(this T prefab) where T : Component {
+
 			ObjectPool.RecycleAll(prefab);
+
 		}
 
 		public static void ClearPool<T>(this T prefab) where T : Component {
+
 			ObjectPool.ClearPool(prefab);
+
 		}
 		
 		public static void CreatePool<T>(this T prefab, int capacity, Transform root = null) where T : Component {
+
 			ObjectPool.CreatePool(prefab, capacity, root: root);
+
 		}
 		
 		public static void CreatePool<T>(this T prefab, int capacity, System.Func<T, T> spawner, Transform root = null) where T : Component {
+
 			ObjectPool.CreatePool(prefab, capacity, spawner, root);
+
 		}
 
 		public static T Spawn<T>(this T prefab, Vector3 position, Quaternion rotation) where T : Component {
+
 			return ObjectPool.Spawn(prefab, position, rotation);
+
 		}
 
 		public static T Spawn<T>(this T prefab, Vector3 position) where T : Component {
+
 			return ObjectPool.Spawn(prefab, position, Quaternion.identity);
+
 		}
 
 		public static T Spawn<T>(this T prefab) where T : Component {
+
 			return ObjectPool.Spawn(prefab, Vector3.zero, Quaternion.identity);
+
 		}
 
 		public static void Recycle<T>(this T obj) where T : Component {
+
 			ObjectPool.Recycle(obj);
+
 		}
 
 		public static int Count<T>(T prefab) where T : Component {
+
 			return ObjectPool.Count(prefab);
+
 		}
+
 	}
 
 	public static class TransformExtensions {

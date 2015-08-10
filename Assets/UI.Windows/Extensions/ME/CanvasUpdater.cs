@@ -23,13 +23,6 @@ namespace UnityEngine.UI.Extensions {
 			
 		}
 
-		public void OnValidate() {
-			
-			this.canvas = this.GetComponent<Canvas>();
-			this.canvasScaler = this.GetComponent<CanvasScaler>();
-
-		}
-
 		public void OnUpdate() {
 
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
@@ -43,7 +36,9 @@ namespace UnityEngine.UI.Extensions {
 		}
 		
 		public static void ForceUpdate(Canvas canvas, CanvasScaler canvasScaler) {
-			
+
+			if (canvas == null) return;
+
 			canvas.scaleFactor = 0.99f;
 			canvas.scaleFactor = 1f;
 
@@ -54,6 +49,15 @@ namespace UnityEngine.UI.Extensions {
 			}
 
 		}
+		
+		#if UNITY_EDITOR
+		public void OnValidate() {
+			
+			this.canvas = this.GetComponent<Canvas>();
+			this.canvasScaler = this.GetComponent<CanvasScaler>();
+			
+		}
+		#endif
 
 	}
 

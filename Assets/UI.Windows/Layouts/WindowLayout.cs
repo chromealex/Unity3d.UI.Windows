@@ -3,10 +3,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
 	[RequireComponent(typeof(Canvas))]
+	[RequireComponent(typeof(CanvasUpdater))]
     public class WindowLayout : WindowObjectElement, ICanvasElement, IWindowEventsAsync {
 
 		public enum ScaleMode : byte {
