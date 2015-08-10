@@ -39,12 +39,15 @@ namespace UnityEngine.UI.Extensions {
 
 			if (canvas == null) return;
 
-			canvas.scaleFactor = 0.99f;
-			canvas.scaleFactor = 1f;
+			var _factor = canvas.scaleFactor;
+			canvas.scaleFactor = _factor - 0.01f;
+			canvas.scaleFactor = _factor;
 
 			if (canvasScaler != null) {
 
-				canvasScaler.scaleFactor = 1f;
+				_factor = canvasScaler.scaleFactor;
+				canvasScaler.scaleFactor = _factor - 0.01f;
+				canvasScaler.scaleFactor = _factor;
 
 			}
 

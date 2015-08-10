@@ -96,12 +96,12 @@ namespace UnityEngine.UI.Windows {
 			this.canvas.sortingOrder = orderInLayer;
 			this.canvas.planeDistance = 10f;// * orderInLayer;
 			this.canvas.worldCamera = this.GetWindow().workCamera;
+			
+			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 
 			this.SetScale(scaleMode, fixedScaleResolution);
 
 			for (int i = 0; i < this.elements.Count; ++i) this.elements[i].Setup(this.GetWindow());
-			
-			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 
 		}
 
