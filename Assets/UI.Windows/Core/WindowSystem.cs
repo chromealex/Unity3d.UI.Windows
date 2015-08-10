@@ -139,7 +139,11 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-
+		
+		[Header("Required")]
+		public ObjectPool objectPool;
+		
+		[Header("Settings")]
 		public Settings settings = new Settings();
 
 		/// <summary>
@@ -190,24 +194,6 @@ namespace UnityEngine.UI.Windows {
 					WindowSystem._instance = GameObject.FindObjectOfType<WindowSystem>();
 					if (WindowSystem._instance == null) {
 
-						/*var go = GameObject.Find("WindowSystemInitializer");
-						if (go != null) WindowSystem._instance = go.GetComponent<WindowSystem>();
-
-						if (WindowSystem._instance == null) {
-
-							if (Application.isPlaying == false) {
-
-								WindowSystem._instance = new WindowSystem();
-
-							} else {
-
-								go = new GameObject("[A] WindowSystem", typeof(WindowSystem));
-								WindowSystem._instance = go.GetComponent<WindowSystem>();
-
-							}
-
-						}*/
-
 						return null;
 
 					}
@@ -227,9 +213,29 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public void OnValidate() {
+
+			if (this.objectPool == null) {
+
+				this.objectPool = Object.FindObjectOfType<ObjectPool>();
+
+			}
+
+		}
+
 		private void Awake() {
 
+			if (WindowSystem.instance != null) return;
 			WindowSystem.instance = this;
+
+			if (this.objectPool == null) {
+
+				Debug.LogError("WindowSystem need ObjectPool reference", this);
+				return;
+
+			}
+
+			this.objectPool.Init();
 
 			GameObject.DontDestroyOnLoad(this.gameObject);
 
@@ -265,7 +271,7 @@ namespace UnityEngine.UI.Windows {
 			foreach (var window in this.windows) {
 
 				if (window.preferences.preallocatedCount > 0) {
-					
+
 					window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source); });
 
 				} else {
@@ -366,6 +372,8 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="window">Window.</param>
 		public static void AddToHistory(WindowBase window) {
+
+			if (Application.isPlaying == false) return;
 
 			if (window.preferences.IsHistoryActive() == true) {
 

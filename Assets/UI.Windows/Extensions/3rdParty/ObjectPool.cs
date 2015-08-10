@@ -24,12 +24,15 @@ using System.Collections.Generic;
 namespace UnityEngine.Extensions {
 
 	public sealed class ObjectPool : MonoBehaviour {
+
 		static ObjectPool _instance;
 		Dictionary<Component, List<Component>> objectLookup = new Dictionary<Component, List<Component>>();
 		Dictionary<Component, Component> prefabLookup = new Dictionary<Component, Component>();
 		Dictionary<Component, List<Component>> allLookup = new Dictionary<Component, List<Component>>();
 
-		public void Awake() {
+		public void Init() {
+
+			if (ObjectPool._instance != null) return;
 
 			ObjectPool._instance = this;
 			
@@ -237,23 +240,14 @@ namespace UnityEngine.Extensions {
 			get {
 				
 				#if UNITY_EDITOR
-				/*if (Application.isPlaying == false) {
-					
-					var items = ObjectPool.FindObjectsOfType<ObjectPool>();
-					if (items.Length > 0) {
+				if (ObjectPool._instance == null) {
 
-						foreach (var item in items) GameObject.DestroyImmediate(item);
+					ObjectPool._instance = ObjectPool.FindObjectOfType<ObjectPool>();
 
-					}
-
-					return new ObjectPool();
-
-				}*/
-
-				if (_instance == null) _instance = ObjectPool.FindObjectOfType<ObjectPool>();
+				}
 				#endif
 
-				return _instance;
+				return ObjectPool._instance;
 				/*
 				var go = GameObject.Find("WindowSystemInitializer/ObjectPool");
 				if (go != null) _instance = go.GetComponent<ObjectPool>();
