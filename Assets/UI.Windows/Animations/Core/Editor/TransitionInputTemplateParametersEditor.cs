@@ -99,9 +99,7 @@ namespace UnityEditor.UI.Windows.Animations {
 			}
 
 			if (this.sceneTestContainer == null) {
-				
-				this.changed = true;
-				
+
 				this.sceneTestContainer = new GameObject("Transition-Temp");
 				this.sceneTestContainer.hideFlags = HideFlags.DontSave;//HideFlags.HideAndDontSave;
 				
@@ -113,15 +111,25 @@ namespace UnityEditor.UI.Windows.Animations {
 				// Create 2 windows
 				
 				this.windowA = WindowSystem.Show(windowSource);
-				this.windowA.transform.SetParent(this.sceneTestContainer.transform);
-				image = this.windowA.GetLayoutComponent<ImageComponent>();
-				image.SetImage(this.styles.transitionA.normal.background);
-				
-				this.windowB = WindowSystem.Show(windowSource);
-				this.windowB.transform.SetParent(this.sceneTestContainer.transform);
-				image = this.windowB.GetLayoutComponent<ImageComponent>();
-				image.SetImage(this.styles.transitionB.normal.background);
-				
+				if (this.windowA != null) {
+
+					this.windowA.transform.SetParent(this.sceneTestContainer.transform);
+					image = this.windowA.GetLayoutComponent<ImageComponent>();
+					image.SetImage(this.styles.transitionA.normal.background);
+					
+					this.windowB = WindowSystem.Show(windowSource);
+					if (this.windowB != null) {
+
+						this.windowB.transform.SetParent(this.sceneTestContainer.transform);
+						image = this.windowB.GetLayoutComponent<ImageComponent>();
+						image.SetImage(this.styles.transitionB.normal.background);
+						
+						this.changed = true;
+
+					}
+
+				}
+
 			}
 			
 			if (this.targetTexture == null) {

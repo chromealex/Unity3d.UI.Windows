@@ -34,11 +34,17 @@ namespace UnityEditor.UI.Windows {
 			return string.Format("{0}.{1}.{2}{3}", this.major, this.minor, this.release, this.type.ToString());
 
 		}
-
+		
 		public string ToSmallString() {
-
+			
 			return string.Format("{0}{1}{2}{3}", this.major, this.minor, this.release, this.type.ToString());
-
+			
+		}
+		
+		public string ToSmallWithoutTypeString() {
+			
+			return string.Format("{0}{1}{2}", this.major, this.minor, this.release);
+			
 		}
 
 		public override bool Equals(object obj) {

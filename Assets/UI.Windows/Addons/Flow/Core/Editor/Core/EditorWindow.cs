@@ -570,7 +570,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			const float size = 64f;
+			const float size = 32f;
 			const float offset = size * 0.5f + 5f;
 
 			if (doubleSided == true) {
@@ -1661,7 +1661,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									while (this.cachedData.version < VersionInfo.BUNDLE_VERSION) {
 
 										// Try to find upgrade method
-										var methodName = "UpgradeTo" + VersionInfo.BUNDLE_VERSION.ToSmallString();
+										var methodName = "UpgradeTo" + this.cachedData.version.ToSmallWithoutTypeString();
 										var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
 										if (methodInfo != null) {
 

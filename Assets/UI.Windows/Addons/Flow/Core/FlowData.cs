@@ -53,19 +53,25 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#if UNITY_EDITOR
 		#region UPGRADES
 		#pragma warning disable 612,618
-		public void UpgradeTo094a() {
+		public void UpgradeTo095() {
+			
+			this.UpgradeTo094();
+			
+		}
 
+		public void UpgradeTo094() {
+			
 			foreach (var window in this.windows) {
-
+				
 				window.attachItems = new List<FlowWindow.AttachItem>();
 				foreach (var attachId in window.attaches) {
-
+					
 					window.attachItems.Add(new FlowWindow.AttachItem(attachId));
-
+					
 				}
-
+				
 			}
-
+			
 		}
 		#pragma warning restore 612,618
 		#endregion
