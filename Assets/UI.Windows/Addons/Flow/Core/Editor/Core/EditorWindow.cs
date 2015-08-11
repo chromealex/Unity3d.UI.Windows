@@ -561,7 +561,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public void DrawTransitionChooser(UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.AttachItem attach, FlowWindow fromWindow, FlowWindow toWindow, bool doubleSided) {
 			
 			if (toWindow.IsEnabled() == false) return;
-
 			if (toWindow.IsContainer() == true) return;
 
 			if (toWindow.IsSmall() == true) {
@@ -578,7 +577,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var q = Quaternion.LookRotation(toWindow.rect.center - fromWindow.rect.center, Vector3.back);
 				var attachRevert = FlowSystem.GetAttachItem(toWindow.id, fromWindow.id);
 				
-				this.DrawTransitionChooser(attachRevert, fromWindow, toWindow, q * Vector2.left * offset, size);
+				this.DrawTransitionChooser(attachRevert, toWindow, fromWindow, q * Vector2.left * offset, size);
 				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.right * offset, size);
 
 			} else {

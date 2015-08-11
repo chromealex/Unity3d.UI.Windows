@@ -11,7 +11,6 @@ namespace UnityEngine.UI.Windows {
 			FlexibleWidth,
 		};
 		
-		public Camera camera;
 		public CanvasGroup canvasGroup;
 
 		[HideInInspector]
@@ -70,14 +69,15 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		#endif
-
+		/*
+		new private Camera camera;
 		internal override void Setup(WindowBase window) {
 
 			base.Setup(window);
 
 			this.camera = this.GetWindow().workCamera;
 
-		}
+		}*/
 
 		public bool IsDestroyed() {
 
