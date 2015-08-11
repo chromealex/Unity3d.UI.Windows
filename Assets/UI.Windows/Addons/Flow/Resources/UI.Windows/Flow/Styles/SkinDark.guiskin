@@ -1408,10 +1408,10 @@ MonoBehaviour:
       m_Top: 5
       m_Bottom: 5
     m_Overflow:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
+      m_Left: 3
+      m_Right: 4
+      m_Top: 3
+      m_Bottom: 3
     m_Font: {fileID: 0}
     m_FontSize: 0
     m_FontStyle: 0
