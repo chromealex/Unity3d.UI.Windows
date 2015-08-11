@@ -41,6 +41,8 @@ namespace UnityEditor.UI.Windows.Animations {
 		private LayoutWindowType windowB;
 		private RenderTexture targetTexture;
 		
+		private Material material;
+
 		private bool changed = false;
 		private bool hovered = false;
 
@@ -83,13 +85,7 @@ namespace UnityEditor.UI.Windows.Animations {
 				this.sliderPosition += delta;
 				if (this.sliderPosition > 2f) {
 					
-					this.sliderPosition = 0f;
-					
-				}
-
-				if (this.sliderPosition > 1f) {
-					
-					this.sliderPosition -= 1f;
+					this.sliderPosition = -0.5f;
 					
 				}
 
@@ -143,20 +139,42 @@ namespace UnityEditor.UI.Windows.Animations {
 			if (this.changed == true) {
 				
 				this.sceneTestContainer.SetActive(true);
-				
+
+				this.material = _target.GetParameters().GetMaterialInstance();
+				var lerpA = _target.GetParameters().materialLerpA;
+				var lerpB = _target.GetParameters().materialLerpB;
+
+				// Take screenshot
+				Graphics.Blit(Texture2D.blackTexture, this.targetTexture);
+
 				// Rewind to value
 				this.windowA.transition.Setup(this.windowA);
 				_target.transition.SetInState(_target, this.windowA, null);
 				this.windowA.transition.Apply(_target.transition, _target, forward: false, value: this.sliderPosition, reset: false);
-				
+
+				if (this.material == null || lerpA == false) {
+					
+					Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture);
+					
+				} else {
+					
+					Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture, this.material);
+					
+				}
+
 				this.windowB.transition.Setup(this.windowB);
 				this.windowB.transition.Apply(_target.transition, _target, forward: true, value: this.sliderPosition, reset: true);
-				
-				// Take screenshot
-				Graphics.Blit(Texture2D.blackTexture, this.targetTexture);
-				Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture);
-				Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture);
-				
+
+				if (this.material == null || lerpB == false) {
+					
+					Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture);
+					
+				} else {
+					
+					Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture, this.material);
+					
+				}
+
 				// Deactivate
 				this.sceneTestContainer.SetActive(false);
 				

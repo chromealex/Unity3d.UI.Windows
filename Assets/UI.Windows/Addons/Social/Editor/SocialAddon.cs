@@ -154,6 +154,8 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		public override void OnFlowWindowGUI(FlowWindow window) {
 
+			if (Social.settings == null) return;
+
 			var socialFlag = (window.flags & Social.settings.uniqueTag) == Social.settings.uniqueTag;
 			if (socialFlag == true) {
 

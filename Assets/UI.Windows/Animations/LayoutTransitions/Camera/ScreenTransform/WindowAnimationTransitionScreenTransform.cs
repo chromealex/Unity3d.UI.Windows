@@ -7,7 +7,7 @@ using UnityEngine.UI.Extensions;
 namespace UnityEngine.UI.Windows.Animations {
 
 	[TransitionCamera]
-	public class WindowAnimationTransitionCameraSlide : TransitionBase {
+	public class WindowAnimationTransitionScreenTransform : TransitionBase {
 		
 		[System.Serializable]
 		public class Parameters : TransitionBase.ParametersBase {
@@ -16,33 +16,58 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			[System.Serializable]
 			public class State {
+				
+				[Header("Canvas Group")]
+				public float alpha = 1f;
 
+				[Header("Rect Transform")]
 				public Vector2 anchorMin;
 				public Vector2 anchorMax;
 				public Vector2 anchoredPosition;
 				public Vector2 sizeDelta;
 				public Vector2 pivot;
+				
+				[Header("Transform")]
+				public Quaternion localRotation = Quaternion.identity;
+				public Vector3 localScale = Vector3.one;
+				
+				[Header("Material")]
+				public float materialStrength = 0f;
 
 				public State() {
 				}
 
 				public State(WindowLayoutRoot root) {
-					
+
+					this.alpha = root.alpha;
+
 					this.anchorMin = root.rectTransform.anchorMin;
 					this.anchorMax = root.rectTransform.anchorMax;
 					this.anchoredPosition = root.rectTransform.anchoredPosition;
 					this.sizeDelta = root.rectTransform.sizeDelta;
 					this.pivot = root.rectTransform.pivot;
 
+					this.localRotation = root.rectTransform.localRotation;
+					this.localScale = root.rectTransform.localScale;
+
+					this.materialStrength = 0f;
+
 				}
 
 				public State(State source) {
 					
+					this.alpha = source.alpha;
+
 					this.anchorMin = source.anchorMin;
 					this.anchorMax = source.anchorMax;
 					this.anchoredPosition = source.anchoredPosition;
 					this.sizeDelta = source.sizeDelta;
 					this.pivot = source.pivot;
+					
+					this.localRotation = source.localRotation;
+					this.localScale = source.localScale;
+
+					this.materialStrength = source.materialStrength;
 
 				}
 
@@ -64,9 +89,11 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
-			public void Apply(WindowLayoutRoot root, State startState, State resultState, float value) {
+			public void Apply(Material material, WindowLayoutRoot root, State startState, State resultState, float value) {
 				
 				CanvasUpdater.ForceUpdate();
+				
+				root.alpha = Mathf.Lerp(startState.alpha, resultState.alpha, value);
 
 				root.rectTransform.anchorMin = Vector2.Lerp(startState.anchorMin, resultState.anchorMin, value);
 				root.rectTransform.anchorMax = Vector2.Lerp(startState.anchorMax, resultState.anchorMax, value);
@@ -74,19 +101,39 @@ namespace UnityEngine.UI.Windows.Animations {
 				root.rectTransform.sizeDelta = Vector2.Lerp(startState.sizeDelta, resultState.sizeDelta, value);
 				root.rectTransform.pivot = Vector2.Lerp(startState.pivot, resultState.pivot, value);
 				
+				root.rectTransform.localRotation = Quaternion.Slerp(startState.localRotation, resultState.localRotation, value);
+				root.rectTransform.localScale = Vector3.Lerp(startState.localScale, resultState.localScale, value);
+
+				if (material != null) {
+
+					material.SetFloat(this.GetMaterialStrengthName(), Mathf.Lerp(startState.materialStrength, resultState.materialStrength, value));
+
+				}
+
 				CanvasUpdater.ForceUpdate();
 
 			}
 			
-			public void Apply(WindowLayoutRoot root, State state) {
+			public void Apply(Material material, WindowLayoutRoot root, State state) {
 				
 				CanvasUpdater.ForceUpdate();
+				
+				root.alpha = state.alpha;
 
 				root.rectTransform.anchorMin = state.anchorMin;
 				root.rectTransform.anchorMax = state.anchorMax;
 				root.rectTransform.anchoredPosition = state.anchoredPosition;
 				root.rectTransform.sizeDelta = state.sizeDelta;
 				root.rectTransform.pivot = state.pivot;
+				
+				root.rectTransform.localRotation = state.localRotation;
+				root.rectTransform.localScale = state.localScale;
+
+				if (material != null) {
+					
+					material.SetFloat(this.GetMaterialStrengthName(), state.materialStrength);
+					
+				}
 
 				CanvasUpdater.ForceUpdate();
 
@@ -152,8 +199,10 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			var state = new Parameters.State(rect);
 			var resultState = param.GetResult(forward);
+			
+			var material = param.GetMaterialInstance();
 
-			param.Apply(rect, state, resultState, ME.Ease.GetByType(forward == true ? param.inEase : param.outEase).interpolate(0f, 1f, value, 1f));
+			param.Apply(material, rect, state, resultState, ME.Ease.GetByType(forward == true ? param.inEase : param.outEase).interpolate(0f, 1f, value, 1f));
 
 		}
 		
@@ -173,6 +222,8 @@ namespace UnityEngine.UI.Windows.Animations {
 			var rect = this.GetRoot(param, window);
 			var state = new Parameters.State(rect);
 
+			var material = param.GetMaterialInstance();
+
 			if (TweenerGlobal.instance != null) {
 
 				TweenerGlobal.instance.removeTweens(tag);
@@ -180,7 +231,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 					if (obj != null) {
 
-						param.Apply(obj, state, resultState, value);
+						param.Apply(material, obj, state, resultState, value);
 
 					}
 
@@ -198,7 +249,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			} else {
 				
-				param.Apply(rect, resultState);
+				param.Apply(material, rect, resultState);
 				if (callback != null) callback();
 				CanvasUpdater.ForceUpdate();
 				
@@ -211,7 +262,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 			
-			param.Apply(this.GetRoot(param, window), param.GetIn());
+			param.Apply(param.GetMaterialInstance(), this.GetRoot(param, window), param.GetIn());
 
 		}
 		
@@ -220,7 +271,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 
-			param.Apply(this.GetRoot(param, window), param.GetOut());
+			param.Apply(param.GetMaterialInstance(), this.GetRoot(param, window), param.GetOut());
 
 		}
 		
@@ -229,15 +280,15 @@ namespace UnityEngine.UI.Windows.Animations {
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 
-			param.Apply(this.GetRoot(param, window), param.GetReset());
+			param.Apply(param.GetMaterialInstance(), this.GetRoot(param, window), param.GetReset());
 
 		}
 
 		#if UNITY_EDITOR
-		[UnityEditor.MenuItem("Assets/Create/UI Windows/Transitions/Camera/Slide")]
+		[UnityEditor.MenuItem("Assets/Create/UI Windows/Transitions/Screen/Transform")]
 		public static void CreateInstance() {
 			
-			ME.EditorUtilities.CreateAsset<WindowAnimationTransitionCameraSlide>();
+			ME.EditorUtilities.CreateAsset<WindowAnimationTransitionScreenTransform>();
 			
 		}
 		#endif

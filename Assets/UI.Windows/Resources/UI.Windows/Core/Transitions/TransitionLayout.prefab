@@ -29,6 +29,8 @@ GameObject:
   m_Component:
   - 224: {fileID: 22424574}
   - 114: {fileID: 11472888}
+  - 222: {fileID: 22250498}
+  - 225: {fileID: 22547304}
   m_Layer: 5
   m_Name: Root
   m_TagString: Untagged
@@ -165,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasGroup: {fileID: 22547304}
   _rectTransform: {fileID: 22424574}
   mode: 0
   minWidth: 1024
@@ -197,6 +200,12 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+--- !u!222 &22250498
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175960}
 --- !u!223 &22359508
 Canvas:
   m_ObjectHideFlags: 1
@@ -273,6 +282,17 @@ CanvasGroup:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 186062}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!225 &22547304
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175960}
   m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1

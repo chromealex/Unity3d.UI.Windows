@@ -10,7 +10,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		[System.Serializable]
 		public class ParametersBase {
-			
+
+			public const string MATERIAL_STRENGTH_NAME_DEFAULT = "_Value";
+
 			public float inDelay;
 			public float outDelay;
 
@@ -19,6 +21,13 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 			public ME.Ease.Type inEase;
 			public ME.Ease.Type outEase;
+			
+			public Material material;
+			public string materialStrengthName;
+			public bool materialLerpA = false;
+			public bool materialLerpB = false;
+
+			private Material materialInstance;
 
 			public ParametersBase() {}
 
@@ -29,6 +38,14 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 				this.inDelay = defaults.inDelay;
 				this.outDelay = defaults.outDelay;
+				
+				this.inEase = defaults.inEase;
+				this.outEase = defaults.outEase;
+
+				this.material = defaults.material;
+				this.materialStrengthName = defaults.materialStrengthName;
+				this.materialLerpA = defaults.materialLerpA;
+				this.materialLerpB = defaults.materialLerpB;
 
 				this.Setup(defaults);
 
@@ -36,6 +53,31 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 			public virtual void Setup(ParametersBase defaults) {
 
+			}
+
+			public string GetMaterialStrengthName() {
+
+				var name = this.materialStrengthName;
+				if (string.IsNullOrEmpty(name) == true) name = ParametersBase.MATERIAL_STRENGTH_NAME_DEFAULT;
+
+				return name;
+
+			}
+
+			public void ResetMaterialInstance() {
+
+				this.materialInstance = null;
+
+			}
+
+			public virtual Material GetMaterialInstance() {
+				
+				if (this.material == null) return null;
+				if (this.materialInstance != null) return this.materialInstance;
+				
+				this.materialInstance = new Material(this.material);
+				return this.materialInstance;
+				
 			}
 
 		}

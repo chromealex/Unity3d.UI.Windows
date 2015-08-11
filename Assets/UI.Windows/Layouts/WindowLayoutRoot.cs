@@ -4,12 +4,15 @@ using System.Collections;
 namespace UnityEngine.UI.Windows {
 
 	[ExecuteInEditMode]
-	public class WindowLayoutRoot : MonoBehaviour {
+	public class WindowLayoutRoot : WindowObject, ICanvasElement {
 		
 		public enum Mode : byte {
 			None,
 			FlexibleWidth,
 		};
+		
+		public Camera camera;
+		public CanvasGroup canvasGroup;
 
 		[HideInInspector]
 		public RectTransform _rectTransform;
@@ -20,6 +23,22 @@ namespace UnityEngine.UI.Windows {
 				if (this._rectTransform == null) this._rectTransform = this.transform as RectTransform;
 
 				return this._rectTransform;
+
+			}
+
+		}
+
+		public float alpha {
+
+			set {
+
+				this.canvasGroup.alpha = value;
+
+			}
+
+			get {
+
+				return this.canvasGroup.alpha;
 
 			}
 
@@ -37,10 +56,40 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR
 		public void OnValidate() {
 
+			if (Application.isPlaying == true) return;
+
 			this._rectTransform = this.transform as RectTransform;
+
+			if (this.canvasGroup == null) {
+				
+				this.canvasGroup = this.GetComponent<CanvasGroup>();
+				if (this.canvasGroup == null) this.gameObject.AddComponent<CanvasGroup>();
+				this.canvasGroup = this.GetComponent<CanvasGroup>();
+				
+			}
 
 		}
 		#endif
+
+		internal override void Setup(WindowBase window) {
+
+			base.Setup(window);
+
+			this.camera = this.GetWindow().workCamera;
+
+		}
+
+		public bool IsDestroyed() {
+
+			return this == null;
+
+		}
+
+		public void Rebuild(UI.CanvasUpdate state) {
+
+			this.Rebuild();
+
+		}
 
 		public void Rebuild() {
 

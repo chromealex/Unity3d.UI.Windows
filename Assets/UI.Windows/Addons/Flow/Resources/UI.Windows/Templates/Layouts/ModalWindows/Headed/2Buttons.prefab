@@ -84,6 +84,7 @@ GameObject:
   m_Component:
   - 224: {fileID: 22449120}
   - 114: {fileID: 11449120}
+  - 225: {fileID: 22508028}
   m_Layer: 5
   m_Name: Root
   m_TagString: Untagged
@@ -267,6 +268,10 @@ MonoBehaviour:
     outDuration: .5
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
     root: {fileID: 0}
     stateApply: 0
@@ -301,6 +306,10 @@ MonoBehaviour:
     outDuration: .5
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -463,6 +472,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camera: {fileID: 0}
+  canvasGroup: {fileID: 22508028}
   _rectTransform: {fileID: 22449120}
   mode: 0
   minWidth: 1024
@@ -889,6 +900,17 @@ CanvasGroup:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103814}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!225 &22508028
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149120}
   m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1

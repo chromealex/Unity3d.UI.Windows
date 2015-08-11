@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 419624}
   - 114: {fileID: 11402922}
   m_Layer: 5
-  m_Name: DiagonalRightBottomToLeftTop
+  m_Name: Alpha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,9 +52,9 @@ MonoBehaviour:
     material: {fileID: 0}
     materialStrengthName: _Strength
     resetState:
-      alpha: 1
-      anchorMin: {x: 1, y: -1}
-      anchorMax: {x: 2, y: 0}
+      alpha: 0
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 1, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
       pivot: {x: .5, y: .5}
@@ -73,8 +73,8 @@ MonoBehaviour:
       materialStrength: 0
     outState:
       alpha: 1
-      anchorMin: {x: -1, y: 1}
-      anchorMax: {x: 0, y: 2}
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 1, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
       pivot: {x: .5, y: .5}
@@ -90,11 +90,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: parameters.resetState.offset.y
-      value: 1
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: parameters.outState.offset.y
-      value: -1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: useDefault
@@ -126,15 +126,11 @@ Prefab:
       objectReference: {fileID: 11400000, guid: 4163d59c0b9404310962429a6affb77d,
         type: 2}
     - target: {fileID: 0}
-      propertyPath: parameters.resetState.anchorMax.x
-      value: 2
+      propertyPath: parameters.outState.anchorMax.x
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: parameters.resetState.anchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: parameters.inState.anchorMax.x
+      propertyPath: parameters.outState.anchorMax.y
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
@@ -142,20 +138,24 @@ Prefab:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: parameters.outState.anchorMax.x
-      value: 0
+      propertyPath: parameters.inState.anchorMax.x
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: parameters.outState.anchorMax.y
-      value: 2
+      propertyPath: parameters.resetState.anchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.resetState.anchorMax.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: parameters.resetState.anchorMin.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: parameters.outState.anchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: parameters.resetState.pivot.x
@@ -190,12 +190,76 @@ Prefab:
       value: .5
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: parameters.resetState.anchorMin.x
+      propertyPath: parameters.resetState.localScale.x
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: parameters.outState.anchorMin.x
-      value: -1
+      propertyPath: parameters.resetState.localScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.resetState.localScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.localScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.localScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.localScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.outState.localScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.outState.localScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.outState.localScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.outState.alpha
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.alpha
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.resetState.alpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.resetState.localRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.localRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.localRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.localRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.localRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters._materialStrengthName
+      value: bn
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: parameters.materialStrengthName

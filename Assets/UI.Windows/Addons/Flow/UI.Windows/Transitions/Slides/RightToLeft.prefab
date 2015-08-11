@@ -49,24 +49,38 @@ MonoBehaviour:
     outDuration: .5
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: _Strength
     resetState:
+      alpha: 1
       anchorMin: {x: -1, y: 0}
       anchorMax: {x: 0, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
       pivot: {x: .5, y: .5}
+      localRotation: {x: 0, y: 0, z: 0, w: 1}
+      localScale: {x: 1, y: 1, z: 1}
+      materialStrength: 0
     inState:
+      alpha: 1
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 1, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
       pivot: {x: .5, y: .5}
+      localRotation: {x: 0, y: 0, z: 0, w: 1}
+      localScale: {x: 1, y: 1, z: 1}
+      materialStrength: 0
     outState:
+      alpha: 1
       anchorMin: {x: 1, y: 0}
       anchorMax: {x: 2, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
       pivot: {x: .5, y: .5}
+      localRotation: {x: 0, y: 0, z: 0, w: 1}
+      localScale: {x: 1, y: 1, z: 1}
+      materialStrength: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -182,6 +196,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: parameters.outState.pivot.y
       value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.outState.alpha
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.inState.alpha
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.resetState.alpha
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: parameters.materialStrengthName
+      value: _Strength
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

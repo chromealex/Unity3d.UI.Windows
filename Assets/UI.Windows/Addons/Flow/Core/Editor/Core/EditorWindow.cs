@@ -576,8 +576,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			if (doubleSided == true) {
 
 				var q = Quaternion.LookRotation(toWindow.rect.center - fromWindow.rect.center, Vector3.back);
-
-				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.left * offset, size);
+				var attachRevert = FlowSystem.GetAttachItem(toWindow.id, fromWindow.id);
+				
+				this.DrawTransitionChooser(attachRevert, fromWindow, toWindow, q * Vector2.left * offset, size);
 				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.right * offset, size);
 
 			} else {

@@ -17,8 +17,6 @@ namespace UnityEngine.UI.Windows.Animations {
 				public float to;
 				
 			}
-			
-			public Material material;
 
 			public State resetState;
 			public State inState;

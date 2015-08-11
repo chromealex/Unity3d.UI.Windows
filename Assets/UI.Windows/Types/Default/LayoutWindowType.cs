@@ -262,47 +262,7 @@ namespace UnityEngine.UI.Windows.Types {
 				return root.GetAnimationDuration(forward);
 				
 			}
-			
-			/*public void OnInit() {
-				
-				if (this.instance != null) this.instance.OnInit();
-				if (this.root != null) this.root.OnInit();
-				
-			}
-			
-			public void OnDeinit() {
 
-				if (this.instance != null) this.instance.OnDeinit();
-				if (this.root != null) this.root.OnDeinit();
-				
-			}
-			
-			public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-
-				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnShowBegin(c, resetAnimation); }, this.instance, this.root);
-
-			}
-			
-			public void OnShowEnd() {
-				
-				if (this.instance != null) this.instance.OnShowEnd();
-				if (this.root != null) this.root.OnShowEnd();
-				
-			}
-			
-			public void OnHideBegin(System.Action callback, bool immediately = false) {
-
-				ME.Utilities.CallInSequence(callback, (e, c) => { e.OnHideBegin(c, immediately); }, this.instance, this.root);
-
-			}
-			
-			public void OnHideEnd() {
-				
-				if (this.instance != null) this.instance.OnHideEnd();
-				if (this.root != null) this.root.OnHideEnd();
-				
-			}*/
-			
 		}
 
 		public WindowLayout.ScaleMode scaleMode;
@@ -403,32 +363,16 @@ namespace UnityEngine.UI.Windows.Types {
 		public void OnInit() {
 			
 			this.instance.OnInit();
-			//foreach (var component in this.components) component.OnInit();
 
 		}
 
 		public void OnDeinit() {
 			
 			if (this.instance != null) this.instance.OnDeinit();
-			//foreach (var component in this.components) component.OnDeinit();
 
 		}
 
 		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-
-			/*var counter = 0;
-			System.Action callbackItem = () => {
-				
-				++counter;
-				if (counter < 2) return;
-				
-				if (callback != null) callback();
-				
-			};
-
-			this.instance.OnShowBegin(callbackItem, resetAnimation);
-			
-			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnShowBegin(c, resetAnimation); });*/
 
 			this.instance.OnShowBegin(callback, resetAnimation);
 
@@ -437,26 +381,10 @@ namespace UnityEngine.UI.Windows.Types {
 		public void OnShowEnd() {
 
 			this.instance.OnShowEnd();
-			//foreach (var component in this.components) component.OnShowEnd();
 		
 		}
 
 		public void OnHideBegin(System.Action callback, bool immediately = false) {
-			
-			/*var counter = 0;
-			System.Action callbackItem = () => {
-				
-				++counter;
-				if (counter < 2) return;
-				
-				if (callback != null) callback();
-				
-			};
-
-			this.instance.OnHideBegin(callbackItem, immediately); 
-			
-			ME.Utilities.CallInSequence(callbackItem, this.components, (e, c) => { e.OnHideBegin(c, immediately); });
-*/
 
 			this.instance.OnHideBegin(callback, immediately); 
 
@@ -465,7 +393,6 @@ namespace UnityEngine.UI.Windows.Types {
 		public void OnHideEnd() {
 
 			this.instance.OnHideEnd();
-			//foreach (var component in this.components) component.OnHideEnd();
 
 		}
 		

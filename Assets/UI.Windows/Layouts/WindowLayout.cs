@@ -102,6 +102,7 @@ namespace UnityEngine.UI.Windows {
 			this.SetScale(scaleMode, fixedScaleResolution);
 
 			for (int i = 0; i < this.elements.Count; ++i) this.elements[i].Setup(this.GetWindow());
+			this.root.Setup(this.GetWindow());
 
 		}
 

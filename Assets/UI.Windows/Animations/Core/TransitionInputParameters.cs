@@ -20,6 +20,13 @@ namespace UnityEngine.UI.Windows.Animations {
 			return null;
 			
 		}
+		
+		[ContextMenu("Reset Material Instance")]
+		public void ResetMaterialInstance() {
+			
+			this.GetParameters().ResetMaterialInstance();
+			
+		}
 
 	}
 

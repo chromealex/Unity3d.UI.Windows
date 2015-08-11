@@ -4,15 +4,15 @@ using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Animations {
 
-	public class WindowAnimationTransitionCameraSlideParameters : TransitionInputTemplateParameters {
+	public class WindowAnimationTransitionScreenTransformParameters : TransitionInputTemplateParameters {
 		
 		[Header("Parameters")]
 		[ReadOnly(fieldName: "useDefault", state: false)]
-		public WindowAnimationTransitionCameraSlide.Parameters parameters;
+		public WindowAnimationTransitionScreenTransform.Parameters parameters;
 		
 		public override void SetDefaultParameters(TransitionBase.ParametersBase parameters) {
 			
-			this.parameters = new WindowAnimationTransitionCameraSlide.Parameters(parameters);
+			this.parameters = new WindowAnimationTransitionScreenTransform.Parameters(parameters);
 			
 		}
 

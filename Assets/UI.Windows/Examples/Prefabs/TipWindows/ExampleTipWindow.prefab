@@ -294,6 +294,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -319,6 +323,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
     root: {fileID: 0}
     stateApply: 0
