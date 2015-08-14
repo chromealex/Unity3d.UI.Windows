@@ -43,21 +43,27 @@ namespace UnityEngine.UI.Windows.Components {
 			this.layoutContent = layoutContent;
 
 		}
-		
+
 		public T1 AddItem<T1, T2>(T2 component, UnityAction<T1> onClick = null, bool autoEvents = true) where T1 : ButtonComponent where T2 : WindowComponent {
 			
 			var element = this.AddItem<T1>();
 			element.SetCallback((button) => {
 				
 				if (autoEvents == true) {
-					
+
 					var index = this.GetIndexOf(button);
-					this.Load(index, immediately: false);
+					this.Load(index, immediately: false, callback: () => {
+						
+						if (onClick != null) onClick.Invoke(element);
+
+					});
 					
+				} else {
+					
+					if (onClick != null) onClick.Invoke(element);
+
 				}
-				
-				if (onClick != null) onClick.Invoke(element);
-				
+
 			});
 			
 			this.components.Add(component);
@@ -150,28 +156,31 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.layoutContent.Hide(() => {
 
-				this.layoutContent.Unload();
-				this.layoutContent.Load(component);
-				this.layoutContent.Show();
+				this.layoutContent.Unload(() => {
 
-				this.onChangeAfter.Invoke(this.layoutContent.GetCurrentComponent(), index);
-
-				var prevLastIndex = this.lastIndex;
-				this.lastIndex = index;
-
-				if (this.lastIndex >= 0) {
+					this.layoutContent.Load(component);
+					this.layoutContent.Show();
 					
-					var lastItem = this.GetItem<ButtonComponent>(this.lastIndex);
-					if (lastItem != null) {
-
-						lastItem.SetDisabled();
-						if (prevLastIndex != index) lastItem.OnClick();
-
+					this.onChangeAfter.Invoke(this.layoutContent.GetCurrentComponent(), index);
+					
+					//var prevLastIndex = this.lastIndex;
+					this.lastIndex = index;
+					
+					if (this.lastIndex >= 0) {
+						
+						var lastItem = this.GetItem<ButtonComponent>(this.lastIndex);
+						if (lastItem != null) {
+							
+							lastItem.SetDisabled();
+							//if (prevLastIndex != index) lastItem.OnClick();
+							
+						}
+						
 					}
+					
+					if (callback != null) callback.Invoke();
 
-				}
-
-				if (callback != null) callback.Invoke();
+				});
 
 			}, immediately);
 

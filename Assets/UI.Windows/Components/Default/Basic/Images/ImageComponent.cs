@@ -61,8 +61,8 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public void SetAlpha(float value) {
-
+		public Color GetColor() {
+			
 			Color color = Color.white;
 			if (this.image != null) {
 				
@@ -71,10 +71,14 @@ namespace UnityEngine.UI.Windows.Components {
 			} else if (this.rawImage != null) {
 				
 				color = this.rawImage.color;
-
+				
 			}
 
-			color.a = value;
+			return color;
+
+		}
+
+		public void SetColor(Color color) {
 
 			if (this.image != null) {
 				
@@ -85,6 +89,14 @@ namespace UnityEngine.UI.Windows.Components {
 				this.rawImage.color = color;
 				
 			}
+
+		}
+
+		public void SetAlpha(float value) {
+
+			var color = this.GetColor();
+			color.a = value;
+			this.SetColor(color);
 
 		}
 

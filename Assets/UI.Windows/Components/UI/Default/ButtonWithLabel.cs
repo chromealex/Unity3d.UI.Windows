@@ -12,28 +12,42 @@ namespace UnityEngine.UI {
 
 			base.DoStateTransition(state, instant);
 
-			if (this.label != null) {
+			this.ApplyState(state, instant);
 
-				switch (this.currentSelectionState) {
+		}
+
+		protected override void OnDidApplyAnimationProperties() {
+
+			base.OnDidApplyAnimationProperties();
+			
+			this.ApplyState(this.currentSelectionState, false);
+
+		}
+
+		private void ApplyState(Selectable.SelectionState state, bool instant) {
+
+			if (this.label != null) {
+				
+				switch (state) {
 					
 					case SelectionState.Disabled:
-						this.label.CrossFadeColor(this.labelColor.disabledColor, this.labelColor.fadeDuration, false, true);
+						this.label.CrossFadeColor(this.labelColor.disabledColor, instant == true ? 0f : this.labelColor.fadeDuration, false, true);
 						break;
 						
 					case SelectionState.Normal:
-						this.label.CrossFadeColor(this.labelColor.normalColor, this.labelColor.fadeDuration, false, true);
+						this.label.CrossFadeColor(this.labelColor.normalColor, instant == true ? 0f : this.labelColor.fadeDuration, false, true);
 						break;
 						
 					case SelectionState.Highlighted:
-						this.label.CrossFadeColor(this.labelColor.highlightedColor, this.labelColor.fadeDuration, false, true);
+						this.label.CrossFadeColor(this.labelColor.highlightedColor, instant == true ? 0f : this.labelColor.fadeDuration, false, true);
 						break;
 						
 					case SelectionState.Pressed:
-						this.label.CrossFadeColor(this.labelColor.pressedColor, this.labelColor.fadeDuration, false, true);
+						this.label.CrossFadeColor(this.labelColor.pressedColor, instant == true ? 0f : this.labelColor.fadeDuration, false, true);
 						break;
-
+						
 				}
-
+				
 			}
 
 		}

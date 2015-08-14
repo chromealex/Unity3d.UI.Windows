@@ -32,6 +32,9 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetImage(Texture texture);
 		void SetImage(Texture texture, bool preserveAspect);
 		void SetMaterial(Material material);
+		Color GetColor();
+		void SetColor(Color color);
+		void SetAlpha(float value);
 
 	}
 

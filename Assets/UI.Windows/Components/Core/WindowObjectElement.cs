@@ -168,33 +168,82 @@ namespace UnityEngine.UI.Windows {
 
         /// <summary>
         /// Registers the sub component.
-        /// If you want to instantiate new component manualy but wants the window events - register this component here.
+        /// If you want to instantiate a new component manualy but wants window events - register this component here.
         /// </summary>
         /// <param name="subComponent">Sub component.</param>
 		public virtual void RegisterSubComponent(WindowObjectElement subComponent) {
 
+			//Debug.Log("REGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState());
 			switch (this.GetComponentState()) {
 				
+				case WindowObjectState.Hiding:
+
+					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+						
+						// after OnInit
+						subComponent.OnInit();
+						
+					}
+
+					subComponent.SetComponentState(this.GetComponentState());
+
+					break;
+
+				case WindowObjectState.Hidden:
+
+					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+						
+						// after OnInit
+						subComponent.OnInit();
+						
+					}
+					
+					subComponent.SetComponentState(this.GetComponentState());
+
+					break;
+
 				case WindowObjectState.Initializing:
 				case WindowObjectState.Initialized:
-                    // after OnInit
-                    subComponent.OnInit();
-                    break;
+					
+					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+
+	                    // after OnInit
+	                    subComponent.OnInit();
+
+					}
+
+	                break;
 
                 case WindowObjectState.Showing:
-                    // after OnShowBegin
-                    subComponent.OnInit();
+                    
+					// after OnShowBegin
+
+					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+
+						subComponent.OnInit();
+
+					}
+
                     subComponent.OnShowBegin(null);
+
                     break;
 
                 case WindowObjectState.Shown:
+
                     // after OnShowEnd
-                    subComponent.OnInit();
+
+					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+
+						subComponent.OnInit();
+
+					}
+
                     subComponent.OnShowBegin(() => {
 
                         subComponent.OnShowEnd();
 
                     });
+
                     break;
 
             }
@@ -214,38 +263,61 @@ namespace UnityEngine.UI.Windows {
         /// Unregisters the sub component.
         /// </summary>
         /// <param name="subComponent">Sub component.</param>
-		public void UnregisterSubComponent(WindowObjectElement subComponent) {
+		public void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null) {
+
+			var sendCallback = true;
+
+			//Debug.Log("UNREGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState());
+			
+			this.subComponents.Remove(subComponent);
 
 			switch (this.GetComponentState()) {
 
                 case WindowObjectState.Shown:
+
                     // after OnShowEnd
                     subComponent.OnHideBegin(() => {
 
                         subComponent.OnHideEnd();
                         subComponent.OnDeinit();
 
+						if (callback != null) callback();
+
                     });
+
+					sendCallback = false;
+
                     break;
 
                 case WindowObjectState.Hiding:
+
                     // after OnHideBegin
                     subComponent.OnHideBegin(null);
+
+					sendCallback = false;
+					if (callback != null) callback();
+
                     break;
 
                 case WindowObjectState.Hidden:
+
                     // after OnHideEnd
                     subComponent.OnHideBegin(() => {
 
                         subComponent.OnHideEnd();
                         subComponent.OnDeinit();
+						
+						if (callback != null) callback();
 
-                    });
+					});
+
+					sendCallback = false;
+
                     break;
 
             }
 
-            this.subComponents.Remove(subComponent);
+			if (sendCallback == true && callback != null) callback();
 
         }
 

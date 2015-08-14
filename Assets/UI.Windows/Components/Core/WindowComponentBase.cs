@@ -29,9 +29,11 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		public bool animationRefresh = false;
 
+		private bool tempNeedToInactive = false;
+
 		public override bool NeedToInactive() {
 
-			return this.animation != null;
+			return this.tempNeedToInactive == true || this.animation != null;
 
 		}
 
@@ -56,8 +58,8 @@ namespace UnityEngine.UI.Windows {
 			
 			this.OnShowBegin(() => {
 
+				base.OnShowBegin(callback, resetAnimation);
 				this.OnShowEnd();
-				if (callback != null) callback();
 
 			}, resetAnimation);
 			
@@ -92,13 +94,21 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
 		public virtual void Hide(System.Action callback, bool immediately) {
 
-			this.OnHideBegin_INTERNAL(() => {
+			this.Hide(callback, immediately, setupTempNeedInactive: true);
+			
+		}
 
+		public void Hide(System.Action callback, bool immediately, bool setupTempNeedInactive) {
+			
+			if (setupTempNeedInactive == true) this.tempNeedToInactive = true;
+			
+			this.OnHideBegin_INTERNAL(() => {
+				
 				base.OnHideBegin(callback, immediately);
 				this.OnHideEnd();
-
-				if (callback != null) callback();
-
+				
+				if (setupTempNeedInactive == true) this.tempNeedToInactive = false;
+				
 			}, immediately);
 			
 		}

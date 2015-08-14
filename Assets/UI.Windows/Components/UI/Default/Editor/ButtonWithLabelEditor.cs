@@ -10,7 +10,7 @@ namespace UnityEditor.UI {
 		
 		private SerializedProperty label;
 		private SerializedProperty labelColor;
-		
+
 		protected override void OnEnable() {
 			
 			base.OnEnable();
@@ -46,7 +46,7 @@ namespace UnityEditor.UI {
 		protected override void OnEnable() {
 
 			base.OnEnable();
-			
+
 			this.rootButton = base.serializedObject.FindProperty("rootButton");
 			this.referenceButton = base.serializedObject.FindProperty("referenceButton");
 

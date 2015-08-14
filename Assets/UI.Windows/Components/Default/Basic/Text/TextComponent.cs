@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -6,9 +7,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public enum ValueFormat : byte {
 
-			None,		// 1234567890
-			WithSpace,	// 1 234 567 890
-			WithComma,	// 1,234 567 890
+			None,		 // 1234567890
+			WithSpace,	 // 1 234 567 890
+			WithComma,	 // 1,234 567 890
+			Time,		 // 00:00:00
+			TimeMinutes, // 00:00
+			TimeMiliseconds, // 00:00:00`00
+			TimeMinutesMiliseconds, // 00:00`00
 
 		};
 
@@ -21,30 +26,66 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			switch (format) {
 				
-			case ValueFormat.None:
-				output = value.ToString();
-				break;
-				
-			case ValueFormat.WithSpace:
-				output = value.ToString("# ### ### ##0").Trim();
-				break;
-				
-			case ValueFormat.WithComma:
-				output = value.ToString("#,### ### ##0").Trim(',');
-				break;
-				
+				case ValueFormat.None:
+					output = value.ToString();
+					break;
+					
+				case ValueFormat.WithSpace:
+					output = value.ToString("# ### ### ##0").Trim();
+					break;
+					
+				case ValueFormat.WithComma:
+					output = value.ToString("#,### ### ##0").Trim(',');
+					break;
+					
+				case ValueFormat.Time:
+
+					{
+						var t = TimeSpan.FromSeconds(value);
+						output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
+					}
+
+					break;
+					
+				case ValueFormat.TimeMinutes:
+					
+					{
+						var t = TimeSpan.FromSeconds(value);
+						output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
+					}
+
+					break;
+					
+				case ValueFormat.TimeMiliseconds:
+
+					{
+						var t = TimeSpan.FromMilliseconds(value);
+						output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
+					}
+
+					break;
+					
+				case ValueFormat.TimeMinutesMiliseconds:
+
+					{
+						var t = TimeSpan.FromMilliseconds(value);
+						output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);
+					}
+
+					break;
+
 			}
 
 			return output;
 
 		}
-
-		public void SetValue(int value, ValueFormat format = ValueFormat.None) {
-
-			this.SetText(TextComponent.FormatValue(value, format));
-
-		}
 		
+		public void SetValue(int value, ValueFormat format = ValueFormat.None) {
+			
+			this.SetText(TextComponent.FormatValue(value, format));
+			
+		}
+
 		public void SetTextVerticalOverflow(VerticalWrapMode mode) {
 			
 			if (this.text != null) this.text.verticalOverflow = mode;

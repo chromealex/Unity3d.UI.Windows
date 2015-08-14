@@ -18,6 +18,8 @@ namespace UnityEditor.UI {
 		AnimBool extShowColorTint       = new AnimBool();
 		AnimBool extShowSpriteTrasition = new AnimBool();
 		AnimBool extShowAnimTransition  = new AnimBool();
+		
+		private bool lastInteractive;
 
 		protected override void OnEnable() {
 

@@ -8,12 +8,22 @@ namespace UnityEngine.UI.Windows {
 
 	public class WindowLayoutBase : WindowComponentBase, IWindowComponentLayout {
 
-		public void Unload() {
+		public void Unload(System.Action callback = null) {
 
 			if (this.component != null) {
 
-				this.component.OnDeinit();
-				this.component.Recycle();
+				this.UnregisterSubComponent(this.component, () => {
+
+					this.component.Recycle();
+					this.component = null;
+
+					if (callback != null) callback.Invoke();
+
+				});
+
+			} else {
+				
+				if (callback != null) callback.Invoke();
 
 			}
 
@@ -24,8 +34,8 @@ namespace UnityEngine.UI.Windows {
 		public void Load(WindowComponent component) {
 
 			this.activatorInstance.component = component;
-			/*var instance = */this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement);
-			//if (instance != null) instance.OnInit();
+			component.SetComponentState(WindowObjectState.NotInitialized);
+			this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement);
 
 		}
 		
@@ -43,7 +53,13 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		#region TODO: ?
+		/*public override void Hide(System.Action callback, bool immediately) {
+
+			this.Hide(callback, immediately, setupTempNeedInactive: false);
+
+		}*/
+
+		/*#region TODO: ?
 		public override void Show(System.Action callback, bool resetAnimation) {
 
 			var counter = 0;
@@ -105,7 +121,7 @@ namespace UnityEngine.UI.Windows {
 			}, immediately);
 			
 		}
-		#endregion
+		#endregion*/
 
 	}
 

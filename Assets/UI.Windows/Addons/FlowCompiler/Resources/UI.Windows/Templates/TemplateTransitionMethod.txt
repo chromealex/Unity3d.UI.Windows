@@ -1,6 +1,8 @@
 ﻿		
 		/// <summary>
 		/// Flows to the {CLASS_NAME}.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: {CLASS_NAME_WITH_NAMESPACE}
 		/// </summary>
 		/// <returns>{CLASS_NAME}</returns>
@@ -18,6 +20,40 @@
 				
 			} else {
 				
+				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Flows to the {CLASS_NAME}.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: {CLASS_NAME_WITH_NAMESPACE}
+		/// </summary>
+		/// <returns>{CLASS_NAME}</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHide{CLASS_NAME}(params object[] parameters) {
+			
+			{CLASS_NAME_WITH_NAMESPACE} instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
 				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
 					
 					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());

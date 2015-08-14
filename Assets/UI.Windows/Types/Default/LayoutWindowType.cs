@@ -209,6 +209,7 @@ namespace UnityEngine.UI.Windows.Types {
 				}
 
 				var instance = this.component.Spawn();
+				//instance.SetComponentState(WindowObjectState.NotInitialized);
 				instance.SetParent(root, setTransformAsSource: false);
 				instance.SetTransformAs();
 
@@ -218,8 +219,9 @@ namespace UnityEngine.UI.Windows.Types {
 				
 				this.root.Setup(instance, this);
 				instance.Setup(window);
+
 				root.RegisterSubComponent(instance);
-				
+
 				instance.transform.SetSiblingIndex(this.sortingOrder);
 				
 				this.instance = instance;

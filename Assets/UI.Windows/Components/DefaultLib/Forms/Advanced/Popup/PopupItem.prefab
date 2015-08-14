@@ -30,6 +30,8 @@ GameObject:
   - 222: {fileID: 22294842}
   - 114: {fileID: 11494846}
   - 114: {fileID: 11494844}
+  - 225: {fileID: 22538790}
+  - 114: {fileID: 11420996}
   m_Layer: 5
   m_Name: PopupItem
   m_TagString: Untagged
@@ -37,6 +39,31 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11420996
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2625d8eb02dec433b8b9b03184151dbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDefault: 1
+  parameters:
+    inDelay: 0
+    outDelay: 0
+    inDuration: .100000001
+    outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    resetState:
+      to: 0
+    inState:
+      to: 1
+    outState:
+      to: 0
 --- !u!114 &11494840
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -161,14 +188,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c7df3d8c8cab44b99c417fc57b43c48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animation: {fileID: 0}
-  animationInputParams: []
-  canvas: {fileID: 0}
-  animationRefresh: 0
-  lastAnimation: {fileID: 0}
+  autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
+  animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  animationInputParams:
+  - {fileID: 11420996}
+  canvas: {fileID: 22538790}
+  animationRefresh: 1
+  lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
+  images: []
   button: {fileID: 11494844}
+  preserveAspect: 0
+  image: {fileID: 11494846}
+  rawImage: {fileID: 0}
   text: {fileID: 11494842}
 --- !u!222 &22294840
 CanvasRenderer:
@@ -217,6 +252,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
+--- !u!225 &22538790
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194842}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -228,4 +274,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 194842}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

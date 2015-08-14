@@ -61,6 +61,47 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 		}
+		
+		public override Color GetColor() {
+			
+			Color color = Color.white;
+			if (this.image != null) {
+				
+				color = this.image.color;
+				
+			} else if (this.rawImage != null) {
+				
+				color = this.rawImage.color;
+				
+			}
+			
+			return color;
+			
+		}
+		
+		public override void SetColor(Color color) {
+			
+			if (this.image != null) {
+				
+				this.image.color = color;
+				
+			} else if (this.rawImage != null) {
+				
+				this.rawImage.color = color;
+				
+			}
+
+			base.SetColor(color);
+			
+		}
+		
+		public void SetAlpha(float value) {
+			
+			var color = this.GetColor();
+			color.a = value;
+			this.SetColor(color);
+			
+		}
 
 		public void SetMaterial(Material material) {
 
