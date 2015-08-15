@@ -39,6 +39,16 @@ public class ParticleSystemCached : MonoBehaviour {
 		
 	}
 
+	public float duration {
+
+		get {
+
+			return (this.mainParticleSystem != null) ? this.mainParticleSystem.duration : 0f;
+
+		}
+
+	}
+
 #if UNITY_EDITOR
 	[ContextMenu("Setup")]
 	public void Setup() {

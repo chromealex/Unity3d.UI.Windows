@@ -661,7 +661,15 @@ namespace UnityEngine.UI.Windows {
 				transition.Play(this.window, transitionParameters, null, forward: true, callback: callback);
 				
 			} else {
-				
+
+				// Reset to defaults
+				var layoutWindow = (this.window as LayoutWindowType);
+				if (layoutWindow != null) {
+
+					layoutWindow.layout.GetLayoutInstance().root.Reset();
+
+				}
+
 				if (callback != null) callback();
 				
 			}
