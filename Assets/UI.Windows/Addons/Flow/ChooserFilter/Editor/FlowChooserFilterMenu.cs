@@ -33,7 +33,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		[MenuItem("Assets/Create Screen...", isValidateFunction: false, priority: 21)]
 		public static void CreateScreen() {
 
-			FlowChooserFilter.CreateScreen(Selection.activeObject);
+			FlowChooserFilter.CreateScreen(Selection.activeObject, string.Empty);
 			
 		}
 

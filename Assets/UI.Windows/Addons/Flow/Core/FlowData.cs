@@ -77,11 +77,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#endregion
 		#endif
 
-		private void OnEnable() {
+		/*private void OnEnable() {
 
 			this.namespaceName = string.IsNullOrEmpty(this.namespaceName) == true ? string.Format("{0}.UI", this.name) : this.namespaceName;
 
-		}
+		}*/
 
 		public WindowBase GetRootScreen() {
 

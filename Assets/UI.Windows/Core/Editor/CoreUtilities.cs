@@ -72,7 +72,7 @@ namespace UnityEditor.UI.Windows {
 
 			}
 
-			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName);
+			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName, string.Empty);
 			if (type != null) {
 
 				var addon = System.Activator.CreateInstance(type) as IWindowAddon;
@@ -90,7 +90,7 @@ namespace UnityEditor.UI.Windows {
 
 			if (cacheAvailable.ContainsKey(addonName) == true) return cacheAvailable[addonName];
 
-			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName);
+			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName, string.Empty);
 			var isActive = type != null;
 
 			cacheAvailable.Add(addonName, isActive);
@@ -100,13 +100,15 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public static Type GetTypeFromAllAssemblies(string typeName) {
+		public static Type GetTypeFromAllAssemblies(string typeName, string namespaceName) {
 
 			Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
 			foreach (Assembly assembly in assemblies) {
 
 				Type[] types = assembly.GetTypes();
 				foreach (Type type in types) {
+
+					if (string.IsNullOrEmpty(namespaceName) == false && type.Namespace != namespaceName) continue;
 
 					if (type.Name.Equals(typeName, StringComparison.InvariantCultureIgnoreCase) || type.Name.Contains('+' + typeName)) {//+ check for inline classes
 

@@ -15,7 +15,7 @@ MonoBehaviour:
   version:
     major: 0
     minor: 9
-    release: 5
+    release: 6
     type: a
   namespaceName: ExampleProject.UI
   forceRecompile: 1

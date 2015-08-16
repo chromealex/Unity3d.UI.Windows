@@ -127,7 +127,7 @@ namespace ME {
 			//string path = filepath;
 			string assetPathAndName = filepath + ".asset";
 
-			AssetDatabase.CreateAsset( asset, assetPathAndName );
+			AssetDatabase.CreateAsset(asset, assetPathAndName);
 
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);

@@ -158,7 +158,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public static void CreateScreen(Object activeObject, string localPath = "", System.Action callback = null) {
+		public static void CreateScreen(Object activeObject, string namespaceName, string localPath = "", System.Action callback = null) {
 			
 			var obj = activeObject;
 			var path = AssetDatabase.GetAssetPath(obj.GetInstanceID()) + localPath;
@@ -185,7 +185,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					var name = className;
 					// Create an instance
-					var layoutPrefab = FlowDatabase.GenerateScreen(path + "/" + name + ".prefab", className, element);
+					var layoutPrefab = FlowDatabase.GenerateScreen(path + "/" + name + ".prefab", className, namespaceName, element);
 
 					Selection.activeObject = layoutPrefab;
 					

@@ -189,7 +189,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				
 				var filepath = window.compiledDirectory + "/" + FlowDatabase.SCREENS_FOLDER + "/" + tplName + "Screen.prefab";
 
-				instance = FlowDatabase.GenerateScreen(filepath, window.compiledDerivedClassName, tplData);
+				instance = FlowDatabase.GenerateScreen(filepath, window.compiledDerivedClassName, string.Empty, tplData);
 
 			} else {
 				
@@ -201,7 +201,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public static WindowBase GenerateScreen(string filepath, string className, FlowLayoutWindowTypeTemplate template) {
+		public static WindowBase GenerateScreen(string filepath, string className, string namespaceName, FlowLayoutWindowTypeTemplate template) {
 
 			WindowBase instance = null;
 
@@ -218,7 +218,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var prefab = source.GetComponent<WindowBase>();
 			instance = UnityEditor.PrefabUtility.InstantiatePrefab(prefab) as WindowBase;
 			
-			var type = CoreUtilities.GetTypeFromAllAssemblies(className);
+			var type = CoreUtilities.GetTypeFromAllAssemblies(className, namespaceName);
 			instance = FlowDatabase.ReplaceComponents<FlowLayoutWindowTypeTemplate, WindowBase>(instance as FlowLayoutWindowTypeTemplate, type);
 			
 			FlowDatabase.SaveScreen(instance);
