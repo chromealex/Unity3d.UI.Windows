@@ -473,23 +473,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 						while (this.cachedData.version < VersionInfo.BUNDLE_VERSION) {
 							
+							var nextVersion = this.cachedData.version + 1;
+
 							// Try to find upgrade method
-							var methodName = "UpgradeTo" + this.cachedData.version.ToSmallWithoutTypeString();
+							var methodName = "UpgradeTo" + nextVersion.ToSmallWithoutTypeString();
 							var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
 							if (methodInfo != null) {
 								
 								methodInfo.Invoke(this.cachedData, null);
-								
-								//this.cachedData.version = VersionInfo.BUNDLE_VERSION;
-								
+
+								Debug.Log("[UPGRADE] Invoked: `" + methodName + "`, version " + nextVersion);
+
 							} else {
 								
-								//Debug.Log("Method `" + methodName + "` was not found: version " + this.cachedData.version + " skipped");
+								Debug.Log("[UPGRADE] Method `" + methodName + "` was not found: version " + nextVersion + " skipped");
 								
 							}
-							
-							var nextVersion = this.cachedData.version + 1;
-							
+
 							UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, nextVersion), 0.5f);
 							
 							this.cachedData.version = nextVersion;
