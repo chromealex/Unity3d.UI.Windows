@@ -42,7 +42,7 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 
 		public static void Update() {
 
-			var gos = Object.FindObjectsOfTypeAll<GameObject>();
+			var gos = Object.FindObjectsOfType<GameObject>();
 
 			HierarchyEditor.first = null;
 
