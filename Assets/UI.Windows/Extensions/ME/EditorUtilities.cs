@@ -286,6 +286,12 @@ namespace ME {
 
 		}
 
+		public static void ResetCache<T>(string directory = null) where T : ScriptableObject {
+
+			ME.Utilities.ResetAssetsArray<T>(directory);
+
+		}
+
 	}
 
 }

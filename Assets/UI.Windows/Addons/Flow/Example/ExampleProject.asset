@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99839ddb8ee5849c1be9ef77fbe191fa, type: 3}
   m_Name: ExampleProject
   m_EditorClassIdentifier: 
-  lastModified: 08.08.2015 08:19
+  lastModified: 17.08.2015 11:08
   version:
     major: 0
     minor: 9
@@ -20,7 +20,7 @@ MonoBehaviour:
   namespaceName: ExampleProject.UI
   forceRecompile: 1
   zoom: 1
-  scrollPos: {x: -3017.00146, y: -4399.00049}
+  scrollPos: {x: -2938.34912, y: -4275.16504}
   rootWindow: 18
   defaultWindows: 2000000001000000
   windows:
@@ -71,9 +71,9 @@ MonoBehaviour:
     compiledDerivedClassName: GlobalMapScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 18
-    screen: {fileID: 11409980, guid: 5875d357d2e93804ead28cacc993ed2b, type: 2}
+    screen: {fileID: 0}
   - id: 3
     flags: 1
     title: Main Menu
@@ -159,9 +159,9 @@ MonoBehaviour:
     compiledDerivedClassName: GameTypeChooserScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11410974, guid: 9149dec098a688246a8dc37813090b16, type: 2}
+    screen: {fileID: 0}
   - id: 18
     flags: 0
     title: Main Loader
@@ -200,9 +200,9 @@ MonoBehaviour:
     compiledDerivedClassName: MainLoaderScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11431942, guid: 25e0d25ac00714749b0cbb0e882e309b, type: 2}
+    screen: {fileID: 0}
   - id: 23
     flags: 1
     title: Shop Operations
@@ -270,9 +270,9 @@ MonoBehaviour:
     compiledDerivedClassName: ShopScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11429562, guid: 95d0dfc614e808b4d9b296a6a71055b6, type: 2}
+    screen: {fileID: 0}
   - id: 25
     flags: 0
     title: Gameplay View
@@ -311,9 +311,9 @@ MonoBehaviour:
     compiledDerivedClassName: GameplayViewScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11491218, guid: 105bba71a88b66d488c533582090b793, type: 2}
+    screen: {fileID: 0}
   - id: 26
     flags: 1
     title: Gameplay
@@ -390,9 +390,9 @@ MonoBehaviour:
     compiledDerivedClassName: EndGameScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11432648, guid: 4743f6000d050e14ba89b3501a2f1806, type: 2}
+    screen: {fileID: 0}
   - id: 29
     flags: 0
     title: Gameplay HUD
@@ -425,9 +425,9 @@ MonoBehaviour:
     compiledDerivedClassName: GameplayHUDScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11448020, guid: c7eefef65eada5443a81e3baba530997, type: 2}
+    screen: {fileID: 0}
   - id: 32
     flags: 0
     title: Background Image
@@ -457,9 +457,9 @@ MonoBehaviour:
     compiledDerivedClassName: BackgroundScreen
     smallStyleDefault: 
     smallStyleSelected: 
-    states: 020000000200000002000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11483758, guid: ed33a39ce28321c4da273518ee06f250, type: 2}
+    screen: {fileID: 0}
   - id: 33
     flags: 262
     title: Social
@@ -559,9 +559,9 @@ MonoBehaviour:
     compiledDerivedClassName: LoadingScreen
     smallStyleDefault: flow node 4
     smallStyleSelected: flow node 4 on
-    states: 020000000200000001000000
+    states: 000000
     screenWindowId: 0
-    screen: {fileID: 11442604, guid: 6620525fdb8c4a34fa21eb429fe02c45, type: 2}
+    screen: {fileID: 0}
   - id: 38
     flags: 14
     title: Default Link

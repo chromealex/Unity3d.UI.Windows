@@ -45,6 +45,7 @@
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
 			if (item == null || item.transition == null) {
 				
+				this.Hide();
 				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
 					
 					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());

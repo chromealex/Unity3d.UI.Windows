@@ -106,7 +106,7 @@ MonoBehaviour:
       m_Left: 4
       m_Right: 4
       m_Top: 4
-      m_Bottom: 4
+      m_Bottom: 2
     m_Padding:
       m_Left: 2
       m_Right: 3
@@ -129,7 +129,7 @@ MonoBehaviour:
     m_FixedWidth: 0
     m_FixedHeight: 0
     m_StretchWidth: 1
-    m_StretchHeight: 0
+    m_StretchHeight: 1
   m_toggle:
     m_Name: toggle
     m_Normal:
@@ -282,22 +282,22 @@ MonoBehaviour:
     m_Margin:
       m_Left: 4
       m_Right: 4
+      m_Top: 5
+      m_Bottom: 2
+    m_Padding:
+      m_Left: 10
+      m_Right: 10
       m_Top: 4
       m_Bottom: 4
-    m_Padding:
-      m_Left: 3
-      m_Right: 3
-      m_Top: 3
-      m_Bottom: 3
     m_Overflow:
       m_Left: 0
       m_Right: 0
       m_Top: 0
       m_Bottom: 0
     m_Font: {fileID: 0}
-    m_FontSize: 0
+    m_FontSize: 14
     m_FontStyle: 0
-    m_Alignment: 0
+    m_Alignment: 3
     m_WordWrap: 0
     m_RichText: 0
     m_TextClipping: 1
@@ -306,7 +306,7 @@ MonoBehaviour:
     m_FixedWidth: 0
     m_FixedHeight: 0
     m_StretchWidth: 1
-    m_StretchHeight: 0
+    m_StretchHeight: 1
   m_textArea:
     m_Name: textarea
     m_Normal:

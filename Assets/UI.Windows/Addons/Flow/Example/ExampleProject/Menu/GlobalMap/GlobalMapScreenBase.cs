@@ -15,13 +15,67 @@ namespace ExampleProject.UI.Menu.GlobalMap {
 		
 		/// <summary>
 		/// Flows to the GameTypeChooser.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen
 		/// </summary>
 		/// <returns>GameTypeChooser</returns>
 		public virtual ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen FlowGameTypeChooser(params object[] parameters) {
 			
-			var instance = WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>(parameters);
-			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(1, 9);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Flows to the GameTypeChooser.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen
+		/// </summary>
+		/// <returns>GameTypeChooser</returns>
+		public virtual ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen FlowHideGameTypeChooser(params object[] parameters) {
+			
+			ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(1, 9);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GameTypeChooser.GameTypeChooserScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
 			return instance;
 			
@@ -29,26 +83,69 @@ namespace ExampleProject.UI.Menu.GlobalMap {
 				
 		/// <summary>
 		/// Flows to the Shop.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen
 		/// </summary>
 		/// <returns>Shop</returns>
 		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowShop(params object[] parameters) {
 			
-			var instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
-			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(1, 24);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
 			return instance;
 			
 		}
-				
+		
 		/// <summary>
-		/// Request Social Module.
-		/// Platform: Facebook (facebook.com)
+		/// Flows to the Shop.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen
 		/// </summary>
-		/// <returns>Social FB Module</returns>
-		public virtual UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.FB.FBModule GetSocialModule() {
+		/// <returns>Shop</returns>
+		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowHideShop(params object[] parameters) {
 			
-			return UnityEngine.UI.Windows.Plugins.Social.Core.SocialSystem.instance.GetModule<UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.FB.FBModule>();
+			ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(1, 24);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
 			
 		}
 		

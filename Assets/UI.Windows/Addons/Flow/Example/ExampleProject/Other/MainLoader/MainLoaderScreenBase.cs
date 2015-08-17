@@ -15,13 +15,67 @@ namespace ExampleProject.UI.Other.MainLoader {
 		
 		/// <summary>
 		/// Flows to the GlobalMap.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen
 		/// </summary>
 		/// <returns>GlobalMap</returns>
 		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowGlobalMap(params object[] parameters) {
 			
-			var instance = WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>(parameters);
-			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(18, 1);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Flows to the GlobalMap.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen
+		/// </summary>
+		/// <returns>GlobalMap</returns>
+		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowHideGlobalMap(params object[] parameters) {
+			
+			ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(18, 1);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
 			return instance;
 			
@@ -29,13 +83,67 @@ namespace ExampleProject.UI.Other.MainLoader {
 				
 		/// <summary>
 		/// Flows to the Background.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: ExampleProject.UI.Other.Background.BackgroundScreen
 		/// </summary>
 		/// <returns>Background</returns>
 		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowBackground(params object[] parameters) {
 			
-			var instance = WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>(parameters);
-			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			ExampleProject.UI.Other.Background.BackgroundScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(18, 32);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Flows to the Background.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Other.Background.BackgroundScreen
+		/// </summary>
+		/// <returns>Background</returns>
+		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowHideBackground(params object[] parameters) {
+			
+			ExampleProject.UI.Other.Background.BackgroundScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(18, 32);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
 			return instance;
 			

@@ -1,5 +1,6 @@
 ﻿
-using System.Text.RegularExpressions;namespace ME {
+using System.Text.RegularExpressions;
+using System.Linq;namespace ME {
 
 	public static class StringUtilities {
 		
@@ -15,6 +16,8 @@ using System.Text.RegularExpressions;namespace ME {
 		}
 		
 		public static string UppercaseWords(this string value) {
+
+			var chars = new char[] { ' ', '.', ',', '!', '@', '#', '$', '%', '^', '&', '*', '(', '{', '[', '/', '\\' };
 
 			char[] array = value.ToCharArray();
 			// Handle the first letter in the string.
@@ -32,7 +35,7 @@ using System.Text.RegularExpressions;namespace ME {
 			// ... Uppercase the lowercase letters following spaces.
 			for (int i = 1; i < array.Length; ++i) {
 
-				if (array[i - 1] == ' ') {
+				if (chars.Contains(array[i - 1]) == true) {
 
 					if (char.IsLower(array[i])) {
 

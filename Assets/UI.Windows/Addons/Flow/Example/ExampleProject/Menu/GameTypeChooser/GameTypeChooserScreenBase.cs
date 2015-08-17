@@ -15,13 +15,67 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 		
 		/// <summary>
 		/// Flows to the Shop.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen
 		/// </summary>
 		/// <returns>Shop</returns>
 		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowShop(params object[] parameters) {
 			
-			var instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>(parameters);
-			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(9, 24);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Flows to the Shop.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen
+		/// </summary>
+		/// <returns>Shop</returns>
+		public virtual ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen FlowHideShop(params object[] parameters) {
+			
+			ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(9, 24);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Menu.ShopOperations.Shop.ShopScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
 			return instance;
 			
@@ -29,18 +83,71 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 				
 		public class FlowFunctionLoaderRoutes : WindowRoutes {
 			
-			public FlowFunctionLoaderRoutes(int index) : base(index) {}
-			
+			public FlowFunctionLoaderRoutes(WindowBase window, int index) : base(window, index) {}
 					
 			/// <summary>
 			/// Flows to the GameplayView.
+			/// Use this method to play transition effect on B window only.
+			/// If you call Hide() on A window - it will hide with standard behaviour.
 			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
 			/// </summary>
 			/// <returns>GameplayView</returns>
 			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowGameplayView(params object[] parameters) {
 				
-				var instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>(parameters);
-				instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+				ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen instance = null;
+				var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(39, 25);
+				if (item == null || item.transition == null) {
+					
+					instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>((window) => {
+						
+						window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+						
+					}, parameters);
+					
+				} else {
+					
+					instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>((window) => {
+						
+						window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+						
+					}, item.transition, item.transitionParameters, parameters);
+					
+				}
+				
+				return instance;
+				
+			}
+			
+			/// <summary>
+			/// Flows to the GameplayView.
+			/// Hides current window.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
+			/// </summary>
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowHideGameplayView(params object[] parameters) {
+				
+				ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen instance = null;
+				var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(39, 25);
+				if (item == null || item.transition == null) {
+					
+					this.Hide();
+					instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>((window) => {
+						
+						window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+						
+					}, parameters);
+					
+				} else {
+					
+					this.Hide(item.transition, item.transitionParameters);
+					instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>((window) => {
+						
+						window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+						
+					}, item.transition, item.transitionParameters, parameters);
+					
+				}
 				
 				return instance;
 				
@@ -50,18 +157,72 @@ namespace ExampleProject.UI.Menu.GameTypeChooser {
 		
 		/// <summary>
 		/// Call the Function Loader.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Function: Loading
 		/// </summary>
 		/// <returns>Function root window</returns>
 		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, params object[] parameters) {
 			
-			var functionRoot = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(parameters);
-			WindowSystem.RegisterFunctionCallback(functionRoot, (index) => { onFunctionEnds(new FlowFunctionLoaderRoutes(index)); });
+			ExampleProject.UI.Loader.Loading.LoadingScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(9, 39);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>((window) => {
+					
+					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunctionLoaderRoutes(this, index)); });
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>((window) => {
+					
+					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunctionLoaderRoutes(this, index)); });
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
-			return functionRoot;
+			return instance;
 			
 		}
-
+		
+		/// <summary>
+		/// Flows to the {CLASS_NAME}.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Loader.Loading.LoadingScreen
+		/// </summary>
+		/// <returns>{CLASS_NAME}</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowHideFunctionLoader(UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, params object[] parameters) {
+			
+			ExampleProject.UI.Loader.Loading.LoadingScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(9, 39);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>((window) => {
+					
+					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunctionLoaderRoutes(this, index)); });
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>((window) => {
+					
+					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunctionLoaderRoutes(this, index)); });
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
 	}
 
 }

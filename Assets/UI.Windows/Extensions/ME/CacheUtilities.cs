@@ -28,7 +28,15 @@ namespace ME {
 			return value;
 			
 		}
-		
+
+		public static void ResetAssetsArray<T>(string directory) {
+			
+			var key = typeof(T).FullName + "," + directory;
+
+			Utilities.cacheAssets.Remove(key);
+
+		}
+
 		public static ScriptableObject[] CacheAssetsArray<T>(System.Func<T[]> func, string directory) {
 			
 			var key = typeof(T).FullName + "," + directory;

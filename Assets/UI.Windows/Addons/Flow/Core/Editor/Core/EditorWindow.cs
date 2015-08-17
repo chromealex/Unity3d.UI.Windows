@@ -10,6 +10,7 @@ using ME;
 using System.Reflection;
 using UnityEngine.UI.Windows.Types;
 using UnityEditor.UI.Windows.Extensions;
+using System.IO;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
@@ -401,7 +402,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									this.DrawTags(FlowSystem.GetWindow(-id), true);
 
 								}, string.Empty, GUIStyle.none);
-								GUI.BringWindowToFront(-window.id);
+								GUI.BringWindowToBack(-window.id);
 
 								var isMoving = (rect != window.rect);
 								
@@ -713,7 +714,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.ShowNotification(new GUIContent("You need to compile this window to use `Select` command"));
 				
 			} else {
-				
+
+				if (Directory.Exists(window.compiledDirectory) == false) {
+
+					window.compiledDirectory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(FlowSystem.GetData())) + "/" + window.compiledNamespace.Replace(FlowSystem.GetData().namespaceName, string.Empty) + "/" + window.compiledNamespace.Replace(".", "/");
+
+				}
+
 				Selection.activeObject = AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
 				EditorGUIUtility.PingObject(Selection.activeObject);
 				
@@ -2530,7 +2537,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			this.DragWindow(headerOnly: false);
 			
-			if (GUI.changed == true) this.guiSplash.cachedData.isDirty = true;
+			if (GUI.changed == true) {
+
+				FlowSystem.SetDirty();
+
+			}
 			
 			GUI.enabled = oldState;
 

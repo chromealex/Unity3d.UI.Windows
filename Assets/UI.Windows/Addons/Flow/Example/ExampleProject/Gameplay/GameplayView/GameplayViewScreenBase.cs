@@ -15,13 +15,67 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		
 		/// <summary>
 		/// Flows to the EndGame.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: ExampleProject.UI.Gameplay.EndGame.EndGameScreen
 		/// </summary>
 		/// <returns>EndGame</returns>
 		public virtual ExampleProject.UI.Gameplay.EndGame.EndGameScreen FlowEndGame(params object[] parameters) {
 			
-			var instance = WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(parameters);
-			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			ExampleProject.UI.Gameplay.EndGame.EndGameScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(25, 28);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Flows to the EndGame.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Gameplay.EndGame.EndGameScreen
+		/// </summary>
+		/// <returns>EndGame</returns>
+		public virtual ExampleProject.UI.Gameplay.EndGame.EndGameScreen FlowHideEndGame(params object[] parameters) {
+			
+			ExampleProject.UI.Gameplay.EndGame.EndGameScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(25, 28);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
 			return instance;
 			
@@ -29,13 +83,67 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 				
 		/// <summary>
 		/// Flows to the GameplayHUD.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
 		/// Full Name: ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen
 		/// </summary>
 		/// <returns>GameplayHUD</returns>
 		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowGameplayHUD(params object[] parameters) {
 			
-			var instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(parameters);
-			instance.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+			ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(25, 29);
+			if (item == null || item.transition == null) {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
+			
+			return instance;
+			
+		}
+		
+		/// <summary>
+		/// Flows to the GameplayHUD.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen
+		/// </summary>
+		/// <returns>GameplayHUD</returns>
+		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowHideGameplayHUD(params object[] parameters) {
+			
+			ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen instance = null;
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(25, 29);
+			if (item == null || item.transition == null) {
+				
+				this.Hide();
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, parameters);
+				
+			} else {
+				
+				this.Hide(item.transition, item.transitionParameters);
+				instance = WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>((window) => {
+					
+					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
+					
+				}, item.transition, item.transitionParameters, parameters);
+				
+			}
 			
 			return instance;
 			

@@ -13,9 +13,11 @@ namespace UnityEngine.UI.Windows {
 	public class WindowRoutes {
 
 		private int index;
+		private WindowBase window;
 
-		public WindowRoutes(int index) {
+		public WindowRoutes(WindowBase window, int index) {
 
+			this.window = window;
 			this.index = index;
 
 		}
@@ -23,6 +25,18 @@ namespace UnityEngine.UI.Windows {
 		public int GetFunctionIterationIndex() {
 
 			return this.index;
+
+		}
+
+		public void Hide() {
+
+			this.window.Hide();
+
+		}
+
+		public void Hide(TransitionBase transition, TransitionInputParameters transitionParameters) {
+			
+			this.window.Hide(transition, transitionParameters);
 
 		}
 

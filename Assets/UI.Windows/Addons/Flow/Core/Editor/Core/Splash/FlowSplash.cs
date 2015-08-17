@@ -26,12 +26,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public FlowData cachedData;
 		private FlowData[] scannedData;
 
+		private GUISkin skin;
+
 		private FlowSystemEditorWindow editor;
 
 		public FlowSplash(FlowSystemEditorWindow editor) {
 
 			this.editor = editor;
-			
+
+			if (this.skin == null) this.skin = Resources.Load<GUISkin>("UI.Windows/Flow/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
 			if (this.splash == null) this.splash = Resources.Load<Texture>("UI.Windows/Flow/Splash");
 
 		}
@@ -204,13 +207,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			});
 			
 			GUILayout.Label("1. Select the project folder:", darkLabel);
-			GUILayout.BeginHorizontal();
+			GUILayout.BeginHorizontal(GUILayout.Height(30f));
 			{
 
-				this.projectFolder = EditorGUILayout.TextField(this.projectFolder);
-				if (GUILayout.Button("...", GUILayout.Width(25f)) == true) {
+				this.projectFolder = EditorGUILayout.TextField(this.projectFolder, this.skin.textField).UppercaseWords();
+				if (GUILayout.Button("...", this.skin.button, GUILayout.Width(35f)) == true) {
 
-					var path = EditorUtility.OpenFolderPanel("Select Empty Project Folder", "Assets/", "").Trim();
+					var path = EditorUtility.SaveFolderPanel("Select Empty Project Folder", "Assets/", "").Trim();
 					if (string.IsNullOrEmpty(path) == false) {
 
 						var splitted = path.Split(new string[] { Application.dataPath }, StringSplitOptions.None);
@@ -254,12 +257,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 			GUILayout.EndHorizontal();
-
-			var oldState = GUI.enabled;
-			GUI.enabled = !this.projectNamespaceAuto;
-			this.projectNamespace = EditorGUILayout.TextField(this.projectNamespace);
-			GUI.enabled = oldState;
 			
+			var oldState = GUI.enabled;
+
+			GUILayout.BeginHorizontal(GUILayout.Height(30f));
+			{
+
+				GUI.enabled = oldState && !this.projectNamespaceAuto;
+				this.projectNamespace = EditorGUILayout.TextField(this.projectNamespace, this.skin.textField);
+				GUI.enabled = oldState;
+
+			}
+			GUILayout.EndHorizontal();
+
 			// Test it
 			//var type = Type.GetType("Assembly-CSharp", throwOnError: true, ignoreCase: true);
 			string assemblyName = "Assembly-CSharp";
@@ -321,10 +331,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				GUILayout.FlexibleSpace();
 
 				oldState = GUI.enabled;
-				GUI.enabled = !hasErrors;
+				GUI.enabled = oldState && !hasErrors;
 				if (GUILayout.Button("Create & Open", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(150f), GUILayout.Height(40f)) == true) {
 					
-					this.CreateProject(this.projectFolder, this.projectNamespace);
+					this.state = State.ProjectSelector;
+					var data = this.CreateProject(this.projectFolder, this.projectNamespace);
+					this.editor.OpenFlowData(data);
+
+					EditorUtilities.ResetCache<FlowData>();
 
 				}
 				GUI.enabled = oldState;
@@ -334,7 +348,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void CreateProject(string projectFolder, string projectNamespace) {
+		public FlowData CreateProject(string projectFolder, string projectNamespace) {
 
 			if (Directory.Exists(projectFolder) == false) {
 
@@ -351,6 +365,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
 			Selection.activeObject = data;
+
+			return data;
 
 		}
 
