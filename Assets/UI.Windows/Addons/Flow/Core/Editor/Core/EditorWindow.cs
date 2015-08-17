@@ -397,12 +397,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, title, style);
 								GUI.BringWindowToFront(window.id);
 
-								GUI.Window(-window.id, new Rect(rect.x, rect.y + rect.height, rect.width, rect.height), (id) => {
+								GUI.Window(-window.id, new Rect(rect.x, rect.y + rect.height, rect.width, this.GetTagsHeight(window)), (id) => {
 
 									this.DrawTags(FlowSystem.GetWindow(-id), true);
 
 								}, string.Empty, GUIStyle.none);
-								GUI.BringWindowToBack(-window.id);
+								GUI.BringWindowToFront(-window.id);
 
 								var isMoving = (rect != window.rect);
 								
@@ -1894,7 +1894,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.Repaint();
 			
 		}
-		
+
+		public float GetTagsHeight(FlowWindow window) {
+			
+			var columns = 3;
+			var height = 16f;
+
+			return Mathf.CeilToInt(window.tags.Count / (float)columns) * height + height + 2f;
+
+		}
+
 		private bool showTagsPopup = false;
 		private Rect showTagsPopupRect;
 		private int showTagsPopupId;
