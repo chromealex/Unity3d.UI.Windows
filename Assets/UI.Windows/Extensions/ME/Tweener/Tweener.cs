@@ -38,7 +38,6 @@ namespace ME {
 
 			private static int INFINITE_LOOPS = -1;
 			private T _obj;
-			private float _duration;
 			private float _start;
 			
 			private class Target {
@@ -143,9 +142,11 @@ namespace ME {
 			}
 	
 			public Tween<T> ease(ITransition value) {
-				_targets[0].transition = value;
+
+                _targets[_targets.Count - 1].transition = value;
 	
 				return this;
+
 			}
 	
 			public Tween<T> onUpdate(System.Action<T, float> func) {
@@ -184,6 +185,14 @@ namespace ME {
 				return this;
 				
 			}
+
+            public Tween<T> setValue(float value) {
+
+                _elapsed = value * _targets[_targets.Count - 1].duration;
+
+                return this;
+
+            }
 	
 			public Tween<T> addTarget(float duration, float end) {
 				
