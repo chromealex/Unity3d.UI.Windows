@@ -40,12 +40,28 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 
 		}
 
+		private static float updateTimer = 0f;
 		public static void Update() {
 
+			if (HierarchyEditor.updateTimer < 1f && Application.isPlaying == true) {
+
+				HierarchyEditor.updateTimer += Time.deltaTime;
+				return;
+
+			}
+
+			HierarchyEditor.updateTimer = 0f;
+
+			HierarchyEditor.OnChanged();
+
+		}
+
+		public static void OnChanged() {
+			
 			var gos = Object.FindObjectsOfType<GameObject>();
-
+			
 			HierarchyEditor.first = null;
-
+			
 			HierarchyEditor.markedScreens.Clear();
 			HierarchyEditor.markedLayouts.Clear();
 			HierarchyEditor.markedComponents.Clear();
@@ -54,21 +70,15 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 				if (go.GetComponent<LayoutWindowType>() != null) HierarchyEditor.markedScreens.Add(go.GetInstanceID());
 				if (go.GetComponent<WindowLayout>() != null) HierarchyEditor.markedLayouts.Add(go.GetInstanceID());
 				if (go.GetComponent<WindowComponent>() != null) HierarchyEditor.markedComponents.Add(go.GetInstanceID());
-
+				
 				if (go.transform.parent == null && go.transform.GetSiblingIndex() == 0) {
-
+					
 					HierarchyEditor.first = go;
-
+					
 				}
-
+				
 			}
 
-			HierarchyEditor.OnChanged();
-
-		}
-
-		public static void OnChanged() {
-			
 			HierarchyEditor.left = 0f;
 			HierarchyEditor.top = 0f;
 			HierarchyEditor.levels = 0;

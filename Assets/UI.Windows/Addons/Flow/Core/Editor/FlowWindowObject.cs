@@ -38,8 +38,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if (this.packageIcon == null) this.packageIcon = Resources.Load<Texture2D>("UI.Windows/Icons/PackageIcon");
 				if (this.packageIconLarge == null) this.packageIconLarge = Resources.Load<Texture2D>("UI.Windows/Icons/PackageIconLarge");
 
-				this.DrawIcon(rect, this.packageIcon, this.packageIconLarge, new Vector2(4f, 6f), new Vector2(0.1f, 3f));
+				this.DrawIcon(rect, this.packageIcon, this.packageIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
 
+			}
+			
+			private Texture2D transitionsIcon;
+			private Texture2D transitionsIconLarge;
+			
+			public void DrawFlowTransitionsProjectGUI(string path, Rect rect) {
+				
+				if (this.transitionsIcon == null) this.transitionsIcon = Resources.Load<Texture2D>("UI.Windows/Icons/Transitions");
+				if (this.transitionsIconLarge == null) this.transitionsIconLarge = Resources.Load<Texture2D>("UI.Windows/Icons/TransitionsIconLarge");
+				
+				this.DrawIcon(rect, this.transitionsIcon, this.transitionsIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
+				
 			}
 
 			private Texture2D componentsIcon;
@@ -47,10 +59,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			public void DrawFlowComponentsProjectGUI(string path, Rect rect) {
 
-				if (this.componentsIcon == null) this.componentsIcon = Resources.Load<Texture2D>("UI.Windows/Icons/ComponentsIcon");
+				if (this.componentsIcon == null) this.componentsIcon = Resources.Load<Texture2D>("UI.Windows/Icons/Components");
 				if (this.componentsIconLarge == null) this.componentsIconLarge = Resources.Load<Texture2D>("UI.Windows/Icons/ComponentsIconLarge");
 
-				this.DrawIcon(rect, this.componentsIcon, this.componentsIconLarge, new Vector2(1f, 2f), new Vector2(0.1f, 3f));
+				this.DrawIcon(rect, this.componentsIcon, this.componentsIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
 
 			}
 
@@ -59,10 +71,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			public void DrawFlowLayoutsProjectGUI(string path, Rect rect) {
 
-				if (this.layoutsIcon == null) this.layoutsIcon = Resources.Load<Texture2D>("UI.Windows/Icons/LayoutsIcon");
+				if (this.layoutsIcon == null) this.layoutsIcon = Resources.Load<Texture2D>("UI.Windows/Icons/Layouts");
 				if (this.layoutsIconLarge == null) this.layoutsIconLarge = Resources.Load<Texture2D>("UI.Windows/Icons/LayoutsIconLarge");
 
-				this.DrawIcon(rect, this.layoutsIcon, this.layoutsIconLarge, new Vector2(1f, 2f), new Vector2(0.1f, 3f));
+				this.DrawIcon(rect, this.layoutsIcon, this.layoutsIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
 
 			}
 
@@ -71,21 +83,33 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			public void DrawFlowScreensProjectGUI(string path, Rect rect) {
 
-				if (this.screensIcon == null) this.screensIcon = Resources.Load<Texture2D>("UI.Windows/Icons/ScreensIcon");
+				if (this.screensIcon == null) this.screensIcon = Resources.Load<Texture2D>("UI.Windows/Icons/Screens");
 				if (this.screensIconLarge == null) this.screensIconLarge = Resources.Load<Texture2D>("UI.Windows/Icons/ScreensIconLarge");
 
-				this.DrawIcon(rect, this.screensIcon, this.screensIconLarge, new Vector2(1f, 2f), new Vector2(0.1f, 3f));
+				this.DrawIcon(rect, this.screensIcon, this.screensIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
 
 			}
 
 			private Texture2D baseScriptIcon;
 			private Texture2D baseScriptLarge;
 
+			private GUIStyle unitySysStyle;
+
 			public void DrawFlowBaseScriptProjectGUI(string path, Rect rect) {
 
 				if (this.baseScriptIcon == null) this.baseScriptIcon = Resources.Load<Texture2D>("UI.Windows/Icons/UnityDocumentIcon");
 				if (this.baseScriptLarge == null) this.baseScriptLarge = Resources.Load<Texture2D>("UI.Windows/Icons/UnityDocumentIconLarge");
 
+				if (this.unitySysStyle == null) {
+
+					this.unitySysStyle = new GUIStyle(EditorStyles.miniLabel);
+					this.unitySysStyle.alignment = TextAnchor.MiddleRight;
+					this.unitySysStyle.normal.textColor = Color.gray;
+
+				}
+
+				var sys = new GUIContent("System");
+				GUI.Label(new Rect(rect.xMin, rect.yMin, rect.width, rect.height), sys, this.unitySysStyle);
 				this.DrawIcon(rect, this.baseScriptIcon, this.baseScriptLarge, new Vector2(0f, 0f), new Vector2(0f, 0f), -10f);
 
 			}
@@ -120,10 +144,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							this.DrawFlowScreensProjectGUI(path, rect);
 
+						} else if (folder == "Transitions") {
+							
+							this.DrawFlowTransitionsProjectGUI(path, rect);
+							
 						} else if (folder == "Components") {
-
+							
 							this.DrawFlowComponentsProjectGUI(path, rect);
-
+							
 						} else if (folder == "Layouts") {
 
 							this.DrawFlowLayoutsProjectGUI(path, rect);
