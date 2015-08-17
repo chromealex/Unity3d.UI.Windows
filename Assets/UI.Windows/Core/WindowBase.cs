@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Animations;
+using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
@@ -336,6 +337,8 @@ namespace UnityEngine.UI.Windows {
 				this.events.OnShowEnd();
 				this.transition.OnShowEnd();
 				if (onShowEnd != null) onShowEnd();
+
+				CanvasUpdater.ForceUpdate();
 
 			    this.currentState = WindowObjectState.Shown;
 
