@@ -172,7 +172,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						r.width += r.x;
 						r.x = 0f;
 						
-						GUI.Box(r, "test", this.unityMarkBackStyle);
+						GUI.Box(r, string.Empty, this.unityMarkBackStyle);
 
 					}
 
