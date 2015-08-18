@@ -124,6 +124,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				}
 
+				if (this.isDirtyMethod == null) return false;
+
 				return (bool)this.isDirtyMethod.Invoke(this, new object[1] { instanceId });
 
 			}
