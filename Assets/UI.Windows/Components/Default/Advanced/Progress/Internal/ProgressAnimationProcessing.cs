@@ -27,8 +27,12 @@ namespace UnityEngine.UI.Windows.Components {
 			this.rectTransform = this.transform as RectTransform;
 
 			var image = this.graphic as Image;
-			var imageRect = image.sprite.textureRect;
-			this.size = new Vector2(imageRect.width, imageRect.height);
+			if (image != null && image.sprite != null) {
+
+				var imageRect = image.sprite.textureRect;
+				this.size = new Vector2(imageRect.width, imageRect.height);
+
+			}
 
 			this.rectTransform.sizeDelta = this.size * 2f;
 			this.rectTransform.anchoredPosition = Vector2.zero;
