@@ -6,7 +6,8 @@ public class ParticleSystemCached : MonoBehaviour {
 	public ParticleSystem mainParticleSystem;
 	public ParticleSystem[] particleSystems;
 	public int count;
-	
+	public bool resetOnStop;
+
 	public Color32 startColor {
 		
 		set {
@@ -74,8 +75,25 @@ public class ParticleSystemCached : MonoBehaviour {
 	
 	public void Stop() {
 
-		if (this.mainParticleSystem != null) this.mainParticleSystem.Stop();
-		
+		if (this.resetOnStop == true) {
+			
+			if (this.mainParticleSystem != null) {
+				
+				this.mainParticleSystem.Clear();
+				this.mainParticleSystem.Stop();
+				
+			}
+			
+		} else {
+
+			if (this.mainParticleSystem != null) {
+
+				this.mainParticleSystem.Stop();
+				
+			}
+
+		}
+
 	}
 	
 	public void Play(bool withChildren) {
@@ -92,7 +110,20 @@ public class ParticleSystemCached : MonoBehaviour {
 		
 		for (int i = 0; i < this.count; ++i) {
 
-			if (this.particleSystems[i] != null) this.particleSystems[i].Stop();
+			if (this.resetOnStop == true) {
+
+				if (this.particleSystems[i] != null) {
+					
+					this.particleSystems[i].Clear();
+					this.particleSystems[i].Stop();
+
+				}
+				
+			} else {
+
+				if (this.particleSystems[i] != null) this.particleSystems[i].Stop();
+
+			}
 
 		}
 		

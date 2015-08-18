@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Reflection;
@@ -114,9 +114,69 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
+			private MethodInfo isDirtyMethod;
+			private bool IsDirty(int instanceId) {
+				
+				if (this.isDirtyMethod == null) {
+					
+					System.Type type = typeof(EditorUtility);
+					this.isDirtyMethod = type.GetMethod("IsDirty", BindingFlags.Static | BindingFlags.NonPublic);
+					
+				}
+
+				return (bool)this.isDirtyMethod.Invoke(this, new object[1] { instanceId });
+
+			}
+
+			private GUIStyle unityMarkBackStyle;
+
 			public void OnProjectItemGUI(string guid, Rect rect) {
 				
 				var path = AssetDatabase.GUIDToAssetPath(guid);
+				var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
+
+				if (this.unityMarkBackStyle == null) {
+					
+					this.unityMarkBackStyle = new GUIStyle("flow shader in 5");
+					
+				}
+
+				if (obj != null) {
+
+					var dirty = false;
+					var go = obj as GameObject;
+					if (go != null) {
+
+						dirty = this.IsDirty(go.GetInstanceID());
+						if (dirty == false) {
+
+							var comps = go.GetComponents<MonoBehaviour>();
+							foreach (var comp in comps) {
+
+								dirty = this.IsDirty(comp.GetInstanceID());
+								if (dirty == true) break;
+
+							}
+
+						}
+
+					} else {
+
+						dirty = this.IsDirty(obj.GetInstanceID());
+
+					}
+
+					if (dirty == true) {
+
+						var r = new Rect(rect);
+						r.width += r.x;
+						r.x = 0f;
+						
+						GUI.Box(r, "test", this.unityMarkBackStyle);
+
+					}
+
+				}
 
 				if (FlowProjectWindowObject.IsValidPackage(path) == true) {
 
