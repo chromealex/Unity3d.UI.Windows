@@ -13,6 +13,9 @@ namespace UnityEngine.UI.Windows {
 			public float minZDepth = 0f;
 			
 			public int preallocatedWindowsPoolSize = 0;
+			
+			public float maxDepthLayer1 = 200f;
+			public float maxDepthLayer2 = 300f;
 
 		}
 

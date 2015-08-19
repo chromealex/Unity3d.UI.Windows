@@ -121,7 +121,7 @@ namespace UnityEngine.UI.Windows {
 				}
 
 			}
-
+			
 			public float maxDepth {
 				
 				get {
@@ -132,6 +132,26 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
+			public float maxDepthLayer1 {
+				
+				get {
+					
+					return this.file != null ? this.file.baseInfo.maxDepthLayer1 : 200f;
+					
+				}
+				
+			}
+			
+			public float maxDepthLayer2 {
+				
+				get {
+					
+					return this.file != null ? this.file.baseInfo.maxDepthLayer2 : 300f;
+					
+				}
+				
+			}
+
 			public int poolSize {
 				
 				get {
@@ -890,9 +910,17 @@ namespace UnityEngine.UI.Windows {
 				depth = windowDepth;
 				
 			} else if (preferences.depth == Preferences.Depth.AlwaysTop) {
-
+				
 				depth = this.settings.maxDepth;
-
+				
+			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer1) {
+				
+				depth = this.settings.maxDepthLayer1;
+				
+			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer2) {
+				
+				depth = this.settings.maxDepthLayer2;
+				
 			} else {
 
 				this.currentDepth += this.depthStep;

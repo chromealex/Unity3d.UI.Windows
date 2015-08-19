@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System;
 using System.Reflection;
+using System.IO;
+using System.Collections.Generic;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -12,9 +14,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			if (System.IO.Directory.Exists(path) == true) {
 				
-				var isScreens = System.IO.Directory.Exists(path + "/Screens");
-				var isLayouts = System.IO.Directory.Exists(path + "/Layouts");
-				var isComponents = System.IO.Directory.Exists(path + "/Components");
+				var isScreens = System.IO.Directory.Exists(Path.Combine(path, "Screens"));
+				var isLayouts = System.IO.Directory.Exists(Path.Combine(path, "Layouts"));
+				var isComponents = System.IO.Directory.Exists(Path.Combine(path, "Components"));
 				
 				if (isScreens && isLayouts && isComponents) {
 					
@@ -29,6 +31,125 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		public class Drawer {
+
+			public class Item {
+
+				public int instanceId;
+				public string path;
+
+				public bool isValidPackage;
+				public bool withSystemLabel;
+				public bool isDirty;
+				
+				public bool isPackage;
+				public bool isBaseClass;
+				public bool isComponentsFolder;
+				public bool isLayoutsFolder;
+				public bool isScreensFolder;
+				public bool isTransitionsFolder;
+
+			}
+
+			public Dictionary<string, Item> cache = new Dictionary<string, Item>();
+
+			public void DrawWithCache(string guid, Rect rect) {
+
+				Item item;
+				if (this.cache.TryGetValue(guid, out item) == false) {
+
+					item = new Item();
+					
+					item.path = AssetDatabase.GUIDToAssetPath(guid);
+					var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(item.path);
+
+					if (obj != null) {
+
+						var dirty = false;
+						var go = obj as GameObject;
+						if (go != null) {
+							
+							dirty = this.IsDirty(go.GetInstanceID());
+							if (dirty == false) {
+								
+								var comps = go.GetComponents<MonoBehaviour>();
+								foreach (var comp in comps) {
+									
+									dirty = this.IsDirty(comp.GetInstanceID());
+									if (dirty == true) break;
+									
+								}
+								
+							}
+							
+						} else {
+							
+							dirty = this.IsDirty(obj.GetInstanceID());
+							
+						}
+						
+						item.instanceId = obj.GetInstanceID();
+						item.isDirty = dirty;
+
+					}
+					
+					if (FlowProjectWindowObject.IsValidPackage(item.path) == true) {
+						
+						item.isValidPackage = true;
+						item.isPackage = true;
+						
+					}
+
+					var packageDir = item.path;
+					
+					if (System.IO.File.Exists(packageDir) == true) {
+						
+						var splitted = item.path.Split('/');
+						packageDir = string.Join("/", splitted, 0, splitted.Length - 1);
+						
+					}
+
+					if (FlowProjectWindowObject.IsValidPackage(packageDir) == true || FlowProjectWindowObject.IsValidPackage(System.IO.Path.Combine(packageDir, "..")) == true) {
+						
+						var last = item.path.Split('/');
+						if (last.Length > 0) {
+
+							item.isValidPackage = true;
+
+							var folder = last[last.Length - 1];
+							if (folder == "Screens") {
+								
+								item.isScreensFolder = true;
+								
+							} else if (folder == "Transitions") {
+								
+								item.isTransitionsFolder = true;
+								
+							} else if (folder == "Components") {
+								
+								item.isComponentsFolder = true;
+								
+							} else if (folder == "Layouts") {
+								
+								item.isLayoutsFolder = true;
+								
+							} else if (item.path.EndsWith("Base.cs") == true) {
+								
+								item.withSystemLabel = true;
+								item.isBaseClass = true;
+								
+							}
+
+						}
+
+					}
+
+					this.cache.Add(guid, item);
+
+				}
+
+				this.OnGUIItem(item.path, rect, item);
+
+			}
 
 			private Texture2D packageIcon;
 			private Texture2D packageIconLarge;
@@ -114,6 +235,49 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
+			public void OnGUIItem(string path, Rect rect, Item item) {
+
+				if (item.isDirty == true) {
+					
+					var r = new Rect(rect);
+					r.width += r.x;
+					r.x = 0f;
+					
+					GUI.Box(r, string.Empty, this.unityMarkBackStyle);
+					
+				}
+
+				if (item.isPackage == true) {
+
+					this.DrawFlowFolderProjectGUI(path, rect);
+					return;
+
+				}
+
+				if (item.isScreensFolder == true) {
+					
+					this.DrawFlowScreensProjectGUI(path, rect);
+					
+				} else if (item.isTransitionsFolder == true) {
+					
+					this.DrawFlowTransitionsProjectGUI(path, rect);
+					
+				} else if (item.isComponentsFolder == true) {
+					
+					this.DrawFlowComponentsProjectGUI(path, rect);
+					
+				} else if (item.isLayoutsFolder == true) {
+					
+					this.DrawFlowLayoutsProjectGUI(path, rect);
+					
+				} else if (item.isBaseClass == true) {
+					
+					this.DrawFlowBaseScriptProjectGUI(path, rect);
+					
+				}
+
+			}
+
 			private MethodInfo isDirtyMethod;
 			private bool IsDirty(int instanceId) {
 				
@@ -134,99 +298,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			public void OnProjectItemGUI(string guid, Rect rect) {
 				
-				var path = AssetDatabase.GUIDToAssetPath(guid);
-				var obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
-
 				if (this.unityMarkBackStyle == null) {
 					
 					this.unityMarkBackStyle = new GUIStyle("flow shader in 5");
 					
 				}
 
-				if (obj != null) {
-
-					var dirty = false;
-					var go = obj as GameObject;
-					if (go != null) {
-
-						dirty = this.IsDirty(go.GetInstanceID());
-						if (dirty == false) {
-
-							var comps = go.GetComponents<MonoBehaviour>();
-							foreach (var comp in comps) {
-
-								dirty = this.IsDirty(comp.GetInstanceID());
-								if (dirty == true) break;
-
-							}
-
-						}
-
-					} else {
-
-						dirty = this.IsDirty(obj.GetInstanceID());
-
-					}
-
-					if (dirty == true) {
-
-						var r = new Rect(rect);
-						r.width += r.x;
-						r.x = 0f;
-						
-						GUI.Box(r, string.Empty, this.unityMarkBackStyle);
-
-					}
-
-				}
-
-				if (FlowProjectWindowObject.IsValidPackage(path) == true) {
-
-					this.DrawFlowFolderProjectGUI(path, rect);
-					return;
-
-				}
-
-				var packageDir = path;
-
-				if (System.IO.File.Exists(packageDir) == true) {
-
-					var splitted = path.Split('/');
-					packageDir = string.Join("/", splitted, 0, splitted.Length - 1);
-
-				}
-
-				if (FlowProjectWindowObject.IsValidPackage(packageDir) == true || FlowProjectWindowObject.IsValidPackage(System.IO.Path.Combine(packageDir, "..")) == true) {
-
-					var last = path.Split('/');
-					if (last.Length > 0) {
-						
-						var folder = last[last.Length - 1];
-						if (folder == "Screens") {
-
-							this.DrawFlowScreensProjectGUI(path, rect);
-
-						} else if (folder == "Transitions") {
-							
-							this.DrawFlowTransitionsProjectGUI(path, rect);
-							
-						} else if (folder == "Components") {
-							
-							this.DrawFlowComponentsProjectGUI(path, rect);
-							
-						} else if (folder == "Layouts") {
-
-							this.DrawFlowLayoutsProjectGUI(path, rect);
-
-						} else if (path.EndsWith("Base.cs") == true) {
-
-							this.DrawFlowBaseScriptProjectGUI(path, rect);
-
-						}
-
-					}
-
-				}
+				this.DrawWithCache(guid, rect);
 
 			}
 

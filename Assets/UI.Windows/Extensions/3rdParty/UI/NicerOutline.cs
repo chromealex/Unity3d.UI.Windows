@@ -169,8 +169,9 @@ namespace UnityEngine.UI
 		
 		protected override void OnValidate ()
 		{
+			base.OnValidate();
+
 			this.effectDistance = this.m_EffectDistance;
-			base.OnValidate ();
 		}
 	}
 }

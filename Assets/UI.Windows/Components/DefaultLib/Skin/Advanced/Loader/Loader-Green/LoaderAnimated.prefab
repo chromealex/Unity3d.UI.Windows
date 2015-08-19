@@ -233,7 +233,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
   m_Interactable: 0
-  m_TargetGraphic: {fileID: 11469224}
+  m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 22466152}
   m_HandleRect: {fileID: 0}
   m_Direction: 0
@@ -265,21 +265,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fcdd5e68ef3d48b9a54ab2ac20c3b80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams: []
   canvas: {fileID: 22518096}
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  images:
+  - {fileID: 11466154}
   duration: 1
   minNormalizedValue: .0500000007
   bar: {fileID: 11469226}
   continious: 1
   continiousWidth: .400000006
   continiousAngleStep: 0
-  images:
-  - {fileID: 11466154}
   tileDuration: 2
   processing: {fileID: 11466152}
 --- !u!222 &22236138
@@ -428,4 +431,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 169226}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

@@ -544,9 +544,14 @@ namespace UnityEngine.UI.Windows {
 	public class Preferences {
 
 		public enum Depth : byte {
+
 			Auto = 0,
 			AlwaysTop = 1,
 			AlwaysBack = 2,
+			
+			AlwaysTopLayer1 = 3,
+			AlwaysTopLayer2 = 4,
+
 		};
 
 		public enum DontDestroy : byte {
