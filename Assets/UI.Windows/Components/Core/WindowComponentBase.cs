@@ -17,7 +17,7 @@ namespace UnityEngine.UI.Windows {
 
 		[Header("Animation Info")]
 		[SceneEditOnly]
-		public WindowAnimationBase animation;
+		new public WindowAnimationBase animation;
 		
 		public ChildsBehaviourMode childsShowMode = ChildsBehaviourMode.Simultaneously;
 		public ChildsBehaviourMode childsHideMode = ChildsBehaviourMode.Simultaneously;

@@ -6,7 +6,7 @@ using UnityEngine.UI.Windows;
 public class ParticleSystemSortingLayer : MonoBehaviour {
 
 	public WindowObject windowObject;
-	public ParticleSystem particleSystem;
+	new public ParticleSystem particleSystem;
 	public int orderDelta;
 
 	public void Start() {
