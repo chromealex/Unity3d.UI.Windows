@@ -167,11 +167,13 @@ namespace UnityEngine.UI
 			this.ApplyShadow (verts, this.effectColor, start, verts.Count, 0, -distanceY);
 		}
 		
+		#if UNITY_EDITOR
 		protected override void OnValidate ()
 		{
 			base.OnValidate();
 
 			this.effectDistance = this.m_EffectDistance;
 		}
+		#endif
 	}
 }

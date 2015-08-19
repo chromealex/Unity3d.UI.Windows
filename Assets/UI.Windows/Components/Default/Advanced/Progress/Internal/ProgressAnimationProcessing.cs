@@ -77,6 +77,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+#if UNITY_EDITOR
 		protected override void OnValidate() {
 
 			base.OnValidate();
@@ -84,6 +85,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.Start();
 
 		}
+#endif
 
 	}
 
