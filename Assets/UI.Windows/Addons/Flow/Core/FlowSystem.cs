@@ -77,6 +77,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			var changed = (FlowSystem.instance.data.zoom != value);
 
+			if (value > 0.98f) value = 1f;
+
 			FlowSystem.instance.data.zoom = value;
 			if (changed == true) FlowSystem.SetDirty();
 

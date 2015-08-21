@@ -153,12 +153,12 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				menu.AddSeparator(prefix);
 
-				menu.AddItem(new GUIContent(prefix + "Functions/Container"), on: false, func: () => {
+				menu.AddItem(new GUIContent(prefix + "Functions/Definition"), on: false, func: () => {
 					
 					this.flowEditor.CreateNewItem(() => {
 						
 						var window = FlowSystem.CreateWindow(flags: FlowWindow.Flags.IsContainer | FlowWindow.Flags.IsFunction);
-						window.title = "Function Container";
+						window.title = "Function Definition";
 
 						return window;
 						
@@ -166,14 +166,14 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				});
 
-				menu.AddItem(new GUIContent(prefix + "Functions/Link"), on: false, func: () => {
+				menu.AddItem(new GUIContent(prefix + "Functions/Call"), on: false, func: () => {
 					
 					this.flowEditor.CreateNewItem(() => {
 						
 						var window = FlowSystem.CreateWindow(flags: FlowWindow.Flags.IsFunction | FlowWindow.Flags.IsSmall | FlowWindow.Flags.CantCompiled);
 						window.smallStyleDefault = "flow node 3";
 						window.smallStyleSelected = "flow node 3 on";
-						window.title = "Function Link";
+						window.title = "Function Call";
 
 						window.rect.width = 150f;
 						window.rect.height = 100f;

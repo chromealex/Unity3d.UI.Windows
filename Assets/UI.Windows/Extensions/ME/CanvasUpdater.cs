@@ -38,6 +38,7 @@ namespace UnityEngine.UI.Extensions {
 		public static void ForceUpdate(Canvas canvas, CanvasScaler canvasScaler) {
 
 			if (canvas == null) return;
+			if (Application.isPlaying == false) return;
 
 			var _factor = canvas.scaleFactor;
 			canvas.scaleFactor = _factor - 0.01f;

@@ -69,9 +69,28 @@ namespace UnityEngine.UI.Windows.Animations {
 			}
 
 		}
-		
+
+		private bool CheckMismatch(WindowBase window, List<TransitionInputParameters> parameters) {
+
+			if (this.transitions.Count != parameters.Count) {
+				
+				Debug.LogError("Animation: Parameters mismatch Transition [Window " + window.gameObject.name + "] ", this);
+				return false;
+				
+			}
+
+			return true;
+
+		}
+
 		public void SetInState(List<TransitionInputParameters> parameters, WindowBase window, WindowComponentBase root) {
 			
+			if (this.CheckMismatch(window, parameters) == false) {
+
+				return;
+				
+			}
+
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
@@ -83,6 +102,12 @@ namespace UnityEngine.UI.Windows.Animations {
 		
 		public void SetOutState(List<TransitionInputParameters> parameters, WindowBase window, WindowComponentBase root) {
 			
+			if (this.CheckMismatch(window, parameters) == false) {
+
+				return;
+				
+			}
+
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
@@ -94,6 +119,12 @@ namespace UnityEngine.UI.Windows.Animations {
 		
 		public void SetResetState(List<TransitionInputParameters> parameters, WindowBase window, WindowComponentBase root) {
 			
+			if (this.CheckMismatch(window, parameters) == false) {
+
+				return;
+				
+			}
+
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
@@ -104,6 +135,13 @@ namespace UnityEngine.UI.Windows.Animations {
 		}
 
 		public void Play(WindowBase window, List<TransitionInputParameters> parameters, WindowComponentBase root, bool forward, System.Action callback) {
+
+			if (this.CheckMismatch(window, parameters) == false) {
+
+				callback();
+				return;
+
+			}
 
 			Transition callbacker = null;
 			var maxDuration = 0f;

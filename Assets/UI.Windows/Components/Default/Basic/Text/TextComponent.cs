@@ -79,7 +79,14 @@ namespace UnityEngine.UI.Windows.Components {
 			return output;
 
 		}
-		
+
+		public float GetContentHeight(string text, Vector2 containerSize) {
+
+			var settings = this.text.GetGenerationSettings(containerSize);
+			return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
+
+		}
+
 		public void SetValue(int value, ValueFormat format = ValueFormat.None) {
 			
 			this.SetText(TextComponent.FormatValue(value, format));

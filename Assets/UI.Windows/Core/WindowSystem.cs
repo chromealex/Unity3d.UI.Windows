@@ -972,7 +972,7 @@ namespace UnityEngine.UI.Windows {
 							var parameter = parameters[i];
 							var par = inputParameters[i];
 
-							var equal = par == null || (parameter.ParameterType == par.GetType());
+							var equal = par == null || par.GetType() == parameter.ParameterType || par.GetType().IsSubclassOf(parameter.ParameterType);
 							if (equal == true) {
 								
 								++count;

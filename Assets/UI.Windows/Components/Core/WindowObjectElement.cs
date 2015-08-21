@@ -330,7 +330,7 @@ namespace UnityEngine.UI.Windows {
 			this.OnValidateEditor();
 			
 		}
-		
+
 		/// <summary>
 		/// Raises the validate editor event.
 		/// You can override this method but call it's base.
