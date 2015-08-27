@@ -71,13 +71,13 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			var rectTransform = (this.transform as RectTransform);
+			/*var rectTransform = (this.transform as RectTransform);
 			rectTransform.anchorMin = Vector2.zero;
 			rectTransform.anchorMax = Vector2.one;
 			rectTransform.pivot = Vector2.one * 0.5f;
 			rectTransform.localScale = Vector3.one;
 			rectTransform.localRotation = Quaternion.identity;
-			rectTransform.anchoredPosition3D = Vector3.zero;
+			rectTransform.anchoredPosition3D = Vector3.zero;*/
 
 		}
 		#endif

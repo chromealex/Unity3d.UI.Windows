@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEngine.UI.Extensions {
 
@@ -32,11 +33,13 @@ namespace UnityEngine.UI.Extensions {
 		}
 
 		public void Arrange() {
-			
+
+			this.lastIndex = 0;
+
 			var items = this.rectChildren;
 			for (int i = 0; i < items.Count; ++i) {
 
-				items[i].anchoredPosition3D = this.GetPosition(i, items.Count, items[i].anchoredPosition3D.z);
+				items[i].anchoredPosition3D = this.GetPosition(i, items.Count, items[i].anchoredPosition3D.z, this.radius, this.bothSided);
 				this.m_Tracker.Add(this, items[i], DrivenTransformProperties.AnchoredPosition3D);
 
 			}
@@ -57,7 +60,7 @@ namespace UnityEngine.UI.Extensions {
 		}
 
 		private int lastIndex = 0;
-		private Vector3 GetPosition(int index, int count, float depth) {
+		private Vector3 GetPosition(int index, int count, float depth, float radius, bool bothSided) {
 			
 			float startAngle = 0f;
 			
@@ -100,16 +103,14 @@ namespace UnityEngine.UI.Extensions {
 			startAngle += this.startAngle;
 
 			var angle = this.angle;
-			var radius = this.radius;
 			var elementAngle = angle / count;
 			var offset = false;
 			
 			var non360 = angle < 360f;
 			
-			if (elementAngle >= this.maxAnglePerElement) offset = true;
-			var elementAngleWithOffset = offset ? this.maxAnglePerElement : elementAngle;
+			offset = (elementAngle >= this.maxAnglePerElement);
 			
-			if (this.bothSided == true) {
+			if (bothSided == true) {
 				
 				if (index % 2 == 0) {
 					
@@ -121,6 +122,7 @@ namespace UnityEngine.UI.Extensions {
 					
 				}
 				
+				var elementAngleWithOffset = offset == true ? this.maxAnglePerElement : elementAngle;
 				if (count % 2 == 0) startAngle -= elementAngleWithOffset * 0.5f;
 				
 			} else {
@@ -141,6 +143,38 @@ namespace UnityEngine.UI.Extensions {
 			return new Vector3(position.x, position.y, depth);
 			
 		}
+
+		#if UNITY_EDITOR
+		public void OnDrawGizmos() {
+
+			const float pointRadius = 30f;
+
+			var scale = 1f;
+			var canvas = this.GetComponentsInParent<Canvas>().FirstOrDefault((c) => c.isRootCanvas);
+			if (canvas != null) {
+
+				scale = canvas.transform.localScale.x;
+
+			}
+
+			UnityEditor.Handles.color = Color.yellow;
+			UnityEditor.Handles.DrawWireDisc(this.transform.position, Vector3.back, this.radius * scale);
+			
+			UnityEditor.Handles.DrawLine(this.transform.position, this.transform.position + this.GetPosition(0, 2, this.transform.position.z, this.radius * scale, bothSided: false));
+			
+			UnityEditor.Handles.color = Color.gray;
+			var items = this.rectChildren;
+			for (int i = 0; i < items.Count; ++i) {
+				
+				var pos = this.GetPosition(i, items.Count, items[i].anchoredPosition3D.z, this.radius * scale, this.bothSided);
+				
+				UnityEditor.Handles.DrawLine(this.transform.position, this.transform.position + pos);
+				UnityEditor.Handles.DrawSolidDisc(this.transform.position + pos, Vector3.back, pointRadius * scale);
+
+			}
+
+		}
+		#endif
 
 	}
 

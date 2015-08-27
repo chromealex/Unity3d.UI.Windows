@@ -8,3 +8,14 @@
 			WindowSystem.CallFunction(this);
 			
 		}
+
+		/// <summary>
+		/// Call the end of current function {FUNCTION_CALL_NAME} and hides current.
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		public void FlowHideFunctionReturn() {
+			
+			this.Hide();
+			WindowSystem.CallFunction(this);
+			
+		}

@@ -155,7 +155,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public FlowWindow.AttachItem GetAttachItem(int from, int to) {
 			
 			var fromWindow = this.GetWindow(from);
-			return fromWindow.attachItems.FirstOrDefault((item) => item.targetId == to);
+			var item = fromWindow.attachItems.FirstOrDefault((element) => element.targetId == to);
+
+			if (item == null) {
+
+				return FlowWindow.AttachItem.Empty;
+
+			}
+
+			return item;
 
 		}
 

@@ -149,7 +149,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
 			if (this.guiSplash == null) this.guiSplash = new FlowSplash(this);
-			if (this.zoomDrawer == null) this.zoomDrawer = new EditorZoomArea();
+			if (this.zoomDrawer == null) this.zoomDrawer = new EditorZoomArea(this);
 
 			if (this.guiSplash.Draw() == false) {
 
@@ -605,6 +605,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					// Has transition or not?
 					var hasTransition = attach.transition != null && attach.transitionParameters != null;
 					if (hasTransition == true) {
+						
+						GUI.DrawTexture(rect, Texture2D.blackTexture);
 
 						var hovered = rect.Contains(Event.current.mousePosition);
 						if (attach.editor == null) {
@@ -613,6 +615,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							hovered = true;
 
 						}
+
 						if (attach.editor.HasPreviewGUI() == true) {
 
 							if (hovered == false) {
@@ -1222,7 +1225,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			if (Event.current.type == EventType.MouseDown && button == 0) {
+			if (Event.current.type == EventType.MouseDown && Event.current.alt == false && button == 0) {
 				
 				this.selectionRect = new Rect(position.x, position.y, 0f, 0f);
 				this.selectionRectWait = true;
@@ -1270,19 +1273,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.Repaint();
 				
 			}
-			
-			/*if (Event.current.type == EventType.MouseDrag &&
-			    (Event.current.button == 0 && Event.current.modifiers == EventModifiers.Alt) ||
-			    Event.current.button == 2) {
-				
-				var scrollPos = FlowSystem.GetScrollPosition();
-				scrollPos -= Event.current.delta / this.zoomDrawer.GetZoom();
-				FlowSystem.SetScrollPosition(scrollPos);
-				
-				Event.current.Use();
-				
-			}*/
-			
+
 		}
 		
 		private AnimatedValues.AnimFloat selectionRectAnimation;

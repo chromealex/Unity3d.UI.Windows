@@ -73,7 +73,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								
 								var comps = go.GetComponents<MonoBehaviour>();
 								foreach (var comp in comps) {
-									
+
+									if (comp == null) continue;
+
 									dirty = this.IsDirty(comp.GetInstanceID());
 									if (dirty == true) break;
 									

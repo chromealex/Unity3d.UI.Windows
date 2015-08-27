@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEngine.UI.Windows {
 
@@ -115,7 +116,7 @@ namespace UnityEngine.UI.Windows {
 		private void OnDrawGUI_EDITOR(bool selected, bool selectedHierarchy) {
 
 			var scale = 1f;
-			var canvas = this.GetComponentInParent<Canvas>();
+			var canvas = this.GetComponentsInParent<Canvas>().FirstOrDefault((c) => c.isRootCanvas);
 			if (canvas != null) scale = canvas.transform.localScale.x;
 
 			var textStyle = new GUIStyle(GUI.skin.label);

@@ -520,8 +520,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				} else if (this.cachedData != null && this.cachedData.version > VersionInfo.BUNDLE_VERSION) {
 
-					EditorGUILayout.HelpBox(string.Format("Selected Project has {0} version while UI.Windows System has {1} version number. Please, download a new version.", this.cachedData.version, VersionInfo.BUNDLE_VERSION), MessageType.Warning);
-					if (GUILayout.Button("Download", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
+					var info = string.Format(
+						"Selected Project has `{0}` version while UI.Windows System has `{1}` version number. Click here to download a new version.",
+						this.cachedData.version,
+						VersionInfo.BUNDLE_VERSION
+					);
+
+					if (GUILayout.Button(new GUIContent(info, new GUIStyle("CN EntryWarn").normal.background), EditorStyles.helpBox, GUILayout.Height(40f)) == true) {
 						
 						Application.OpenURL(VersionInfo.DOWNLOAD_LINK);
 						

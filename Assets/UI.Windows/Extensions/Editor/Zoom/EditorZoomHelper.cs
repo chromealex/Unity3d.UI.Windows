@@ -75,6 +75,14 @@ namespace UnityEditor.UI.Windows.Extensions {
 		private float zoomValue = 1f;
 		private Vector2 zoomCoordsOrigin = Vector2.zero;
 
+		private EditorWindow editor;
+
+		public EditorZoomArea(EditorWindow editor) {
+
+			this.editor = editor;
+
+		}
+
 		public void SetZoom(float value) {
 
 			this.zoomValue = value;
@@ -130,6 +138,8 @@ namespace UnityEditor.UI.Windows.Extensions {
 				this.zoomCoordsOrigin += (zoomCoordsMousePos - this.zoomCoordsOrigin) - (oldZoom / this.zoomValue) * (zoomCoordsMousePos - this.zoomCoordsOrigin);
 				
 				Event.current.Use();
+				
+				this.editor.Repaint();
 
 			}
 			
@@ -142,7 +152,9 @@ namespace UnityEditor.UI.Windows.Extensions {
 				Vector2 delta = Event.current.delta;
 				delta /= this.zoomValue;
 				this.zoomCoordsOrigin += delta;
-				
+
+				this.editor.Repaint();
+
 				//Event.current.Use();
 
 			}

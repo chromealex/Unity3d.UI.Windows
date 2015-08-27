@@ -14,25 +14,12 @@
 		/// <returns>Function root window</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, params object[] parameters) {
 			
-			{CLASS_NAME_WITH_NAMESPACE} instance = null;
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
-			if (item == null || item.transition == null) {
+			var instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
 				
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(this, index)); });
-					
-				}, parameters);
+				WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(this, index)); });
 				
-			} else {
-				
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(this, index)); });
-					
-				}, item.transition, item.transitionParameters, parameters);
-				
-			}
+			}, item.transition, item.transitionParameters, parameters);
 			
 			return instance;
 			
@@ -47,27 +34,14 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHideFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, params object[] parameters) {
 			
-			{CLASS_NAME_WITH_NAMESPACE} instance = null;
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
-			if (item == null || item.transition == null) {
+			
+			this.Hide(item.transition, item.transitionParameters);
+			var instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
 				
-				this.Hide();
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(this, index)); });
-					
-				}, parameters);
+				WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(this, index)); });
 				
-			} else {
-				
-				this.Hide(item.transition, item.transitionParameters);
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					WindowSystem.RegisterFunctionCallback(window, (index) => { onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(this, index)); });
-					
-				}, item.transition, item.transitionParameters, parameters);
-				
-			}
+			}, item.transition, item.transitionParameters, parameters);
 			
 			return instance;
 			

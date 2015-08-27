@@ -8,25 +8,12 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} Flow{CLASS_NAME}(params object[] parameters) {
 			
-			{CLASS_NAME_WITH_NAMESPACE} instance = null;
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
-			if (item == null || item.transition == null) {
+			var instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
 				
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
-					
-				}, parameters);
+				window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
 				
-			} else {
-				
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
-					
-				}, item.transition, item.transitionParameters, parameters);
-				
-			}
+			}, item.transition, item.transitionParameters, parameters);
 			
 			return instance;
 			
@@ -41,27 +28,14 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHide{CLASS_NAME}(params object[] parameters) {
 			
-			{CLASS_NAME_WITH_NAMESPACE} instance = null;
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
-			if (item == null || item.transition == null) {
+			
+			this.Hide(item.transition, item.transitionParameters);
+			var instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
 				
-				this.Hide();
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
-					
-				}, parameters);
+				window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
 				
-			} else {
-				
-				this.Hide(item.transition, item.transitionParameters);
-				instance = WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((window) => {
-					
-					window.SetFunctionIterationIndex(this.GetFunctionIterationIndex());
-					
-				}, item.transition, item.transitionParameters, parameters);
-				
-			}
+			}, item.transition, item.transitionParameters, parameters);
 			
 			return instance;
 			

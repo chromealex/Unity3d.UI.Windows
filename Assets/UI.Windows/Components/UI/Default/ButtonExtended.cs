@@ -5,6 +5,42 @@ using UnityEngine.Serialization;
 namespace UnityEngine.UI {
 
 	public class ButtonExtended : Button {
+		
+		[System.Serializable]
+		public struct ScaleBlock {
+			
+			//
+			// Static Properties
+			//
+			public static ScaleBlock defaultScaleBlock {
+				
+				get {
+					
+					return new ScaleBlock {
+						normalScale = 1f,
+						highlightedScale = 1.1f,
+						pressedScale = 0.8f,
+						disabledScale = 1f,
+						scaleMultiplier = 1f,
+						fadeDuration = 0.1f
+					};
+					
+				}
+				
+			}
+			
+			public Transform transform;
+			
+			public float normalScale;
+			public float highlightedScale;
+			public float pressedScale;
+			public float disabledScale;
+			
+			[Range(1f, 5f)]
+			public float scaleMultiplier;
+			public float fadeDuration;
+			
+		}
 
 		[System.Serializable]
 		public struct AlphaBlock {
@@ -42,20 +78,22 @@ namespace UnityEngine.UI {
 
 		}
 
-		public enum Transition {
+		public enum Transition : byte {
 
 			// Defaults
-			None = 0,
-			ColorTint = 1,
-			SpriteSwap = 2,
-			Animation = 3,
+			None = 0x0,
+
+			ColorTint = 0x1,
+			SpriteSwap = 0x2,
+			Animation = 0x4,
 
 			// Addons
-			SpriteSwapAndColorTint = 4,
-			CanvasGroupAlpha = 5,
+			SpriteSwapAndColorTint = 0x8,
+			CanvasGroupAlpha = 0x10,
+			Scale = 0x20,
 
 		};
-
+		
 		[FormerlySerializedAs("alpha")]
 		[SerializeField]
 		private AlphaBlock m_Alpha = AlphaBlock.defaultAlphaBlock;
@@ -67,9 +105,39 @@ namespace UnityEngine.UI {
 				this.m_Alpha = value;
 			}
 		}
+		
+		[FormerlySerializedAs("scale")]
+		[SerializeField]
+		private ScaleBlock m_Scale = ScaleBlock.defaultScaleBlock;
+		public ScaleBlock scale {
+			get {
+				return this.m_Scale;
+			}
+			set {
+				this.m_Scale = value;
+			}
+		}
 
+		[BitMask(typeof(Transition))]
 		public Transition transitionExtended;
 		
+		private void StartScaleTween(float targetScale, bool instant) {
+			
+			if (this.scale.transform == null) return;
+			
+			if (instant == true) {
+				
+				this.scale.transform.localScale = Vector3.one * targetScale;
+				
+			} else {
+				
+				TweenerGlobal.instance.removeTweens(this.scale.transform);
+				TweenerGlobal.instance.addTweenScale(this.scale.transform, this.scale.fadeDuration, Vector3.one * targetScale).tag(this.scale.transform);
+				
+			}
+			
+		}
+
 		private void StartAlphaTween(float targetAlpha, bool instant) {
 			
 			if (this.alpha.canvasGroup == null) return;
@@ -125,32 +193,42 @@ namespace UnityEngine.UI {
 
 			base.InstantClearState();
 
-			switch (this.transitionExtended) {
-
-				case Transition.CanvasGroupAlpha:
-					this.StartAlphaTween(this.alpha.normalAlpha, true);
-					break;
-				case Transition.SpriteSwapAndColorTint:
-					this.StartColorTween(Color.white, true);
-					this.DoSpriteSwap(null);
-					break;
-				case Transition.ColorTint:
-					this.StartColorTween(Color.white, true);
-					break;
-				case Transition.SpriteSwap:
-					this.DoSpriteSwap(null);
-					break;
-				case Transition.Animation:
-					string triggerName = this.animationTriggers.normalTrigger;
-					this.TriggerAnimation(triggerName);
-					break;
+			if ((this.transitionExtended & Transition.Scale) != 0) {
+				
+				this.StartScaleTween(this.scale.normalScale, true);
+				
+			}
+			
+			if ((this.transitionExtended & Transition.CanvasGroupAlpha) != 0) {
+				
+				this.StartAlphaTween(this.alpha.normalAlpha, true);
+				
+			}
+			
+			if ((this.transitionExtended & Transition.ColorTint) != 0) {
+				
+				this.StartColorTween(Color.white, true);
+				
+			}
+			
+			if ((this.transitionExtended & Transition.SpriteSwap) != 0) {
+				
+				this.DoSpriteSwap(null);
+				
+			}
+			
+			if ((this.transitionExtended & Transition.Animation) != 0) {
+				
+				string triggerName = this.animationTriggers.normalTrigger;
+				this.TriggerAnimation(triggerName);
 
 			}
 
 		}
 
 		protected override void DoStateTransition(Selectable.SelectionState state, bool instant) {
-
+			
+			float scale;
 			float alpha;
 			Color color;
 			Sprite newSprite;
@@ -159,30 +237,35 @@ namespace UnityEngine.UI {
 			switch (state) {
 
 				case Selectable.SelectionState.Normal:
+					scale = this.scale.normalScale;
 					alpha = this.alpha.normalAlpha;
 					color = this.colors.normalColor;
 					newSprite = null;
 					triggername = this.animationTriggers.normalTrigger;
 				break;
 				case Selectable.SelectionState.Highlighted:
+					scale = this.scale.highlightedScale;
 					alpha = this.alpha.highlightedAlpha;
 					color = this.colors.highlightedColor;
 					newSprite = this.spriteState.highlightedSprite;
 					triggername = this.animationTriggers.highlightedTrigger;
 				break;
 				case Selectable.SelectionState.Pressed:
+					scale = this.scale.pressedScale;
 					alpha = this.alpha.pressedAlpha;
 					color = this.colors.pressedColor;
 					newSprite = this.spriteState.pressedSprite;
 					triggername = this.animationTriggers.pressedTrigger;
 				break;
 				case Selectable.SelectionState.Disabled:
+					scale = this.scale.disabledScale;
 					alpha = this.alpha.disabledAlpha;
 					color = this.colors.disabledColor;
 					newSprite = this.spriteState.disabledSprite;
 					triggername = this.animationTriggers.disabledTrigger;
 				break;
 				default:
+					scale = 0f;
 					alpha = 0f;
 					color = Color.black;
 					newSprite = null;
@@ -191,27 +274,36 @@ namespace UnityEngine.UI {
 
 			}
 
-			if (base.gameObject.activeInHierarchy) {
-
-				switch (this.transitionExtended) {
+			if (base.gameObject.activeInHierarchy == true) {
+				
+				if ((this.transitionExtended & Transition.Scale) != 0) {
 					
-					case Transition.CanvasGroupAlpha:
-						this.StartAlphaTween(alpha * this.alpha.alphaMultiplier, instant);
-						break;
-					case Transition.SpriteSwapAndColorTint:
-						this.StartColorTween(color * this.colors.colorMultiplier, instant);
-						this.DoSpriteSwap(newSprite);
-					break;
-					case Transition.ColorTint:
-						this.StartColorTween(color * this.colors.colorMultiplier, instant);
-					break;
-					case Transition.SpriteSwap:
-						this.DoSpriteSwap(newSprite);
-					break;
-					case Transition.Animation:
-						this.TriggerAnimation(triggername);
-					break;
-
+					this.StartScaleTween(scale * this.scale.scaleMultiplier, instant);
+					
+				}
+				
+				if ((this.transitionExtended & Transition.CanvasGroupAlpha) != 0) {
+					
+					this.StartAlphaTween(alpha * this.alpha.alphaMultiplier, instant);
+					
+				}
+				
+				if ((this.transitionExtended & Transition.ColorTint) != 0) {
+					
+					this.StartColorTween(color * this.colors.colorMultiplier, instant);
+					
+				}
+				
+				if ((this.transitionExtended & Transition.SpriteSwap) != 0) {
+					
+					this.DoSpriteSwap(newSprite);
+					
+				}
+				
+				if ((this.transitionExtended & Transition.Animation) != 0) {
+					
+					this.TriggerAnimation(triggername);
+					
 				}
 
 			}

@@ -10,12 +10,16 @@ namespace UnityEditor.UI {
 
 		private SerializedProperty transition;
 		private SerializedProperty transitionExtended;
+
+		SerializedProperty extScaleBlockProperty;
 		SerializedProperty extAlphaBlockProperty;
 		SerializedProperty extColorBlockProperty;
 		SerializedProperty extSpriteStateProperty;
 		SerializedProperty extAnimTriggerProperty;
 		SerializedProperty extTargetGraphicProperty;
-		AnimBool extShowAlphaTint = new AnimBool();
+
+		AnimBool extShowScale = new AnimBool();
+		AnimBool extShowAlpha = new AnimBool();
 		AnimBool extShowColorTint = new AnimBool();
 		AnimBool extShowSpriteTrasition = new AnimBool();
 		AnimBool extShowAnimTransition = new AnimBool();
@@ -27,7 +31,8 @@ namespace UnityEditor.UI {
 
 			this.transition = this.serializedObject.FindProperty("m_Transition");
 			this.transitionExtended = serializedObject.FindProperty("transitionExtended");
-
+			
+			extScaleBlockProperty = serializedObject.FindProperty("m_Scale");
 			extAlphaBlockProperty = serializedObject.FindProperty("m_Alpha");
 			extColorBlockProperty = serializedObject.FindProperty("m_Colors");
 			extSpriteStateProperty = serializedObject.FindProperty("m_SpriteState");
@@ -35,27 +40,33 @@ namespace UnityEditor.UI {
 			extTargetGraphicProperty = serializedObject.FindProperty("m_TargetGraphic");
 
 			var trans = GetTransition(this.transitionExtended);
-			extShowAlphaTint.value = (trans == ButtonExtended.Transition.CanvasGroupAlpha);
-			extShowColorTint.value = (trans == ButtonExtended.Transition.ColorTint || trans == ButtonExtended.Transition.SpriteSwapAndColorTint);
-			extShowSpriteTrasition.value = (trans == ButtonExtended.Transition.SpriteSwap || trans == ButtonExtended.Transition.SpriteSwapAndColorTint);
-			extShowAnimTransition.value = (trans == ButtonExtended.Transition.Animation);
+			extShowScale.value = (trans & ButtonExtended.Transition.Scale) != 0;
+			extShowAlpha.value = (trans & ButtonExtended.Transition.CanvasGroupAlpha) != 0;
+			extShowColorTint.value = (trans & ButtonExtended.Transition.ColorTint) != 0;
+			extShowSpriteTrasition.value = (trans & ButtonExtended.Transition.SpriteSwap) != 0;
+			extShowAnimTransition.value = (trans & ButtonExtended.Transition.Animation) != 0;
 			
+			extShowScale.valueChanged.AddListener(Repaint);
+			extShowAlpha.valueChanged.AddListener(Repaint);
 			extShowColorTint.valueChanged.AddListener(Repaint);
 			extShowSpriteTrasition.valueChanged.AddListener(Repaint);
 
 		}
 
 		protected override void OnDisable() {
-			base.OnDisable();
 
-			extShowAlphaTint.valueChanged.RemoveListener(Repaint);
+			base.OnDisable();
+			
+			extShowScale.valueChanged.RemoveListener(Repaint);
+			extShowAlpha.valueChanged.RemoveListener(Repaint);
 			extShowColorTint.valueChanged.RemoveListener(Repaint);
 			extShowSpriteTrasition.valueChanged.RemoveListener(Repaint);
+
 		}
 
 		static ButtonExtended.Transition GetTransition(SerializedProperty transition) {
 
-			return (ButtonExtended.Transition)transition.enumValueIndex;
+			return (ButtonExtended.Transition)transition.intValue;
 
 		}
 
@@ -69,14 +80,16 @@ namespace UnityEditor.UI {
 			
 			var trans = GetTransition(this.transitionExtended);
 			var animator = (target as Selectable).GetComponent<Animator>();
-			extShowAlphaTint.target = (!transitionExtended.hasMultipleDifferentValues && (trans == ButtonExtended.Transition.CanvasGroupAlpha));
-			extShowColorTint.target = (!transitionExtended.hasMultipleDifferentValues && (trans == ButtonExtended.Transition.ColorTint || trans == ButtonExtended.Transition.SpriteSwapAndColorTint));
-			extShowSpriteTrasition.target = (!transitionExtended.hasMultipleDifferentValues && (trans == ButtonExtended.Transition.SpriteSwap || trans == ButtonExtended.Transition.SpriteSwapAndColorTint));
-			extShowAnimTransition.target = (!transitionExtended.hasMultipleDifferentValues && (trans == ButtonExtended.Transition.Animation));
+			extShowScale.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.Scale) != 0);
+			extShowAlpha.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.CanvasGroupAlpha) != 0);
+			extShowColorTint.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.ColorTint) != 0);
+			extShowSpriteTrasition.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.SpriteSwap) != 0);
+			extShowAnimTransition.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.Animation) != 0);
 
 			EditorGUILayout.PropertyField(this.transitionExtended);
 
-			if (trans == ButtonExtended.Transition.ColorTint || trans == ButtonExtended.Transition.SpriteSwap || trans == ButtonExtended.Transition.SpriteSwapAndColorTint) {
+			if ((trans & ButtonExtended.Transition.ColorTint) != 0 ||
+			    (trans & ButtonExtended.Transition.SpriteSwap) != 0) {
 				EditorGUILayout.PropertyField(extTargetGraphicProperty);
 				EditorGUILayout.Space();
 			}
@@ -87,8 +100,14 @@ namespace UnityEditor.UI {
 			}
 			EditorGUILayout.EndFadeGroup();
 			
-			if (EditorGUILayout.BeginFadeGroup(extShowAlphaTint.faded)) {
+			if (EditorGUILayout.BeginFadeGroup(extShowAlpha.faded)) {
 				EditorGUILayout.PropertyField(extAlphaBlockProperty, includeChildren: true);
+				EditorGUILayout.Space();
+			}
+			EditorGUILayout.EndFadeGroup();
+			
+			if (EditorGUILayout.BeginFadeGroup(extShowScale.faded)) {
+				EditorGUILayout.PropertyField(extScaleBlockProperty, includeChildren: true);
 				EditorGUILayout.Space();
 			}
 			EditorGUILayout.EndFadeGroup();

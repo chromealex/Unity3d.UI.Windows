@@ -38,7 +38,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		
 		[System.Serializable]
 		public class AttachItem {
-			
+
+			public static readonly AttachItem Empty = new AttachItem(-1);
+
 			public int targetId;
 			
 			public TransitionBase transition;
