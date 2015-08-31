@@ -18,19 +18,24 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		[Header("Raycaster Source (Optional)")]
 		public BaseRaycaster raycasterSource;
-		
+
 		public void Start() {
-			
+
 			this.Init();
-			
+
 		}
-		
+
 		public void Init() {
-			
+
 			if (this.canvas != null && this.windowObject != null) {
 				
 				var window = this.windowObject.GetWindow();
-				if (window == null) return;
+				if (window == null) {
+
+					Debug.LogWarning("[ CanvasLinker ] WindowObject::GetWindow() is null", this);
+					return;
+
+				}
 				
 				this.canvas.overrideSorting = true;
 				this.canvas.sortingLayerName = window.GetSortingLayerName();

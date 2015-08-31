@@ -1,9 +1,9 @@
-
 using System.Collections.Generic;
 using System.Linq;
 
 namespace UnityEngine.UI.Windows {
 
+	[UnityEngine.DisallowMultipleComponent]
 	public class WindowObjectElement : WindowObject {
 		
 		[Header("Sub Components")]

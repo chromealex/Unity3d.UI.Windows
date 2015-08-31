@@ -20,6 +20,10 @@ namespace UnityEngine.UI.Extensions {
 		public Adjust adjust = Adjust.Shrink;
 		public float scaleFactor = 1f;
 
+		public bool overwriteDepth = false;
+		[ReadOnly("overwriteDepth", state: true)]
+		public float depth;
+
 		public override void CalculateLayoutInputVertical() {
 
 			this.Arrange();
@@ -153,13 +157,21 @@ namespace UnityEngine.UI.Extensions {
 				var rect = this.rectChildren[i];
 				
 				this.m_Tracker.Add(this, rect, DrivenTransformProperties.Scale | DrivenTransformProperties.AnchoredPosition | DrivenTransformProperties.Anchors | DrivenTransformProperties.SizeDelta);
-				rect.localScale = scale * this.scaleFactor;
+
+				var s = scale * this.scaleFactor;
+				if (this.overwriteDepth == true) {
+
+					s.z = this.depth;
+
+				}
+
+				rect.localScale = s;
 
 				rect.pivot = new Vector2(x, y);
 				rect.anchorMin = Vector2.zero;
 				rect.anchorMax = Vector2.one;
 				rect.sizeDelta = Vector2.zero;
-				rect.anchoredPosition = Vector2.zero;
+				rect.anchoredPosition = new Vector2(this.padding.left, this.padding.top);
 
 			}
 

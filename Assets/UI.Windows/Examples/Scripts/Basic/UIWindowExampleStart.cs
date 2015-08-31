@@ -21,7 +21,7 @@ public class UIWindowExampleStart : MonoBehaviour {
 #if UNITY_EDITOR
 	public void LateUpdate() {
 		
-		this.version = UnityEditor.UI.Windows.VersionInfo.BUNDLE_VERSION.ToString();
+		this.version = VersionInfo.BUNDLE_VERSION.ToString();
 
 	}
 #endif

@@ -10,35 +10,67 @@ namespace UnityEngine.UI.Windows.Components {
 			None,		 // 1234567890
 			WithSpace,	 // 1 234 567 890
 			WithComma,	 // 1,234 567 890
-			Time,		 // 00:00:00
-			TimeMinutes, // 00:00
-			TimeMiliseconds, // 00:00:00`00
-			TimeMinutesMiliseconds, // 00:00`00
+			TimeHMS,	 // 00:00:00
+			TimeMS, 	 // 00:00
+			TimeHMSms, 	 // 00:00:00`00
+			TimeMSms, 	 // 00:00`00
 
 		};
 
 		[SerializeField]
 		private Text text;
-
+		
 		public static string FormatValue(int value, ValueFormat format) {
+
+			return TextComponent.FormatValue((float)value, format);
+
+		}
+
+		public static string FormatValue(float value, ValueFormat format) {
 			
 			var output = string.Empty;
 			
 			switch (format) {
 				
 				case ValueFormat.None:
-					output = value.ToString();
+
+					{
+						
+						output = value.ToString();
+						
+					}
+
 					break;
 					
 				case ValueFormat.WithSpace:
-					output = value.ToString("# ### ### ##0").Trim();
+
+					if (value < 0f) {
+						
+						output = "-" + (-value).ToString("# ### ### ##0").Trim();
+
+					} else {
+
+						output = value.ToString("# ### ### ##0").Trim();
+
+					}
+
 					break;
 					
 				case ValueFormat.WithComma:
-					output = value.ToString("#,### ### ##0").Trim(',');
+					
+					if (value < 0f) {
+						
+						output = "-" + (-value).ToString("#,### ### ##0").Trim(',');
+						
+					} else {
+						
+						output = value.ToString("#,### ### ##0").Trim(',');
+						
+					}
+
 					break;
 					
-				case ValueFormat.Time:
+				case ValueFormat.TimeHMS:
 
 					{
 						var t = TimeSpan.FromSeconds(value);
@@ -47,7 +79,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 					break;
 					
-				case ValueFormat.TimeMinutes:
+				case ValueFormat.TimeMS:
 					
 					{
 						var t = TimeSpan.FromSeconds(value);
@@ -56,7 +88,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 					break;
 					
-				case ValueFormat.TimeMiliseconds:
+				case ValueFormat.TimeHMSms:
 
 					{
 						var t = TimeSpan.FromMilliseconds(value);
@@ -65,7 +97,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 					break;
 					
-				case ValueFormat.TimeMinutesMiliseconds:
+				case ValueFormat.TimeMSms:
 
 					{
 						var t = TimeSpan.FromMilliseconds(value);

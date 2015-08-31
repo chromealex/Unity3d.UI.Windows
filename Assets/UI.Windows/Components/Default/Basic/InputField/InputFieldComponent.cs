@@ -6,12 +6,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class InputFieldComponent : WindowComponent {
 
+		public bool convertToUppercase = false;
+
 		[SerializeField]
 		protected Text text;
 		
 		[SerializeField]
 		protected InputField inputField;
 		
+		[SerializeField]
+		protected Text placeholder;
+
 		private ComponentEvent<string> onChange = new ComponentEvent<string>();
 		private ComponentEvent<string> onEditEnd = new ComponentEvent<string>();
 
@@ -22,16 +27,26 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void SetText(string text) {
-
+			
 			if (this.inputField != null) {
 				
 				this.inputField.enabled = false;
 				this.inputField.text = string.Empty;
 				this.inputField.text = text;
 				this.inputField.enabled = true;
-
+				
 			}
+			
+		}
+		
+		public void SetPlaceholderText(string text) {
+			
+			if (this.placeholder != null) {
 
+				this.placeholder.text = text;
+				
+			}
+			
 		}
 
 		public void SetFocus() {
@@ -85,7 +100,8 @@ namespace UnityEngine.UI.Windows.Components {
 		public override void OnInit() {
 
 			base.OnInit();
-			
+
+			this.inputField.onValidateInput = this.OnValidateChar;
 			this.inputField.onValueChange.AddListener(this.OnChange);
 			this.inputField.onEndEdit.AddListener(this.OnEditEnd);
 
@@ -94,12 +110,25 @@ namespace UnityEngine.UI.Windows.Components {
 		public override void OnDeinit() {
 
 			base.OnDeinit();
-			
+
+			this.inputField.onValidateInput = null;
 			this.inputField.onValueChange.RemoveListener(this.OnChange);
 			this.inputField.onEndEdit.RemoveListener(this.OnEditEnd);
 
 			this.onChange.RemoveAllListeners();
 			this.onEditEnd.RemoveAllListeners();
+
+		}
+
+		public char OnValidateChar(string text, int index, char addedChar) {
+
+			if (this.convertToUppercase == true) {
+
+				return char.ToUpper(addedChar);
+
+			}
+
+			return addedChar;
 
 		}
 

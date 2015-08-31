@@ -605,8 +605,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					// Has transition or not?
 					var hasTransition = attach.transition != null && attach.transitionParameters != null;
 					if (hasTransition == true) {
-						
-						GUI.DrawTexture(rect, Texture2D.blackTexture);
+
+						GUI.DrawTexture(rect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false);
 
 						var hovered = rect.Contains(Event.current.mousePosition);
 						if (attach.editor == null) {

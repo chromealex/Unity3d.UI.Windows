@@ -16,6 +16,9 @@ namespace Tacticsoft
     [RequireComponent(typeof(ScrollRect))]
     public class TableView : MonoBehaviour
     {
+		
+		public GameObject noContentContainer;
+		public GameObject hasContentContainer;
 
         #region Public API
         /// <summary>
@@ -63,9 +66,17 @@ namespace Tacticsoft
             m_rowHeights = new float[m_dataSource.GetNumberOfRowsForTableView(this)];
             this.isEmpty = m_rowHeights.Length == 0;
             if (this.isEmpty) {
+
+				if (this.noContentContainer != null) this.noContentContainer.SetActive(true);
+				if (this.hasContentContainer != null) this.hasContentContainer.SetActive(false);
+
                 ClearAllRows();
                 return;
             }
+			
+			if (this.noContentContainer != null) this.noContentContainer.SetActive(false);
+			if (this.hasContentContainer != null) this.hasContentContainer.SetActive(true);
+			
             m_cumulativeRowHeights = new float[m_rowHeights.Length];
             m_cleanCumulativeIndex = -1;
 

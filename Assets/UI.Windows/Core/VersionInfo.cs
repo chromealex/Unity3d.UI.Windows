@@ -1,5 +1,5 @@
 ﻿
-namespace UnityEditor.UI.Windows {
+namespace UnityEngine.UI.Windows {
 	
 	[System.Serializable]
 	public struct Version {

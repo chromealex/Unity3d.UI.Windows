@@ -386,7 +386,7 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="canvas">Canvas.</param>
 		public static void ApplyToSettings(Canvas canvas) {
 
-			if (WindowSystem.instance.settings.file == null) {
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
 				
 				canvas.overrideSorting = true;
 				canvas.sortingLayerName = "Windows";

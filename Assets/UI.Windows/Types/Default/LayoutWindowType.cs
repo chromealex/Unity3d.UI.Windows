@@ -219,8 +219,12 @@ namespace UnityEngine.UI.Windows.Types {
 				
 				this.root.Setup(instance, this);
 				instance.Setup(window);
+				
+				if (instance.autoRegisterInRoot == true && root.autoRegisterSubComponents == true) {
 
-				root.RegisterSubComponent(instance);
+					root.RegisterSubComponent(instance);
+
+				}
 
 				instance.transform.SetSiblingIndex(this.sortingOrder);
 				

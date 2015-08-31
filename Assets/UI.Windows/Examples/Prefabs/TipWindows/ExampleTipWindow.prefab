@@ -153,6 +153,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
+  m_TargetEye: 3
   m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
@@ -246,9 +247,11 @@ MonoBehaviour:
   transition:
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
+  layoutRoot: {fileID: 0}
   root: {fileID: 22498182}
   animationRoot: {fileID: 11456502}
   canvas: {fileID: 22356496}
+  canvasScaler: {fileID: 11456496}
   raycaster: {fileID: 0}
   initializedChild: 1
   text: {fileID: 11456526}

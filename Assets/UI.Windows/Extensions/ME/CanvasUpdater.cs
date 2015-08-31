@@ -35,19 +35,21 @@ namespace UnityEngine.UI.Extensions {
 			
 		}
 		
-		public static void ForceUpdate(Canvas canvas, CanvasScaler canvasScaler) {
+		public static void ForceUpdate(Canvas canvas, CanvasScaler canvasScaler = null) {
 
 			if (canvas == null) return;
 			if (Application.isPlaying == false) return;
 
+			const float delta = 0.05f;
+
 			var _factor = canvas.scaleFactor;
-			canvas.scaleFactor = _factor - 0.01f;
+			canvas.scaleFactor = _factor - delta;
 			canvas.scaleFactor = _factor;
 
 			if (canvasScaler != null) {
 
 				_factor = canvasScaler.scaleFactor;
-				canvasScaler.scaleFactor = _factor - 0.01f;
+				canvasScaler.scaleFactor = _factor - delta;
 				canvasScaler.scaleFactor = _factor;
 
 			}

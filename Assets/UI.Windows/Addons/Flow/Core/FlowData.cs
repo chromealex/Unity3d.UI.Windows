@@ -28,7 +28,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	public class FlowData : ScriptableObject {
 
 		public string lastModified = "-";
-		public UnityEditor.UI.Windows.Version version;
+		public Version version;
 
 		public string namespaceName;
 		public bool forceRecompile;

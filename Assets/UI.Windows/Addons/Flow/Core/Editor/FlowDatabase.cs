@@ -5,6 +5,7 @@ using ME;
 using System.Reflection;
 using System.Linq;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -64,24 +65,38 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			var cachedFields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
 
-			// Add a new component
-			var newInstance = source.gameObject.AddComponent(withType);
+			var fieldValues = new Dictionary<string, object>();
+			foreach (var cache in cachedFields) {
+				/*
+				var cache = cachedFields.FirstOrDefault((f) => f.Name == field.Name);
+				if (cache != null) {*/
+
+				fieldValues.Add(cache.Name, cache.GetValue(source));
+				//field.SetValue(newInstance, cache.GetValue(source));
+
+				//}
+
+			}
+
+			var go = source.gameObject;
+
+			// Destroy the old one
+			Object.DestroyImmediate(source);
 			
+			// Add a new component
+			var newInstance = go.AddComponent(withType);
 			var newFields = newInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
 
 			foreach (var field in newFields) {
 
-				var cache = cachedFields.FirstOrDefault((f) => f.Name == field.Name);
-				if (cache != null) {
+				object value;
+				if (fieldValues.TryGetValue(field.Name, out value) == true) {
 
-					field.SetValue(newInstance, cache.GetValue(source));
+					field.SetValue(newInstance, value);
 
 				}
 
 			}
-
-			// Destroy the old one
-			Object.DestroyImmediate(source);
 
 			return newInstance as TWith;
 

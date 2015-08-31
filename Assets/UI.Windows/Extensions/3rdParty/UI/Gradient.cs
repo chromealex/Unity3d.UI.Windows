@@ -6,15 +6,20 @@ namespace UnityEngine.UI {
 
 	[AddComponentMenu("UI/Effects/Gradient")]
 	public class Gradient : BaseVertexEffect {
+
 		public GradientMode gradientMode = GradientMode.Global;
 		public GradientDir gradientDir = GradientDir.Vertical;
 		public ColorMode colorMode = ColorMode.Multiply;
+
 		public bool overwriteAllColor = false;
+
 		public Color vertex1 = Color.white;
 		public Color vertex2 = Color.black;
-		[Range(0f, 1f)]
-		public float
-			lerpPosition = 0.5f;
+
+		[ReadOnly("gradientDir", GradientDir.DiagonalLeftToRight | GradientDir.DiagonalRightToLeft, bitMask: true)]
+		//[Range(0f, 1f)]
+		public float lerpPosition = 0.5f;
+
 		private Graphic targetGraphic;
 
 		protected override void Start() {
@@ -58,10 +63,10 @@ namespace UnityEngine.UI {
 
 					switch (gradientDir) {
 						case GradientDir.Vertical:
-							targetColor = (i % 4 == 0 || (i - 1) % 4 == 0) ? vertex1 : vertex2;
+							targetColor = (i % 4 == 0 || (i - 3) % 4 == 0) ? vertex1 : vertex2;
 							break;
 						case GradientDir.Horizontal:
-							targetColor = (i % 4 == 0 || (i - 3) % 4 == 0) ? vertex1 : vertex2;
+							targetColor = (i % 4 == 0 || (i - 1) % 4 == 0) ? vertex1 : vertex2;
 							break;
 						case GradientDir.DiagonalLeftToRight:
 							targetColor = (i % 4 == 0) ? vertex1 : ((i - 2) % 4 == 0 ? vertex2 : Color.Lerp(vertex2, vertex1, this.lerpPosition));
@@ -110,10 +115,10 @@ namespace UnityEngine.UI {
 	}
 
 	public enum GradientDir {
-		Vertical,
-		Horizontal,
-		DiagonalLeftToRight,
-		DiagonalRightToLeft
+		Vertical = 0x1,
+		Horizontal = 0x2,
+		DiagonalLeftToRight = 0x4,
+		DiagonalRightToLeft = 0x8
 		//Free
 	}
 

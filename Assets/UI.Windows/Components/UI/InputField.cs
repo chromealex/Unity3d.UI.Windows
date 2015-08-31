@@ -8,7 +8,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 	public class InputField : UnityEngine.UI.InputField {
 
-		public override void OnSelect(BaseEventData eventData) {
+		/*public override void OnSelect(BaseEventData eventData) {
 
 			base.OnSelect(eventData);
 
@@ -51,7 +51,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 			}
 
-		}
+		}*/
 
 	}
 

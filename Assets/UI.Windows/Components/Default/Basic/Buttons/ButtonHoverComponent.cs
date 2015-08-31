@@ -12,6 +12,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
 
+		private bool hoverIsActive = true;
+
+		public void SetHoverState(bool state) {
+
+			this.hoverIsActive = state;
+
+		}
+
 		public virtual void SetCallbackHover(UnityAction<bool> onHover) {
 
 			this.onHover.AddListenerDistinct(onHover);
@@ -21,6 +29,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public void OnPointerEnter(PointerEventData eventData) {
 
 			if (this.button.interactable == false) return;
+			if (this.hoverIsActive == false) return;
 
 			if (this.onHover != null) this.onHover.Invoke(true);
 
