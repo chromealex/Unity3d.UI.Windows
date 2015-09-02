@@ -95,38 +95,111 @@ public class ParticleSystemCached : MonoBehaviour {
 		}
 
 	}
-	
-	public void Play(bool withChildren) {
 
-		for (int i = 0; i < this.count; ++i) {
+	public void Rewind(float time, bool withChildren) {
 
-			if (this.particleSystems[i] != null) this.particleSystems[i].Play();
-
-		}
-		
-	}
-	
-	public void Stop(bool withChildren) {
-		
-		for (int i = 0; i < this.count; ++i) {
-
-			if (this.resetOnStop == true) {
+		if (withChildren == true) {
+			
+			for (int i = 0; i < this.count; ++i) {
 
 				if (this.particleSystems[i] != null) {
 					
-					this.particleSystems[i].Clear();
-					this.particleSystems[i].Stop();
-
+					this.particleSystems[i].Simulate(time);
+					this.particleSystems[i].Play();
+					
 				}
-				
-			} else {
 
-				if (this.particleSystems[i] != null) this.particleSystems[i].Stop();
+			}
+
+		} else {
+
+			if (this.mainParticleSystem != null) {
+
+				this.mainParticleSystem.Simulate(time);
+				this.mainParticleSystem.Play();
 
 			}
 
 		}
+
+	}
+
+	public void Play(bool withChildren) {
 		
+		if (withChildren == true) {
+
+			for (int i = 0; i < this.count; ++i) {
+
+				if (this.particleSystems[i] != null) {
+
+					this.particleSystems[i].Play();
+
+				}
+
+			}
+
+		} else {
+
+			if (this.mainParticleSystem != null) {
+
+				this.mainParticleSystem.Play();
+				
+			}
+
+		}
+
+	}
+	
+	public void Stop(bool withChildren) {
+		
+		if (withChildren == true) {
+
+			for (int i = 0; i < this.count; ++i) {
+
+				if (this.resetOnStop == true) {
+
+					if (this.particleSystems[i] != null) {
+						
+						this.particleSystems[i].Clear();
+						this.particleSystems[i].Stop();
+
+					}
+					
+				} else {
+
+					if (this.particleSystems[i] != null) {
+
+						this.particleSystems[i].Stop();
+
+					}
+
+				}
+
+			}
+
+		} else {
+
+			if (this.resetOnStop == true) {
+				
+				if (this.mainParticleSystem != null) {
+					
+					this.mainParticleSystem.Clear();
+					this.mainParticleSystem.Stop();
+					
+				}
+				
+			} else {
+				
+				if (this.mainParticleSystem != null) {
+					
+					this.mainParticleSystem.Stop();
+					
+				}
+				
+			}
+
+		}
+
 	}
 	
 	private ParticleSystem.Particle[] cache = new ParticleSystem.Particle[0];

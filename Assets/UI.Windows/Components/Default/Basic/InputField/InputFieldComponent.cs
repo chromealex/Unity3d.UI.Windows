@@ -48,6 +48,18 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			
 		}
+		
+		public bool HasFocus() {
+			
+			if (this.inputField != null) {
+				
+				return this.inputField.isFocused;
+
+			}
+
+			return false;
+			
+		}
 
 		public void SetFocus() {
 
