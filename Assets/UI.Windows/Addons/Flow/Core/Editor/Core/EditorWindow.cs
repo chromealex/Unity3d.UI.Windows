@@ -2535,6 +2535,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 			
+			/*if (GUI.Button(new Rect(0f, 0f, window.rect.width, window.rect.height), "TEST") == true) {
+				
+				Debug.Log(UnityEngine.UI.Windows.Plugins.FlowCompiler.Tpl.GenerateTransitionMethods(window));
+				
+			}*/
+
 			this.DragWindow(headerOnly: false);
 			
 			if (GUI.changed == true) {

@@ -19,6 +19,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		string OnCompilerTransitionGeneration(FlowWindow window);
 		string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName);
+		string OnCompilerTransitionTypedAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names);
 		bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo);
 
 		void Install();
@@ -53,6 +54,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		public virtual string OnCompilerTransitionGeneration(FlowWindow window) { return string.Empty; }
 		public virtual string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) { return string.Empty; }
+		public virtual string OnCompilerTransitionTypedAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) { return string.Empty; }
 		public virtual bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo) { return false; }
 
 		public virtual void Install() {}
@@ -289,7 +291,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			return false;
 			
 		}
-
+		
 		public static string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) {
 			
 			var result = string.Empty;
@@ -297,6 +299,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			foreach (var addon in flowAddons) {
 				
 				result += addon.OnCompilerTransitionAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName);
+				
+			}
+			
+			return result;
+			
+		}
+		
+		public static string OnCompilerTransitionTypedAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) {
+			
+			var result = string.Empty;
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				result += addon.OnCompilerTransitionTypedAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName, types, names);
 				
 			}
 			

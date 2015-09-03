@@ -112,8 +112,11 @@ namespace UnityEngine.Extensions {
 		}
 
 		public static T Spawn<T>(T prefab, Vector3 position, Quaternion rotation) where T : Component {
+
 			if (prefab == null) return null;
+
 			if (instance.objectLookup.ContainsKey(prefab)) {
+
 				T obj = null;
 				var list = instance.objectLookup[prefab];
 				if (list.Count > 0) {
@@ -142,7 +145,7 @@ namespace UnityEngine.Extensions {
 					
 				}
 
-				obj = Object.Instantiate<T>(prefab);
+				obj = ObjectPool.InstantiateSource<T>(prefab);
 				obj.transform.position = position;
 				obj.transform.rotation = rotation;
 				obj.transform.SetParent(prefab.transform.parent);
@@ -153,10 +156,11 @@ namespace UnityEngine.Extensions {
 				prefab.AddToAll(obj);
 
 				return (T)obj;
+
 			} else {
 				
 				T obj = null;
-				obj = Object.Instantiate<T>(prefab);
+				obj = ObjectPool.InstantiateSource<T>(prefab);
 				obj.transform.position = position;
 				obj.transform.rotation = rotation;
 				obj.transform.SetParent(prefab.transform.parent);
@@ -166,7 +170,27 @@ namespace UnityEngine.Extensions {
 				prefab.AddToAll(obj);
 
 				return (T)obj;
+
 			}
+
+		}
+
+		public static T InstantiateSource<T>(T source) where T : Component {
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+
+				if (ME.EditorUtilities.IsPrefab(source.gameObject) == true) {
+
+					return UnityEditor.PrefabUtility.InstantiatePrefab(source) as T;
+
+				}
+
+			}
+			#endif
+
+			return Object.Instantiate<T>(source);
+
 		}
 
 		public static void AddToAll<T>(T prefab, T item) where T : Component {
@@ -185,11 +209,15 @@ namespace UnityEngine.Extensions {
 		}
 
 		public static T Spawn<T>(T prefab, Vector3 position) where T : Component {
+
 			return Spawn(prefab, position, Quaternion.identity);
+
 		}
 
 		public static T Spawn<T>(T prefab) where T : Component {
+
 			return Spawn(prefab, Vector3.zero, Quaternion.identity);
+
 		}
 
 		public static void Recycle<T>(T obj) where T : Component {

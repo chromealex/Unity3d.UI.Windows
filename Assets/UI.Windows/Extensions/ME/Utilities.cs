@@ -3,10 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 namespace ME {
 
 	public partial class Utilities {
+
+		public static string FormatParameter(System.Type type) {
+
+			var pattern = @"(`\d+)";
+			var result = type.ToString()
+				.Replace("[", "<")
+				.Replace("]", ">")
+				.Replace("+", ".")
+				.Replace(",", ", ");
+
+			return Regex.Replace(result, pattern, string.Empty);
+
+		}
 
 		public static void PreserveAspect(RawImage image) {
 
@@ -175,6 +189,7 @@ namespace ME {
 			return tex;
 
 		}
+
 	}
 
 }

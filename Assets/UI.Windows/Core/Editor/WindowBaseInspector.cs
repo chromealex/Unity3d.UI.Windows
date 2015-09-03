@@ -54,6 +54,11 @@ namespace UnityEditor.UI.Windows {
 					GUILayout.Label(string.Format("Call Variations Count: {0}", callVariationsCount));
 					GUILayout.Label(string.Format("Empty Calls: {0}", (hasEmptyCall == true ? "True" : "False")));
 					
+					var boxStyle = new GUIStyle(EditorStyles.helpBox);
+					boxStyle.stretchHeight = true;
+					boxStyle.fixedHeight = 0f;
+					boxStyle.wordWrap = true;
+
 					EditorGUILayout.BeginVertical();
 					{
 
@@ -64,22 +69,24 @@ namespace UnityEditor.UI.Windows {
 							var list = new List<string>();
 							foreach (var p in parameters) {
 
-								var inSystemNamespace = (p.ParameterType.FullName.Split(new string[] { "." }, System.StringSplitOptions.RemoveEmptyEntries)[0].Trim().ToLower() == "system");
-								list.Add("<color=#000080ff>" + (inSystemNamespace == true ? p.ParameterType.Name : p.ParameterType.FullName) + "</color> " + p.Name);
-						
+								list.Add("<color=#000080ff>" + ME.Utilities.FormatParameter(p.ParameterType) + "</color> " + p.Name);
+
 							}
 
-							EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+							EditorGUILayout.BeginVertical(boxStyle);
 							{
 
 								var labelStyle = ME.Utilities.CacheStyle("WindowBaseInspector", "label", (name) => {
 
 									var style = new GUIStyle(EditorStyles.largeLabel);
 									style.richText = true;
+									style.stretchHeight = false;
+									style.fixedHeight = 100f;
+									style.wordWrap = true;
 									return style;
 
 								});
-								EditorGUILayout.SelectableLabel(string.Join(", ", list.ToArray()), labelStyle);
+								EditorGUILayout.SelectableLabel(string.Join("\n", list.ToArray()), labelStyle, GUILayout.Height(100f));
 								
 							}
 							EditorGUILayout.EndVertical();

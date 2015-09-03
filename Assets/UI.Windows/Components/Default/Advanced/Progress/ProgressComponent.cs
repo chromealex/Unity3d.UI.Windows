@@ -113,7 +113,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void BreakAnimation() {
 
-			TweenerGlobal.instance.removeTweens(this);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this);
 
 		}
 

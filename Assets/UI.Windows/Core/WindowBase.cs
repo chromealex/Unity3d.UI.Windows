@@ -598,6 +598,51 @@ namespace UnityEngine.UI.Windows {
 			this.initialized = (this.workCamera != null);
 			
 		}
+
+		[ContextMenu("Create on Scene")]
+		public void CreateOnScene() {
+
+			var window = WindowSystem.Show<WindowBase>(this);
+			if (window != null) {
+
+				var selection = new List<GameObject>();
+				var layoutWindow = window as UnityEngine.UI.Windows.Types.LayoutWindowType;
+				if (layoutWindow != null) {
+
+					foreach (var component in layoutWindow.layout.components) {
+
+						var compInstance = layoutWindow.layout.Get<WindowComponent>(component.tag);
+						if (compInstance != null) selection.Add(compInstance.gameObject);
+
+					}
+
+				}
+
+				if (window != null) {
+
+					selection.Add(window.gameObject);
+
+				}
+
+				UnityEditor.Selection.objects = selection.ToArray();
+
+				if (selection.Count > 0) {
+
+					if (UnityEditor.SceneView.currentDrawingSceneView != null) {
+
+						UnityEditor.SceneView.currentDrawingSceneView.AlignViewToObject(selection[0].transform);
+
+					}
+
+				}
+
+			} else {
+
+				Debug.LogError("Create window on scene failed. May be WindowSystem is not exist on scene.");
+
+			}
+
+		}
 		#endif
 
 	}

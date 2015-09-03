@@ -152,7 +152,33 @@ namespace UnityEngine.UI.Windows {
 
 			var face = this.randomColor;
 			face.a = 0.3f;
-			UnityEditor.Handles.DrawSolidRectangleWithOutline(points, face, this.randomColor);
+			if (this.autoStretchX == true && this.autoStretchY == true) {
+				
+				face.a = 0.3f;
+				var faceFill = face;
+				faceFill.a = 0.01f;
+				ME.EditorUtilities.DrawRectangle(points, faceFill, face, this.randomColor);
+
+			} else if (this.autoStretchX == true && this.autoStretchY == false) {
+				
+				face.a = 0.3f;
+				var faceFill = face;
+				faceFill.a = 0.01f;
+				ME.EditorUtilities.DrawRectangle(points, faceFill, face, this.randomColor, verticalDraw: false);
+				
+			} else if (this.autoStretchX == false && this.autoStretchY == true) {
+				
+				face.a = 0.3f;
+				var faceFill = face;
+				faceFill.a = 0.01f;
+				ME.EditorUtilities.DrawRectangle(points, faceFill, face, this.randomColor, horizontalDraw: false);
+				
+			} else {
+
+				face.a = 0.3f;
+				UnityEditor.Handles.DrawSolidRectangleWithOutline(points, face, this.randomColor);
+
+			}
 
 			var shadowOffset = Vector3.one * 1f;
 			shadowOffset.z = 0f;

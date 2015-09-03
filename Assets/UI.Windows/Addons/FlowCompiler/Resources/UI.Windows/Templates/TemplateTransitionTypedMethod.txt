@@ -1,0 +1,29 @@
+﻿		
+		/// <summary>
+		/// Flows to the {CLASS_NAME}.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
+		/// Full Name: {CLASS_NAME_WITH_NAMESPACE}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>{CLASS_NAME}</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} Flow{CLASS_NAME}({PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_Flow{CLASS_NAME}(false, {PARAMETERS_CALL});
+			
+		}
+		
+		/// <summary>
+		/// Flows to the {CLASS_NAME}.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: {CLASS_NAME_WITH_NAMESPACE}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>{CLASS_NAME}</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHide{CLASS_NAME}({PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_Flow{CLASS_NAME}(true, {PARAMETERS_CALL});
+			
+		}
+		

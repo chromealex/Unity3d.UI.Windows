@@ -82,8 +82,8 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var classNameWithNamespace = Tpl.GetNamespace(root) + "." + Tpl.GetDerivedClassName(root);
 			var transitionMethods = Tpl.GenerateTransitionMethods(windowTo);
 			transitionMethods = transitionMethods.Replace("\r\n", "\r\n\t")
-												 .Replace("\n", "\n\t");
-
+				.Replace("\n", "\n\t");
+			
 			result +=
 				part.Replace("{TRANSITION_METHODS}", transitionMethods)
 					.Replace("{FUNCTION_NAME}", functionName)
@@ -91,6 +91,65 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 					.Replace("{FLOW_FROM_ID}", windowFrom.id.ToString())
 					.Replace("{FLOW_TO_ID}", windowTo.id.ToString())
 					.Replace("{CLASS_NAME_WITH_NAMESPACE}", classNameWithNamespace);
+			
+			return result;
+			
+		}
+		
+		public static string GenerateTransitionTypedMethod(FlowSystemEditorWindow flowEditor, FlowWindow windowFrom, FlowWindow windowTo, System.Type[] parameters, string[] parameterNames) {
+			
+			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionTypedMethod") as TextAsset;
+			if (file == null) {
+				
+				Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateTransitionTypedMethod'");
+				
+				return string.Empty;
+				
+			}
+			
+			var data = FlowSystem.GetData();
+			if (data == null) return string.Empty;
+			
+			var result = string.Empty;
+			var part = file.text;
+			
+			// Function link
+			var functionId = windowTo.GetFunctionId();
+			
+			// Find function container
+			var functionContainer = data.GetWindow(functionId);
+			if (functionContainer == null) {
+				
+				// Function not found
+				return string.Empty;
+				
+			}
+			
+			// Get function root window
+			var root = data.GetWindow(functionContainer.functionRootId);
+			//var exit = data.GetWindow(functionContainer.functionExitId);
+			
+			var functionName = functionContainer.title;
+			var functionCallName = functionContainer.directory;
+			var classNameWithNamespace = Tpl.GetNamespace(root) + "." + Tpl.GetDerivedClassName(root);
+			var transitionMethods = Tpl.GenerateTransitionMethods(windowTo);
+			transitionMethods = transitionMethods.Replace("\r\n", "\r\n\t")
+				.Replace("\n", "\n\t");
+
+			var definition = parameters.Select((x, i) => ME.Utilities.FormatParameter(x) + " " + parameterNames[i]).ToArray();
+			var call = parameterNames;
+			var description = parameters.Select((x, i) => "/// <param name=\"" + parameterNames[i] + "\">" + parameterNames[i] + " to OnParametersPass</param>").ToArray();
+
+			result +=
+				part.Replace("{TRANSITION_METHODS}", transitionMethods)
+					.Replace("{FUNCTION_NAME}", functionName)
+					.Replace("{FUNCTION_CALL_NAME}", functionCallName)
+					.Replace("{FLOW_FROM_ID}", windowFrom.id.ToString())
+					.Replace("{FLOW_TO_ID}", windowTo.id.ToString())
+					.Replace("{CLASS_NAME_WITH_NAMESPACE}", classNameWithNamespace)
+					.Replace("{PARAMETERS_DEFINITION}", string.Join(", ", definition))
+					.Replace("{PARAMETERS_CALL}", string.Join(", ", call))
+					.Replace("{PARAMETERS_DESCRIPTION}", string.Join(System.Environment.NewLine, description));
 			
 			return result;
 			
@@ -214,19 +273,34 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			return base.OnCompilerTransitionGeneration(window);
 
 		}
-
+		
 		public override string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) {
-
+			
 			if (windowTo.IsFunction() == true && 
 			    windowTo.IsSmall() == true &&
 			    windowTo.IsContainer() == false &&
 			    windowTo.GetFunctionId() > 0) {
 				
 				return FlowFunctionsTemplateGenerator.GenerateTransitionMethod(this.flowEditor, windowFrom, windowTo);
-				
-			}
 
+			}
+			
 			return base.OnCompilerTransitionAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName);
+			
+		} 
+		
+		public override string OnCompilerTransitionTypedAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) {
+			
+			if (windowTo.IsFunction() == true && 
+			    windowTo.IsSmall() == true &&
+			    windowTo.IsContainer() == false &&
+			    windowTo.GetFunctionId() > 0) {
+
+				return FlowFunctionsTemplateGenerator.GenerateTransitionTypedMethod(this.flowEditor, windowFrom, windowTo, types, names);
+
+			}
+			
+			return base.OnCompilerTransitionTypedAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName, types, names);
 			
 		} 
 

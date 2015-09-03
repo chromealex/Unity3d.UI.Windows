@@ -292,6 +292,65 @@ namespace ME {
 
 		}
 
+		public static void DrawRectangle(Vector3[] points, Color fill, Color border, Color borderLines, float borderWidthPercent = 0.01f, bool horizontalDraw = true, bool verticalDraw = true) {
+			
+			var margin = Vector3.Distance(points[0], points[2]) * borderWidthPercent;
+			var noColor = new Color(0f, 0f, 0f, 0f);
+
+			if (horizontalDraw == true) {
+
+				// Left margin
+				UnityEditor.Handles.DrawSolidRectangleWithOutline(new Vector3[] {
+					points[0],
+					points[1],
+					points[1] + Vector3.right * margin,
+					points[0] + Vector3.right * margin
+				}, border, noColor);
+
+				// Right margin
+				UnityEditor.Handles.DrawSolidRectangleWithOutline(new Vector3[] {
+					points[3] + Vector3.left * margin,
+					points[2] + Vector3.left * margin,
+					points[2],
+					points[3]
+				}, border, noColor);
+
+			}
+
+			if (verticalDraw == true) {
+
+				// Top margin
+				UnityEditor.Handles.DrawSolidRectangleWithOutline(new Vector3[] {
+					points[1] + Vector3.down * margin + (horizontalDraw == true ? Vector3.right * margin : Vector3.zero),
+					points[1] + (horizontalDraw == true ? Vector3.right * margin : Vector3.zero),
+					points[2] + (horizontalDraw == true ? Vector3.left * margin : Vector3.zero),
+					points[2] + Vector3.down * margin + (horizontalDraw == true ? Vector3.left * margin : Vector3.zero)
+				}, border, noColor);
+
+				// Bottom margin
+				UnityEditor.Handles.DrawSolidRectangleWithOutline(new Vector3[] {
+					points[0] + (horizontalDraw == true ? Vector3.right * margin : Vector3.zero),
+					points[0] + Vector3.up * margin + (horizontalDraw == true ? Vector3.right * margin : Vector3.zero),
+					points[3] + Vector3.up * margin + (horizontalDraw == true ? Vector3.left * margin : Vector3.zero),
+					points[3] + (horizontalDraw == true ? Vector3.left * margin : Vector3.zero)
+				}, border, noColor);
+
+			}
+
+			{
+
+				UnityEditor.Handles.DrawSolidRectangleWithOutline(new Vector3[] {
+					points[0] + (horizontalDraw == true ? Vector3.right * margin : Vector3.zero) + (verticalDraw == true ? Vector3.up * margin : Vector3.zero),
+					points[1] + (horizontalDraw == true ? Vector3.right * margin : Vector3.zero) + (verticalDraw == true ? Vector3.down * margin : Vector3.zero),
+					points[2] + (horizontalDraw == true ? Vector3.left * margin : Vector3.zero) + (verticalDraw == true ? Vector3.down * margin : Vector3.zero),
+					points[3] + (horizontalDraw == true ? Vector3.left * margin : Vector3.zero) + (verticalDraw == true ? Vector3.up * margin : Vector3.zero)
+				}, fill, borderLines);
+				UnityEditor.Handles.DrawSolidRectangleWithOutline(points, noColor, borderLines);
+
+			}
+
+		}
+
 	}
 
 }

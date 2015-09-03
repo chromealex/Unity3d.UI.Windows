@@ -1,0 +1,29 @@
+﻿		
+		/// <summary>
+		/// Call the Function {FUNCTION_CALL_NAME}.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>Function root window</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(false, onFunctionEnds, {PARAMETERS_CALL});
+			
+		}
+		
+		/// <summary>
+		/// Call the Function {FUNCTION_CALL_NAME}.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>Function root window</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHideFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, onFunctionEnds, {PARAMETERS_CALL});
+			
+		}
+		

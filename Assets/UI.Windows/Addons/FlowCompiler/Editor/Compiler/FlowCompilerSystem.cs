@@ -112,7 +112,34 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			return Tpl.GetNamespace() + IO.GetRelativePath(window, ".");
 
 		}
-		
+
+		private static void CollectCallVariations(WindowBase screen, System.Action<Type[], string[]> onEveryVariation) {
+
+			if (screen != null) {
+				
+				var methods = screen.GetType().GetMethods().Where((info) => info.IsVirtual == false && info.Name == "OnParametersPass").ToList();
+				for (int i = 0; i < methods.Count; ++i) {
+					
+					var method = methods[i];
+					var parameters = method.GetParameters();
+					
+					var listTypes = new List<System.Type>();
+					var listNames = new List<string>();
+					foreach (var p in parameters) {
+						
+						listTypes.Add(p.ParameterType);
+						listNames.Add(p.Name);
+						
+					}
+
+					onEveryVariation(listTypes.ToArray(), listNames.ToArray());
+
+				}
+				
+			}
+
+		}
+
 		public static string GenerateTransitionMethods(FlowWindow window) {
 
 			var flowData = FlowSystem.GetData();
@@ -126,6 +153,12 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				var classNameWithNamespace = Tpl.GetNamespace(each) + "." + Tpl.GetDerivedClassName(each);
 				
 				result += FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod(window, each, className, classNameWithNamespace);
+
+				Tpl.CollectCallVariations(each.GetScreen(), (listTypes, listNames) => {
+					
+					result += FlowTemplateGenerator.GenerateWindowLayoutTransitionTypedMethod(window, each, className, classNameWithNamespace, listTypes, listNames);
+
+				});
 
 			}
 
@@ -156,6 +189,12 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				}
 
 				result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(window, attachedWindow, everyPlatformHasUniqueName);
+				
+				Tpl.CollectCallVariations(attachedWindow.GetScreen(), (listTypes, listNames) => {
+					
+					result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionTypedAttachedGeneration(window, attachedWindow, everyPlatformHasUniqueName, listTypes, listNames);
+					
+				});
 
 			}
 
