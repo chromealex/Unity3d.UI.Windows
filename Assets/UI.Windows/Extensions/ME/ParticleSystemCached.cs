@@ -150,55 +150,61 @@ public class ParticleSystemCached : MonoBehaviour {
 
 	}
 	
+    public void Stop(bool withChildren, bool resetOnStop) {
+
+        if (withChildren == true) {
+
+            for (int i = 0; i < this.count; ++i) {
+
+                if (this.resetOnStop == true || resetOnStop == true) {
+
+                    if (this.particleSystems[i] != null) {
+
+                        this.particleSystems[i].Clear();
+                        this.particleSystems[i].Stop();
+
+                    }
+
+                } else {
+
+                    if (this.particleSystems[i] != null) {
+
+                        this.particleSystems[i].Stop();
+
+                    }
+
+                }
+
+            }
+
+        } else {
+
+            if (this.resetOnStop == true || resetOnStop == true) {
+
+                if (this.mainParticleSystem != null) {
+
+                    this.mainParticleSystem.Clear();
+                    this.mainParticleSystem.Stop();
+
+                }
+
+            } else {
+
+                if (this.mainParticleSystem != null) {
+
+                    this.mainParticleSystem.Stop();
+
+                }
+
+            }
+
+        }
+        
+    }
+
 	public void Stop(bool withChildren) {
 		
-		if (withChildren == true) {
-
-			for (int i = 0; i < this.count; ++i) {
-
-				if (this.resetOnStop == true) {
-
-					if (this.particleSystems[i] != null) {
-						
-						this.particleSystems[i].Clear();
-						this.particleSystems[i].Stop();
-
-					}
-					
-				} else {
-
-					if (this.particleSystems[i] != null) {
-
-						this.particleSystems[i].Stop();
-
-					}
-
-				}
-
-			}
-
-		} else {
-
-			if (this.resetOnStop == true) {
-				
-				if (this.mainParticleSystem != null) {
-					
-					this.mainParticleSystem.Clear();
-					this.mainParticleSystem.Stop();
-					
-				}
-				
-			} else {
-				
-				if (this.mainParticleSystem != null) {
-					
-					this.mainParticleSystem.Stop();
-					
-				}
-				
-			}
-
-		}
+		this.Stop(withChildren, false);
 
 	}
 	

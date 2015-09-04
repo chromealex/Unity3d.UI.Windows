@@ -31,11 +31,17 @@ namespace UnityEngine.UI.Windows {
 
 		private Layout.Component activatorInstance;
 		private WindowComponent component;
-		public void Load(WindowComponent component) {
+		public T Load<T>(T component) where T : WindowComponent {
+
+			return this.Load(component as WindowComponent) as T;
+
+		}
+
+		public WindowComponent Load(WindowComponent component) {
 
 			this.activatorInstance.component = component;
 			component.SetComponentState(WindowObjectState.NotInitialized);
-			this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement);
+			return this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement) as WindowComponent;
 
 		}
 		
@@ -52,76 +58,6 @@ namespace UnityEngine.UI.Windows {
 			return this.component;
 			
 		}
-
-		/*public override void Hide(System.Action callback, bool immediately) {
-
-			this.Hide(callback, immediately, setupTempNeedInactive: false);
-
-		}*/
-
-		/*#region TODO: ?
-		public override void Show(System.Action callback, bool resetAnimation) {
-
-			var counter = 0;
-			System.Action callbackItem = () => {
-				
-				++counter;
-				if (counter < 2) return;
-				
-				if (callback != null) callback();
-				
-			};
-
-			if (this.component != null) {
-
-				this.component.OnShowBegin(callbackItem);
-
-			} else {
-				
-				callbackItem();
-				
-			}
-
-			base.Show(() => {
-
-				if (this.component != null) this.component.OnShowEnd();
-				callbackItem();
-				
-			}, resetAnimation);
-			
-		}
-		
-		public override void Hide(System.Action callback, bool immediately) {
-			
-			var counter = 0;
-			System.Action callbackItem = () => {
-				
-				++counter;
-				if (counter < 2) return;
-				
-				if (callback != null) callback();
-				
-			};
-
-			if (this.component != null) {
-
-				this.component.OnHideBegin(callbackItem);
-
-			} else {
-
-				callbackItem();
-
-			}
-
-			base.Hide(() => {
-				
-				if (this.component != null) this.component.OnHideEnd();
-				callbackItem();
-				
-			}, immediately);
-			
-		}
-		#endregion*/
 
 	}
 
