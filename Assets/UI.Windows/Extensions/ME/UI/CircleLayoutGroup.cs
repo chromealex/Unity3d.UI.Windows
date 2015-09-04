@@ -76,17 +76,25 @@ namespace UnityEngine.UI.Extensions {
 
 				item.anchoredPosition3D = this.GetPosition((this.reverse == true ? count - i - 1 : i), count, item.anchoredPosition3D.z, rX, rY, this.bothSided, this.startAngle, this.maxAnglePerElement, this.angle) + center.XY();
 				#if UNITY_EDITOR
-				this.m_Tracker.Add(this, item, DrivenTransformProperties.AnchoredPosition3D | DrivenTransformProperties.Pivot | DrivenTransformProperties.Anchors);
-				item.anchorMin = Vector2.one * 0.5f;
-				item.anchorMax = Vector2.one * 0.5f;
-				item.pivot = Vector2.one * 0.5f;
+				if (Application.isPlaying == false) {
+
+					this.m_Tracker.Add(this, item, DrivenTransformProperties.AnchoredPosition3D | DrivenTransformProperties.Pivot | DrivenTransformProperties.Anchors);
+					item.anchorMin = Vector2.one * 0.5f;
+					item.anchorMax = Vector2.one * 0.5f;
+					item.pivot = Vector2.one * 0.5f;
+
+				}
 				#endif
 
 			}
 
 			#if UNITY_EDITOR
-			this.m_Tracker.Add(this, this.rectTransform, DrivenTransformProperties.Pivot);
-			this.rectTransform.pivot = Vector2.one * 0.5f;
+			if (Application.isPlaying == false) {
+
+				this.m_Tracker.Add(this, this.rectTransform, DrivenTransformProperties.Pivot);
+				this.rectTransform.pivot = Vector2.one * 0.5f;
+
+			}
 			#endif
 
 		}
@@ -207,6 +215,8 @@ namespace UnityEngine.UI.Extensions {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
+			if (Application.isPlaying == true) return;
+
 			base.OnValidate();
 
 			if (this.angle <= 0f) {
@@ -218,6 +228,8 @@ namespace UnityEngine.UI.Extensions {
 		}
 
 		public void OnDrawGizmosSelected() {
+			
+			if (Application.isPlaying == true) return;
 
 			const int smooth = 50;
 			
