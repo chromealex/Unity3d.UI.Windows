@@ -40,7 +40,7 @@ public class UIWindowExampleScreen : LayoutWindowType {
 
 	private void OnAlert() {
 
-		WindowSystem.Show<UIWindowExampleAlertScreen>("Some text to the alert message.\nYou can click on the background now to close this window. This is an example of module usage.");
+		WindowSystem.Show<UIWindowExampleAlertScreen>(w => w.OnParametersPass("Some text to the alert message.\nYou can click on the background now to close this window. This is an example of module usage."));
 
 	}
 
@@ -52,7 +52,7 @@ public class UIWindowExampleScreen : LayoutWindowType {
 
 		} else {
 
-			WindowSystem.Show<UIWindowExampleScreen>(true);
+			WindowSystem.Show<UIWindowExampleScreen>(w => w.OnParametersPass(true));
 
 		}
 

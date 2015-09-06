@@ -485,48 +485,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					// Need to upgrade
 					
 					if (GUILayout.Button("Upgrade to " + VersionInfo.BUNDLE_VERSION, FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(150f), GUILayout.Height(40f)) == true) {
-						
-						UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, VersionInfo.BUNDLE_VERSION), 0f);
-						var type = this.cachedData.GetType();
-						
-						while (this.cachedData.version < VersionInfo.BUNDLE_VERSION) {
-							
-							var nextVersion = this.cachedData.version + 1;
 
-							try {
+						FlowUpdater.Run(this.cachedData);
 
-								// Try to find upgrade method
-								var methodName = "UpgradeTo" + nextVersion.ToSmallWithoutTypeString();
-								var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
-								if (methodInfo != null) {
-									
-									methodInfo.Invoke(this.cachedData, null);
-
-									Debug.Log("[UPGRADE] Invoked: `" + methodName + "`, version " + nextVersion);
-
-								} else {
-									
-									Debug.Log("[UPGRADE] Method `" + methodName + "` was not found: version " + nextVersion + " skipped");
-									
-								}
-
-								UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, nextVersion), 0.5f);
-
-							} catch (UnityException) {
-							} finally {
-
-								UnityEditor.EditorUtility.ClearProgressBar();
-
-							}
-
-							this.cachedData.version = nextVersion;
-							UnityEditor.EditorUtility.SetDirty(this.cachedData);
-							
-						}
-						
-						UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, VersionInfo.BUNDLE_VERSION), 1f);
-						UnityEditor.EditorUtility.ClearProgressBar();
-						
 					}
 					
 				} else if (this.cachedData != null && this.cachedData.version > VersionInfo.BUNDLE_VERSION) {

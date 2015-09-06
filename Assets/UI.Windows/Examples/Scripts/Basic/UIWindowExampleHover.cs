@@ -11,7 +11,7 @@ public class UIWindowExampleHover : MonoBehaviour {
 
 	public void OnHover() {
 		
-		this.infoWindow = WindowSystem.Show<UIWindowExampleTip>(this.text) as TipWindowType;
+		this.infoWindow = WindowSystem.Show<UIWindowExampleTip>((w) => w.OnParametersPass(this.text)) as TipWindowType;
 		this.infoWindow.OnHover(this.transform as RectTransform);
 		
 	}

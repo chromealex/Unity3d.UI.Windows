@@ -36,6 +36,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		[Header("Compiler Plugin")]
 		public string namespaceName;
 		public bool forceRecompile;
+		public bool minimalScriptsSize;
 
 		[Header("Flow Data")]
 		[ReadOnly]
@@ -72,7 +73,13 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#if UNITY_EDITOR
 		#region UPGRADES
 		#pragma warning disable 612,618
-		public void UpgradeTo098() {
+		public bool UpgradeTo099() {
+
+			return true;
+
+		}
+
+		public bool UpgradeTo098() {
 			
 			foreach (var oldWindow in this.windows) {
 
@@ -163,10 +170,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				this.windowAssets.Add(window);
 
 			}
+
+			return false;
 			
 		}
 
-		public void UpgradeTo094() {
+		public bool UpgradeTo094() {
 			
 			foreach (var window in this.windows) {
 				
@@ -178,6 +187,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				}
 				
 			}
+
+			return false;
 			
 		}
 		#pragma warning restore 612,618

@@ -41,11 +41,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (state == true) {
 
-				this.infoWindow = WindowSystem.Show<TextTipWindowType>((window) => {
+				this.infoWindow = WindowSystem.Show<TextTipWindowType>((window) => window.PrepareFor(this),
+				                                                       (window) => window.OnParametersPass(this.tipText)
+				                                                       ) as TipWindowType;
 
-					window.PrepareFor(this);
-
-				}, this.tipText) as TipWindowType;
 				if (this.infoWindow != null) this.infoWindow.OnHover(this.transform as RectTransform);
 
 			} else {

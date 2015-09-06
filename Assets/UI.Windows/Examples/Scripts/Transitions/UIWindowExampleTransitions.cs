@@ -9,7 +9,7 @@ public class UIWindowExampleTransitions : LayoutWindowType {
 
 	public void ShowWindow(int index) {
 
-		WindowSystem.Show(this.windows[index], "This is <b>" + this.windows[index].name + "</b> transition. Close this window and choose another one.");
+		WindowSystem.Show(this.windows[index], "This is <b>" + this.windows[index].name + "</b> transition. Close this window to choose another one.");
 
 	}
 

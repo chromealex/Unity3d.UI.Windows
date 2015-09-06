@@ -9,7 +9,7 @@
 		/// <returns>Function root window</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
 			
-			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(false, onFunctionEnds, {PARAMETERS_CALL});
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(false, onFunctionEnds, (w) => w.OnParametersPass({PARAMETERS_CALL}));
 			
 		}
 		
@@ -23,7 +23,7 @@
 		/// <returns>Function root window</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHideFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
 			
-			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, onFunctionEnds, {PARAMETERS_CALL});
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, onFunctionEnds, (w) => w.OnParametersPass({PARAMETERS_CALL}));
 			
 		}
 		

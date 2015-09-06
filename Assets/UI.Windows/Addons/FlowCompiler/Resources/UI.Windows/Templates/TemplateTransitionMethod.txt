@@ -6,9 +6,9 @@
 		/// Full Name: {CLASS_NAME_WITH_NAMESPACE}
 		/// </summary>
 		/// <returns>{CLASS_NAME}</returns>
-		public virtual {CLASS_NAME_WITH_NAMESPACE} Flow{CLASS_NAME}(params object[] parameters) {
+		public virtual {CLASS_NAME_WITH_NAMESPACE} Flow{CLASS_NAME}() {
 			
-			return this.INTERNAL_Flow{CLASS_NAME}(false, parameters);
+			return this.INTERNAL_Flow{CLASS_NAME}(false);
 			
 		}
 		
@@ -19,17 +19,22 @@
 		/// Full Name: {CLASS_NAME_WITH_NAMESPACE}
 		/// </summary>
 		/// <returns>{CLASS_NAME}</returns>
-		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHide{CLASS_NAME}(params object[] parameters) {
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHide{CLASS_NAME}() {
 			
-			return this.INTERNAL_Flow{CLASS_NAME}(true, parameters);
+			return this.INTERNAL_Flow{CLASS_NAME}(true);
 			
 		}
 		
-		private {CLASS_NAME_WITH_NAMESPACE} INTERNAL_Flow{CLASS_NAME}(bool hide, params object[] parameters) {
+		private {CLASS_NAME_WITH_NAMESPACE} INTERNAL_Flow{CLASS_NAME}(bool hide, System.Action<{CLASS_NAME_WITH_NAMESPACE}> onParametersPassCall = null) {
 			
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
 			if (hide == true) this.Hide(item.transition, item.transitionParameters);
-			return WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>((w) => w.SetFunctionIterationIndex(this.GetFunctionIterationIndex()), item.transition, item.transitionParameters, parameters);
+			return WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(
+				(w) => w.SetFunctionIterationIndex(this.GetFunctionIterationIndex()),
+				item.transition,
+				item.transitionParameters,
+				onParametersPassCall
+			);
 			
 		}
 		

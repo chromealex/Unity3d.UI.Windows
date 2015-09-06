@@ -9,7 +9,7 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} Flow{CLASS_NAME}({PARAMETERS_DEFINITION}) {
 			
-			return this.INTERNAL_Flow{CLASS_NAME}(false, {PARAMETERS_CALL});
+			return this.INTERNAL_Flow{CLASS_NAME}(false, (w) => w.OnParametersPass({PARAMETERS_CALL}));
 			
 		}
 		
@@ -23,7 +23,7 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHide{CLASS_NAME}({PARAMETERS_DEFINITION}) {
 			
-			return this.INTERNAL_Flow{CLASS_NAME}(true, {PARAMETERS_CALL});
+			return this.INTERNAL_Flow{CLASS_NAME}(true, (w) => w.OnParametersPass({PARAMETERS_CALL}));
 			
 		}
 		

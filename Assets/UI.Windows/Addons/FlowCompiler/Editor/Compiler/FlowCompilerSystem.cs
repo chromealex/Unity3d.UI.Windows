@@ -506,7 +506,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		}*/
 		#endregion
 
-		private static void GenerateWindow(string newPath, FD.FlowWindow window, bool recompile) {
+		private static void GenerateWindow(string newPath, FD.FlowWindow window, bool recompile, bool minimalScriptsSize) {
 
 			if (window.compiled == true && recompile == false) return;
 
@@ -562,7 +562,13 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			var baseClassTemplate = FlowTemplateGenerator.GenerateWindowLayoutBaseClass(newInfo.baseClassname, newInfo.baseNamespace, Tpl.GenerateTransitionMethods(window));
 			var derivedClassTemplate = FlowTemplateGenerator.GenerateWindowLayoutDerivedClass(newInfo.classname, newInfo.baseClassname, newInfo.baseNamespace);
-			
+
+			if (minimalScriptsSize == true) {
+
+				baseClassTemplate = FlowCompilerSystem.Compress(baseClassTemplate);
+
+			}
+
 			if (baseClassTemplate != null && derivedClassTemplate != null) {
 
 				IO.CreateFile(path, newInfo.baseClassnameFile, baseClassTemplate, rewrite: true);
@@ -579,10 +585,50 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			window.compiled = true;
 
 		}
+
+		private static string Compress(string data) {
+
+			var symbols = new string[] { ",", "{", "}", @"\(", @"\)", "==", ">=", "<=", "=>", "-", @"\+", "--", @"\+\+", ">", "<", "=", ":", @"\?" };
+
+			data = data.Replace("\t", string.Empty);
+
+			var blockComments = @"/\*(.*?)\*/";
+			var lineComments = @"//(.*?)\r?\n";
+			var strings = @"""((\\[^\n]|[^""\n])*)""";
+			var verbatimStrings = @"@(""[^""]*"")+";
+
+			data = Regex.Replace(data, blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings, me => {
+				if (me.Value.StartsWith("/*") || me.Value.StartsWith("//"))
+					return me.Value.StartsWith("//") ? Environment.NewLine : "";
+				// Keep the literal strings
+				return me.Value;
+			},
+			RegexOptions.Singleline);
+
+			data = data.Replace("\t", string.Empty);
+			data = data.Replace("\r\n", string.Empty);
+			data = data.Replace("\r", string.Empty);
+			data = data.Replace("\n", string.Empty);
+
+			foreach (var symbol in symbols) {
+
+				data = Regex.Replace(data, @"(\s?" + symbol + @"\s?)", symbol.Replace(@"\", string.Empty));
+
+			}
+
+			return data;
+
+		}
 		
-		private static void Generate(string pathToData, bool recompile, System.Func<FD.FlowWindow, bool> predicate) {
+		private static void Generate(string pathToData, bool recompile, bool minimalScriptsSize, System.Func<FD.FlowWindow, bool> predicate) {
 
 			var filename = Path.GetFileName(pathToData);
+			if (string.IsNullOrEmpty(pathToData) == true) {
+
+				throw new Exception("`pathToData` is wrong: " + pathToData + ". Filename: " + filename);
+
+			}
+
 			var directory = pathToData.Replace(filename, string.Empty);
 			
 			FlowCompilerSystem.currentProject = Path.GetFileNameWithoutExtension(pathToData);
@@ -604,7 +650,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 					foreach (var each in windows) {
 
 						var relativePath = IO.GetRelativePath(each, "/");
-						FlowCompilerSystem.GenerateWindow(basePath + relativePath + "/", each, recompile);
+						FlowCompilerSystem.GenerateWindow(basePath + relativePath + "/", each, recompile, minimalScriptsSize);
 
 					}
 
@@ -624,15 +670,15 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		}
 
 		#region VARIANTS
-		public static void GenerateByTag(string pathToData, int tag, bool recompile = false) {
+		public static void GenerateByTag(string pathToData, int tag, bool recompile = false, bool minimalScriptsSize = false) {
 
-			FlowCompilerSystem.Generate(pathToData, recompile, flowWindow => flowWindow.tags.Contains(tag));
+			FlowCompilerSystem.Generate(pathToData, recompile, minimalScriptsSize, flowWindow => flowWindow.tags.Contains(tag));
 
 		}
 
-		public static void GenerateByTags(string pathToData, int[] tags, bool recompile = false) {
+		public static void GenerateByTags(string pathToData, int[] tags, bool recompile = false, bool minimalScriptsSize = false) {
 
-			FlowCompilerSystem.Generate(pathToData, recompile, flowWindow => {
+			FlowCompilerSystem.Generate(pathToData, recompile, minimalScriptsSize, flowWindow => {
 
 				foreach (var tag in flowWindow.tags) {
 
@@ -646,15 +692,15 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		public static void GenerateByWindow(string pathToData, bool recompile = false, FD.FlowWindow window = null) {
+		public static void GenerateByWindow(string pathToData, bool recompile = false, bool minimalScriptsSize = false, FD.FlowWindow window = null) {
 			
-			FlowCompilerSystem.Generate(pathToData, recompile, flowWindow => flowWindow == window);
+			FlowCompilerSystem.Generate(pathToData, recompile, minimalScriptsSize, flowWindow => flowWindow == window);
 			
 		}
 		
-		public static void Generate(string pathToData, bool recompile = false) {
+		public static void Generate(string pathToData, bool recompile = false, bool minimalScriptsSize = false) {
 			
-			FlowCompilerSystem.Generate(pathToData, recompile, null);
+			FlowCompilerSystem.Generate(pathToData, recompile, minimalScriptsSize, null);
 			
 		}
 		#endregion

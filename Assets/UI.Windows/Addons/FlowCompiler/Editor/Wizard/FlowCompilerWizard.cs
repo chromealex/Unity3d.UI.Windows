@@ -46,6 +46,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 			editor.compileNamespace = FlowSystem.GetData().namespaceName;
 			editor.forceRecompile = FlowSystem.GetData().forceRecompile;
+			editor.minimalScriptsSize = FlowSystem.GetData().minimalScriptsSize;
 			editor.partIndex = 0;
 
 			editor.image = Resources.Load("UI.Windows/FlowCompiler/WizardImage") as Texture;
@@ -326,6 +327,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 		private string compileNamespace;
 		private bool saveDefaultSettings = false;
 		private bool forceRecompile = false;
+		private bool minimalScriptsSize = false;
 		private List<int> tagsIgnored = new List<int>();
 		public void DrawPart1() {
 			
@@ -338,11 +340,15 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			#else
 			GUILayout.Label("Namespace:");
 			this.compileNamespace = GUILayout.TextField(this.compileNamespace);
-
+			
 			CustomGUI.Splitter();
 			
 			this.forceRecompile = GUILayout.Toggle(this.forceRecompile, "Force to recompile all");
 			EditorGUILayout.HelpBox("By default all not compiled windows will be compiled. If you want to recompile all ScreenBase* windows - turn on this flag. Your Screen* code will not be changed in any case.", MessageType.Info);
+			
+			CustomGUI.Splitter();
+			
+			this.minimalScriptsSize = GUILayout.Toggle(this.minimalScriptsSize, "Minimal scripts size");
 
 			this.DrawSaveToDefaultToggle();
 			#endif
@@ -367,7 +373,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		private void DrawHeader(string text) {
 
-			var style = new GUIStyle(EditorStyles.whiteLargeLabel);
+			var style = new GUIStyle(EditorStyles.largeLabel);
 			style.fontSize = 14;
 
 			GUILayout.Label(text, style);
@@ -383,7 +389,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 			GUILayout.BeginHorizontal();
 			{
 				var firstPart = (this.partIndex == 0);
-				var lastPart = (this.partIndex == this.parts - 1);
+				var lastPart = (this.partIndex >= this.parts - 2);
 				
 				var oldEnabled = GUI.enabled;
 
@@ -416,6 +422,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 							
 							FlowSystem.GetData().namespaceName = this.compileNamespace;
 							FlowSystem.GetData().forceRecompile = this.forceRecompile;
+							FlowSystem.GetData().minimalScriptsSize = this.minimalScriptsSize;
 							FlowSystem.SetDirty();
 							
 						}
@@ -426,7 +433,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 							
 							// Build all
 							
-							FlowCompilerSystem.Generate(AssetDatabase.GetAssetPath(FlowSystem.GetData()), this.forceRecompile);
+							FlowCompilerSystem.Generate(AssetDatabase.GetAssetPath(FlowSystem.GetData()), this.forceRecompile, this.minimalScriptsSize);
 							
 						} else {
 
@@ -437,7 +444,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 							}
 
-							FlowCompilerSystem.GenerateByTags(AssetDatabase.GetAssetPath(FlowSystem.GetData()), tags.ToArray(), this.forceRecompile);
+							FlowCompilerSystem.GenerateByTags(AssetDatabase.GetAssetPath(FlowSystem.GetData()), tags.ToArray(), this.forceRecompile, this.minimalScriptsSize);
 							
 						}
 

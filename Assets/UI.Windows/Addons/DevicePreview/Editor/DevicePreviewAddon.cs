@@ -47,7 +47,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 			{
 
-				if (GUILayout.Button("Open Preview") == true) {
+				if (GUILayout.Button("Open Preview", FlowSystemEditorWindow.defaultSkin.button) == true) {
 
 					DevicePreview.ShowEditor();
 

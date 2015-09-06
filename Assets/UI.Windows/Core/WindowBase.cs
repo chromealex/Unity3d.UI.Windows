@@ -58,6 +58,7 @@ namespace UnityEngine.UI.Windows {
 		private bool passParams = false;
 		[HideInInspector]
 		private object[] parameters;
+		private System.Action<WindowBase> onParametersPassCall;
 
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 		private WindowBase source;
@@ -106,18 +107,24 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.passParams == true) {
 
-				System.Reflection.MethodInfo methodInfo;
-				if (WindowSystem.InvokeMethodWithParameters(out methodInfo, this, "OnParametersPass", this.parameters) == true) {
+				if (this.parameters != null && this.parameters.Length > 0) {
 
-					// Success
-					methodInfo.Invoke(this, this.parameters);
+					System.Reflection.MethodInfo methodInfo;
+					if (WindowSystem.InvokeMethodWithParameters(out methodInfo, this, "OnParametersPass", this.parameters) == true) {
 
-				} else {
+						// Success
+						methodInfo.Invoke(this, this.parameters);
 
-					// Method not found
-					Debug.LogWarning("Method `OnParametersPass` was not found with input parameters.", this);
+					} else {
+
+						// Method not found
+						Debug.LogWarning("Method `OnParametersPass` was not found with input parameters.", this);
+
+					}
 
 				}
+
+				this.onParametersPassCall(this);
 
 			} else {
 				
@@ -159,7 +166,9 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		internal void SetParameters(params object[] parameters) {
+		internal void SetParameters(System.Action<WindowBase> onParametersPassCall, params object[] parameters) {
+			
+			this.onParametersPassCall = onParametersPassCall;
 
 			if (parameters != null && parameters.Length > 0) {
 
@@ -168,7 +177,7 @@ namespace UnityEngine.UI.Windows {
 
 			} else {
 
-				this.passParams = false;
+				this.passParams = (onParametersPassCall != null);
 
 			}
 
@@ -629,7 +638,7 @@ namespace UnityEngine.UI.Windows {
 
 			try {
 
-				window = WindowSystem.Show<WindowBase>(this);
+				window = WindowSystem.Show<WindowBase>(source: this);
 
 			} catch (UnityException) {
 			} finally {

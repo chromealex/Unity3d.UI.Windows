@@ -16,7 +16,7 @@ MonoBehaviour:
   version:
     major: 0
     minor: 9
-    release: 8
+    release: 9
     type: a
   namespaceName: ExampleProject.UI
   forceRecompile: 1
@@ -683,7 +683,6 @@ MonoBehaviour:
   - {fileID: 11420260}
   - {fileID: 11412570}
   - {fileID: 11434122}
-  isDirty: 0
   tags:
   - id: 1
     title: Version 1
@@ -695,6 +694,7 @@ MonoBehaviour:
     enabled: 1
   flowWindowWithLayout: 1
   flowWindowWithLayoutScaleFactor: 0
+  isDirty: 0
 --- !u!114 &11405146
 MonoBehaviour:
   m_ObjectHideFlags: 0

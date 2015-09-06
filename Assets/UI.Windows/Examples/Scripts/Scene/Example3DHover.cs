@@ -24,7 +24,7 @@ public class Example3DHover : MonoBehaviour {
 
 			if (this.tip == null) {
 
-				this.tip = WindowSystem.Show<UIWindowExampleTip>(this.hoverText) as TipWindowType;
+				this.tip = WindowSystem.Show<UIWindowExampleTip>(w => w.OnParametersPass(this.hoverText)) as TipWindowType;
 				this.tip.OnHover(this.transform, hit.point, this.cam, this.offset);
 
 			}

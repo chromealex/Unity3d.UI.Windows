@@ -8,6 +8,8 @@ using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 	public class FlowCompiler : FlowAddon {
+		
+		private GUISkin skin;
 
 		public static void ShowEditor(System.Action onClose) {
 
@@ -38,26 +40,31 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 		}
 
 		public override void OnFlowSettingsGUI() {
-			
+
+			if (this.skin == null) this.skin = Resources.Load<GUISkin>("UI.Windows/Flow/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
+
 			GUILayout.Label(FlowAddon.MODULE_INSTALLED, EditorStyles.centeredGreyMiniLabel);
 
 			EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 			{
 				
 				#region NAMESPACE
-				EditorGUIUtility.labelWidth = 70f;
-				
-				var namespaceName = EditorGUILayout.TextField("Namespace: ", FlowSystem.GetData().namespaceName);
-				if (namespaceName != FlowSystem.GetData().namespaceName) {
-					
-					FlowSystem.GetData().namespaceName = namespaceName;
-					FlowSystem.SetDirty();
+				GUILayout.Label("Namespace:");
+				GUILayout.BeginVertical(GUILayout.Height(30f));
+				{
+
+					var namespaceName = EditorGUILayout.TextField(FlowSystem.GetData().namespaceName, this.skin.textField);
+					if (namespaceName != FlowSystem.GetData().namespaceName) {
+						
+						FlowSystem.GetData().namespaceName = namespaceName;
+						FlowSystem.SetDirty();
+
+					}
 
 				}
-				
-				EditorGUIUtility.LookLikeControls();
-				
-				var forceRecompile = GUILayout.Toggle(FlowSystem.GetData().forceRecompile, "Force Recompile");
+				GUILayout.EndHorizontal();
+
+				var forceRecompile = EditorGUILayout.ToggleLeft("Force Recompile", FlowSystem.GetData().forceRecompile);
 				if (forceRecompile != FlowSystem.GetData().forceRecompile) {
 					
 					FlowSystem.GetData().forceRecompile = forceRecompile;
@@ -65,6 +72,14 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 					
 				}
 				
+				var minimalScriptsSize = EditorGUILayout.ToggleLeft("Minimal Scripts Size", FlowSystem.GetData().minimalScriptsSize);
+				if (minimalScriptsSize != FlowSystem.GetData().minimalScriptsSize) {
+					
+					FlowSystem.GetData().minimalScriptsSize = minimalScriptsSize;
+					FlowSystem.SetDirty();
+					
+				}
+
 				#endregion
 
 			}
