@@ -192,7 +192,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public List<WindowBase> windows = new List<WindowBase>();
 		
-		[HideInInspector]
+		//[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 		
 		//[HideInInspector]
@@ -217,7 +217,7 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		private float currentZDepth;
 
-		private bool disabledCallEvents;
+		private bool disabledCallEvents = false;
 
 		private static WindowSystem _instance;
 		private static WindowSystem instance {
@@ -363,7 +363,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static bool IsCallEventsEnabled() {
 
-			return WindowSystem.instance.disabledCallEvents;
+			return WindowSystem.instance.disabledCallEvents == false;
 
 		}
 
@@ -767,7 +767,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.Show<T>(null, null, null, null, null, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, null, null, null, parameters);
 			
 		}
 
@@ -779,7 +779,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 
-			return WindowSystem.Show<T>(null, null, null, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, null, null, onParametersPassCall, parameters);
 			
 		}
 		
@@ -792,7 +792,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(T source, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.Show<T>(null, null, null, source, null, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, null, source, null, parameters);
 			
 		}
 
@@ -805,7 +805,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(T source, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.Show<T>(null, null, null, source, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, null, source, onParametersPassCall, parameters);
 			
 		}
 
@@ -818,7 +818,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(System.Action<T> onCreatePredicate, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 
-			return WindowSystem.Show<T>(onCreatePredicate, null, null, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(onCreatePredicate, null, null, null, onParametersPassCall, parameters);
 			
 		}
 		
@@ -832,7 +832,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.Show<T>(null, transition, transitionParameters, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, transition, transitionParameters, null, onParametersPassCall, parameters);
 			
 		}
 		
@@ -847,7 +847,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(TransitionBase transition, TransitionInputParameters transitionParameters, T source, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.Show<T>(null, transition, transitionParameters, source, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, transition, transitionParameters, source, onParametersPassCall, parameters);
 			
 		}
 
@@ -862,7 +862,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(System.Action<T> onCreatePredicate, TransitionBase transition, TransitionInputParameters transitionParameters, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.Show<T>(onCreatePredicate, transition, transitionParameters, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(onCreatePredicate, transition, transitionParameters, null, onParametersPassCall, parameters);
 
 		}
 
@@ -876,7 +876,12 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="source">Source.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Show<T>(System.Action<T> onCreatePredicate, TransitionBase transition, TransitionInputParameters transitionParameters, T source, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+		public static T ShowWithParameters<T>(System.Action<T> onCreatePredicate,
+		                        TransitionBase transition,
+		                        TransitionInputParameters transitionParameters,
+		                        T source,
+		                        System.Action<T> onParametersPassCall,
+		                        params object[] parameters) where T : WindowBase {
 
 			System.Action<WindowBase> onInit = null;
 			if (onParametersPassCall != null) {

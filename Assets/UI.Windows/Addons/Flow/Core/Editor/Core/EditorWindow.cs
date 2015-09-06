@@ -720,7 +720,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var screen = window.GetScreen();
 				if (screen != null) {
 
-					screen.CreateOnScene();
+					screen.CreateOnScene(callEvents: false);
 
 				}
 

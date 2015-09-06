@@ -331,7 +331,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="onShowEnd">On show end.</param>
 		public void Show(System.Action onShowEnd, TransitionBase transition, TransitionInputParameters transitionParameters) {
-			
+
 			if (WindowSystem.IsCallEventsEnabled() == false) {
 
 				return;
