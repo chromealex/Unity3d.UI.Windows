@@ -385,7 +385,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
   canvasGroup: {fileID: 22519026}
   _rectTransform: {fileID: 22487310}
   mode: 0
@@ -426,6 +425,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11476220}
   initialized: 1
   isAlive: 0
+  editorScale: 0
 --- !u!114 &11494764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -514,7 +514,7 @@ RectTransform:
   m_GameObject: {fileID: 187310}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22487310}
   m_Father: {fileID: 0}

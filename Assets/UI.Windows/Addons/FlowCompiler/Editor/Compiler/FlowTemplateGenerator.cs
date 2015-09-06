@@ -2,10 +2,10 @@
 using System.Collections;
 using UnityEditor;
 using UnityEngine.UI.Windows.Plugins.FlowCompiler;
-
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
@@ -89,7 +89,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		public static string GenerateWindowLayoutTransitionMethod(FlowWindow from, FlowWindow to, string targetClassName, string targetClassNameWithNamespace) {
+		public static string GenerateWindowLayoutTransitionMethod(FD.FlowWindow from, FD.FlowWindow to, string targetClassName, string targetClassNameWithNamespace) {
 			
 			var file = Resources.Load("UI.Windows/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
@@ -107,7 +107,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			
 		}
 		
-		public static string GenerateWindowLayoutTransitionTypedMethod(FlowWindow from, FlowWindow to, string targetClassName, string targetClassNameWithNamespace, System.Type[] parameters, string[] parameterNames) {
+		public static string GenerateWindowLayoutTransitionTypedMethod(FD.FlowWindow from, FD.FlowWindow to, string targetClassName, string targetClassNameWithNamespace, System.Type[] parameters, string[] parameterNames) {
 			
 			var file = Resources.Load("UI.Windows/Templates/TemplateTransitionTypedMethod") as TextAsset;
 			if (file == null) {

@@ -187,8 +187,8 @@ MonoBehaviour:
   tag: 3
   containsLayouts: 0
   comment: BUTTONS LIST
-  autoStretchX: 0
-  autoStretchY: 0
+  autoStretchX: 1
+  autoStretchY: 1
   showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
@@ -236,7 +236,7 @@ MonoBehaviour:
   containsLayouts: 1
   comment: CONTENT BORDER EXAMPLE
   autoStretchX: 0
-  autoStretchY: 0
+  autoStretchY: 1
   showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
@@ -284,7 +284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
   canvasGroup: {fileID: 22534398}
   _rectTransform: {fileID: 22499824}
   mode: 0
@@ -324,6 +323,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11452338}
   initialized: 1
   isAlive: 0
+  editorScale: 0
 --- !u!223 &22399816
 Canvas:
   m_ObjectHideFlags: 1
@@ -366,7 +366,7 @@ RectTransform:
   m_GameObject: {fileID: 199824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22499824}
   m_Father: {fileID: 0}

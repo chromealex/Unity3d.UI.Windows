@@ -11,16 +11,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99839ddb8ee5849c1be9ef77fbe191fa, type: 3}
   m_Name: ExampleProject
   m_EditorClassIdentifier: 
-  lastModified: 17.08.2015 11:08
+  lastModified: 05.09.2015 05:57
+  lastModifiedUnix: 1441475858
   version:
     major: 0
     minor: 9
-    release: 7
+    release: 8
     type: a
   namespaceName: ExampleProject.UI
   forceRecompile: 1
   zoom: 1
-  scrollPos: {x: -2938.34912, y: -4275.16504}
+  scrollPos: {x: -2974.34912, y: -4347.16504}
   rootWindow: 18
   defaultWindows: 2000000001000000
   windows:
@@ -664,6 +665,24 @@ MonoBehaviour:
     states: 000000000000000000000000
     screenWindowId: 0
     screen: {fileID: 0}
+  windowAssets:
+  - {fileID: 11434304}
+  - {fileID: 11465790}
+  - {fileID: 11438822}
+  - {fileID: 11481574}
+  - {fileID: 11433168}
+  - {fileID: 11412652}
+  - {fileID: 11407382}
+  - {fileID: 11448340}
+  - {fileID: 11443826}
+  - {fileID: 11492530}
+  - {fileID: 11446360}
+  - {fileID: 11406172}
+  - {fileID: 11405146}
+  - {fileID: 11452682}
+  - {fileID: 11420260}
+  - {fileID: 11412570}
+  - {fileID: 11434122}
   isDirty: 0
   tags:
   - id: 1
@@ -676,3 +695,830 @@ MonoBehaviour:
     enabled: 1
   flowWindowWithLayout: 1
   flowWindowWithLayoutScaleFactor: 0
+--- !u!114 &11405146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 34_Loader
+  m_EditorClassIdentifier: 
+  id: 34
+  flags: 17
+  title: Loading
+  directory: Loader
+  rect:
+    serializedVersion: 2
+    x: 4526
+    y: 4060
+    width: 350
+    height: 400
+  attachedComponents: []
+  attachItems:
+  - targetId: 35
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 0, g: 1, b: .0631012917, a: 1}
+  isVisibleState: 0
+  functionRootId: 35
+  functionExitId: 35
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: flow node 4
+  smallStyleSelected: flow node 4 on
+  states: 000000000000000000000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11406172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 33_Window33Directory
+  m_EditorClassIdentifier: 
+  id: 33
+  flags: 262
+  title: Social
+  directory: Window33Directory
+  rect:
+    serializedVersion: 2
+    x: 3494.40015
+    y: 4832
+    width: 150
+    height: 100
+  attachedComponents: []
+  attachItems: []
+  randomColor: {r: 1, g: .726544619, b: 0, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: flow node 1
+  smallStyleSelected: flow node 1 on
+  states: 000000000000000000000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11407382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 25_GameplayView
+  m_EditorClassIdentifier: 
+  id: 25
+  flags: 0
+  title: Gameplay View
+  directory: GameplayView
+  rect:
+    serializedVersion: 2
+    x: 5016.3999
+    y: 4599.2002
+    width: 250
+    height: 250
+  attachedComponents: []
+  attachItems:
+  - targetId: 26
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 29
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 28
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 1, g: 0, b: .559586525, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayView/
+  compiledNamespace: ExampleProject.UI.Gameplay.GameplayView
+  compiledScreenName: GameplayView
+  compiledBaseClassName: GameplayViewScreenBase
+  compiledDerivedClassName: GameplayViewScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11412570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 39_Window39Directory
+  m_EditorClassIdentifier: 
+  id: 39
+  flags: 22
+  title: Function Link
+  directory: Window39Directory
+  rect:
+    serializedVersion: 2
+    x: 4614.3999
+    y: 4672
+    width: 150
+    height: 100
+  attachedComponents: []
+  attachItems:
+  - targetId: 25
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: .0739541054, g: 0, b: 1, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 34
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: flow node 3
+  smallStyleSelected: flow node 3 on
+  states: 000000000000000000000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11412652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 24_Shop
+  m_EditorClassIdentifier: 
+  id: 24
+  flags: 0
+  title: Shop
+  directory: Shop
+  rect:
+    serializedVersion: 2
+    x: 4152.3999
+    y: 5200.80029
+    width: 250
+    height: 250
+  attachedComponents: []
+  attachItems:
+  - targetId: 23
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: .76233077, g: 1, b: 0, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/ShopOperations/Shop/
+  compiledNamespace: ExampleProject.UI.Menu.ShopOperations.Shop
+  compiledScreenName: Shop
+  compiledBaseClassName: ShopScreenBase
+  compiledDerivedClassName: ShopScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11420260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 38_Window38Directory
+  m_EditorClassIdentifier: 
+  id: 38
+  flags: 14
+  title: Default Link
+  directory: Window38Directory
+  rect:
+    serializedVersion: 2
+    x: 4614.3999
+    y: 5164.80029
+    width: 150
+    height: 30
+  attachedComponents: []
+  attachItems: []
+  randomColor: {r: 1, g: 0, b: .132748604, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: flow node 4
+  smallStyleSelected: flow node 4 on
+  states: 000000000000000000000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11433168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 23_ShopOperations
+  m_EditorClassIdentifier: 
+  id: 23
+  flags: 1
+  title: Shop Operations
+  directory: ShopOperations
+  rect:
+    serializedVersion: 2
+    x: 4102.3999
+    y: 5100.80029
+    width: 350
+    height: 400
+  attachedComponents: []
+  attachItems:
+  - targetId: 24
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: .903448343, g: 1, b: 0, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11434122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 40_Window40Directory
+  m_EditorClassIdentifier: 
+  id: 40
+  flags: 22
+  title: Function Link
+  directory: Window40Directory
+  rect:
+    serializedVersion: 2
+    x: 4614.3999
+    y: 4972.80029
+    width: 150
+    height: 100
+  attachedComponents: []
+  attachItems:
+  - targetId: 38
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 0, g: .428380728, b: 1, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 34
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: flow node 3
+  smallStyleSelected: flow node 3 on
+  states: 000000000000000000000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11434304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 1_GlobalMap
+  m_EditorClassIdentifier: 
+  id: 1
+  flags: 0
+  title: Global Map
+  directory: GlobalMap
+  rect:
+    serializedVersion: 2
+    x: 3737.6001
+    y: 4595.2002
+    width: 250
+    height: 250
+  attachedComponents:
+  - targetWindowId: 24
+    sourceComponentTag: 4
+    comment: On OnButton1Action Action
+  - targetWindowId: 9
+    sourceComponentTag: 5
+    comment: On OnButton2Action Action
+  attachItems:
+  - targetId: 3
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 9
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 24
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 33
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 0, g: 0, b: 0, a: 0}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 0100000002000000
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/GlobalMap/
+  compiledNamespace: ExampleProject.UI.Menu.GlobalMap
+  compiledScreenName: GlobalMap
+  compiledBaseClassName: GlobalMapScreenBase
+  compiledDerivedClassName: GlobalMapScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 18
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11438822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 9_GameTypeChooser
+  m_EditorClassIdentifier: 
+  id: 9
+  flags: 0
+  title: Game Type
+  directory: GameTypeChooser
+  rect:
+    serializedVersion: 2
+    x: 4166.3999
+    y: 4595.2002
+    width: 250
+    height: 250
+  attachedComponents:
+  - targetWindowId: 24
+    sourceComponentTag: 4
+    comment: On OnButton1Action Action
+  - targetWindowId: 39
+    sourceComponentTag: 5
+    comment: On OnButton2Action Action
+  attachItems:
+  - targetId: 3
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 24
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 39
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 0, g: .85722971, b: 1, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/GameTypeChooser/
+  compiledNamespace: ExampleProject.UI.Menu.GameTypeChooser
+  compiledScreenName: GameTypeChooser
+  compiledBaseClassName: GameTypeChooserScreenBase
+  compiledDerivedClassName: GameTypeChooserScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11443826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 28_EndGame
+  m_EditorClassIdentifier: 
+  id: 28
+  flags: 0
+  title: Victory/Defeat Screen
+  directory: EndGame
+  rect:
+    serializedVersion: 2
+    x: 5017.6001
+    y: 4896
+    width: 250
+    height: 250
+  attachedComponents: []
+  attachItems:
+  - targetId: 26
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 40
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 0, g: .142874718, b: 1, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/EndGame/
+  compiledNamespace: ExampleProject.UI.Gameplay.EndGame
+  compiledScreenName: EndGame
+  compiledBaseClassName: EndGameScreenBase
+  compiledDerivedClassName: EndGameScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11446360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 32_Background
+  m_EditorClassIdentifier: 
+  id: 32
+  flags: 0
+  title: Background Image
+  directory: Background
+  rect:
+    serializedVersion: 2
+    x: 3366.40015
+    y: 4371.2002
+    width: 250
+    height: 250
+  attachedComponents: []
+  attachItems: []
+  randomColor: {r: 0, g: 1, b: .124795437, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 01000000
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/Background/
+  compiledNamespace: ExampleProject.UI.Other.Background
+  compiledScreenName: Background
+  compiledBaseClassName: BackgroundScreenBase
+  compiledDerivedClassName: BackgroundScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11448340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 26_Gameplay
+  m_EditorClassIdentifier: 
+  id: 26
+  flags: 1
+  title: Gameplay
+  directory: Gameplay
+  rect:
+    serializedVersion: 2
+    x: 4966.3999
+    y: 4499.2002
+    width: 652
+    height: 696.799805
+  attachedComponents: []
+  attachItems:
+  - targetId: 25
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 29
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 28
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: .883602381, g: 1, b: 0, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 0000000000000000000000000000000000000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11452682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 35_Loading
+  m_EditorClassIdentifier: 
+  id: 35
+  flags: 0
+  title: Gameplay/Menu Loader
+  directory: Loading
+  rect:
+    serializedVersion: 2
+    x: 4576
+    y: 4160
+    width: 250
+    height: 250
+  attachedComponents: []
+  attachItems:
+  - targetId: 34
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: .720338106, g: 1, b: 0, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Loader/Loading/
+  compiledNamespace: ExampleProject.UI.Loader.Loading
+  compiledScreenName: Loading
+  compiledBaseClassName: LoadingScreenBase
+  compiledDerivedClassName: LoadingScreen
+  smallStyleDefault: flow node 4
+  smallStyleSelected: flow node 4 on
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11465790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 3_Menu
+  m_EditorClassIdentifier: 
+  id: 3
+  flags: 1
+  title: Main Menu
+  directory: Menu
+  rect:
+    serializedVersion: 2
+    x: 3687.6001
+    y: 4495.2002
+    width: 814.799805
+    height: 1055.6001
+  attachedComponents: []
+  attachItems:
+  - targetId: 1
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 9
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 23
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 1, g: 0, b: .222830772, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: 
+  compiledNamespace: 
+  compiledScreenName: 
+  compiledBaseClassName: 
+  compiledDerivedClassName: 
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11481574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 18_MainLoader
+  m_EditorClassIdentifier: 
+  id: 18
+  flags: 0
+  title: Main Loader
+  directory: MainLoader
+  rect:
+    serializedVersion: 2
+    x: 2995.19995
+    y: 4524.80029
+    width: 250
+    height: 250
+  attachedComponents:
+  - targetWindowId: 1
+    sourceComponentTag: 2
+    comment: On Action Action
+  attachItems:
+  - targetId: 32
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  - targetId: 1
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: .488009095, g: 1, b: 0, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 01000000
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/MainLoader/
+  compiledNamespace: ExampleProject.UI.Other.MainLoader
+  compiledScreenName: MainLoader
+  compiledBaseClassName: MainLoaderScreenBase
+  compiledDerivedClassName: MainLoaderScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0
+--- !u!114 &11492530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
+  m_Name: 29_GameplayHUD
+  m_EditorClassIdentifier: 
+  id: 29
+  flags: 0
+  title: Gameplay HUD
+  directory: GameplayHUD
+  rect:
+    serializedVersion: 2
+    x: 5318.3999
+    y: 4601.6001
+    width: 250
+    height: 250
+  attachedComponents: []
+  attachItems:
+  - targetId: 26
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  randomColor: {r: 0, g: .220976353, b: 1, a: 1}
+  isVisibleState: 0
+  functionRootId: 0
+  functionExitId: 0
+  functionId: 0
+  storeType: 0
+  tags: 
+  comments: []
+  compiled: 0
+  compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayHUD/
+  compiledNamespace: ExampleProject.UI.Gameplay.GameplayHUD
+  compiledScreenName: GameplayHUD
+  compiledBaseClassName: GameplayHUDScreenBase
+  compiledDerivedClassName: GameplayHUDScreen
+  smallStyleDefault: 
+  smallStyleSelected: 
+  states: 000000
+  screenWindowId: 0
+  screen: {fileID: 0}
+  isDirty: 0

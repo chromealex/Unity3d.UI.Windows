@@ -132,7 +132,12 @@ namespace UnityEngine.UI.Windows {
 				this.OnTransitionInit();
 				this.OnLayoutInit(depth, raycastPriority, orderInLayer);
 				this.OnModulesInit();
-				this.OnInit();
+
+				if (WindowSystem.IsCallEventsEnabled() == true) {
+
+					this.OnInit();
+
+				}
 
 				this.setup = true;
 
@@ -317,6 +322,12 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="onShowEnd">On show end.</param>
 		public void Show(System.Action onShowEnd, TransitionBase transition, TransitionInputParameters transitionParameters) {
+			
+			if (WindowSystem.IsCallEventsEnabled() == false) {
+
+				return;
+
+			}
 			
 			if (this.currentState == WindowObjectState.Showing || this.currentState == WindowObjectState.Shown) return;
 			this.currentState = WindowObjectState.Showing;
@@ -602,44 +613,72 @@ namespace UnityEngine.UI.Windows {
 		[ContextMenu("Create on Scene")]
 		public void CreateOnScene() {
 
-			var window = WindowSystem.Show<WindowBase>(this);
-			if (window != null) {
+			this.CreateOnScene(callEvents: true);
 
-				var selection = new List<GameObject>();
-				var layoutWindow = window as UnityEngine.UI.Windows.Types.LayoutWindowType;
-				if (layoutWindow != null) {
+		}
 
-					foreach (var component in layoutWindow.layout.components) {
+		public void CreateOnScene(bool callEvents) {
 
-						var compInstance = layoutWindow.layout.Get<WindowComponent>(component.tag);
-						if (compInstance != null) selection.Add(compInstance.gameObject);
+			if (callEvents == false) {
 
-					}
+				WindowSystem.DisableCallEvents();
 
-				}
+			}
+
+			WindowBase window = null;
+
+			try {
+
+				window = WindowSystem.Show<WindowBase>(this);
+
+			} catch (UnityException) {
+			} finally {
 
 				if (window != null) {
-
-					selection.Add(window.gameObject);
-
-				}
-
-				UnityEditor.Selection.objects = selection.ToArray();
-
-				if (selection.Count > 0) {
-
-					if (UnityEditor.SceneView.currentDrawingSceneView != null) {
-
-						UnityEditor.SceneView.currentDrawingSceneView.AlignViewToObject(selection[0].transform);
-
+					
+					var selection = new List<GameObject>();
+					var layoutWindow = window as UnityEngine.UI.Windows.Types.LayoutWindowType;
+					if (layoutWindow != null) {
+						
+						foreach (var component in layoutWindow.layout.components) {
+							
+							var compInstance = layoutWindow.layout.Get<WindowComponent>(component.tag);
+							if (compInstance != null) selection.Add(compInstance.gameObject);
+							
+						}
+						
 					}
-
+					
+					if (window != null) {
+						
+						selection.Add(window.gameObject);
+						
+					}
+					
+					UnityEditor.Selection.objects = selection.ToArray();
+					
+					if (selection.Count > 0) {
+						
+						if (UnityEditor.SceneView.currentDrawingSceneView != null) {
+							
+							UnityEditor.SceneView.currentDrawingSceneView.AlignViewToObject(selection[0].transform);
+							
+						}
+						
+					}
+					
+				} else {
+					
+					Debug.LogError("Create window on scene failed. May be WindowSystem is not exist on scene.");
+					
 				}
 
-			} else {
+			}
 
-				Debug.LogError("Create window on scene failed. May be WindowSystem is not exist on scene.");
-
+			if (callEvents == false) {
+				
+				WindowSystem.RestoreCallEvents();
+				
 			}
 
 		}

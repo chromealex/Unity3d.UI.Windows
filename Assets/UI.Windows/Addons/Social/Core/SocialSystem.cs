@@ -9,9 +9,9 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 	
 	public static class FlowWindowSocialExt {
 		
-		public static bool IsSocial(this UnityEngine.UI.Windows.Plugins.Flow.FlowWindow window) {
+		public static bool IsSocial(this UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow window) {
 			
-			return (window.flags & UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.Flags.Tag1) != 0;
+			return (window.flags & UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.Flags.Tag1) != 0;
 			
 		}
 		

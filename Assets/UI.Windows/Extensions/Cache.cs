@@ -61,7 +61,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		public int GetValue(int key) {
 
-			if (key >= this.values.Length) return -1;
+			if (key < 0 || key >= this.values.Length) return -1;
 			return this.values[key];
 
 		}

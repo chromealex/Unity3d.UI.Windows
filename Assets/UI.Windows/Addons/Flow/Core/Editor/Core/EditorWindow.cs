@@ -11,6 +11,7 @@ using System.Reflection;
 using UnityEngine.UI.Windows.Types;
 using UnityEditor.UI.Windows.Extensions;
 using System.IO;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
@@ -178,8 +179,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				this.DrawSettings(TOOLBAR_HEIGHT);
 				
-				IEnumerable<FlowWindow> windows = null;
-				IEnumerable<FlowWindow> containers = null;
+				IEnumerable<FD.FlowWindow> windows = null;
+				IEnumerable<FD.FlowWindow> containers = null;
 				if (hasData == true) {
 					
 					windows = FlowSystem.GetWindows();
@@ -500,7 +501,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public bool IsVisible(FlowWindow window) {
+		public bool IsVisible(FD.FlowWindow window) {
 
 			/*var scrollPos = FlowSystem.GetScrollPosition();
 			var rect = new Rect(scrollPos.x - this.scrollRect.width * 0.5f + this.scrollRect.x,
@@ -525,7 +526,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 		
-		public Vector2 GetWindowSize(FlowWindow window) {
+		public Vector2 GetWindowSize(FD.FlowWindow window) {
 			
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			var flowWindowWithLayoutScaleFactor = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
@@ -551,7 +552,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public void DrawTransitionChooser(UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.AttachItem attach, FlowWindow fromWindow, FlowWindow toWindow, bool doubleSided) {
+		public void DrawTransitionChooser(FD.FlowWindow.AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSided) {
 			
 			if (toWindow.IsEnabled() == false) return;
 			if (toWindow.IsContainer() == true) return;
@@ -581,7 +582,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void DrawTransitionChooser(UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.AttachItem attach, FlowWindow fromWindow, FlowWindow toWindow, Vector2 offset, float size) {
+		public void DrawTransitionChooser(FD.FlowWindow.AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, Vector2 offset, float size) {
 
 			var _size = Vector2.one * size;
 			var rect = new Rect(Vector2.Lerp(fromWindow.rect.center, toWindow.rect.center, 0.5f) + offset - _size * 0.5f, _size);
@@ -657,7 +658,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		private GUIStyle layoutBoxStyle;
-		public void DrawWindowLayout(FlowWindow window) {
+		public void DrawWindowLayout(FD.FlowWindow window) {
 			
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			if (flowWindowWithLayout == true) {
@@ -707,82 +708,38 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 			
 		}
-		
-		private void SelectWindow(FlowWindow window) {
-			
-			for (int i = 0; i < window.states.Length; ++i) window.SetCompletedState(i, CompletedState.NotReady);
-			
+
+		private void CreateOnScrene(FD.FlowWindow window) {
+
 			if (window.compiled == false) {
 				
-				this.ShowNotification(new GUIContent("You need to compile this window to use `Select` command"));
+				this.ShowNotification(new GUIContent("You need to compile this window to use `Create on Scene` command"));
 				
 			} else {
 
-				if (Directory.Exists(window.compiledDirectory) == false) {
+				var screen = window.GetScreen();
+				if (screen != null) {
 
-					window.compiledDirectory = Path.GetDirectoryName(AssetDatabase.GetAssetPath(FlowSystem.GetData())) + "/" + window.compiledNamespace.Replace(FlowSystem.GetData().namespaceName, string.Empty) + "/" + window.compiledNamespace.Replace(".", "/");
+					screen.CreateOnScene();
 
 				}
 
-				Selection.activeObject = AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
-				EditorGUIUtility.PingObject(Selection.activeObject);
-				
-				//if (window.screen == null) {
-				
-				window.SetCompletedState(0, CompletedState.NotReady);
-				
-				var files = AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
-				foreach (var file in files) {
-					
-					var path = AssetDatabase.GUIDToAssetPath(file);
-					
-					var go = AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
-					if (go != null) {
-						
-						var screen = go.GetComponent<WindowBase>();
-						if (screen != null) {
-							
-							window.SetScreen(screen);
-							window.SetCompletedState(0, CompletedState.Ready);
-							
-							var lWin = screen as LayoutWindowType;
-							if (lWin != null) {
-								
-								if (lWin.layout.layout != null) {
-									
-									window.SetCompletedState(1, CompletedState.Ready);
-									window.SetCompletedState(2, (lWin.layout.components.Any((c) => c.component == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
-									
-								} else {
-									
-									window.SetCompletedState(0, CompletedState.NotReady);
-									window.SetCompletedState(1, CompletedState.NotReady);
-									window.SetCompletedState(2, CompletedState.NotReady);
-									
-								}
-								
-							} else {
-								
-								window.SetCompletedState(1, CompletedState.Ready);
-								
-							}
-							
-							break;
-							
-						} else {
-							
-							window.SetCompletedState(0, CompletedState.ReadyButWarnings);
-							
-						}
-						
-					}
-					
-				}
-				
-				//}
-				
 			}
-			
+
+		}
+
+		private void SelectWindow(FD.FlowWindow window) {
+
+			if (window.compiled == false) {
+				
+				this.ShowNotification(new GUIContent("You need to compile this window to use `Select` command"));
+					
+			} else {
+
+				window.Select();
+
+			}
+
 		}
 		
 		public void DrawWaitForConnection() {
@@ -872,9 +829,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		private Dictionary<int, List<FlowWindow>> bringFront = new Dictionary<int, List<FlowWindow>>();
+		private Dictionary<int, List<FD.FlowWindow>> bringFront = new Dictionary<int, List<FD.FlowWindow>>();
 		
-		private void BringBackOrFront(FlowWindow current, IEnumerable<FlowWindow> windows) {
+		private void BringBackOrFront(FD.FlowWindow current, IEnumerable<FD.FlowWindow> windows) {
 			
 			// Is any of other window has bigger size and collide current
 			foreach (var window in windows) {
@@ -905,7 +862,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 						} else {
 							
-							this.bringFront.Add(window.id, new List<FlowWindow>() { current });
+							this.bringFront.Add(window.id, new List<FD.FlowWindow>() { current });
 							
 						}
 						
@@ -1450,7 +1407,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public void CreateNewItem(System.Func<FlowWindow> predicate) {
+		public void CreateNewItem(System.Func<FD.FlowWindow> predicate) {
 			
 			var scrollPos = FlowSystem.GetScrollPosition();
 			
@@ -1461,13 +1418,28 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		private void DrawToolbar() {
+
+			var buttonStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "toolbarButton", (name) => {
+				
+				var _buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
+				_buttonStyle.stretchWidth = false;
+				
+				return _buttonStyle;
+				
+			});
 			
-			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
-			buttonStyle.stretchWidth = false;
+			var buttonDropdownStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "toolbarDropDown", (name) => {
+				
+				var _buttonStyle = new GUIStyle(EditorStyles.toolbarDropDown);
+				_buttonStyle.stretchWidth = false;
+				
+				return _buttonStyle;
+				
+			});
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
 			
-			this.DrawToolbar(buttonStyle);
+			this.DrawToolbar(buttonStyle, buttonDropdownStyle);
 			
 			GUILayout.EndHorizontal();
 			
@@ -1518,36 +1490,46 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public void SetCenterTo(FlowWindow window) {
+		public void SetCenterTo(FD.FlowWindow window) {
 
 			FlowSystem.SetZoom(1f);
 			FlowSystem.SetScrollPosition(-new Vector2(window.rect.x - this.scrollRect.width * 0.5f, window.rect.y - this.scrollRect.height * 0.5f));
 
 		}
 		
-		private void DrawToolbar(GUIStyle buttonStyle) {
+		private Rect layoutStateToolbarCreateButtonRect;
+		private Rect layoutStateToolbarToolsButtonRect;
+		private void DrawToolbar(GUIStyle buttonStyle, GUIStyle buttonDropdownStyle) {
 			
-			var result = GUILayout.Button("Create", buttonStyle);
-			var rect = GUILayoutUtility.GetLastRect();
-			
+			var result = GUILayout.Button("Create", buttonDropdownStyle);
+			if (Event.current.type == EventType.Repaint) {
+				
+				this.layoutStateToolbarCreateButtonRect = GUILayoutUtility.GetLastRect();
+				
+			}
+
 			if (result == true) {
 				
 				var menu = new GenericMenu();
 				this.SetupCreateMenu(string.Empty, menu);
 				
-				menu.DropDown(new Rect(rect.x, rect.y + TOOLBAR_HEIGHT, rect.width, rect.height));
+				menu.DropDown(this.layoutStateToolbarCreateButtonRect);
 				
 			}
 			
-			result = GUILayout.Button("Tools", buttonStyle);
-			rect = GUILayoutUtility.GetLastRect();
-			
+			result = GUILayout.Button("Tools", buttonDropdownStyle);
+			if (Event.current.type == EventType.Repaint) {
+				
+				this.layoutStateToolbarToolsButtonRect = GUILayoutUtility.GetLastRect();
+				
+			}
+
 			if (result == true) {
 				
 				var menu = new GenericMenu();
 				this.SetupToolsMenu(string.Empty, menu);
 				
-				menu.DropDown(new Rect(rect.x, rect.y + TOOLBAR_HEIGHT, rect.width, rect.height));
+				menu.DropDown(this.layoutStateToolbarToolsButtonRect);
 				
 			}
 			
@@ -1574,10 +1556,26 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			var oldState = GUI.enabled;
 			GUI.enabled = !EditorApplication.isCompiling;//!FlowSceneView.IsActive();
-			
-			var buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
-			buttonStyle.stretchWidth = false;
-			
+
+			var buttonStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "toolbarButton", (name) => {
+				
+				var _buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
+				_buttonStyle.stretchWidth = false;
+				
+				return _buttonStyle;
+				
+			});
+
+			var buttonWarningStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "buttonWarningStyle", (name) => {
+				
+				var _buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
+				_buttonStyle.stretchWidth = false;
+				_buttonStyle.fontStyle = FontStyle.Bold;
+				
+				return _buttonStyle;
+				
+			});
+
 			var window = FlowSystem.GetWindow(id);
 			
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
@@ -1672,8 +1670,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.WaitForAttach(id);
 						
 					}
-					
-					if (GUILayout.Button("Destroy", buttonStyle) == true) {
+
+					if (GUILayout.Button("Destroy", buttonWarningStyle) == true) {
 						
 						if (EditorUtility.DisplayDialog("Are you sure?", "Current container will be destroyed with all links (All windows will be saved)", "Yes, destroy", "No") == true) {
 							
@@ -1886,7 +1884,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public float GetTagsHeight(FlowWindow window) {
+		public float GetTagsHeight(FD.FlowWindow window) {
 			
 			var columns = 3;
 			var height = 16f;
@@ -1899,7 +1897,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Rect showTagsPopupRect;
 		private int showTagsPopupId;
 		private string tagCaption = string.Empty;
-		private void DrawTags(FlowWindow window, bool defaultWindow = false) {
+		private void DrawTags(FD.FlowWindow window, bool defaultWindow = false) {
 
 			EditorGUIUtility.labelWidth = 35f;
 			
@@ -2082,7 +2080,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		private void DrawStates(CompletedState[] states, FlowWindow window) {
+		private void DrawStates(FD.CompletedState[] states, FD.FlowWindow window) {
 			
 			if (states == null) return;
 			
@@ -2112,15 +2110,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				var state = states[i];
 				
-				if (state == CompletedState.NotReady) {
+				if (state == FD.CompletedState.NotReady) {
 					
 					color = new Color(1f, 0.3f, 0.3f, 1f);
 					
-				} else if (state == CompletedState.Ready) {
+				} else if (state == FD.CompletedState.Ready) {
 					
 					color = new Color(0.3f, 1f, 0.3f, 1f);
 					
-				} else if (state == CompletedState.ReadyButWarnings) {
+				} else if (state == FD.CompletedState.ReadyButWarnings) {
 					
 					color = new Color(1f, 1f, 0.3f, 1f);
 					
@@ -2135,19 +2133,39 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.color = oldColor;
 			
 		}
-		
-		private void DrawWindowToolbar(FlowWindow window) {
+
+		private Rect layoutStateSelectButtonRect;
+		private void DrawWindowToolbar(FD.FlowWindow window) {
 			
 			//var edit = false;
 			var id = window.id;
-
+			
 			var buttonStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "toolbarButton", (name) => {
-
+				
 				var _buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
 				_buttonStyle.stretchWidth = false;
-
+				
 				return _buttonStyle;
+				
+			});
+			
+			var buttonDropdownStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "toolbarDropDown", (name) => {
+				
+				var _buttonStyle = new GUIStyle(EditorStyles.toolbarDropDown);
+				_buttonStyle.stretchWidth = false;
+				
+				return _buttonStyle;
+				
+			});
 
+			var buttonWarningStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "buttonWarningStyle", (name) => {
+				
+				var _buttonStyle = new GUIStyle(EditorStyles.toolbarButton);
+				_buttonStyle.stretchWidth = false;
+				_buttonStyle.fontStyle = FontStyle.Bold;
+				
+				return _buttonStyle;
+				
 			});
 
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
@@ -2212,19 +2230,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						}
 						
 					}
-					
-					if (GUILayout.Button("Destroy", buttonStyle) == true) {
-						
-						if (EditorUtility.DisplayDialog("Are you sure?", "Current window will be destroyed with all links", "Yes, destroy", "No") == true) {
-							
-							this.ShowNotification(new GUIContent(string.Format("The window `{0}` was successfully destroyed", window.title)));
-							FlowSystem.DestroyWindow(id);
-							return;
-							
-						}
-						
-					}
-					
+
 				}
 				
 				if (window.IsSmall() == false) {
@@ -2327,12 +2333,71 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				GUILayout.FlexibleSpace();
 				
-				if (window.IsSmall() == false && FlowSceneView.IsActive() == false && window.storeType == FlowWindow.StoreType.NewScreen) {
-					
-					if (GUILayout.Button("Select", buttonStyle) == true) {
-						
-						this.SelectWindow(window);
-						
+				if (window.IsSmall() == false && FlowSceneView.IsActive() == false && window.storeType == FD.FlowWindow.StoreType.NewScreen) {
+
+					var state = GUILayout.Button("Screen", buttonDropdownStyle);
+					if (Event.current.type == EventType.Repaint) {
+
+						this.layoutStateSelectButtonRect = GUILayoutUtility.GetLastRect();
+
+					}
+
+					if (state == true) {
+
+						var menu = new GenericMenu();
+						menu.AddItem(new GUIContent("Select Package"), on: false, func: () => { this.SelectWindow(window); });
+						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScrene(window); });
+
+						var screen = window.GetScreen();
+
+						var methodsCount = 0;
+						WindowSystem.CollectCallVariations(screen, (types, names) => {
+
+							++methodsCount;
+
+						});
+
+						menu.AddDisabledItem(new GUIContent("Callings/Methods: " + methodsCount.ToString()));
+						menu.AddSeparator("Callings/");
+
+						if (window.compiled == true &&
+						    screen != null) {
+
+							methodsCount = 0;
+							WindowSystem.CollectCallVariations(screen, (types, names) => {
+
+								var parameters = new List<string>();
+								for (int i = 0; i < types.Length; ++i) {
+
+									parameters.Add(ME.Utilities.FormatParameter(types[i]) + " " + names[i]);
+
+								}
+
+								var paramsStr = parameters.Count > 0 ? "(" + string.Join(", ", parameters.ToArray()) + ")" : string.Empty;
+								menu.AddItem(new GUIContent("Callings/OnParametersPass" + paramsStr), on: false, func: () => {
+
+									Selection.activeObject = screen;
+
+								});
+
+								++methodsCount;
+
+							});
+
+							if (methodsCount == 0) {
+								
+								menu.AddDisabledItem(new GUIContent("Callings/No `OnParametersPass` Methods Found"));
+
+							}
+
+						} else {
+							
+							menu.AddDisabledItem(new GUIContent("Callings/You need to compile window"));
+
+						}
+
+						menu.DropDown(this.layoutStateSelectButtonRect);
+
 					}
 					
 					/*
@@ -2352,6 +2417,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				}
 				
+				if (GUILayout.Button("X", buttonWarningStyle) == true) {
+					
+					if (EditorUtility.DisplayDialog("Are you sure?", "Current window will be destroyed with all links.", "Yes, destroy", "No") == true) {
+						
+						this.ShowNotification(new GUIContent(string.Format("The window `{0}` was successfully destroyed", window.title)));
+						FlowSystem.DestroyWindow(id);
+						return;
+						
+					}
+					
+				}
+
 			} else {
 				
 				// Draw Attach/Detach component link
@@ -2444,7 +2521,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				} else {
 
-					if (window.storeType == FlowWindow.StoreType.NewScreen) {
+					if (window.storeType == FD.FlowWindow.StoreType.NewScreen) {
 						
 						this.DrawStates(window.states, window);
 						
@@ -2475,8 +2552,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							// Directory choosed
 							
-							window.flags &= (~FlowWindow.Flags.CantCompiled);
-							window.storeType = FlowWindow.StoreType.NewScreen;
+							window.flags &= (~FD.FlowWindow.Flags.CantCompiled);
+							window.storeType = FD.FlowWindow.StoreType.NewScreen;
 							
 							if (string.IsNullOrEmpty(window.directory) == true)
 								window.directory = string.Empty;
@@ -2486,17 +2563,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 								// Re-use screen choosed
 							
-								window.flags |= FlowWindow.Flags.CantCompiled;
-								window.storeType = FlowWindow.StoreType.ReUseScreen;
+								window.flags |= FD.FlowWindow.Flags.CantCompiled;
+								window.storeType = FD.FlowWindow.StoreType.ReUseScreen;
 							
 								var linkIndex = -1;
 								var index = 0;
 								var values = new List<string>();
-								var list = new List<FlowWindow>();
+								var list = new List<FD.FlowWindow>();
 								var windows = FlowSystem.GetWindows();
 								foreach (var win in windows) {
 								
-									if (win.storeType == FlowWindow.StoreType.NewScreen &&
+									if (win.storeType == FD.FlowWindow.StoreType.NewScreen &&
 										win.IsSmall() == false &&
 										win.IsContainer() == false) {
 									

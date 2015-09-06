@@ -40,6 +40,12 @@ namespace UnityEditor.UI.Windows {
 			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false);
 
 		}
+		
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement) {
+			
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false);
+			
+		}
 
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered) {
 

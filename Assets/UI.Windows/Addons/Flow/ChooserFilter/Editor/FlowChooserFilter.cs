@@ -6,6 +6,7 @@ using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows.Animations;
 using System.Linq;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -206,7 +207,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public static void CreateTransition(FlowWindow flowWindow, FlowWindow toWindow, string localPath, System.Action<TransitionInputTemplateParameters> callback = null) {
+		public static void CreateTransition(FD.FlowWindow flowWindow, FD.FlowWindow toWindow, string localPath, System.Action<TransitionInputTemplateParameters> callback = null) {
 
 			if (flowWindow.GetScreen() == null) return;
 

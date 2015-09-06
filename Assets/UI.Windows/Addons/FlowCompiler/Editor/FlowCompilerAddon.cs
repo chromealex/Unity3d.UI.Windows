@@ -3,6 +3,7 @@ using UnityEngine.UI.Windows;
 using UnityEditor.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
@@ -51,7 +52,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 					
 					FlowSystem.GetData().namespaceName = namespaceName;
 					FlowSystem.SetDirty();
-					
+
 				}
 				
 				EditorGUIUtility.LookLikeControls();
@@ -71,7 +72,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		}
 
-		public override void OnFlowWindowGUI(FlowWindow window) {
+		public override void OnFlowWindowGUI(FD.FlowWindow window) {
 
 			if (window.CanCompiled() == false) return;
 

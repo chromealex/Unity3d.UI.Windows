@@ -256,19 +256,27 @@ namespace ME {
 				foreach (var obj in objects) {
 					
 					if (obj == null) continue;
-					
+
 					var path = AssetDatabase.GUIDToAssetPath(obj);
 					if (path == null) continue;
 					
-					var file = AssetDatabase.LoadAssetAtPath(path, typeof(ScriptableObject)) as ScriptableObject;
-					if (file == null) continue;
-					
-					var comp = file as T;
-					if (comp == null) continue;
-					
-					if (predicate != null && predicate(comp) == false) continue;
-					
-					output.Add(comp);
+					var files = AssetDatabase.LoadAllAssetsAtPath(path);
+					if (files == null) continue;
+
+					foreach (var file in files) {
+
+						var comp = file as T;
+						if (comp == null) continue;
+
+						if (predicate != null && predicate(comp) == false) continue;
+
+						if (output.Contains(comp) == false) {
+
+							output.Add(comp);
+
+						}
+
+					}
 
 				}
 				

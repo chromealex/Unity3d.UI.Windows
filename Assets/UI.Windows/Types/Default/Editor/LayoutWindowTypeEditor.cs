@@ -42,6 +42,12 @@ namespace UnityEditor.UI.Windows.Types {
 			this.OnPreviewGUI(color, r, style, false, false);
 
 		}
+		
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement) {
+			
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable);
+			
+		}
 
 		private Layout.Component selectedComponent;
 		private WindowLayoutEditor layoutEditor;

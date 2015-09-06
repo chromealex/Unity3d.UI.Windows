@@ -197,6 +197,10 @@ MonoBehaviour:
     outDuration: .5
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 1
     root: {fileID: 0}
     stateApply: 0
@@ -231,6 +235,10 @@ MonoBehaviour:
     outDuration: .5
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -430,6 +438,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11413754}
   initialized: 1
   isAlive: 0
+  editorScale: 0
 --- !u!114 &11470076
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -589,7 +598,7 @@ RectTransform:
   m_GameObject: {fileID: 141326}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22441324}
   m_Father: {fileID: 0}

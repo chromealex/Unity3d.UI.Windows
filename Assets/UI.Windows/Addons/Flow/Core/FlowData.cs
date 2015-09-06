@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI.Windows.Extensions;
+using ME;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 	
@@ -26,36 +27,142 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	};
 
 	public class FlowData : ScriptableObject {
-
+		
+		[Header("Version Data")]
 		public string lastModified = "-";
+		public long lastModifiedUnix = 0;
 		public Version version;
-
+		
+		[Header("Compiler Plugin")]
 		public string namespaceName;
 		public bool forceRecompile;
 
+		[Header("Flow Data")]
+		[ReadOnly]
 		public float zoom = 1f;
+		[ReadOnly]
 		public Vector2 scrollPos = new Vector2(-1f, -1f);
 
+		[ReadOnly]
 		public int rootWindow;
+		[ReadOnly]
 		public List<int> defaultWindows = new List<int>();
 
+		[System.Obsolete("Windows List was deprecated. Use windowAssets List instead.")]
+		//[HideInInspector]
 		public List<FlowWindow> windows = new List<FlowWindow>();
-		public bool isDirty = false;
+		[ReadOnly]
+		public List<Data.FlowWindow> windowAssets = new List<Data.FlowWindow>();
 
+		[ReadOnly]
 		public List<FlowTag> tags = new List<FlowTag>();
 
 		//private Rect selectionRect;
+		[HideInInspector]
 		private List<int> selected = new List<int>();
 
+		[HideInInspector]
 		public bool flowWindowWithLayout;
+		[HideInInspector]
 		public float flowWindowWithLayoutScaleFactor = 0f;
+
+		[ReadOnly]
+		public bool isDirty = false;
 
 		#if UNITY_EDITOR
 		#region UPGRADES
 		#pragma warning disable 612,618
-		public void UpgradeTo095() {
+		public void UpgradeTo098() {
 			
-			this.UpgradeTo094();
+			foreach (var oldWindow in this.windows) {
+
+				var window = Data.FlowWindow.CreateInstance<Data.FlowWindow>();
+				//var path = UnityEditor.AssetDatabase.GenerateUniqueAssetPath("Assets/ + ".asset");
+				//UnityEditor.AssetDatabase.CreateAsset(window, path);
+
+				//window = UnityEditor.AssetDatabase.LoadAssetAtPath<Data.FlowWindow>(path);
+
+				window.name = window.directory;
+
+				// copy data from old FlowWindow to new
+				window.compiled = oldWindow.compiled;
+				window.compiledBaseClassName = oldWindow.compiledBaseClassName;
+				window.compiledDerivedClassName = oldWindow.compiledDerivedClassName;
+				window.compiledDirectory = oldWindow.compiledDirectory;
+				window.compiledNamespace = oldWindow.compiledNamespace;
+				window.compiledScreenName = oldWindow.compiledScreenName;
+				
+				window.id = oldWindow.id;
+				window.flags = (Flow.Data.FlowWindow.Flags)(int)oldWindow.flags;
+				window.title = oldWindow.title;
+				window.directory = oldWindow.directory;
+				window.rect = oldWindow.rect;
+
+				window.functionExitId = oldWindow.functionExitId;
+				window.functionId = oldWindow.functionId;
+				window.functionRootId = oldWindow.functionRootId;
+
+				window.isVisibleState = oldWindow.isVisibleState;
+				window.randomColor = oldWindow.randomColor;
+
+				window.screenWindowId = oldWindow.screenWindowId;
+				window.SetScreen(oldWindow.screen);
+
+				window.smallStyleDefault = oldWindow.smallStyleDefault;
+				window.smallStyleSelected = oldWindow.smallStyleSelected;
+
+				window.storeType = (Flow.Data.FlowWindow.StoreType)(byte)oldWindow.storeType;
+				window.tags = oldWindow.tags;
+
+				var states = oldWindow.states;
+				window.states = new Flow.Data.CompletedState[states.Length];
+				for (int i = 0; i < states.Length; ++i) {
+
+					window.states[i] = (Flow.Data.CompletedState)(byte)states[i];
+					
+				}
+
+				var attachedComponents = oldWindow.attachedComponents;
+				window.attachedComponents = new List<Flow.Data.FlowWindow.ComponentLink>();
+				for (int i = 0; i < attachedComponents.Count; ++i) {
+					
+					var old = attachedComponents[i];
+					window.attachedComponents.Add(new Flow.Data.FlowWindow.ComponentLink(old.targetWindowId, old.sourceComponentTag, old.comment));
+					
+				}
+				
+				var attachItems = oldWindow.attachItems;
+				window.attachItems = new List<Flow.Data.FlowWindow.AttachItem>();
+				for (int i = 0; i < attachItems.Count; ++i) {
+					
+					var old = attachItems[i];
+					window.attachItems.Add(new Flow.Data.FlowWindow.AttachItem(old.targetId) { transition = old.transition, transitionParameters = old.transitionParameters, editor = old.editor });
+					
+				}
+				
+				var comments = oldWindow.comments;
+				window.comments = new List<Flow.Data.DefaultElement>();
+				for (int i = 0; i < comments.Count; ++i) {
+					
+					var old = comments[i];
+					window.comments.Add(new Flow.Data.DefaultElement() { tag = old.tag, comment = old.comment, library = old.library, elementPath = old.elementPath, elementComponent = old.elementComponent });
+					
+				}
+
+				window.SetDirty();
+				window.Save();
+
+				window.RefreshScreen();
+				UnityEditor.Selection.activeObject = null;
+
+				window.name = window.ToString();
+				UnityEditor.AssetDatabase.AddObjectToAsset(window, this);
+				UnityEditor.AssetDatabase.ImportAsset(UnityEditor.AssetDatabase.GetAssetPath(window), UnityEditor.ImportAssetOptions.ForceUpdate);
+				UnityEditor.AssetDatabase.SaveAssets();
+
+				this.windowAssets.Add(window);
+
+			}
 			
 		}
 
@@ -85,7 +192,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public WindowBase GetRootScreen() {
 
-			var flowWindow = this.windows.FirstOrDefault((w) => w.id == this.rootWindow);
+			var flowWindow = this.windowAssets.FirstOrDefault((w) => w.id == this.rootWindow);
 			if (flowWindow != null) {
 
 				return flowWindow.GetScreen();
@@ -96,10 +203,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		public List<WindowBase> GetAllScreens(System.Func<FlowWindow, bool> predicate = null) {
+		public List<WindowBase> GetAllScreens(System.Func<Data.FlowWindow, bool> predicate = null) {
 			
 			var list = new List<WindowBase>();
-			foreach (var window in this.windows) {
+			foreach (var window in this.windowAssets) {
 
 				if (window.IsSmall() == true) continue;
 
@@ -129,8 +236,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				var dateTime = System.DateTime.Now;
 				this.lastModified = dateTime.ToString("dd.MM.yyyy hh:mm");
+				this.lastModifiedUnix = dateTime.ToUnixTime();
 
 				UnityEditor.EditorUtility.SetDirty(this);
+
+				foreach (var window in this.windowAssets) {
+
+					this.VerifyRename(window.id);
+					window.isDirty = true;
+					window.Save();
+
+				}
 
 			}
 			#endif
@@ -152,14 +268,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public FlowWindow.AttachItem GetAttachItem(int from, int to) {
+		public Data.FlowWindow.AttachItem GetAttachItem(int from, int to) {
 			
 			var fromWindow = this.GetWindow(from);
 			var item = fromWindow.attachItems.FirstOrDefault((element) => element.targetId == to);
 
 			if (item == null) {
 
-				return FlowWindow.AttachItem.Empty;
+				return Data.FlowWindow.AttachItem.Empty;
 
 			}
 
@@ -173,7 +289,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void AddTag(FlowWindow window, FlowTag tag) {
+		public void AddTag(Data.FlowWindow window, FlowTag tag) {
 
 			var contains = this.tags.FirstOrDefault((t) => t.title.ToLower() == tag.title.ToLower());
 			if (contains == null) {
@@ -192,7 +308,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 		
-		public void RemoveTag(FlowWindow window, FlowTag tag) {
+		public void RemoveTag(Data.FlowWindow window, FlowTag tag) {
 			
 			window.RemoveTag(tag);
 
@@ -241,7 +357,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public void SelectWindows(int[] ids) {
 
 			this.selected.Clear();
-			foreach (var window in this.windows) {
+			foreach (var window in this.windowAssets) {
 				
 				if (window.IsContainer() == false && ids.Contains(window.id) == true) {
 					
@@ -253,12 +369,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public void SelectWindowsInRect(Rect rect, System.Func<FlowWindow, bool> predicate = null) {
+		public void SelectWindowsInRect(Rect rect, System.Func<Data.FlowWindow, bool> predicate = null) {
 
 			//this.selectionRect = rect;
 
 			this.selected.Clear();
-			foreach (var window in this.windows) {
+			foreach (var window in this.windowAssets) {
 
 				if (window.IsContainer() == false && rect.Overlaps(window.rect, true) == true && (predicate == null || predicate(window) == true)) {
 
@@ -305,23 +421,48 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 			if (component != null) {
 				
-				return this.windows.Any((w) => w.id == source && w.AlreadyAttached(other, component));
+				return this.windowAssets.Any((w) => w.id == source && w.AlreadyAttached(other, component));
 				
 			}
 			
-			return this.windows.Any((w) => w.id == source && w.AlreadyAttached(other));
+			return this.windowAssets.Any((w) => w.id == source && w.AlreadyAttached(other));
 			
 		}
 		
 		public void DestroyWindow(int id) {
 			
 			// Remove window
-			this.windows.Remove(this.GetWindow(id));
+			//this.windows.Remove(this.GetWindow(id));
+			var data = this.GetWindow(id);
+			this.windowAssets.Remove(data);
 			
+			#if UNITY_EDITOR
+			// Delete any old sub assets inside the prefab.
+			/*var assetPath = UnityEditor.AssetDatabase.GetAssetPath(data);
+			var assets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(assetPath);
+			for (int i = 0; i < assets.Length; ++i) {
+
+				var asset = assets[i];
+				if (UnityEditor.AssetDatabase.IsMainAsset(asset) ||
+				    asset is GameObject ||
+				    asset is Component) {
+
+					continue;
+
+				} else {
+
+					Object.DestroyImmediate(asset, allowDestroyingAssets: true);
+
+				}
+
+			}*/
+			Object.DestroyImmediate(data, allowDestroyingAssets: true);
+			#endif
+
 			this.selected.Remove(id);
 			this.defaultWindows.Remove(id);
 			
-			foreach (var window in this.windows) {
+			foreach (var window in this.windowAssets) {
 				
 				window.Detach(id, oneWay: true);
 				
@@ -334,83 +475,90 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 		#endif
 		
-		public FlowWindow CreateWindow(FlowWindow.Flags flags) {
-			
-			var newId = this.AllocateId();
-			var window = new FlowWindow(newId, flags);
-			
-			this.windows.Add(window);
-			this.windowsCache.Clear();
-			
-			this.isDirty = true;
-			
-			return window;
+		public Data.FlowWindow CreateWindow(Data.FlowWindow.Flags flags) {
+
+			return this.CreateWindow_INTERNAL(flags);
 
 		}
 
-		public FlowWindow CreateDefaultLink() {
+		public Data.FlowWindow CreateDefaultLink() {
+
+			var window = this.CreateWindow_INTERNAL(
+				UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.Flags.IsSmall |
+				UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.Flags.CantCompiled |
+				UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.Flags.ShowDefault
+				);
 			
-			var newId = this.AllocateId();
-			var window = new FlowWindow(newId, isDefaultLink: true);
 			window.title = "Default Link";
-			
 			window.rect.width = 150f;
 			window.rect.height = 30f;
 
-			this.windows.Add(window);
-			this.windowsCache.Clear();
-			
-			this.isDirty = true;
-			
 			return window;
-			
+
 		}
 		
-		public FlowWindow CreateContainer() {
-			
-			var newId = this.AllocateId();
-			var window = new FlowWindow(newId, isContainer: true);
-			
-			this.windows.Add(window);
-			this.windowsCache.Clear();
-			
-			this.isDirty = true;
-			
-			return window;
+		public Data.FlowWindow CreateContainer() {
+
+			return this.CreateWindow_INTERNAL(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.Flags.IsContainer);
 			
 		}
 
-		public FlowWindow CreateWindow() {
-			
-			var newId = this.AllocateId();
-			var window = new FlowWindow(newId, isContainer: false);
-			
-			this.windows.Add(window);
-			this.windowsCache.Clear();
-			
-			this.isDirty = true;
-			
-			return window;
-			
+		public Data.FlowWindow CreateWindow() {
+
+			return this.CreateWindow_INTERNAL(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.Flags.Default);
+
 		}
 
-		public IEnumerable<FlowWindow> GetWindows() {
+		private Data.FlowWindow CreateWindow_INTERNAL(Data.FlowWindow.Flags flags) {
 			
-			return this.windows.Where((w) => w.IsContainer() == false && w.IsEnabled());
+			var newId = this.AllocateId();
+
+			//var window = new Data.FlowWindow(newId, flags);
+			//this.windows.Add(window);
+
+			var window = Data.FlowWindow.CreateInstance<Data.FlowWindow>();
+			#if UNITY_EDITOR
+			window.name = window.ToString();
+			UnityEditor.AssetDatabase.AddObjectToAsset(window, this);
+			UnityEditor.AssetDatabase.ImportAsset(UnityEditor.AssetDatabase.GetAssetPath(window), UnityEditor.ImportAssetOptions.ForceUpdate);
+			UnityEditor.AssetDatabase.SaveAssets();
+			#endif
+			window.Setup(newId, flags);
+
+			this.windowAssets.Add(window);
+			this.windowsCache.Clear();
+			this.isDirty = true;
+
+			return window;
+
+		}
+
+		public void VerifyRename(int id) {
+
+			var data = this.GetWindow(id);
+			if (data == null) return;
+
+			data.name = data.ToString();
+
+		}
+
+		public IEnumerable<Data.FlowWindow> GetWindows() {
+			
+			return this.windowAssets.Where((w) => w.IsContainer() == false && w.IsEnabled());
 			
 		}
 		
-		public IEnumerable<FlowWindow> GetContainers() {
+		public IEnumerable<Data.FlowWindow> GetContainers() {
 			
-			return this.windows.Where((w) => w.IsContainer() == true && w.IsEnabled());
+			return this.windowAssets.Where((w) => w.IsContainer() == true && w.IsEnabled());
 			
 		}
 		
-		public FlowWindow GetWindow(WindowBase window) {
+		public Data.FlowWindow GetWindow(WindowBase window) {
 
 			if (window == null) return null;
 
-			return this.windows.FirstOrDefault((w) => {
+			return this.windowAssets.FirstOrDefault((w) => {
 
 				if (w.GetScreen() != null) {
 
@@ -425,19 +573,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		private Cache windowsCache = new Cache();
-		public FlowWindow GetWindow(int id) {
+		public Data.FlowWindow GetWindow(int id) {
 
 			if (this.windowsCache.IsEmpty() == true) {
 
-				this.windowsCache.Fill(this.windows, (w, i) => w.id, (w, i) => i);
+				this.windowsCache.Fill(this.windowAssets, (w, i) => w.id, (w, i) => i);
 
 			}
 
 			var index = this.windowsCache.GetValue(id);
 			if (index == -1) return null;
-			if (index < 0 || index >= this.windows.Count) return null;
+			if (index < 0 || index >= this.windowAssets.Count) return null;
 
-			return this.windows[index];
+			return this.windowAssets[index];
 
 		}
 
@@ -450,7 +598,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public int AllocateId() {
 
 			var maxId = 0;
-			foreach (var window in this.windows) {
+			foreach (var window in this.windowAssets) {
 
 				if (maxId < window.id) maxId = window.id;
 

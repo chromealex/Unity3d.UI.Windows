@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace UnityEditor.UI.Windows {
 	
-	//[CustomEditor(typeof(WindowLayoutElement))]
+	[CustomEditor(typeof(WindowLayoutElement))]
 	[CanEditMultipleObjects()]
 	public class WindowLayoutElementEditor : Editor {
 
@@ -15,23 +15,23 @@ namespace UnityEditor.UI.Windows {
 
 		public void OnEnable() {
 			
-			SceneView.onSceneGUIDelegate -= this.OnSceneView;
-			SceneView.onSceneGUIDelegate += this.OnSceneView;
+			//SceneView.onSceneGUIDelegate -= this.OnSceneView;
+			//SceneView.onSceneGUIDelegate += this.OnSceneView;
 
 			this._target = this.target as WindowLayoutElement;
 			if (this._target == null) return;
 
 			this.layout = this._target.GetComponentInParent<WindowLayout>();
 
-			if (this._target != null) {
+			/*if (this._target != null) {
 
 				this.lastPivot = (this._target.transform as RectTransform).pivot;
 
-			}
+			}*/
 
 		}
 
-		public void OnDisable() {
+		/*public void OnDisable() {
 			
 			SceneView.onSceneGUIDelegate -= this.OnSceneView;
 
@@ -71,6 +71,28 @@ namespace UnityEditor.UI.Windows {
 			
 			return position;
 			
+		}*/
+		
+		public override bool HasPreviewGUI() {
+			
+			return true;
+			
+		}
+
+		private IPreviewEditor editor;
+		public override void OnPreviewGUI(Rect r, GUIStyle background) {
+
+			if (this.layout != null) {
+
+				if (this.editor == null) this.editor = Editor.CreateEditor(this.layout) as IPreviewEditor;
+				if (this.editor != null) {
+
+					this.editor.OnPreviewGUI(Color.white, r, background, drawInfo: false, selectable: false, selectedElement: this._target);
+
+				}
+
+			}
+
 		}
 
 	}

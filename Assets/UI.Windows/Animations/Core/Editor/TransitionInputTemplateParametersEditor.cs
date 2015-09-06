@@ -64,6 +64,9 @@ namespace UnityEditor.UI.Windows.Animations {
 				this.sceneTestContainer.SetActive(false);
 				GameObject.DestroyImmediate(this.sceneTestContainer);
 
+				if (this.windowA != null) Object.DestroyImmediate(this.windowA.gameObject);
+				if (this.windowB != null) Object.DestroyImmediate(this.windowB.gameObject);
+
 			}
 
 		}
@@ -121,6 +124,10 @@ namespace UnityEditor.UI.Windows.Animations {
 						image.SetImage(this.styles.transitionB.normal.background);
 						
 						this.changed = true;
+
+					} else {
+
+						Object.DestroyImmediate(this.windowA.gameObject);
 
 					}
 
@@ -215,6 +222,12 @@ namespace UnityEditor.UI.Windows.Animations {
 			
 			this.OnPreviewGUI(color, rect, style, drawInfo, selectable, hovered: false);
 
+		}
+		
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement) {
+			
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false);
+			
 		}
 
 		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {

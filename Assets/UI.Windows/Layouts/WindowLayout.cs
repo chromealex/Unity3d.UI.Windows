@@ -48,11 +48,19 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		#if UNITY_EDITOR
+		[HideInInspector]
+		public float editorScale;
 		public override void OnValidateEditor() {
 
 			base.OnValidateEditor();
 
 			if (Application.isPlaying == true) return;
+
+			if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) {
+
+				this.transform.localScale = Vector3.one * this.editorScale;
+
+			}
 
 			if (this.canvasUpdater == null || this.GetComponents<CanvasUpdater>().Length > 1) {
 

@@ -7,12 +7,13 @@ using System.IO;
 using System.Collections.Generic;
 using ME;
 using UnityEngine.UI.Windows.Plugins.FlowCompiler;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Functions {
 	
 	public static class FlowFunctionsTemplateGenerator {
 		
-		public static string GenerateReturnMethod(FlowSystemEditorWindow flowEditor, FlowWindow exitWindow) {
+		public static string GenerateReturnMethod(FlowSystemEditorWindow flowEditor, FD.FlowWindow exitWindow) {
 			
 			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateReturnMethod") as TextAsset;
 			if (file == null) {
@@ -44,7 +45,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			
 		}
 		
-		public static string GenerateTransitionMethod(FlowSystemEditorWindow flowEditor, FlowWindow windowFrom, FlowWindow windowTo) {
+		public static string GenerateTransitionMethod(FlowSystemEditorWindow flowEditor, FD.FlowWindow windowFrom, FD.FlowWindow windowTo) {
 			
 			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
@@ -96,7 +97,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			
 		}
 		
-		public static string GenerateTransitionTypedMethod(FlowSystemEditorWindow flowEditor, FlowWindow windowFrom, FlowWindow windowTo, System.Type[] parameters, string[] parameterNames) {
+		public static string GenerateTransitionTypedMethod(FlowSystemEditorWindow flowEditor, FD.FlowWindow windowFrom, FD.FlowWindow windowTo, System.Type[] parameters, string[] parameterNames) {
 			
 			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionTypedMethod") as TextAsset;
 			if (file == null) {
@@ -161,7 +162,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 		private Editor editor;
 		
-		private List<FlowWindow> functions = new List<FlowWindow>();
+		private List<FD.FlowWindow> functions = new List<FD.FlowWindow>();
 
 		public override void OnFlowSettingsGUI() {
 			
@@ -173,7 +174,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			if (data == null) return;
 			
 			this.functions.Clear();
-			foreach (var window in data.windows) {
+			foreach (var window in data.windowAssets) {
 				
 				if (window.IsFunction() == true &&
 				    window.IsContainer() == true) {
@@ -216,7 +217,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 					
 					this.flowEditor.CreateNewItem(() => {
 						
-						var window = FlowSystem.CreateWindow(flags: FlowWindow.Flags.IsContainer | FlowWindow.Flags.IsFunction);
+						var window = FlowSystem.CreateWindow(flags: FD.FlowWindow.Flags.IsContainer | FD.FlowWindow.Flags.IsFunction);
 						window.title = "Function Definition";
 
 						return window;
@@ -229,7 +230,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 					
 					this.flowEditor.CreateNewItem(() => {
 						
-						var window = FlowSystem.CreateWindow(flags: FlowWindow.Flags.IsFunction | FlowWindow.Flags.IsSmall | FlowWindow.Flags.CantCompiled);
+						var window = FlowSystem.CreateWindow(flags: FD.FlowWindow.Flags.IsFunction | FD.FlowWindow.Flags.IsSmall | FD.FlowWindow.Flags.CantCompiled);
 						window.smallStyleDefault = "flow node 3";
 						window.smallStyleSelected = "flow node 3 on";
 						window.title = "Function Call";
@@ -247,7 +248,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 		}
 
-		public override bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo) {
+		public override bool IsCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo) {
 
 			return windowTo.IsFunction() == true && 
 					windowTo.IsSmall() == true &&
@@ -256,7 +257,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 		}
 
-		public override string OnCompilerTransitionGeneration(FlowWindow window) {
+		public override string OnCompilerTransitionGeneration(FD.FlowWindow window) {
 			
 			var functionContainer = window.GetFunctionContainer();
 			if (functionContainer != null) {
@@ -274,7 +275,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 		}
 		
-		public override string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) {
+		public override string OnCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName) {
 			
 			if (windowTo.IsFunction() == true && 
 			    windowTo.IsSmall() == true &&
@@ -289,7 +290,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			
 		} 
 		
-		public override string OnCompilerTransitionTypedAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) {
+		public override string OnCompilerTransitionTypedAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) {
 			
 			if (windowTo.IsFunction() == true && 
 			    windowTo.IsSmall() == true &&
@@ -304,7 +305,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			
 		} 
 
-		public override void OnFlowWindowGUI(FlowWindow window) {
+		public override void OnFlowWindowGUI(FD.FlowWindow window) {
 
 			var data = FlowSystem.GetData();
 			if (data == null) return;
@@ -318,7 +319,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 				var alreadyConnectedFunctionIds = new List<int>();
 
 				// Find caller window
-				var windowFrom = data.windows.FirstOrDefault((item) => item.HasAttach(window.id));
+				var windowFrom = data.windowAssets.FirstOrDefault((item) => item.HasAttach(window.id));
 				if (windowFrom != null) {
 					
 					var attaches = windowFrom.GetAttachedWindows();
@@ -334,7 +335,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 					
 				}
 				
-				foreach (var win in data.windows) {
+				foreach (var win in data.windowAssets) {
 					
 					if (win.IsFunction() == true &&
 					    win.IsContainer() == true) {
@@ -388,7 +389,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 						}
 						
 					}
-					foreach (var win in data.windows) {
+					foreach (var win in data.windowAssets) {
 						
 						if (win.IsFunction() == true &&
 						    win.IsContainer() == true) {

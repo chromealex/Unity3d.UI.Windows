@@ -95,10 +95,12 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			[System.Serializable]
 			public class Window {
 
-				public enum Status {
+				public enum Status : byte {
+
 					NoData = 0,
 					Loading = 1,
 					Loaded = 2,
+
 				}
 
 				public int id;
@@ -110,7 +112,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 				public bool changed = false;
 
-				public Window(FlowWindow source) {
+				public Window(Flow.Data.FlowWindow source) {
 					
 					this.id = source.id;
 					
@@ -159,8 +161,8 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			}
 			
 			public List<Window> list = new List<Window>();
-			
-			public Window Get(FlowWindow window) {
+
+			public Window Get(Flow.Data.FlowWindow window) {
 				
 				Window result = null;
 				

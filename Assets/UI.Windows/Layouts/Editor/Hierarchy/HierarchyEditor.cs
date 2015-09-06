@@ -4,12 +4,39 @@ using System.Collections.Generic;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Types;
 using System.Linq;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEditor.UI.Windows.Hierarchy {
 
 	[InitializeOnLoad]
 	public class HierarchyEditor {
-		
+
+		public class Colors {
+
+			public class ColorItem {
+
+				public Color back;
+				public Color text;
+
+				public ColorItem(Color back, Color text) {
+
+					this.back = back;
+					this.text = text;
+
+				}
+
+			}
+			
+			public ColorItem screens = new ColorItem(new Color32(102, 204, 255, 255), Color.white);
+			public ColorItem layouts = new ColorItem(new Color32(255, 204, 102, 255), new Color32(100, 100, 100, 255));
+			public ColorItem transitions = new ColorItem(new Color32(204, 255, 102, 255), Color.white);
+			public ColorItem modules = new ColorItem(new Color32(204, 204, 204, 255), new Color32(100, 100, 100, 255));
+			public ColorItem components = new ColorItem(new Color32(255, 255, 102, 255), new Color32(100, 100, 100, 255));
+			public ColorItem layoutElements = new ColorItem(new Color32(204, 102, 255, 255), Color.white);
+			public ColorItem linkers = new ColorItem(new Color32(255, 111, 207, 255), Color.white);
+
+		}
+
 		public class Item {
 
 			public bool hasScreen;
@@ -19,9 +46,13 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 			public bool hasTransition;
 			
 			public bool hasModule;
+			
+			public bool hasLayoutElement;
+			public bool hasLinker;
 
 		}
 		
+		public static Colors colors = new Colors();
 		public static Dictionary<int, Item> cache = new Dictionary<int, Item>();
 		
 		public static void DrawWithCache(int instanceID, Rect selectionRect) {
@@ -34,6 +65,8 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 				item.hasScreen = HierarchyEditor.markedScreens.Contains(instanceID);
 				item.hasLayout = HierarchyEditor.markedLayouts.Contains(instanceID);
 				item.hasComponent = HierarchyEditor.markedComponents.Contains(instanceID);
+				item.hasLayoutElement = HierarchyEditor.markedLayoutElements.Contains(instanceID);
+				item.hasLinker = HierarchyEditor.markedLinkers.Contains(instanceID);
 
 				var obj = Object.FindObjectsOfType<GameObject>().FirstOrDefault((element) => element.GetInstanceID() == instanceID);
 				if (obj != null) {
@@ -52,7 +85,7 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 							item.hasModule = true;
 
 						}
-						
+
 					}
 					
 				}
@@ -65,15 +98,12 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 
 		}
 
-		public static Texture2D layout;
-		public static Texture2D screen;
-		public static Texture2D components;
-		public static Texture2D transition;
-
 		public static List<int> markedScreens = new List<int>();
 		public static List<int> markedLayouts = new List<int>();
 		public static List<int> markedComponents = new List<int>();
-		
+		public static List<int> markedLayoutElements = new List<int>();
+		public static List<int> markedLinkers = new List<int>();
+
 		private static float left = 0f;
 		private static float top = 0f;
 		private static int levels = 0;
@@ -84,11 +114,6 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 		static HierarchyEditor() {
 
 			// Init
-			HierarchyEditor.layout = Resources.Load<Texture2D>("UI.Windows/Icons/LayoutsIcon");
-			HierarchyEditor.screen = Resources.Load<Texture2D>("UI.Windows/Icons/ScreensIcon");
-			HierarchyEditor.components = Resources.Load<Texture2D>("UI.Windows/Icons/ComponentsIcon");
-			HierarchyEditor.transition = Resources.Load<Texture2D>("UI.Windows/Icons/TransitionsIcon");
-
 			EditorApplication.update += HierarchyEditor.Update;
 			EditorApplication.hierarchyWindowItemOnGUI += HierarchyEditor.HierarchyItemGUI;
 			EditorApplication.hierarchyWindowChanged += HierarchyEditor.OnChanged;
@@ -138,13 +163,13 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 			if (item.hasScreen == true) {
 				
 				rect.x -= sizeX;
-				GUI.Label(rect, HierarchyEditor.screen);
+				HierarchyEditor.DrawLabel(rect, HierarchyEditor.colors.screens, "SCR");
 				++levels;
 				
 				if (item.hasTransition == true) {
 							
 					rect.x -= sizeX;
-					GUI.Label(rect, HierarchyEditor.transition);
+					HierarchyEditor.DrawLabel(rect, HierarchyEditor.colors.transitions, "TR");
 					++levels;
 					
 				}
@@ -152,29 +177,43 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 				if (item.hasModule == true) {
 					
 					rect.x -= sizeX;
-					GUI.Label(rect, "MOD", EditorStyles.boldLabel);
+					HierarchyEditor.DrawLabel(rect, HierarchyEditor.colors.modules, "MOD");
 					++levels;
 					
 				}
 
 			}
 			
+			if (item.hasLayoutElement == true) {
+				
+				rect.x -= sizeX;
+				HierarchyEditor.DrawLabel(rect, HierarchyEditor.colors.layoutElements, "LE");
+				++levels;
+				
+			}
+
 			if (item.hasLayout == true) {
 				
 				rect.x -= sizeX;
-				GUI.Label(rect, HierarchyEditor.layout);
+				HierarchyEditor.DrawLabel(rect, HierarchyEditor.colors.layouts, "LAY");
 				++levels;
 				
 			}
-			
-			if (item.hasComponent == true) {
+
+			if (item.hasLinker == true) {
 				
 				rect.x -= sizeX;
-				GUI.Label(rect, HierarchyEditor.components);
+				HierarchyEditor.DrawLabel(rect, HierarchyEditor.colors.linkers, "LNK");
+				++levels;
+				
+			} else if (item.hasComponent == true) {
+				
+				rect.x -= sizeX;
+				HierarchyEditor.DrawLabel(rect, HierarchyEditor.colors.components, "COM");
 				++levels;
 				
 			}
-			
+
 			CustomGUI.Splitter(new Rect(HierarchyEditor.left - offset, rect.yMin, 1f, rect.height));
 			
 			if (levels > HierarchyEditor.levels) {
@@ -194,6 +233,19 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 				HierarchyEditor.top = rect.yMax;
 				
 			}
+
+		}
+
+		public static void DrawLabel(Rect rect, Colors.ColorItem colors, string label) {
+
+			var oldColor = GUI.backgroundColor;
+			GUI.backgroundColor = colors.back;
+			var style = new GUIStyle(EditorStyles.boldLabel);
+			style.alignment = TextAnchor.MiddleCenter;
+			style.normal.background = Texture2D.whiteTexture;
+			style.normal.textColor = colors.text;
+			GUI.Label(rect, label, style);
+			GUI.backgroundColor = oldColor;
 
 		}
 
@@ -220,6 +272,8 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 				if (go.GetComponent<LayoutWindowType>() != null) HierarchyEditor.markedScreens.Add(go.GetInstanceID());
 				if (go.GetComponent<WindowLayout>() != null) HierarchyEditor.markedLayouts.Add(go.GetInstanceID());
 				if (go.GetComponent<WindowComponent>() != null) HierarchyEditor.markedComponents.Add(go.GetInstanceID());
+				if (go.GetComponent<WindowLayoutElement>() != null) HierarchyEditor.markedLayoutElements.Add(go.GetInstanceID());
+				if (go.GetComponent<LinkerComponent>() != null) HierarchyEditor.markedLinkers.Add(go.GetInstanceID());
 				
 				if (go.transform.parent == null && go.transform.GetSiblingIndex() == 0) {
 					
@@ -236,6 +290,9 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 			HierarchyEditor.markedScreens.Clear();
 			HierarchyEditor.markedLayouts.Clear();
 			HierarchyEditor.markedComponents.Clear();
+			HierarchyEditor.markedLayoutElements.Clear();
+			HierarchyEditor.markedLinkers.Clear();
+
 			foreach (var go in gos) {
 
 				onItem(go);

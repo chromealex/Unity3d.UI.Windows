@@ -9,6 +9,7 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Linq;
 using System.IO;
 using UnityEditor.UI.Windows.Plugins.Flow.Editors;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -18,7 +19,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public const float POPUP_MARGIN = 5f;
 
 		private FlowSystemEditorWindow rootWindow;
-		private FlowWindow window;
+		private FD.FlowWindow window;
 		private string currentScene;
 		private SceneView currentView;
 		private List<WindowLayout> layouts;
@@ -68,7 +69,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public bool isLocked = false;
 
-		public FlowSceneItem(FlowSystemEditorWindow rootWindow, FlowWindow window, AnimatedValues.AnimFloat progressValue) {
+		public FlowSceneItem(FlowSystemEditorWindow rootWindow, FD.FlowWindow window, AnimatedValues.AnimFloat progressValue) {
 
 			this.isLocked = false;
 
@@ -424,7 +425,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var count = 6;
 			for (int i = 0; i < count; ++i) {
 				
-				CompletedState state = CompletedState.NotReady;
+				var state = FD.CompletedState.NotReady;
 
 				var errors = false;
 				var warnings = false;
@@ -432,7 +433,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (hasState == true) {
 
-					state = (errors == false) ? (warnings == true ? CompletedState.ReadyButWarnings : CompletedState.Ready) : CompletedState.NotReady;
+					state = (errors == false) ? (warnings == true ? FD.CompletedState.ReadyButWarnings : FD.CompletedState.Ready) : FD.CompletedState.NotReady;
 					
 					this.window.SetCompletedState(i, state);
 					
@@ -1310,7 +1311,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		private static AnimatedValues.AnimFloat editAnimation;
-		public static void SetControl(FlowSystemEditorWindow rootWindow, FlowWindow window, System.Action<float> onProgress) {
+		public static void SetControl(FlowSystemEditorWindow rootWindow, FD.FlowWindow window, System.Action<float> onProgress) {
 
 			if (EditorApplication.SaveCurrentSceneIfUserWantsTo() == true) {
 				

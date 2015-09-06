@@ -8,6 +8,7 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using System.IO;
 using System.Collections.Generic;
 using ME;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Social {
 	
@@ -98,7 +99,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 					this.flowEditor.CreateNewItem(() => {
 
-						var window = FlowSystem.CreateWindow(FlowWindow.Flags.IsSmall | FlowWindow.Flags.CantCompiled | Social.settings.uniqueTag);
+						var window = FlowSystem.CreateWindow(FD.FlowWindow.Flags.IsSmall | FD.FlowWindow.Flags.CantCompiled | Social.settings.uniqueTag);
 						window.smallStyleDefault = "flow node 1";
 						window.smallStyleSelected = "flow node 1 on";
 						window.title = "Social";
@@ -116,7 +117,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		}
 
-		public override bool IsCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo) {
+		public override bool IsCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo) {
 
 			var settings = Social.settings;
 			if (settings != null) {
@@ -134,7 +135,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 		}
 
-		public override string OnCompilerTransitionAttachedGeneration(FlowWindow windowFrom, FlowWindow windowTo, bool everyPlatformHasUniqueName) {
+		public override string OnCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName) {
 
 			var settings = Social.settings;
 			if (settings != null) {
@@ -152,7 +153,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			
 		} 
 
-		public override void OnFlowWindowGUI(FlowWindow window) {
+		public override void OnFlowWindowGUI(FD.FlowWindow window) {
 
 			if (Social.settings == null) return;
 

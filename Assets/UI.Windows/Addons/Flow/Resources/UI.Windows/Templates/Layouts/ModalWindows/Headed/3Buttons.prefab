@@ -419,7 +419,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
   canvasGroup: {fileID: 22542988}
   _rectTransform: {fileID: 22449120}
   mode: 0
@@ -464,6 +463,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11420212}
   initialized: 1
   isAlive: 0
+  editorScale: 0
   comment: 'Modal Window: 3 Buttons With Header'
 --- !u!114 &11453472
 MonoBehaviour:
@@ -918,7 +918,7 @@ RectTransform:
   m_GameObject: {fileID: 149122}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22449120}
   m_Father: {fileID: 0}

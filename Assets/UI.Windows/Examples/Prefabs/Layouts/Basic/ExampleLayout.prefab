@@ -140,7 +140,7 @@ MonoBehaviour:
   tag: 3
   containsLayouts: 0
   comment: BUTTON OK EXAMPLE
-  autoStretchX: 0
+  autoStretchX: 1
   autoStretchY: 0
   showInComponentsList: 1
   showFullDescription: 0
@@ -181,6 +181,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -206,6 +210,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
     root: {fileID: 0}
     stateApply: 0
@@ -273,6 +281,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11467412}
   initialized: 1
   isAlive: 0
+  editorScale: 0
 --- !u!114 &11444910
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -359,6 +368,10 @@ MonoBehaviour:
     outDuration: .5
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -384,6 +397,10 @@ MonoBehaviour:
     outDuration: .5
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
     root: {fileID: 0}
     stateApply: 0
@@ -418,6 +435,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
     root: {fileID: 0}
     stateApply: 0
@@ -452,6 +473,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -484,8 +509,8 @@ MonoBehaviour:
   tag: 2
   containsLayouts: 0
   comment: CONTENT INNER EXAMPLE
-  autoStretchX: 0
-  autoStretchY: 0
+  autoStretchX: 1
+  autoStretchY: 1
   showInComponentsList: 1
   showFullDescription: 0
   tempEditorComponent: {fileID: 0}
@@ -573,6 +598,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -598,6 +627,10 @@ MonoBehaviour:
     outDuration: .100000001
     inEase: 0
     outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
     root: {fileID: 0}
     stateApply: 0
@@ -713,7 +746,7 @@ RectTransform:
   m_GameObject: {fileID: 190710}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22440896}
   m_Father: {fileID: 0}

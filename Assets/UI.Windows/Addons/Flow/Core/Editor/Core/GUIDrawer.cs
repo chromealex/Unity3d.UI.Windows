@@ -19,7 +19,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void DrawComponentCurve(FlowWindow from, ref UnityEngine.UI.Windows.Plugins.Flow.FlowWindow.ComponentLink link, FlowWindow to) {
+		public void DrawComponentCurve(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow from, ref UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.ComponentLink link, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow to) {
 
 			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
 			
@@ -177,7 +177,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public void DrawNodeCurve(FlowWindow from, FlowWindow to, bool doubleSide) {
+		public void DrawNodeCurve(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow from, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow to, bool doubleSide) {
 
 			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
 			
@@ -303,7 +303,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public void DrawNodeCurve(FlowWindow fromContainer, FlowWindow toContainer, Rect centerStart, Rect centerEnd, Rect fromRect, Rect toRect, bool doubleSide, float size = 6f) {
+		public void DrawNodeCurve(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow fromContainer, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow toContainer, Rect centerStart, Rect centerEnd, Rect fromRect, Rect toRect, bool doubleSide, float size = 6f) {
 			
 			Rect start = fromRect;
 			Rect end = toRect;

@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Text.RegularExpressions;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
@@ -50,7 +51,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				
 			}
 
-			public Info(FlowWindow window) {
+			public Info(FD.FlowWindow window) {
 				
 				this.baseNamespace = window.compiledNamespace;
 				this.classname = window.compiledDerivedClassName;
@@ -95,56 +96,29 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		public static string GetBaseClassName(FlowWindow flowWindow) {
+		public static string GetBaseClassName(FD.FlowWindow flowWindow) {
 			
 			return flowWindow.directory.UppercaseFirst() + "ScreenBase";
 			
 		}
 		
-		public static string GetDerivedClassName(FlowWindow flowWindow) {
+		public static string GetDerivedClassName(FD.FlowWindow flowWindow) {
 			
 			return flowWindow.directory.UppercaseFirst() + "Screen";
 			
 		}
 		
-		public static string GetNamespace(FlowWindow window) {
+		public static string GetNamespace(FD.FlowWindow window) {
 			
 			return Tpl.GetNamespace() + IO.GetRelativePath(window, ".");
 
 		}
 
-		private static void CollectCallVariations(WindowBase screen, System.Action<Type[], string[]> onEveryVariation) {
-
-			if (screen != null) {
-				
-				var methods = screen.GetType().GetMethods().Where((info) => info.IsVirtual == false && info.Name == "OnParametersPass").ToList();
-				for (int i = 0; i < methods.Count; ++i) {
-					
-					var method = methods[i];
-					var parameters = method.GetParameters();
-					
-					var listTypes = new List<System.Type>();
-					var listNames = new List<string>();
-					foreach (var p in parameters) {
-						
-						listTypes.Add(p.ParameterType);
-						listNames.Add(p.Name);
-						
-					}
-
-					onEveryVariation(listTypes.ToArray(), listNames.ToArray());
-
-				}
-				
-			}
-
-		}
-
-		public static string GenerateTransitionMethods(FlowWindow window) {
+		public static string GenerateTransitionMethods(FD.FlowWindow window) {
 
 			var flowData = FlowSystem.GetData();
 			
-			var transitions = flowData.windows.Where(w => window.attachItems.Any((item) => item.targetId == w.id) && w.CanCompiled() && !w.IsContainer());
+			var transitions = flowData.windowAssets.Where(w => window.attachItems.Any((item) => item.targetId == w.id) && w.CanCompiled() && !w.IsContainer());
 
 			var result = string.Empty;
 			foreach (var each in transitions) {
@@ -154,7 +128,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				
 				result += FlowTemplateGenerator.GenerateWindowLayoutTransitionMethod(window, each, className, classNameWithNamespace);
 
-				Tpl.CollectCallVariations(each.GetScreen(), (listTypes, listNames) => {
+				WindowSystem.CollectCallVariations(each.GetScreen(), (listTypes, listNames) => {
 					
 					result += FlowTemplateGenerator.GenerateWindowLayoutTransitionTypedMethod(window, each, className, classNameWithNamespace, listTypes, listNames);
 
@@ -190,7 +164,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(window, attachedWindow, everyPlatformHasUniqueName);
 				
-				Tpl.CollectCallVariations(attachedWindow.GetScreen(), (listTypes, listNames) => {
+				WindowSystem.CollectCallVariations(attachedWindow.GetScreen(), (listTypes, listNames) => {
 					
 					result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionTypedAttachedGeneration(window, attachedWindow, everyPlatformHasUniqueName, listTypes, listNames);
 					
@@ -318,7 +292,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			
 		}
 		
-		private static IEnumerable<FlowWindow> GetParentContainers(FlowWindow window, IEnumerable<FlowWindow> containers) {
+		private static IEnumerable<FD.FlowWindow> GetParentContainers(FD.FlowWindow window, IEnumerable<FD.FlowWindow> containers) {
 			
 			var parent = containers.FirstOrDefault(where => where.attachItems.Any((item) => item.targetId == window.id));
 			
@@ -331,7 +305,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		public static string GetRelativePath(FlowWindow window, string token) {
+		public static string GetRelativePath(FD.FlowWindow window, string token) {
 			
 			var result = GetParentContainers(window, FlowSystem.GetContainers())
 					.Reverse()
@@ -366,7 +340,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		#region OLD
 		/*
-		private static bool CompiledInfoIsInvalid( FlowWindow flowWindow ) {
+		private static bool CompiledInfoIsInvalid( FD.FlowWindow flowWindow ) {
 
 			return GetBaseClassName( flowWindow ) != flowWindow.compiledBaseClassName
 				|| GetNamespace( flowWindow ) != flowWindow.compiledNamespace;
@@ -419,7 +393,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		private static void GenerateUIWindow( string fullpath, FlowWindow window, bool recompile = false ) {
+		private static void GenerateUIWindow( string fullpath, FD.FlowWindow window, bool recompile = false ) {
 
 			var isCompiledInfoInvalid = window.compiled && CompiledInfoIsInvalid( window );
 
@@ -493,7 +467,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		public static void GenerateUI( string pathToData, bool recompile = false, Func<FlowWindow, bool> predicate = null ) {
+		public static void GenerateUI( string pathToData, bool recompile = false, Func<FD.FlowWindow, bool> predicate = null ) {
 
 			var filename = Path.GetFileName( pathToData );
 			var directory = pathToData.Replace( filename, "" );
@@ -532,7 +506,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		}*/
 		#endregion
 
-		private static void GenerateWindow(string newPath, FlowWindow window, bool recompile) {
+		private static void GenerateWindow(string newPath, FD.FlowWindow window, bool recompile) {
 
 			if (window.compiled == true && recompile == false) return;
 
@@ -606,7 +580,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		private static void Generate(string pathToData, bool recompile, System.Func<FlowWindow, bool> predicate) {
+		private static void Generate(string pathToData, bool recompile, System.Func<FD.FlowWindow, bool> predicate) {
 
 			var filename = Path.GetFileName(pathToData);
 			var directory = pathToData.Replace(filename, string.Empty);
@@ -672,7 +646,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		}
 		
-		public static void GenerateByWindow(string pathToData, bool recompile = false, FlowWindow window = null) {
+		public static void GenerateByWindow(string pathToData, bool recompile = false, FD.FlowWindow window = null) {
 			
 			FlowCompilerSystem.Generate(pathToData, recompile, flowWindow => flowWindow == window);
 			

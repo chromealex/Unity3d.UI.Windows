@@ -8,6 +8,7 @@ using System.IO;
 using System;
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows;
+using System.Collections.Generic;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -400,9 +401,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			{
 				
 				GUI.skin = skin;
-				
-				this.scannedData = EditorUtilities.GetAssetsOfType<FlowData>();
-				
+
+				this.scannedData = EditorUtilities.GetAssetsOfType<FlowData>(useCache: false);
+
 				if (this.scannedData.Length == 0) {
 					
 					var center = new GUIStyle(darkLabel);
@@ -432,7 +433,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					buttonStyle.normal.background = null;
 					
-					this.scannedData = this.scannedData.OrderByDescending((data) => (data != null ? data.lastModified : string.Empty)).ToArray();
+					this.scannedData = this.scannedData.OrderByDescending((data) => (data != null ? data.lastModifiedUnix : 0)).ToArray();
 					
 					foreach (var data in this.scannedData) {
 						
@@ -492,23 +493,32 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							var nextVersion = this.cachedData.version + 1;
 
-							// Try to find upgrade method
-							var methodName = "UpgradeTo" + nextVersion.ToSmallWithoutTypeString();
-							var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
-							if (methodInfo != null) {
-								
-								methodInfo.Invoke(this.cachedData, null);
+							try {
 
-								Debug.Log("[UPGRADE] Invoked: `" + methodName + "`, version " + nextVersion);
+								// Try to find upgrade method
+								var methodName = "UpgradeTo" + nextVersion.ToSmallWithoutTypeString();
+								var methodInfo = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.Public);
+								if (methodInfo != null) {
+									
+									methodInfo.Invoke(this.cachedData, null);
 
-							} else {
-								
-								Debug.Log("[UPGRADE] Method `" + methodName + "` was not found: version " + nextVersion + " skipped");
-								
+									Debug.Log("[UPGRADE] Invoked: `" + methodName + "`, version " + nextVersion);
+
+								} else {
+									
+									Debug.Log("[UPGRADE] Method `" + methodName + "` was not found: version " + nextVersion + " skipped");
+									
+								}
+
+								UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, nextVersion), 0.5f);
+
+							} catch (UnityException) {
+							} finally {
+
+								UnityEditor.EditorUtility.ClearProgressBar();
+
 							}
 
-							UnityEditor.EditorUtility.DisplayProgressBar("Upgrading", string.Format("Migrating from {0} to {1}", this.cachedData.version, nextVersion), 0.5f);
-							
 							this.cachedData.version = nextVersion;
 							UnityEditor.EditorUtility.SetDirty(this.cachedData);
 							

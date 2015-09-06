@@ -22,11 +22,12 @@ namespace UnityEngine.UI.Windows {
 		public static bool waitForComponentConnectionTemp;
 		public static WindowLayoutElement waitForComponentConnectionElementTemp;
 
+		[ReadOnly]
 		public bool autoStretchX = false;
+		[ReadOnly]
 		public bool autoStretchY = false;
 
 		public bool showInComponentsList = true;
-
 		public bool showFullDescription = false;
 
 		[HideInInspector]
@@ -92,6 +93,10 @@ namespace UnityEngine.UI.Windows {
 		public override void OnValidateEditor() {
 			
 			base.OnValidateEditor();
+
+			var rectTransform = this.transform as RectTransform;
+			this.autoStretchX = rectTransform.anchorMin.x == 0f && rectTransform.anchorMax.x == 1f;
+			this.autoStretchY = rectTransform.anchorMin.y == 0f && rectTransform.anchorMax.y == 1f;
 
 			var layoutComponent = this.GetComponent<LayoutElement>();
 			if (layoutComponent != null) {

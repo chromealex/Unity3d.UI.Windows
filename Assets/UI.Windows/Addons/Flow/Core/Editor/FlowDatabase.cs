@@ -12,6 +12,7 @@ using UnityEditor;
 using UnityEditor.UI.Windows;
 using ADB = UnityEditor.AssetDatabase;
 #endif
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 
@@ -127,7 +128,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 		
-		public static WindowLayout GenerateLayout(FlowWindow window, FlowWindowLayoutTemplate layout) {
+		public static WindowLayout GenerateLayout(FD.FlowWindow window, FlowWindowLayoutTemplate layout) {
 			
 			WindowLayout instance = null;
 			
@@ -192,7 +193,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 		
-		public static WindowBase GenerateScreen(FlowWindow window, FlowLayoutWindowTypeTemplate template) {
+		public static WindowBase GenerateScreen(FD.FlowWindow window, FlowLayoutWindowTypeTemplate template) {
 			
 			WindowBase instance = null;
 			

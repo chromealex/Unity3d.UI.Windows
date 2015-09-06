@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine.UI.Windows.Plugins.Social;
 using UnityEngine.UI.Windows.Plugins.Social.Core;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Social {
 
@@ -27,7 +28,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			var target = this.target as SocialSettings;
 			var socials = SocialSettingsEditor.socials;
 
-			target.uniqueTag = (FlowWindow.Flags)EditorGUILayout.EnumPopup("Unique Tag:", target.uniqueTag);
+			target.uniqueTag = (FD.FlowWindow.Flags)EditorGUILayout.EnumPopup("Unique Tag:", target.uniqueTag);
 			
 			GUILayout.Label("Platforms", EditorStyles.boldLabel);
 

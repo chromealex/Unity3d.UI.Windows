@@ -12,6 +12,7 @@ namespace UnityEngine.UI.Windows {
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style);
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable);
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered);
+		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, WindowLayoutElement selectedElement);
 		
 	}
 

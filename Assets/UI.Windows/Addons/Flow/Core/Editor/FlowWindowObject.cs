@@ -427,7 +427,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var oldState = GUI.enabled;
 			GUI.enabled = true;
 
-			GUILayout.Label("Flow Window Object");
+			GUILayout.Label("Flow Package");
 
 			GUI.enabled = oldState;
 

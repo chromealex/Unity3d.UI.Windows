@@ -7,6 +7,7 @@ using ME;
 using UnityEditor.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Heatmap.Core;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
@@ -54,7 +55,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 		}
 
-		public override void OnFlowWindowLayoutGUI(Rect rect, UnityEngine.UI.Windows.Plugins.Flow.FlowWindow window) {
+		public override void OnFlowWindowLayoutGUI(Rect rect, FD.FlowWindow window) {
 			
 			if (Heatmap.settings == null) Heatmap.settings = this.GetSettingsFile();
 

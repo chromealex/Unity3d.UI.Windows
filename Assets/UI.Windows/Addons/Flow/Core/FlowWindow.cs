@@ -10,8 +10,9 @@ using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows.Animations;
 using System;
 using UnityEngine.UI.Windows.Styles;
+using System.IO;
 
-namespace UnityEngine.UI.Windows.Plugins.Flow {
+namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 	public enum CompletedState : byte {
 		NotReady,
@@ -34,8 +35,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	}
 
 	[System.Serializable]
-	public class FlowWindow {
+	public class FlowWindow : ScriptableObject {
 		
+		private const int STATES_COUNT = 3;
+
 		[System.Serializable]
 		public class AttachItem {
 
@@ -82,8 +85,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		private const int STATES_COUNT = 3;
-
 		public enum Flags : int {
 
 			Default = 0x0,
@@ -121,6 +122,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		};
 
+		#region VALUES
 		public int id;
 		[BitMask(typeof(Flags))]
 		public Flags flags;
@@ -128,8 +130,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public string directory = string.Empty;
 		public Rect rect;
 
-		[Obsolete("Attaches not supported. Use FlowData.Upgrade() context function to fix it.")]
-		public List<int> attaches = new List<int>();
 		public List<ComponentLink> attachedComponents = new List<ComponentLink>();
 		public List<AttachItem> attachItems = new List<AttachItem>();
 
@@ -160,32 +160,30 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 
 		public int screenWindowId;	// used when storeType == ReUseScreen
+		#endregion
+
 		[SerializeField]
 		private WindowBase screen;
 
-		public FlowWindow(int id, bool isContainer = false, bool isDefaultLink = false, FlowWindow.Flags flags = Flags.Default) {
-			
-			if (isContainer == true) {
-				
-				flags |= Flags.IsContainer;
-				
-			}
-			
-			if (isDefaultLink == true) {
-				
-				flags |= Flags.IsSmall;
-				flags |= Flags.CantCompiled;
-				flags |= Flags.ShowDefault;
-				
-			}
+		public bool isDirty = false;
 
-			this.Init(id, flags);
-
-		}
-		
-		public FlowWindow(int id, FlowWindow.Flags flags) {
+		public void Setup(int id, FlowWindow.Flags flags) {
 
 			this.Init(id, flags: flags);
+
+		}
+
+		public void Save() {
+
+			#if UNITY_EDITOR
+			if (this.isDirty == true) {
+
+				UnityEditor.EditorUtility.SetDirty(this);
+
+			}
+			#endif
+
+			this.isDirty = false;
 
 		}
 
@@ -780,8 +778,133 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return result;
 			
 		}
+
+		public void RefreshScreen() {
+			
+			var window = this;
+
+			if (window.compiled == true) {
+
+				UnityEditor.Selection.activeObject = UnityEditor.AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
+				UnityEditor.EditorGUIUtility.PingObject(UnityEditor.Selection.activeObject);
+				
+				window.SetCompletedState(0, CompletedState.NotReady);
+				
+				var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
+				foreach (var file in files) {
+					
+					var path = UnityEditor.AssetDatabase.GUIDToAssetPath(file);
+					
+					var go = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+					if (go != null) {
+						
+						var screen = go.GetComponent<WindowBase>();
+						if (screen != null) {
+							
+							window.SetScreen(screen);
+							window.SetCompletedState(0, CompletedState.Ready);
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		public void Select() {
+
+			var window = this;
+
+			for (int i = 0; i < window.states.Length; ++i) {
+				
+				window.SetCompletedState(i, CompletedState.NotReady);
+				
+			}
+			
+			if (window.compiled == true) {
+
+				if (Directory.Exists(window.compiledDirectory) == false) {
+					
+					window.compiledDirectory = Path.GetDirectoryName(UnityEditor.AssetDatabase.GetAssetPath(FlowSystem.GetData())) + "/" + window.compiledNamespace.Replace(FlowSystem.GetData().namespaceName, string.Empty) + "/" + window.compiledNamespace.Replace(".", "/");
+					
+				}
+				
+				UnityEditor.Selection.activeObject = UnityEditor.AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
+				UnityEditor.EditorGUIUtility.PingObject(UnityEditor.Selection.activeObject);
+
+				window.SetCompletedState(0, CompletedState.NotReady);
+				
+				var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
+				foreach (var file in files) {
+					
+					var path = UnityEditor.AssetDatabase.GUIDToAssetPath(file);
+					
+					var go = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+					if (go != null) {
+						
+						var screen = go.GetComponent<WindowBase>();
+						if (screen != null) {
+							
+							window.SetScreen(screen);
+							window.SetCompletedState(0, CompletedState.Ready);
+							
+							var lWin = screen as LayoutWindowType;
+							if (lWin != null) {
+								
+								if (lWin.layout.layout != null) {
+									
+									window.SetCompletedState(1, CompletedState.Ready);
+									window.SetCompletedState(2, (lWin.layout.components.Any((c) => c.component == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
+									
+								} else {
+									
+									window.SetCompletedState(0, CompletedState.NotReady);
+									window.SetCompletedState(1, CompletedState.NotReady);
+									window.SetCompletedState(2, CompletedState.NotReady);
+									
+								}
+								
+							} else {
+								
+								window.SetCompletedState(1, CompletedState.Ready);
+								
+							}
+							
+							break;
+							
+						} else {
+							
+							window.SetCompletedState(0, CompletedState.ReadyButWarnings);
+							
+						}
+						
+					}
+					
+				}
+
+			}
+
+		}
 		#endif
-		
+
+		public override string ToString() {
+
+			return this.id.ToString() + "_" + this.title;
+
+		}
+
+		#if UNITY_EDITOR
+		[UnityEditor.MenuItem("Assets/Create/UI Windows/Flow/Window")]
+		public static FlowWindow CreateInstance() {
+			
+			return ME.EditorUtilities.CreateAsset<FlowWindow>();
+			
+		}
+		#endif
+
 	}
 
 }

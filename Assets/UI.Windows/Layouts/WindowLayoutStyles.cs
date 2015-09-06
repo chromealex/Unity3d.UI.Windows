@@ -39,7 +39,7 @@ namespace UnityEngine.UI.Windows.Styles {
 					
 				};
 				
-				this.boxSelected = this.skin.FindStyle("flow node 5");
+				this.boxSelected = this.skin.FindStyle("flow node 6");
 				#endif
 
 			}

@@ -41,11 +41,19 @@ namespace UnityEditor.UI.Windows {
 
 		private float GetFactor(Vector2 inner, Vector2 boundingBox) {     
 
-			float widthScale = 0, heightScale = 0;
-			if (inner.x != 0)
+			var widthScale = 0f;
+			var heightScale = 0f;
+			if (inner.x != 0f) {
+
 				widthScale = boundingBox.x / inner.x;
-			if (inner.y != 0)
+
+			}
+
+			if (inner.y != 0f) {
+
 				heightScale = boundingBox.y / inner.y;                
+
+			}
 			
 			return Mathf.Min(widthScale, heightScale);
 
@@ -67,28 +75,44 @@ namespace UnityEditor.UI.Windows {
 		
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
 
-			this.OnPreviewGUI(color, r, background, drawInfo, selectable, null);
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, null, null);
 
 		}
 		
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
 			
-			this.OnPreviewGUI(color, r, style, drawInfo, selectable, null);
+			this.OnPreviewGUI(color, r, style, drawInfo, selectable, null, null);
 
 		}
 
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, System.Action<WindowLayoutElement, Rect, bool> onElementGUI) {
+			
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, null, onElementGUI);
+
+		}
+
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement) {
+
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, selectedElement, null);
+
+		}
+
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement, Rect, bool> onElementGUI) {
 
 			var oldColor = GUI.color;
 			var c = Color.white;
-			c.a = 1f;
+			c.a = 0.3f;
 			GUI.color = c;
 			GUI.Box(r, string.Empty, background);
 			GUI.color = oldColor;
 
 			var _target = this.target as UnityEngine.UI.Windows.WindowLayout;
 			if (_target == null) return;
-			
+
+			var selectedColor = color;
+			var notSelectedColor = color;
+			notSelectedColor.a = 0.4f;
+
 			var elements = _target.elements;
 
 			if (ME.EditorUtilities.IsPrefab(_target.gameObject) == false && _target.gameObject.activeInHierarchy == true) {
@@ -112,13 +136,21 @@ namespace UnityEditor.UI.Windows {
 
 				}
 
+				_target.editorScale = _target.transform.localScale.x;
 				_target.root.editorRect = (_target.root.transform as RectTransform).rect;
 				(_target.transform as RectTransform).localPosition = pos;
 
 			}
 			
 			var scaleFactor = 0f;
-			if (elements.Count > 0) scaleFactor = this.GetFactor(new Vector2(_target.root.editorRect.width, _target.root.editorRect.height), new Vector2(r.width, r.height));
+			if (elements.Count > 0) {
+
+				scaleFactor = this.GetFactor(new Vector2(_target.root.editorRect.width, _target.root.editorRect.height), new Vector2(r.width, r.height));
+
+			}
+
+			var scaleFactorCanvas = _target.editorScale > 0f ? 1f / _target.editorScale : 1f;
+			scaleFactor *= scaleFactorCanvas;
 
 			var selected = WindowLayoutStyles.styles.boxSelected;
 			var styles = WindowLayoutStyles.styles.boxes;
@@ -138,10 +170,8 @@ namespace UnityEditor.UI.Windows {
 
 				rect.x *= scaleFactor;
 				rect.y *= scaleFactor;
-
 				rect.x += r.x + r.width * 0.5f;
 				rect.y += r.y + r.height * 0.5f;
-				
 				rect.width *= scaleFactor;
 				rect.height *= scaleFactor;
 				
@@ -166,7 +196,17 @@ namespace UnityEditor.UI.Windows {
 
 				}
 
-				GUI.color = color;
+				if (selectedElement != null) {
+
+					GUI.color = (selectedElement == element) ? selectedColor : notSelectedColor;
+					if (selectedElement == element) style = selected;
+
+				} else {
+
+					GUI.color = color;
+
+				}
+
 				GUI.Label(rect, string.Empty, style);
 
 				GUI.color = oldColor;

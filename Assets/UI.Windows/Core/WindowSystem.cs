@@ -217,6 +217,8 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		private float currentZDepth;
 
+		private bool disabledCallEvents;
+
 		private static WindowSystem _instance;
 		private static WindowSystem instance {
 
@@ -344,6 +346,24 @@ namespace UnityEngine.UI.Windows {
 		public static WindowBase GetByType<T>() where T : WindowBase {
 
 			return WindowSystem.instance.windows.FirstOrDefault((w) => w is T) as T;
+
+		}
+
+		public static void DisableCallEvents() {
+
+			WindowSystem.instance.disabledCallEvents = true;
+
+		}
+
+		public static void RestoreCallEvents() {
+			
+			WindowSystem.instance.disabledCallEvents = false;
+
+		}
+
+		public static bool IsCallEventsEnabled() {
+
+			return WindowSystem.instance.disabledCallEvents;
 
 		}
 
@@ -908,7 +928,34 @@ namespace UnityEngine.UI.Windows {
 			return depth;
 
 		}
-		
+
+		public static void CollectCallVariations(WindowBase screen, System.Action<System.Type[], string[]> onEveryVariation) {
+			
+			if (screen != null) {
+				
+				var methods = screen.GetType().GetMethods().Where((info) => info.IsVirtual == false && info.Name == "OnParametersPass").ToList();
+				for (int i = 0; i < methods.Count; ++i) {
+					
+					var method = methods[i];
+					var parameters = method.GetParameters();
+					
+					var listTypes = new List<System.Type>();
+					var listNames = new List<string>();
+					foreach (var p in parameters) {
+						
+						listTypes.Add(p.ParameterType);
+						listNames.Add(p.Name);
+						
+					}
+					
+					onEveryVariation(listTypes.ToArray(), listNames.ToArray());
+					
+				}
+				
+			}
+			
+		}
+
 		private Dictionary<string, MethodInfo> methodsCache = new Dictionary<string, MethodInfo>();
 		internal static bool InvokeMethodWithParameters(out MethodInfo methodInfo, WindowBase window, string methodName, params object[] inputParameters) {
 

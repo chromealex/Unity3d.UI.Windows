@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 	
@@ -37,7 +38,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 				public int id;
 				public ModuleSettings settings;
 
-				public Window(FlowWindow source) {
+				public Window(Flow.Data.FlowWindow source) {
 
 					this.id = source.id;
 
@@ -47,7 +48,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 
 			public List<Window> list = new List<Window>();
 
-			public Window Get(FlowWindow window) {
+			public Window Get(Flow.Data.FlowWindow window) {
 
 				Window result = null;
 				
@@ -84,7 +85,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 
 		}
 
-		public FlowWindow.Flags uniqueTag = FlowWindow.Flags.Tag1;
+		public FD.FlowWindow.Flags uniqueTag = FD.FlowWindow.Flags.Tag1;
 
 		public Platform[] activePlatforms;
 

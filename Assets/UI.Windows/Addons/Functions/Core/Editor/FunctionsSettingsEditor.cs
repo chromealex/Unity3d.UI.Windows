@@ -3,12 +3,13 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Collections.Generic;
+using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 	public class FunctionsSettingsEditor : Editor {
 
-		private List<FlowWindow> functions = new List<FlowWindow>();
+		private List<FD.FlowWindow> functions = new List<FD.FlowWindow>();
 		/*
 		public void OnEnable() {
 
@@ -25,7 +26,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			if (data == null) return;
 
 			this.functions.Clear();
-			foreach (var window in data.windows) {
+			foreach (var window in data.windowAssets) {
 
 				if (window.IsFunction() == true &&
 				    window.IsContainer() == true) {
