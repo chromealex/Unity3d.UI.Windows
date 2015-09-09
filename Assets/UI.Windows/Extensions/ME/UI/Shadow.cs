@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿#if UNITY_5_0 || UNITY_5_1
+#define PRE_UNITY_5_2
+#endif
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;

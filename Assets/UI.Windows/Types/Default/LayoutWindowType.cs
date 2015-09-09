@@ -103,6 +103,8 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			base.OnValidate();
 
+			if (this.layout == null) return;
+
 			this.layout.Update_EDITOR(this);
 			
 		}

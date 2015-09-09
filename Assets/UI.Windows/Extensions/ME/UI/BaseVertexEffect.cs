@@ -42,10 +42,11 @@ namespace ME {
 			}
 
 		}
-		#endif
 
-		public abstract void ModifyVertices(List<UIVertex> verteces);
+        public abstract void ModifyVertices(List<UIVertex> verteces);
 
-	}
+    #endif
+
+    }
 
 }
