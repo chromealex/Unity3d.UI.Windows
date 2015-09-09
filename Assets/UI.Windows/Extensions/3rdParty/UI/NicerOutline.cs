@@ -5,7 +5,7 @@ namespace UnityEngine.UI
 {
 	//An outline that looks a bit nicer than the default one. It has less "holes" in the outline by drawing more copies of the effect
 	[AddComponentMenu ("UI/Effects/NicerOutline", 15)]
-	public class NicerOutline : BaseVertexEffect
+	public class NicerOutline : ME.BaseVertexEffect
 	{
 		[SerializeField]
 		private Color m_EffectColor = new Color (0f, 0f, 0f, 0.5f);

@@ -125,7 +125,7 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 			const float sizeX = 32f;
 			const float sizeY = 16f;
 			
-			const float offset = 3f;
+			const float offset = 1f;
 			const float firstElementDeltaHeight = 5f;
 			const float leftOffset = 14f;
 			
@@ -238,9 +238,19 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 
 		public static void DrawLabel(Rect rect, Colors.ColorItem colors, string label) {
 
+			const float offset = 1f;
+			
+			rect.x += offset;
+			rect.y += offset;
+			rect.width -= offset * 2f;
+			rect.height -= offset * 2f;
+
 			var oldColor = GUI.backgroundColor;
 			GUI.backgroundColor = colors.back;
 			var style = new GUIStyle(EditorStyles.boldLabel);
+			style.padding = new RectOffset(-1, 0, 0, 1);
+			style.margin = new RectOffset();
+			style.border = new RectOffset();
 			style.alignment = TextAnchor.MiddleCenter;
 			style.normal.background = Texture2D.whiteTexture;
 			style.normal.textColor = colors.text;

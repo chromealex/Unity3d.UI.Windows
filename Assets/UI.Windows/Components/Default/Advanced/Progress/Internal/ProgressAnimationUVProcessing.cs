@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace UnityEngine.UI.Windows.Components {
 
 	[ExecuteInEditMode]
-	public class ProgressAnimationUVProcessing : BaseVertexEffect {
+	public class ProgressAnimationUVProcessing : ME.BaseVertexEffect {
 
 		public Slider.Direction direction;
 		public float duration = 1f;

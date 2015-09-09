@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace UnityEngine.UI {
 
 	[AddComponentMenu("UI/Effects/Gradient")]
-	public class Gradient : BaseVertexEffect {
+	public class Gradient : ME.BaseVertexEffect {
 
 		public GradientMode gradientMode = GradientMode.Global;
 		public GradientDir gradientDir = GradientDir.Vertical;
@@ -23,7 +23,11 @@ namespace UnityEngine.UI {
 		private Graphic targetGraphic;
 
 		protected override void Start() {
-			targetGraphic = GetComponent<Graphic>();
+
+			base.Start();
+
+			this.targetGraphic = this.GetComponent<Graphic>();
+
 		}
 
 		public override void ModifyVertices(List<UIVertex> vertexList) {

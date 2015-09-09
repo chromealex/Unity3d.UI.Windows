@@ -26,6 +26,14 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			public GameView(DevicePreviewWindow root) {
 
 				this.root = root;
+				
+				EditorApplication.update += this.OnUpdate;
+
+			}
+
+			~GameView() {
+				
+				EditorApplication.update -= this.OnUpdate;
 
 			}
 
@@ -37,7 +45,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			}
 
 			//private DevicePreviewCamera previewCamera;
-			//private RenderTexture tempRenderTexture;
+			private RenderTexture tempRenderTexture;
+			private Texture2D tempScreenshot;
 
 			private int currentWidth;
 			private int currentHeight;
@@ -53,10 +62,11 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				this.ppi = ppi;
 				this.currentWidth = width;
 				this.currentHeight = height;
+				
+				this.tempScreenshot = new Texture2D(width, height, TextureFormat.RGB24, false);
 
-				/*
 				this.tempRenderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
-
+				/*
 				if (this.previewCamera == null) {
 
 					var go = new GameObject("__TempCamera");
@@ -99,6 +109,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			public void Update() {
 
 				if (this.isActive == false) return;
+
+				this.OnUpdate();
 
 			}
 
@@ -160,41 +172,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 				}
 
-				if (Event.current.type == EventType.Repaint) {
-
-					var allCameras = Camera.allCameras.OrderBy((c) => c.depth);
-					foreach (var camera in allCameras) {
-						
-						var rect = camera.rect;
-
-						//var camRect = new Rect(0f, 0f, this.currentWidth, this.currentHeight);
-						//var camDrawRect = this.GetRectFromSize(this.currentWidth, this.currentHeight);
-
-						camera.gameObject.hideFlags = HideFlags.HideAndDontSave;
-
-						/*var scale = Mathf.Max(camDrawRect.width, camDrawRect.height) / Mathf.Max(this.currentWidth, this.currentHeight);
-
-						var matrix = Handles.matrix;
-						Handles.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one * scale);
-
-						Handles.BeginGUI();
-*/
-						//Handles.ClearCamera(drawRect, camera);
-						Handles.SetCamera(drawRect, camera);
-						Handles.DrawCamera(drawRect, camera, DrawCameraMode.Normal);
-
-						//Handles.EndGUI();
-
-						//Handles.matrix = matrix;
-
-						camera.rect = rect;
-						camera.gameObject.hideFlags = HideFlags.None;
-
-					}
-
-				}
-
-				//GUI.DrawTexture(drawRect, this.tempRenderTexture);
+				GUI.DrawTexture(drawRect, this.tempRenderTexture);
 				
 				if (deviceOutput != null) {
 
@@ -203,7 +181,50 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				}
 
 			}
+
+			public void OnUpdate() {
+				
+				if (this.isActive == false) return;
+
+				// Clear screen
+				//Graphics.Blit(Texture2D.blackTexture, this.tempRenderTexture); 
+				
+				var allCameras = Camera.allCameras.OrderBy((c) => c.depth);
+				foreach (var camera in allCameras) {
+
+					Graphics.Blit(this.TakeScreenshot(camera), this.tempRenderTexture); 
+
+				}
+
+			}
 			
+			public Texture2D TakeScreenshot(Camera camera) {
+
+				if (this.tempRenderTexture == null) {
+
+					return null;
+
+				}
+
+				var width = this.tempRenderTexture.width;
+				var height = this.tempRenderTexture.height;
+
+				camera.targetTexture = this.tempRenderTexture;
+				camera.Render();
+				
+				RenderTexture.active = this.tempRenderTexture;
+				
+				this.tempScreenshot.ReadPixels(new Rect(0f, 0f, width, height), 0, 0);
+				this.tempScreenshot.Apply(false);
+				
+				camera.targetTexture = null;
+				
+				RenderTexture.active = null;
+				
+				return this.tempScreenshot;
+				
+			}
+
 			private float GetFactor(Vector2 inner, Vector2 boundingBox) {     
 				
 				float widthScale = 0, heightScale = 0;
@@ -248,9 +269,9 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		public static DevicePreviewWindow ShowEditor(System.Action onClose) {
 			
 			var editor = DevicePreviewWindow.CreateInstance<DevicePreviewWindow>();
-			var title = "UI.Windows: Device Preview";
+			var title = "UIW Prev";
 			#if !UNITY_4
-			editor.titleContent = new GUIContent(title);
+			editor.titleContent = new GUIContent(title, Resources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
 			#else
 			editor.title = title;
 			#endif
@@ -296,6 +317,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			this.Validate();
 
 			this.gameView.Update();
+			
+			this.Repaint();
 
 		}
 

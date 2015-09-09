@@ -179,7 +179,8 @@ namespace UnityEngine.UI.Windows {
 		
 		[Header("Settings")]
 		public Settings settings = new Settings();
-
+		
+		[Header("Window System")]
 		/// <summary>
 		/// Default windows list.
 		/// Use WindowSystem.ShowDefault() to show them.
@@ -192,7 +193,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public List<WindowBase> windows = new List<WindowBase>();
 		
-		//[HideInInspector]
+		[System.NonSerialized][HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 		
 		//[HideInInspector]
@@ -303,25 +304,26 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		protected virtual void Init() {
 
-			foreach (var window in this.windows) {
-
-				if (window.preferences.preallocatedCount > 0) {
-
-					window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source, null); });
-
-				} else {
-
-					window.CreatePool(this.settings.preallocatedWindowsPoolSize);
-
-				}
-
-			}
-
+			this.currentWindows.Clear();
 			this.functions = new Functions();
 
 			this.depthStep = (this.settings.maxDepth - this.settings.minDepth) / this.settings.poolSize;
 			this.zDepthStep = 200f;
 			WindowSystem.ResetDepth();
+
+			foreach (var window in this.windows) {
+				
+				if (window.preferences.preallocatedCount > 0) {
+					
+					window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source, null); });
+					
+				} else {
+					
+					window.CreatePool(this.settings.preallocatedWindowsPoolSize);
+					
+				}
+				
+			}
 
 		}
 

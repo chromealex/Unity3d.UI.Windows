@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace UnityEngine.UI.Windows.Components {
 
 	[ExecuteInEditMode]
-	public class ProgressAnimationProcessing : BaseVertexEffect {
+	public class ProgressAnimationProcessing : ME.BaseVertexEffect {
 
 		[ReadOnly]
 		public Slider.Direction direction;

@@ -709,7 +709,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		private void CreateOnScrene(FD.FlowWindow window) {
+		private void CreateOnScene(FD.FlowWindow window) {
 
 			if (window.compiled == false) {
 				
@@ -2346,7 +2346,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						var menu = new GenericMenu();
 						menu.AddItem(new GUIContent("Select Package"), on: false, func: () => { this.SelectWindow(window); });
-						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScrene(window); });
+						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScene(window); });
 
 						var screen = window.GetScreen();
 
