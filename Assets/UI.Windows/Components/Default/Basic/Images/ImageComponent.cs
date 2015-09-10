@@ -8,14 +8,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class ImageComponent : WindowComponent, IImageComponent {
 
+		#region source macros UI.Windows.ImageComponent
 		[Header("Properties")]
 		public bool preserveAspect;
 
-		//[HideInInspector][SerializeField]
-		public Image image;
+		[SerializeField]
+		private Image image;
 		
-		//[HideInInspector][SerializeField]
-		public RawImage rawImage;
+		[SerializeField]
+		private RawImage rawImage;
 
 		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {
 
@@ -61,7 +62,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public Color GetColor() {
+		public /*{overrideColor}*/ Color GetColor() {
 			
 			Color color = Color.white;
 			if (this.image != null) {
@@ -78,7 +79,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetColor(Color color) {
+		public /*{overrideColor}*/ void SetColor(Color color) {
 
 			if (this.image != null) {
 				
@@ -115,6 +116,7 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 		}
+		#endregion
 
 		#if UNITY_EDITOR
 		public override void OnValidateEditor() {
@@ -123,8 +125,10 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			if (this.gameObject.activeSelf == false) return;
 
+			#region source macros UI.Windows.Editor.ImageComponent
 			if (this.image == null) this.image = this.GetComponent<Image>();
 			if (this.rawImage == null) this.rawImage = this.GetComponent<RawImage>();
+			#endregion
 			
 		}
 		#endif

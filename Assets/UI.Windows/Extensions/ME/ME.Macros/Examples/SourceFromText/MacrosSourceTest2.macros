@@ -1,0 +1,20 @@
+﻿#region source macros TEST2
+var a = "Source Test 2" + {aa};
+Debug.Log(a);
+#endregion
+
+#region source macros TEST3
+var b = "Source Test 3" + {aa};
+Debug.Log(b);
+Debug.Log({bb});
+#endregion
+
+#region source macros TEST4
+var c = "Source Test 4";
+Debug.Log(c);
+#endregion
+
+#region source macros TEST5
+{code}
+Debug.Log({x});
+#endregion
