@@ -178,7 +178,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			#if UNITY_EDITOR
 			if (this.isDirty == true) {
 
-				UnityEditor.EditorUtility.SetDirty(this);
+				if (this != null) UnityEditor.EditorUtility.SetDirty(this);
 
 			}
 			#endif

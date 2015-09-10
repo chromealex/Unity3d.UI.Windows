@@ -17,15 +17,13 @@ namespace ME.Macros {
 
 			MacrosSystem.Clear();
 
-			var macrosRefreshed = false;
+			//var macrosRefreshed = false;
 			
 			var output = string.Empty;
 			var defCount = 0;
 
-			var files = AssetDatabase.FindAssets("t:MonoScript");
-			foreach (var guid in files) {
+			foreach (var file in importedAssets) {
 
-				var file = AssetDatabase.GUIDToAssetPath(guid);
 				if (MacrosSystem.IsFileMacrosDefinition(file) == true) {
 
 					MacrosSystem.ProcessMacrosDefinition(file);
@@ -34,66 +32,40 @@ namespace ME.Macros {
 
 				}
 
-				if (importedAssets.Contains(file) == true) macrosRefreshed = true;
-
-			}
-
-			#if SEARCH_SOURCES_IN_TEXT
-			files = AssetDatabase.FindAssets("t:Object");
-			foreach (var guid in files) {
-
-				var file = AssetDatabase.GUIDToAssetPath(guid);
+				//if (importedAssets.Contains(file) == true) macrosRefreshed = true;
+				
+				#if SEARCH_SOURCES_IN_TEXT
 				if (MacrosSystem.IsFileMacrosDefinition(file, true) == true) {
-
+					
 					MacrosSystem.ProcessMacrosDefinition(file);
 					output += "Processing definition: " + file + "\n";
 					++defCount;
-
+					
 				}
-
-				if (importedAssets.Contains(file) == true) macrosRefreshed = true;
+				
+				//if (importedAssets.Contains(file) == true) macrosRefreshed = true;
+				#endif
 
 			}
-			#endif
 
-			Debug.Log("[MACROS] Definitions processed: " + defCount.ToString() + "\n" + output);
+			if (defCount > 0) Debug.Log("[MACROS] Definitions processed: " + defCount.ToString() + "\n" + output);
 
 			output = string.Empty;
 			var pCount = 0;
 
-			if (macrosRefreshed == true) {
+			foreach (var file in importedAssets) {
+				
+				if (MacrosSystem.IsFileContainsMacros(file) == true) {
 
-				files = AssetDatabase.FindAssets("t:MonoScript");
-				foreach (var guid in files) {
-
-					var file = AssetDatabase.GUIDToAssetPath(guid);
-					if (MacrosSystem.IsFileContainsMacros(file) == true) {
-
-						MacrosSystem.Process(file);
-						output += "Processing: " + file + "\n";
-						++pCount;
-
-					}
-
-				}
-
-			} else {
-
-				foreach (var file in importedAssets) {
-					
-					if (MacrosSystem.IsFileContainsMacros(file) == true) {
-
-						MacrosSystem.Process(file);
-						output += "Processing: " + file + "\n";
-						++pCount;
-
-					}
+					MacrosSystem.Process(file);
+					output += "Processing: " + file + "\n";
+					++pCount;
 
 				}
 
 			}
-			
-			Debug.Log("[MACROS] Processed: " + pCount.ToString() + "\n" + output);
+
+			if (pCount > 0) Debug.Log("[MACROS] Processed: " + pCount.ToString() + "\n" + output);
 
 		}
 
