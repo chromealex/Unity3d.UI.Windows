@@ -13,11 +13,11 @@ namespace UnityEngine.UI.Windows {
 	public class WindowRoutes {
 
 		private int index;
-		private WindowBase window;
+		private WindowBase sourceWindow;
 
-		public WindowRoutes(WindowBase window, int index) {
+		public WindowRoutes(WindowBase sourceWindow, int index) {
 
-			this.window = window;
+			this.sourceWindow = sourceWindow;
 			this.index = index;
 
 		}
@@ -30,13 +30,13 @@ namespace UnityEngine.UI.Windows {
 
 		public void Hide() {
 
-			this.window.Hide();
+			this.sourceWindow.Hide();
 
 		}
 
 		public void Hide(TransitionBase transition, TransitionInputParameters transitionParameters) {
 			
-			this.window.Hide(transition, transitionParameters);
+			this.sourceWindow.Hide(transition, transitionParameters);
 
 		}
 
@@ -607,6 +607,7 @@ namespace UnityEngine.UI.Windows {
 
 			});
 			
+			WindowSystem.ResetDepth();
 			WindowSystem.RefreshHistory();
 			
 		}
@@ -632,6 +633,7 @@ namespace UnityEngine.UI.Windows {
 
 			});
 			
+			WindowSystem.ResetDepth();
 			WindowSystem.RefreshHistory();
 			
 		}
@@ -677,9 +679,7 @@ namespace UnityEngine.UI.Windows {
 			});
 
 			ME.Utilities.CallInSequence(() => {
-				
-				WindowSystem.ResetDepth();
-				
+
 				if (callback != null) callback();
 				
 			}, list, (window, wait) => {
@@ -701,8 +701,6 @@ namespace UnityEngine.UI.Windows {
 			
 			ME.Utilities.CallInSequence(() => {
 				
-				WindowSystem.ResetDepth();
-
 				if (callback != null) callback();
 
 			}, WindowSystem.instance.currentWindows.Where((w) => {
@@ -815,12 +813,12 @@ namespace UnityEngine.UI.Windows {
 		/// Shows window of T type.
 		/// Returns null if window not registered.
 		/// </summary>
-		/// <param name="onCreatePredicate">On create predicate.</param>
+		/// <param name="afterGetInstance">On create predicate.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Show<T>(System.Action<T> onCreatePredicate, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+		public static T Show<T>(System.Action<T> afterGetInstance, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 
-			return WindowSystem.ShowWithParameters<T>(onCreatePredicate, null, null, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(afterGetInstance, null, null, null, onParametersPassCall, parameters);
 			
 		}
 		
@@ -857,14 +855,14 @@ namespace UnityEngine.UI.Windows {
 		/// Shows window of T type.
 		/// Returns null if window not registered.
 		/// </summary>
-		/// <param name="onCreatePredicate">On create predicate.</param>
+		/// <param name="afterGetInstance">On create predicate.</param>
 		/// <param name="transition">Transition.</param>
 		/// <param name="transitionParameters">Transition parameters.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Show<T>(System.Action<T> onCreatePredicate, TransitionBase transition, TransitionInputParameters transitionParameters, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+		public static T Show<T>(System.Action<T> afterGetInstance, TransitionBase transition, TransitionInputParameters transitionParameters, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.ShowWithParameters<T>(onCreatePredicate, transition, transitionParameters, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(afterGetInstance, transition, transitionParameters, null, onParametersPassCall, parameters);
 
 		}
 
@@ -872,13 +870,13 @@ namespace UnityEngine.UI.Windows {
 		/// Shows window of T type.
 		/// Returns null if window not registered.
 		/// </summary>
-		/// <param name="onCreatePredicate">On create predicate.</param>
+		/// <param name="afterGetInstance">On create predicate.</param>
 		/// <param name="transition">Transition.</param>
 		/// <param name="transitionParameters">Transition parameters.</param>
 		/// <param name="source">Source.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T ShowWithParameters<T>(System.Action<T> onCreatePredicate,
+		public static T ShowWithParameters<T>(System.Action<T> afterGetInstance,
 		                        TransitionBase transition,
 		                        TransitionInputParameters transitionParameters,
 		                        T source,
@@ -903,9 +901,9 @@ namespace UnityEngine.UI.Windows {
 			var instance = (source != null) ? WindowSystem.instance.Create_INTERNAL(source, onInit, parameters) as T : WindowSystem.Create<T>(onInit, parameters);
 			if (instance != null) {
 				
-				if (onCreatePredicate != null) {
+				if (afterGetInstance != null) {
 					
-					onCreatePredicate(instance);
+					afterGetInstance(instance);
 					
 				}
 				

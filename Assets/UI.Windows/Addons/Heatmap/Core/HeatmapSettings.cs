@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					this.points.Add(new Point(point, tag, component));
 					this.changed = true;
 
-					this.UpdateMap();
+					//this.UpdateMap();
 
 				}
 
@@ -204,7 +204,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 		}
 
 		public bool show;
-		public string key;
+		public string authKey;
 
 		public WindowsData data;
 

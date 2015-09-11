@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: Heatmap
   m_EditorClassIdentifier: 
   show: 0
-  key: 
+  authKey: 
   data:
     list: []

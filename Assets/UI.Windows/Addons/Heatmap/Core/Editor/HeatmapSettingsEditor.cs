@@ -17,7 +17,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			{
 				target.show = EditorGUILayout.ToggleLeft("Show", target.show, EditorStyles.boldLabel);
 				EditorGUILayout.LabelField("Key:");
-				target.key = EditorGUILayout.TextArea(target.key);
+				target.authKey = EditorGUILayout.TextArea(target.authKey);
 			}
 			EditorGUILayout.EndVertical();
 

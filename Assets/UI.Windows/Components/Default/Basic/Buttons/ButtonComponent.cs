@@ -26,7 +26,7 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnInit();
 
 			#if FLOW_PLUGIN_HEATMAP
-			//this.button.onClick.AddListener(this.HeatmapSendComponentClick);
+			this.button.onClick.AddListener(this.OnComponentClick);
 			#endif
 
 		}
@@ -42,7 +42,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.callbackButton.RemoveAllListeners();
 
 			#if FLOW_PLUGIN_HEATMAP
-			//this.button.onClick.RemoveListener(this.HeatmapSendComponentClick);
+			this.button.onClick.RemoveListener(this.OnComponentClick);
 			#endif
 
 		}
