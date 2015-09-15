@@ -30,6 +30,12 @@ namespace UnityEngine.UI.Windows.Types {
 			return this.layout.Get<T>(tag);
 			
 		}
+		
+		public override Vector2 GetSize() {
+
+			return this.layout.layout.GetSize();
+			
+		}
 
 		public WindowLayoutElement GetLayoutContainer(LayoutTag tag) {
 

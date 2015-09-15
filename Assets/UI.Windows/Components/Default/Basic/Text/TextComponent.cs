@@ -104,17 +104,15 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			switch (format) {
 				
-				case ValueFormat.None:
-					
-				{
+				case ValueFormat.None: {
 					
 					output = value.ToString();
 					
-				}
-					
 					break;
-					
-				case ValueFormat.WithSpace:
+
+				}
+				
+				case ValueFormat.WithSpace: {
 					
 					if (value < 0f) {
 						
@@ -127,8 +125,10 @@ namespace UnityEngine.UI.Windows.Components {
 					}
 					
 					break;
-					
-				case ValueFormat.WithComma:
+
+				}
+				
+				case ValueFormat.WithComma: {
 					
 					if (value < 0f) {
 						
@@ -141,43 +141,45 @@ namespace UnityEngine.UI.Windows.Components {
 					}
 					
 					break;
-					
-				case ValueFormat.TimeHMS:
-					
-				{
+
+				}
+				
+				case ValueFormat.TimeHMS: {
+
 					var t = TimeSpan.FromSeconds(value);
 					output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
-				}
 					
 					break;
-					
-				case ValueFormat.TimeMS:
-					
-				{
+
+				}
+				
+				case ValueFormat.TimeMS: {
+
 					var t = TimeSpan.FromSeconds(value);
 					output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
-				}
 					
 					break;
-					
-				case ValueFormat.TimeHMSms:
-					
-				{
+
+				}
+				
+				case ValueFormat.TimeHMSms: {
+
 					var t = TimeSpan.FromMilliseconds(value);
 					output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
-				}
 					
 					break;
-					
-				case ValueFormat.TimeMSms:
-					
-				{
+
+				}
+				
+				case ValueFormat.TimeMSms: {
+
 					var t = TimeSpan.FromMilliseconds(value);
 					output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);
-				}
 					
 					break;
-					
+
+				}
+				
 			}
 			
 			return output;

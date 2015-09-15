@@ -9,7 +9,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 		
 		public LayoutElement layoutElement;
 
-		private bool horizontalLast;
+		/*private bool horizontalLast;
 		private bool verticalLast;
 
 		private bool asDropdown = false;
@@ -103,7 +103,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 			this.maxHeight = maxHeight;
 			this.UpdateDropdown();
 
-		}
+		}*/
 
 		#if UNITY_EDITOR
 		protected override void OnValidate() {

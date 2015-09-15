@@ -69,11 +69,11 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 					if (data != null && data.texture != null && data.status == HeatmapSettings.WindowsData.Window.Status.Loaded) {
 
-						GUI.DrawTexture(rect, data.texture, ScaleMode.StretchToFill, alphaBlend: true);
+						GUI.DrawTexture(rect, data.texture, ScaleMode.ScaleToFit, alphaBlend: true);
 
 					} else {
 						
-						if (this.noDataTexture != null) GUI.DrawTexture(rect, this.noDataTexture, ScaleMode.StretchToFill, alphaBlend: true);
+						if (this.noDataTexture != null) GUI.DrawTexture(rect, this.noDataTexture, ScaleMode.ScaleToFit, alphaBlend: true);
 
 					}
 

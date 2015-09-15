@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI.Windows;
 
 namespace Tacticsoft
 {
@@ -22,7 +23,7 @@ namespace Tacticsoft
         /// Create a cell for a certain row in a table view.
         /// Callers should use tableView.GetReusableCell to cache objects
         /// </summary>
-        TableViewCell GetCellForRowInTableView(TableView tableView, int row);
+		WindowComponent GetCellForRowInTableView(TableView tableView, int row);
     }
 }
 

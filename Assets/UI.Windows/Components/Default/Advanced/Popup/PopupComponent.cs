@@ -21,13 +21,13 @@ namespace UnityEngine.UI.Windows.Components {
 		public class State {
 
 			public RectTransform rect;
-			public List list;
+			public ListComponent list;
 			public bool reverse;
 
 			public Vector2 anchorMin;
 			public Vector2 anchorMax;
 
-			public State(RectTransform rect, List list, Vector2 anchorMin, Vector2 anchorMax, bool reverse) {
+			public State(RectTransform rect, ListComponent list, Vector2 anchorMin, Vector2 anchorMax, bool reverse) {
 
 				this.rect = rect;
 				this.list = list;
@@ -60,7 +60,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public LinkerComponent list;
 
 		private ITextComponent label;
-		private List items;
+		private ListComponent items;
 
 		private bool opened;
 
@@ -68,7 +68,7 @@ namespace UnityEngine.UI.Windows.Components {
 		private State stateUp;
 
 		public DropState dropState = DropState.Auto;
-		public float maxHeight = 200f;
+		//public float maxHeight = 200f;
 
 		private Extensions.ScrollRect scrollRect;
 		private Transform currentParent;
@@ -100,7 +100,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.label.SetText(string.Empty);
 			if (this.label is ISelectable) (this.label as ISelectable).SetCallback(this.Toggle);
 
-			this.items.SetupAsDropdown(this.maxHeight);
+			//this.items.SetupAsDropdown(this.maxHeight);
 
 			WindowSystemInput.onPointerDown.AddListener(this.OnPressDown);
 
@@ -244,7 +244,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public void SetItems(int capacity, UnityAction<IComponent> onItem = null) {
+		public void SetItems(int capacity, UnityAction<IComponent, int> onItem = null) {
 			
 			this.items.SetItems(capacity, onItem);
 			

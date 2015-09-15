@@ -193,6 +193,12 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public virtual Vector2 GetSize() {
+
+			return new Vector2(Screen.width, Screen.height);
+
+		}
+
 		#if TRANSITION_POSTEFFECTS_ENABLED
 		private void OnRenderImage(RenderTexture source, RenderTexture destination) {
 			

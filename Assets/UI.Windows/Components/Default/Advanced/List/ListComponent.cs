@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace UnityEngine.UI.Windows.Components {
 	
-	public class List : WindowComponent {
+	public class ListComponent : WindowComponent {
 		
 		[Header("List")]
 		public List<WindowComponent> list = new List<WindowComponent>();
@@ -52,9 +52,21 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetupAsDropdown(float maxHeight) {
+		/*public void SetupAsDropdown(float maxHeight) {
 
 			this.scrollRect.SetupAsDropdown(maxHeight);
+
+		}*/
+
+		public virtual WindowComponent GetInstance(int index) {
+
+			var instance = this.source.Spawn();
+			instance.Setup(this.GetLayoutRoot());
+			instance.Setup(this.GetWindow());
+			this.list.Add(instance);
+			this.RegisterSubComponent(instance);
+
+			return instance;
 
 		}
 
@@ -69,15 +81,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.source == null) return default(T);
 
-			var instance = this.source.Spawn();
-			instance.Setup(this.GetLayoutRoot());
-			instance.Setup(this.GetWindow());
+			var instance = this.GetInstance(this.Count());
+			if (instance == null) return default(T);
 
-			if (this.scrollRect != null && this.scrollRect.content != null) instance.SetParent(this.scrollRect.content, setTransformAsSource: false);
+			if (this.scrollRect != null && this.scrollRect.content != null) {
 
-			this.list.Add(instance);
+				instance.SetParent(this.scrollRect.content, setTransformAsSource: false);
 
-			this.RegisterSubComponent(instance);
+			}
 
 			if (instance is LinkerComponent) {
 
@@ -87,7 +98,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			if (instance != null) instance.gameObject.SetActive(true);
+			if (instance != null) {
+
+				instance.gameObject.SetActive(true);
+
+			}
 
 			#region Navigation
 			if (this.lastSelectableInstance != instance) {
@@ -230,6 +245,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public virtual bool IsEmpty() {
+
+			return this.Count() == 0;
+
+		}
+
 		public int Count() {
 
 			return this.list.Count;
@@ -248,41 +269,47 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public T GetItem<T>(int index) where T : IComponent {
+		public virtual WindowComponent GetItem(int index) {
 
 			if (this.list[index] is LinkerComponent) {
-
-				return (this.list[index] as LinkerComponent).Get<T>();
-
+				
+				return (this.list[index] as LinkerComponent).Get<WindowComponent>();
+				
 			}
 
-			return (T)(this.list[index] as IComponent);
+			return this.list[index];
 			
 		}
 
-		public virtual void SetItems(int capacity, UnityAction<IComponent> onItem = null) {
+		public virtual T GetItem<T>(int index) where T : IComponent {
 
-			this.SetItems<IComponent>(capacity, (element, index) => {
+			return (T)(this.GetItem(index) as IComponent);
+			
+		}
 
-				if (onItem != null) onItem(element as WindowComponent);
+		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
+
+			this.SetItems(capacity, (element, index) => {
+
+				if (onItem != null) onItem((T)element, index);
 
 			});
 
 		}
 		
-		public virtual void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
+		protected virtual void SetItems(int capacity, UnityAction<IComponent, int> onItem) {
 			
 			this.Clear();
-
+			
 			for (int i = 0; i < capacity; ++i) {
-
-				var instance = this.AddItem<T>();
+				
+				var instance = this.AddItem<IComponent>();
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 				
 			}
-			
+
 		}
-		
+
 		public virtual void SetItemsAsync<T>(int capacity, UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
 			
 			this.Clear();
@@ -325,9 +352,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void Refresh() {
 
-			if (this.noElements != null) this.noElements.SetActive(this.list.Count == 0);
-			if (this.content != null) this.content.SetActive(this.list.Count > 0);
-			if (this.scrollRect != null) this.scrollRect.UpdateDropdown();
+			if (this.noElements != null) this.noElements.SetActive(this.IsEmpty() == true);
+			if (this.content != null) this.content.SetActive(this.IsEmpty() == false);
+			//if (this.scrollRect != null) this.scrollRect.UpdateDropdown();
 
 		}
 

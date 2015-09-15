@@ -5,7 +5,7 @@ using UnityEngine.UI.Windows.Components.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ToggleComponent : List {
+	public class ToggleComponent : ListComponent {
 
 		public ToggleGroup toggleGroup;
 		public bool allowSwitchOff = false;

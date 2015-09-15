@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI.Windows.Components;
 
-public class UIWindowExampleTransitionsListComponent : List {
+public class UIWindowExampleTransitionsListComponent : ListComponent {
 	
 	public override void OnInit() {
 

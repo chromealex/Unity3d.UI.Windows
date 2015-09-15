@@ -1,4 +1,3 @@
-#define FLOW_PLUGIN_HEATMAP
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
@@ -25,10 +24,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnInit();
 
-			#if FLOW_PLUGIN_HEATMAP
-			this.button.onClick.AddListener(this.OnComponentClick);
-			#endif
-
 		}
 
 		public override void OnDeinit() {
@@ -40,10 +35,6 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.button != null) this.button.onClick.RemoveListener(this.OnClick);
 			this.callback.RemoveAllListeners();
 			this.callbackButton.RemoveAllListeners();
-
-			#if FLOW_PLUGIN_HEATMAP
-			this.button.onClick.RemoveListener(this.OnComponentClick);
-			#endif
 
 		}
 

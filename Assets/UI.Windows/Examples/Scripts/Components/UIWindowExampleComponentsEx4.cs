@@ -4,7 +4,7 @@ using UnityEngine.UI.Windows.Components;
 
 public class UIWindowExampleComponentsEx4 : WindowComponent {
 
-	public List list;
+	public ListComponent list;
 
 	public override void OnInit() {
 
