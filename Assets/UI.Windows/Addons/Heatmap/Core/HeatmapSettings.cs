@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Heatmap.Events;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
@@ -12,79 +13,48 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 		[System.Serializable]
 		public struct Point {
 
-			[System.Serializable]
-			public struct ComponentInfo {
-				
-				[Header("Tag")]
-				public LayoutTag tag;
-
-				[Header("Coords (Absolute)")]
-				public float x;
-				public float y;
-				public float w;
-				public float h;
-
-				public ComponentInfo(LayoutTag tag, WindowComponent component) {
-					
-					this.tag = tag;
-
-					this.x = 0f;
-					this.y = 0f;
-					this.w = 0f;
-					this.h = 0f;
-
-					//var rect = (component.transform as RectTransform).rect;
-
-					var corners = new Vector3[4];
-					(component.transform as RectTransform).GetWorldCorners(corners);
-
-					var leftBottom = this.GetScreenPoint(component, corners[0]);
-					var topRight = this.GetScreenPoint(component, corners[2]);
-
-					this.x = leftBottom.x;
-					this.y = leftBottom.y;
-					this.w = topRight.x - leftBottom.x;
-					this.h = topRight.y - leftBottom.y;
-
-				}
-
-				private Vector3 GetScreenPoint(WindowComponent component, Vector3 worldPoint) {
-
-					return component.GetWindow().workCamera.WorldToScreenPoint(worldPoint);
-
-				}
-
-			}
-
 			[Header("Coords (Normalized)")]
 			// Normalized (x, y) coords
 			public float x;
 			public float y;
 			
-			[Header("Container")]
-			public ComponentInfo componentInfo;
+			[Header("Container Tag")]
+			public LayoutTag tag;
 
 			public Point(Vector2 point, LayoutTag tag, WindowComponent component) {
 				
 				this.x = point.x;
 				this.y = point.y;
 
-				this.componentInfo = new ComponentInfo(tag, component);
+				this.tag = tag;
 				
 			}
 			
-			public float GetAbsoluteX(float screenWidth) {
-				
+			public float GetAbsoluteX(WindowsData.Window window, float screenWidth) {
+
+				var rect = this.GetRect(window);
+
 				// Container offset + unnormalized current point (x, y)
-				return this.componentInfo.x + this.x * this.componentInfo.w;
+				return Mathf.Lerp(this.x, rect.x, rect.x + rect.width);
 				
 			}
 			
-			public float GetAbsoluteY(float screenHeight) {
+			public float GetAbsoluteY(WindowsData.Window window, float screenHeight) {
 				
+				var rect = this.GetRect(window);
+
 				// Container offset + unnormalized current point (x, y)
-				return this.componentInfo.y + this.y * this.componentInfo.h;
+				return Mathf.Lerp(this.y, rect.y, rect.y + rect.height);
 				
+			}
+
+			private Rect GetRect(WindowsData.Window window) {
+				
+				var win = FlowSystem.GetWindow(window.id);
+				var screen = win.GetScreen() as LayoutWindowType;
+				var container = screen.GetLayoutContainer(this.tag);
+				return container.editorRect;
+
 			}
 
 		};
@@ -146,7 +116,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					
 					if (this.changed == false) return;
 
-					this.texture = HeatmapVisualizer.Create(this.texture, this.GetPoints(), this.size);
+					this.texture = HeatmapVisualizer.Create(this.texture, this, this.GetPoints(), this.size);
 					this.changed = false;
 
 				}

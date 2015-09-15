@@ -2357,8 +2357,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						});
 
-						menu.AddDisabledItem(new GUIContent("Callings/Methods: " + methodsCount.ToString()));
-						menu.AddSeparator("Callings/");
+						menu.AddDisabledItem(new GUIContent("Calls/Methods: " + methodsCount.ToString()));
+						menu.AddSeparator("Calls/");
 
 						if (window.compiled == true &&
 						    screen != null) {
@@ -2374,7 +2374,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								}
 
 								var paramsStr = parameters.Count > 0 ? "(" + string.Join(", ", parameters.ToArray()) + ")" : string.Empty;
-								menu.AddItem(new GUIContent("Callings/OnParametersPass" + paramsStr), on: false, func: () => {
+								menu.AddItem(new GUIContent("Calls/OnParametersPass" + paramsStr), on: false, func: () => {
 
 									Selection.activeObject = screen;
 
@@ -2386,13 +2386,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							if (methodsCount == 0) {
 								
-								menu.AddDisabledItem(new GUIContent("Callings/No `OnParametersPass` Methods Found"));
+								menu.AddDisabledItem(new GUIContent("Calls/No `OnParametersPass` Methods Found"));
 
 							}
 
 						} else {
 							
-							menu.AddDisabledItem(new GUIContent("Callings/You need to compile window"));
+							menu.AddDisabledItem(new GUIContent("Calls/You need to compile window"));
 
 						}
 

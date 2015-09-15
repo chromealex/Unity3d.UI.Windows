@@ -11,8 +11,10 @@ using System;
 namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 	
 	public enum ClickType : byte {
+
 		Component,
 		Screen,
+
 	}
 
 	public class HeatmapSystem {
@@ -46,20 +48,12 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 		}
 
-		private static Vector3 GetScreenPoint(WindowComponent component, Vector3 worldPoint) {
-			
-			return component.GetWindow().workCamera.WorldToScreenPoint(worldPoint);
-			
-		}
-
 		public static void Put(IHeatmapHandler component, Vector2 localPoint, ClickType clickType) {
 
 			// Normalize coords - make it ready to save
 			var fullScreen = new Vector2(Screen.width, Screen.height);
 			var current = localPoint;
-			var screenNormalized = new Vector2(current.x / fullScreen.x, current.y / fullScreen.y);
-
-			var localNormalizedPoint = screenNormalized;
+			var localNormalizedPoint = Vector2.zero;
 
 			var tag = LayoutTag.None;
 			WindowBase screen = null;
@@ -109,12 +103,21 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			} else {
 
 				screen = WindowSystem.GetCurrentWindow();
+				localNormalizedPoint = new Vector2(current.x / fullScreen.x, current.y / fullScreen.y);
 
 			}
+			
+			Debug.Log(fullScreen + " :: " + localNormalizedPoint + " :: " + localPoint);
 
 			// Send point to server
 			HeatmapSystem.Send(tag, screen, component as WindowComponent, localNormalizedPoint);
 
+		}
+		
+		private static Vector3 GetScreenPoint(WindowComponent component, Vector3 worldPoint) {
+			
+			return component.GetWindow().workCamera.WorldToScreenPoint(worldPoint);
+			
 		}
 
 		public static void Send(LayoutTag tag, WindowBase window, WindowComponent component, Vector2 localNormalizedPoint) {
@@ -139,7 +142,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			data.status = HeatmapSettings.WindowsData.Window.Status.Loading;
 
-			data.size = (window as LayoutWindowType).layout.GetLayoutInstance().GetSize();
+			data.size = window.GetSize();
 			data.AddPoint(localNormalizedPoint, tag, component);
 
 //#if !UNITY_EDITOR

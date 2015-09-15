@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 	
-	public class Tabs : Components.List {
+	public class Tabs : Components.ListComponent {
 
 		private List<WindowComponent> components = new List<WindowComponent>();
 

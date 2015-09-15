@@ -15,7 +15,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 		public static int MINIMUM_THRESHOLD = 100;	//!< Minimum threshold.	
 		///	Minimum alpha a point must have to be rendered at all.
 
-		public static Texture2D Create(Texture2D map, List<UnityEngine.UI.Windows.Plugins.Heatmap.Core.HeatmapSettings.Point> normalizedPoints, Vector2 size, int radius = 10) {
+		public static Texture2D Create(Texture2D map, HeatmapSettings.WindowsData.Window window, List<UnityEngine.UI.Windows.Plugins.Heatmap.Core.HeatmapSettings.Point> normalizedPoints, Vector2 size, int radius = 10) {
 
 			if (size == Vector2.zero) {
 
@@ -43,35 +43,53 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 				int lineWidth = 1;//(int)(radius * .05f);
 				Dictionary<Vector2, Color> pixelAlpha = new Dictionary<Vector2, Color>();
 				
-				for (int i = 0; i < normalizedPoints.Count; i++) {			// generate alpha add for each point and a specified circumference
+				for (int i = 0; i < normalizedPoints.Count; ++i) {			// generate alpha add for each point and a specified circumference
+
 					pixelAlpha.Clear();
+
 					for (int r = 0; r < radius; r+=lineWidth) {	// draw and fill them circles
-						for (int angle=0; angle<360; angle++) {
-							x2 = (int)(r * Mathf.Cos(angle)) + (int)(normalizedPoints[i].GetAbsoluteX(size.x));
-							y2 = (int)(r * Mathf.Sin(angle)) + (int)(normalizedPoints[i].GetAbsoluteY(size.y));
+
+						for (int angle = 0; angle < 360; ++angle) {
+
+							x2 = (int)(r * Mathf.Cos(angle)) + (int)(normalizedPoints[i].GetAbsoluteX(window, size.x));
+							y2 = (int)(r * Mathf.Sin(angle)) + (int)(normalizedPoints[i].GetAbsoluteY(window, size.y));
 							
 							// This could be sped up
 							for (int y = y2; y > y2-lineWidth; y--) {
+
 								for (int x = x2; x < x2+lineWidth; x++) {
+
 									Vector2 coord = new Vector2(x, y);
 									
-									if (pixelAlpha.ContainsKey(coord))
+									if (pixelAlpha.ContainsKey(coord)) {
+
 										pixelAlpha[coord] = color;
-									else
+
+									} else {
+
 										pixelAlpha.Add(new Vector2(x, y), color);
-								}		
+
+									}
+
+								}	
+
 							}
+
 						}
+
 						color = new Color(color.r, color.g, color.b, color.a - (pointAlpha / ((float)radius / lineWidth)));
+
 					}
 					
 					// Since the radial fill code overwrites it's own pixels, make sure to only add finalized alpha to
 					// old values.
 					foreach (KeyValuePair<Vector2, Color> keyval in pixelAlpha) {
+
 						Vector2 coord = keyval.Key;
 						Color previousColor = map.GetPixel((int)coord.x, (int)coord.y);
 						Color newColor = keyval.Value;
 						map.SetPixel((int)coord.x, (int)coord.y, new Color(newColor.r, newColor.b, newColor.g, newColor.a + previousColor.a));
+
 					}
 					
 					// Reset color for next point

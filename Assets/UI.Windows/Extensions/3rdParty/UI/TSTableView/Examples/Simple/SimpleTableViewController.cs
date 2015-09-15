@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Tacticsoft;
+using UnityEngine.UI.Windows;
 
 namespace Tacticsoft.Examples
 {
@@ -36,7 +37,7 @@ namespace Tacticsoft.Examples
         }
 
         //Will be called by the TableView when a cell needs to be created for display
-        public TableViewCell GetCellForRowInTableView(TableView tableView, int row) {
+		public WindowComponent GetCellForRowInTableView(TableView tableView, int row) {
             VisibleCounterCell cell = tableView.GetReusableCell(m_cellPrefab.reuseIdentifier) as VisibleCounterCell;
             if (cell == null) {
                 cell = (VisibleCounterCell)GameObject.Instantiate(m_cellPrefab);

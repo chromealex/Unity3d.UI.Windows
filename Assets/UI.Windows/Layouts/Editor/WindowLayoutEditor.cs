@@ -121,7 +121,9 @@ namespace UnityEditor.UI.Windows {
 				_target.transform.localPosition = Vector3.zero;
 
 				foreach (var element in elements) {
-					
+
+					if (element == null) continue;
+
 					var rectTransform = (element.transform as RectTransform);
 
 					var corners = new Vector3[4];
@@ -163,6 +165,8 @@ namespace UnityEditor.UI.Windows {
 			var vertStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.vertStyle", "box", (style) => new GUIStyle(style));
 
 			foreach (var element in elements) {
+
+				if (element == null) continue;
 
 				element.editorDrawDepth = element.GetComponentsInParent<WindowLayoutElement>(true).Length - 1;
 

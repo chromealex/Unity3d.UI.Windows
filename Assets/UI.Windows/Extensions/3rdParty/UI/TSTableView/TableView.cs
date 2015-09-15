@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.SocialPlatforms;
+using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Components;
 
 namespace Tacticsoft
 {
@@ -16,7 +17,44 @@ namespace Tacticsoft
     [RequireComponent(typeof(ScrollRect))]
     public class TableView : MonoBehaviour
     {
-		
+		[System.Serializable]
+		public struct Range {
+			//
+			// Fields
+			//
+			public int count;
+			
+			public int from;
+			
+			//
+			// Constructors
+			//
+			public Range (int fromValue, int valueCount)
+			{
+				this.from = fromValue;
+				this.count = valueCount;
+			}
+			
+			public int Last() {
+				
+				if (this.count == 0) {
+					
+					throw new System.InvalidOperationException("Empty range has no to()");
+					
+				}
+				
+				return (this.from + this.count - 1);
+				
+			}
+			
+			public bool Contains(int num) {
+				
+				return num >= this.from && num < (this.from + this.count);
+				
+			}
+
+		}
+
 		public GameObject noContentContainer;
 		public GameObject hasContentContainer;
 
@@ -43,15 +81,15 @@ namespace Tacticsoft
         /// </summary>
         /// <param name="reuseIdentifier">The identifier for the cell type</param>
         /// <returns>A prepared cell if available, null if none</returns>
-        public TableViewCell GetReusableCell(string reuseIdentifier) {
-            LinkedList<TableViewCell> cells;
+		public WindowComponent GetReusableCell(string reuseIdentifier) {
+            LinkedList<WindowComponent> cells;
             if (!m_reusableCells.TryGetValue(reuseIdentifier, out cells)) {
                 return null;
             }
             if (cells.Count == 0) {
                 return null;
             }
-            TableViewCell cell = cells.First.Value;
+            WindowComponent cell = cells.First.Value;
             cells.RemoveFirst();
             return cell;
         }
@@ -97,9 +135,9 @@ namespace Tacticsoft
         /// <summary>
         /// Get cell at a specific row (if active). Returns null if not.
         /// </summary>
-        public TableViewCell GetCellAtRow(int row)
+        public WindowComponent GetCellAtRow(int row)
         {
-            TableViewCell retVal = null;
+            WindowComponent retVal = null;
             m_visibleCells.TryGetValue(row, out retVal);
             return retVal;
         }
@@ -119,7 +157,7 @@ namespace Tacticsoft
             m_rowHeights[row] = m_dataSource.GetHeightForRowInTableView(this, row);
             m_cleanCumulativeIndex = Mathf.Min(m_cleanCumulativeIndex, row - 1);
             if (m_visibleRowRange.Contains(row)) {
-                TableViewCell cell = GetCellAtRow(row);
+                WindowComponent cell = GetCellAtRow(row);
                 cell.GetComponent<LayoutElement>().preferredHeight = m_rowHeights[row];
                 if (row > 0) {
                     cell.GetComponent<LayoutElement>().preferredHeight -= m_verticalLayoutGroup.spacing;
@@ -192,11 +230,11 @@ namespace Tacticsoft
         private float[] m_cumulativeRowHeights;
         private int m_cleanCumulativeIndex;
 
-        private Dictionary<int, TableViewCell> m_visibleCells;
+        private Dictionary<int, WindowComponent> m_visibleCells;
         private Range m_visibleRowRange;
 
         private RectTransform m_reusableCellContainer;
-        private Dictionary<string, LinkedList<TableViewCell>> m_reusableCells;
+        private Dictionary<string, LinkedList<WindowComponent>> m_reusableCells;
 
         private float m_scrollY;
 
@@ -230,12 +268,12 @@ namespace Tacticsoft
             m_topPadding.transform.SetParent(m_scrollRect.content, false);
             m_bottomPadding = CreateEmptyPaddingElement("Bottom");
             m_bottomPadding.transform.SetParent(m_scrollRect.content, false);
-            m_visibleCells = new Dictionary<int, TableViewCell>();
+            m_visibleCells = new Dictionary<int, WindowComponent>();
 
             m_reusableCellContainer = new GameObject("ReusableCells", typeof(RectTransform)).GetComponent<RectTransform>();
             m_reusableCellContainer.SetParent(this.transform, false);
             m_reusableCellContainer.gameObject.SetActive(false);
-            m_reusableCells = new Dictionary<string, LinkedList<TableViewCell>>();
+            m_reusableCells = new Dictionary<string, LinkedList<WindowComponent>>();
         }
         
         void Update()
@@ -281,7 +319,7 @@ namespace Tacticsoft
 
         private void AddRow(int row, bool atEnd)
         {
-            TableViewCell newCell = m_dataSource.GetCellForRowInTableView(this, row);
+            WindowComponent newCell = m_dataSource.GetCellForRowInTableView(this, row);
             newCell.transform.SetParent(m_scrollRect.content, false);
 
             LayoutElement layoutElement = newCell.GetComponent<LayoutElement>();
@@ -362,7 +400,7 @@ namespace Tacticsoft
             //Debug.Log("Hiding row at scroll y " + m_scrollY.ToString("0.00"));
 
             int row = last ? m_visibleRowRange.Last() : m_visibleRowRange.from;
-            TableViewCell removedCell = m_visibleCells[row];
+            WindowComponent removedCell = m_visibleCells[row];
             StoreCellForReuse(removedCell);
             m_visibleCells.Remove(row);
             m_visibleRowRange.count -= 1;
@@ -408,8 +446,9 @@ namespace Tacticsoft
             return m_cumulativeRowHeights[row];
         }
 
-        private void StoreCellForReuse(TableViewCell cell) {
-            string reuseIdentifier = cell.reuseIdentifier;
+        private void StoreCellForReuse(WindowComponent cell) {
+
+			string reuseIdentifier = (cell is IListViewItem) ? (cell as IListViewItem).reuseIdentifier : "cell";
             
             if (string.IsNullOrEmpty(reuseIdentifier)) {
                 GameObject.Destroy(cell.gameObject);
@@ -417,7 +456,7 @@ namespace Tacticsoft
             }
 
             if (!m_reusableCells.ContainsKey(reuseIdentifier)) {
-                m_reusableCells.Add(reuseIdentifier, new LinkedList<TableViewCell>());
+                m_reusableCells.Add(reuseIdentifier, new LinkedList<WindowComponent>());
             }
             m_reusableCells[reuseIdentifier].AddLast(cell);
             cell.transform.SetParent(m_reusableCellContainer, false);
@@ -429,19 +468,4 @@ namespace Tacticsoft
         
     }
 
-    internal static class RangeExtensions
-    {
-        public static int Last(this Range range)
-        {
-            if (range.count == 0)
-            {
-                throw new System.InvalidOperationException("Empty range has no to()");
-            }
-            return (range.from + range.count - 1);
-        }
-
-        public static bool Contains(this Range range, int num) {
-            return num >= range.from && num < (range.from + range.count);
-        }
-    }
 }
