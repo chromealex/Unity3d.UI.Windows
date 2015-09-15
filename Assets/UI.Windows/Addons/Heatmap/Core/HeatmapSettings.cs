@@ -104,12 +104,11 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 				}
 
 				public int id;
-				public Status status = Status.NoData;
-				public Texture2D texture = null;
-
 				public Vector2 size;
 				public List<Point> points = new List<Point>();
 
+				public Status status = Status.NoData;
+				public Texture2D texture = null;
 				public bool changed = false;
 
 				public Window(Flow.Data.FlowWindow source) {
