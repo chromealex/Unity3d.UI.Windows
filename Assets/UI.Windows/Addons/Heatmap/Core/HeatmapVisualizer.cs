@@ -38,7 +38,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			{
 				int x2;							// the offset x val in img coordinates
 				int y2;							// the offset y val in img coordinates (0,0) - (maxX, maxY)
-				float pointAlpha = .9f;			// The alpha that the darkest pixel will be in a poitn.
+				float pointAlpha = .9f;			// The alpha that the darkest pixel will be in a point.
 				Color color = new Color(1f, 1f, 1f, pointAlpha);
 				int lineWidth = 1;//(int)(radius * .05f);
 				Dictionary<Vector2, Color> pixelAlpha = new Dictionary<Vector2, Color>();
@@ -55,13 +55,13 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 							y2 = (int)(r * Mathf.Sin(angle)) + (int)(normalizedPoints[i].GetAbsoluteY(window, size.y));
 							
 							// This could be sped up
-							for (int y = y2; y > y2-lineWidth; y--) {
+							for (int y = y2; y > y2 - lineWidth; --y) {
 
-								for (int x = x2; x < x2+lineWidth; x++) {
+								for (int x = x2; x < x2 + lineWidth; ++x) {
 
 									Vector2 coord = new Vector2(x, y);
 									
-									if (pixelAlpha.ContainsKey(coord)) {
+									if (pixelAlpha.ContainsKey(coord) == true) {
 
 										pixelAlpha[coord] = color;
 
@@ -94,7 +94,9 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					
 					// Reset color for next point
 					color = new Color(color.r, color.g, color.b, pointAlpha);
+
 				}
+
 			}
 			
 			map.Apply();

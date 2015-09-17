@@ -5,6 +5,7 @@ using UnityEngine.UI.Windows.Plugins.Heatmap.Components;
 using UnityEngine.UI.Windows.Plugins.Heatmap.Events;
 using System.Linq;
 using UnityEngine.UI.Windows.Types;
+using UnityEngine.UI.Windows.Plugins.Flow;
 
 namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 	
@@ -102,7 +103,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			}
 			
-			Debug.Log(fullScreen + " :: " + localNormalizedPoint + " :: " + localPoint);
+			//Debug.Log(fullScreen + " :: " + localNormalizedPoint + " :: " + localPoint);
 
 			// Send point to server
 			HeatmapSystem.Send(tag, screen, component as WindowComponent, localNormalizedPoint);
@@ -141,7 +142,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			data.status = HeatmapSettings.WindowsData.Window.Status.Loading;
 
-			data.size = window.GetSize();
+			//data.size = new Vector2(Screen.width, Screen.height);
 			data.AddPoint(localNormalizedPoint, tag, component);
 
 			#if UNITY_EDITOR
@@ -150,6 +151,37 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			data.status = HeatmapSettings.WindowsData.Window.Status.Loaded;
 
+		}
+		
+		public static float GetFactor(Vector2 inner, Vector2 boundingBox) {     
+			
+			var widthScale = 0f;
+			var heightScale = 0f;
+			if (inner.x != 0f) {
+				
+				widthScale = boundingBox.x / inner.x;
+				
+			}
+			
+			if (inner.y != 0f) {
+				
+				heightScale = boundingBox.y / inner.y;                
+				
+			}
+			
+			return Mathf.Min(widthScale, heightScale);
+			
+		}
+
+		public static WindowLayout GetLayout(int windowId, out LayoutWindowType screen) {
+			
+			var window = FlowSystem.GetWindow(windowId);
+			
+			screen = window.GetScreen() as LayoutWindowType;
+			if (screen == null || screen.layout.layout == null) return null;
+			
+			return screen.layout.layout;
+			
 		}
 
 	}

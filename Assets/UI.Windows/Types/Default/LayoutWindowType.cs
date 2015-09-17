@@ -33,7 +33,7 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		public override Vector2 GetSize() {
 
-			return this.layout.layout.GetSize();
+			return this.layout.GetLayoutInstance().GetSize();
 			
 		}
 

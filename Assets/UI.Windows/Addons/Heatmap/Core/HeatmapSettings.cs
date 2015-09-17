@@ -48,12 +48,69 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 				
 			}
 
-			private Rect GetRect(WindowsData.Window window) {
+			public Rect GetComponentRect(LayoutWindowType screen, WindowComponentBase component) {
+
+				//var rect = (component.transform as RectTransform).rect;
 				
-				var win = FlowSystem.GetWindow(window.id);
-				var screen = win.GetScreen() as LayoutWindowType;
-				var container = screen.GetLayoutContainer(this.tag);
-				return container.editorRect;
+				var corners = new Vector3[4];
+				(component.transform as RectTransform).GetWorldCorners(corners);
+				
+				var leftBottom = this.GetScreenPoint(screen, component, corners[0]);
+				var topRight = this.GetScreenPoint(screen, component, corners[2]);
+
+				var rect = new Rect();
+				rect.x = leftBottom.x;
+				rect.y = leftBottom.y;
+				rect.width = topRight.x - leftBottom.x;
+				rect.height = topRight.y - leftBottom.y;
+
+				return rect;
+
+			}
+			
+			private Vector3 GetScreenPoint(LayoutWindowType screen, WindowComponentBase component, Vector3 worldPoint) {
+				
+				return screen.workCamera.WorldToScreenPoint(worldPoint);
+				
+			}
+			
+			#if UNITY_EDITOR
+			private static bool test = false;
+			#endif
+			private Rect GetRect(WindowsData.Window window) {
+
+				LayoutWindowType screen;
+				var layout = HeatmapSystem.GetLayout(window.id, out screen);
+
+				var container = layout.GetRootByTag(this.tag);
+				if (container == null) return new Rect();
+
+				#if UNITY_EDITOR
+				var rect = container.editorRect;
+				var size = layout.GetSize();
+
+				// Get normalized size
+				var nRect = new Rect(
+					(rect.x + size.x * 0.5f) / size.x,
+					(rect.height - rect.y + size.y * 0.5f) / size.y,
+					rect.width / size.x,
+					rect.height / size.y
+				);
+
+				if (test == false) {
+					
+					//Debug.Log(rect + " :: " + size + " :: " + nRect);
+					test = true;
+					
+				}
+
+				// Restore rect
+				//rect = new Rect(nRect.x, nRect.y, nRect.width, nRect.height);
+
+				return nRect;
+				#else
+				return new Rect();
+				#endif
 
 			}
 
@@ -73,10 +130,12 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 				}
 
+				// Serialized:
 				public int id;
-				public Vector2 size;
 				public List<Point> points = new List<Point>();
 
+				// Non serialized:
+				public Vector2 size;
 				public Status status = Status.NoData;
 				public Texture2D texture = null;
 				public bool changed = false;
@@ -112,12 +171,25 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 				public void UpdateMap() {
 
-					if (this.texture == null) this.texture = new Texture2D((int)this.size.x, (int)this.size.y, TextureFormat.ARGB32, false);
-					
 					if (this.changed == false) return;
+
+					#if UNITY_EDITOR
+					LayoutWindowType screen;
+					var layout = HeatmapSystem.GetLayout(this.id, out screen);
+					var size = layout.root.editorRect.size;
+					
+					if (this.texture == null || size != this.size) {
+
+						Debug.Log("UpdateMap: " + size);
+
+						this.size = size;
+						this.texture = new Texture2D((int)this.size.x, (int)this.size.y, TextureFormat.ARGB32, false);
+						
+					}
 
 					this.texture = HeatmapVisualizer.Create(this.texture, this, this.GetPoints(), this.size);
 					this.changed = false;
+					#endif
 
 				}
 				

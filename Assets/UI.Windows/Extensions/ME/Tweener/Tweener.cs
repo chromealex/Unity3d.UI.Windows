@@ -265,6 +265,12 @@ namespace ME {
 			
 		}
 		
+		public void removeTweens(string tweenerTag) {
+			
+			Mark(tween => tween.getTag().ToString() == tweenerTag);
+			
+		}
+
 		public void removeTweens(object tweenerTag) {
 			
 			Mark(tween => tween.getTag() == tweenerTag);
