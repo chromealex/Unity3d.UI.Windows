@@ -91,7 +91,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			public void Apply(Material material, WindowLayoutRoot root, State startState, State resultState, float value) {
 				
-				CanvasUpdater.ForceUpdate();
+				//CanvasUpdater.ForceUpdate();
 				
 				root.alpha = Mathf.Lerp(startState.alpha, resultState.alpha, value);
 
@@ -110,7 +110,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 				}
 
-				CanvasUpdater.ForceUpdate();
+				//CanvasUpdater.ForceUpdate();
 
 			}
 			
@@ -226,7 +226,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			if (TweenerGlobal.instance != null) {
 
-				TweenerGlobal.instance.removeTweens(tag);
+				//TweenerGlobal.instance.removeTweens(tag);
 				TweenerGlobal.instance.addTween(rect, duration, 0f, 1f).onUpdate((obj, value) => {
 
 					if (obj != null) {

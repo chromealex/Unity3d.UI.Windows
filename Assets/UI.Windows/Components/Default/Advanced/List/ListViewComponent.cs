@@ -112,6 +112,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public void AddItem(UnityAction<IComponent, int> onItem) {
+
+			++this.capacity;
+			this.onItem = onItem;
+
+			this.dataSource = this;
+
+		}
+
 		protected override void SetItems(int capacity, UnityAction<IComponent, int> onItem) {
 
 			this.capacity = capacity;
@@ -333,7 +342,7 @@ namespace UnityEngine.UI.Windows.Components {
 		private LayoutElement bottomPadding;
 		private float[] rowHeights;
 		//cumulative[i] = sum(rowHeights[j] for 0 <= j <= i)
-		private float[] cumulativeRowHeights;
+		private float[] cumulativeRowHeights = new float[0];
 		private int cleanCumulativeIndex;
 		private Dictionary<int, WindowComponent> visibleCells;
 		private Range visibleRowRange;
@@ -405,7 +414,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
         
-		public void Update() {
+		public virtual void Update() {
 
 			if (this.requiresReload == true) {
 
@@ -415,7 +424,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void LateUpdate() {
+		public virtual void LateUpdate() {
 
 			if (this.requiresRefresh == true) {
 
@@ -604,6 +613,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private int FindIndexOfRowAtY(float y, int startIndex, int endIndex) {
 
+			if (endIndex < 0) {
+
+				endIndex = 0;
+
+			}
+
 			if (startIndex >= endIndex) {
 
 				return startIndex;
@@ -624,6 +639,18 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		private float GetCumulativeRowHeight(int row) {
+
+			if (row < 0) {
+
+				row = 0;
+
+			}
+
+			if (this.cumulativeRowHeights.Length == 0) {
+
+				return 0f;
+
+			}
 
 			while (this.cleanCumulativeIndex < row) {
 

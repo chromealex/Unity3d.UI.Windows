@@ -124,8 +124,8 @@ namespace UnityEngine.UI.Windows.Animations {
 		public void Play(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var delay = this.GetDelay(parameters, forward);
-			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
-			
+			var tag = parameters.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			if (delay > 0f && TweenerGlobal.instance != null) {

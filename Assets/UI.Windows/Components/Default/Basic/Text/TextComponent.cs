@@ -15,6 +15,12 @@ namespace UnityEngine.UI.Windows.Components {
 			return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
 
 		}
+		
+		public void SetValue(long value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+			
+			this.SetText(TextComponent.FormatValue(value, format));
+			
+		}
 
 		public void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format = UnityEngine.UI.Windows.Components.TextComponent.ValueFormat.None) {
 			
@@ -85,20 +91,28 @@ namespace UnityEngine.UI.Windows.Components {
 			None,		 // 1234567890
 			WithSpace,	 // 1 234 567 890
 			WithComma,	 // 1,234 567 890
-			TimeHMS,	 // 00:00:00
-			TimeMS, 	 // 00:00
-			TimeHMSms, 	 // 00:00:00`00
-			TimeMSms, 	 // 00:00`00
-			
+			TimeHMSFromSeconds,				// 00:00:00
+			TimeMSFromSeconds,				// 00:00
+			TimeHMSmsFromMilliseconds,		// 00:00:00`00
+			TimeMSmsFromMilliseconds,		// 00:00`00
+
+			DateDMHMS,						// 12 Aug 00:00:00
+
 		};
 		
 		public static string FormatValue(int value, ValueFormat format) {
 			
-			return TextComponent.FormatValue((float)value, format);
+			return TextComponent.FormatValue((double)value, format);
 			
 		}
 		
-		public static string FormatValue(float value, ValueFormat format) {
+		public static string FormatValue(long value, ValueFormat format) {
+			
+			return TextComponent.FormatValue((double)value, format);
+			
+		}
+
+		public static string FormatValue(double value, ValueFormat format) {
 			
 			var output = string.Empty;
 			
@@ -144,7 +158,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.TimeHMS: {
+				case ValueFormat.DateDMHMS: {
+
+					DateTime date = new DateTime((long)value);
+					output = date.ToString("dd MM hh:mm:ss");
+
+					break;
+
+				}
+
+				case ValueFormat.TimeHMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
 					output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
@@ -153,7 +176,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.TimeMS: {
+				case ValueFormat.TimeMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
 					output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
@@ -162,7 +185,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.TimeHMSms: {
+				case ValueFormat.TimeHMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
 					output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
@@ -171,7 +194,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.TimeMSms: {
+				case ValueFormat.TimeMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
 					output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);

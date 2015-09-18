@@ -223,6 +223,8 @@ namespace UnityEngine.UI.Windows {
 			public class OnBackAction : UnityEvent {}
 			public OnBackAction onBackAction = new OnBackAction();
 
+			private System.Action callback;
+
 			public bool IsBackActionShowSpecific() {
 				
 				return (this.backAction & BackAction.ShowSpecificWindow) != 0;
@@ -240,23 +242,33 @@ namespace UnityEngine.UI.Windows {
 				return (this.backAction & BackAction.HideCurrentWindow) != 0;
 				
 			}
-			
-			public void LateUpdate(WindowBase window, System.Action callback = null) {
-				
-				if (UnityEngine.Input.GetKeyDown(KeyCode.Escape) == true) {
-					
-					if (callback != null) {
+
+			public void SetCallback(System.Action callback) {
+
+				this.callback = callback;
+
+			}
+
+			public void LateUpdate(WindowBase window) {
+
+				if (WindowSystem.GetCurrentWindow() == window) {
+
+					if (UnityEngine.Input.GetKeyDown(KeyCode.Escape) == true) {
 						
-						callback();
-						
-					} else {
-						
-						this.OnClick(window);
+						if (this.callback != null) {
+							
+							this.callback();
+							
+						} else {
+							
+							this.OnClick(window);
+							
+						}
 						
 					}
-					
+
 				}
-				
+
 			}
 			
 			public void OnClick(WindowBase window) {
@@ -485,9 +497,9 @@ namespace UnityEngine.UI.Windows {
 		public Once once = new Once();
 		public EveryInstance onEveryInstance = new EveryInstance();
 
-		public void LateUpdate(WindowBase window, System.Action callback = null) {
+		public void LateUpdate(WindowBase window) {
 			
-			this.backButtonBehaviour.LateUpdate(window, callback);
+			this.backButtonBehaviour.LateUpdate(window);
 
 		}
 
