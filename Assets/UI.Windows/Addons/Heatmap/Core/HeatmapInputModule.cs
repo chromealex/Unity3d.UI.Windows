@@ -47,7 +47,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Events {
 			if (this.currentData == null) this.currentData = new PointerEventData(EventSystem.current);
 			if (this.currentData.used == true) this.currentData.Reset();
 
-			#if UNITY_STANDALONE || UNITY_WEBPLAYER
+			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
 			if (Input.GetMouseButtonUp(0) == true ||
 			    Input.GetMouseButtonUp(1) == true ||
 			    Input.GetMouseButtonUp(2) == true) {

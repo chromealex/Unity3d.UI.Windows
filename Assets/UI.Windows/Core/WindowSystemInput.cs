@@ -12,7 +12,7 @@ namespace UnityEngine.UI.Windows {
 		
 		public void LateUpdate() {
 			
-			#if UNITY_STANDALONE || UNITY_WEBPLAYER
+			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
 			if (Input.GetMouseButtonDown(0) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(0) == true) WindowSystemInput.onPointerUp.Invoke();
 			if (Input.GetMouseButtonDown(1) == true) WindowSystemInput.onPointerDown.Invoke();
@@ -27,7 +27,7 @@ namespace UnityEngine.UI.Windows {
 
 			// TODO: Make it crossplatform
 
-			#if UNITY_STANDALONE || UNITY_WEBPLAYER
+			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
 			return Input.mousePosition;
 			#else
 			return Vector2.zero;
