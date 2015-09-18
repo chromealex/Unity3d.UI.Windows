@@ -49,10 +49,10 @@ namespace UnityEngine.UI.Windows {
 		public float maxWidth = 1920f;
 		public float margin = 100f;
 
-		[HideInInspector]
+		#if UNITY_EDITOR
+		//[HideInInspector]
 		public Rect editorRect;
 
-		#if UNITY_EDITOR
 		public void OnValidate() {
 
 			if (Application.isPlaying == true) return;

@@ -8,6 +8,7 @@ using UnityEditor.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Heatmap.Core;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
@@ -76,8 +77,27 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 					//data.UpdateMap();
 
 					if (data != null && data.texture != null && data.status == HeatmapSettings.WindowsData.Window.Status.Loaded) {
+						
+						LayoutWindowType screen;
+						var layout = HeatmapSystem.GetLayout(window.id, out screen);
 
-						GUI.DrawTexture(rect, data.texture, ScaleMode.ScaleToFit, alphaBlend: true);
+						var scaleFactor = HeatmapSystem.GetFactor(new Vector2(layout.root.editorRect.width, layout.root.editorRect.height), rect.size);
+						//var scaleFactorCanvas = layout.editorScale > 0f ? 1f / layout.editorScale : 1f;
+						//scaleFactor *= scaleFactorCanvas;
+
+						var r = layout.root.editorRect;
+						r.x *= scaleFactor;
+						r.y *= scaleFactor;
+						r.x += rect.x + rect.width * 0.5f;
+						r.y += rect.y + rect.height * 0.5f;
+						r.width *= scaleFactor;
+						r.height *= scaleFactor;
+
+						var c = Color.white;
+						c.a = 0.5f;
+						GUI.color = c;
+						GUI.DrawTexture(r, data.texture, ScaleMode.StretchToFill, alphaBlend: false);
+						GUI.color = Color.white;
 
 					} else {
 						
