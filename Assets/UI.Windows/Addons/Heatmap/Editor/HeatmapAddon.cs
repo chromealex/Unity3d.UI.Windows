@@ -51,7 +51,15 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 					this.editor.OnInspectorGUI();
 					
 				}
-				
+
+				if (GUILayout.Button("Refresh") == true) {
+
+					//var settings = Heatmap.settings;
+					//TODO:..
+					settings.data.UpdateMap();
+
+				}
+
 			}
 
 		}
@@ -66,12 +74,13 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 				if (settings.show == true) {
 
 					var data = settings.data.Get(window);
-					data.UpdateMap();
+					//data.UpdateMap();
 
 					if (data != null && data.texture != null && data.status == HeatmapSettings.WindowsData.Window.Status.Loaded) {
-						
+
 						LayoutWindowType screen;
 						var layout = HeatmapSystem.GetLayout(window.id, out screen);
+						if (layout == null) return;
 
 						var scaleFactor = HeatmapSystem.GetFactor(new Vector2(layout.root.editorRect.width, layout.root.editorRect.height), rect.size);
 						//var scaleFactorCanvas = layout.editorScale > 0f ? 1f / layout.editorScale : 1f;
