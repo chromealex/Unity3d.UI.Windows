@@ -306,13 +306,11 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 							var obj = jo.list[i];
 							var x = obj.GetField("x").f;
 							var y = obj.GetField("y").f;
-							//Debug.Log(x + " :: " + y);
+
 							Vector2 point = new Vector2(x, y);
 							LayoutTag t = (LayoutTag)(int)obj.GetField("tag").d;
 
 							int windowId = (int)obj.GetField("windowId").d;
-							
-							//this.AddPoint(point, t, null);
 
 							foreach (var item in this.list) {
 								if (item.id == windowId) {
