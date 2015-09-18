@@ -50,7 +50,15 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 					this.editor.OnInspectorGUI();
 					
 				}
-				
+
+				if (GUILayout.Button("Refresh") == true) {
+
+					//var settings = Heatmap.settings;
+					//TODO:..
+					settings.data.UpdateMap();
+
+				}
+
 			}
 
 		}
@@ -65,7 +73,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 				if (settings.show == true) {
 
 					var data = settings.data.Get(window);
-					data.UpdateMap();
+					//data.UpdateMap();
 
 					if (data != null && data.texture != null && data.status == HeatmapSettings.WindowsData.Window.Status.Loaded) {
 

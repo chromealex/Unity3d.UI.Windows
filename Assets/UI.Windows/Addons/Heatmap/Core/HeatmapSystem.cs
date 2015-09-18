@@ -7,6 +7,7 @@ using System.Linq;
 using UnityEngine.UI.Windows.Types;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI.Windows.Plugins.Social.ThirdParty;
 
 namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 	
@@ -20,7 +21,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 	public class HeatmapSystem {
 
 		//TODO: change to HttpRequestAsync
-		private static IHttpRequest sender = new HttpRequest();
+		public static IHttpRequest sender = new HttpRequest();
 
 		public static void Put() {
 			
@@ -145,13 +146,12 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			data.size = window.GetSize();
 			data.AddPoint(localNormalizedPoint, tag, component);
 
-//#if !UNITY_EDITOR
 			//TODO: change to MathX
 			//Rounding coords to 2 digets after point
-			var roundedX = Math.Round((double)data.size.x, 2).ToString(); //Math.Round((double)localNormalizedPoint.x, 2).ToString();
-			var roundedY = Math.Round((double)data.size.y, 2).ToString(); //Math.Round((double)localNormalizedPoint.y, 2).ToString();
+			var roundedX = Math.Round((double)localNormalizedPoint.x, 2).ToString();
+			var roundedY = Math.Round((double)localNormalizedPoint.y, 2).ToString();
 
-
+			Debug.Log(localNormalizedPoint.x);
 			HeatmapSystem.sender.Post("http://localhost:8080/hm_save", new Dictionary<string, string>() {
 				{"key", settings.authKey},
 				{"uid", SystemInfo.deviceUniqueIdentifier},
@@ -160,14 +160,6 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 				{"x",  roundedX},
 				{"y",  roundedY}
 			}, null);
-
-#if !UNITY_EDITOR
-#else
-			//TODO: load data
-			UnityEditor.EditorUtility.SetDirty(settings);
-#endif
-
-			data.status = HeatmapSettings.WindowsData.Window.Status.Loaded;
 
 		}
 

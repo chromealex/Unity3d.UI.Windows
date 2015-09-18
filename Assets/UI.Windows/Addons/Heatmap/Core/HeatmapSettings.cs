@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Heatmap.Events;
 using UnityEngine.UI.Windows.Types;
+using System.Linq;
+using UnityEngine.UI.Windows.Plugins.Social.ThirdParty;
 
 namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
@@ -52,7 +54,9 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 				
 				var win = FlowSystem.GetWindow(window.id);
 				var screen = win.GetScreen() as LayoutWindowType;
-				var container = screen.GetLayoutContainer(this.tag);
+				var container = screen.layout.layout.GetRootByTag(this.tag);
+				if (container == null) return new Rect();
+
 				return container.editorRect;
 
 			}
@@ -110,16 +114,51 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 				}
 
-				public void UpdateMap() {
+				/*public void UpdateMap() {
+					Debug.Log("dsfgsdf");
+					//TODO: load data
+					var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(useCache: false).FirstOrDefault();
+					HeatmapSystem.sender.Post("http://localhost:8080/hm_load", new Dictionary<string, string>() {
+						{"key", settings.authKey},
+						//{"uid", SystemInfo.deviceUniqueIdentifier},
+						{"windowId", this.id.ToString()}//,
+						//{"tag", ((int)tag).ToString()}
+					}, (HttpResult result) => {
+						Debug.Log("Callback" + result.errDescr + " : " + result.response);
+						if (result.IsSuccess() == true) {
+							var jo = new JSONObject(result.response.Trim());
+							this.points.Clear();
+							for (int i = 0, imax = jo.list.Count; i < imax; ++i) {
 
-					if (this.texture == null) this.texture = new Texture2D((int)this.size.x, (int)this.size.y, TextureFormat.ARGB32, false);
-					
-					if (this.changed == false) return;
+								var obj = jo.list[i];
+								var x = obj.GetField("x").f;
+								var y = obj.GetField("y").f;
+								Debug.Log(x + " :: " + y);
+								Vector2 point = new Vector2(x, y);
+								LayoutTag t = (LayoutTag)(int)obj.GetField("tag").d;
 
-					this.texture = HeatmapVisualizer.Create(this.texture, this, this.GetPoints(), this.size);
-					this.changed = false;
+								this.AddPoint(point, t, null);
 
-				}
+							}
+
+							UnityEditor.EditorUtility.SetDirty(settings);
+							this.status = HeatmapSettings.WindowsData.Window.Status.Loaded;
+							
+							if (this.texture == null) this.texture = new Texture2D((int)this.size.x, (int)this.size.y, TextureFormat.ARGB32, false);
+							
+							if (this.changed == false) return;
+							
+							this.texture = HeatmapVisualizer.Create(this.texture, this, this.GetPoints(), this.size);
+							this.changed = false;
+
+						}
+						
+					});
+
+
+
+
+				}*/
 				
 				public void SetChanged() {
 
@@ -162,6 +201,67 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 				
 				return result;
 				
+			}
+
+			public void UpdateMap() {
+
+				string ids = "[";
+				for (int i = 0, imax = this.list.Count - 1; i <= imax; ++i) {
+					ids += this.list[i].id.ToString();
+					if (i < imax) ids += ",";
+				}
+				ids += "]";
+
+				var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(useCache: false).FirstOrDefault();
+
+				HeatmapSystem.sender.Post("http://localhost:8080/hm_load", new Dictionary<string, string>() {
+					{"key", settings.authKey},
+					//{"uid", SystemInfo.deviceUniqueIdentifier},
+					{"windowIds", ids}//
+				}, (result) => {
+
+					if (result.IsSuccess() == true) {
+						var jo = new JSONObject(result.response.Trim());
+
+						foreach (var item in this.list) {
+							item.points.Clear();
+						}
+
+						for (int i = 0, imax = jo.list.Count; i < imax; ++i) {
+							
+							var obj = jo.list[i];
+							var x = obj.GetField("x").f;
+							var y = obj.GetField("y").f;
+							//Debug.Log(x + " :: " + y);
+							Vector2 point = new Vector2(x, y);
+							LayoutTag t = (LayoutTag)(int)obj.GetField("tag").d;
+
+							int windowId = (int)obj.GetField("windowId").d;
+							
+							//this.AddPoint(point, t, null);
+
+							foreach (var item in this.list) {
+								if (item.id == windowId) {
+									item.AddPoint(point, t, null);
+									item.status = HeatmapSettings.WindowsData.Window.Status.Loaded;
+									break;
+								}
+							}
+						}
+
+						UnityEditor.EditorUtility.SetDirty(settings);
+
+						foreach (var item in this.list) {
+							if (item.texture == null) item.texture = new Texture2D((int)item.size.x, (int)item.size.y, TextureFormat.ARGB32, false);									
+							if (item.changed == false) return;					
+							item.texture = HeatmapVisualizer.Create(item.texture, item, item.GetPoints(), item.size);
+							item.changed = false;
+						}
+
+					}
+
+				});
+
 			}
 			
 			public void SetChanged() {
