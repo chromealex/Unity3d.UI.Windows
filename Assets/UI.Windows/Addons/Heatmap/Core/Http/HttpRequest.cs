@@ -8,7 +8,7 @@ using System.IO;
 
 public class HttpRequest : IHttpRequest {
 
-	public virtual void MakeRequest(string url, string method, System.Action<HttpResult> onResult, System.Func<HttpWebRequest, bool> modifyer = null) {
+	public virtual void MakeRequest(string url, string method, System.Action<HttpResult> onResult, System.Func<HttpWebRequest, bool> modifier = null) {
 
 		var res = new HttpResult();
 
@@ -16,8 +16,10 @@ public class HttpRequest : IHttpRequest {
 
 		r.Method = method;
 
-		if (modifyer != null) {
-			modifyer(r);
+		if (modifier != null) {
+
+			modifier(r);
+
 		}
 
 		try {
@@ -49,7 +51,9 @@ public class HttpRequest : IHttpRequest {
 	}
 
 	public virtual void Get(string url, System.Action<HttpResult> onResult) {
+
 		this.MakeRequest(url, HttpMethods.GET, onResult);
+
 	}
 
 	public virtual void Post(string url, Dictionary<string, string> data, System.Action<HttpResult> onResult) {
@@ -66,10 +70,11 @@ public class HttpRequest : IHttpRequest {
 			r.ContentType = "application/json";
 			
 			//Write the payload to the request body.
-			using ( Stream requestStream = r.GetRequestStream())
-			{
+			using (var requestStream = r.GetRequestStream()) {
+
 				requestStream.Write(encoding.GetBytes(requestPayload), 0,
 				                    encoding.GetByteCount(requestPayload));
+
 			}
 
 			return false;

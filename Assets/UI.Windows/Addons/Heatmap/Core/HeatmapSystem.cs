@@ -150,10 +150,9 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			//TODO: change to MathX
 			//Rounding coords to 2 digets after point
-			var roundedX = Math.Round((double)localNormalizedPoint.x, 2).ToString();
-			var roundedY = Math.Round((double)localNormalizedPoint.y, 2).ToString();
-
-			Debug.Log(localNormalizedPoint.x);
+			//var roundedX = Math.Round((double)localNormalizedPoint.x, 2).ToString();
+			//var roundedY = Math.Round((double)localNormalizedPoint.y, 2).ToString();
+			/*
 			HeatmapSystem.sender.Post("http://localhost:8080/hm_save", new Dictionary<string, string>() {
 				{"key", settings.authKey},
 				{"uid", SystemInfo.deviceUniqueIdentifier},
@@ -161,7 +160,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 				{"tag", ((int)tag).ToString()},
 				{"x",  roundedX},
 				{"y",  roundedY}
-			}, null);
+			}, null);*/
 
 		}
 		

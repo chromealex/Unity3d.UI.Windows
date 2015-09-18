@@ -278,7 +278,8 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			}
 
 			public void UpdateMap() {
-
+				
+				#if UNITY_EDITOR
 				string ids = "[";
 				for (int i = 0, imax = this.list.Count - 1; i <= imax; ++i) {
 					ids += this.list[i].id.ToString();
@@ -333,6 +334,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					}
 
 				});
+				#endif
 
 			}
 			

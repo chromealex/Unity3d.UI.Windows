@@ -54,8 +54,8 @@ public class HttpRequestAsync : HttpRequest {
 
 	private void BeginRequest(HttpWebRequest request, System.Action<HttpResult> onResult) {
 
-		int total = 0;
-		byte[] buffer = new byte[1000];
+		//int total = 0;
+		//byte[] buffer = new byte[1000];
 
 		request.BeginGetResponse(new AsyncCallback((result) => {
 			var data = request.EndGetResponse(result);
