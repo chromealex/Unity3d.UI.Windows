@@ -87,12 +87,14 @@ namespace UnityEngine.UI.Windows {
 
 			public WindowBase window;
 			public WindowObjectState state;
-
-			public HistoryItem(WindowBase window) {
-
-				this.state = window.GetState();
+			
+			public HistoryItem(WindowBase window) : this(window, window.GetState()) {}
+			
+			public HistoryItem(WindowBase window, WindowObjectState state) {
+				
+				this.state = state;
 				this.window = window;
-
+				
 			}
 
 		}
@@ -428,14 +430,27 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="window">Window.</param>
 		public static void AddToHistory(WindowBase window) {
 
+			WindowSystem.AddToHistory(window, window.GetState());
+
+		}
+
+		public static void AddToHistory(WindowBase window, WindowObjectState state, bool forced = false) {
+			
 			if (Application.isPlaying == false) return;
 
-			if (window.preferences.IsHistoryActive() == true) {
-
-				if (WindowSystem.instance != null) WindowSystem.instance.history.Add(new HistoryItem(window));
+			if (forced == true || window.preferences.IsHistoryActive() == true) {
+				
+				if (WindowSystem.instance != null) WindowSystem.instance.history.Add(new HistoryItem(window, state));
 				WindowSystem.UpdateLastInstance();
-
+				
 			}
+			
+		}
+
+		public static void RemoveFromHistory(WindowBase window) {
+
+			WindowSystem.instance.history.RemoveAll((item) => item.window == window);
+			WindowSystem.RefreshHistory();
 
 		}
 
@@ -455,7 +470,7 @@ namespace UnityEngine.UI.Windows {
 		/// <returns>The current window.</returns>
 		public static WindowBase GetCurrentWindow() {
 
-			var last = WindowSystem.instance.history.LastOrDefault();
+			var last = WindowSystem.instance.history.LastOrDefault(w => w.state == WindowObjectState.Showing || w.state == WindowObjectState.Shown);
 			if (last == null) return null;
 
 			return last.window;
