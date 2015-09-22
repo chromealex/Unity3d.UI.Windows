@@ -26,6 +26,8 @@ namespace UnityEditor.UI.Windows {
 				for (int i = 0; i < property.arraySize; ++i) {
 
 					var element = property.GetArrayElementAtIndex(i);
+					if (window.layout.layout == null) continue;
+
 					var rootElement = window.layout.layout.GetRootByTag(window.layout.components[i].tag);
 					if (rootElement != null && rootElement.showInComponentsList == true) elements.Add(element);
 

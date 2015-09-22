@@ -41,14 +41,15 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				// Prepare rule
 				var replace = replaceRules[i];
 				replace = replace.Replace(" ", @"\s?");
+				replace = replace.Replace("(", @"\(").Replace(")", @"\)");
 				replace = oldInfo.Replace(replace, (r) => r.Replace("{VARIABLE}", "([a-zA-Z]+[a-zA-Z0-9]*)"));
 				
 				var replacement = replaceRules[i];
 				replacement = newInfo.Replace(replacement, (r) => r.Replace("{VARIABLE}", "$1"));
 				
 				var pattern = @"" + replace + "";
-				
-				var rgx = new Regex(pattern, RegexOptions.IgnoreCase);
+
+				var rgx = new Regex(pattern, RegexOptions.Singleline);
 				text = rgx.Replace(text, replacement);
 				
 			}
