@@ -95,12 +95,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			{
 
 				if (addon != null && addon.InstallationNeeded() == true) {
-					
-					if (GUILayoutExt.LargeButton("Install", 40f, 200f) == true) {
 
-						addon.Install();
-						
+					GUILayout.BeginHorizontal();
+					{
+						GUILayout.FlexibleSpace();
+						if (GUILayoutExt.LargeButton("Install", 40f, 200f) == true) {
+
+							addon.Install();
+							
+						}
+						GUILayout.FlexibleSpace();
 					}
+					GUILayout.EndHorizontal();
 
 				} else {
 

@@ -663,7 +663,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			if (flowWindowWithLayout == true) {
 				
-				if (this.layoutBoxStyle == null) this.layoutBoxStyle = FlowSystemEditorWindow.defaultSkin.FindStyle("LayoutBox");
+				if (this.layoutBoxStyle == null) {
+
+					this.layoutBoxStyle = FlowSystemEditorWindow.defaultSkin.FindStyle("LayoutBox");
+
+				}
 				
 				GUILayout.Box(string.Empty, this.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 				var rect = GUILayoutUtility.GetLastRect();
