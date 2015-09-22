@@ -465,15 +465,12 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		/// <summary>
-		/// Gets the current window (Basicaly the last window in history).
+		/// Gets the current window
 		/// </summary>
 		/// <returns>The current window.</returns>
 		public static WindowBase GetCurrentWindow() {
 
-			var last = WindowSystem.instance.history.LastOrDefault(w => w.state == WindowObjectState.Showing || w.state == WindowObjectState.Shown);
-			if (last == null) return null;
-
-			return last.window;
+			return WindowSystem.instance.lastInstance;
 
 		}
 
