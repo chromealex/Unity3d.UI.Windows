@@ -1486,7 +1486,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			menu.AddItem(new GUIContent(string.Format("{0}Center Screen", prefix)), on: false, func: () => {
 				
-				FlowSystem.SetScrollPosition(Vector2.one * -1f);
+				FlowSystem.SetScrollPosition(Vector2.one);
 				
 			});
 			

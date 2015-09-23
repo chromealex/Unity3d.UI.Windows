@@ -23,6 +23,12 @@ namespace UnityEngine.UI.Windows.Components {
 				return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
 	
 			}
+			
+			public void SetValue(long value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+				
+				this.SetText(TextComponent.FormatValue(value, format));
+				
+			}
 	
 			public void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format = UnityEngine.UI.Windows.Components.TextComponent.ValueFormat.None) {
 				

@@ -42,7 +42,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		[ReadOnly]
 		public float zoom = 1f;
 		[ReadOnly]
-		public Vector2 scrollPos = new Vector2(-1f, -1f);
+		public Vector2 scrollPos = new Vector2(1f, 1f);
 
 		[ReadOnly]
 		public int rootWindow;
