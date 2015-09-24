@@ -9,21 +9,43 @@ using UnityEngine;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Types;
 
-namespace ExampleProject.UI.Gameplay.EndGame {
+namespace ExampleProject.UI.Menu.MainMenu {
 
-	public class EndGameScreenBase : LayoutWindowType {
+	public class MainMenuScreenBase : LayoutWindowType {
 		
 		public class FlowFunctionLoaderRoutes : WindowRoutes {
 			
 			public FlowFunctionLoaderRoutes(WindowBase window, int index) : base(window, index) {}
 					
 			/// <summary>
-			/// Flows to the Default.
+			/// Flows to the GameplayView.
+			/// Use this method to play transition effect on B window only.
+			/// If you call Hide() on A window - it will hide with standard behaviour.
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
 			/// </summary>
-			/// <returns>Default</returns>
-			public virtual void FlowDefault(params object[] parameters) {
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowGameplayView() {
 				
-				WindowSystem.ShowDefault(parameters);
+				return this.INTERNAL_FlowGameplayView(hide: false);
+				
+			}
+			
+			/// <summary>
+			/// Flows to the GameplayView.
+			/// Hides current window.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
+			/// </summary>
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowHideGameplayView() {
+				
+				return this.INTERNAL_FlowGameplayView(hide: true);
+				
+			}
+			
+			private ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen INTERNAL_FlowGameplayView(bool hide, System.Action<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen> onParametersPassCall = null) {
+				
+				return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>(this, 39, 25, hide, onParametersPassCall);
 				
 			}
 			
@@ -57,7 +79,7 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 		
 		private ExampleProject.UI.Loader.Loading.LoadingScreen INTERNAL_FlowFunctionLoader(bool hide, UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, System.Action<ExampleProject.UI.Loader.Loading.LoadingScreen> onParametersPassCall = null) {
 			
-			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(28, 40);
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(1, 39);
 			if (hide == true) this.Hide(item.transition, item.transitionParameters);
 			return WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
 				(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunctionLoaderRoutes(this, index))),

@@ -8,9 +8,9 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 
-namespace ExampleProject.UI.Menu.GlobalMap {
+namespace ExampleProject.UI.Menu.MainMenu {
 
-	public class GlobalMapScreen : GlobalMapScreenBase {
+	public class MainMenuScreen : MainMenuScreenBase {
 
 	}
 

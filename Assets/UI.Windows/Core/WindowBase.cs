@@ -30,7 +30,7 @@ namespace UnityEngine.UI.Windows {
 
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
-	public class WindowBase : WindowObject, IWindowEventsAsync {
+	public class WindowBase : WindowObject, IWindowEventsAsync, IFunctionIteration {
 
 		#if UNITY_EDITOR
 		[HideInInspector]

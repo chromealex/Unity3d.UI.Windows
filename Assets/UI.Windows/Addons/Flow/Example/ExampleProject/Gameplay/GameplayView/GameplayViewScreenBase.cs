@@ -22,7 +22,7 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// <returns>EndGame</returns>
 		public virtual ExampleProject.UI.Gameplay.EndGame.EndGameScreen FlowEndGame() {
 			
-			return this.INTERNAL_FlowEndGame(false);
+			return this.INTERNAL_FlowEndGame(hide: false);
 			
 		}
 		
@@ -35,20 +35,13 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// <returns>EndGame</returns>
 		public virtual ExampleProject.UI.Gameplay.EndGame.EndGameScreen FlowHideEndGame() {
 			
-			return this.INTERNAL_FlowEndGame(true);
+			return this.INTERNAL_FlowEndGame(hide: true);
 			
 		}
 		
 		private ExampleProject.UI.Gameplay.EndGame.EndGameScreen INTERNAL_FlowEndGame(bool hide, System.Action<ExampleProject.UI.Gameplay.EndGame.EndGameScreen> onParametersPassCall = null) {
 			
-			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(25, 28);
-			if (hide == true) this.Hide(item.transition, item.transitionParameters);
-			return WindowSystem.Show<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(
-				(w) => w.SetFunctionIterationIndex(this.GetFunctionIterationIndex()),
-				item.transition,
-				item.transitionParameters,
-				onParametersPassCall
-			);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(this, 25, 28, hide, onParametersPassCall);
 			
 		}
 				
@@ -61,7 +54,7 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// <returns>GameplayHUD</returns>
 		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowGameplayHUD() {
 			
-			return this.INTERNAL_FlowGameplayHUD(false);
+			return this.INTERNAL_FlowGameplayHUD(hide: false);
 			
 		}
 		
@@ -74,20 +67,13 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		/// <returns>GameplayHUD</returns>
 		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowHideGameplayHUD() {
 			
-			return this.INTERNAL_FlowGameplayHUD(true);
+			return this.INTERNAL_FlowGameplayHUD(hide: true);
 			
 		}
 		
 		private ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen INTERNAL_FlowGameplayHUD(bool hide, System.Action<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen> onParametersPassCall = null) {
 			
-			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(25, 29);
-			if (hide == true) this.Hide(item.transition, item.transitionParameters);
-			return WindowSystem.Show<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(
-				(w) => w.SetFunctionIterationIndex(this.GetFunctionIterationIndex()),
-				item.transition,
-				item.transitionParameters,
-				onParametersPassCall
-			);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(this, 25, 29, hide, onParametersPassCall);
 			
 		}
 		

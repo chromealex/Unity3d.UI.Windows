@@ -14,41 +14,34 @@ namespace ExampleProject.UI.Other.MainLoader {
 	public class MainLoaderScreenBase : LayoutWindowType {
 		
 		/// <summary>
-		/// Flows to the GlobalMap.
+		/// Flows to the MainMenu.
 		/// Use this method to play transition effect on B window only.
 		/// If you call Hide() on A window - it will hide with standard behaviour.
-		/// Full Name: ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen
+		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
 		/// </summary>
-		/// <returns>GlobalMap</returns>
-		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowGlobalMap() {
+		/// <returns>MainMenu</returns>
+		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowMainMenu() {
 			
-			return this.INTERNAL_FlowGlobalMap(false);
+			return this.INTERNAL_FlowMainMenu(hide: false);
 			
 		}
 		
 		/// <summary>
-		/// Flows to the GlobalMap.
+		/// Flows to the MainMenu.
 		/// Hides current window.
 		/// Use this method to play transition effect on both windows (A and B).
-		/// Full Name: ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen
+		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
 		/// </summary>
-		/// <returns>GlobalMap</returns>
-		public virtual ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen FlowHideGlobalMap() {
+		/// <returns>MainMenu</returns>
+		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowHideMainMenu() {
 			
-			return this.INTERNAL_FlowGlobalMap(true);
+			return this.INTERNAL_FlowMainMenu(hide: true);
 			
 		}
 		
-		private ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen INTERNAL_FlowGlobalMap(bool hide, System.Action<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen> onParametersPassCall = null) {
+		private ExampleProject.UI.Menu.MainMenu.MainMenuScreen INTERNAL_FlowMainMenu(bool hide, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onParametersPassCall = null) {
 			
-			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(18, 1);
-			if (hide == true) this.Hide(item.transition, item.transitionParameters);
-			return WindowSystem.Show<ExampleProject.UI.Menu.GlobalMap.GlobalMapScreen>(
-				(w) => w.SetFunctionIterationIndex(this.GetFunctionIterationIndex()),
-				item.transition,
-				item.transitionParameters,
-				onParametersPassCall
-			);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, 18, 1, hide, onParametersPassCall);
 			
 		}
 				
@@ -61,7 +54,7 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// <returns>Background</returns>
 		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowBackground() {
 			
-			return this.INTERNAL_FlowBackground(false);
+			return this.INTERNAL_FlowBackground(hide: false);
 			
 		}
 		
@@ -74,20 +67,13 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// <returns>Background</returns>
 		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowHideBackground() {
 			
-			return this.INTERNAL_FlowBackground(true);
+			return this.INTERNAL_FlowBackground(hide: true);
 			
 		}
 		
 		private ExampleProject.UI.Other.Background.BackgroundScreen INTERNAL_FlowBackground(bool hide, System.Action<ExampleProject.UI.Other.Background.BackgroundScreen> onParametersPassCall = null) {
 			
-			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(18, 32);
-			if (hide == true) this.Hide(item.transition, item.transitionParameters);
-			return WindowSystem.Show<ExampleProject.UI.Other.Background.BackgroundScreen>(
-				(w) => w.SetFunctionIterationIndex(this.GetFunctionIterationIndex()),
-				item.transition,
-				item.transitionParameters,
-				onParametersPassCall
-			);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.Background.BackgroundScreen>(this, 18, 32, hide, onParametersPassCall);
 			
 		}
 		

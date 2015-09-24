@@ -9,8 +9,16 @@ using UnityEngine.Events;
 using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEngine.UI.Windows {
-	
-	public class WindowRoutes {
+
+	public interface IFunctionIteration {
+
+		int GetFunctionIterationIndex();
+		bool Hide();
+		bool Hide(TransitionBase transition, TransitionInputParameters transitionParameters);
+
+	}
+
+	public class WindowRoutes : IFunctionIteration {
 
 		private int index;
 		private WindowBase sourceWindow;
@@ -28,15 +36,15 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void Hide() {
+		public bool Hide() {
 
-			this.sourceWindow.Hide();
+			return this.sourceWindow.Hide();
 
 		}
 
-		public void Hide(TransitionBase transition, TransitionInputParameters transitionParameters) {
+		public bool Hide(TransitionBase transition, TransitionInputParameters transitionParameters) {
 			
-			this.sourceWindow.Hide(transition, transitionParameters);
+			return this.sourceWindow.Hide(transition, transitionParameters);
 
 		}
 
