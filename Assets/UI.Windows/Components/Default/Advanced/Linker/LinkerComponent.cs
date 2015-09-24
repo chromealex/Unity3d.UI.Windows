@@ -12,6 +12,8 @@ namespace UnityEngine.UI.Windows.Components {
 		[ComponentChooser]
 		public WindowComponent prefab;
 
+		public bool fitToRoot;
+
 		[HideInInspector]
 		private WindowComponent instance;
 
@@ -65,7 +67,20 @@ namespace UnityEngine.UI.Windows.Components {
 				this.instance = this.prefab.Spawn();
 				this.instance.SetParent(this, false);
 				this.instance.SetTransformAs(this.prefab);
-				
+
+				if (this.fitToRoot == true) {
+
+					var rect = this.instance.transform as RectTransform;
+					if (rect != null) {
+
+						rect.anchorMin = Vector2.zero;
+						rect.anchorMax = Vector2.one;
+						rect.sizeDelta = Vector2.zero;
+
+					}
+
+				}
+
 				this.instance.Setup(this.GetLayoutRoot());
 				this.instance.Setup(this.GetWindow());
 
