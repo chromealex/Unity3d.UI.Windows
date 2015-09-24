@@ -1398,6 +1398,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		public void OpenFlowData(FlowData flowData) {
 			
+			if (this.guiSplash == null) this.guiSplash = new FlowSplash(this);
 			this.guiSplash.cachedData = flowData;
 			FlowSystem.SetData(flowData);
 			

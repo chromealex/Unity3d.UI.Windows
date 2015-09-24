@@ -8,7 +8,7 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} Flow{CLASS_NAME}() {
 			
-			return this.INTERNAL_Flow{CLASS_NAME}(false);
+			return this.INTERNAL_Flow{CLASS_NAME}(hide: false);
 			
 		}
 		
@@ -21,20 +21,13 @@
 		/// <returns>{CLASS_NAME}</returns>
 		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHide{CLASS_NAME}() {
 			
-			return this.INTERNAL_Flow{CLASS_NAME}(true);
+			return this.INTERNAL_Flow{CLASS_NAME}(hide: true);
 			
 		}
 		
 		private {CLASS_NAME_WITH_NAMESPACE} INTERNAL_Flow{CLASS_NAME}(bool hide, System.Action<{CLASS_NAME_WITH_NAMESPACE}> onParametersPassCall = null) {
 			
-			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
-			if (hide == true) this.Hide(item.transition, item.transitionParameters);
-			return WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(
-				(w) => w.SetFunctionIterationIndex(this.GetFunctionIterationIndex()),
-				item.transition,
-				item.transitionParameters,
-				onParametersPassCall
-			);
+			return WindowSystemFlow.DoFlow<{CLASS_NAME_WITH_NAMESPACE}>(this, {FLOW_FROM_ID}, {FLOW_TO_ID}, hide, onParametersPassCall);
 			
 		}
 		

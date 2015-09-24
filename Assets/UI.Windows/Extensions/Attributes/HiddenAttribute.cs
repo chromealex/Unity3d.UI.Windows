@@ -7,23 +7,23 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
-public class ReadOnlyAttribute : PropertyAttribute {
-	
+public class HiddenAttribute : PropertyAttribute {
+
 	public readonly string fieldName;
 	public readonly object state;
 	public readonly bool bitMask;
 	public readonly bool inverseCondition;
-	
-	public ReadOnlyAttribute() {
-		
+
+	public HiddenAttribute() {
+
 		this.fieldName = null;
 		this.state = false;
 		this.bitMask = false;
 		this.inverseCondition = false;
-		
+
 	}
-	
-	public ReadOnlyAttribute(string fieldName, object state = null, bool bitMask = false, bool inverseCondition = false) {
+
+	public HiddenAttribute(string fieldName, object state = null, bool bitMask = false, bool inverseCondition = false) {
 		
 		this.fieldName = fieldName;
 		this.state = state;
@@ -35,8 +35,8 @@ public class ReadOnlyAttribute : PropertyAttribute {
 }
 
 #if UNITY_EDITOR
-[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
-public class ReadOnlyAttributeDrawer : PropertyDrawer {
+[CustomPropertyDrawer(typeof(HiddenAttribute))]
+public class HiddenAttributeDrawer : PropertyDrawer {
 
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
 
@@ -48,11 +48,11 @@ public class ReadOnlyAttributeDrawer : PropertyDrawer {
 
 		var state = false;
 
-		var attribute = this.attribute as ReadOnlyAttribute;
+		var attribute = this.attribute as HiddenAttribute;
 		if (string.IsNullOrEmpty(attribute.fieldName) == false) {
 			
-			var bitMask = (this.attribute as ReadOnlyAttribute).bitMask;
-			
+			var bitMask = (this.attribute as HiddenAttribute).bitMask;
+
 			var inverseCondition = attribute.inverseCondition;
 			var needState = attribute.state;
 			var prop = this.GetRelativeProperty(property, property.propertyPath, attribute.fieldName);
@@ -64,26 +64,27 @@ public class ReadOnlyAttributeDrawer : PropertyDrawer {
 				if (inverseCondition == true) {
 					
 					if (((int)value & (int)needState) != 0) state = false;
-					
+
 				} else {
-					
+
 					if (((int)value & (int)needState) == 0) state = false;
-					
+
 				}
-				
+
 			} else {
-				
+
 				state = true;
 				if (object.Equals(needState, value) == !inverseCondition) state = false;
-				
+
 			}
 
 		}
 
-		var oldState = GUI.enabled;
-		GUI.enabled = state;
-		EditorGUI.PropertyField(position, property, label, true);
-		GUI.enabled = oldState;
+		if (state == true) {
+
+			EditorGUI.PropertyField(position, property, label, true);
+
+		}
 
 	}
 
@@ -125,7 +126,7 @@ public class ReadOnlyAttributeDrawer : PropertyDrawer {
 				return thisSP.intValue;
 			case SerializedPropertyType.Enum:
 
-				if ((this.attribute as ReadOnlyAttribute).bitMask == true) {
+				if ((this.attribute as HiddenAttribute).bitMask == true) {
 
 					return thisSP.intValue;
 

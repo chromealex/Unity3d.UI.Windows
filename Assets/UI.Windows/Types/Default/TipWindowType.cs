@@ -311,8 +311,10 @@ namespace UnityEngine.UI.Windows.Types {
 		private void Update_EDITOR() {
 
 			#region COMPONENTS
-			this.canvas = this.GetComponentsInChildren<Canvas>(true)[0];
-			this.canvasScaler = this.GetComponentsInChildren<CanvasScaler>(true)[0];
+			var canvases = this.GetComponentsInChildren<Canvas>(true);
+			if (canvases != null && canvases.Length > 0) this.canvas = canvases[0];
+			var scalers = this.GetComponentsInChildren<CanvasScaler>(true);
+			if (scalers != null && scalers.Length > 0) this.canvasScaler = scalers[0];
 			var raycasters = this.GetComponentsInChildren<UnityEngine.EventSystems.BaseRaycaster>(true);
 			if (raycasters != null && raycasters.Length > 0) this.raycaster = raycasters[0];
 			#endregion

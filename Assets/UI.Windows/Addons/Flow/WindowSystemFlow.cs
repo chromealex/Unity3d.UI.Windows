@@ -13,6 +13,15 @@ namespace UnityEngine.UI.Windows {
 	
 	public class WindowSystemFlow : WindowSystem {
 
+		public enum LoadType : int {
+
+			None = 0x0,
+
+			Window = 0x1,
+			Function = 0x2,
+
+		};
+
 		[Header("Flow Projects")]
 		public FlowData flow;
 
@@ -25,33 +34,84 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR || UNITY_CONSOLE
 		public FlowData flowConsoleOnly;
 		#endif
+		
+		[Header("Flow Projects (Additional)")]
+		[BitMask(typeof(LoadType))]
+		public LoadType additionalLoadType = LoadType.None;
 
+		[ReadOnly("additionalLoadType", (int)(LoadType.Window | LoadType.Function), bitMask: true)]
+		public FlowData additionalFlow;
+		
+		#if UNITY_EDITOR || UNITY_MOBILE
+		[ReadOnly("additionalLoadType", (int)(LoadType.Window | LoadType.Function), bitMask: true)]
+		public FlowData additionalFlowMobileOnly;
+		#endif
+		#if UNITY_EDITOR || UNITY_STANDALONE
+		[ReadOnly("additionalLoadType", (int)(LoadType.Window | LoadType.Function), bitMask: true)]
+		public FlowData additionalFlowStandaloneOnly;
+		#endif
+		#if UNITY_EDITOR || UNITY_CONSOLE
+		[ReadOnly("additionalLoadType", (int)(LoadType.Window | LoadType.Function), bitMask: true)]
+		public FlowData additionalFlowConsoleOnly;
+		#endif
+
+		[Header("Start Settings")]
 		public bool showRootOnStart = true;
 
 		protected override void Init() {
 
-			var flow = this.flow;
-			if (flow == null) {
+			#region FLOW DEFAULT
+			{
+				var flow = this.flow;
+				if (flow == null) {
 
-				Debug.LogError("Flow data was not set to WindowSystemFlow. Set ");
-				return;
+					Debug.LogError("Flow data was not set to WindowSystemFlow. Set ");
+					return;
+
+				}
+
+				#if UNITY_MOBILE
+				if (this.flowMobileOnly != null) flow = this.flowMobileOnly;
+				#endif
+				#if UNITY_STANDALONE
+				if (this.flowStandaloneOnly != null)
+				flow = this.flowStandaloneOnly;
+				#endif
+				#if UNITY_CONSOLE
+				if (this.flowConsoleOnly != null) flow = this.flowConsoleOnly;
+				#endif
+
+				FlowSystem.SetData(flow);
+
+				this.defaults.AddRange(flow.GetDefaultScreens());
+				this.windows.AddRange(flow.GetAllScreens());
 
 			}
+			#endregion
 
-			#if UNITY_MOBILE
-			if (this.flowMobileOnly != null) flow = this.flowMobileOnly;
-			#endif
-			#if UNITY_STANDALONE
-			if (this.flowStandaloneOnly != null) flow = this.flowStandaloneOnly;
-			#endif
-			#if UNITY_CONSOLE
-			if (this.flowConsoleOnly != null) flow = this.flowConsoleOnly;
-			#endif
-			
-			FlowSystem.SetData(flow);
+			#region FLOW ADDITIONAL
+			{
 
-			this.defaults.AddRange(flow.GetDefaultScreens());
-			this.windows.AddRange(flow.GetAllScreens());
+				var additionalFlow = this.additionalFlow;
+				#if UNITY_MOBILE
+				if (this.additionalFlowMobileOnly != null) flow = this.additionalFlowMobileOnly;
+				#endif
+				#if UNITY_STANDALONE
+				if (this.additionalFlowStandaloneOnly != null) flow = this.additionalFlowStandaloneOnly;
+				#endif
+				#if UNITY_CONSOLE
+				if (this.additionalFlowConsoleOnly != null) flow = this.additionalFlowConsoleOnly;
+				#endif
+
+				if (additionalFlow != null) {
+
+					var screens = additionalFlow.GetAllScreens((w) => ((this.additionalLoadType & LoadType.Function) != 0 && (w.IsFunction() == true || w.GetFunctionContainer() != null)) || ((this.additionalLoadType & LoadType.Window) != 0 && w.IsFunction() == false));
+					this.windows.AddRange(screens);
+
+				}
+
+			}
+			#endregion
 
 			base.Init();
 
@@ -68,6 +128,20 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			
+		}
+
+		public static T DoFlow<T>(WindowBase screen, int from, int to, bool hide, System.Action<T> onParametersPassCall) where T : WindowBase {
+			
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(from, to);
+			if (hide == true) screen.Hide(item.transition, item.transitionParameters);
+
+			return WindowSystem.Show<T>(
+				(w) => w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex()),
+				item.transition,
+				item.transitionParameters,
+				onParametersPassCall
+				);
+
 		}
 
 	}
