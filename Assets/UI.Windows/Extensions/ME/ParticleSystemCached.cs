@@ -96,18 +96,49 @@ public class ParticleSystemCached : MonoBehaviour {
 
 	}
 
-	public void Rewind(float time, bool withChildren) {
+    public void SetTime(float time, bool withChildren) {
 
-		if (withChildren == true) {
+        if (withChildren == true) {
+
+            for (int i = 0; i < this.particleSystems.Length; ++i) {
+
+                this.particleSystems[i].time = time;
+
+            }
+
+        } else {
+
+            if (this.mainParticleSystem != null) {
+
+                this.mainParticleSystem.time = time;
+
+            }
+
+        }
+
+    }
+
+    public void Rewind(float time, bool withChildren, bool noRestart) {
+        
+        if (withChildren == true) {
 			
-			for (int i = 0; i < this.count; ++i) {
+			for (int i = 0; i < this.particleSystems.Length; ++i) {
 
-				if (this.particleSystems[i] != null) {
-					
-					this.particleSystems[i].Simulate(time);
-					this.particleSystems[i].Play();
-					
-				}
+			    var ps = this.particleSystems[i];
+
+                if (ps != null) {
+
+                    ps.randomSeed = 1;
+
+                    if (noRestart == false) {
+
+                        ps.Simulate(time, withChildren: false, restart: true);
+
+                    }
+
+                    ps.Simulate(time, withChildren: false, restart: false);
+
+                }
 
 			}
 
@@ -115,10 +146,17 @@ public class ParticleSystemCached : MonoBehaviour {
 
 			if (this.mainParticleSystem != null) {
 
-				this.mainParticleSystem.Simulate(time);
-				this.mainParticleSystem.Play();
+                this.mainParticleSystem.randomSeed = 1;
 
-			}
+			    if (noRestart == false) {
+
+			        this.mainParticleSystem.Simulate(time, withChildren: false, restart: true);
+
+                }
+
+			    this.mainParticleSystem.Simulate(time, withChildren: false, restart: false);
+
+            }
 
 		}
 
