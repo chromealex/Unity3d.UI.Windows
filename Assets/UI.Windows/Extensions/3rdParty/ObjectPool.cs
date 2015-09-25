@@ -17,8 +17,7 @@ PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIG
 HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
 CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */
-using UnityEngine;
-using System.Collections;
+
 using System.Collections.Generic;
 
 namespace UnityEngine.Extensions {
@@ -28,7 +27,7 @@ namespace UnityEngine.Extensions {
 		static ObjectPool _instance;
 		Dictionary<Component, List<Component>> objectLookup = new Dictionary<Component, List<Component>>();
 		Dictionary<Component, Component> prefabLookup = new Dictionary<Component, Component>();
-		Dictionary<Component, List<Component>> allLookup = new Dictionary<Component, List<Component>>();
+        Dictionary<Component, Component> sceneLookup = new Dictionary<Component, Component>();
 
 		public void Init() {
 
@@ -40,17 +39,17 @@ namespace UnityEngine.Extensions {
 
 			instance.objectLookup.Clear();
 			instance.prefabLookup.Clear();
-			instance.allLookup.Clear();
+            instance.sceneLookup.Clear();
 
-		}
+        }
 
 		public static void RecycleAll<T>(T prefab) where T : Component {
 
 			if (prefab == null) return;
 
-			if (instance.allLookup.ContainsKey(prefab)) {
+			if (instance.objectLookup.ContainsKey(prefab)) {
 
-				foreach (var item in instance.allLookup[prefab]) {
+				foreach (var item in instance.objectLookup[prefab]) {
 					
 					item.Recycle();
 					
@@ -64,15 +63,15 @@ namespace UnityEngine.Extensions {
 
 			if (prefab == null) return;
 			
-			if (instance.allLookup.ContainsKey(prefab)) {
+			if (instance.objectLookup.ContainsKey(prefab)) {
 
-				foreach (var item in instance.allLookup[prefab]) {
+				foreach (var item in instance.objectLookup[prefab]) {
 					
 					if (item != null) GameObject.Destroy(item.gameObject);
 					
 				}
 				
-				instance.allLookup[prefab].Clear();
+				instance.objectLookup[prefab].Clear();
 				
 			}
 
@@ -136,8 +135,8 @@ namespace UnityEngine.Extensions {
 						obj.transform.localRotation = rotation;
 						obj.gameObject.SetActive(true);
 						
-						instance.prefabLookup.Add(obj, prefab);
-						prefab.AddToAll(obj);
+						instance.prefabLookup[obj] = prefab;
+                        instance.sceneLookup.Add(obj, prefab);
 						
 						return (T)obj;
 						
@@ -152,10 +151,10 @@ namespace UnityEngine.Extensions {
 				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
 				obj.gameObject.SetActive(true);
-				instance.prefabLookup.Add(obj, prefab);
-				prefab.AddToAll(obj);
+				instance.prefabLookup[obj] = prefab;
+                instance.sceneLookup.Add(obj, prefab);
 
-				return (T)obj;
+                return (T)obj;
 
 			} else {
 				
@@ -167,9 +166,8 @@ namespace UnityEngine.Extensions {
 				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
 				obj.gameObject.SetActive(true);
-				prefab.AddToAll(obj);
 
-				return (T)obj;
+                return (T)obj;
 
 			}
 
@@ -192,22 +190,7 @@ namespace UnityEngine.Extensions {
 			return Object.Instantiate<T>(source);
 
 		}
-
-		public static void AddToAll<T>(T prefab, T item) where T : Component {
-
-			if (instance.allLookup.ContainsKey(prefab) == true) {
-
-				var list = instance.allLookup[prefab];
-				if (list.Contains(item) == false) list.Add(item);
-
-			} else {
-
-				instance.allLookup.Add(prefab, new List<Component>() { item });
-
-			}
-
-		}
-
+        
 		public static T Spawn<T>(T prefab, Vector3 position) where T : Component {
 
 			return Spawn(prefab, position, Quaternion.identity);
@@ -225,14 +208,13 @@ namespace UnityEngine.Extensions {
 			if (obj == null) return;
 			if (instance == null) return;
 
-			if (instance.prefabLookup.ContainsKey(obj)) {
+		    if (instance.sceneLookup.ContainsKey(obj) == true) {
 
-				instance.objectLookup[instance.prefabLookup[obj]].Add(obj);
-				instance.prefabLookup.Remove(obj);
-				//obj.transform.parent = instance.transform;
-				obj.gameObject.SetActive(false);
+		        instance.objectLookup[instance.prefabLookup[obj]].Add(obj);
+		        instance.sceneLookup.Remove(obj);
+		        obj.gameObject.SetActive(false);
 
-			} else {
+		    } else if(instance.prefabLookup.ContainsKey(obj) == false) {
 
 				#if UNITY_EDITOR
 
@@ -301,13 +283,7 @@ namespace UnityEngine.Extensions {
 	}
 
 	public static class ObjectPoolExtensions {
-
-		public static void AddToAll<T>(this T prefab, T instance) where T : Component {
-			
-			ObjectPool.AddToAll(prefab, instance);
-			
-		}
-
+        
 		public static void RecycleAll<T>(this T prefab) where T : Component {
 
 			ObjectPool.RecycleAll(prefab);

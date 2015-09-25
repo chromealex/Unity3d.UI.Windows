@@ -21,8 +21,8 @@ namespace UnityEngine.UI.Extensions {
 		public bool reverse = false;
 
 		public bool manualSize = false;
-		[ReadOnly("manualSize", true)] public float radiusX = 100f;
-		[ReadOnly("manualSize", true)] public float radiusY = 100f;
+		[ReadOnly("manualSize", false)] public float radiusX = 100f;
+		[ReadOnly("manualSize", false)] public float radiusY = 100f;
 
 		public override void CalculateLayoutInputVertical() {
 
@@ -64,6 +64,8 @@ namespace UnityEngine.UI.Extensions {
 			center.x = xOffset;
 			center.y = yOffset;
 
+			var cPivot = Vector2.one * 0.5f;
+
 			this.lastIndex = 0;
 
 			var items = this.rectChildren;
@@ -79,12 +81,13 @@ namespace UnityEngine.UI.Extensions {
 				if (Application.isPlaying == false) {
 
 					this.m_Tracker.Add(this, item, DrivenTransformProperties.AnchoredPosition3D | DrivenTransformProperties.Pivot | DrivenTransformProperties.Anchors);
-					item.anchorMin = Vector2.one * 0.5f;
-					item.anchorMax = Vector2.one * 0.5f;
-					item.pivot = Vector2.one * 0.5f;
 
 				}
 				#endif
+
+				if (item.anchorMin != cPivot) item.anchorMin = cPivot;
+				if (item.anchorMax != cPivot) item.anchorMax = cPivot;
+				if (item.pivot != cPivot) item.pivot = cPivot;
 
 			}
 
@@ -92,10 +95,11 @@ namespace UnityEngine.UI.Extensions {
 			if (Application.isPlaying == false) {
 
 				this.m_Tracker.Add(this, this.rectTransform, DrivenTransformProperties.Pivot);
-				this.rectTransform.pivot = Vector2.one * 0.5f;
 
 			}
 			#endif
+			
+			if (this.rectTransform.pivot != cPivot) this.rectTransform.pivot = cPivot;
 
 		}
 		
