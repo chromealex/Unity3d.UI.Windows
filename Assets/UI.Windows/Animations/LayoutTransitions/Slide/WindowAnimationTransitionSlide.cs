@@ -176,8 +176,8 @@ namespace UnityEngine.UI.Windows.Animations {
 			}
 
 			if (component == null && parameters == null) return null;
-			if (parameters == null) return component.transform as RectTransform;
-			if (component == null || parameters.moveRoot == true) return root.transform as RectTransform;
+			if (component != null && parameters == null) return component.transform as RectTransform;
+			if (component == null || (parameters != null && parameters.moveRoot == true)) return root.transform as RectTransform;
 
 			return component.transform as RectTransform;
 

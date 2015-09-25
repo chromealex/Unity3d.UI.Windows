@@ -75,7 +75,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public float GetRowHeight(ListViewComponent view, int row) {
+		public virtual float GetRowHeight(ListViewComponent view, int row) {
 
 			return (this.specialSize != null) ? this.specialSize.rect.height : (this.source.transform as RectTransform).rect.height;
 
