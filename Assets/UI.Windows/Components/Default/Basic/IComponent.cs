@@ -15,6 +15,10 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetCallback(UnityAction<ButtonComponent> callback);
 		Selectable GetSelectable();
 
+		void SetEnabledState(bool state);
+		void SetHoverState(bool state);
+		void SetCallbackHover(UnityAction<bool> callback);
+
 	}
 	
 	public interface ITextComponent : IComponent {
@@ -22,7 +26,24 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format = UnityEngine.UI.Windows.Components.TextComponent.ValueFormat.None);
 		void SetText(string text);
 		string GetText();
-		
+		void SetTextColor(Color color);
+		void SetValueFormat(UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format);
+
+		void SetFont(Font font);
+		void SetFontSize(int value);
+
+		void SetLineSpacing(float value);
+		void SetFontStyle(FontStyle style);
+		void SetRichText(bool state);
+
+		void SetTextAlignment(TextAnchor anchor);
+		void SetTextVerticalOverflow(VerticalWrapMode mode);
+		void SetTextHorizontalOverflow(HorizontalWrapMode mode);
+
+		void SetBestFitState(bool state);
+		void SetBestFitMinSize(int value);
+		void SetBestFitMaxSize(int value);
+
 	}
 	
 	public interface IImageComponent : IComponent {
@@ -35,7 +56,9 @@ namespace UnityEngine.UI.Windows.Components {
 		Color GetColor();
 		void SetColor(Color color);
 		void SetAlpha(float value);
+		void SetPreserveAspectState(bool state);
 
 	}
 
 }
+

@@ -293,6 +293,122 @@ namespace ME {
 			return action();
 
 		}
+		
+		public static T[] GetObjectsOfType<T>(string filepath = null, string inFolder = null, System.Func<T, bool> predicate = null, bool useCache = true) where T : Object {
+			
+			System.Func<T[]> action = () => {
+				
+				var output = new List<T>();
+
+				System.Func<string, bool> item = (string guid) => {
+					
+					if (guid == null) return false;
+					
+					var path = AssetDatabase.GUIDToAssetPath(guid);
+					if (path == null) return false;
+					
+					var files = AssetDatabase.LoadAllAssetsAtPath(path);
+					if (files == null) return false;
+
+					var result = false;
+					for (int i = 0; i < files.Length; ++i) {
+
+						var file = files[i];
+
+						var comp = file as T;
+						if (comp == null) continue;
+
+						if (predicate != null && predicate(comp) == false) continue;
+
+						if (output.Contains(comp) == false) {
+
+							output.Add(comp);
+							result = true;
+
+						}
+
+					}
+
+					return result;
+
+				};
+
+				//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+				var objects = AssetDatabase.FindAssets("t:Object", null);
+
+				if (string.IsNullOrEmpty(inFolder) == false) {
+
+					// Find directories
+					var dirs = new List<string>();
+					foreach (var obj in objects) {
+						
+						if (obj == null) continue;
+						
+						var path = AssetDatabase.GUIDToAssetPath(obj);
+						if (path == null) continue;
+
+						var isDir = System.IO.Directory.Exists(path);
+						if (isDir == true) {
+
+							var locs = Path.GetDirectoryName(path).Split('/');
+							if (locs.Length > 0) {
+								
+								var loc = locs[locs.Length - 1];
+								if (loc == inFolder) {
+									
+									dirs.Add(path);
+									
+								}
+								
+							}
+
+						}
+
+					}
+
+					foreach (var dir in dirs) {
+
+						var objs = AssetDatabase.FindAssets("t:Object", new string[] { dir });
+						foreach (var obj in objs) {
+
+							if (obj == null) continue;
+
+							var path = AssetDatabase.GUIDToAssetPath(obj);
+							if (path == null) continue;
+
+							if (path.Contains(filepath) == true) {
+
+								item(obj);
+
+							}
+
+						}
+
+					}
+
+				} else {
+
+					foreach (var obj in objects) {
+
+						item(obj);
+
+					}
+
+				}
+
+				return output.ToArray();
+				
+			};
+			
+			if (useCache == true) {
+				
+				return ME.Utilities.CacheObjectsArray<T>(action, filepath).Cast<T>().ToArray();
+				
+			}
+			
+			return action();
+			
+		}
 
 		public static void ResetCache<T>(string directory = null) where T : ScriptableObject {
 

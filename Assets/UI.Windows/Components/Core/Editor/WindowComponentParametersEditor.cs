@@ -1,0 +1,135 @@
+﻿using UnityEngine;
+using System.Collections;
+using UnityEngine.UI.Windows.Components;
+using System.Reflection;
+using System.Linq;
+
+namespace UnityEditor.UI.Windows.Components {
+
+	public class ParametersEditor : UnityEditor.Editor, IParametersEditor {
+		
+		public virtual void OnParametersGUI(Rect rect) {}
+		public virtual float GetHeight() { return 0f; }
+		
+	}
+
+	[CustomEditor(typeof(WindowComponentParametersBase), editorForChildClasses: true)]
+	public class WindowComponentParametersEditor : ParametersEditor {
+
+		private WindowComponentParametersBase parameters;
+		private FieldInfo[] fields;
+		private SerializedProperty[] properties;
+		private ulong[] values;
+		//private System.Array flags;
+		private float referenceHeight;
+
+		public void OnEnable() {
+
+			this.parameters = this.target as WindowComponentParametersBase;
+			this.fields = this.parameters.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+
+			this.values = new ulong[this.fields.Length];
+			this.properties = new SerializedProperty[this.fields.Length];
+			for (int i = 0; i < this.properties.Length; ++i) {
+
+				this.properties[i] = this.serializedObject.FindProperty(this.fields[i].Name);
+				var attrs = this.fields[i].GetCustomAttributes(false);
+				if (attrs != null && attrs.Length > 0) {
+
+					var attr = attrs.FirstOrDefault((a) => a is ParamFlagAttribute) as ParamFlagAttribute;
+					if (attr != null) this.values[i] = attr.flag;
+
+				}
+
+			}
+			
+			//this.flags = System.Enum.GetValues(typeof(ParameterFlag));
+
+			this.referenceHeight = 16f;
+			/*var referenceField = this.fields.FirstOrDefault((f) => f.GetCustomAttributes(false).Count() == 0);
+			var referenceIndex = System.Array.IndexOf(this.fields, referenceField);
+			if (referenceIndex >= 0) {
+				
+				this.referenceHeight = EditorGUI.GetPropertyHeight(this.properties[referenceIndex]);
+				
+			}*/
+
+		}
+
+		public override void OnInspectorGUI() {
+
+			var oldState = GUI.enabled;
+			GUI.enabled = false;
+			this.DrawDefaultInspector();
+			GUI.enabled = oldState;
+
+		}
+
+		public override void OnParametersGUI(Rect rect) {
+
+			const float toggleWidth = 30f;
+			const float space = 2f;
+
+			var oldState = GUI.enabled;
+			GUI.enabled = false;
+
+			this.serializedObject.Update();
+
+			var height = 0f;
+			for (int i = 0; i < this.properties.Length; ++i) {
+				
+				GUI.enabled = true;
+				
+				var property = this.properties[i];
+				var value = this.values[i];//(ParameterFlag)this.flags.GetValue(i + 1);
+				var state = this.parameters.IsChanged(value);
+
+				height = EditorGUI.GetPropertyHeight(property);
+
+				var offset = height - this.referenceHeight;
+
+				GUI.enabled = state;
+
+				var cRect = rect;
+				cRect.x += toggleWidth;
+				cRect.width -= toggleWidth;
+				cRect.height += offset;
+				EditorGUI.PropertyField(cRect, property);
+
+				GUI.enabled = true;
+
+				var tRect = rect;
+				tRect.y += offset;
+				tRect.width = toggleWidth;
+				var val = EditorGUI.Toggle(tRect, state);
+				if (val != state) this.parameters.SetChanged(value, val);
+
+				rect.y += height + space;
+
+			}
+			
+			this.serializedObject.ApplyModifiedProperties();
+
+			GUI.enabled = oldState;
+
+		}
+
+		public override float GetHeight() {
+			
+			const float space = 2f;
+
+			var height = 0f;
+			for (int i = 0; i < this.properties.Length; ++i) {
+
+				var property = this.properties[i];
+				height += EditorGUI.GetPropertyHeight(property) + space;
+
+			}
+
+			return height;
+
+		}
+
+	}
+
+}

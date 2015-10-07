@@ -135,7 +135,8 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			// Offline
 			#if UNITY_EDITOR
-			var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(useCache: false).FirstOrDefault();
+			var modulesPath = FlowSystem.GetData().GetModulesPath();
+			var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(modulesPath, useCache: false).FirstOrDefault();
 			#else
 			HeatmapSettings settings = null;
 			#endif
@@ -145,7 +146,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			data.status = HeatmapSettings.WindowsData.Window.Status.Loading;
 
-			//data.size = new Vector2(Screen.width, Screen.height);
+			data.size = new Vector2(Screen.width, Screen.height);
 			data.AddPoint(localNormalizedPoint, tag, component);
 
 			//TODO: change to MathX

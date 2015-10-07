@@ -6,10 +6,10 @@ using UnityEngine.UI.Windows.Components;
 public class UIWindowExampleComponentsEx6 : WindowComponent {
 	
 	public LinkerComponent buttonValueLinker;
-	private ButtonWithTextComponent buttonValue;
+	private ButtonComponent buttonValue;
 	
 	public LinkerComponent buttonColorLinker;
-	private ButtonWithTextComponent buttonColor;
+	private ButtonComponent buttonColor;
 
 	public LinkerComponent[] bars;
 

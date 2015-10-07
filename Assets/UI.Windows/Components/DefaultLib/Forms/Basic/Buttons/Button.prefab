@@ -48,14 +48,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99a01f98e98d4c55aacf53b199642f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams: []
   canvas: {fileID: 0}
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
+  images: []
   button: {fileID: 11406584}
+  callback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  hoverIsActive: 1
+  preserveAspect: 0
+  image: {fileID: 11406582}
+  rawImage: {fileID: 0}
+  text: {fileID: 11406588}
+  valueFormat: 0
 --- !u!114 &11406582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -69,6 +85,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300008, guid: 5c2ca5675950a465eb3ecd79a31ca909, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
@@ -119,6 +141,22 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  m_Alpha:
+    canvasGroup: {fileID: 0}
+    normalAlpha: .699999988
+    highlightedAlpha: .899999976
+    pressedAlpha: 1
+    disabledAlpha: .300000012
+    alphaMultiplier: 1
+    fadeDuration: .100000001
+  m_Scale:
+    transform: {fileID: 0}
+    normalScale: 1
+    highlightedScale: 1.10000002
+    pressedScale: .800000012
+    disabledScale: 1
+    scaleMultiplier: 1
+    fadeDuration: .100000001
   transitionExtended: 2
   rootButton: {fileID: 0}
   referenceButton: {fileID: 0}
@@ -143,6 +181,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 14
@@ -223,9 +267,12 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: hoverIsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 106588}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

@@ -23,7 +23,7 @@ public class UIWindowExampleComponents : LayoutWindowType {
 		var i = 0;
 		foreach (var component in this.components) {
 
-			var button = this.tabs.AddItem<ButtonWithTextComponent, WindowComponent>(component);
+			var button = this.tabs.AddItem<ButtonComponent, WindowComponent>(component);
 			button.SetText((++i).ToString() + ". " + component.name);
 
 		}

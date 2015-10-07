@@ -14,7 +14,7 @@ public class UIWindowExampleComponentsEx7 : WindowComponent {
 
 		this.popupLinker.Get(ref this.popup);
 
-		this.popup.SetItems<ButtonWithTextComponent>(10, (element, index) => {
+		this.popup.SetItems<ButtonComponent>(10, (element, index) => {
 
 			element.SetText("Item " + index.ToString());
 

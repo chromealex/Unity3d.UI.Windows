@@ -12,6 +12,57 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 	public class DevicePreviewWindow : EditorWindowExt {
 
+		public class Styles {
+			
+			public GUIStyle leftPanel;
+			public GUIStyle contentPanel;
+			
+			public GUIStyle listFoldout;
+			public GUIStyle listFoldoutHovered;
+
+			public GUIStyle listButton;
+			public GUIStyle listButtonHovered;
+			public GUIStyle listButtonPortrait;
+			public GUIStyle listButtonPortraitHovered;
+
+			public GUIStyle warning;
+			public GUIStyle screen;
+
+			public GUISkin skin;
+
+			public Styles() {
+
+				this.skin = Resources.Load<GUISkin>("UI.Windows/DevicePreview/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"));
+				if (this.skin != null) {
+
+					this.leftPanel = this.skin.FindStyle("LeftPanel");
+					this.contentPanel = this.skin.FindStyle("ContentPanel");
+					
+					this.listFoldout = this.skin.FindStyle("ListFoldout");
+					this.listFoldoutHovered = this.skin.FindStyle("ListFoldoutHovered");
+
+					this.listButton = this.skin.FindStyle("ListButton");
+					this.listButtonHovered = this.skin.FindStyle("ListButtonHovered");
+					this.listButtonPortrait = this.skin.FindStyle("ListButtonPortrait");
+					this.listButtonPortraitHovered = this.skin.FindStyle("ListButtonPortraitHovered");
+
+					this.warning = this.skin.FindStyle("Warning");
+					this.screen = this.skin.FindStyle("Screen");
+
+				}
+
+			}
+
+			public bool IsValid() {
+
+				return this.skin != null && this.leftPanel != null;
+
+			}
+
+		}
+
+		public static Styles styles = new Styles();
+
 		public class GameView {
 
 			public DevicePreviewWindow root;
@@ -114,16 +165,16 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 			}
 
-			public void OnGUI() {
+			public void OnGUI(Rect rect) {
 				
 				if (this.isActive == false) {
 
 					var warningOffset = 15f;
 
-					var style = new GUIStyle("flow node 6");
+					var style = DevicePreviewWindow.styles.warning;//new GUIStyle("flow node 6");
+					if (style == null) return;
 					style.alignment = TextAnchor.MiddleCenter;
 					style.fontStyle = FontStyle.Bold;
-
 					style.margin = new RectOffset();
 					style.padding = new RectOffset();
 					style.contentOffset = Vector2.zero;
@@ -134,7 +185,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 					var width = contentRect.width + warningOffset;
 					var height = contentRect.height + warningOffset;
 
-					var centerRect = new Rect(this.width * 0.5f - width * 0.5f, this.height * 0.5f - height * 0.5f, width, height);
+					var centerRect = new Rect(DevicePreviewWindow.PANEL_WIDTH + DevicePreviewWindow.MARGIN + this.width * 0.5f - width * 0.5f, this.height * 0.5f - height * 0.5f, width, height);
 					GUI.Label(centerRect, content, style);
 
 					this.root.selectedId = -1;
@@ -143,11 +194,11 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 				}
 
-				var rectStyle = new GUIStyle("flow node 0");
+				var rectStyle = DevicePreviewWindow.styles.screen;//new GUIStyle("flow node 0");
 				
 				var size = new Vector2(this.width, this.height);
 				
-				GUI.Box(new Rect(0f, 0f, size.x, size.y), string.Empty, rectStyle);
+				GUI.Box(new Rect(rect.x, rect.y, size.x, size.y), string.Empty, rectStyle);
 				
 				var drawRect = this.GetRectFromSize(this.currentWidth, this.currentHeight);
 				var drawRectLandscape = this.GetRectFromSize(this.orientation == ScreenOrientation.Landscape ? this.currentWidth : this.currentHeight, this.orientation == ScreenOrientation.Landscape ? this.currentHeight : this.currentWidth);
@@ -155,8 +206,10 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 				var deviceOutput = this.deviceOutput as IDeviceOutput;
 				if (deviceOutput == null) {
 					
-					var offset = 5f;
-					var backRect = new Rect(drawRect.x - offset, drawRect.y - offset, drawRect.width + offset * 2f, drawRect.height + offset * 2f);
+					var offset = 20f;
+					var backRect = new Rect(DevicePreviewWindow.PANEL_WIDTH + DevicePreviewWindow.MARGIN + drawRect.x - offset, DevicePreviewWindow.MARGIN + drawRect.y - offset, drawRect.width + offset * 2f, drawRect.height + offset * 2f);
+					drawRect.x += DevicePreviewWindow.PANEL_WIDTH + DevicePreviewWindow.MARGIN;
+					drawRect.y += DevicePreviewWindow.MARGIN;
 					var oldColor = GUI.color;
 					GUI.color = Color.black;
 					GUI.Box(backRect, string.Empty, rectStyle);
@@ -166,28 +219,63 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 				if (deviceOutput != null) {
 
-					deviceOutput.SetRect(new Rect(0f, 0f, size.x, size.y), drawRect, drawRectLandscape, this.orientation);
+					deviceOutput.SetRect(rect, new Rect(0f, 0f, size.x, size.y), drawRect, drawRectLandscape, this.orientation);
 
 					deviceOutput.DoPreGUI();
 
 				}
 
-				GUI.DrawTexture(drawRect, this.tempRenderTexture);
+				if (this.tempRenderTexture != null) GUI.DrawTexture(drawRect, this.tempRenderTexture);
 				
 				if (deviceOutput != null) {
 
 					deviceOutput.DoPostGUI();
 					
 				}
+				
+				EventType type = Event.current.type;
+				EditorGUIUtility.AddCursorRect(drawRect, MouseCursor.CustomCursor);
+				if (type == EventType.Repaint) {
+
+					//EditorGUIUtility.RenderGameViewCameras(cameraRect: new Rect(0f, 0f, 300f, 300f), targetDisplay: 0, gizmos: false, gui: true);
+
+				} if (type != EventType.Layout && type != EventType.Used) {
+
+					bool flag = drawRect.Contains(Event.current.mousePosition);
+					if (Event.current.rawType == EventType.MouseDown && !flag)
+					{
+						return;
+					}
+					Event.current.mousePosition = new Vector2(Event.current.mousePosition.x - drawRect.x, Event.current.mousePosition.y - drawRect.y);
+					EditorGUIUtility.QueueGameViewInputEvent(Event.current);
+					bool flag2 = true;
+					if (Event.current.rawType == EventType.MouseUp && !flag)
+					{
+						flag2 = false;
+					}
+					if (type == EventType.ExecuteCommand || type == EventType.ValidateCommand)
+					{
+						flag2 = false;
+					}
+					if (flag2)
+					{
+						Event.current.Use();
+					}
+					else
+					{
+						Event.current.mousePosition = new Vector2(Event.current.mousePosition.x + drawRect.x, Event.current.mousePosition.y + drawRect.y);
+					}
+
+				}
 
 			}
 
 			public void OnUpdate() {
-				
+
 				if (this.isActive == false) return;
 
 				// Clear screen
-				//Graphics.Blit(Texture2D.blackTexture, this.tempRenderTexture); 
+				Graphics.Blit(Texture2D.blackTexture, this.tempRenderTexture); 
 				
 				var allCameras = Camera.allCameras.OrderBy((c) => c.depth);
 				foreach (var camera in allCameras) {
@@ -228,10 +316,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			private float GetFactor(Vector2 inner, Vector2 boundingBox) {     
 				
 				float widthScale = 0, heightScale = 0;
-				if (inner.x != 0)
-					widthScale = boundingBox.x / inner.x;
-				if (inner.y != 0)
-					heightScale = boundingBox.y / inner.y;                
+				if (inner.x != 0) widthScale = boundingBox.x / inner.x;
+				if (inner.y != 0) heightScale = boundingBox.y / inner.y;                
 				
 				return Mathf.Min(widthScale, heightScale);
 				
@@ -263,13 +349,14 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		}
 
-		private const float PANEL_WIDTH = 250f;
-		private const float MARGIN = 5f;
+		public const float PANEL_WIDTH = 250f;
+		public const float MARGIN = 100f;
+		public const float TOP_OFFSET = 21f;
 
 		public static DevicePreviewWindow ShowEditor(System.Action onClose) {
 			
 			var editor = DevicePreviewWindow.CreateInstance<DevicePreviewWindow>();
-			var title = "UIW Prev";
+			var title = "UIW Preview";
 			#if !UNITY_4
 			editor.titleContent = new GUIContent(title, Resources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
 			#else
@@ -277,6 +364,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			#endif
 			editor.position = new Rect(0f, 0f, 1f, 1f);
 
+			editor.autoRepaintOnSceneChange = true;
+			editor.wantsMouseMove = true;
 			editor.gameView = new GameView(editor);
 
 			editor.onClose = onClose;
@@ -287,6 +376,18 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			Parser.Collect(forced: false);
 
 			return editor;
+
+		}
+		
+		public void OnFocus() {
+
+			UnityEditorInternal.InternalEditorUtility.OnGameViewFocus(true);
+			
+		}
+		
+		public void OnLostFocus() {
+
+			UnityEditorInternal.InternalEditorUtility.OnGameViewFocus(false);
 
 		}
 
@@ -301,6 +402,8 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		}
 
 		public void Validate() {
+
+			if (DevicePreviewWindow.styles == null | DevicePreviewWindow.styles.IsValid() == false) DevicePreviewWindow.styles = new Styles();
 
 			if (Parser.manufacturerToDevices == null || Parser.manufacturerToDevices.Count == 0) {
 
@@ -325,34 +428,35 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 		private void OnGUI() {
 
 			this.Validate();
+			if (DevicePreviewWindow.styles.IsValid() == false) return;
 			
-			var rectStyle = new GUIStyle("flow node 0");
+			var rectStyle = DevicePreviewWindow.styles.leftPanel;//new GUIStyle("flow node 0");
+			if (rectStyle == null) return;
 
-			var rect = new Rect(0f, 0f, PANEL_WIDTH, this.position.height);
-
+			Rect rect;
+			
+			rect = new Rect(0f, 0f, PANEL_WIDTH, this.position.height);
 			GUI.Box(rect, string.Empty, rectStyle);
-
 			GUILayout.BeginArea(rect);
 			{
-
+				
 				this.DrawDevicesList();
-
+				
 			}
 			GUILayout.EndArea();
 
-			rect = new Rect(PANEL_WIDTH + MARGIN, 0f, this.position.width - PANEL_WIDTH - MARGIN, this.position.height);
-
+			rect = new Rect(PANEL_WIDTH + MARGIN, MARGIN, this.position.width - PANEL_WIDTH - MARGIN * 2f, this.position.height - MARGIN * 2f);
 			this.gameView.Resize(rect.width, rect.height);
-
-			GUI.Box(rect, string.Empty, rectStyle);
-
-			GUILayout.BeginArea(rect);
+			GUI.Box(rect, string.Empty, DevicePreviewWindow.styles.contentPanel);
+			//GUI.BeginClip(rect);
+			//GUILayout.BeginArea(rect);
 			{
-
-				this.gameView.OnGUI();
-
+				
+				this.gameView.OnGUI(rect);
+				
 			}
-			GUILayout.EndArea();
+			//GUILayout.EndArea();
+			//GUI.EndClip();
 
 		}
 
@@ -368,48 +472,49 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		private void DrawDevicesList() {
 
-			var scrollWidth = 20f;
+			if (DevicePreviewWindow.styles.IsValid() == false) return;
+
+			var scrollWidth = 10f;
 			var offset = 10;
 
-			var elementStyle = new GUIStyle("flow node hex 0");
+			var elementStyle = DevicePreviewWindow.styles.listButton;//new GUIStyle("flow node hex 0");
+			if (elementStyle == null) return;
 			elementStyle.contentOffset = Vector2.zero;
 			elementStyle.fixedWidth = PANEL_WIDTH - scrollWidth - offset;
 			elementStyle.margin = new RectOffset(offset, 0, 0, 0);
 			elementStyle.padding = new RectOffset(20, 20, 10, 20);
 			elementStyle.alignment = TextAnchor.MiddleLeft;
 			
-			var elementStyleSelected = new GUIStyle("flow node hex 1 on");
+			var elementStyleSelected = DevicePreviewWindow.styles.listButtonHovered;//new GUIStyle("flow node hex 1 on");
 			elementStyleSelected.contentOffset = Vector2.zero;
 			elementStyleSelected.fixedWidth = PANEL_WIDTH - scrollWidth - offset;
 			elementStyleSelected.margin = new RectOffset(offset, 0, 0, 0);
 			elementStyleSelected.padding = new RectOffset(20, 20, 10, 20);
 			elementStyleSelected.alignment = TextAnchor.MiddleLeft;
 			
-			var elementStylePortrait = new GUIStyle("flow node hex 2");
+			var elementStylePortrait = DevicePreviewWindow.styles.listButtonPortrait;//new GUIStyle("flow node hex 2");
 			elementStylePortrait.contentOffset = Vector2.zero;
 			elementStylePortrait.fixedWidth = PANEL_WIDTH - scrollWidth - offset;
 			elementStylePortrait.margin = new RectOffset(offset, 0, 0, 0);
 			elementStylePortrait.padding = new RectOffset(20, 20, 10, 20);
 			elementStylePortrait.alignment = TextAnchor.MiddleLeft;
 			
-			var elementStyleSelectedPortrait = new GUIStyle("flow node hex 2 on");
+			var elementStyleSelectedPortrait = DevicePreviewWindow.styles.listButtonPortraitHovered;//new GUIStyle("flow node hex 2 on");
 			elementStyleSelectedPortrait.contentOffset = Vector2.zero;
 			elementStyleSelectedPortrait.fixedWidth = PANEL_WIDTH - scrollWidth - offset;
 			elementStyleSelectedPortrait.margin = new RectOffset(offset, 0, 0, 0);
 			elementStyleSelectedPortrait.padding = new RectOffset(20, 20, 10, 20);
 			elementStyleSelectedPortrait.alignment = TextAnchor.MiddleLeft;
-			
-			
-			var headerLabel = new GUIStyle(EditorStyles.whiteLargeLabel);
+
+			var headerLabel = new GUIStyle(EditorStyles.largeLabel);
 			headerLabel.padding = new RectOffset(0, 0, 0, 0);
 			headerLabel.margin = new RectOffset(0, 0, 0, 0);
 			
 			var miniLabel = new GUIStyle(EditorStyles.miniLabel);
 			miniLabel.padding = new RectOffset(0, 0, 0, 0);
 			miniLabel.margin = new RectOffset(0, 0, 0, 0);
-			
-			
-			var foldOutStyle = new GUIStyle("flow node hex 4");
+
+			var foldOutStyle = DevicePreviewWindow.styles.listFoldout;//new GUIStyle("flow node hex 4");
 			foldOutStyle.contentOffset = Vector2.zero;
 			foldOutStyle.fixedWidth = PANEL_WIDTH - scrollWidth;
 			foldOutStyle.font = headerLabel.font;
@@ -417,16 +522,19 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			foldOutStyle.padding = new RectOffset(20, 20, 15, 15);
 			foldOutStyle.alignment = TextAnchor.MiddleLeft;
 			
-			var foldOutStyleSelected = new GUIStyle("flow node hex 4 on");
+			var foldOutStyleSelected = DevicePreviewWindow.styles.listFoldoutHovered;//new GUIStyle("flow node hex 4 on");
 			foldOutStyleSelected.contentOffset = Vector2.zero;
 			foldOutStyleSelected.fixedWidth = PANEL_WIDTH - scrollWidth;
 			foldOutStyleSelected.font = headerLabel.font;
 			foldOutStyleSelected.fontSize = headerLabel.fontSize;
 			foldOutStyleSelected.padding = new RectOffset(20, 20, 15, 15);
 			foldOutStyleSelected.alignment = TextAnchor.MiddleLeft;
-
-			this.scrollPosition = EditorGUILayout.BeginScrollView(this.scrollPosition, false, false);
 			
+			var oldSkin = GUI.skin;
+			GUI.skin = DevicePreviewWindow.styles.skin;
+			this.scrollPosition = EditorGUILayout.BeginScrollView(this.scrollPosition, false, false);
+			GUI.skin = oldSkin;
+
 			var i = 0;
 			var directories = Parser.manufacturerToDevices;
 			if (this.directoriesFoldOut.Count != directories.Count) {

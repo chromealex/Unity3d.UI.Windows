@@ -20,7 +20,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 
 		public static Rect ScaleSizeBy(this Rect rect, float scale) {
 
-			return rect.ScaleSizeBy(scale, rect.center);
+			return rect.ScaleSizeBy(1f / scale, rect.MiddleMiddle());
 
 		}
 

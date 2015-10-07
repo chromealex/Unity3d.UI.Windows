@@ -194,7 +194,7 @@ namespace UnityEditor.UI.Windows {
 					
 				}
 
-				if (WindowLayoutElement.waitForComponentConnectionElementTemp == element) {
+				if (/*WindowLayoutElement.waitForComponentConnectionElementTemp == element ||*/ Selection.gameObjects.Contains(element.gameObject) == true) {
 
 					style = selected;
 

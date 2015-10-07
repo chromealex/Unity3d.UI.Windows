@@ -5,24 +5,119 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class TextComponent : ColoredComponent, ITextComponent {
 
+		public override void Setup(IComponentParameters parameters) {
+			
+			base.Setup(parameters);
+			
+			var inputParameters = parameters as TextComponentParameters;
+			#region source macros UI.Windows.Initialization.TextComponent
+			{
+				if (inputParameters != null) inputParameters.Setup(this as ITextComponent);
+			}
+			#endregion
+
+		}
+
 		#region source macros UI.Windows.TextComponent
+		[Header("Text Component")]
 		[SerializeField]
 		private Text text;
+		public UnityEngine.UI.Windows.Components.TextComponent.ValueFormat valueFormat;
+
+		public void SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
+			
+			if (this.text != null) {
+				
+				this.text.resizeTextForBestFit = state;
+				this.text.resizeTextMinSize = minSize;
+				this.text.resizeTextMaxSize = maxSize;
+				
+			}
+			
+		}
+		
+		public void SetBestFitState(bool state) {
+			
+			if (this.text != null) this.text.resizeTextForBestFit = state;
+			
+		}
+		
+		public void SetBestFitMinSize(int size) {
+			
+			if (this.text != null) this.text.resizeTextMinSize = size;
+			
+		}
+		
+		public void SetBestFitMaxSize(int size) {
+			
+			if (this.text != null) this.text.resizeTextMaxSize = size;
+			
+		}
+
+		public void SetFont(Font font) {
+			
+			if (this.text != null) this.text.font = font;
+			
+		}
+
+		public void SetFontSize(int fontSize) {
+			
+			if (this.text != null) this.text.fontSize = fontSize;
+			
+		}
+
+		public void SetLineSpacing(float value) {
+			
+			if (this.text != null) this.text.lineSpacing = value;
+			
+		}
+		
+		public void SetRichText(bool state) {
+			
+			if (this.text != null) this.text.supportRichText = state;
+			
+		}
+		
+		public void SetFontStyle(FontStyle fontStyle) {
+			
+			if (this.text != null) this.text.fontStyle = fontStyle;
+			
+		}
 
 		public float GetContentHeight(string text, Vector2 containerSize) {
+
+			if (this.text == null) return 0f;
 
 			var settings = this.text.GetGenerationSettings(containerSize);
 			return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
 
 		}
+
+		public void SetValueFormat(UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+
+			this.valueFormat = format;
+
+		}
 		
+		public void SetValue(long value) {
+			
+			this.SetValue(value, this.valueFormat);
+			
+		}
+		
+		public void SetValue(int value) {
+			
+			this.SetValue(value, this.valueFormat);
+
+		}
+
 		public void SetValue(long value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
 			
 			this.SetText(TextComponent.FormatValue(value, format));
 			
 		}
 
-		public void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format = UnityEngine.UI.Windows.Components.TextComponent.ValueFormat.None) {
+		public void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
 			
 			this.SetText(TextComponent.FormatValue(value, format));
 			
@@ -57,15 +152,25 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.text != null) this.text.text = text;
 
 		}
-		
+
+		public virtual void SetTextAlpha(float value) {
+
+			var color = this.GetTextColor();
+			color.a = value;
+			this.SetTextColor(color);
+
+		}
+
 		public virtual void SetTextColor(Color color) {
 			
-			this.text.color = color;
+			if (this.text != null) this.text.color = color;
 			
 		}
 		
 		public virtual Color GetTextColor() {
-			
+
+			if (this.text == null) return Color.white;
+
 			return this.text.color;
 			
 		}

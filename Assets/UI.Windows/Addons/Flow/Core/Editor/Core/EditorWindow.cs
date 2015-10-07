@@ -31,14 +31,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			editor.autoRepaintOnSceneChange = true;
 			editor.onClose = onClose;
 			editor.wantsMouseMove = true;
-			
+			editor.antiAlias = 2;
+
 			var title = "UIW Flow";
 			#if !UNITY_4
 			editor.titleContent = new GUIContent(title, Resources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
 			#else
 			editor.title = title;
 			#endif
-			
+
 			var width = 800f;
 			var height = 600f;
 
@@ -224,8 +225,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									var curWindow = FlowSystem.GetWindow(attachId);
 									if (curWindow.IsContainer() == true &&
 									    curWindow.IsFunction() == false) continue;
-									
-									//if (this.IsVisible(window) == false) continue;
 
 									if (curWindow.IsFunction() == true &&
 									    curWindow.IsContainer() == true) {
@@ -503,26 +502,24 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public bool IsVisible(FD.FlowWindow window) {
 
-			/*var scrollPos = FlowSystem.GetScrollPosition();
+			if (this.zoomDrawer.GetZoom() < 1f) {
+
+				return true;
+
+			}
+
+			var scrollPos = -FlowSystem.GetScrollPosition();
 			var rect = new Rect(scrollPos.x - this.scrollRect.width * 0.5f + this.scrollRect.x,
 			                    scrollPos.y + this.scrollRect.y,
 			                    this.scrollRect.width,
 			                    this.scrollRect.height);
 
-			var newState = true;//rect.ScaleSizeBy(this.zoomDrawer.GetZoom()).Overlaps(window.rect.ScaleSizeBy(this.zoomDrawer.GetZoom()));
+			var scaledRect = rect.ScaleSizeBy(this.zoomDrawer.GetZoom());
+			var scaledWin = window.rect.ScaleSizeBy(this.zoomDrawer.GetZoom());
+			
+			scaledRect.x += FlowSystemEditorWindow.SETTINGS_WIDTH;
 
-			if (newState == true &&
-				window.isVisibleState == false) {
-
-				window.isVisibleState = true;
-				this.Repaint();
-				return false;
-
-			}
-
-			return newState;*/
-
-			return true;
+			return window.isVisibleState = scaledRect.Overlaps(scaledWin);
 
 		}
 		
@@ -2566,45 +2563,44 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 						} else if (typeId == 1) {
 							
-								// Re-use screen choosed
+							// Re-use screen choosed
 							
-								window.flags |= FD.FlowWindow.Flags.CantCompiled;
-								window.storeType = FD.FlowWindow.StoreType.ReUseScreen;
+							window.flags |= FD.FlowWindow.Flags.CantCompiled;
+							window.storeType = FD.FlowWindow.StoreType.ReUseScreen;
 							
-								var linkIndex = -1;
-								var index = 0;
-								var values = new List<string>();
-								var list = new List<FD.FlowWindow>();
-								var windows = FlowSystem.GetWindows();
-								foreach (var win in windows) {
+							var linkIndex = -1;
+							var index = 0;
+							var values = new List<string>();
+							var list = new List<FD.FlowWindow>();
+							var windows = FlowSystem.GetWindows();
+							foreach (var win in windows) {
 								
-									if (win.storeType == FD.FlowWindow.StoreType.NewScreen &&
-										win.IsSmall() == false &&
-										win.IsContainer() == false) {
+								if (win.storeType == FD.FlowWindow.StoreType.NewScreen &&
+									win.IsSmall() == false &&
+									win.IsContainer() == false) {
 									
-										values.Add(win.title.Replace("/", " "));
-										list.Add(win);
+									values.Add(win.title.Replace("/", " "));
+									list.Add(win);
 									
-										if (window.screenWindowId == win.id)
-											linkIndex = index;
+									if (window.screenWindowId == win.id) linkIndex = index;
 									
-										++index;
+									++index;
 									
-									}
-								
 								}
-							
-								linkIndex = EditorGUILayout.Popup(linkIndex, values.ToArray()/*, new GUIStyle("ExposablePopupMenu")*/);
-								if (linkIndex >= 0 && linkIndex < list.Count) {
 								
-									window.screenWindowId = list[linkIndex].id;
-								
-								}
-							
-								//window.screen = GUILayoutExt.ScreenField(window.screen, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ScreenField"));
-								//window.directory = GUILayout.TextField(window.directory);
-							
 							}
+							
+							linkIndex = EditorGUILayout.Popup(linkIndex, values.ToArray()/*, new GUIStyle("ExposablePopupMenu")*/);
+							if (linkIndex >= 0 && linkIndex < list.Count) {
+								
+								window.screenWindowId = list[linkIndex].id;
+								
+							}
+							
+							//window.screen = GUILayoutExt.ScreenField(window.screen, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ScreenField"));
+							//window.directory = GUILayout.TextField(window.directory);
+							
+						}
 						//GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 						
 					}

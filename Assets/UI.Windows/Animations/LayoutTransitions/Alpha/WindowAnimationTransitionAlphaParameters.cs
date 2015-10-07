@@ -7,7 +7,7 @@ namespace UnityEngine.UI.Windows.Animations {
 	[RequireComponent(typeof(CanvasGroup))]
 	public class WindowAnimationTransitionAlphaParameters : TransitionInputParameters {
 
-		[ReadOnly(fieldName: "useDefault", state: false)]
+		[ReadOnly(fieldName: "useDefault", state: true)]
 		public WindowAnimationTransitionAlpha.Parameters parameters;
 		
 		public override void SetDefaultParameters(TransitionBase.ParametersBase parameters) {

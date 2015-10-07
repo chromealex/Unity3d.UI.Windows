@@ -28,7 +28,7 @@ GameObject:
   - 114: {fileID: 11450946}
   - 114: {fileID: 11450948}
   m_Layer: 5
-  m_Name: Text
+  m_Name: TextField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,15 +45,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681b23972fd7f4cd69c127c4b7d8e8b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams: []
   canvas: {fileID: 0}
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   images: []
   text: {fileID: 11450946}
+  valueFormat: 0
 --- !u!114 &11450946
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -67,6 +72,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: .91911763, g: .91911763, b: .91911763, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 16
@@ -141,7 +152,15 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_FontData.m_BestFit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_FontData.m_MinSize
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 109308}

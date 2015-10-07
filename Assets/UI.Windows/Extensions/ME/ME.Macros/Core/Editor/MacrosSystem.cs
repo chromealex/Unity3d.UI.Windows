@@ -52,7 +52,7 @@ namespace ME.Macros {
 				string text;
 				if (MacrosSystem.cacheMacros.TryGetValue(macrosName, out text) == false) {
 
-					Debug.LogWarningFormat ("[MACROS] Macros `{0}` doesn't exists in file `{1}`. Skipped.", macrosName, path);
+					Debug.LogWarningFormat("[MACROS] Macros `{0}` doesn't exists in file `{1}`. Skipped.", macrosName, path);
 
 				} else {
 

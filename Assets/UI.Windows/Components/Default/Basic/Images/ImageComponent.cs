@@ -7,16 +7,36 @@ using UnityEngine.UI.Windows.Extensions;
 namespace UnityEngine.UI.Windows.Components {
 
 	public class ImageComponent : WindowComponent, IImageComponent {
+		
+		public override void Setup(IComponentParameters parameters) {
+			
+			base.Setup(parameters);
+			
+			var inputParameters = parameters as ImageComponentParameters;
+			#region source macros UI.Windows.Initialization.ImageComponent
+			{
+				if (inputParameters != null) inputParameters.Setup(this as IImageComponent);
+			}
+			#endregion
+			
+		}
 
 		#region source macros UI.Windows.ImageComponent
-		[Header("Properties")]
-		public bool preserveAspect;
+		[Header("Image Component")]
+		[SerializeField]
+		private bool preserveAspect;
 
 		[SerializeField]
 		private Image image;
 		
 		[SerializeField]
 		private RawImage rawImage;
+
+		public void SetPreserveAspectState(bool state) {
+
+			this.preserveAspect = state;
+
+		}
 
 		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {
 

@@ -65,7 +65,7 @@ namespace UnityEngine.UI.Windows {
 				var flow = this.flow;
 				if (flow == null) {
 
-					Debug.LogError("Flow data was not set to WindowSystemFlow. Set ");
+					Debug.LogError("Flow data was not set to WindowSystemFlow.");
 					return;
 
 				}
@@ -112,7 +112,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			#endregion
-
+			
 			base.Init();
 
 			this.OnStart();

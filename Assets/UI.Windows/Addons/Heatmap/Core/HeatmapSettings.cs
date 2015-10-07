@@ -153,7 +153,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					this.points.Add(new Point(point, tag, component));
 					this.changed = true;
 
-					//this.UpdateMap();
+					this.UpdateMap();
 
 				}
 
@@ -171,7 +171,18 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 				}
 
-				/*public void UpdateMap() {
+				public void UpdateMap() {
+
+					this.status = HeatmapSettings.WindowsData.Window.Status.Loaded;
+					
+					if (this.texture == null) this.texture = new Texture2D((int)this.size.x, (int)this.size.y, TextureFormat.ARGB32, false);
+					
+					if (this.changed == false) return;
+
+					this.texture = HeatmapVisualizer.Create(this.texture, this, this.GetPoints(), this.size);
+					this.changed = false;
+
+					/*
 					Debug.Log("dsfgsdf");
 					//TODO: load data
 					var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(useCache: false).FirstOrDefault();
@@ -230,9 +241,9 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					});
 
 
+*/
 
-
-				}*/
+				}
 				
 				public void SetChanged() {
 
@@ -279,7 +290,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			public void UpdateMap() {
 				
-				#if UNITY_EDITOR
+				/*#if UNITY_EDITOR
 				string ids = "[";
 				for (int i = 0, imax = this.list.Count - 1; i <= imax; ++i) {
 					ids += this.list[i].id.ToString();
@@ -334,7 +345,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 					}
 
 				});
-				#endif
+				#endif*/
 
 			}
 			

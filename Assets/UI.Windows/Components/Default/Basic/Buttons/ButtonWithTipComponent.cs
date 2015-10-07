@@ -6,7 +6,7 @@ using UnityEngine.UI.Windows.Types;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonWithTipComponent : ButtonHoverComponent {
+	public class ButtonWithTipComponent : ButtonComponent {
 
 		private string tipText;
 		private TipWindowType infoWindow;

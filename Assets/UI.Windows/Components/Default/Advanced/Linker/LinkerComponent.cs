@@ -11,6 +11,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		[ComponentChooser]
 		public WindowComponent prefab;
+		[HideInInspector][SerializeField]
+		public WindowComponentParametersBase prefabParameters;
 
 		public bool fitToRoot;
 
@@ -68,6 +70,12 @@ namespace UnityEngine.UI.Windows.Components {
 				this.instance.SetParent(this, false);
 				this.instance.SetTransformAs(this.prefab);
 
+				if (this.prefabParameters != null) {
+
+					this.instance.Setup(this.prefabParameters);
+
+				}
+
 				if (this.fitToRoot == true) {
 
 					var rect = this.instance.transform as RectTransform;
@@ -86,72 +94,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 				this.RegisterSubComponent(this.instance);
 
-				//this.instance.OnInit();
-
 			}
 
 		}
-		/*
-		public override void OnDeinit() {
-			
-			base.OnDeinit();
-
-			var instance = this.instance;
-			if (instance != null) instance.OnDeinit();
-			
-		}
-		
-		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-			
-			var counter = 0;
-			System.Action callbackItem = () => {
-				
-				++counter;
-				if (counter < 2) return;
-				
-				if (callback != null) callback();
-				
-			};
-			
-			base.OnShowBegin(callbackItem, resetAnimation);
-			this.instance.OnShowBegin(callbackItem, resetAnimation);
-
-		}
-		
-		public override void OnShowEnd() {
-			
-			base.OnShowEnd();
-			
-			var instance = this.instance;
-			if (instance != null) instance.OnShowEnd();
-			
-		}
-		
-		public override void OnHideBegin(System.Action callback, bool immediately = false) {
-			
-			var counter = 0;
-			System.Action callbackItem = () => {
-				
-				++counter;
-				if (counter < 2) return;
-				
-				if (callback != null) callback();
-				
-			};
-			
-			base.OnHideBegin(callbackItem, immediately);
-			this.instance.OnHideBegin(callbackItem, immediately);
-
-		}
-		
-		public override void OnHideEnd() {
-			
-			base.OnHideEnd();
-			
-			var instance = this.instance;
-			if (instance != null) instance.OnHideEnd();
-			
-		}*/
 
 	}
 

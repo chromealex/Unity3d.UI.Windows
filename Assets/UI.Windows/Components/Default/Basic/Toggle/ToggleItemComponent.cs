@@ -5,21 +5,21 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ToggleItemComponent : ButtonWithTextComponent {
+	public class ToggleItemComponent : ButtonComponent {
 
 		public Toggle toggle;
 
-		private ComponentEvent<bool> callback = new ComponentEvent<bool>();
+		private ComponentEvent<bool> callbackToggle = new ComponentEvent<bool>();
 		private ComponentEvent<ToggleItemComponent, bool> callbackButton = new ComponentEvent<ToggleItemComponent, bool>();
 
 		public virtual void SetCallback(UnityAction<bool> callback) {
 
-			this.callback.AddListenerDistinct(callback);
+			this.callbackToggle.AddListenerDistinct(callback);
 			this.callbackButton.RemoveAllListeners();
 
 			this.SetCallback(() => {
 
-				this.callback.Invoke(this.GetState());
+				this.callbackToggle.Invoke(this.GetState());
 
 			});
 
@@ -28,7 +28,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public virtual void SetCallback(UnityAction<ToggleItemComponent, bool> callback) {
 			
 			this.callbackButton.AddListenerDistinct(callback);
-			this.callback.RemoveAllListeners();
+			this.callbackToggle.RemoveAllListeners();
 			
 			this.SetCallback(() => {
 				

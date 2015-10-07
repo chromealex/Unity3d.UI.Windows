@@ -240,6 +240,22 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
+		public string GetModulesPath() {
+
+			var modulesPath = string.Empty;
+			var data = this;
+
+			#if UNITY_EDITOR
+			var dataPath = UnityEditor.AssetDatabase.GetAssetPath(data);
+			var directory = System.IO.Path.GetDirectoryName(dataPath);
+			var projectName = data.name;
+			modulesPath = System.IO.Path.Combine(directory, string.Format("{0}.Modules", projectName));
+			#endif
+
+			return modulesPath;
+
+		}
+
 		public void Save() {
 
 			#if UNITY_EDITOR
@@ -533,12 +549,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			UnityEditor.AssetDatabase.AddObjectToAsset(window, this);
 			UnityEditor.AssetDatabase.ImportAsset(UnityEditor.AssetDatabase.GetAssetPath(window), UnityEditor.ImportAssetOptions.ForceUpdate);
 			UnityEditor.AssetDatabase.SaveAssets();
+			UnityEditor.EditorUtility.SetDirty(window);
 			#endif
 			window.Setup(newId, flags);
 
 			this.windowAssets.Add(window);
 			this.windowsCache.Clear();
 			this.isDirty = true;
+
+			this.Save();
 
 			return window;
 

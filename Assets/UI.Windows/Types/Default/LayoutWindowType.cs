@@ -165,10 +165,15 @@ namespace UnityEngine.UI.Windows.Types {
 
 			[ReadOnly]
 			public LayoutTag tag;
-			[ComponentChooser]
 			public WindowComponent component;
 			public int sortingOrder = 0;
-			
+			public WindowComponentParametersBase componentParameters;
+
+			#if UNITY_EDITOR
+			public bool editorParametersFoldout;
+			public IParametersEditor componentParametersEditor;
+			#endif
+
 			public Component(LayoutTag tag) {
 
 				this.tag = tag;
@@ -176,6 +181,30 @@ namespace UnityEngine.UI.Windows.Types {
 			}
 			
 			#if UNITY_EDITOR
+			public WindowComponentParametersBase OnComponentChanged(WindowBase window, WindowComponent newComponent) {
+
+				this.component = newComponent;
+
+				if (this.componentParameters != null) {
+
+					var link = this.componentParameters;
+#if UNITY_EDITOR
+                    UnityEditor.EditorApplication.delayCall += () => {
+
+						Object.DestroyImmediate(link, allowDestroyingAssets: true);
+
+					};
+#endif
+
+                }
+
+				var instance = Layout.AddParametersFor(window, this.component);
+				this.componentParameters = instance;
+
+				return instance;
+
+			}
+
 			private IPreviewEditor editor;
 			public void OnPreviewGUI(Rect rect, GUIStyle background) {
 
@@ -220,6 +249,12 @@ namespace UnityEngine.UI.Windows.Types {
 				//instance.SetComponentState(WindowObjectState.NotInitialized);
 				instance.SetParent(root, setTransformAsSource: false);
 				instance.SetTransformAs();
+
+				if (this.componentParameters != null) {
+
+					instance.Setup(this.componentParameters);
+
+				}
 
 				var rect = instance.transform as RectTransform;
 				rect.sizeDelta = (this.component.transform as RectTransform).sizeDelta;
@@ -410,6 +445,27 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 		
+		public static WindowComponentParametersBase AddParametersFor(WindowBase window, WindowComponent component) {
+
+			return Layout.AddParametersFor(window.gameObject, component);
+
+		}
+
+		public static WindowComponentParametersBase AddParametersFor(GameObject obj, WindowComponent component) {
+
+			if (component == null) return null;
+
+			// Find the type
+			var type = System.Type.GetType(string.Format("{0}Parameters", component.GetType().FullName), throwOnError: false, ignoreCase: false);
+			if (type == null) return null;
+
+			// Add component
+			var instance = obj.AddComponent(type);
+			instance.hideFlags = HideFlags.HideInInspector;
+			return instance as WindowComponentParametersBase;
+
+		}
+
 		#if UNITY_EDITOR
 		private List<LayoutTag> tags = new List<LayoutTag>();
 		internal void Update_EDITOR(LayoutWindowType layoutWindow) {

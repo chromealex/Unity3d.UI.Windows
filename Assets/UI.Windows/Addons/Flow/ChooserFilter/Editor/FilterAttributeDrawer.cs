@@ -28,7 +28,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 				EditorGUI.PropertyField(new Rect(offset.x, offset.y, position.width - width - margin, position.height), property, label, true);
 				
-				if (GUI.Button(new Rect(position.width - width + offset.x, offset.y, width, position.height), "...") == true) {
+				if (GUI.Button(new Rect(position.width - width + offset.x, offset.y, width, position.height), "...", EditorStyles.miniButton) == true) {
 
 					WindowComponentLibraryChooser.Show((element) => {
 

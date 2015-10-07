@@ -29,12 +29,12 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			
 			if (Heatmap.settings == null) {
 
-				Heatmap.settings = this.GetSettingsFile();
+				Heatmap.settings = Heatmap.GetSettingsFile();
 				//if (Heatmap.settings == null) Heatmap.settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(useCache: false).FirstOrDefault();
 
 			}
 
-			if (this.noDataTexture == null) this.noDataTexture = Resources.Load("UI.Windows/Heatmap/NoData") as Texture;
+			if (this.noDataTexture == null) this.noDataTexture = Resources.Load<Texture>("UI.Windows/Heatmap/NoData");
 
 			var settings = Heatmap.settings;
 			if (settings == null) {
@@ -54,7 +54,6 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 				if (GUILayout.Button("Refresh") == true) {
 
-					//var settings = Heatmap.settings;
 					//TODO:..
 					settings.data.UpdateMap();
 
@@ -66,7 +65,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 		public override void OnFlowWindowLayoutGUI(Rect rect, FD.FlowWindow window) {
 			
-			if (Heatmap.settings == null) Heatmap.settings = this.GetSettingsFile();
+			if (Heatmap.settings == null) Heatmap.settings = Heatmap.GetSettingsFile();
 
 			var settings = Heatmap.settings;
 			if (settings != null) {
@@ -121,18 +120,14 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			
 		}
 
-		private HeatmapSettings GetSettingsFile() {
+		public static HeatmapSettings GetSettingsFile() {
 			
 			var data = FlowSystem.GetData();
 			if (data == null) return null;
 
-			var dataPath = AssetDatabase.GetAssetPath(data);
-			var directory = Path.GetDirectoryName(dataPath);
-			var projectName = data.name;
-			var modulesPath = Path.Combine(directory, projectName + ".Modules");
-			
+			var modulesPath = data.GetModulesPath();
+
 			var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(modulesPath, useCache: true);
-			
 			if (settings != null && settings.Length > 0) {
 				
 				return settings[0];
@@ -161,7 +156,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			
 			return settings == null;*/
 
-			return this.GetSettingsFile() == null;
+			return Heatmap.GetSettingsFile() == null;
 			
 		}
 		

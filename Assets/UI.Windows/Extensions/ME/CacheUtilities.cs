@@ -9,6 +9,7 @@ namespace ME {
 		
 		private static Dictionary<string, Component[]> cacheComponents = new Dictionary<string, Component[]>();
 		private static Dictionary<string, ScriptableObject[]> cacheAssets = new Dictionary<string, ScriptableObject[]>();
+		private static Dictionary<string, Object[]> cacheObjects = new Dictionary<string, Object[]>();
 
 		private static Dictionary<string, double> cacheByTimeLastTime = new Dictionary<string, double>();
 		private static Dictionary<string, object> cacheByTimeLastValue = new Dictionary<string, object>();
@@ -36,16 +37,32 @@ namespace ME {
 			Utilities.cacheAssets.Remove(key);
 
 		}
-
+		
 		public static ScriptableObject[] CacheAssetsArray<T>(System.Func<T[]> func, string directory) {
 			
 			var key = typeof(T).FullName + "," + directory;
 			
 			ScriptableObject[] value;
 			if (Utilities.cacheAssets.TryGetValue(key, out value) == false) {
-
+				
 				value = func().Cast<ScriptableObject>().ToArray();
 				Utilities.cacheAssets.Add(key, value);
+				
+			}
+			
+			return value;
+			
+		}
+		
+		public static Object[] CacheObjectsArray<T>(System.Func<T[]> func, string directory) {
+			
+			var key = typeof(T).FullName + "," + directory;
+			
+			Object[] value;
+			if (Utilities.cacheObjects.TryGetValue(key, out value) == false) {
+				
+				value = func().Cast<Object>().ToArray();
+				Utilities.cacheObjects.Add(key, value);
 				
 			}
 			

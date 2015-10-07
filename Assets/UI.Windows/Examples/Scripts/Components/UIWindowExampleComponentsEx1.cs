@@ -11,10 +11,10 @@ public class UIWindowExampleComponentsEx1 : WindowComponent {
 	private ButtonComponent button1;
 	
 	public LinkerComponent button2Linker;
-	private ButtonWithTextComponent button2;
+	private ButtonComponent button2;
 	
 	public LinkerComponent button3Linker;
-	private ButtonHoverComponent button3;
+	private ButtonComponent button3;
 	
 	public LinkerComponent button4Linker;
 	private ButtonWithTipComponent button4;

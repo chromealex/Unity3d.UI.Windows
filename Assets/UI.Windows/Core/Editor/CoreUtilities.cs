@@ -41,6 +41,26 @@ namespace UnityEditor.UI.Windows {
 			CoreUtilities.addonsLoaded = true;
 
 		}
+		
+		public static T Load<T>(string filepath) where T : UnityEngine.Object {
+			
+			const string directory = "EditorResources";
+			
+			var items = ME.EditorUtilities.GetObjectsOfType<T>(filepath: filepath, inFolder: directory, useCache: true);
+			if (items == null || items.Length == 0) return null;
+			
+			return items[0];
+			
+		}
+		
+		public static T[] LoadAll<T>(string filepath) where T : UnityEngine.Object {
+			
+			const string directory = "EditorResources";
+			
+			var items = ME.EditorUtilities.GetObjectsOfType<T>(filepath: filepath, inFolder: directory, useCache: true);
+			return items;
+			
+		}
 
 		public static List<T> GetAddons<T>(System.Action<string, T> forEach = null) where T : IWindowAddon {
 

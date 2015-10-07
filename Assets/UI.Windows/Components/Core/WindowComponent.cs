@@ -24,6 +24,10 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
+		public virtual void Setup(IComponentParameters parameters) {
+
+		}
+
 		/// <summary>
 		/// Gets the layout root.
 		/// Basicaly it's the parent transform from current. But it's not always so.

@@ -6,7 +6,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 	public class WindowAnimationTransitionSlideParameters : TransitionInputParameters {
 		
-		[ReadOnly(fieldName: "useDefault", state: false)]
+		[ReadOnly(fieldName: "useDefault", state: true)]
 		public WindowAnimationTransitionSlide.Parameters parameters;
 		
 		public override void SetDefaultParameters(TransitionBase.ParametersBase parameters) {

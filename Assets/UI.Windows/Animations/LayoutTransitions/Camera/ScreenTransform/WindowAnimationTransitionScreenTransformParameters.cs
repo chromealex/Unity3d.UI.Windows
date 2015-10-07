@@ -7,7 +7,7 @@ namespace UnityEngine.UI.Windows.Animations {
 	public class WindowAnimationTransitionScreenTransformParameters : TransitionInputTemplateParameters {
 		
 		[Header("Parameters")]
-		[ReadOnly(fieldName: "useDefault", state: false)]
+		[ReadOnly(fieldName: "useDefault", state: true)]
 		public WindowAnimationTransitionScreenTransform.Parameters parameters;
 		
 		public override void SetDefaultParameters(TransitionBase.ParametersBase parameters) {

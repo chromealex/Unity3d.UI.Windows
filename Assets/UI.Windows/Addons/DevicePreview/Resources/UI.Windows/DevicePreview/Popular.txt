@@ -1,5 +1,5 @@
 ﻿PC/Mac, iMac 27", 2560x1440, 27
-PC/Mac, iMac 21.5", 1920x1080, 21.5
+PC/Mac, iMac 21.5", 1920x1080, 21.5, Apple.Mac
 PC/Mac, Macbook Air 11.6", 1366x768, 11.6
 PC/Mac, Macbook Air 13", 1440x900, 13
 PC/Mac, Macbook Pro 13.3", 1280x800, 13.3
@@ -16,20 +16,18 @@ PC/Mac, PC, 1600x1024, 17
 PC/Mac, PC, 1600x1200, 17
 PC/Mac, PC, 1920x1080, 17
 PC/Mac, {SCREEN}, 0x0, 0
-Apple, iPad, 1024x768, 9.7
-Apple, iPad 2, 1024x768, 9.7
-Apple, iPad 3, 2048x1536, 9.7
-Apple, iPad 4, 2048x1536, 9.7
-Apple, iPad Air, 2048x1536, 9.7
-Apple, iPad Air 2, 2048x1536, 9.7
-Apple, iPad Mini, 1024x768, 7.9
-Apple, iPad Mini 2, 2048x1536, 7.9
-Apple, iPad mini 3, 2048x1536, 7.9
-Apple, iPhone 3GS, 480x320, 3.5, Apple.Iphone3
-Apple, iPhone 4S, 960x640, 3.5, Apple.Iphone4
-Apple, iPhone 5, 1136x640, 4, Apple.Iphone5
-Apple, iPhone 6, 1334x750, 4.7
-Apple, iPhone 6 Plus, 1920x1080, 5.5
+Apple, iPad, 1024x768, 9.7, Apple.Ipad1
+Apple, iPad 2, 1024x768, 9.7, Apple.Ipad
+Apple, iPad 3/4, 2048x1536, 9.7, Apple.Ipad
+Apple, iPad Air 1/2, 2048x1536, 9.7, Apple.IpadAir
+Apple, iPad Mini, 1024x768, 7.9, Apple.IpadMini
+Apple, iPad Mini 2/3, 2048x1536, 7.9, Apple.IpadMini
+Apple, iPhone 3G/3GS, 480x320, 3.5, Apple.Iphone3
+Apple, iPhone 4/4S, 960x640, 3.5, Apple.Iphone4
+Apple, iPhone 5/5S, 1136x640, 4, Apple.Iphone5
+Apple, iPhone 5C, 1136x640, 4, Apple.Iphone5C
+Apple, iPhone 6/6S, 1334x750, 4.7, Apple.Iphone6
+Apple, iPhone 6/6S Plus, 1920x1080, 5.5, Apple.Iphone6plus
 Acer, Iconia Tab, 1280x800, 10.1
 Amazon, Kindle Fire, 1024x600, 7
 Amazon, Kindle Fire 2, 1024x600, 7
@@ -44,9 +42,9 @@ ASUS, Transformer TF101, 1280x800, 10.1
 ASUS, Transformer Prime TF201, 1280x800, 10.1
 Asus, Nexus 7 (2013), 1920x1200, 7
 Asus, Nexus 10, 2560x1600, 10
-Barnes &amp; Noble, Nook, 1024x600, 7
-Barnes &amp; Noble, Nook HD 7", 1440x900, 7
-Barnes &amp; Noble, Nook HD 9", 1920x1280, 9
+Barnes & Noble, Nook, 1024x600, 7
+Barnes & Noble, Nook HD 7", 1440x900, 7
+Barnes & Noble, Nook HD 9", 1920x1280, 9
 BlackBerry, Playbook, 1024x600, 7
 BlackBerry, Torch 9800, 480x360, 3.2
 BlackBerry, Torch 9810, 640x480, 3.2
@@ -57,6 +55,7 @@ HTC, Evo 3D, 960x540, 4.3
 HTC, Flyer, 1024x600, 7
 HTC, Sensation 4G, 960x540, 4.3
 HTC, Thunderbolt, 800x480, 4.3
+HTC, One M9, 1920x1080, 5, HTC.OneM9
 Lenovo, IdeaPad A1, 1024x600, 7
 Lenovo, ThinkPad, 1280x800, 10.1
 Lenovo, Yoga 3 Pro, 3200x1800, 13.3
@@ -71,13 +70,15 @@ Motorola, Droid RAZR, 960x540, 4.3
 Motorola, Droid Xyboard 10.1, 1280x800, 10.1
 Motorola, Xoom, 1280x800, 10.1
 Nokia, Lumia 900, 800x480, 4.3
+Nokia, Lumia 920, 1280x768, 4.5, Nokia.Lumia920
 Samsung, Brightside, 320x240, 3.1
 Samsung, Epic 4G Touch, 800x480, 4.52
 Samsung, Exhibit 4G, 800x480, 3.5
 Samsung, Focus Flash, 800x480, 3.7
 Samsung, Galaxy S2, 800x480, 4.52
 Samsung, Galaxy S3, 1280x720, 4.8
-Samsung, Galaxy S4, 1920x1080, 5
+Samsung, Galaxy S4, 1920x1080, 5, Samsung.GalaxyS4
+Samsung, Galaxy S4 Mini, 960x540, 4.3, Samsung.GalaxyS4Mini
 Samsung, Galaxy Tab, 1024x600, 7
 Samsung, Galaxy Tab 7.7, 1280x800, 7.7
 Samsung, Galaxy Tab 10.1, 1280x800, 10.1
@@ -92,6 +93,10 @@ Samsung, Galaxy Tab Pro 8.4, 2560x1600, 8.4
 Samsung, Galaxy Tab Pro 10.1, 2560x1600, 10.1
 Samsung, Galaxy Tab Pro 12.2, 2560x1600, 12.2
 Sony, Tablet S, 1280x800, 9.4
+Sony, Xperia M4, 1280x720, 5
+Sony, Xperia Z3 Compact, 1280x720, 4.6, Sony.Z3Compact
+Sony, Xperia Z3/Z5, 1920x1080, 5.2, Sony.Z3
+Sony, Xperia Z5 Premium, 3840x2160, 5.5, Sony.Z5
 T-Mobile, MyTouch 4G Slide, 800x480, 3.8
 T-Mobile, SpringBoard, 1280x800, 7
 Toshiba, Thrive, 1280x800, 10.1
