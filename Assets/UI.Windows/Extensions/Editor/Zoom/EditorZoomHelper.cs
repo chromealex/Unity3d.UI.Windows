@@ -162,7 +162,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 		}
 
 		public Vector2 Begin(Rect screenRect, Vector2 scrollPos, Rect contentRect) {
-
+			
 			this.zoomCoordsOrigin = scrollPos;
 			var origin = this.zoomCoordsOrigin;
 
@@ -178,20 +178,26 @@ namespace UnityEditor.UI.Windows.Extensions {
 
 		}
 
-		public Rect Begin(Rect area, Rect contentSize) {
+		private Rect Begin(Rect area, Rect contentSize) {
+
+			var clippedArea = area;
 
 			GUI.EndGroup();        // End the group Unity begins automatically for an EditorWindow to clip out the window tab. This allows us to draw outside of the size of the EditorWindow.
-			
-			Rect clippedArea = area.ScaleSizeBy(1f / this.zoomValue, this.screenCoordsArea.MiddleMiddle());
+
+			clippedArea = area.ScaleSizeBy(1f / this.zoomValue, this.screenCoordsArea.MiddleMiddle());
 			//this.screenCoordsArea.ScaleSizeBy(1f / this.zoomValue, this.screenCoordsArea.TopLeft());
 			clippedArea.y += EditorZoomArea.EDITOR_TAB_HEIGHT;
 			GUI.BeginGroup(clippedArea);
 			
 			this.prevGuiMatrix = GUI.matrix;
-			Matrix4x4 translation = Matrix4x4.TRS(clippedArea.MiddleMiddle(), Quaternion.identity, Vector3.one);
-			Matrix4x4 scale = Matrix4x4.Scale(new Vector3(this.zoomValue, this.zoomValue, 1f));
-			GUI.matrix = translation * scale * translation.inverse * GUI.matrix;
-			
+			if (this.zoomValue < 1f) {
+
+				Matrix4x4 translation = Matrix4x4.TRS(clippedArea.MiddleMiddle(), Quaternion.identity, Vector3.one);
+				Matrix4x4 scale = Matrix4x4.Scale(new Vector3(this.zoomValue, this.zoomValue, 1f));
+				GUI.matrix = translation * scale * translation.inverse * GUI.matrix;
+
+			}
+
 			GUI.BeginGroup(new Rect(this.zoomCoordsOrigin.x, this.zoomCoordsOrigin.y, contentSize.width, contentSize.height));
 
 			return clippedArea;
@@ -215,15 +221,14 @@ namespace UnityEditor.UI.Windows.Extensions {
 			this.prevUnzoomGuiMatrix = GUI.matrix;
 
 			GUI.matrix = this.prevGuiMatrix;
-
 			GUI.BeginGroup(new Rect(0f, 0f, Screen.width, Screen.height));
+
 
 		}
 
 		public void EndUnzoom() {
-			
-			GUI.EndGroup();
 
+			GUI.EndGroup();
 			GUI.matrix = this.prevUnzoomGuiMatrix;
 
 		}

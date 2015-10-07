@@ -79,7 +79,7 @@ namespace ExampleProject.UI.Menu.MainMenu {
 		
 		private ExampleProject.UI.Loader.Loading.LoadingScreen INTERNAL_FlowFunctionLoader(bool hide, UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, System.Action<ExampleProject.UI.Loader.Loading.LoadingScreen> onParametersPassCall = null) {
 			
-			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(1, 39);
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(43, 39);
 			if (hide == true) this.Hide(item.transition, item.transitionParameters);
 			return WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
 				(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunctionLoaderRoutes(this, index))),

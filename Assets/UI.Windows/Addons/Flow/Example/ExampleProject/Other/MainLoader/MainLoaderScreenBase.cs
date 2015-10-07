@@ -14,38 +14,6 @@ namespace ExampleProject.UI.Other.MainLoader {
 	public class MainLoaderScreenBase : LayoutWindowType {
 		
 		/// <summary>
-		/// Flows to the MainMenu.
-		/// Use this method to play transition effect on B window only.
-		/// If you call Hide() on A window - it will hide with standard behaviour.
-		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
-		/// </summary>
-		/// <returns>MainMenu</returns>
-		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowMainMenu() {
-			
-			return this.INTERNAL_FlowMainMenu(hide: false);
-			
-		}
-		
-		/// <summary>
-		/// Flows to the MainMenu.
-		/// Hides current window.
-		/// Use this method to play transition effect on both windows (A and B).
-		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
-		/// </summary>
-		/// <returns>MainMenu</returns>
-		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowHideMainMenu() {
-			
-			return this.INTERNAL_FlowMainMenu(hide: true);
-			
-		}
-		
-		private ExampleProject.UI.Menu.MainMenu.MainMenuScreen INTERNAL_FlowMainMenu(bool hide, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onParametersPassCall = null) {
-			
-			return WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, 18, 1, hide, onParametersPassCall);
-			
-		}
-				
-		/// <summary>
 		/// Flows to the Background.
 		/// Use this method to play transition effect on B window only.
 		/// If you call Hide() on A window - it will hide with standard behaviour.
@@ -74,6 +42,38 @@ namespace ExampleProject.UI.Other.MainLoader {
 		private ExampleProject.UI.Other.Background.BackgroundScreen INTERNAL_FlowBackground(bool hide, System.Action<ExampleProject.UI.Other.Background.BackgroundScreen> onParametersPassCall = null) {
 			
 			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.Background.BackgroundScreen>(this, 18, 32, hide, onParametersPassCall);
+			
+		}
+				
+		/// <summary>
+		/// Flows to the MainMenu.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
+		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+		/// </summary>
+		/// <returns>MainMenu</returns>
+		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowMainMenu() {
+			
+			return this.INTERNAL_FlowMainMenu(hide: false);
+			
+		}
+		
+		/// <summary>
+		/// Flows to the MainMenu.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+		/// </summary>
+		/// <returns>MainMenu</returns>
+		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowHideMainMenu() {
+			
+			return this.INTERNAL_FlowMainMenu(hide: true);
+			
+		}
+		
+		private ExampleProject.UI.Menu.MainMenu.MainMenuScreen INTERNAL_FlowMainMenu(bool hide, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onParametersPassCall = null) {
+			
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, 18, 43, hide, onParametersPassCall);
 			
 		}
 		
