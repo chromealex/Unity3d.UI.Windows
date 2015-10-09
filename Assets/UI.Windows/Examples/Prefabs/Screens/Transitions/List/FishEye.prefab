@@ -82,8 +82,14 @@ MonoBehaviour:
     depth: 0
     dontDestroy: 1
     history: 0
+    createPool: 1
     preallocatedCount: 0
     editorValidated: 1
+  audio:
+    flowData: {fileID: 0}
+    playType: 0
+    clipType: 0
+    id: 0
   modules:
     elements:
     - moduleSource: {fileID: 11450152, guid: 7bae598a085794f63a00d7abccc91396, type: 2}

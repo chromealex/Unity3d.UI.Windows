@@ -41,7 +41,7 @@ namespace UnityEditor.UI.Windows.Plugins.FlowCompiler {
 
 		public override void OnFlowSettingsGUI() {
 
-			if (this.skin == null) this.skin = Resources.Load<GUISkin>("UI.Windows/Flow/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
+			if (this.skin == null) this.skin = FlowSystemEditorWindow.defaultSkin;
 
 			GUILayout.Label(FlowAddon.MODULE_INSTALLED, EditorStyles.centeredGreyMiniLabel);
 

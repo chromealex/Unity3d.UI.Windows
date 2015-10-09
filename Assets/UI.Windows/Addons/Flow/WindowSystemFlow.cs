@@ -1,4 +1,4 @@
-﻿#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 #define UNITY_MOBILE
 #endif
 #if UNITY_XBOX360 || UNITY_XBOXONE || UNITY_PS3 || UNITY_PS4 || UNITY_WII
@@ -19,6 +19,7 @@ namespace UnityEngine.UI.Windows {
 
 			Window = 0x1,
 			Function = 0x2,
+			Audio = 0x4,
 
 		};
 
@@ -82,6 +83,7 @@ namespace UnityEngine.UI.Windows {
 				#endif
 
 				FlowSystem.SetData(flow);
+				Audio.Manager.InitAndAdd(flow.audio);
 
 				this.defaults.AddRange(flow.GetDefaultScreens());
 				this.windows.AddRange(flow.GetAllScreens());
@@ -107,6 +109,7 @@ namespace UnityEngine.UI.Windows {
 
 					var screens = additionalFlow.GetAllScreens((w) => ((this.additionalLoadType & LoadType.Function) != 0 && (w.IsFunction() == true || w.GetFunctionContainer() != null)) || ((this.additionalLoadType & LoadType.Window) != 0 && w.IsFunction() == false));
 					this.windows.AddRange(screens);
+					if ((this.additionalLoadType & LoadType.Audio) != 0) Audio.Manager.InitAndAdd(flow.audio);
 
 				}
 

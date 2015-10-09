@@ -20,7 +20,6 @@ namespace UnityEditor.UI.Windows.Components {
 		private FieldInfo[] fields;
 		private SerializedProperty[] properties;
 		private ulong[] values;
-		//private System.Array flags;
 		private float referenceHeight;
 
 		public void OnEnable() {
@@ -42,8 +41,6 @@ namespace UnityEditor.UI.Windows.Components {
 				}
 
 			}
-			
-			//this.flags = System.Enum.GetValues(typeof(ParameterFlag));
 
 			this.referenceHeight = 16f;
 			/*var referenceField = this.fields.FirstOrDefault((f) => f.GetCustomAttributes(false).Count() == 0);
@@ -67,6 +64,8 @@ namespace UnityEditor.UI.Windows.Components {
 
 		public override void OnParametersGUI(Rect rect) {
 
+			if (this.serializedObject == null) return;
+
 			const float toggleWidth = 30f;
 			const float space = 2f;
 
@@ -81,7 +80,7 @@ namespace UnityEditor.UI.Windows.Components {
 				GUI.enabled = true;
 				
 				var property = this.properties[i];
-				var value = this.values[i];//(ParameterFlag)this.flags.GetValue(i + 1);
+				var value = this.values[i];
 				var state = this.parameters.IsChanged(value);
 
 				height = EditorGUI.GetPropertyHeight(property);
@@ -94,11 +93,12 @@ namespace UnityEditor.UI.Windows.Components {
 				cRect.x += toggleWidth;
 				cRect.width -= toggleWidth;
 				cRect.height += offset;
-				EditorGUI.PropertyField(cRect, property);
+				EditorGUI.PropertyField(cRect, property, includeChildren: true);
 
 				GUI.enabled = true;
 
 				var tRect = rect;
+				tRect.x -= 10f;
 				tRect.y += offset;
 				tRect.width = toggleWidth;
 				var val = EditorGUI.Toggle(tRect, state);

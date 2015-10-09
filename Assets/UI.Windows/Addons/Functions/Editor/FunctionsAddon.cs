@@ -195,7 +195,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				foreach (var function in this.functions) {
 					
-					if (GUILayoutExt.LargeButton(function.title, 20f, FlowSystemEditorWindow.SETTINGS_WIDTH) == true) {
+					if (GUILayout.Button(function.title, FlowSystemEditorWindow.defaultSkin.button) == true) {
 
 						this.flowEditor.SetCenterTo(function);
 
@@ -360,7 +360,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 				var oldColor = GUI.color;
 				GUI.color = isActiveSelected ? Color.white : Color.grey;
-				var result = GUILayoutExt.LargeButton(functionContainer != null ? functionContainer.title : "None", GUILayout.MaxHeight(60f), GUILayout.MaxWidth(150f));
+				var result = GUILayout.Button(functionContainer != null ? functionContainer.title : "None", FlowSystemEditorWindow.defaultSkin.button, GUILayout.ExpandHeight(true));
 				GUI.color = oldColor;
 				var rect = GUILayoutUtility.GetLastRect();
 				rect.y += rect.height;

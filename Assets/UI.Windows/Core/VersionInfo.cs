@@ -225,7 +225,7 @@ namespace UnityEngine.UI.Windows {
 
 		public const string DOWNLOAD_LINK = "https://github.com/chromealex/Unity3d.UI.Windows";
 
-		public static readonly Version BUNDLE_VERSION = new Version(1, 0, 0, Version.Type.Alpha);
+		public static readonly Version BUNDLE_VERSION = new Version(1, 0, 1, Version.Type.Alpha);
 
 	}
 

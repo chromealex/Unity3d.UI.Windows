@@ -588,6 +588,8 @@ namespace UnityEngine.UI.Windows {
 		public History history = History.Auto;
 
 		[Header("Pool")]
+		public bool createPool = true;
+		[ReadOnly("createPool", state: false)]
 		public int preallocatedCount = 0;
 
 		public bool IsHistoryActive() {

@@ -154,6 +154,7 @@ namespace UnityEditor.UI.Windows {
 				if (oldComponent != newComponent) {
 
 					parameters.objectReferenceValue = this.components[index].OnComponentChanged(this.window, newComponent as WindowComponent);
+					this.components[index].componentParametersEditor = null;
 
 				}
 
@@ -171,6 +172,7 @@ namespace UnityEditor.UI.Windows {
 								component.objectReferenceValue = elem.mainComponent;
 								var c = component.objectReferenceValue;
 								parameters.objectReferenceValue = this.components[i].OnComponentChanged(this.window, c as WindowComponent);
+								this.components[i].componentParametersEditor = null;
 								item.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 
 							}

@@ -30,7 +30,7 @@ namespace UnityEngine.UI.Windows {
 
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
-	public class WindowBase : WindowObject, IWindowEventsAsync, IFunctionIteration {
+	public class WindowBase : WindowObject, IWindowEventsAsync, IFunctionIteration, IWindow {
 
 		#if UNITY_EDITOR
 		[HideInInspector]
@@ -43,6 +43,7 @@ namespace UnityEngine.UI.Windows {
 		public bool initialized = false;
 
 		public Preferences preferences = new Preferences();
+		new public Audio.Window audio = new Audio.Window();
 		public Modules.Modules modules = new Modules.Modules();
 		public Events events = new Events();
 		#if !TRANSITION_ENABLED
@@ -72,6 +73,14 @@ namespace UnityEngine.UI.Windows {
 
 			return this.source == y.source;
 			
+		}
+
+		public void Setup(FlowData data) {
+
+			#if UNITY_EDITOR
+			this.audio.flowData = data;
+			#endif
+
 		}
 
 		internal void Init(WindowBase source, float depth, float zDepth, int raycastPriority, int orderInLayer) {
@@ -197,6 +206,22 @@ namespace UnityEngine.UI.Windows {
 
 			return new Vector2(Screen.width, Screen.height);
 
+		}
+		
+		public void ApplyInnerCameras(Camera[] cameras, bool front) {
+			
+			var currentDepth = this.workCamera.depth;
+			var depthStep = WindowSystem.GetDepthStep() * 0.5f;
+			var camerasCount = cameras.Length;
+			
+			//var innerStep = depthStep / camerasCount;
+			for (int i = 0; i < camerasCount; ++i) {
+				
+				cameras[i].orthographicSize = this.workCamera.orthographicSize;
+				cameras[i].depth = currentDepth + depthStep * (i + 1) * (front == true ? 1f : -1f);
+				
+			}
+			
 		}
 
 		#if TRANSITION_POSTEFFECTS_ENABLED
@@ -355,10 +380,11 @@ namespace UnityEngine.UI.Windows {
 				if (this.currentState != WindowObjectState.Showing) return;
 
 				++counter;
-				if (counter < 5) return;
+				if (counter < 6) return;
 
 				this.OnShowEnd();
 				this.OnLayoutShowEnd();
+				this.audio.OnShowEnd();
 				this.modules.OnShowEnd();
 				this.events.OnShowEnd();
 				this.transition.OnShowEnd();
@@ -371,6 +397,7 @@ namespace UnityEngine.UI.Windows {
 			};
 
 			this.OnLayoutShowBegin(callback);
+			this.audio.OnShowBegin(callback);
 			this.modules.OnShowBegin(callback);
 
 			if (transition != null) {
@@ -438,7 +465,7 @@ namespace UnityEngine.UI.Windows {
 				if (this.currentState != WindowObjectState.Hiding) return;
 
 				++counter;
-				if (counter < 5) return;
+				if (counter < 6) return;
 				
 				WindowSystem.AddToHistory(this);
 
@@ -447,6 +474,7 @@ namespace UnityEngine.UI.Windows {
 				this.OnHideEnd();
 				this.OnLayoutHideEnd();
 				this.modules.OnHideEnd();
+				this.audio.OnHideEnd();
 				this.events.OnHideEnd();
 				this.transition.OnHideEnd();
 				if (onHideEnd != null) onHideEnd();
@@ -456,6 +484,7 @@ namespace UnityEngine.UI.Windows {
 			};
 
 			this.OnLayoutHideBegin(callback);
+			this.audio.OnHideBegin(callback);
 			this.modules.OnHideBegin(callback);
 			
 			if (transition != null) {

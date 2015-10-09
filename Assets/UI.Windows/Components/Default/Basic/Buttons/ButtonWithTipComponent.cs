@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows.Types;
+using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -24,7 +25,6 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnDeinit();
 
 			this.OnStateChanged(state: false);
-			this.infoWindow = null;
 
 		}
 
@@ -33,7 +33,6 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnHideBegin(callback, immediately);
 
 			this.OnStateChanged(state: false);
-			this.infoWindow = null;
 
 		}
 

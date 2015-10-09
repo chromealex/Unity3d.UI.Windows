@@ -86,7 +86,11 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  sfx:
+    flowData: {fileID: 0}
+    id: 0
   hoverIsActive: 0
+  hoverOnAnyPointerState: 0
   hoverInCallback:
     m_PersistentCalls:
       m_Calls: []
@@ -134,8 +138,14 @@ MonoBehaviour:
     depth: 0
     dontDestroy: 1
     history: 0
+    createPool: 1
     preallocatedCount: 0
     editorValidated: 1
+  audio:
+    flowData: {fileID: 0}
+    playType: 0
+    clipType: 0
+    id: 0
   modules:
     elements: []
   events:
@@ -247,7 +257,11 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  sfx:
+    flowData: {fileID: 0}
+    id: 0
   hoverIsActive: 0
+  hoverOnAnyPointerState: 0
   hoverInCallback:
     m_PersistentCalls:
       m_Calls: []
@@ -320,7 +334,11 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  sfx:
+    flowData: {fileID: 0}
+    id: 0
   hoverIsActive: 0
+  hoverOnAnyPointerState: 0
   hoverInCallback:
     m_PersistentCalls:
       m_Calls: []

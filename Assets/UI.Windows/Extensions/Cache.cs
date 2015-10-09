@@ -27,7 +27,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 				
 			}
 			
-			this.isEmpty = false;
+			this.isEmpty = sources.Count > 0;
 			
 		}
 		
@@ -76,33 +76,41 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 	public class Cache<T0, T1> {
 
-		public List<T0> keys = new List<T0>();
-		public List<T1> values = new List<T1>();
+		public Dictionary<T0, T1> values = new Dictionary<T0, T1>();
 
 		private bool isEmpty = true;
 
 		public void Fill<T>(List<T> sources, System.Func<T, int, T0> getKey, System.Func<T, int, T1> getValue) {
 
-			this.keys.Clear();
 			this.values.Clear();
 
 			for (int i = 0; i < sources.Count; ++i) {
 
-				this.keys.Add(getKey(sources[i], i));
-				this.values.Add(getValue(sources[i], i));
+				var key = getKey(sources[i], i);
+				if (this.values.ContainsKey(key) == false) this.values.Add(key, getValue(sources[i], i));
 
 			}
 
-			this.isEmpty = false;
+			this.isEmpty = sources.Count > 0;
 
 		}
-
+		
 		public T1 GetValue(T0 key) {
-
-			var index = this.keys.IndexOf(key);
-			if (index < 0) return default(T1);
-
-			return this.values[index];
+			
+			T1 value;
+			if (this.values.TryGetValue(key, out value) == true) {
+				
+				return value;
+				
+			}
+			
+			return default(T1);
+			
+		}
+		
+		public bool ContainsKey(T0 key) {
+			
+			return this.values.ContainsKey(key);
 
 		}
 

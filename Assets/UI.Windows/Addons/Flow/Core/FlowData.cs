@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI.Windows.Extensions;
 using ME;
+using UnityEngine.UI.Windows.Audio;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 	
@@ -27,7 +28,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 	};
 
 	public class FlowData : ScriptableObject {
-		
+
 		[Header("Version Data")]
 		public string lastModified = "-";
 		public long lastModifiedUnix = 0;
@@ -50,13 +51,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public List<int> defaultWindows = new List<int>();
 
 		[System.Obsolete("Windows List was deprecated. Use windowAssets List instead.")]
-		//[HideInInspector]
+		[HideInInspector]
 		public List<FlowWindow> windows = new List<FlowWindow>();
 		[ReadOnly]
 		public List<Data.FlowWindow> windowAssets = new List<Data.FlowWindow>();
 
 		[ReadOnly]
 		public List<FlowTag> tags = new List<FlowTag>();
+		
+		public Audio.Data audio = new Audio.Data();
 
 		//private Rect selectionRect;
 		[HideInInspector]
@@ -195,6 +198,22 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#endregion
 		#endif
 
+		#if UNITY_EDITOR
+		[ContextMenu("Setup")]
+		public void Setup() {
+			
+			this.audio.Setup();
+
+			var screens = this.GetAllScreens();
+			foreach (var screen in screens) {
+
+				if (screen != null) screen.Setup(this);
+
+			}
+			
+		}
+		#endif
+
 		/*private void OnEnable() {
 
 			this.namespaceName = string.IsNullOrEmpty(this.namespaceName) == true ? string.Format("{0}.UI", this.name) : this.namespaceName;
@@ -270,6 +289,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				foreach (var window in this.windowAssets) {
 
 					this.VerifyRename(window.id);
+					if (window.GetScreen() != null) window.GetScreen().Setup(this);
 					window.isDirty = true;
 					window.Save();
 
@@ -281,20 +301,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			this.isDirty = false;
 
 		}
-		
-		public int GetNextTagId() {
-			
-			var maxId = 0;
-			foreach (var tag in this.tags) {
-				
-				if (tag.id > maxId) maxId = tag.id;
-				
-			}
-			
-			return maxId + 1;
-			
-		}
-		
+
 		public Data.FlowWindow.AttachItem GetAttachItem(int from, int to) {
 			
 			var fromWindow = this.GetWindow(from);
@@ -308,6 +315,20 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			return item;
 
+		}
+
+		#region TAGS
+		public int GetNextTagId() {
+			
+			var maxId = 0;
+			foreach (var tag in this.tags) {
+				
+				if (tag.id > maxId) maxId = tag.id;
+				
+			}
+			
+			return maxId + 1;
+			
 		}
 
 		public FlowTag GetTag(int id) {
@@ -342,6 +363,36 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			this.isDirty = true;
 
 		}
+		#endregion
+
+		#region AUDIO
+		public int GetNextAudioItemId(ClipType clipType) {
+			
+			var maxId = 0;
+			var states = this.audio.GetStates(clipType);
+			foreach (var state in states) {
+				
+				if (state.key > maxId) maxId = state.key;
+				
+			}
+			
+			return maxId + 1;
+			
+		}
+
+		public void AddAudioItem(ClipType clipType, Audio.Data.State state) {
+
+			state.key = this.GetNextAudioItemId(clipType);
+			this.audio.Add(clipType, state);
+
+		}
+
+		public void RemoveAudioItem(ClipType clipType, int key) {
+
+			this.audio.Remove(clipType, key);
+
+		}
+		#endregion
 
 		public void SetRootWindow(int id) {
 			

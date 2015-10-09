@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine.Events;
 using UnityEngine.UI.Windows.Animations;
+using UnityEngine.UI.Windows.Audio;
 
 namespace UnityEngine.UI.Windows {
 
@@ -213,6 +214,7 @@ namespace UnityEngine.UI.Windows {
 		public List<HistoryItem> history = new List<HistoryItem>();
 
 		public Functions functions = new Functions();
+		new public Audio.Source audio = new Audio.Source();
 
 		[HideInInspector]
 		private float depthStep;
@@ -288,8 +290,9 @@ namespace UnityEngine.UI.Windows {
 			this.Init();
 
 		}
-
+		
 		private WindowBase lastInstance;
+		private WindowBase previousInstance;
 		protected virtual void LateUpdate() {
 
 			var lastWindow = this.lastInstance;
@@ -300,12 +303,33 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+
+		public static void AudioStop(ClipType clipType, int id) {
+
+			//Debug.Log("STOP: " + id);
+			Audio.Manager.Stop(WindowSystem.instance.audio, clipType, id);
+
+		}
+
+		public static void AudioPlay(ClipType clipType, int id) {
+			
+			//Debug.Log("PLAY: " + id);
+			Audio.Manager.Play(WindowSystem.instance.audio, clipType, id);
+
+		}
 		
 		public static void UpdateLastInstance() {
 
 			if (WindowSystem.instance == null) return;
 
-			WindowSystem.instance.lastInstance = WindowSystem.GetWindow((item) => item.window != null && (item.window.GetState() == WindowObjectState.Shown || item.window.GetState() == WindowObjectState.Showing));
+			var lastInstance = WindowSystem.GetWindow((item) => item.window != null && (item.window.GetState() == WindowObjectState.Shown || item.window.GetState() == WindowObjectState.Showing));
+			if (lastInstance != WindowSystem.instance.lastInstance) {
+
+				WindowSystem.instance.previousInstance = WindowSystem.instance.lastInstance;
+
+			}
+
+			WindowSystem.instance.lastInstance = lastInstance;
 
 		}
 
@@ -322,7 +346,9 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.ResetDepth();
 
 			foreach (var window in this.windows) {
-				
+
+				if (window.preferences.createPool == false) continue;
+
 				if (window.preferences.preallocatedCount > 0) {
 					
 					window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source, null); });
@@ -471,15 +497,25 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.UpdateLastInstance();
 
 		}
-
+		
 		/// <summary>
 		/// Gets the current window
 		/// </summary>
 		/// <returns>The current window.</returns>
 		public static WindowBase GetCurrentWindow() {
-
+			
 			return WindowSystem.instance.lastInstance;
-
+			
+		}
+		
+		/// <summary>
+		/// Gets the previous window (Last opened)
+		/// </summary>
+		/// <returns>The previous window.</returns>
+		public static WindowBase GetPreviousWindow() {
+			
+			return WindowSystem.instance.previousInstance;
+			
 		}
 
 		/// <summary>

@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Collections.Generic;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
+using UnityEditor.UI.Windows.Plugins.Flow;
 
 namespace UnityEditor.UI.Windows.Plugins.Functions {
 
@@ -39,7 +40,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 			foreach (var function in this.functions) {
 
-				GUILayout.Button(function.title);
+				GUILayout.Button(function.title, FlowSystemEditorWindow.defaultSkin.button);
 
 			}
 

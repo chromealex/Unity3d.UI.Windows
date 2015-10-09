@@ -70,10 +70,31 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
 
+			var key = "UI.Windows.Addons." + caption + ":foldout";
+			var show = EditorPrefs.GetBool(key, true);
+
 			GUILayout.BeginHorizontal();
 			{
 
-				GUILayout.Label(caption.ToSentenceCase().UppercaseWords(), EditorStyles.boldLabel);
+				var style = ME.Utilities.CacheStyle("UI.Windows.Settings.AddonToggle", "Toggle", (name) => {
+					
+					return FlowSystemEditorWindow.defaultSkin.FindStyle("SettingsAddonToggle");
+					
+				});
+				var styleSelected = ME.Utilities.CacheStyle("UI.Windows.Settings.AddonToggle", "ToggleSelected", (name) => {
+					
+					return FlowSystemEditorWindow.defaultSkin.FindStyle("SettingsAddonToggleSelected");
+					
+				});
+
+				var newShow = GUILayout.Toggle(show, caption.ToSentenceCase().UppercaseWords(), show == true ? styleSelected : style);
+				EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
+				if (newShow != show) {
+					
+					show = newShow;
+					EditorPrefs.SetBool(key, show);
+
+				}
 
 				if (settingsMenu != null) {
 
@@ -91,31 +112,35 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
 
-			GUILayout.BeginVertical(FlowSystemEditorWindow.defaultSkin.box);
-			{
+			if (show == true) {
 
-				if (addon != null && addon.InstallationNeeded() == true) {
+				GUILayout.BeginVertical(FlowSystemEditorWindow.defaultSkin.box);
+				{
 
-					GUILayout.BeginHorizontal();
-					{
-						GUILayout.FlexibleSpace();
-						if (GUILayoutExt.LargeButton("Install", 40f, 200f) == true) {
+					if (addon != null && addon.InstallationNeeded() == true) {
 
-							addon.Install();
-							
+						GUILayout.BeginHorizontal();
+						{
+							GUILayout.FlexibleSpace();
+							if (GUILayoutExt.LargeButton("Install", 40f, 200f) == true) {
+
+								addon.Install();
+								
+							}
+							GUILayout.FlexibleSpace();
 						}
-						GUILayout.FlexibleSpace();
+						GUILayout.EndHorizontal();
+
+					} else {
+
+						onGUI();
+
 					}
-					GUILayout.EndHorizontal();
-
-				} else {
-
-					onGUI();
 
 				}
+				GUILayout.EndVertical();
 
 			}
-			GUILayout.EndVertical();
 
 		}
 

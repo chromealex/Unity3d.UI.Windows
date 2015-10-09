@@ -17,7 +17,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 		void SetEnabledState(bool state);
 		void SetHoverState(bool state);
+		void SetHoverOnAnyPointerState(bool state);
 		void SetCallbackHover(UnityAction<bool> callback);
+
+		void SetSFX(Audio.Component data);
 
 	}
 	

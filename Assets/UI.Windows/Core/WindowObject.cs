@@ -11,6 +11,9 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
+	public interface IWindow : IWindowObject {
+	};
+
 	public class WindowObject : MonoBehaviour, IWindowObject {
 
 		[HideInInspector]

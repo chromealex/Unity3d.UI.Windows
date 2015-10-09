@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ME;
 using System.IO;
+using UnityEngine.UI.Windows.Audio;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -104,26 +105,50 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data.GetAttachItem(from, to);
 
 		}
-
+		
+		#region TAGS
 		public static List<FlowTag> GetTags() {
 			
 			if (FlowSystem.HasData() == false) return null;
-
+			
 			return FlowSystem.instance.data.tags;
-
+			
 		}
-
+		
 		public static void AddTag(Data.FlowWindow window, FlowTag tag) {
-
+			
 			FlowSystem.instance.data.AddTag(window, tag);
-
+			
 		}
-
+		
 		public static void RemoveTag(Data.FlowWindow window, FlowTag tag) {
 			
 			FlowSystem.instance.data.RemoveTag(window, tag);
-
+			
 		}
+		#endregion
+		
+		#region AUDIO
+		public static List<Audio.Data.State> GetAudioItems(ClipType clipType) {
+			
+			if (FlowSystem.HasData() == false) return null;
+			
+			return FlowSystem.instance.data.audio.GetStates(clipType);
+			
+		}
+		
+		public static void AddAudioItem(ClipType clipType, Audio.Data.State state) {
+			
+			FlowSystem.instance.data.AddAudioItem(clipType, state);
+			
+		}
+		
+		public static void RemoveAudioItem(ClipType clipType, int key) {
+			
+			FlowSystem.instance.data.RemoveAudioItem(clipType, key);
+			
+		}
+		#endregion
 
 		public static void SetRootWindow(int id) {
 			

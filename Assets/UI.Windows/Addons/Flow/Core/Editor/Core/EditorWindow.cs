@@ -12,6 +12,8 @@ using UnityEngine.UI.Windows.Types;
 using UnityEditor.UI.Windows.Extensions;
 using System.IO;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
+using UnityEngine.UI.Windows.Audio;
+using UnityEditor.UI.Windows.Plugins.Flow.Audio;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
@@ -878,6 +880,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Vector2 settingsWindowScroll;
 		private ReorderableList defaultWindows;
 		private ReorderableList tagsList;
+		private ReorderableList audioMusicList;
+		private ReorderableList audioFXList;
 		private void DrawSettings(float offsetY) {
 			
 			//var scrollPos = FlowSystem.GetScrollPosition();
@@ -1054,7 +1058,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 				});
 				#endregion
-				
+
+				#region AUDIO
+				Flow.DrawModuleSettingsGUI(null, "Audio", null, () => {
+
+					AudioSettingsEditor.DrawList(ref this.audioMusicList, "Music", ClipType.Music);
+					AudioSettingsEditor.DrawList(ref this.audioFXList, "FX", ClipType.SFX);
+
+				});
+				#endregion
+
 				#region FLOW
 				Flow.DrawModuleSettingsGUI(null, "Flow Settings", null, () => {
 					
@@ -1406,7 +1419,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;
 			this.tagsList = null;
-			
+			this.audioMusicList = null;
+
 		}
 		
 		public void CreateNewItem(System.Func<FD.FlowWindow> predicate) {

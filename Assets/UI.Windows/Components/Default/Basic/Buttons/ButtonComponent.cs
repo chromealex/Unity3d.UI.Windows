@@ -217,8 +217,22 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
+			this.sfx.Play();
+
 			if (this.callback != null) this.callback.Invoke();
 			if (this.callbackButton != null) this.callbackButton.Invoke(this);
+
+		}
+		#endregion
+
+		#region Audio
+		[Header("Audio")]
+		[SerializeField]
+		private Audio.Component sfx = new Audio.Component();
+
+		public void SetSFX(Audio.Component data) {
+
+			this.sfx = data;
 
 		}
 		#endregion
@@ -227,12 +241,20 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Hover Actions")]
 		[SerializeField]
 		private bool hoverIsActive = true;
+		[SerializeField]
+		private bool hoverOnAnyPointerState = false;
 		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
 
 		public void SetHoverState(bool state) {
 			
 			this.hoverIsActive = state;
 			
+		}
+
+		public void SetHoverOnAnyPointerState(bool state) {
+
+			this.hoverOnAnyPointerState = state;
+
 		}
 		
 		public virtual void SetCallbackHover(UnityAction<bool> onHover) {
@@ -241,17 +263,28 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
+		private bool ValidateHoverPointer(PointerEventData eventData) {
+			
+			if (this.button.interactable == false) return false;
+			if (this.hoverIsActive == false) return false;
+			if (this.hoverOnAnyPointerState == false && WindowSystemInput.GetPointerState() != PointerState.Default) return false;
+
+			return true;
+
+		}
+
 		public void OnPointerEnter(PointerEventData eventData) {
-			
-			if (this.button.interactable == false) return;
-			if (this.hoverIsActive == false) return;
-			
+
+			if (this.ValidateHoverPointer(eventData) == false) return;
+
 			this.onHover.Invoke(true);
 			
 		}
 		
 		public void OnPointerExit(PointerEventData eventData) {
 			
+			if (this.ValidateHoverPointer(eventData) == false) return;
+
 			this.onHover.Invoke(false);
 			
 		}

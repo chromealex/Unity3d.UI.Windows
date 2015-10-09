@@ -10,10 +10,14 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag.P1)] public bool interactableByDefault = true;
 		[ParamFlag(ParameterFlag.P2)] public ComponentEvent callback = new ComponentEvent();
 
+		[Header("Button: SFX")]
+		[ParamFlag(ParameterFlag.P7)] public Audio.Component sfx = new Audio.Component();
+
 		[Header("Button: Hover")]
 		[ParamFlag(ParameterFlag.P3)] public bool hoverIsActive = false;
-		[ParamFlag(ParameterFlag.P4)] public ComponentEvent hoverInCallback = new ComponentEvent();
-		[ParamFlag(ParameterFlag.P5)] public ComponentEvent hoverOutCallback = new ComponentEvent();
+		[ParamFlag(ParameterFlag.P4)] public bool hoverOnAnyPointerState = false;
+		[ParamFlag(ParameterFlag.P5)] public ComponentEvent hoverInCallback = new ComponentEvent();
+		[ParamFlag(ParameterFlag.P6)] public ComponentEvent hoverOutCallback = new ComponentEvent();
 
 		public void Setup(ISelectable component) {
 			
@@ -25,7 +29,9 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			
 			if (this.IsChanged(ParameterFlag.P3) == true) component.SetHoverState(this.hoverIsActive);
-			if (this.IsChanged(ParameterFlag.P4) == true) {
+			if (this.IsChanged(ParameterFlag.P4) == true) component.SetHoverOnAnyPointerState(this.hoverOnAnyPointerState);
+
+			if (this.IsChanged(ParameterFlag.P5) == true) {
 				
 				component.SetCallbackHover((state) => {
 					
@@ -39,7 +45,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			if (this.IsChanged(ParameterFlag.P5) == true) {
+			if (this.IsChanged(ParameterFlag.P6) == true) {
 
 				component.SetCallbackHover((state) => {
 
@@ -52,6 +58,8 @@ namespace UnityEngine.UI.Windows.Components {
 				});
 
 			}
+
+			if (this.IsChanged(ParameterFlag.P7) == true) component.SetSFX(this.sfx);
 
 		}
 		
