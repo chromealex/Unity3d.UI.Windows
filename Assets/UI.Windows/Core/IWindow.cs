@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace UnityEngine.UI.Windows {
 	
@@ -13,6 +14,7 @@ namespace UnityEngine.UI.Windows {
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable);
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered);
 		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, WindowLayoutElement selectedElement);
+		void OnPreviewGUI(Color color, Rect rect, GUIStyle style, WindowLayoutElement selected, System.Action<WindowLayoutElement> onSelection, List<WindowLayoutElement> highlighted);
 		
 	}
 

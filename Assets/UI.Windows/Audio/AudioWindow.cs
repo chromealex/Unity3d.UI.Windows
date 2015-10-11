@@ -44,8 +44,8 @@ namespace UnityEngine.UI.Windows.Audio {
 		public PlayType playType = PlayType.KeepCurrent;
 		[ReadOnly("flowData", null)]
 		public ClipType clipType;
-		[SerializeField][AudioPopup("clipType")]
-		private int id = 0;
+		[AudioPopup("clipType")]
+		public int id = 0;
 
 		// Events
 		public void OnInit() { }

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI.Windows;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Extensions;
+using System.Linq;
 
 namespace UnityEngine.UI.Windows.Audio {
 
@@ -67,7 +68,22 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 
 		public State GetState(ClipType clipType, int key) {
-			
+
+#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+				
+				if (clipType == ClipType.Music) {
+					
+					return this.music.FirstOrDefault(item => item.key == key);
+					
+				} else if (clipType == ClipType.SFX) {
+					
+					return this.fx.FirstOrDefault(item => item.key == key);
+					
+				}
+
+			}
+#else
 			if (clipType == ClipType.Music) {
 				
 				return this.musicCache.GetValue(key);
@@ -77,6 +93,7 @@ namespace UnityEngine.UI.Windows.Audio {
 				return this.fxCache.GetValue(key);
 				
 			}
+#endif
 
 			return null;
 			

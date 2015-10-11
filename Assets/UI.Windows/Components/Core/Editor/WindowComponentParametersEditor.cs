@@ -64,7 +64,7 @@ namespace UnityEditor.UI.Windows.Components {
 
 		public override void OnParametersGUI(Rect rect) {
 
-			if (this.serializedObject == null) return;
+			if (this == null || this.serializedObject == null) return;
 
 			const float toggleWidth = 30f;
 			const float space = 2f;
@@ -89,18 +89,19 @@ namespace UnityEditor.UI.Windows.Components {
 
 				GUI.enabled = state;
 
-				var cRect = rect;
+				var cRect = new Rect(rect);
 				cRect.x += toggleWidth;
 				cRect.width -= toggleWidth;
-				cRect.height += offset;
+				cRect.height = height;
 				EditorGUI.PropertyField(cRect, property, includeChildren: true);
 
 				GUI.enabled = true;
 
-				var tRect = rect;
+				var tRect = new Rect(rect);
 				tRect.x -= 10f;
 				tRect.y += offset;
 				tRect.width = toggleWidth;
+				tRect.height = this.referenceHeight;
 				var val = EditorGUI.Toggle(tRect, state);
 				if (val != state) this.parameters.SetChanged(value, val);
 

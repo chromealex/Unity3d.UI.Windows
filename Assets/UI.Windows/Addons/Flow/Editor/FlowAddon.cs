@@ -17,11 +17,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		void OnFlowToolbarGUI(GUIStyle toolbarButton);
 		void OnFlowCreateMenuGUI(string prefix, GenericMenu menu);
 		void OnFlowToolsMenuGUI(string prefix, GenericMenu menu);
+		void OnFlowWindowScreenMenuGUI(FD.FlowWindow window, GenericMenu menu);
 		
 		string OnCompilerTransitionGeneration(FD.FlowWindow window);
 		string OnCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName);
 		string OnCompilerTransitionTypedAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names);
 		bool IsCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo);
+
+		void OnGUI();
 
 		void Install();
 		bool InstallationNeeded();
@@ -52,11 +55,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public virtual void OnFlowToolbarGUI(GUIStyle buttonStyle) {}
 		public virtual void OnFlowCreateMenuGUI(string prefix, GenericMenu menu) {}
 		public virtual void OnFlowToolsMenuGUI(string prefix, GenericMenu menu) {}
+		public virtual void OnFlowWindowScreenMenuGUI(FD.FlowWindow window, GenericMenu menu) {}
 		
 		public virtual string OnCompilerTransitionGeneration(FD.FlowWindow window) { return string.Empty; }
 		public virtual string OnCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName) { return string.Empty; }
 		public virtual string OnCompilerTransitionTypedAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) { return string.Empty; }
 		public virtual bool IsCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo) { return false; }
+
+		public virtual void OnGUI() {}
 
 		public virtual void Install() {}
 		public virtual void Reinstall() {}
@@ -68,7 +74,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public static void DrawModuleSettingsGUI(IWindowFlowAddon addon, string caption, GenericMenu settingsMenu, System.Action onGUI) {
 			
-			CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
+			//CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
 
 			var key = "UI.Windows.Addons." + caption + ":foldout";
 			var show = EditorPrefs.GetBool(key, true);
@@ -88,7 +94,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				});
 
 				var newShow = GUILayout.Toggle(show, caption.ToSentenceCase().UppercaseWords(), show == true ? styleSelected : style);
-				EditorGUIUtility.AddCursorRect(GUILayoutUtility.GetLastRect(), MouseCursor.Link);
+				var rect = GUILayoutUtility.GetLastRect();
+				if (GUI.enabled == true) EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+				if (rect.Contains(Event.current.mousePosition) == true) FlowSystemEditorWindow.GetWindow<FlowSystemEditorWindow>().Repaint();
 				if (newShow != show) {
 					
 					show = newShow;
@@ -110,7 +118,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 			GUILayout.EndHorizontal();
 			
-			CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
+			//CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
 
 			if (show == true) {
 
@@ -260,6 +268,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.EndHorizontal();
 
 		}
+		
+		public static void OnDrawGUI(FlowSystemEditorWindow flowEditor) {
+
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				addon.OnGUI();
+				
+			}
+
+		}
 
 		public static void OnDrawToolbarGUI(FlowSystemEditorWindow flowEditor, GUIStyle buttonStyle) {
 			
@@ -273,6 +293,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
+		public static void OnFlowWindowScreenMenuGUI(FlowSystemEditorWindow flowEditor, FD.FlowWindow window, GenericMenu menu) {
+			
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				addon.OnFlowWindowScreenMenuGUI(window, menu);
+				
+			}
+
+		}
+
 		public static void OnDrawCreateMenuGUI(FlowSystemEditorWindow flowEditor, string prefix, GenericMenu menu) {
 			
 			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();

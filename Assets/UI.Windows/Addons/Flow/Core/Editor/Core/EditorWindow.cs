@@ -14,11 +14,12 @@ using System.IO;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 using UnityEngine.UI.Windows.Audio;
 using UnityEditor.UI.Windows.Plugins.Flow.Audio;
+using UnityEditor.UI.Windows.Audio;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
 	public class FlowSystemEditorWindow : EditorWindowExt {
-		
+
 		public static GUISkin defaultSkin;
 		public static bool loaded = false;
 		public static bool loading = false;
@@ -33,7 +34,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			editor.autoRepaintOnSceneChange = true;
 			editor.onClose = onClose;
 			editor.wantsMouseMove = true;
-			editor.antiAlias = 2;
+			editor.antiAlias = 0;
 
 			var title = "UIW Flow";
 			#if !UNITY_4
@@ -125,6 +126,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					ME.EditorUtilities.GetPrefabsOfType<FlowLayoutWindowTypeTemplate>();
 					ME.EditorUtilities.GetPrefabsOfType<WindowModule>(strongType: false);
 
+					FlowSystemEditorWindow.settingsWidth = EditorPrefs.GetFloat("UI.Windows.Editor.Settings.Width", 280f);
+
 					FlowSystemEditorWindow.loading = false;
 					FlowSystemEditorWindow.loaded = true;
 					
@@ -139,15 +142,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 			
 		}
-		
-		public const float SETTINGS_WIDTH = 280f;
+
 		public const float TOOLBAR_HEIGHT = 18f;
-		
+
+		private static float settingsWidth = 280f;
+
+		public static float GetSettingsWidth() {
+
+			return FlowSystemEditorWindow.settingsWidth;
+
+		}
+
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
 			
-			GUI.enabled = !EditorApplication.isCompiling;
+			GUI.enabled = this.IsEnabled();
 
 			if (FlowSystemEditorWindow.defaultSkin == null) FlowSystemEditorWindow.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
 			
@@ -179,7 +189,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				GUI.enabled = FlowSystem.HasData() && GUI.enabled;
 				this.DrawToolbar();
 				GUI.enabled = oldEnabled;
-				
+
 				this.DrawSettings(TOOLBAR_HEIGHT);
 				
 				IEnumerable<FD.FlowWindow> windows = null;
@@ -192,9 +202,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				
 				this.scrollRect = this.position;
-				this.scrollRect.x = SETTINGS_WIDTH;
+				this.scrollRect.x = FlowSystemEditorWindow.GetSettingsWidth();
 				this.scrollRect.y = TOOLBAR_HEIGHT;
-				this.scrollRect.width -= SETTINGS_WIDTH;
+				this.scrollRect.width -= FlowSystemEditorWindow.GetSettingsWidth();
 				this.scrollRect.height -= TOOLBAR_HEIGHT;
 				
 				var scrollPos = FlowSystem.GetScrollPosition();
@@ -385,7 +395,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									title = window.title;
 									
 								} else {
-									
+
+									if (FlowSystem.GetData().modeLayer != ModeLayer.Flow) {
+
+										title = window.title;
+
+									}
+
 									var size = this.GetWindowSize(window);
 									
 									window.rect.width = size.x;
@@ -493,11 +509,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.DrawWaitForConnection();
 				this.DrawTagsPopup();
 				this.HandleEvents(TOOLBAR_HEIGHT);
-				
+
 				GUI.enabled = true;
-				
+
 				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
 				
+				Flow.OnDrawGUI(this);
+
 			}
 			
 		}
@@ -513,13 +531,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var scrollPos = -FlowSystem.GetScrollPosition();
 			var rect = new Rect(scrollPos.x - this.scrollRect.width * 0.5f + this.scrollRect.x,
 			                    scrollPos.y + this.scrollRect.y,
-			                    this.scrollRect.width,
+			                    this.scrollRect.width + FlowSystemEditorWindow.GetSettingsWidth(),
 			                    this.scrollRect.height);
 
 			var scaledRect = rect.ScaleSizeBy(this.zoomDrawer.GetZoom());
 			var scaledWin = window.rect.ScaleSizeBy(this.zoomDrawer.GetZoom());
 			
-			scaledRect.x += FlowSystemEditorWindow.SETTINGS_WIDTH;
+			//scaledRect.x += FlowSystemEditorWindow.GetSettingsWidth();
 
 			return window.isVisibleState = scaledRect.Overlaps(scaledWin);
 
@@ -552,7 +570,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		public void DrawTransitionChooser(FD.FlowWindow.AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSided) {
-			
+
+			if (FlowSystem.GetData().modeLayer != ModeLayer.Flow) return;
 			if (toWindow.IsEnabled() == false) return;
 			if (toWindow.IsContainer() == true) return;
 
@@ -876,12 +895,29 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 			
 		}
-		
+
+		private static bool enabled = true;
+		public void SetDisabled() {
+
+			FlowSystemEditorWindow.enabled = false;
+
+		}
+
+		public void SetEnabled() {
+
+			FlowSystemEditorWindow.enabled = true;
+
+		}
+
+		public bool IsEnabled() {
+
+			return FlowSystemEditorWindow.enabled == true && EditorApplication.isCompiling == false;
+
+		}
+
 		private Vector2 settingsWindowScroll;
 		private ReorderableList defaultWindows;
 		private ReorderableList tagsList;
-		private ReorderableList audioMusicList;
-		private ReorderableList audioFXList;
 		private void DrawSettings(float offsetY) {
 			
 			//var scrollPos = FlowSystem.GetScrollPosition();
@@ -890,7 +926,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			//GUI.Window(-1, wRect, (id) => {
 			
 			if (FlowSystem.HasData() == false) return;
-			
+
 			var boxStyle = ME.Utilities.CacheStyle("FlowEditor.Settings.Styles", "miniButton", (styleName) => {
 
 				var _boxStyle = new GUIStyle(FlowSystemEditorWindow.defaultSkin.button);
@@ -900,9 +936,42 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			});
 
-			GUILayout.BeginArea(new Rect(0f, offsetY, SETTINGS_WIDTH, this.position.height - offsetY), boxStyle);
+			GUILayout.BeginArea(new Rect(0f, offsetY, FlowSystemEditorWindow.GetSettingsWidth(), this.position.height - offsetY), boxStyle);
 			{
-				
+
+				GUILayout.BeginHorizontal();
+				{
+					var data = FlowSystem.GetData();
+
+					var oldState = GUI.enabled;
+
+					var layers = System.Enum.GetNames(typeof(ModeLayer));
+					for (int i = 0; i < layers.Length; ++i) {
+						
+						var layerName = layers[i];
+						var style = EditorStyles.miniButtonMid;
+						if (i == 0) style = EditorStyles.miniButtonLeft;
+						if (i == layers.Length - 1) style = EditorStyles.miniButtonRight;
+						var selected = ((int)data.modeLayer == i);
+
+						style = new GUIStyle(style);
+						style.fontSize = 12;
+						style.fontStyle = FontStyle.Bold;
+
+						GUI.enabled = !selected && oldState;
+						if (GUILayout.Button(layerName, style, GUILayout.Height(30f)) == true) {
+							
+							FlowSystem.GetData().modeLayer = (ModeLayer)i;
+							
+						}
+						
+					}
+
+					GUI.enabled = oldState;
+
+				}
+				GUILayout.EndHorizontal();
+
 				//var buttonStyle = new GUIStyle(EditorStyles.miniButton);
 				//this.DrawToolbar(buttonStyle);
 
@@ -1059,15 +1128,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				});
 				#endregion
 
-				#region AUDIO
-				Flow.DrawModuleSettingsGUI(null, "Audio", null, () => {
-
-					AudioSettingsEditor.DrawList(ref this.audioMusicList, "Music", ClipType.Music);
-					AudioSettingsEditor.DrawList(ref this.audioFXList, "FX", ClipType.SFX);
-
-				});
-				#endregion
-
 				#region FLOW
 				Flow.DrawModuleSettingsGUI(null, "Flow Settings", null, () => {
 					
@@ -1138,7 +1198,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			GUILayout.EndArea();
-			
+
 			//}, "Settings");
 			
 			//GUI.BringWindowToFront(-1);
@@ -1148,6 +1208,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private bool scrollingMouse = false;
 		private bool selectionRectWait;
 		private Rect selectionRect;
+		private bool settingsDragStarted;
+		private Vector2 settingsDragLastPos;
 		private void HandleEvents(float offset) {
 			
 			var button = Event.current.button;
@@ -1160,89 +1222,137 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.DrawContextMenu();
 				
 			}
-			
-			if (Event.current.type == EventType.MouseDown && button == 2) {
+
+			#region Settings
+			var settingsHandleWidth = 10f;
+			var settingsHandleRect = new Rect(FlowSystemEditorWindow.settingsWidth - settingsHandleWidth * 0.5f, TOOLBAR_HEIGHT, settingsHandleWidth, Screen.height - TOOLBAR_HEIGHT);
+			if (GUI.enabled == true) EditorGUIUtility.AddCursorRect(settingsHandleRect, MouseCursor.ResizeHorizontal);
+			if (Event.current.type == EventType.MouseDown && settingsHandleRect.Contains(Event.current.mousePosition) == true) {
+
+				// Start settings drag
+				this.settingsDragStarted = true;
+				this.settingsDragLastPos = Event.current.mousePosition;
+
+			}
+
+			if (this.settingsDragStarted == true) {
+
+				if (Event.current.type == EventType.MouseDrag) {
+
+					var delta = Event.current.mousePosition - this.settingsDragLastPos;
+					this.settingsDragLastPos = Event.current.mousePosition;
+					FlowSystemEditorWindow.settingsWidth += delta.x;
+					if (FlowSystemEditorWindow.settingsWidth < 150f) {
+						
+						FlowSystemEditorWindow.settingsWidth = 150f;
+						
+					}
+					if (FlowSystemEditorWindow.settingsWidth > 300f) {
+						
+						FlowSystemEditorWindow.settingsWidth = 300f;
+						
+					}
+					EditorPrefs.SetFloat("UI.Windows.Editor.Settings.Width", FlowSystemEditorWindow.settingsWidth);
+
+					this.Repaint();
+
+				}
+
+				if (Event.current.type == EventType.MouseUp) {
+
+					this.settingsDragStarted = false;
+
+				}
+
+			}
+			#endregion
+
+			if (this.settingsDragStarted == false) {
+
+				if (Event.current.type == EventType.MouseDown && button == 2) {
+					
+					this.scrollingMouse = true;
+					
+					this.scrollingMouseAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
+						
+						this.Repaint();
+						
+					});
+					this.scrollingMouseAnimation.speed = 2f;
+					this.scrollingMouseAnimation.target = 1f;
+					
+				}
 				
-				this.scrollingMouse = true;
-				
-				this.scrollingMouseAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
+				if (Event.current.type == EventType.MouseDrag && this.scrollingMouse == true) {
 					
 					this.Repaint();
 					
-				});
-				this.scrollingMouseAnimation.speed = 2f;
-				this.scrollingMouseAnimation.target = 1f;
+					this.showTagsPopup = false;
+					this.showTagsPopupId = -1;
+					
+				}
 				
-			}
-			
-			if (Event.current.type == EventType.MouseDrag && this.scrollingMouse == true) {
-				
-				this.Repaint();
-				
-				this.showTagsPopup = false;
-				this.showTagsPopupId = -1;
-				
-			}
-			
-			if (Event.current.type == EventType.MouseUp && this.scrollingMouse == true) {
-				
-				this.scrollingMouse = false;
-				
-				this.scrollingMouseAnimation.value = 1f;
-				this.scrollingMouseAnimation.speed = 2f;
-				this.scrollingMouseAnimation.target = 0f;
-				
-				this.Repaint();
-				
-			}
-			
-			if (Event.current.type == EventType.MouseDown && Event.current.alt == false && button == 0) {
-				
-				this.selectionRect = new Rect(position.x, position.y, 0f, 0f);
-				this.selectionRectWait = true;
-				
-				this.selectionRectAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
+				if (Event.current.type == EventType.MouseUp && this.scrollingMouse == true) {
+					
+					this.scrollingMouse = false;
+					
+					this.scrollingMouseAnimation.value = 1f;
+					this.scrollingMouseAnimation.speed = 2f;
+					this.scrollingMouseAnimation.target = 0f;
 					
 					this.Repaint();
 					
-				});
-				this.selectionRectAnimation.speed = 2f;
-				this.selectionRectAnimation.target = 1f;
+				}
 				
-			}
-			
-			if (Event.current.type == EventType.MouseDrag && this.selectionRectWait == true) {
+				if (Event.current.type == EventType.MouseDown && Event.current.alt == false && button == 0) {
+					
+					this.selectionRect = new Rect(position.x, position.y, 0f, 0f);
+					this.selectionRectWait = true;
+					
+					this.selectionRectAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
+						
+						this.Repaint();
+						
+					});
+					this.selectionRectAnimation.speed = 2f;
+					this.selectionRectAnimation.target = 1f;
+					
+				}
 				
-				var p1x = this.selectionRect.x;
-				var p1y = this.selectionRect.y;
-				var p2x = position.x;
-				var p2y = position.y;
+				if (Event.current.type == EventType.MouseDrag && this.selectionRectWait == true) {
+					
+					var p1x = this.selectionRect.x;
+					var p1y = this.selectionRect.y;
+					var p2x = position.x;
+					var p2y = position.y;
+					
+					this.selectionRect.width = p2x - p1x;
+					this.selectionRect.height = p2y - p1y;
+					
+					FlowSystem.SelectWindowsInRect(this.selectionRect);
+					
+					this.Repaint();
+					
+					this.showTagsPopup = false;
+					this.showTagsPopupId = -1;
+					
+				}
 				
-				this.selectionRect.width = p2x - p1x;
-				this.selectionRect.height = p2y - p1y;
-				
-				FlowSystem.SelectWindowsInRect(this.selectionRect);
-				
-				this.Repaint();
-				
-				this.showTagsPopup = false;
-				this.showTagsPopupId = -1;
-				
-			}
-			
-			if (Event.current.type == EventType.MouseUp && this.selectionRectWait == true) {
-				
-				// Select in rect
-				FlowSystem.SelectWindowsInRect(this.selectionRect);
-				
-				this.selectionRectWait = false;
-				
-				this.selectionRectAnimation.value = 1f;
-				this.selectionRectAnimation.speed = 2f;
-				this.selectionRectAnimation.target = 0f;
-				
-				this.Repaint();
-				
+				if (Event.current.type == EventType.MouseUp && this.selectionRectWait == true) {
+					
+					// Select in rect
+					FlowSystem.SelectWindowsInRect(this.selectionRect);
+					
+					this.selectionRectWait = false;
+					
+					this.selectionRectAnimation.value = 1f;
+					this.selectionRectAnimation.speed = 2f;
+					this.selectionRectAnimation.target = 0f;
+					
+					this.Repaint();
+					
+				}
+
 			}
 
 		}
@@ -1355,7 +1465,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			minMax.yMax += backOffset;
 			
 			var nullOffset = FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, Vector2.zero);
-			var offset = new Vector2(Screen.width * 0.5f - SETTINGS_WIDTH * 0.5f - nullOffset.width * 0.5f, 0f);
+			var offset = new Vector2(Screen.width * 0.5f - FlowSystemEditorWindow.GetSettingsWidth() * 0.5f - nullOffset.width * 0.5f, 0f);
 			
 			var backRect = FlowSystemEditor.Scale(minMax, new Rect(0f, 0f, 10000f, 10000f), this.scrollRect, offset);
 			
@@ -1419,7 +1529,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;
 			this.tagsList = null;
-			this.audioMusicList = null;
 
 		}
 		
@@ -1571,7 +1680,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			EditorGUIUtility.labelWidth = 65f;
 			
 			var oldState = GUI.enabled;
-			GUI.enabled = !EditorApplication.isCompiling;//!FlowSceneView.IsActive();
+			GUI.enabled = this.IsEnabled();
 
 			var buttonStyle = ME.Utilities.CacheStyle("FlowEditor.DrawWindowToolbar.Styles", "toolbarButton", (name) => {
 				
@@ -1779,7 +1888,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void DragWindow(bool headerOnly) {
 
 			var oldState = GUI.enabled;
-			GUI.enabled = !EditorApplication.isCompiling;//!FlowSceneView.IsActive();
+			GUI.enabled = this.IsEnabled();
 			if (GUI.enabled == false) return;
 			
 			if (Event.current.button != 2) {
@@ -2064,7 +2173,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									this.showTagsPopup = true;
 									if (Event.current.type == EventType.Repaint) {
 										
-										this.showTagsPopupRect = new Rect(window.rect.x + rect.x + SETTINGS_WIDTH, window.rect.y + rect.y + (defaultWindow == true ? window.rect.height : 0f), rect.width, rect.height);
+										this.showTagsPopupRect = new Rect(window.rect.x + rect.x + FlowSystemEditorWindow.GetSettingsWidth(), window.rect.y + rect.y + (defaultWindow == true ? window.rect.height : 0f), rect.width, rect.height);
 										
 									}
 									
@@ -2152,7 +2261,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private Rect layoutStateSelectButtonRect;
 		private void DrawWindowToolbar(FD.FlowWindow window) {
-			
+
+			if (FlowSystem.GetData().modeLayer != ModeLayer.Flow) {
+
+				return;
+
+			}
+
 			//var edit = false;
 			var id = window.id;
 			
@@ -2412,6 +2527,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						}
 
+						Flow.OnFlowWindowScreenMenuGUI(this, window, menu);
+
 						menu.DropDown(this.layoutStateSelectButtonRect);
 
 					}
@@ -2504,7 +2621,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private void DrawNodeWindow(int id) {
 			
 			var oldState = GUI.enabled;
-			GUI.enabled = !EditorApplication.isCompiling;//!FlowSceneView.IsActive();
+			GUI.enabled = this.IsEnabled();
 
 			var window = FlowSystem.GetWindow(id);
 
@@ -2528,6 +2645,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			} else {
 
+				var textField = ME.Utilities.CacheStyle("UI.Windows.Styles.TextFieldSmall", "TextFieldSmall", (name) => FlowSystemEditorWindow.defaultSkin.FindStyle(name));
+
 				if (window.IsSmall() == true) {
 					
 					this.DrawWindowToolbar(window);
@@ -2549,78 +2668,82 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					}
 
 					this.DrawWindowToolbar(window);
-					
-					GUILayout.BeginHorizontal();
-					{
+
+					if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+
+						GUILayout.BeginHorizontal();
+						{
+							
+							GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+							window.title = GUILayout.TextField(window.title, textField);
+							
+						}
+						GUILayout.EndHorizontal();
 						
-						GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-						window.title = GUILayout.TextField(window.title);
-						
-					}
-					GUILayout.EndHorizontal();
-					
-					GUILayout.BeginHorizontal();
-					{
-						
-						var typeId = (int)window.storeType;
-						typeId = GUILayoutExt.Popup(typeId, new string[1] { "Directory:"/*, "Re-use Screen:"*/ }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-						if (typeId == 0) {
+						GUILayout.BeginHorizontal();
+						{
 							
-							// Directory choosed
-							
-							window.flags &= (~FD.FlowWindow.Flags.CantCompiled);
-							window.storeType = FD.FlowWindow.StoreType.NewScreen;
-							
-							if (string.IsNullOrEmpty(window.directory) == true)
-								window.directory = string.Empty;
-							window.directory = GUILayout.TextField(window.directory);
-							
-						} else if (typeId == 1) {
-							
-							// Re-use screen choosed
-							
-							window.flags |= FD.FlowWindow.Flags.CantCompiled;
-							window.storeType = FD.FlowWindow.StoreType.ReUseScreen;
-							
-							var linkIndex = -1;
-							var index = 0;
-							var values = new List<string>();
-							var list = new List<FD.FlowWindow>();
-							var windows = FlowSystem.GetWindows();
-							foreach (var win in windows) {
+							var typeId = (int)window.storeType;
+							typeId = GUILayoutExt.Popup(typeId, new string[1] { "Directory:"/*, "Re-use Screen:"*/ }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+							if (typeId == 0) {
 								
-								if (win.storeType == FD.FlowWindow.StoreType.NewScreen &&
-									win.IsSmall() == false &&
-									win.IsContainer() == false) {
+								// Directory choosed
+								
+								window.flags &= (~FD.FlowWindow.Flags.CantCompiled);
+								window.storeType = FD.FlowWindow.StoreType.NewScreen;
+								
+								if (string.IsNullOrEmpty(window.directory) == true) window.directory = string.Empty;
+								window.directory = GUILayout.TextField(window.directory, textField);
+								
+							} else if (typeId == 1) {
+								
+								// Re-use screen choosed
+								
+								window.flags |= FD.FlowWindow.Flags.CantCompiled;
+								window.storeType = FD.FlowWindow.StoreType.ReUseScreen;
+								
+								var linkIndex = -1;
+								var index = 0;
+								var values = new List<string>();
+								var list = new List<FD.FlowWindow>();
+								var windows = FlowSystem.GetWindows();
+								foreach (var win in windows) {
 									
-									values.Add(win.title.Replace("/", " "));
-									list.Add(win);
-									
-									if (window.screenWindowId == win.id) linkIndex = index;
-									
-									++index;
+									if (win.storeType == FD.FlowWindow.StoreType.NewScreen &&
+										win.IsSmall() == false &&
+										win.IsContainer() == false) {
+										
+										values.Add(win.title.Replace("/", " "));
+										list.Add(win);
+										
+										if (window.screenWindowId == win.id) linkIndex = index;
+										
+										++index;
+										
+									}
 									
 								}
 								
-							}
-							
-							linkIndex = EditorGUILayout.Popup(linkIndex, values.ToArray()/*, new GUIStyle("ExposablePopupMenu")*/);
-							if (linkIndex >= 0 && linkIndex < list.Count) {
+								linkIndex = EditorGUILayout.Popup(linkIndex, values.ToArray()/*, new GUIStyle("ExposablePopupMenu")*/);
+								if (linkIndex >= 0 && linkIndex < list.Count) {
+									
+									window.screenWindowId = list[linkIndex].id;
+									
+								}
 								
-								window.screenWindowId = list[linkIndex].id;
+								//window.screen = GUILayoutExt.ScreenField(window.screen, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ScreenField"));
+								//window.directory = GUILayout.TextField(window.directory);
 								
 							}
-							
-							//window.screen = GUILayoutExt.ScreenField(window.screen, false, FlowSystemEditorWindow.defaultSkin.FindStyle("ScreenField"));
-							//window.directory = GUILayout.TextField(window.directory);
+							//GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 							
 						}
-						//GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-						
-					}
-					GUILayout.EndHorizontal();
+						GUILayout.EndHorizontal();
 
-					this.DrawWindowLayout(window);
+						this.DrawWindowLayout(window);
+
+					}
+
 					Flow.OnDrawWindowGUI(this, window);
 
 				}

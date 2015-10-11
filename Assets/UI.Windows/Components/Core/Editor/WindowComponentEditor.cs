@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Components;
+using System.Collections.Generic;
 
 namespace UnityEditor.UI.Windows {
 
@@ -23,35 +24,43 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public override void OnPreviewGUI(Rect r, GUIStyle background) {
+		public override void OnPreviewGUI(Rect rect, GUIStyle style) {
+
+		}
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style) {
+
+		}
+
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable) {
 			
-			//this.OnPreviewGUI(Color.white, r, background);
+			this.OnPreviewGUI(color, rect, style, drawInfo, selectable, hovered: false, selectedElement: null, onSelection: null, highlighted: null);
 			
 		}
 		
-		public virtual void OnPreviewGUI(Color color, Rect r, GUIStyle background) {
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
 			
-			//this.OnPreviewGUI(color, r, background, false, false);
+			this.OnPreviewGUI(color, rect, style, drawInfo, selectable, hovered, selectedElement: null, onSelection: null, highlighted: null);
 			
-		}
-
-		public virtual void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
-
-			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false);
-
 		}
 		
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement) {
 			
-			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false);
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false, selectedElement: selectedElement, onSelection: null, highlighted: null);
 			
 		}
-
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered) {
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, List<WindowLayoutElement> highlighted) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo: true, selectable: true, hovered: false, selectedElement: selectedElement, onSelection: onSelection, highlighted: highlighted);
+			
+		}
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, List<WindowLayoutElement> highlighted) {
 
 			var _target = this.target as WindowComponent;
 
-			this.DrawComponent(_target, _target.name, r, background);
+			this.DrawComponent(_target, _target.name, rect, style);
 			/*
 			var components = _target.GetComponentsInChildren<WindowComponent>(true);
 			var xCount = Mathf.CeilToInt(Mathf.Sqrt(components.Length));

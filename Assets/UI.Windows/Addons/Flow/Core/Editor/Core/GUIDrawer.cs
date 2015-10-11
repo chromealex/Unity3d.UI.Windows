@@ -461,7 +461,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var scrollPos = -FlowSystem.GetScrollPosition();
 			var offset = -8f;
 			
-			if (this.editor.scrollRect.Contains(new Vector3(pos.x - scrollPos.x + FlowSystemEditorWindow.SETTINGS_WIDTH + offset, pos.y - scrollPos.y + FlowSystemEditorWindow.TOOLBAR_HEIGHT + offset, 0f)) == false) return;
+			if (this.editor.scrollRect.Contains(new Vector3(pos.x - scrollPos.x + FlowSystemEditorWindow.GetSettingsWidth() + offset, pos.y - scrollPos.y + FlowSystemEditorWindow.TOOLBAR_HEIGHT + offset, 0f)) == false) return;
 
 			var shadowOffset = Vector3.one * 1f;
 			shadowOffset.z = 0f;

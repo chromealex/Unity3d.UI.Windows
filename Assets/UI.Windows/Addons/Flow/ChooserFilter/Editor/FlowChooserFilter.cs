@@ -286,7 +286,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			predicate: (element) => {
 
 				var elementPath = AssetDatabase.GetAssetPath(element.gameObject);
-				var isInPackage = FlowProjectWindowObject.IsValidPackage(elementPath + "/../");
+				var isInPackage = FlowEditorUtilities.IsValidPackage(elementPath + "/../");
 
 				if (element.transition != null && (isInPackage == true || element.useAsTemplate == true)) {
 

@@ -183,23 +183,33 @@ namespace UnityEngine.UI.Windows.Types {
 			#if UNITY_EDITOR
 			public WindowComponentParametersBase OnComponentChanged(WindowBase window, WindowComponent newComponent) {
 
+				var hasChanged = (newComponent != this.component);
 				this.component = newComponent;
 
-				if (this.componentParameters != null) {
-
-					var link = this.componentParameters;
-#if UNITY_EDITOR
-                    UnityEditor.EditorApplication.delayCall += () => {
-
+				WindowComponentParametersBase instance = null;
+				if (hasChanged == true) {
+					
+					#if UNITY_EDITOR
+					if (this.componentParameters != null) {
+						
+						var link = this.componentParameters;
+						//UnityEditor.EditorApplication.delayCall += () => {
+						
 						Object.DestroyImmediate(link, allowDestroyingAssets: true);
+						
+						//};
+						
+					}
+					#endif
 
-					};
-#endif
+					instance = Layout.AddParametersFor(window, this.component);
+					this.componentParameters = instance;
 
-                }
+				} else {
 
-				var instance = Layout.AddParametersFor(window, this.component);
-				this.componentParameters = instance;
+					instance = this.componentParameters;
+
+				}
 
 				return instance;
 

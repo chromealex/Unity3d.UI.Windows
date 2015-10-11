@@ -59,45 +59,43 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public override void OnPreviewGUI(Rect r, GUIStyle background) {
+		public override void OnPreviewGUI(Rect rect, GUIStyle style) {
 			
-			//var color = new Color(0.8f, 0.8f, 1f, 1f);
-			//color.a = 0.7f;
-			this.OnPreviewGUI(Color.white, r, GUI.skin.box, true, false);
-
-		}
-
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle background) {
-
-			this.OnPreviewGUI(color, r, background, true, false);
-
+			this.OnPreviewGUI(Color.white, rect, style, drawInfo: true, selectable: false, hovered: false, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
+			
 		}
 		
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
-
-			this.OnPreviewGUI(color, r, background, drawInfo, selectable, null, null);
-
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo: true, selectable: false, hovered: false, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
+			
 		}
 		
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable) {
 			
-			this.OnPreviewGUI(color, r, style, drawInfo, selectable, null, null);
-
-		}
-
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, System.Action<WindowLayoutElement, Rect, bool> onElementGUI) {
+			this.OnPreviewGUI(color, rect, style, drawInfo, selectable, hovered: false, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
 			
-			this.OnPreviewGUI(color, r, background, drawInfo, selectable, null, onElementGUI);
-
 		}
-
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo, selectable, hovered, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
+			
+		}
+		
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement) {
-
-			this.OnPreviewGUI(color, r, background, drawInfo, selectable, selectedElement, null);
-
+			
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false, selectedElement: selectedElement, onSelection: null, onElementGUI: null, highlighted: null);
+			
 		}
-
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement, Rect, bool> onElementGUI) {
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, List<WindowLayoutElement> highlighted) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo: true, selectable: true, hovered: false, selectedElement: selectedElement, onSelection: onSelection, onElementGUI: null, highlighted: highlighted);
+			
+		}
+		
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, System.Action<WindowLayoutElement, Rect, bool> onElementGUI, List<WindowLayoutElement> highlighted) {
 
 			var oldColor = GUI.color;
 			var c = Color.white;
@@ -157,6 +155,8 @@ namespace UnityEditor.UI.Windows {
 			var selected = WindowLayoutStyles.styles.boxSelected;
 			var styles = WindowLayoutStyles.styles.boxes;
 			var stylesSelected = WindowLayoutStyles.styles.boxesSelected;
+			var elementSelectedStyle = WindowLayoutStyles.styles.layoutElementSelected;
+			var elementHighlightStyle = WindowLayoutStyles.styles.layoutElementHighlighted;
 			
 			var horArrowsStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.horArrowsStyle", "ColorPickerHorizThumb", (style) => new GUIStyle(style));
 			var vertArrowsStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.vertArrowsStyle", "ColorPickerVertThumb", (style) => new GUIStyle(style));
@@ -164,6 +164,7 @@ namespace UnityEditor.UI.Windows {
 			var horStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.horStyle", "box", (style) => new GUIStyle(style));
 			var vertStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.vertStyle", "box", (style) => new GUIStyle(style));
 
+			var selectedRect = new Rect();
 			foreach (var element in elements) {
 
 				if (element == null) continue;
@@ -178,11 +179,13 @@ namespace UnityEditor.UI.Windows {
 				rect.y += r.y + r.height * 0.5f;
 				rect.width *= scaleFactor;
 				rect.height *= scaleFactor;
-				
-				var style = styles[Mathf.Clamp(element.editorDrawDepth, 0, WindowLayoutStyles.MAX_DEPTH - 1)];
+
+				var styleDepth = Mathf.Clamp(element.editorDrawDepth, 0, WindowLayoutStyles.MAX_DEPTH - 1);
+
+				var style = styles[styleDepth];
 				if (rect.Contains(Event.current.mousePosition) == true) {
 
-					style = stylesSelected[Mathf.Clamp(element.editorDrawDepth, 0, WindowLayoutStyles.MAX_DEPTH - 1)];
+					style = stylesSelected[styleDepth];
 
 					element.editorHovered = true;
 					this.Repaint();
@@ -197,13 +200,19 @@ namespace UnityEditor.UI.Windows {
 				if (/*WindowLayoutElement.waitForComponentConnectionElementTemp == element ||*/ Selection.gameObjects.Contains(element.gameObject) == true) {
 
 					style = selected;
+					selectedRect = rect;
 
 				}
 
 				if (selectedElement != null) {
 
 					GUI.color = (selectedElement == element) ? selectedColor : notSelectedColor;
-					if (selectedElement == element) style = selected;
+					if (selectedElement == element) {
+
+						style = selected;
+						selectedRect = rect;
+
+					}
 
 				} else {
 
@@ -254,7 +263,23 @@ namespace UnityEditor.UI.Windows {
 
 			}
 
-			if (drawInfo == true || onElementGUI != null) {
+			if (highlighted != null) {
+
+				foreach (var element in elements) {
+
+					if (highlighted.Contains(element) == true) {
+						
+						GUI.Box(element.tempEditorRect, string.Empty, elementHighlightStyle);
+
+					}
+
+				}
+
+			}
+
+			GUI.Box(selectedRect, string.Empty, elementSelectedStyle);
+
+			if (drawInfo == true || onElementGUI != null || selectable == true) {
 				
 				WindowLayoutElement maxDepthElement = null;
 				var _maxDepth = -1;
@@ -273,7 +298,7 @@ namespace UnityEditor.UI.Windows {
 				}
 
 				foreach (var element in elements) {
-					
+
 					if (element.showInComponentsList == false) continue;
 					if (element.editorHovered == false || maxDepthElement != element) {
 						
@@ -285,9 +310,10 @@ namespace UnityEditor.UI.Windows {
 
 						if (selectable == true) {
 
-							WindowLayoutElement.waitForComponentConnectionElementTemp = element;
-							WindowLayoutElement.waitForComponentConnectionTemp = true;
-							
+							//WindowLayoutElement.waitForComponentConnectionElementTemp = element;
+							//WindowLayoutElement.waitForComponentConnectionTemp = true;
+							if (onSelection != null) onSelection(element);
+
 							if (onElementGUI != null) onElementGUI(element, element.tempEditorRect, true);
 
 						}

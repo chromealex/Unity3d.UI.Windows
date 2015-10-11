@@ -8,6 +8,13 @@ using UnityEngine.UI.Windows.Audio;
 
 namespace UnityEngine.UI.Windows.Plugins.Flow {
 	
+	public enum ModeLayer : byte {
+		
+		Flow,
+		Audio,
+		
+	};
+
 	[System.Serializable]
 	public class FlowTag {
 		
@@ -60,13 +67,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public List<FlowTag> tags = new List<FlowTag>();
 		
 		public Audio.Data audio = new Audio.Data();
+		
+		public ModeLayer modeLayer = ModeLayer.Flow;
 
 		//private Rect selectionRect;
 		[HideInInspector]
 		private List<int> selected = new List<int>();
 
 		[HideInInspector]
-		public bool flowWindowWithLayout;
+		public bool flowWindowWithLayout = true;
 		[HideInInspector]
 		public float flowWindowWithLayoutScaleFactor = 0f;
 
@@ -76,6 +85,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#if UNITY_EDITOR
 		#region UPGRADES
 		#pragma warning disable 612,618
+		public bool UpgradeTo102() {
+
+			this.flowWindowWithLayout = true;
+			this.modeLayer = ModeLayer.Flow;
+
+			UnityEditor.EditorUtility.SetDirty(this);
+
+			return true;
+			
+		}
+
 		public bool UpgradeTo099() {
 
 			return true;

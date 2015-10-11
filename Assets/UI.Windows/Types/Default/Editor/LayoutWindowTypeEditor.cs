@@ -8,6 +8,7 @@ using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows.Components;
 using System.Linq;
 using ME;
+using System.Collections.Generic;
 
 namespace UnityEditor.UI.Windows.Types {
 	
@@ -24,34 +25,46 @@ namespace UnityEditor.UI.Windows.Types {
 			return true;
 			
 		}
-		
-		public override void OnPreviewGUI(Rect r, GUIStyle background) {
-			
-			this.OnPreviewGUI(Color.white, r, background);
-			
-		}
-		
-		public virtual void OnPreviewGUI(Color color, Rect r, GUIStyle background) {
-			
-			this.OnPreviewGUI(color, r, background, false, false);
-			
-		}
-		
-		public void OnPreviewGUI(Color color, Rect r, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
-			
-			this.OnPreviewGUI(color, r, style, false, false);
 
+		public override void OnPreviewGUI(Rect rect, GUIStyle style) {
+			
+			this.OnPreviewGUI(Color.white, rect, style, drawInfo: true, selectable: false, hovered: false, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
+			
+		}
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo: true, selectable: false, hovered: false, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
+			
+		}
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo, selectable, hovered: false, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
+			
+		}
+
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, bool drawInfo, bool selectable, bool hovered) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo, selectable, hovered, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
+			
 		}
 		
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, WindowLayoutElement selectedElement) {
 			
-			this.OnPreviewGUI(color, r, background, drawInfo, selectable);
+			this.OnPreviewGUI(color, r, background, drawInfo, selectable, hovered: false, selectedElement: selectedElement, onSelection: null, onElementGUI: null, highlighted: null);
+			
+		}
+		
+		public void OnPreviewGUI(Color color, Rect rect, GUIStyle style, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, List<WindowLayoutElement> highlighted) {
+			
+			this.OnPreviewGUI(color, rect, style, drawInfo: true, selectable: true, hovered: false, selectedElement: selectedElement, onSelection: onSelection, onElementGUI: null, highlighted: highlighted);
 			
 		}
 
 		private Layout.Component selectedComponent;
 		private WindowLayoutEditor layoutEditor;
-		public virtual void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable) {
+		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, System.Action<WindowLayoutElement, Rect, bool> onElementGUI, List<WindowLayoutElement> highlighted) {
 
 			var _target = this.target as LayoutWindowType;
 			var layout = _target.layout.layout;
@@ -66,7 +79,7 @@ namespace UnityEditor.UI.Windows.Types {
 
 					if (Event.current.type != EventType.Layout) {
 
-						this.layoutEditor.OnPreviewGUI(color, r, background, drawInfo, true, (element, elementRect, isClicked) => {
+						this.layoutEditor.OnPreviewGUI(color, r, background, drawInfo, selectable: selectable, hovered: hovered, selectedElement: selectedElement, onSelection: onSelection, onElementGUI: (element, elementRect, isClicked) => {
 
 							if (isClicked == true) {
 
@@ -88,7 +101,7 @@ namespace UnityEditor.UI.Windows.Types {
 
 							}*/
 
-						});
+						}, highlighted: highlighted);
 
 					}
 

@@ -3,10 +3,75 @@ using UnityEditor;
 using System.Collections;
 using UnityEditor.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows;
+using System.IO;
 
 namespace ME {
 
 	public partial class GUILayoutExt {
+
+		public static GUIStyle componentChooserStyle = new GUIStyle("MiniPullDown");
+
+		public static void DrawComponentChooser(Rect rect, GameObject gameObject, WindowComponent component, System.Action<WindowComponent> onSelect, GUIStyle style = null) {
+
+			if (style == null) {
+
+				style = GUILayoutExt.componentChooserStyle;
+				style.fixedWidth = 0f;
+				style.fixedHeight = 0f;
+
+			}
+
+			if (GUI.Button(rect, "+", style) == true) {
+
+				GenericMenu.MenuFunction2 onAction = (object comp) => {
+
+					onSelect(comp as WindowComponent);
+
+				};
+
+				var libraries = ME.EditorUtilities.GetAssetsOfType<WindowComponentLibraryLinker>(null, (p) => {
+					
+					return !p.child;
+					
+				});
+				
+				var menu = new GenericMenu();
+				var package = FlowEditorUtilities.GetPackage(gameObject);
+				if (package != null) {
+
+					var components = ME.EditorUtilities.GetPrefabsOfType<WindowComponent>(strongType: false, directory: AssetDatabase.GetAssetPath(package));
+					foreach (var comp in components) {
+
+						var path = AssetDatabase.GetAssetPath(comp.gameObject);
+						var packagePath = AssetDatabase.GetAssetPath(package);
+						var _path = path.Replace(packagePath, string.Empty);
+						_path = _path.Replace("/Components", string.Empty);
+						_path = Path.GetDirectoryName(_path);
+						_path = _path.TrimEnd('/');
+
+						menu.AddItem(new GUIContent(package.name + " Screen" + _path + "/" + comp.gameObject.name.ToSentenceCase()), on: (comp == component), func: onAction, userData: comp);
+
+					}
+
+					menu.AddSeparator(string.Empty);
+
+				}
+
+				foreach (var library in libraries) {
+
+					foreach (var item in library.items) {
+
+						menu.AddItem(new GUIContent(library.name + "/" + item.localDirectory + "/" + item.title.ToSentenceCase()), on: (item.mainComponent == component), func: onAction, userData: item.mainComponent);
+
+					}
+
+				}
+
+				menu.DropDown(rect);
+
+			}
+
+		}
 
 		public static int Popup(int value, string[] values, GUIStyle labelStyle, params GUILayoutOption[] layout) {
 
@@ -92,7 +157,7 @@ namespace ME {
 			
 		}
 
-		public static T ObjectField<T>(T data, bool allowSceneObjects, GUIStyle style) where T : ScriptableObject {
+		public static T ObjectField<T>(T data, bool allowSceneObjects, GUIStyle style) where T : Object {
 			
 			var id = GUIUtility.GetControlID(FocusType.Passive) + 1;
 			var title = data == null ? "None" : data.name;

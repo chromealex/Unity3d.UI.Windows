@@ -245,6 +245,8 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool hoverOnAnyPointerState = false;
 		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
 
+		private bool tempHoverState = false;
+
 		public void SetHoverState(bool state) {
 			
 			this.hoverIsActive = state;
@@ -264,7 +266,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		private bool ValidateHoverPointer(PointerEventData eventData) {
-			
+
 			if (this.button.interactable == false) return false;
 			if (this.hoverIsActive == false) return false;
 			if (this.hoverOnAnyPointerState == false && WindowSystemInput.GetPointerState() != PointerState.Default) return false;
@@ -274,19 +276,24 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void OnPointerEnter(PointerEventData eventData) {
+			
+			this.tempHoverState = false;
 
 			if (this.ValidateHoverPointer(eventData) == false) return;
-
+			
+			this.tempHoverState = true;
 			this.onHover.Invoke(true);
 			
 		}
 		
 		public void OnPointerExit(PointerEventData eventData) {
-			
-			if (this.ValidateHoverPointer(eventData) == false) return;
+
+			if (this.tempHoverState == false) return;
 
 			this.onHover.Invoke(false);
 			
+			this.tempHoverState = false;
+
 		}
 
 		#endregion

@@ -13,6 +13,8 @@ namespace UnityEngine.UI.Windows.Styles {
 			public GUIStyle[] boxes;
 			public GUIStyle[] boxesSelected;
 			public GUIStyle boxSelected;
+			public GUIStyle layoutElementSelected;
+			public GUIStyle layoutElementHighlighted;
 			
 			public Styles() {
 
@@ -40,6 +42,8 @@ namespace UnityEngine.UI.Windows.Styles {
 				};
 				
 				this.boxSelected = this.skin.FindStyle("flow node 6");
+				this.layoutElementSelected = this.skin.FindStyle("LayoutElementSelected");
+				this.layoutElementHighlighted = this.skin.FindStyle("LayoutElementHighlighted");
 				#endif
 
 			}

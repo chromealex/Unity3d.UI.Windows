@@ -9,26 +9,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	[InitializeOnLoad]
 	public static class FlowProjectWindowObject {
-		
-		public static bool IsValidPackage(string path) {
-			
-			if (System.IO.Directory.Exists(path) == true) {
-				
-				var isScreens = System.IO.Directory.Exists(Path.Combine(path, "Screens"));
-				var isLayouts = System.IO.Directory.Exists(Path.Combine(path, "Layouts"));
-				var isComponents = System.IO.Directory.Exists(Path.Combine(path, "Components"));
-				
-				if (isScreens && isLayouts && isComponents) {
-					
-					return true;
-					
-				}
-				
-			}
-			
-			return false;
-			
-		}
 
 		public class Drawer {
 
@@ -94,7 +74,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					}
 					
-					if (FlowProjectWindowObject.IsValidPackage(item.path) == true) {
+					if (FlowEditorUtilities.IsValidPackage(item.path) == true) {
 						
 						item.isValidPackage = true;
 						item.isPackage = true;
@@ -110,7 +90,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 					}
 
-					if (FlowProjectWindowObject.IsValidPackage(packageDir) == true || FlowProjectWindowObject.IsValidPackage(System.IO.Path.Combine(packageDir, "..")) == true) {
+					if (FlowEditorUtilities.IsValidPackage(packageDir) == true || FlowEditorUtilities.IsValidPackage(System.IO.Path.Combine(packageDir, "..")) == true) {
 						
 						var last = item.path.Split('/');
 						if (last.Length > 0) {
@@ -389,11 +369,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (AssetDatabase.IsValidFolder(path) == true) {
 
-				var isScreens = System.IO.Directory.Exists(path + "/Screens");
-				var isLayouts = System.IO.Directory.Exists(path + "/Layouts");
-				var isComponents = System.IO.Directory.Exists(path + "/Components");
-
-				if (isScreens && isLayouts && isComponents) {
+				if (FlowEditorUtilities.IsValidPackage(path) == true) {
 
 					this.DrawFlowFolderInspector(path);
 

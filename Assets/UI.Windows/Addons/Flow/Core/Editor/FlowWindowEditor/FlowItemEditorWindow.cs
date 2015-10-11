@@ -1050,7 +1050,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private void DrawLayoutItem(WindowBase screen, WindowLayout layout, Layout.Component component, float width) {
+		private void DrawLayoutItem(WindowBase screen, WindowLayout layout, UnityEngine.UI.Windows.Types.Layout.Component component, float width) {
 
 			if (layout == null) return;
 

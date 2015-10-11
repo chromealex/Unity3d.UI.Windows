@@ -162,6 +162,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		public int screenWindowId;	// used when storeType == ReUseScreen
 		#endregion
 
+		#if UNITY_EDITOR
+		public UnityEditor.Editor audioEditor;
+		#endif
+
 		[SerializeField]
 		private WindowBase screen;
 
@@ -591,12 +595,18 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 				var windowStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Window.Selected", styleNormal, (styleName) => {
 					
 					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
-					_style.fontStyle = FontStyle.Bold;
+					/*_style.fontStyle = FontStyle.Bold;
 					_style.margin = new RectOffset(0, 0, 0, 0);
 					_style.padding = new RectOffset(0, 0, 5, 4);
 					_style.alignment = TextAnchor.UpperLeft;
-					_style.contentOffset = new Vector2(5f, 0f);
-					
+					_style.contentOffset = new Vector2(5f, 0f);*/
+
+					_style.padding = new RectOffset(0, 0, 14, 1);
+					_style.contentOffset = new Vector2(0f, -15f);
+					_style.fontStyle = FontStyle.Bold;
+					_style.alignment = TextAnchor.UpperCenter;
+					_style.normal.textColor = Color.black;
+
 					return _style;
 					
 				});
@@ -604,12 +614,18 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 				var windowStyleSelected = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Window.NotSelected", styleSelected, (styleName) => {
 					
 					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
-					_style.fontStyle = FontStyle.Bold;
+					/*_style.fontStyle = FontStyle.Bold;
 					_style.margin = new RectOffset(0, 0, 0, 0);
 					_style.padding = new RectOffset(0, -1, 5, 4);
 					_style.alignment = TextAnchor.UpperLeft;
-					_style.contentOffset = new Vector2(5f, 0f);
+					_style.contentOffset = new Vector2(5f, 0f);*/
 					
+					_style.padding = new RectOffset(0, 0, 14, 1);
+					_style.contentOffset = new Vector2(0f, -15f);
+					_style.fontStyle = FontStyle.Bold;
+					_style.alignment = TextAnchor.UpperCenter;
+					_style.normal.textColor = Color.black;
+
 					return _style;
 					
 				});
