@@ -1,4 +1,4 @@
-### Current Version: 1.0.2a
+### Current Version: 1.0.3a
 
 ## 1.0.3a
 - Audio editor improvemets
