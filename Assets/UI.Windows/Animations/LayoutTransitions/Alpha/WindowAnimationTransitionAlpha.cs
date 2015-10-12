@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace UnityEngine.UI.Windows.Animations {
@@ -6,7 +6,7 @@ namespace UnityEngine.UI.Windows.Animations {
 	public class WindowAnimationTransitionAlpha : TransitionBase {
 		
 		[System.Serializable]
-		public class Parameters : TransitionBase.ParametersBase {
+		public class Parameters : TransitionBase.ParametersVideoBase {
 			
 			public Parameters(TransitionBase.ParametersBase baseDefaults) : base(baseDefaults) {}
 			

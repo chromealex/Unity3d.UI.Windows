@@ -9,28 +9,19 @@ namespace UnityEngine.UI.Windows.Animations {
 	public class TransitionBase : ScriptableObject {
 
 		[System.Serializable]
-		public class ParametersBase {
-
-			public const string MATERIAL_STRENGTH_NAME_DEFAULT = "_Value";
-
+		public abstract class ParametersBase {
+			
 			public float inDelay;
 			public float outDelay;
-
+			
 			public float inDuration;
 			public float outDuration;
 			
 			public ME.Ease.Type inEase;
 			public ME.Ease.Type outEase;
-			
-			public Material material;
-			public string materialStrengthName;
-			public bool materialLerpA = false;
-			public bool materialLerpB = false;
-
-			private Material materialInstance;
 
 			public ParametersBase() {}
-
+			
 			public ParametersBase(ParametersBase defaults) {
 				
 				this.inDuration = defaults.inDuration;
@@ -42,23 +33,77 @@ namespace UnityEngine.UI.Windows.Animations {
 				this.inEase = defaults.inEase;
 				this.outEase = defaults.outEase;
 
-				this.material = defaults.material;
-				this.materialStrengthName = defaults.materialStrengthName;
-				this.materialLerpA = defaults.materialLerpA;
-				this.materialLerpB = defaults.materialLerpB;
+			}
+			
+			public abstract void Setup(ParametersBase defaults);
+
+		}
+		
+		[System.Serializable]
+		public class ParametersAudioBase : ParametersBase {
+			
+			public ParametersAudioBase() {}
+			
+			public ParametersAudioBase(ParametersBase defaults) : base(defaults) {
 
 				this.Setup(defaults);
 
 			}
 			
-			public virtual void Setup(ParametersBase defaults) {
+			public override void Setup(ParametersBase defaults) {
+			}
+			
+			public virtual float GetVolumeValueIn(float value) {
+				
+				return 0f;
+				
+			}
+			
+			public virtual float GetVolumeValueOut(float value) {
+				
+				return 0f;
+				
+			}
 
+		}
+
+		[System.Serializable]
+		public class ParametersVideoBase : ParametersBase {
+
+			public const string MATERIAL_STRENGTH_NAME_DEFAULT = "_Value";
+
+			public Material material;
+			public string materialStrengthName;
+			public bool materialLerpA = false;
+			public bool materialLerpB = false;
+
+			private Material materialInstance;
+
+			public ParametersVideoBase() {}
+
+			public ParametersVideoBase(ParametersBase defaults) : base(defaults) {
+
+				var pars = defaults as ParametersVideoBase;
+				if (pars != null) {
+
+					this.material = pars.material;
+					this.materialStrengthName = pars.materialStrengthName;
+					this.materialLerpA = pars.materialLerpA;
+					this.materialLerpB = pars.materialLerpB;
+
+				}
+
+				this.Setup(defaults);
+
+			}
+			
+			public override void Setup(ParametersBase defaults) {
 			}
 
 			public string GetMaterialStrengthName() {
 
 				var name = this.materialStrengthName;
-				if (string.IsNullOrEmpty(name) == true) name = ParametersBase.MATERIAL_STRENGTH_NAME_DEFAULT;
+				if (string.IsNullOrEmpty(name) == true) name = ParametersVideoBase.MATERIAL_STRENGTH_NAME_DEFAULT;
 
 				return name;
 

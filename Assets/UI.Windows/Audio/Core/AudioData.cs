@@ -83,7 +83,7 @@ namespace UnityEngine.UI.Windows.Audio {
 				}
 
 			}
-#else
+#endif
 			if (clipType == ClipType.Music) {
 				
 				return this.musicCache.GetValue(key);
@@ -93,7 +93,6 @@ namespace UnityEngine.UI.Windows.Audio {
 				return this.fxCache.GetValue(key);
 				
 			}
-#endif
 
 			return null;
 			

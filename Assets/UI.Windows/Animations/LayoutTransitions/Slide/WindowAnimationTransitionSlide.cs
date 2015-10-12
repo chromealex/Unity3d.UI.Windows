@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Components;
 using UnityEngine.UI.Windows.Types;
@@ -8,7 +8,7 @@ namespace UnityEngine.UI.Windows.Animations {
 	public class WindowAnimationTransitionSlide : TransitionBase {
 		
 		[System.Serializable]
-		public class Parameters : TransitionBase.ParametersBase {
+		public class Parameters : TransitionBase.ParametersVideoBase {
 			
 			public enum ApplyTo : byte {
 				

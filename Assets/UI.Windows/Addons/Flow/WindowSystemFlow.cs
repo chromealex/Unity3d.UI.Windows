@@ -136,12 +136,11 @@ namespace UnityEngine.UI.Windows {
 		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, System.Action<T> onParametersPassCall) where T : WindowBase {
 			
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(from, to);
-			if (hide == true) screen.Hide(item.transition, item.transitionParameters);
+			if (hide == true) screen.Hide(item);
 
 			return WindowSystem.Show<T>(
 				(w) => w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex()),
-				item.transition,
-				item.transitionParameters,
+				item,
 				onParametersPassCall
 				);
 

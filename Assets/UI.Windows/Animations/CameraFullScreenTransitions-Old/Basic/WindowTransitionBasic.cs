@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Animations {
@@ -7,7 +7,7 @@ namespace UnityEngine.UI.Windows.Animations {
 	public class WindowTransitionBasic : TransitionBase {
 		
 		[System.Serializable]
-		public class Parameters : TransitionBase.ParametersBase {
+		public class Parameters : TransitionBase.ParametersVideoBase {
 			
 			public Parameters(TransitionBase.ParametersBase baseDefaults) : base(baseDefaults) {}
 			
@@ -15,7 +15,13 @@ namespace UnityEngine.UI.Windows.Animations {
 			public class State {
 				
 				public float to;
-				
+
+				public State(State source) {
+
+					this.to = source.to;
+
+				}
+
 			}
 
 			public State resetState;
@@ -28,9 +34,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				if (param == null) return;
 				
 				// Place params installation here
-				this.inState = param.inState;
-				this.outState = param.outState;
-				this.resetState = param.resetState;
+				this.inState = new State(param.inState);
+				this.outState = new State(param.outState);
+                this.resetState = new State(param.resetState);
 
 				this.material = param.material;
 				

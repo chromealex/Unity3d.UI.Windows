@@ -15,6 +15,7 @@ using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 using UnityEngine.UI.Windows.Audio;
 using UnityEditor.UI.Windows.Plugins.Flow.Audio;
 using UnityEditor.UI.Windows.Audio;
+using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
@@ -569,17 +570,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public void DrawTransitionChooser(FD.FlowWindow.AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSided) {
-
-			if (FlowSystem.GetData().modeLayer != ModeLayer.Flow) return;
+		public void DrawTransitionChooser(AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSided) {
+			
 			if (toWindow.IsEnabled() == false) return;
 			if (toWindow.IsContainer() == true) return;
-
-			if (toWindow.IsSmall() == true) {
-
-				if (toWindow.IsFunction() == false) return;
-
-			}
+			if (toWindow.IsSmall() == true && toWindow.IsFunction() == false) return;
 
 			const float size = 32f;
 			const float offset = size * 0.5f + 5f;
@@ -600,55 +595,101 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		public void DrawTransitionChooser(FD.FlowWindow.AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, Vector2 offset, float size) {
+		public void DrawTransitionChooser(AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, Vector2 offset, float size) {
 
 			var _size = Vector2.one * size;
 			var rect = new Rect(Vector2.Lerp(fromWindow.rect.center, toWindow.rect.center, 0.5f) + offset - _size * 0.5f, _size);
 
-			var transitionStyle = ME.Utilities.CacheStyle("UI.Windows.Styles.DefaultSkin", "TransitionIcon", (name) => FlowSystemEditorWindow.defaultSkin.FindStyle("TransitionIcon"));
-			var transitionStyleBorder = ME.Utilities.CacheStyle("UI.Windows.Styles.DefaultSkin", "TransitionIconBorder", (name) => FlowSystemEditorWindow.defaultSkin.FindStyle("TransitionIconBorder"));
+			var icon = "TransitionIcon";
+			if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+
+				icon = "TransitionIconAudio";
+
+			}
+
+			var transitionStyle = ME.Utilities.CacheStyle("UI.Windows.Styles.DefaultSkin", icon, (name) => FlowSystemEditorWindow.defaultSkin.FindStyle(name));
+			var transitionStyleBorder = ME.Utilities.CacheStyle("UI.Windows.Styles.DefaultSkin", "TransitionIconBorder", (name) => FlowSystemEditorWindow.defaultSkin.FindStyle(name));
 			if (transitionStyle != null && transitionStyleBorder != null) {
 
 				if (fromWindow.GetScreen() != null) {
 
 					System.Action onClick = () => {
-						
-						FlowChooserFilter.CreateTransition(fromWindow, toWindow, "/Transitions", (element) => {
+
+						if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+
+							FlowChooserFilter.CreateTransition<TransitionVideoInputTemplateParameters>(fromWindow, toWindow, "/Transitions", (element) => {
+								
+								FlowSystem.Save();
+								
+							});
+
+						} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
 							
-							FlowSystem.Save();
-							
-						});
+							FlowChooserFilter.CreateTransition<TransitionAudioInputTemplateParameters>(fromWindow, toWindow, "/Transitions", (element) => {
+								
+								FlowSystem.Save();
+								
+							});
+
+						}
 
 					};
 
 					// Has transition or not?
-					var hasTransition = attach.transition != null && attach.transitionParameters != null;
+					TransitionBase transition = null;
+					TransitionInputParameters transitionParameters  = null;
+					IPreviewEditor editor = null;
+					if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+
+						transition = attach.transition;
+						transitionParameters = attach.transitionParameters;
+						editor = attach.editor;
+
+					} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+						
+						transition = attach.audioTransition;
+						transitionParameters = attach.audioTransitionParameters;
+						editor = attach.editorAudio;
+
+					}
+					
+					var hasTransition = transition != null && transitionParameters != null;
 					if (hasTransition == true) {
 
 						GUI.DrawTexture(rect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false);
 
 						var hovered = rect.Contains(Event.current.mousePosition);
-						if (attach.editor == null) {
+						if (editor == null) {
 
-							attach.editor = Editor.CreateEditor(attach.transitionParameters) as IPreviewEditor;
+							editor = Editor.CreateEditor(transitionParameters) as IPreviewEditor;
+							if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+								
+								attach.editor = editor;
+								
+							} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+								
+								attach.editorAudio = editor;
+								
+							}
+
 							hovered = true;
 
 						}
 
-						if (attach.editor.HasPreviewGUI() == true) {
+						if (editor.HasPreviewGUI() == true) {
 
 							if (hovered == false) {
 
-								attach.editor.OnDisable();
+								editor.OnDisable();
 
 							} else {
 
-								attach.editor.OnEnable();
+								editor.OnEnable();
 								
 							}
 
 							var style = new GUIStyle(EditorStyles.toolbarButton);
-							attach.editor.OnPreviewGUI(Color.white, rect, style, false, false, hovered);
+							editor.OnPreviewGUI(Color.white, rect, style, false, false, hovered);
 
 						}
 
@@ -2262,11 +2303,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Rect layoutStateSelectButtonRect;
 		private void DrawWindowToolbar(FD.FlowWindow window) {
 
-			if (FlowSystem.GetData().modeLayer != ModeLayer.Flow) {
+			/*if (FlowSystem.GetData().modeLayer != ModeLayer.Flow) {
 
 				return;
 
-			}
+			}*/
 
 			//var edit = false;
 			var id = window.id;

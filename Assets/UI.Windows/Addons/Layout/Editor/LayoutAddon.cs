@@ -207,8 +207,8 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 						this.allListHeight += itemHeight;
 						
 					}
-					
-					viewRect.height = this.allListHeight;
+
+					viewRect.height = Mathf.Max(rectList.height, this.allListHeight);
 
 					var oldSkin = GUI.skin;
 					GUI.skin = FlowSystemEditorWindow.defaultSkin;

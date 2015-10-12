@@ -100,7 +100,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		public static Data.FlowWindow.AttachItem GetAttachItem(int from, int to) {
+		public static AttachItem GetAttachItem(int from, int to) {
 
 			return FlowSystem.instance.data.GetAttachItem(from, to);
 

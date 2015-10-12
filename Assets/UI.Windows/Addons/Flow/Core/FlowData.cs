@@ -85,6 +85,13 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#if UNITY_EDITOR
 		#region UPGRADES
 		#pragma warning disable 612,618
+		public bool UpgradeTo103() {
+
+			// Need to recompile
+			return true;
+			
+		}
+
 		public bool UpgradeTo102() {
 
 			this.flowWindowWithLayout = true;
@@ -162,11 +169,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				}
 				
 				var attachItems = oldWindow.attachItems;
-				window.attachItems = new List<Flow.Data.FlowWindow.AttachItem>();
+				window.attachItems = new List<AttachItem>();
 				for (int i = 0; i < attachItems.Count; ++i) {
 					
 					var old = attachItems[i];
-					window.attachItems.Add(new Flow.Data.FlowWindow.AttachItem(old.targetId) { transition = old.transition, transitionParameters = old.transitionParameters, editor = old.editor });
+					window.attachItems.Add(new AttachItem(old.targetId) { transition = old.transition, transitionParameters = old.transitionParameters, editor = old.editor });
 					
 				}
 				
@@ -322,14 +329,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		public Data.FlowWindow.AttachItem GetAttachItem(int from, int to) {
+		public AttachItem GetAttachItem(int from, int to) {
 			
 			var fromWindow = this.GetWindow(from);
 			var item = fromWindow.attachItems.FirstOrDefault((element) => element.targetId == to);
 
 			if (item == null) {
 
-				return Data.FlowWindow.AttachItem.Empty;
+				return AttachItem.Empty;
 
 			}
 

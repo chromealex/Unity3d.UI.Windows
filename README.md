@@ -1,5 +1,9 @@
 ### Current Version: 1.0.2a
 
+## 1.0.3a
+- Audio editor improvemets
+- Audio transitions implemented
+
 ## 1.0.2a
 - Audio (Music&FX) support added
 	- Need to implement fade in/out

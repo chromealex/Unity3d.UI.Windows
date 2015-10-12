@@ -144,7 +144,8 @@ namespace UnityEngine.UI.Windows {
 			if (this.setup == false) {
 				
 				this.Setup(this);
-
+				
+				this.OnAudioInit();
 				this.OnTransitionInit();
 				this.OnLayoutInit(depth, raycastPriority, orderInLayer);
 				this.OnModulesInit();
@@ -244,6 +245,13 @@ namespace UnityEngine.UI.Windows {
 		}
 		#endif
 
+		private void OnAudioInit() {
+
+			this.audio.Setup(this);
+			this.audio.OnInit();
+
+		}
+
 		private void OnTransitionInit() {
 			
 			this.workCamera.clearFlags = CameraClearFlags.Depth;
@@ -332,7 +340,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public void Show() {
 
-			this.Show(null);
+			this.Show_INTERNAL(null, null);
 
 		}
 
@@ -342,7 +350,7 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="onShowEnd">On show end.</param>
 		public void Show(System.Action onShowEnd) {
 
-			this.Show(onShowEnd, null, null);
+			this.Show_INTERNAL(onShowEnd, null);
 
 		}
 		
@@ -351,9 +359,16 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="transition">Transition.</param>
 		/// <param name="transitionParameters">Transition parameters.</param>
-		public void Show(TransitionBase transition, TransitionInputParameters transitionParameters) {
+		public void Show(AttachItem transitionItem) {
 			
-			this.Show(null, transition, transitionParameters);
+			this.Show_INTERNAL(null, transitionItem);
+			
+		}
+		
+		[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
+		public void Show(TransitionBase transition, TransitionInputParameters transitionParams) {
+			
+			this.Show_INTERNAL(onShowEnd: null, transitionItem: null);
 			
 		}
 
@@ -361,7 +376,13 @@ namespace UnityEngine.UI.Windows {
 		/// Show the specified onShowEnd.
 		/// </summary>
 		/// <param name="onShowEnd">On show end.</param>
-		public void Show(System.Action onShowEnd, TransitionBase transition, TransitionInputParameters transitionParameters) {
+		public void Show(System.Action onShowEnd, AttachItem transitionItem) {
+
+			this.Show_INTERNAL(onShowEnd, transitionItem);
+
+		}
+
+		public void Show_INTERNAL(System.Action onShowEnd, AttachItem transitionItem) {
 
 			if (WindowSystem.IsCallEventsEnabled() == false) {
 
@@ -397,12 +418,22 @@ namespace UnityEngine.UI.Windows {
 			};
 
 			this.OnLayoutShowBegin(callback);
-			this.audio.OnShowBegin(callback);
+
+			if (transitionItem != null && transitionItem.audioTransition != null) {
+
+				this.audio.OnShowBegin(transitionItem.audioTransition, transitionItem.audioTransitionParameters, callback);
+
+			} else {
+
+				this.audio.OnShowBegin(callback);
+
+			}
+
 			this.modules.OnShowBegin(callback);
 
-			if (transition != null) {
+			if (transitionItem != null && transitionItem.transition != null) {
 
-				this.transition.OnShowBegin(transition, transitionParameters, callback);
+				this.transition.OnShowBegin(transitionItem.transition, transitionItem.transitionParameters, callback);
 
 			} else {
 
@@ -422,8 +453,8 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public bool Hide() {
 			
-			return this.Hide(null);
-			
+			return this.Hide_INTERNAL(onHideEnd: null, transitionItem: null);
+
 		}
 		
 		/// <summary>
@@ -431,9 +462,9 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="transition">Transition.</param>
 		/// <param name="transitionParameters">Transition parameters.</param>
-		public bool Hide(TransitionBase transition, TransitionInputParameters transitionParameters) {
+		public bool Hide(AttachItem transitionItem) {
 			
-			return this.Hide(null, transition, transitionParameters);
+			return this.Hide_INTERNAL(null, transitionItem);
 			
 		}
 		/// <summary>
@@ -443,7 +474,14 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="onHideEnd">On hide end.</param>
 		public bool Hide(System.Action onHideEnd) {
 
-			return this.Hide(onHideEnd, null, null);
+			return this.Hide_INTERNAL(onHideEnd, null);
+
+		}
+
+		[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
+		public bool Hide(TransitionBase transition, TransitionInputParameters transitionParams) {
+			
+			return this.Hide_INTERNAL(onHideEnd: null, transitionItem: null);
 
 		}
 
@@ -454,7 +492,13 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="onHideEnd">On hide end.</param>
 		/// <param name="transition">Transition.</param>
 		/// <param name="transitionParameters">Transition parameters.</param>
-		public bool Hide(System.Action onHideEnd, TransitionBase transition, TransitionInputParameters transitionParameters) {
+		public bool Hide(System.Action onHideEnd, AttachItem transitionItem) {
+
+			return this.Hide_INTERNAL(onHideEnd, transitionItem);
+
+		}
+
+		private bool Hide_INTERNAL(System.Action onHideEnd, AttachItem transitionItem) {
 
 			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
 			this.currentState = WindowObjectState.Hiding;
@@ -484,12 +528,22 @@ namespace UnityEngine.UI.Windows {
 			};
 
 			this.OnLayoutHideBegin(callback);
-			this.audio.OnHideBegin(callback);
+
+			if (transitionItem != null && transitionItem.audioTransition != null) {
+				
+				this.audio.OnHideBegin(transitionItem.audioTransition, transitionItem.audioTransitionParameters, callback);
+				
+			} else {
+				
+				this.audio.OnHideBegin(callback);
+				
+			}
+
 			this.modules.OnHideBegin(callback);
 			
-			if (transition != null) {
+			if (transitionItem != null && transitionItem.transition != null) {
 				
-				this.transition.OnHideBegin(transition, transitionParameters, callback);
+				this.transition.OnHideBegin(transitionItem.transition, transitionItem.transitionParameters, callback);
 				
 			} else {
 				

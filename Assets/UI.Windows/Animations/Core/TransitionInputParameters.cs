@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace UnityEngine.UI.Windows.Animations {
@@ -18,13 +18,6 @@ namespace UnityEngine.UI.Windows.Animations {
 		public virtual TransitionBase.ParametersBase GetParameters() {
 			
 			return null;
-			
-		}
-		
-		[ContextMenu("Reset Material Instance")]
-		public void ResetMaterialInstance() {
-			
-			this.GetParameters().ResetMaterialInstance();
 			
 		}
 

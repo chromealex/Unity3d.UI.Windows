@@ -105,11 +105,22 @@ namespace UnityEditor.UI.Windows.Plugins.Audio {
 
 							}
 
-							if (window.audioEditor == null) window.audioEditor = Editor.CreateEditor(state.clip);
-							window.audioEditor.OnPreviewGUI(rect, EditorStyles.helpBox);
-							GUILayout.BeginHorizontal();
-							window.audioEditor.OnPreviewSettings();
-							GUILayout.EndHorizontal();
+							if (window.audioEditor == null) {
+
+								EditorPrefs.SetBool("AutoPlayAudio", false);
+								window.audioEditor = Editor.CreateEditor(state.clip);
+								//System.Type.GetType("AudioUtil").InvokeMember("StopClip", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public, null, null, new object[] { state.clip });
+
+							}
+
+							if (Event.current.type != EventType.MouseDrag && Event.current.type != EventType.DragPerform) {
+
+								window.audioEditor.OnPreviewGUI(rect, EditorStyles.helpBox);
+								GUILayout.BeginHorizontal();
+								window.audioEditor.OnPreviewSettings();
+								GUILayout.EndHorizontal();
+
+							}
 
 						}
 						GUILayout.EndVertical();

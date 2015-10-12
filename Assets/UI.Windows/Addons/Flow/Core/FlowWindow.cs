@@ -40,29 +40,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		private const int STATES_COUNT = 3;
 
 		[System.Serializable]
-		public class AttachItem {
-
-			public static readonly AttachItem Empty = new AttachItem(-1);
-
-			public int targetId;
-			
-			public TransitionBase transition;
-			public TransitionInputParameters transitionParameters;
-
-			#if UNITY_EDITOR
-			[HideInInspector]
-			public IPreviewEditor editor;
-			#endif
-
-			public AttachItem(int targetId) {
-
-				this.targetId = targetId;
-
-			}
-
-		}
-
-		[System.Serializable]
 		public struct ComponentLink {
 			
 			[Header("Base")]

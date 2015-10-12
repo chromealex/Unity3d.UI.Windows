@@ -7,6 +7,7 @@ using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Components;
 using System.Collections.Generic;
+using UnityEditor.UI.Windows.Extensions;
 
 namespace UnityEditor.UI.Windows.Animations {
 
@@ -75,9 +76,55 @@ namespace UnityEditor.UI.Windows.Animations {
 		private double lastTime;
 		public void OnUpdate() {
 			
-			var _target = this.target as TransitionInputTemplateParameters;
-			if (_target == null) return;
-			if (/*_target.useAsTemplate == false ||*/ _target.transition == null) return;
+			var _target = this.target as TransitionVideoInputTemplateParameters;
+			if (_target != null) {
+				
+				this.DrawVideo(_target);
+				
+			}
+
+			var _targetAudio = this.target as TransitionAudioInputTemplateParameters;
+			if (_targetAudio != null) {
+				
+				this.DrawAudio(_targetAudio);
+				
+			}
+
+		}
+		
+		private AnimationCurve audioCurveIn;
+		private AnimationCurve audioCurveOut;
+		public void DrawAudio(TransitionAudioInputTemplateParameters _target) {
+			
+			if (_target.transition == null) return;
+
+			/*if (this.audioCurve == null) {
+
+				this.audioCurve = new AnimationCurve();
+
+			}
+
+			this.audioCurve.keys = new Keyframe[0];
+
+			var keys = new List<Keyframe>();
+			var pars = _target.GetParameters<TransitionBase.ParametersAudioBase>();
+			for (float t = 0f; t <= pars.inDuration; t += 0.05f) {
+
+				keys.Add(new Keyframe(t, pars.GetVolumeValueIn(t)));
+
+			}
+			
+			this.audioCurve.postWrapMode = WrapMode.Clamp;
+			this.audioCurve.preWrapMode = WrapMode.Clamp;
+			this.audioCurve.keys = keys.ToArray();
+
+			this.Repaint();*/
+
+		}
+
+		public void DrawVideo(TransitionVideoInputTemplateParameters _target) {
+
+			if (_target.transition == null) return;
 
 			if (this.hovered == true) {
 
@@ -146,46 +193,51 @@ namespace UnityEditor.UI.Windows.Animations {
 			
 			if (this.changed == true) {
 				
-				this.sceneTestContainer.SetActive(true);
+				var videoParameters = _target.GetParameters<TransitionBase.ParametersVideoBase>();
+				if (videoParameters != null) {
 
-				this.material = _target.GetParameters().GetMaterialInstance();
-				var lerpA = _target.GetParameters().materialLerpA;
-				var lerpB = _target.GetParameters().materialLerpB;
+					this.sceneTestContainer.SetActive(true);
 
-				// Take screenshot
-				Graphics.Blit(Texture2D.blackTexture, this.targetTexture);
+					this.material = videoParameters.GetMaterialInstance();
+					var lerpA = videoParameters.materialLerpA;
+					var lerpB = videoParameters.materialLerpB;
 
-				// Rewind to value
-				this.windowA.transition.Setup(this.windowA);
-				_target.transition.SetInState(_target, this.windowA, null);
-				this.windowA.transition.Apply(_target.transition, _target, forward: false, value: this.sliderPosition, reset: false);
+					// Take screenshot
+					Graphics.Blit(Texture2D.blackTexture, this.targetTexture);
 
-				if (this.material == null || lerpA == false) {
-					
-					Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture);
-					
-				} else {
-					
-					Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture, this.material);
-					
+					// Rewind to value
+					this.windowA.transition.Setup(this.windowA);
+					_target.transition.SetInState(_target, this.windowA, null);
+					this.windowA.transition.Apply(_target.transition, _target, forward: false, value: this.sliderPosition, reset: false);
+
+					if (this.material == null || lerpA == false) {
+						
+						Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture);
+						
+					} else {
+						
+						Graphics.Blit(this.TakeScreenshot(this.windowA.workCamera), this.targetTexture, this.material);
+						
+					}
+
+					this.windowB.transition.Setup(this.windowB);
+					this.windowB.transition.Apply(_target.transition, _target, forward: true, value: this.sliderPosition, reset: true);
+
+					if (this.material == null || lerpB == false) {
+						
+						Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture);
+						
+					} else {
+						
+						Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture, this.material);
+						
+					}
+
+					// Deactivate
+					this.sceneTestContainer.SetActive(false);
+
 				}
 
-				this.windowB.transition.Setup(this.windowB);
-				this.windowB.transition.Apply(_target.transition, _target, forward: true, value: this.sliderPosition, reset: true);
-
-				if (this.material == null || lerpB == false) {
-					
-					Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture);
-					
-				} else {
-					
-					Graphics.Blit(this.TakeScreenshot(this.windowB.workCamera), this.targetTexture, this.material);
-					
-				}
-
-				// Deactivate
-				this.sceneTestContainer.SetActive(false);
-				
 			}
 
 			if (this.hovered == true) {
@@ -200,8 +252,7 @@ namespace UnityEditor.UI.Windows.Animations {
 			
 			var _target = this.target as TransitionInputTemplateParameters;
 			if (_target == null) return false;
-			if (/*_target.useAsTemplate == false || */
-			    _target.transition == null) return false;
+			if (_target.transition == null) return false;
 
 			return true;
 
@@ -252,7 +303,6 @@ namespace UnityEditor.UI.Windows.Animations {
 			
 			var _target = this.target as TransitionInputTemplateParameters;
 			if (_target == null) return;
-			if (/*_target.useAsTemplate == false ||*/ _target.transition == null) return;
 			
 			this.changed = false;
 
@@ -273,10 +323,67 @@ namespace UnityEditor.UI.Windows.Animations {
 
 			}
 
-			if (this.targetTexture != null) {
+			var _targetVideo = this.target as TransitionVideoInputTemplateParameters;
+			if (_targetVideo != null) {
+				
+				if (this.targetTexture != null) {
+					
+					GUI.DrawTexture(rect, this.targetTexture);
+					
+				}
 
-				GUI.DrawTexture(rect, this.targetTexture);
+			}
+			
+			var _targetAudio = this.target as TransitionAudioInputTemplateParameters;
+			if (_targetAudio != null) {
+				
+				var pars = _target.GetParameters<TransitionBase.ParametersAudioBase>();
+				var oldEvent = new Event(Event.current);
+				//Event.current.Use();
+				this.audioCurveIn = new AnimationCurve();
+				for (float t = 0f; t <= pars.inDuration + 0.01f; t += 0.05f) {
+					
+					var value = pars.GetVolumeValueIn(t);
+					var key = new Keyframe(t, value);
+					this.audioCurveIn.AddKey(key);
+					
+				}
+				
+				this.audioCurveOut = new AnimationCurve();
+				for (float t = 0f; t <= pars.outDuration + 0.01f; t += 0.05f) {
+					
+					var value = pars.GetVolumeValueOut(t);
+					var key = new Keyframe(t, value);
+					this.audioCurveOut.AddKey(key);
+					
+				}
 
+				AnimationCurveUtility.SetLinear(ref this.audioCurveIn);
+				AnimationCurveUtility.SetLinear(ref this.audioCurveOut);
+				
+				this.audioCurveIn.postWrapMode = WrapMode.Clamp;
+				this.audioCurveIn.preWrapMode = WrapMode.Clamp;
+
+				this.audioCurveOut.postWrapMode = WrapMode.Clamp;
+				this.audioCurveOut.preWrapMode = WrapMode.Clamp;
+
+				{
+					if (Event.current.type == EventType.MouseDown) Event.current.type = EventType.Repaint;
+					EditorGUI.CurveField(new Rect(rect.x, rect.y, rect.width, rect.height * 0.5f), string.Empty, this.audioCurveIn, Color.red, new Rect(0f, 0f, pars.inDuration, 1f));
+					EditorGUI.CurveField(new Rect(rect.x, rect.y + rect.height * 0.5f, rect.width, rect.height * 0.5f), string.Empty, this.audioCurveOut, Color.cyan, new Rect(0f, 0f, pars.outDuration, 1f));
+
+					if (this.sliderPosition > 0f) {
+
+						GUI.Box(new Rect(rect.x + (this.sliderPosition * rect.width), rect.y, 3f, rect.height * 0.5f), string.Empty);
+						GUI.Box(new Rect(rect.x + (this.sliderPosition * rect.width), rect.y + rect.height * 0.5f, 3f, rect.height * 0.5f), string.Empty);
+
+					}
+
+					EditorGUI.DropShadowLabel(new Rect(rect.x, rect.y, rect.width, rect.height * 0.5f), "In");
+					EditorGUI.DropShadowLabel(new Rect(rect.x, rect.y + rect.height * 0.5f, rect.width, rect.height * 0.5f), "Out");
+				}
+				Event.current = oldEvent;
+				
 			}
 
 		}

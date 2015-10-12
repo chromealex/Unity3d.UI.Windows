@@ -34,11 +34,10 @@
 		private {CLASS_NAME_WITH_NAMESPACE} INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(bool hide, UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, System.Action<{CLASS_NAME_WITH_NAMESPACE}> onParametersPassCall = null) {
 			
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem({FLOW_FROM_ID}, {FLOW_TO_ID});
-			if (hide == true) this.Hide(item.transition, item.transitionParameters);
+			if (hide == true) this.Hide(item);
 			return WindowSystem.Show<{CLASS_NAME_WITH_NAMESPACE}>(
 				(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunction{FUNCTION_CALL_NAME}Routes(this, index))),
-				item.transition,
-				item.transitionParameters,
+				item,
 				onParametersPassCall
 			);
 			

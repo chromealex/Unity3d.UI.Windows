@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Animations {
 
-	public class WindowTransitionBasicParameters : TransitionInputTemplateParameters {
+	public class WindowTransitionBasicParameters : TransitionVideoInputTemplateParameters {
 		
-		[ReadOnly(fieldName: "useDefault", state: false)]
+		[ReadOnly(fieldName: "useDefault", state: true)]
 		public WindowTransitionBasic.Parameters parameters;
 		
 		public override void SetDefaultParameters(TransitionBase.ParametersBase parameters) {

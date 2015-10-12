@@ -207,7 +207,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public static void CreateTransition(FD.FlowWindow flowWindow, FD.FlowWindow toWindow, string localPath, System.Action<TransitionInputTemplateParameters> callback = null) {
+		public static void CreateTransition<T>(FD.FlowWindow flowWindow, FD.FlowWindow toWindow, string localPath, System.Action<T> callback = null) where T : TransitionInputTemplateParameters {
 
 			if (flowWindow.GetScreen() == null) return;
 
@@ -217,23 +217,30 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var packagePath = string.Join("/", splitted, 0, splitted.Length - 1);
 			var path = packagePath + localPath;
 
-			FlowChooserFilterWindow.Show<TransitionInputTemplateParameters>(
+			FlowChooserFilterWindow.Show<T>(
 				root: null,
 			    onSelect: (element) => {
 				
 				// Clean up previous transitions if exists
 				var attachItem = flowWindow.GetAttachItem(toWindow);
 				if (attachItem != null) {
-					
-					if (attachItem.transition != null && attachItem.transitionParameters != null) {
 
-						AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(attachItem.transitionParameters.gameObject));
+					if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+						
+						if (attachItem.transitionParameters != null) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(attachItem.transitionParameters.gameObject));
 						
 						attachItem.transition = null;
 						attachItem.transitionParameters = null;
 
+					} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+
+						if (attachItem.audioTransitionParameters != null) AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(attachItem.audioTransitionParameters.gameObject));
+						
+						attachItem.audioTransition = null;
+						attachItem.audioTransitionParameters = null;
+
 					}
-					
+
 				}
 
 				if (System.IO.Directory.Exists(path) == false) {
@@ -244,8 +251,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (element == null) return;
 
+				var prefix = string.Empty;
+				if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+					
+					prefix = "Transition";
+
+				} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+					
+					prefix = "AudioTransition";
+
+				}
+
 				var elementPath = AssetDatabase.GetAssetPath(element.gameObject);
-				var targetName = "Transition-" + element.gameObject.name + "-" + (toWindow.IsFunction() == true ? FlowSystem.GetWindow(toWindow.functionId).directory : toWindow.directory);
+				var targetName = prefix + "-" + element.gameObject.name + "-" + (toWindow.IsFunction() == true ? FlowSystem.GetWindow(toWindow.functionId).directory : toWindow.directory);
 				var targetPath = path + "/" + targetName + ".prefab";
 
 				if (AssetDatabase.CopyAsset(elementPath, targetPath) == true) {
@@ -253,12 +271,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					AssetDatabase.ImportAsset(targetPath);
 
 					var newInstance = AssetDatabase.LoadAssetAtPath<GameObject>(targetPath);
-					var instance = newInstance.GetComponent<TransitionInputTemplateParameters>();
+					var instance = newInstance.GetComponent<T>();
+					instance.useDefault = true;
 					instance.useAsTemplate = false;
 					EditorUtility.SetDirty(instance);
 
-					attachItem.transition = instance.transition;
-					attachItem.transitionParameters = instance;
+					if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+						
+						attachItem.transition = instance.transition;
+						attachItem.transitionParameters = instance;
+
+					} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+						
+						attachItem.audioTransition = instance.transition;
+						attachItem.audioTransitionParameters = instance;
+
+					}
 
 					if (callback != null) callback(instance);
 

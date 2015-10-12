@@ -207,6 +207,18 @@ MonoBehaviour:
     playType: 0
     clipType: 0
     id: 0
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+    bypassEffect: 0
+    bypassListenerEffect: 0
+    bypassReverbEffect: 0
+    loop: 1
+    priority: 128
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 0
+    reverbZoneMix: 1
   modules:
     elements: []
   events:

@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Animations {
 
-	public class WindowAnimationTransitionScreenTransformParameters : TransitionInputTemplateParameters {
+	public class WindowAnimationTransitionScreenTransformParameters : TransitionVideoInputTemplateParameters {
 		
 		[Header("Parameters")]
 		[ReadOnly(fieldName: "useDefault", state: true)]

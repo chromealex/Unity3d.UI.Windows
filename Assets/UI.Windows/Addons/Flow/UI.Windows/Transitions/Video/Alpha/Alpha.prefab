@@ -51,6 +51,8 @@ MonoBehaviour:
     outEase: 0
     material: {fileID: 0}
     materialStrengthName: _Strength
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       alpha: 0
       anchorMin: {x: 0, y: 0}

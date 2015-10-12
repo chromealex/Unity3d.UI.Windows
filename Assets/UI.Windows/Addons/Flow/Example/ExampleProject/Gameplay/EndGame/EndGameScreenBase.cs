@@ -58,11 +58,10 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 		private ExampleProject.UI.Loader.Loading.LoadingScreen INTERNAL_FlowFunctionLoader(bool hide, UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, System.Action<ExampleProject.UI.Loader.Loading.LoadingScreen> onParametersPassCall = null) {
 			
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(28, 40);
-			if (hide == true) this.Hide(item.transition, item.transitionParameters);
+			if (hide == true) this.Hide(item);
 			return WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
 				(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunctionLoaderRoutes(this, index))),
-				item.transition,
-				item.transitionParameters,
+				item,
 				onParametersPassCall
 			);
 			

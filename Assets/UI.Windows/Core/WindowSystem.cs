@@ -15,8 +15,39 @@ namespace UnityEngine.UI.Windows {
 
 		int GetFunctionIterationIndex();
 		bool Hide();
-		bool Hide(TransitionBase transition, TransitionInputParameters transitionParameters);
+		bool Hide(AttachItem transitionItem);
+		
+		//[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
+		bool Hide(TransitionBase transition, TransitionInputParameters transitionParams);
 
+	}
+	
+	[System.Serializable]
+	public class AttachItem {
+		
+		public static readonly AttachItem Empty = new AttachItem(-1);
+		
+		public int targetId;
+		
+		public TransitionBase transition;
+		public TransitionInputParameters transitionParameters;
+		
+		public TransitionBase audioTransition;
+		public TransitionInputParameters audioTransitionParameters;
+		
+		#if UNITY_EDITOR
+		[HideInInspector]
+		public IPreviewEditor editor;
+		[HideInInspector]
+		public IPreviewEditor editorAudio;
+		#endif
+		
+		public AttachItem(int targetId) {
+			
+			this.targetId = targetId;
+			
+		}
+		
 	}
 
 	public class WindowRoutes : IFunctionIteration {
@@ -43,9 +74,16 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public bool Hide(TransitionBase transition, TransitionInputParameters transitionParameters) {
+		public bool Hide(AttachItem transitionItem) {
 			
-			return this.sourceWindow.Hide(transition, transitionParameters);
+			return this.sourceWindow.Hide(transitionItem);
+
+		}
+		
+		[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
+		public bool Hide(TransitionBase transition, TransitionInputParameters transitionParams) {
+
+			return this.Hide();
 
 		}
 
@@ -304,20 +342,27 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void AudioStop(ClipType clipType, int id) {
+		public static void AudioStop(WindowBase window, ClipType clipType, int id) {
 
 			//Debug.Log("STOP: " + id);
-			Audio.Manager.Stop(WindowSystem.instance.audio, clipType, id);
-
-		}
-
-		public static void AudioPlay(ClipType clipType, int id) {
-			
-			//Debug.Log("PLAY: " + id);
-			Audio.Manager.Play(WindowSystem.instance.audio, clipType, id);
+			Audio.Manager.Stop(window, WindowSystem.instance.audio, clipType, id);
 
 		}
 		
+		public static void AudioPlay(WindowBase window, ClipType clipType, int id) {
+			
+			//Debug.Log("PLAY: " + id);
+			Audio.Manager.Play(window, WindowSystem.instance.audio, clipType, id);
+			
+		}
+		
+		public static void AudioChange(WindowBase window, ClipType clipType, int id, Audio.Window audioSettings) {
+			
+			//Debug.Log("CHANGE: " + id + " :: " + audioSettings.volume);
+			Audio.Manager.Change(window, WindowSystem.instance.audio, clipType, id, audioSettings);
+			
+		}
+
 		public static void UpdateLastInstance() {
 
 			if (WindowSystem.instance == null) return;
@@ -340,6 +385,7 @@ namespace UnityEngine.UI.Windows {
 
 			this.currentWindows.Clear();
 			this.functions = new Functions();
+			this.audio.Init();
 
 			this.depthStep = (this.settings.maxDepth - this.settings.minDepth) / this.settings.poolSize;
 			this.zDepthStep = 200f;
@@ -823,7 +869,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.ShowWithParameters<T>(null, null, null, null, null, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, null, null, parameters);
 			
 		}
 
@@ -835,7 +881,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 
-			return WindowSystem.ShowWithParameters<T>(null, null, null, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, null, onParametersPassCall, parameters);
 			
 		}
 		
@@ -848,7 +894,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(T source, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.ShowWithParameters<T>(null, null, null, source, null, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, source, null, parameters);
 			
 		}
 
@@ -861,7 +907,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(T source, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.ShowWithParameters<T>(null, null, null, source, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, null, source, onParametersPassCall, parameters);
 			
 		}
 
@@ -874,7 +920,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Show<T>(System.Action<T> afterGetInstance, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 
-			return WindowSystem.ShowWithParameters<T>(afterGetInstance, null, null, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(afterGetInstance, null, null, onParametersPassCall, parameters);
 			
 		}
 		
@@ -882,13 +928,12 @@ namespace UnityEngine.UI.Windows {
 		/// Shows window of T type with specific transition.
 		/// Returns null if window not registered.
 		/// </summary>
-		/// <param name="transition">Transition.</param>
-		/// <param name="transitionParameters">Transition parameters.</param>
+		/// <param name="transition">Transition Item.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Show<T>(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+		public static T Show<T>(AttachItem transitionItem, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.ShowWithParameters<T>(null, transition, transitionParameters, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, transitionItem, null, onParametersPassCall, parameters);
 			
 		}
 		
@@ -896,14 +941,13 @@ namespace UnityEngine.UI.Windows {
 		/// Shows window of T type.
 		/// Returns null if window not registered.
 		/// </summary>
-		/// <param name="transition">Transition.</param>
-		/// <param name="transitionParameters">Transition parameters.</param>
+		/// <param name="transition">Transition Item.</param>
 		/// <param name="source">Source.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Show<T>(TransitionBase transition, TransitionInputParameters transitionParameters, T source, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+		public static T Show<T>(AttachItem transitionItem, T source, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.ShowWithParameters<T>(null, transition, transitionParameters, source, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(null, transitionItem, source, onParametersPassCall, parameters);
 			
 		}
 
@@ -912,14 +956,27 @@ namespace UnityEngine.UI.Windows {
 		/// Returns null if window not registered.
 		/// </summary>
 		/// <param name="afterGetInstance">On create predicate.</param>
-		/// <param name="transition">Transition.</param>
-		/// <param name="transitionParameters">Transition parameters.</param>
+		/// <param name="transition">Transition Item.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Show<T>(System.Action<T> afterGetInstance, TransitionBase transition, TransitionInputParameters transitionParameters, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+		public static T Show<T>(System.Action<T> afterGetInstance, AttachItem transitionItem, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			return WindowSystem.ShowWithParameters<T>(afterGetInstance, transition, transitionParameters, null, onParametersPassCall, parameters);
+			return WindowSystem.ShowWithParameters<T>(afterGetInstance, transitionItem, null, onParametersPassCall, parameters);
 
+		}
+		
+		[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
+		public static T Show<T>(TransitionBase transition, TransitionInputParameters transitionParams, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+			
+			return WindowSystem.ShowWithParameters<T>(null, null, null, onParametersPassCall, parameters);
+			
+		}
+
+		[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
+		public static T Show<T>(System.Action<T> afterGetInstance, TransitionBase transition, TransitionInputParameters transitionParams, System.Action<T> onParametersPassCall, params object[] parameters) where T : WindowBase {
+			
+			return WindowSystem.ShowWithParameters<T>(afterGetInstance, null, null, onParametersPassCall, parameters);
+			
 		}
 
 		/// <summary>
@@ -928,13 +985,11 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="afterGetInstance">On create predicate.</param>
 		/// <param name="transition">Transition.</param>
-		/// <param name="transitionParameters">Transition parameters.</param>
 		/// <param name="source">Source.</param>
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T ShowWithParameters<T>(System.Action<T> afterGetInstance,
-		                        TransitionBase transition,
-		                        TransitionInputParameters transitionParameters,
+		                        AttachItem transitionItem,
 		                        T source,
 		                        System.Action<T> onParametersPassCall,
 		                        params object[] parameters) where T : WindowBase {
@@ -963,9 +1018,9 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 				
-				if (transition != null && transitionParameters != null) {
-					
-					instance.Show(transition, transitionParameters);
+				if (transitionItem != null && transitionItem.transition != null && transitionItem.transitionParameters != null) {
+
+					instance.Show(transitionItem);
 					
 				} else {
 					
