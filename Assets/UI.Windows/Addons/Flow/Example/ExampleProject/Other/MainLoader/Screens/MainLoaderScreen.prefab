@@ -86,9 +86,21 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  sfx:
+  sfxOnClick:
     flowData: {fileID: 0}
+    randomize: 0
     id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
   hoverIsActive: 0
   hoverOnAnyPointerState: 0
   hoverInCallback:
@@ -269,9 +281,21 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  sfx:
+  sfxOnClick:
     flowData: {fileID: 0}
+    randomize: 0
     id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
   hoverIsActive: 0
   hoverOnAnyPointerState: 0
   hoverInCallback:
@@ -346,9 +370,21 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  sfx:
+  sfxOnClick:
     flowData: {fileID: 0}
+    randomize: 0
     id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
   hoverIsActive: 0
   hoverOnAnyPointerState: 0
   hoverInCallback:

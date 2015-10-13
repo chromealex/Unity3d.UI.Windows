@@ -1,5 +1,10 @@
 ### Current Version: 1.0.3a
 
+## 1.0.4a
+- SFX field improvements
+- Audio KeepCurrent/RestartIfEquals fix
+- New Popup implemented
+
 ## 1.0.3a
 - Audio editor improvemets
 - Audio transitions implemented

@@ -26,6 +26,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		void OnGUI();
 
+		void Reset();
+
 		void Install();
 		bool InstallationNeeded();
 
@@ -63,6 +65,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public virtual bool IsCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo) { return false; }
 
 		public virtual void OnGUI() {}
+
+		public virtual void Reset() {}
 
 		public virtual void Install() {}
 		public virtual void Reinstall() {}
@@ -269,6 +273,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 		
+		public static void OnReset(FlowSystemEditorWindow flowEditor) {
+			
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				addon.Reset();
+				
+			}
+			
+		}
+
 		public static void OnDrawGUI(FlowSystemEditorWindow flowEditor) {
 
 			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();

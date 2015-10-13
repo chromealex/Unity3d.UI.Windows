@@ -217,7 +217,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			this.sfx.Play();
+			this.sfxOnClick.Play();
 
 			if (this.callback != null) this.callback.Invoke();
 			if (this.callbackButton != null) this.callbackButton.Invoke(this);
@@ -228,11 +228,27 @@ namespace UnityEngine.UI.Windows.Components {
 		#region Audio
 		[Header("Audio")]
 		[SerializeField]
-		private Audio.Component sfx = new Audio.Component();
+		private Audio.Component sfxOnClick = new Audio.Component();
+		[SerializeField]
+		private Audio.Component sfxOnEnter = new Audio.Component();
+		[SerializeField]
+		private Audio.Component sfxOnLeave = new Audio.Component();
 
-		public void SetSFX(Audio.Component data) {
+		public void SetSFX(PointerEventState state, Audio.Component data) {
 
-			this.sfx = data;
+			if (state == PointerEventState.Click) {
+
+				this.sfxOnClick = data;
+
+			} else if (state == PointerEventState.Enter) {
+
+				this.sfxOnEnter = data;
+
+			} else if (state == PointerEventState.Leave) {
+
+				this.sfxOnLeave = data;
+
+			}
 
 		}
 		#endregion
@@ -281,6 +297,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.ValidateHoverPointer(eventData) == false) return;
 			
+			this.sfxOnEnter.Play();
+
 			this.tempHoverState = true;
 			this.onHover.Invoke(true);
 			
@@ -289,6 +307,8 @@ namespace UnityEngine.UI.Windows.Components {
 		public void OnPointerExit(PointerEventData eventData) {
 
 			if (this.tempHoverState == false) return;
+			
+			this.sfxOnLeave.Play();
 
 			this.onHover.Invoke(false);
 			

@@ -20,6 +20,13 @@ namespace UnityEditor.UI.Windows.Plugins.Audio {
 		private ReorderableList audioMusicList;
 		private ReorderableList audioFXList;
 
+		public override void Reset() {
+			
+			this.audioMusicList = null;
+			this.audioFXList = null;
+
+		}
+
 		public override void OnFlowSettingsGUI() {
 			
 			GUILayout.Label(FlowAddon.MODULE_INSTALLED, EditorStyles.centeredGreyMiniLabel);
@@ -70,17 +77,24 @@ namespace UnityEditor.UI.Windows.Plugins.Audio {
 
 					GUILayout.BeginHorizontal();
 					{
-						var clipType = (int)screen.audio.clipType;
-						clipType = GUILayoutExt.Popup(clipType, new string[2] { "Keep Current", "Restart If Equals" }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-						screen.audio.clipType = (ClipType)clipType;
-						
-						var newId = AudioPopupEditor.DrawLayout(screen.audio.id, screen.audio.clipType, screen.audio.flowData.audio, null);
-						if (newId != screen.audio.id) {
+						var playType = (int)screen.audio.playType;
+						playType = GUILayoutExt.Popup(playType, new string[2] { "Keep Current", "Restart If Equals" }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+						screen.audio.playType = (UnityEngine.UI.Windows.Audio.Window.PlayType)playType;
+
+						var rect = GUILayoutUtility.GetLastRect();
+
+						/*var newId = */AudioPopupEditor.Draw(new Rect(rect.x + rect.width, rect.y, window.rect.width - EditorGUIUtility.labelWidth - 10f, rect.height), screen.audio.id, (result) => {
+
+							screen.audio.id = result;
+							window.audioEditor = null;
+
+						}, screen.audio.clipType, screen.audio.flowData.audio, null);
+						/*if (newId != screen.audio.id) {
 
 							screen.audio.id = newId;
 							window.audioEditor = null;
 
-						}
+						}*/
 
 					}
 					GUILayout.EndHorizontal();

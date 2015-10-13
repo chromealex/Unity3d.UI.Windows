@@ -7,33 +7,22 @@ using UnityEditor.UI.Windows.Extensions;
 using UnityEditor;
 #endif
 
-public class ReadOnlyAttribute : BitmaskBaseAttribute {
+public class ReadOnlyAttribute : ConditionAttribute {
 	
-	public readonly object state;
-	public readonly string fieldName;
-	public readonly bool inverseCondition;
-	
-	public ReadOnlyAttribute() : base(false) {
-		
-		this.fieldName = null;
-		this.state = false;
-		this.inverseCondition = false;
-		
-	}
-	
-	public ReadOnlyAttribute(string fieldName, object state = null, bool bitMask = false, bool inverseCondition = false) : base(bitMask) {
-		
-		this.fieldName = fieldName;
-		this.state = state;
-		this.inverseCondition = inverseCondition;
-		
-	}
+	public ReadOnlyAttribute() : base() {}
+	public ReadOnlyAttribute(string fieldName, object state = null, bool bitMask = false, bool inverseCondition = false) : base(fieldName, state, bitMask, inverseCondition) {}
 
 }
 
 #if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
 public class ReadOnlyAttributeDrawer : PropertyDrawer {
+
+	public static bool IsEnabled(PropertyDrawer drawer, SerializedProperty property) {
+
+		return PropertyExtensions.IsEnabled<ReadOnlyAttribute>(drawer, property);
+
+	}
 
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
 
@@ -43,39 +32,7 @@ public class ReadOnlyAttributeDrawer : PropertyDrawer {
 
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 
-		var state = false;
-
-		var attribute = this.GetAttribute<ReadOnlyAttribute>();
-		if (string.IsNullOrEmpty(attribute.fieldName) == false) {
-			
-			var bitMask = (this.attribute as ReadOnlyAttribute).bitMask;
-			
-			var inverseCondition = attribute.inverseCondition;
-			var needState = attribute.state;
-			var prop = property.GetRelativeProperty(property.propertyPath, attribute.fieldName);
-
-			var value = prop.GetRawValue(attribute);
-			if (bitMask == true) {
-				
-				state = true;
-				if (inverseCondition == true) {
-					
-					if (((int)value & (int)needState) != 0) state = false;
-					
-				} else {
-					
-					if (((int)value & (int)needState) == 0) state = false;
-					
-				}
-				
-			} else {
-				
-				state = true;
-				if (object.Equals(needState, value) == !inverseCondition) state = false;
-				
-			}
-
-		}
+		var state = ReadOnlyAttributeDrawer.IsEnabled(this, property);
 
 		var oldState = GUI.enabled;
 		GUI.enabled = state;

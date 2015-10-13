@@ -15,10 +15,97 @@ public class BitmaskBaseAttribute : PropertyAttribute {
 	
 }
 
+public class ConditionAttribute : BitmaskBaseAttribute {
+	
+	public readonly string fieldName;
+	public readonly object state;
+	public readonly bool inverseCondition;
+	
+	public ConditionAttribute() : base(false) {
+		
+		this.fieldName = null;
+		this.state = false;
+		this.inverseCondition = false;
+		
+	}
+	
+	public ConditionAttribute(string fieldName, object state = null, bool bitMask = false, bool inverseCondition = false) : base(bitMask) {
+		
+		this.fieldName = fieldName;
+		this.state = state;
+		this.inverseCondition = inverseCondition;
+		
+	}
+
+}
+
 namespace UnityEditor.UI.Windows.Extensions {
 
 	#if UNITY_EDITOR
 	public static class PropertyExtensions {
+		
+		public static bool IsEnabled<T>(PropertyDrawer drawer, SerializedProperty property) where T : ConditionAttribute {
+			
+			var state = false;
+
+			var attribute = drawer.GetAttribute<T>();
+			if (attribute != null) {
+
+				if (string.IsNullOrEmpty(attribute.fieldName) == false) {
+					
+					var bitMask = attribute.bitMask;
+					
+					var inverseCondition = attribute.inverseCondition;
+					var needState = attribute.state;
+					var prop = PropertyExtensions.GetRelativeProperty(property, property.propertyPath, attribute.fieldName);
+					
+					var value = prop.GetRawValue(attribute);
+					if (bitMask == true) {
+						
+						state = true;
+						if (inverseCondition == true) {
+							
+							if (((int)value & (int)needState) != 0) state = false;
+							
+						} else {
+							
+							if (((int)value & (int)needState) == 0) state = false;
+							
+						}
+						
+					} else {
+						
+						state = true;
+						if (object.Equals(needState, value) == !inverseCondition) state = false;
+						
+					}
+
+				}
+
+			} else {
+				
+				state = true;
+				
+			}
+			
+			return state;
+			
+		}
+
+		public static string GetPathWithoutArray(this string path, string name) {
+
+			var search = ".Array." + name;
+
+			if (path.Contains(search) == true) {
+
+				var splitted = path.Split(new string[] { search }, StringSplitOptions.RemoveEmptyEntries);
+				path = splitted[0];
+
+			}
+
+			return path;
+			
+		}
 
 		public static T GetAttribute<T>(this PropertyDrawer drawer) where T : PropertyAttribute {
 
@@ -32,23 +119,61 @@ namespace UnityEditor.UI.Windows.Extensions {
 			return default(T);
 
 		}
-
-		public static SerializedProperty GetRelativeProperty(this SerializedProperty property, string path, string fieldName) {
+		
+		public static SerializedProperty GetRelativeProperty(SerializedProperty property, string path, string fieldName) {
 			
 			var splitted = path.Split('.');
 			if (splitted.Length > 1) {
-				
-				path = string.Join(".", splitted, 0, splitted.Length - 1) + "." + fieldName;
+
+				if (splitted.Length > 3 && splitted[splitted.Length - 2] == "Array" && splitted[splitted.Length - 1].Contains("[") == true) {
+					
+					path = string.Join(".", splitted, 0, splitted.Length - 3) + "." + fieldName;
+					
+				} else {
+					
+					path = string.Join(".", splitted, 0, splitted.Length - 1) + "." + fieldName;
+					
+				}
 				
 			} else {
 				
 				path = fieldName;
 				
 			}
+
+			//path = path.GetPathWithoutArray(property.name);
 			
 			return property.serializedObject.FindProperty(path);
 			
 		}
+		/*
+		public static SerializedProperty GetRelativeProperty(this SerializedProperty property, string path, string fieldName) {
+			
+			var splitted = path.Split('.');
+			if (splitted.Length > 1) {
+
+				if (splitted.Length > 2 && splitted[splitted.Length - 1] == "Array") {
+
+					path = string.Join(".", splitted, 0, splitted.Length - 2) + "." + fieldName;
+
+				} else {
+
+					path = string.Join(".", splitted, 0, splitted.Length - 1) + "." + fieldName;
+					
+				}
+
+			} else {
+				
+				path = fieldName;
+				
+			}
+
+			Debug.Log(path + " :: " + fieldName);
+			//path = path.GetPathWithoutArray(property.name);
+
+			return property.serializedObject.FindProperty(path);
+			
+		}*/
 		
 		public static object GetRawValue(this SerializedProperty thisSP, BitmaskBaseAttribute attribute) {
 			

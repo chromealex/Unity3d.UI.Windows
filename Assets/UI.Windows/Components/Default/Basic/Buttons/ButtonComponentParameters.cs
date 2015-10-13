@@ -11,7 +11,9 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag.P2)] public ComponentEvent callback = new ComponentEvent();
 
 		[Header("Button: SFX")]
-		[ParamFlag(ParameterFlag.P7)] public Audio.Component sfx = new Audio.Component();
+		[ParamFlag(ParameterFlag.P7)] public Audio.Component sfxOnClick = new Audio.Component();
+		[ParamFlag(ParameterFlag.P8)] public Audio.Component sfxOnEnter = new Audio.Component();
+		[ParamFlag(ParameterFlag.P9)] public Audio.Component sfxOnLeave = new Audio.Component();
 
 		[Header("Button: Hover")]
 		[ParamFlag(ParameterFlag.P3)] public bool hoverIsActive = false;
@@ -58,8 +60,10 @@ namespace UnityEngine.UI.Windows.Components {
 				});
 
 			}
-
-			if (this.IsChanged(ParameterFlag.P7) == true) component.SetSFX(this.sfx);
+			
+			if (this.IsChanged(ParameterFlag.P7) == true) component.SetSFX(PointerEventState.Click, this.sfxOnClick);
+			if (this.IsChanged(ParameterFlag.P8) == true) component.SetSFX(PointerEventState.Enter, this.sfxOnEnter);
+			if (this.IsChanged(ParameterFlag.P9) == true) component.SetSFX(PointerEventState.Leave, this.sfxOnLeave);
 
 		}
 		

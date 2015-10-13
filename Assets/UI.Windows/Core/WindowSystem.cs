@@ -341,6 +341,29 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+		
+		public static void AudioPlayFX(int id, int[] randomIds, bool randomize) {
+			
+			if (randomize == true) {
+				
+				var index = Random.Range(0, randomIds.Length);
+				if (index >= 0 && index < randomIds.Length) {
+					
+					WindowSystem.AudioPlay(null, ClipType.SFX, randomIds[index]);
+					
+				}
+				
+			} else {
+				
+				if (id > 0) {
+					
+					WindowSystem.AudioPlay(null, ClipType.SFX, id);
+					
+				}
+				
+			}
+			
+		}
 
 		public static void AudioStop(WindowBase window, ClipType clipType, int id) {
 

@@ -78,7 +78,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			this.inited = true;
 			
 		}
-		
+
 		private static List<bool> componentParametersSearched;
 		public static SerializedProperty OnItemDraw(LayoutWindowType window, List<SerializedProperty> items, List<UnityEngine.UI.Windows.Types.Layout.Component> components, bool draw, bool withParameters, Rect rect, SerializedProperty item, out float elementHeight) {
 
@@ -87,7 +87,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 
 				LayoutSettingsEditor.componentParametersSearched = new List<bool>();
 				for (int i = 0; i < components.Count; ++i) {
+
 					LayoutSettingsEditor.componentParametersSearched.Add(false);
+
 				}
 
 			}

@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEditor.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows;
 using System.IO;
+using UnityEditor.UI.Windows.Extensions;
 
 namespace ME {
 
@@ -23,6 +24,8 @@ namespace ME {
 
 			if (GUI.Button(rect, "+", style) == true) {
 
+				var anySpecial = Event.current.shift || Event.current.command || Event.current.control || Event.current.alt;
+
 				GenericMenu.MenuFunction2 onAction = (object comp) => {
 
 					onSelect(comp as WindowComponent);
@@ -34,40 +37,107 @@ namespace ME {
 					return !p.child;
 					
 				});
-				
-				var menu = new GenericMenu();
+
+				var screenRect = new Rect(rect.x, rect.y + rect.height, 150f, 250f);
+				Vector2 vector = GUIUtility.GUIToScreenPoint(new Vector2(screenRect.x, screenRect.y));
+				screenRect.x = vector.x;
+				screenRect.y = vector.y;
+
+				Popup popup = null;
+				GenericMenu menu = null;
+
+				if (anySpecial == false) {
+
+					popup = new Popup() { screenRect = screenRect };
+
+				} else {
+
+					menu = new GenericMenu();
+
+				}
+
 				var package = FlowEditorUtilities.GetPackage(gameObject);
 				if (package != null) {
 
 					var components = ME.EditorUtilities.GetPrefabsOfType<WindowComponent>(strongType: false, directory: AssetDatabase.GetAssetPath(package));
-					foreach (var comp in components) {
+					for (int i = 0; i < components.Length; ++i) {
 
+						var comp = components[i];
 						var path = AssetDatabase.GetAssetPath(comp.gameObject);
 						var packagePath = AssetDatabase.GetAssetPath(package);
 						var _path = path.Replace(packagePath, string.Empty);
 						_path = _path.Replace("/Components", string.Empty);
 						_path = Path.GetDirectoryName(_path);
 						_path = _path.TrimEnd('/');
+						_path = package.name + " Screen" + _path + "/" + comp.gameObject.name.ToSentenceCase();
 
-						menu.AddItem(new GUIContent(package.name + " Screen" + _path + "/" + comp.gameObject.name.ToSentenceCase()), on: (comp == component), func: onAction, userData: comp);
+						if (anySpecial == false) {
+
+							var index = i;
+							popup.ItemByPath(_path, () =>  {
+
+								onAction(components[index]);
+
+							});
+
+						} else {
+
+							menu.AddItem(new GUIContent(_path), on: (comp == component), func: onAction, userData: comp);
+
+						}
+
+					}
+					
+					if (anySpecial == true) {
+
+						menu.AddSeparator(string.Empty);
 
 					}
 
-					menu.AddSeparator(string.Empty);
-
 				}
 
+				var k = 0;
+				var z = 0;
 				foreach (var library in libraries) {
 
 					foreach (var item in library.items) {
 
-						menu.AddItem(new GUIContent(library.name + "/" + item.localDirectory + "/" + item.title.ToSentenceCase()), on: (item.mainComponent == component), func: onAction, userData: item.mainComponent);
+						var path = library.name + "/" + item.localDirectory + "/" + item.title.ToSentenceCase();
+						
+						if (anySpecial == true) {
+
+							menu.AddItem(new GUIContent(path), on: (item.mainComponent == component), func: onAction, userData: item.mainComponent);
+
+						} else {
+
+							var index1 = z;
+							var index2 = k;
+							popup.ItemByPath(path, () =>  {
+
+								onAction(libraries[index1].items[index2].mainComponent);
+								
+							});
+
+						}
+
+						++k;
 
 					}
 
+					++z;
+					k = 0;
+
 				}
 
-				menu.DropDown(rect);
+				if (anySpecial == false) {
+
+					popup.Show();
+
+				} else {
+					
+					menu.DropDown(rect);
+
+				}
 
 			}
 

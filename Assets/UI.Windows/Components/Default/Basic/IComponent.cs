@@ -3,6 +3,14 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 	
+	public enum PointerEventState : byte {
+		
+		Click,
+		Enter,
+		Leave,
+		
+	};
+
 	public interface IComponent {
 
 	}
@@ -20,7 +28,7 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetHoverOnAnyPointerState(bool state);
 		void SetCallbackHover(UnityAction<bool> callback);
 
-		void SetSFX(Audio.Component data);
+		void SetSFX(PointerEventState state, Audio.Component data);
 
 	}
 	

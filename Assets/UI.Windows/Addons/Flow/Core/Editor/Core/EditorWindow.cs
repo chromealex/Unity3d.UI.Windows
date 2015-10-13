@@ -1566,10 +1566,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		public void ChangeFlowData() {
-			
+
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;
 			this.tagsList = null;
+			Flow.OnReset(this);
 
 		}
 		
