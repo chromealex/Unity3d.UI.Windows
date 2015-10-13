@@ -62,6 +62,134 @@
 - Core Editor: "Create on Scene" Context function added to the each Screen Settings (Select screen prefab and select *settings* context menu)
 - Core Editor: Scene View drawing changed (Works with stretchX/stretchY)
 
+## 0.9.6a
+- ParticleSystemCached Rewind added
+- InputField Caret bug fix now is not needed
+- TextComponent enum changed
+- Gradient are now supports bitmask
+- AutoRegisterInRoot boolean working on Layout Initialization
+- TipWindowType refactored: working on multiply screen resolutions
+- minor fixes
+- Generator improvemets
+- UI Button Extended supports multiply transitions
+- HideAllAndClean fix wrong depth reset
+- Button extended with alpha transition
+- Flow zoom 0.98
+- ProgressAnimation Component null fix
+- isDirty check
+- test label removed
+- particles
+- Tweener setValue added
+- Flat icons
+- Force Canvas update
+- tags fix
+- Create Project fixed
+- Hierarchy View improvements
+- Flow: "Create Project" button added on splash screen
+- Flow: Create Screen function -> ReplaceComponents function fixed
+- Minor improvements and fixes
+
+## 0.9.5a
+- Examples fixed
+- Transition FlowHide## method variation added
+- Button with label interactable flag fixed in editor
+- skin improvements
+- warning fix
+- attach revert fixed
+- Flow attaches doubleSided fixed
+- WindowLayoutRoot ICanvasElement now
+- layout fixes
+- Upgrade fix
+- Functions Iteration fixed
+- WindowSystem start ObjectPool ref fixed
+- Styles changed
+- UI.Windows updated
+- Bug merge fixes
+- ComboBox removed
+- Flow visual improvements
+- Function transitions full support
+- Tags popup fixed
+- Social plugin having uniqueTag now
+- Warnings fixed
+- readme.txt removed
+- Version updater added
+- Transitions added (pre-alpha)
+- Some bugs fixed
+- Many other improvements
+
+## 0.9.4a
+- Transition CameraSlide added
+- Transition states instancing fixed
+- Flow editor small fixes
+- Scene [A] objects spam fixed
+- Preallocated windows pool size parameter added
+- CricleLayoutGroup added
+- SizeToScaleLayoutGroup added
+- CanvasUpdater added
+- FlowLayoutGroup added (3rdParty)
+- BackButton action added
+- History preferences per window added
+- Many other fixes
+
+## 0.9.3a
+- Events are now public
+- Show/Hide SetActive according on animation
+- Flow Editor create window coords fix
+- Hide/Show behaviour refactoring
+
+## 0.9.2a
+- Tweener extension refactoring
+- Sorting Layers bug fix
+- List Component navigation added
+- major performance fixes in editor flow
+- flow editor refactor
+- flow editor zoom added
+- android devices transition issues resolved by TRANSITION_ENABLE compile flag
+- isContainer and isDefaultLink flags are completely removed
+- many minor fixes
+
+## 0.9.1a
+- Fillable boolean added
+- forced flag added into tabs
+- Tags editor added
+- Tags adding fixed
+- Screen layout editor added
+- Flow: Functions module call stack fixed
+- Flow: Functions compiler class added
+- Flow: Create Screen/Layout buttons added into each window view
+- Flow: "Functions" module added (beta)
+- Flow: Visual improvements
+- Minor fixes
+
+## 0.9.0a
+- Flow: Comments class added
+- Warnings fixed
+- Smart script template added
+- Preserve aspect added to ImageComponent
+- Icons added
+- Heatmap addon (pre-alpha)
+- Social settings
+- Macros removed
+- Components register fix
+- Minor fixes
+- Modules installation
+- Social installer
+- Social: FB implementation at the beginning
+- Social: VK beta
+- Minor fixes
+- Clean up
+- Social addon started (VK.com login & friends added by token)
+- Some examples fixed
+- List component will no longer clean up on hide
+- Components Show/Hide behaviour changed to recursive
+- Added button with text and image
+- Minor fixes
+- FlowCompiler: Hot fix path error
+- Flow: Arrows visual fixes
+- Flow: Window states fixed
+- Flow: Minor GUI fixes
+- Layout: Light skin size fixes
+
 ## Older
 View older version info on commit changes
 
