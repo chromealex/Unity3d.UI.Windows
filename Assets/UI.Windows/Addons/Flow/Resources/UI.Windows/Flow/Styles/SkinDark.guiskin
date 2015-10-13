@@ -1485,13 +1485,13 @@ MonoBehaviour:
     m_StretchHeight: 1
   - m_Name: LayoutBox
     m_Normal:
-      m_Background: {fileID: 2800000, guid: 6d13a02fb89c444a295a2b97f065b12b, type: 3}
+      m_Background: {fileID: 2800000, guid: 03d95d98684ee446cb9d7facd082fdd6, type: 3}
       m_TextColor: {r: .5, g: .5, b: .5, a: 1}
     m_Hover:
       m_Background: {fileID: 0}
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Active:
-      m_Background: {fileID: 0}
+      m_Background: {fileID: 2800000, guid: 03d95d98684ee446cb9d7facd082fdd6, type: 3}
       m_TextColor: {r: 0, g: 0, b: 0, a: 1}
     m_Focused:
       m_Background: {fileID: 0}

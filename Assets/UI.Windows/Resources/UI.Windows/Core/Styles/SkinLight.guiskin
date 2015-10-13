@@ -1424,7 +1424,7 @@ MonoBehaviour:
     m_FixedWidth: 0
     m_FixedHeight: 0
     m_StretchWidth: 1
-    m_StretchHeight: 0
+    m_StretchHeight: 1
   - m_Name: StyledBox1
     m_Normal:
       m_Background: {fileID: 2800000, guid: 397e6cf5ef93797479b8dfefe80598bd, type: 3}
