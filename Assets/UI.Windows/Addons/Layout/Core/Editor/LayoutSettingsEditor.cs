@@ -55,14 +55,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			this.onItemDraw = (rect, item) => {
 				
 				var h = 0f;
-				return this.OnItemDraw(this.window, this.items, this.components, true, true, rect, item, out h);
+				return LayoutSettingsEditor.OnItemDraw(this.window, this.items, this.components, true, true, rect, item, out h);
 				
 			};
 			
 			System.Func<int, float> getHeight = (index) => {
 				
 				var h = 56f;
-				this.OnItemDraw(this.window, this.items, this.components, false, true, new Rect(), this.items[index], out h);
+				LayoutSettingsEditor.OnItemDraw(this.window, this.items, this.components, false, true, new Rect(), this.items[index], out h);
 				
 				return h;
 				

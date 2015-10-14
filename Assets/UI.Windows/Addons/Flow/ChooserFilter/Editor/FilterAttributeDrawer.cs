@@ -2,6 +2,8 @@
 using UnityEditor.UI.Windows.Plugins.Flow;
 using UnityEditor.UI.Windows;
 using UnityEngine;
+using ME;
+using UnityEditor.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows.Extensions {
 
@@ -27,18 +29,13 @@ namespace UnityEngine.UI.Windows.Extensions {
 				//property.serializedObject.Update();
 
 				EditorGUI.PropertyField(new Rect(offset.x, offset.y, position.width - width - margin, position.height), property, label, true);
-				
-				if (GUI.Button(new Rect(position.width - width + offset.x, offset.y, width, position.height), "...", EditorStyles.miniButton) == true) {
+				GUILayoutExt.DrawComponentChooser(new Rect(position.width - width + offset.x, offset.y, width, position.height), (property.serializedObject.targetObject as WindowComponent).gameObject, property.objectReferenceValue as WindowComponent, (component) => {
 
-					WindowComponentLibraryChooser.Show((element) => {
+					property.objectReferenceValue = component;
+					property.serializedObject.ApplyModifiedProperties();
 
-						property.objectReferenceValue = element.mainComponent;
-						property.serializedObject.ApplyModifiedProperties();
+				});
 
-					});
-
-				}
-				
 				//property.serializedObject.ApplyModifiedProperties();
 
 			}

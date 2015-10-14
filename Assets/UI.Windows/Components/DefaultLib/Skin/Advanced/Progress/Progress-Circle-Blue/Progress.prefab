@@ -83,6 +83,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: .834482193, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: d4961a84271014276b478e4cf91e0dde, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
@@ -102,21 +108,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7289cb2102049868f62d7d6a819050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  subComponents: []
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
   animationInputParams: []
   canvas: {fileID: 22591828}
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
+  images:
+  - {fileID: 11415066}
   duration: 1
   minNormalizedValue: .0500000007
   bar: {fileID: 11474476}
   continious: 0
   continiousWidth: .400000006
   continiousAngleStep: 0
-  images:
-  - {fileID: 11415066}
+  currentValueNormalized: 0
 --- !u!114 &11474472
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -130,6 +141,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: d4961a84271014276b478e4cf91e0dde, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -151,6 +168,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: a10beb6d754ac4167b3643891eae8f9d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -332,9 +355,12 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: continious
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 135158}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

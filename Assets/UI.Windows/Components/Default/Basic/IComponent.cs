@@ -70,6 +70,18 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetPreserveAspectState(bool state);
 
 	}
+	
+	public interface IProgressComponent {
+		
+		void SetDuration(float value);
+		void SetMinNormalizedValue(float value);
+		void SetContiniousState(bool continious);
+		void SetContiniousWidth(float continiousWidth);
+		void SetContiniousAngleStep(float continiousAngleStep);
+		void SetCallback(UnityAction<float> onChanged);
+		void SetValue(float value, bool immediately = false);
+		
+	}
 
 }
 

@@ -21,6 +21,8 @@ namespace UnityEditor.UI.Windows.Components {
 			this.prefab = this.serializedObject.FindProperty("prefab");
 			this.prefabParameters = this.serializedObject.FindProperty("prefabParameters");
 
+			this.oldComponent = this.prefab.objectReferenceValue as WindowComponent;
+
 		}
 
 		public override void OnInspectorGUI() {
@@ -58,7 +60,7 @@ namespace UnityEditor.UI.Windows.Components {
 					var rect = GUILayoutUtility.GetLastRect();
 					--EditorGUI.indentLevel;
 
-					if (foldout == true) {
+					if (this.foldout == true) {
 
 						rect.y += rect.height;
 						rect.height = this.editor.GetHeight();

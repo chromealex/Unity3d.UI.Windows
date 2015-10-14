@@ -367,6 +367,8 @@ namespace UnityEngine.UI.Windows {
 
 		public static void AudioStop(WindowBase window, ClipType clipType, int id) {
 
+			if (WindowSystem.instance == null) return;
+
 			//Debug.Log("STOP: " + id);
 			Audio.Manager.Stop(window, WindowSystem.instance.audio, clipType, id);
 
@@ -374,6 +376,8 @@ namespace UnityEngine.UI.Windows {
 		
 		public static void AudioPlay(WindowBase window, ClipType clipType, int id) {
 			
+			if (WindowSystem.instance == null) return;
+
 			//Debug.Log("PLAY: " + id);
 			Audio.Manager.Play(window, WindowSystem.instance.audio, clipType, id);
 			
@@ -381,6 +385,8 @@ namespace UnityEngine.UI.Windows {
 		
 		public static void AudioChange(WindowBase window, ClipType clipType, int id, Audio.Window audioSettings) {
 			
+			if (WindowSystem.instance == null) return;
+
 			//Debug.Log("CHANGE: " + id + " :: " + audioSettings.volume);
 			Audio.Manager.Change(window, WindowSystem.instance.audio, clipType, id, audioSettings);
 			

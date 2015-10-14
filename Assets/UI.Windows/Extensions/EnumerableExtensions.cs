@@ -6,7 +6,7 @@ public static class EnumerableExtensions {
 
 	public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) {
 
-		Random rng = new Random();
+		Random rng = new Random(UnityEngine.Random.seed);
 		T[] sourceArray = source.ToArray();
 		
 		for (int n = 0; n < sourceArray.Length; n++) {

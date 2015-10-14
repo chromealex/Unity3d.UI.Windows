@@ -66,7 +66,23 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  sfxOnClick:
+    flowData: {fileID: 11400000, guid: 94f1f649a03964a46ad1422f69f76088, type: 2}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
   hoverIsActive: 1
+  hoverOnAnyPointerState: 0
   preserveAspect: 0
   image: {fileID: 11406582}
   rawImage: {fileID: 0}

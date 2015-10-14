@@ -14,7 +14,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[HideInInspector][SerializeField]
 		public WindowComponentParametersBase prefabParameters;
 
-		public bool fitToRoot;
+		public bool fitToRoot = true;
 
 		[HideInInspector]
 		private WindowComponent instance;
@@ -95,6 +95,17 @@ namespace UnityEngine.UI.Windows.Components {
 				this.RegisterSubComponent(this.instance);
 
 			}
+
+		}
+
+	}
+
+	[System.Serializable]
+	public class LinkerComponent<T> : LinkerComponent where T : IComponent {
+
+		public T Get() {
+
+			return this.Get<T>();
 
 		}
 

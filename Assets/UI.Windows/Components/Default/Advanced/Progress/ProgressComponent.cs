@@ -6,22 +6,36 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ProgressComponent : ColoredComponent {
+	public class ProgressComponent : ColoredComponent, IProgressComponent {
 		
 		[Header("Base")]
-		public float duration = 0f;
+		public float duration = 1f;
 		public float minNormalizedValue = 0f;
 		public Extensions.Slider bar;
 		
 		[Header("Continious")]
 		public bool continious;
-		[Range(0f, 1f)]
+		[ReadOnly("continious", state: false)][Range(0f, 1f, order = 2)]
 		public float continiousWidth = 0.4f;
+		[ReadOnly("continious", state: false)]
 		public float continiousAngleStep = 0f;
 
 		private ComponentEvent<float> callback = new ComponentEvent<float>();
 		private ComponentEvent<ProgressComponent, float> callbackButton = new ComponentEvent<ProgressComponent, float>();
+		[Range(0f, 1f)]
+		public float currentValueNormalized = 0f;
 		private float currentValue = 0f;
+		
+		public override void Setup(IComponentParameters parameters) {
+			
+			base.Setup(parameters);
+			
+			var inputParameters = parameters as ProgressComponentParameters;
+			{
+				if (inputParameters != null) inputParameters.Setup(this as IProgressComponent);
+			}
+
+		}
 
 		public override void OnInit() {
 
@@ -63,6 +77,36 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
+		public void SetDuration(float value) {
+			
+			this.duration = value;
+			
+		}
+		
+		public void SetMinNormalizedValue(float value) {
+			
+			this.minNormalizedValue = value;
+			
+		}
+		
+		public void SetContiniousState(bool state) {
+			
+			this.continious = state;
+			
+		}
+		
+		public void SetContiniousWidth(float value) {
+			
+			this.continiousWidth = value;
+			
+		}
+		
+		public void SetContiniousAngleStep(float value) {
+			
+			this.continiousAngleStep = value;
+			
+		}
+
 		public virtual void SetCallback(UnityAction<float> callback) {
 
 			this.callback.AddListenerDistinct(callback);
@@ -246,6 +290,10 @@ namespace UnityEngine.UI.Windows.Components {
 		public override void OnValidateEditor() {
 
 			base.OnValidateEditor();
+
+			if (Application.isPlaying == false) return;
+
+			this.SetValue(this.currentValueNormalized, immediately: true);
 
 			ME.Utilities.FindReference<Extensions.Slider>(this, ref this.bar);
 
