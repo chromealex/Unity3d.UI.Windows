@@ -28,6 +28,8 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 			public GUIStyle listButtonSelected;
 			public GUIStyle listTag;
 			public GUIStyle objectField;
+			public GUIStyle layoutBack;
+			public GUIStyle dropShadow;
 
 			public Styles() {
 
@@ -44,6 +46,8 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 					this.listTag = new GUIStyle(this.skin.FindStyle("ListButton"));
 					this.listTag.alignment = TextAnchor.MiddleRight;
 					this.objectField = this.skin.FindStyle("ObjectField");
+					this.layoutBack = this.skin.FindStyle("LayoutBack");
+					this.dropShadow = this.skin.FindStyle("DropShadow");
 
 				}
 
@@ -77,8 +81,10 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 		public override void OnGUI() {
 
 			if (this.opened == true) {
+				
+				GUI.Box(new Rect(0f, 0f, Screen.width, Screen.height), string.Empty, Layout.styles.dropShadow);
 
-				const float settingsWidth = 250f;
+				const float settingsWidth = 320f;
 				const float listHeight = 200f;
 				const float padding = 5f;
 				const float closeSize = 30f;
@@ -89,7 +95,8 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 				var rectList = new Rect(MARGIN, rect.y + MARGIN, settingsWidth, listHeight - padding);
 				var rectSettings = new Rect(MARGIN, rect.y + MARGIN + listHeight, settingsWidth, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT - listHeight);
 				var rectCloseButton = new Rect(rect.x + rect.width - closeSize, rect.y, closeSize, closeSize);
-
+				
+				GUI.Box(new Rect(rect.x + MARGIN, rect.y + MARGIN, rect.width - MARGIN * 2f, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT), string.Empty, Layout.styles.layoutBack);
 				GUI.Box(rect, string.Empty, Layout.styles.backLock);
 				GUI.Box(rectList, string.Empty, Layout.styles.content);
 				GUI.Box(rectSettings, string.Empty, Layout.styles.content);
@@ -159,9 +166,9 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 									if (editor != null) {
 										
 										EditorGUIUtility.labelWidth = 100f;
-										++EditorGUI.indentLevel;
+										//++EditorGUI.indentLevel;
 										editor.OnParametersGUI(viewRect);
-										--EditorGUI.indentLevel;
+										//--EditorGUI.indentLevel;
 										EditorGUIUtility.LookLikeControls();
 										
 									}

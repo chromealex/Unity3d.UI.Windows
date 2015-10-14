@@ -261,6 +261,7 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool hoverOnAnyPointerState = false;
 		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
 
+		[HideInInspector]
 		private bool tempHoverState = false;
 
 		public void SetHoverState(bool state) {

@@ -47,6 +47,9 @@ public class FlowDataPopupAttributeDrawer : PropertyDrawer {
 						mod = files[i].lastModifiedUnix;
 						index = i;
 
+						property.objectReferenceValue = files[index];
+						property.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+
 					}
 
 				}

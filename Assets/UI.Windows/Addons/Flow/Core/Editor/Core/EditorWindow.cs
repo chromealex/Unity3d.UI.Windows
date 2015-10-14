@@ -18,10 +18,39 @@ using UnityEditor.UI.Windows.Audio;
 using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
-	
-	public class FlowSystemEditorWindow : EditorWindowExt {
 
-		public static GUISkin defaultSkin;
+	public class FlowSystemEditorWindow : EditorWindowExt {
+		
+		public class Styles {
+			
+			public GUISkin skin;
+			public GUIStyle layoutBoxStyle;
+			
+			public Styles() {
+				
+				this.skin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
+				if (this.skin != null) {
+
+					this.layoutBoxStyle = this.skin.FindStyle("LayoutBox");
+
+				}
+
+			}
+			
+		}
+
+		public static Styles styles = new Styles();
+
+		public static GUISkin defaultSkin {
+
+			get {
+
+				return FlowSystemEditorWindow.styles.skin;
+
+			}
+
+		}
+
 		public static bool loaded = false;
 		public static bool loading = false;
 
@@ -120,6 +149,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
 					if (this.guiSplash == null) this.guiSplash = new FlowSplash(this);
+					FlowSystemEditorWindow.styles = new Styles();
 
 					// Cache
 					ME.EditorUtilities.GetAssetsOfType<FlowData>();
@@ -160,11 +190,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			GUI.enabled = this.IsEnabled();
 
-			if (FlowSystemEditorWindow.defaultSkin == null) FlowSystemEditorWindow.defaultSkin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
-			
 			if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
 			if (this.guiSplash == null) this.guiSplash = new FlowSplash(this);
 			if (this.zoomDrawer == null) this.zoomDrawer = new EditorZoomArea(this);
+			if (FlowSystemEditorWindow.styles == null) FlowSystemEditorWindow.styles = new Styles();
 
 			if (this.guiSplash.Draw() == false) {
 
@@ -716,24 +745,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
-		private GUIStyle layoutBoxStyle;
 		public void DrawWindowLayout(FD.FlowWindow window) {
 			
 			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
 			if (flowWindowWithLayout == true) {
-				
-				//if (this.layoutBoxStyle == null) {
 
-					this.layoutBoxStyle = FlowSystemEditorWindow.defaultSkin.FindStyle("LayoutBox");
-
-				//}
-				
-				GUILayout.Box(string.Empty, this.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+				GUILayout.Box(string.Empty, FlowSystemEditorWindow.styles.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 				var rect = GUILayoutUtility.GetLastRect();
 				
 				if (window.OnPreviewGUI(rect,
 				                        FlowSystemEditorWindow.defaultSkin.button,
-				                        this.layoutBoxStyle,
+				                        FlowSystemEditorWindow.styles.layoutBoxStyle,
 				                        drawInfo: true,
 				                        selectable: true,
 				                        onCreateScreen: () => {

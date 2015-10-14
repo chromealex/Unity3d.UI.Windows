@@ -59,7 +59,6 @@ namespace UnityEditor.UI.Windows.Plugins.Audio {
 
 		}
 
-		private GUIStyle layoutBoxStyle;
 		public override void OnFlowWindowGUI(FD.FlowWindow window) {
 
 			var data = FlowSystem.GetData();
@@ -104,13 +103,8 @@ namespace UnityEditor.UI.Windows.Plugins.Audio {
 						
 						GUILayout.BeginVertical();
 						{
-							if (this.layoutBoxStyle == null) {
-								
-								this.layoutBoxStyle = FlowSystemEditorWindow.defaultSkin.FindStyle("LayoutBox");
-								
-							}
-							
-							GUILayout.Box(string.Empty, this.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+
+							GUILayout.Box(string.Empty, FlowSystemEditorWindow.styles.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
 							var rect = GUILayoutUtility.GetLastRect();
 
 							if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition) == true) {

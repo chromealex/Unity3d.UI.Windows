@@ -16,7 +16,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag.P9)] public Audio.Component sfxOnLeave = new Audio.Component();
 
 		[Header("Button: Hover")]
-		[ParamFlag(ParameterFlag.P3)] public bool hoverIsActive = false;
+		[ParamFlag(ParameterFlag.P3)] public bool hoverIsActive = true;
 		[ParamFlag(ParameterFlag.P4)] public bool hoverOnAnyPointerState = false;
 		[ParamFlag(ParameterFlag.P5)] public ComponentEvent hoverInCallback = new ComponentEvent();
 		[ParamFlag(ParameterFlag.P6)] public ComponentEvent hoverOutCallback = new ComponentEvent();

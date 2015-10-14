@@ -101,7 +101,7 @@ namespace UnityEditor.UI.Windows.Audio {
 					if (string.IsNullOrEmpty(attribute.fieldName) == false) {
 
 						var prop = PropertyExtensions.GetRelativeProperty(property, property.propertyPath, attribute.fieldName);
-						clipType = (ClipType)((KeyValuePair<int, string>)prop.GetRawValue(attribute)).Key;
+						clipType = (ClipType)((KeyValuePair<int, string>)PropertyExtensions.GetRawValue(prop, attribute)).Key;
 
 					}
 
@@ -109,32 +109,20 @@ namespace UnityEditor.UI.Windows.Audio {
 
 					var flowData = PropertyExtensions.GetRelativeProperty(property, property.propertyPath, "flowData");
 					if (flowData != null) {
-						
-						var _data = flowData.GetRawValue(attribute) as UnityEngine.UI.Windows.Plugins.Flow.FlowData;
+
+						var _data = PropertyExtensions.GetRawValue(flowData, attribute) as UnityEngine.UI.Windows.Plugins.Flow.FlowData;
 						if (_data != null) data = _data.audio;
 
 					}
 
 					if (data != null) {
 
-						if (property.isArray == true) {
+						property.intValue = AudioPopupEditor.Draw(position, property.intValue, (result) => {
 
-							for (int i = 0; i < property.arraySize; ++i) {
+							property.intValue = result;
+							property.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 
-								//AudioPopupEditor.Draw(position, property.intValue, clipType, data, label);
-
-							}
-
-						} else {
-
-							property.intValue = AudioPopupEditor.Draw(position, property.intValue, (result) => {
-
-								property.intValue = result;
-								property.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-
-							}, clipType, data, label);
-
-						}
+						}, clipType, data, label);
 
 						property.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 

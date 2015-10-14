@@ -59,7 +59,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 					var needState = attribute.state;
 					var prop = PropertyExtensions.GetRelativeProperty(property, property.propertyPath, attribute.fieldName);
 					
-					var value = prop.GetRawValue(attribute);
+					var value = PropertyExtensions.GetRawValue(prop, attribute);
 					if (bitMask == true) {
 						
 						state = true;
@@ -175,7 +175,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 			
 		}*/
 		
-		public static object GetRawValue(this SerializedProperty thisSP, BitmaskBaseAttribute attribute) {
+		public static object GetRawValue(SerializedProperty thisSP, BitmaskBaseAttribute attribute) {
 			
 			if (thisSP == null) return null;
 			

@@ -98,7 +98,7 @@ namespace UnityEditor.UI.Windows.Components {
 				GUI.enabled = true;
 
 				var tRect = new Rect(rect);
-				tRect.x -= 10f;
+				tRect.x += 5f;
 				tRect.y += offset;
 				tRect.width = toggleWidth;
 				tRect.height = this.referenceHeight;
