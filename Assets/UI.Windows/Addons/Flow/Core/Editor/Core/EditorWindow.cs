@@ -1589,6 +1589,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public void ChangeFlowData() {
 
+			this.guiSplash.cachedData = null;
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;
 			this.tagsList = null;
@@ -1727,8 +1728,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUILayout.FlexibleSpace();
 			
 			var oldColor = GUI.color;
-			GUI.color = Color.gray;
-			GUILayout.Label(string.Format("Current Data: {0}", AssetDatabase.GetAssetPath(this.guiSplash.cachedData)), buttonStyle);
+			var c = Color.cyan;
+			c.a = 0.3f;
+			GUI.color = c;
+			GUILayout.Label(string.Format("Version: {1}. Current Data: {0}", AssetDatabase.GetAssetPath(FlowSystem.GetData()), VersionInfo.BUNDLE_VERSION), buttonStyle);
 			GUI.color = oldColor;
 			
 			if (GUILayout.Button("Change", buttonStyle) == true) {
