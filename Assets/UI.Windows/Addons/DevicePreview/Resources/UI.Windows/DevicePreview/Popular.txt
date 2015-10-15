@@ -38,8 +38,8 @@ Amazon, Kindle Fire HDX 8.9", 2560x1600, 8.9
 Amazon, Fire HD 6, 1280x800, 6
 Amazon, Fire HD 7, 1280x800, 7
 Amazon, Fire HD 8.9, 1920x1200, 8.9
-ASUS, Transformer TF101, 1280x800, 10.1
-ASUS, Transformer Prime TF201, 1280x800, 10.1
+Asus, Transformer TF101, 1280x800, 10.1
+Asus, Transformer Prime TF201, 1280x800, 10.1
 Asus, Nexus 7 (2013), 1920x1200, 7
 Asus, Nexus 10, 2560x1600, 10
 Barnes & Noble, Nook, 1024x600, 7
