@@ -286,6 +286,17 @@ namespace UnityEngine.UI.Windows.Components {
 			return (T)(this.GetItem(index) as IComponent);
 			
 		}
+		
+		public void ForEach<T>(UnityAction<T, int> onItem = null) where T : IComponent {
+
+			for (int i = 0, capacity = this.Count(); i < capacity; ++i) {
+
+				var instance = this.GetItem<T>(i);
+				if (instance != null && onItem != null) onItem.Invoke(instance, i);
+				
+			}
+
+		}
 
 		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : IComponent {
 
