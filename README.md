@@ -1,4 +1,4 @@
-<img src="https://github.com/chromealex/Unity3d.UI.Windows/blob/74a207e5cd707005c3e89c36d07fc25a3c9eb3d0/UIWImage.png"/>
+<img src="https://github.com/chromealex/Unity3d.UI.Windows/blob/master/UIWImage.png"/>
 
 ### Current Version: 1.0.4a
 
