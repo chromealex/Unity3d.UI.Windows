@@ -16,6 +16,7 @@ using UnityEngine.UI.Windows.Audio;
 using UnityEditor.UI.Windows.Plugins.Flow.Audio;
 using UnityEditor.UI.Windows.Audio;
 using UnityEngine.UI.Windows.Animations;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -64,7 +65,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			editor.autoRepaintOnSceneChange = true;
 			editor.onClose = onClose;
 			editor.wantsMouseMove = true;
-			editor.antiAlias = 0;
+			//editor.antiAlias = 0;
 
 			var title = "UIW Flow";
 			#if !UNITY_4
@@ -187,7 +188,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
-			
+
 			GUI.enabled = this.IsEnabled();
 
 			if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
@@ -255,7 +256,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.DrawBackground();
 
 						if (hasData == true && windows != null) {
-							
+
+							foreach (var window in windows) {
+
+								window.isMovingState = false;
+
+							}
+
 							this.tempAttaches.Clear();
 							foreach (var window in windows) {
 
@@ -302,11 +309,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 										}
 										
 									} else {
-										
+
 										var doubleSided = FlowSystem.AlreadyAttached(attachId, window.id);
 										if (this.tempAttaches.Contains(attachId) == true && doubleSided == true) continue;
 										
-										this.guiDrawer.DrawNodeCurve(window, curWindow, doubleSided);
+										this.guiDrawer.DrawNodeCurve(attachItem, window, curWindow, doubleSided);
 
 										// Draw Transition Chooser
 										this.DrawTransitionChooser(attachItem, window, curWindow, doubleSided);
@@ -469,7 +476,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 											var delta = new Vector2(newRect.x - window.rect.x, newRect.y - window.rect.y);
 											if (delta != Vector2.zero) {
 												
-												window.rect = newRect;
+												window.rect = newRect.PixelPerfect();
 												
 												// Move all selected windows
 												foreach (var selectedId in selected) {
@@ -509,7 +516,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 						if (FlowSystem.GetZoom() >= 0.3f) {
 
-							if (FlowSystem.GetData() != null && FlowSystem.GetData().flowWindowWithLayout == true) {
+							if (FlowSystem.GetData() != null && FlowSystem.GetData().HasView(FlowView.Layout) == true) {
 								
 								foreach (var window in windows) {
 
@@ -519,12 +526,50 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									for (int i = 0; i < components.Count; ++i) {
 										
 										var component = components[i];
-										this.guiDrawer.DrawComponentCurve(window, ref component, FlowSystem.GetWindow (component.targetWindowId));
+										this.guiDrawer.DrawComponentCurve(window, ref component, FlowSystem.GetWindow(component.targetWindowId));
 										components[i] = component;
 										
 									}
 									
 								}
+								
+							}
+
+						}
+
+						this.tempAttaches.Clear();
+						if (hasData == true && windows != null) {
+
+							foreach (var window in windows) {
+								
+								var attaches = window.attachItems;
+								foreach (var attachItem in attaches) {
+									
+									var attachId = attachItem.targetId;
+									
+									var curWindow = FlowSystem.GetWindow(attachId);
+									if (curWindow.IsContainer() == true &&
+									    curWindow.IsFunction() == false) continue;
+									
+									if (curWindow.IsFunction() == true &&
+									    curWindow.IsContainer() == true) {
+
+									} else {
+										
+										var doubleSided = FlowSystem.AlreadyAttached(attachId, window.id);
+										if (this.tempAttaches.Contains(attachId) == true && doubleSided == true) continue;
+
+										Vector2 centerOffset = Flow.OnDrawNodeCurveOffset(this, attachItem, window, curWindow, doubleSided);
+
+										Flow.OnFlowWindowTransition(this, attachItem.index, window, curWindow, doubleSided, centerOffset);
+
+									}
+									
+								}
+
+								Flow.OnDrawWindow(this, window);
+
+								this.tempAttaches.Add(window.id);
 								
 							}
 
@@ -542,15 +587,38 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				GUI.enabled = true;
 
-				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
-				
 				Flow.OnDrawGUI(this);
+
+				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
 
 			}
 			
 		}
 
+		public bool ContainsRect(Rect sourceRect) {
+			
+			if (this.zoomDrawer.GetZoom() < 1f) {
+				
+				return true;
+				
+			}
+			
+			var scrollPos = -FlowSystem.GetScrollPosition();
+			var rect = new Rect(scrollPos.x - this.scrollRect.width * 0.5f + this.scrollRect.x,
+			                    scrollPos.y + this.scrollRect.y,
+			                    this.scrollRect.width + FlowSystemEditorWindow.GetSettingsWidth(),
+			                    this.scrollRect.height);
+			
+			var scaledRect = rect.ScaleSizeBy(this.zoomDrawer.GetZoom());
+			var scaledWin = sourceRect.ScaleSizeBy(this.zoomDrawer.GetZoom());
+
+			return scaledRect.Overlaps(scaledWin);
+
+		}
+
 		public bool IsVisible(FD.FlowWindow window) {
+
+			if (window.isMovingState == true) return true;
 
 			if (this.zoomDrawer.GetZoom() < 1f) {
 
@@ -558,24 +626,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			var scrollPos = -FlowSystem.GetScrollPosition();
-			var rect = new Rect(scrollPos.x - this.scrollRect.width * 0.5f + this.scrollRect.x,
-			                    scrollPos.y + this.scrollRect.y,
-			                    this.scrollRect.width + FlowSystemEditorWindow.GetSettingsWidth(),
-			                    this.scrollRect.height);
-
-			var scaledRect = rect.ScaleSizeBy(this.zoomDrawer.GetZoom());
-			var scaledWin = window.rect.ScaleSizeBy(this.zoomDrawer.GetZoom());
-			
-			//scaledRect.x += FlowSystemEditorWindow.GetSettingsWidth();
-
-			return window.isVisibleState = scaledRect.Overlaps(scaledWin);
+			return window.isVisibleState = this.ContainsRect(window.rect);
 
 		}
 		
 		public Vector2 GetWindowSize(FD.FlowWindow window) {
 			
-			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
+			var flowWindowWithLayout = FlowSystem.GetData().HasView(FlowView.Layout);
 			var flowWindowWithLayoutScaleFactor = FlowSystem.GetData().flowWindowWithLayoutScaleFactor;
 			if (flowWindowWithLayout == true) {
 
@@ -603,31 +660,67 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			if (toWindow.IsEnabled() == false) return;
 			if (toWindow.IsContainer() == true) return;
-			if (toWindow.IsSmall() == true && toWindow.IsFunction() == false) return;
+
+			var factor = 0.5f;
+			var transitionsContainer = fromWindow;
+			var namePrefix = string.Empty;
+
+			if (fromWindow.IsSmall() == true &&
+				fromWindow.IsABTest() == true) {
+
+				// is ABTest
+				//Debug.Log(fromWindow.id + " => " + toWindow.id + " :: " + attach.index + " :: " + doubleSided);
+				transitionsContainer = FlowSystem.GetWindow(fromWindow.abTests.sourceWindowId);
+				if (transitionsContainer == null) return;
+
+				namePrefix = "Variant" + attach.index.ToString();
+				factor = 0.2f;
+
+			} else {
+
+				if (toWindow.IsSmall() == true) {
+
+					if (toWindow.IsFunction() == false) return;
+
+				}
+
+			}
+
+			if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+
+				if (FlowSystem.GetData().HasView(FlowView.AudioTransitions) == false) return;
+
+			} else {
+				
+				if (FlowSystem.GetData().HasView(FlowView.VideoTransitions) == false) return;
+
+			}
 
 			const float size = 32f;
 			const float offset = size * 0.5f + 5f;
+
+			Vector2 centerOffset = Flow.OnDrawNodeCurveOffset(this, attach, fromWindow, toWindow, doubleSided);
 
 			if (doubleSided == true) {
 
 				var q = Quaternion.LookRotation(toWindow.rect.center - fromWindow.rect.center, Vector3.back);
 				var attachRevert = FlowSystem.GetAttachItem(toWindow.id, fromWindow.id);
 				
-				this.DrawTransitionChooser(attachRevert, toWindow, fromWindow, q * Vector2.left * offset, size);
-				this.DrawTransitionChooser(attach, fromWindow, toWindow, q * Vector2.right * offset, size);
+				this.DrawTransitionChooser(attachRevert, toWindow, toWindow, fromWindow, centerOffset, q * Vector2.left * offset, size, factor, namePrefix);
+				this.DrawTransitionChooser(attach, fromWindow, fromWindow, toWindow, centerOffset, q * Vector2.right * offset, size, factor, namePrefix);
 
 			} else {
 
-				this.DrawTransitionChooser(attach, fromWindow, toWindow, Vector2.zero, size);
+				this.DrawTransitionChooser(attach, transitionsContainer, fromWindow, toWindow, centerOffset, Vector2.zero, size, factor, namePrefix);
 
 			}
 
 		}
 
-		public void DrawTransitionChooser(AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, Vector2 offset, float size) {
+		public void DrawTransitionChooser(AttachItem attach, FD.FlowWindow transitionsContainer, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, Vector2 centerOffset, Vector2 offset, float size, float factor = 0.5f, string namePrefix = "") {
 
 			var _size = Vector2.one * size;
-			var rect = new Rect(Vector2.Lerp(fromWindow.rect.center, toWindow.rect.center, 0.5f) + offset - _size * 0.5f, _size);
+			var rect = new Rect(Vector2.Lerp(fromWindow.rect.center + centerOffset, toWindow.rect.center, factor) + offset - _size * 0.5f, _size);
 
 			var icon = "TransitionIcon";
 			if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
@@ -640,106 +733,106 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var transitionStyleBorder = ME.Utilities.CacheStyle("UI.Windows.Styles.DefaultSkin", "TransitionIconBorder", (name) => FlowSystemEditorWindow.defaultSkin.FindStyle(name));
 			if (transitionStyle != null && transitionStyleBorder != null) {
 
-				if (fromWindow.GetScreen() != null) {
+				//if (fromWindow.GetScreen() != null) {
 
-					System.Action onClick = () => {
+				System.Action onClick = () => {
 
-						if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
-
-							FlowChooserFilter.CreateTransition<TransitionVideoInputTemplateParameters>(fromWindow, toWindow, "/Transitions", (element) => {
-								
-								FlowSystem.Save();
-								
-							});
-
-						} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
-							
-							FlowChooserFilter.CreateTransition<TransitionAudioInputTemplateParameters>(fromWindow, toWindow, "/Transitions", (element) => {
-								
-								FlowSystem.Save();
-								
-							});
-
-						}
-
-					};
-
-					// Has transition or not?
-					TransitionBase transition = null;
-					TransitionInputParameters transitionParameters  = null;
-					IPreviewEditor editor = null;
 					if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
 
-						transition = attach.transition;
-						transitionParameters = attach.transitionParameters;
-						editor = attach.editor;
+						FlowChooserFilter.CreateTransition<TransitionVideoInputTemplateParameters>(transitionsContainer, fromWindow, toWindow, attach.index, "/Transitions", namePrefix, (element) => {
+							
+							FlowSystem.Save();
+							
+						});
 
 					} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
 						
-						transition = attach.audioTransition;
-						transitionParameters = attach.audioTransitionParameters;
-						editor = attach.editorAudio;
+						FlowChooserFilter.CreateTransition<TransitionAudioInputTemplateParameters>(transitionsContainer, fromWindow, toWindow, attach.index, "/Transitions", namePrefix, (element) => {
+							
+							FlowSystem.Save();
+							
+						});
 
 					}
+
+				};
+
+				// Has transition or not?
+				TransitionBase transition = null;
+				TransitionInputParameters transitionParameters  = null;
+				IPreviewEditor editor = null;
+				if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
+
+					transition = attach.transition;
+					transitionParameters = attach.transitionParameters;
+					editor = attach.editor;
+
+				} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
 					
-					var hasTransition = transition != null && transitionParameters != null;
-					if (hasTransition == true) {
+					transition = attach.audioTransition;
+					transitionParameters = attach.audioTransitionParameters;
+					editor = attach.editorAudio;
 
-						GUI.DrawTexture(rect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false);
+				}
+				
+				var hasTransition = transition != null && transitionParameters != null;
+				if (hasTransition == true) {
 
-						var hovered = rect.Contains(Event.current.mousePosition);
-						if (editor == null) {
+					GUI.DrawTexture(rect, Texture2D.blackTexture, ScaleMode.ScaleAndCrop, false);
 
-							editor = Editor.CreateEditor(transitionParameters) as IPreviewEditor;
-							if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
-								
-								attach.editor = editor;
-								
-							} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
-								
-								attach.editorAudio = editor;
-								
-							}
+					var hovered = GUI.enabled && rect.Contains(Event.current.mousePosition);
+					if (editor == null) {
 
-							hovered = true;
-
-						}
-
-						if (editor.HasPreviewGUI() == true) {
-
-							if (hovered == false) {
-
-								editor.OnDisable();
-
-							} else {
-
-								editor.OnEnable();
-								
-							}
-
-							var style = new GUIStyle(EditorStyles.toolbarButton);
-							editor.OnPreviewGUI(Color.white, rect, style, false, false, hovered);
-
-						}
-
-						if (GUI.Button(rect, string.Empty, transitionStyleBorder) == true) {
-
-							onClick();
-
-						}
-
-					} else {
-						
-						GUI.Box(rect, string.Empty, transitionStyle);
-						if (GUI.Button(rect, string.Empty, transitionStyleBorder) == true) {
+						editor = Editor.CreateEditor(transitionParameters) as IPreviewEditor;
+						if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
 							
-							onClick();
-
+							attach.editor = editor;
+							
+						} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
+							
+							attach.editorAudio = editor;
+							
 						}
+
+						hovered = true;
+
+					}
+
+					if (editor.HasPreviewGUI() == true) {
+
+						if (hovered == false) {
+
+							editor.OnDisable();
+
+						} else {
+
+							editor.OnEnable();
+							
+						}
+
+						var style = new GUIStyle(EditorStyles.toolbarButton);
+						editor.OnPreviewGUI(Color.white, rect, style, false, false, hovered);
+
+					}
+
+					if (GUI.Button(rect, string.Empty, transitionStyleBorder) == true) {
+
+						onClick();
+
+					}
+
+				} else {
+					
+					GUI.Box(rect, string.Empty, transitionStyle);
+					if (GUI.Button(rect, string.Empty, transitionStyleBorder) == true) {
+						
+						onClick();
 
 					}
 
 				}
+
+				//}
 
 			}
 
@@ -747,7 +840,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public void DrawWindowLayout(FD.FlowWindow window) {
 			
-			var flowWindowWithLayout = FlowSystem.GetData().flowWindowWithLayout;
+			var flowWindowWithLayout = FlowSystem.GetData().HasView(FlowView.Layout);
 			if (flowWindowWithLayout == true) {
 
 				GUILayout.Box(string.Empty, FlowSystemEditorWindow.styles.layoutBoxStyle, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
@@ -982,14 +1075,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private ReorderableList defaultWindows;
 		private ReorderableList tagsList;
 		private void DrawSettings(float offsetY) {
-			
+
 			//var scrollPos = FlowSystem.GetScrollPosition();
 			
 			//var wRect = new Rect(10f + scrollPos.x, 20f + scrollPos.y, 200f, 200f);
 			//GUI.Window(-1, wRect, (id) => {
 			
 			if (FlowSystem.HasData() == false) return;
-
+			
+			EditorGUI.BeginDisabledGroup(this.scrollingMouse);
+			
 			var boxStyle = ME.Utilities.CacheStyle("FlowEditor.Settings.Styles", "miniButton", (styleName) => {
 
 				var _boxStyle = new GUIStyle(FlowSystemEditorWindow.defaultSkin.button);
@@ -999,7 +1094,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			});
 
-			GUILayout.BeginArea(new Rect(0f, offsetY, FlowSystemEditorWindow.GetSettingsWidth(), this.position.height - offsetY), boxStyle);
+			GUILayout.BeginArea(new Rect(0f, offsetY, FlowSystemEditorWindow.GetSettingsWidth(), this.position.height - offsetY).PixelPerfect(), boxStyle);
 			{
 
 				GUILayout.BeginHorizontal();
@@ -1040,7 +1135,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				var oldSkin = GUI.skin;
 				GUI.skin = FlowSystemEditorWindow.defaultSkin;
-				this.settingsWindowScroll = GUILayout.BeginScrollView(this.settingsWindowScroll, false, false);
+				this.settingsWindowScroll = GUILayout.BeginScrollView(this.settingsWindowScroll.PixelPerfect(), false, false);
 				GUI.skin = oldSkin;
 
 				CustomGUI.Splitter();
@@ -1193,18 +1288,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				#region FLOW
 				Flow.DrawModuleSettingsGUI(null, "Flow Settings", null, () => {
-					
-					var flowWindowWithLayout = GUILayout.Toggle(FlowSystem.GetData().flowWindowWithLayout, "Window With Layout");
-					if (flowWindowWithLayout != FlowSystem.GetData().flowWindowWithLayout) {
+
+					var filter = (FlowView)EditorExtension.DrawBitMaskFieldLayout((int)FlowSystem.GetData().flowView, typeof(FlowView), new GUIContent("Filter:"));
+					if (filter != FlowSystem.GetData().flowView) {
 						
-						FlowSystem.GetData().flowWindowWithLayout = flowWindowWithLayout;
+						FlowSystem.GetData().flowView = filter;
 						FlowSystem.SetDirty();
 						
 						this.Repaint();
 						
 					}
-					
-					if (flowWindowWithLayout == true) {
+
+					if (FlowSystem.GetData().HasView(FlowView.Layout) == true) {
 						
 						EditorGUIUtility.labelWidth = 50f;
 						
@@ -1255,12 +1350,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				});
 
-				GUILayout.Label(string.Format("Version {0}. MIT license Alex Feer <chrome.alex@gmail.com>", VersionInfo.BUNDLE_VERSION), copyright);
+				GUILayout.Label(string.Format(VersionInfo.DESCRIPTION, VersionInfo.BUNDLE_VERSION), copyright);
 				
 				GUILayout.EndScrollView();
 				
 			}
 			GUILayout.EndArea();
+
+			EditorGUI.EndDisabledGroup();
 
 			//}, "Settings");
 			
@@ -1425,7 +1522,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			if (this._background == null) this._background = Resources.Load<Texture2D>("UI.Windows/Flow/Background");
 			
-			FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f);
+			FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f).PixelPerfect();
 			
 			var oldColor = GUI.color;
 			
@@ -1435,7 +1532,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var size = new Vector2(this._background.width, this._background.height);
 			var drawSize = new Vector2(this.contentRect.width, this.contentRect.height);
 			
-			GUI.DrawTextureWithTexCoords(new Rect(0f, 0f, drawSize.x, drawSize.y), this._background, new Rect(0f, 0f, drawSize.x / size.x, drawSize.y / size.y), true);
+			GUI.DrawTextureWithTexCoords(new Rect(0f, 0f, drawSize.x, drawSize.y).PixelPerfect(), this._background, new Rect(0f, 0f, drawSize.x / size.x, drawSize.y / size.y).PixelPerfect(), true);
 			
 			if (this.selectionRect.size != Vector2.zero && (this.selectionRectAnimation.isAnimating == true || this.selectionRectWait == true)) {
 				
@@ -1581,15 +1678,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		public void OpenFlowData(FlowData flowData) {
 			
-			if (this.guiSplash == null) this.guiSplash = new FlowSplash(this);
-			this.guiSplash.cachedData = flowData;
+			if (this.guiSplash == null) {
+
+				this.ChangeFlowData();
+				return;
+
+			}
+
 			FlowSystem.SetData(flowData);
 			
 		}
 
 		public void ChangeFlowData() {
 
-			this.guiSplash.cachedData = null;
+			this.guiSplash = null;
 			FlowSystem.SetData(null);
 			this.defaultWindows = null;
 			this.tagsList = null;
@@ -1786,7 +1888,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								var hasContainer = currentAttach.HasContainer();
 								var container = currentAttach.GetContainer();
 								
-								if ((attachTo.IsContainer() == true && currentAttach.IsContainer() == true && attachTo == container) || (hasContainer == true && container.id != id)) {
+								if ((attachTo.IsContainer() == true && currentAttach.IsContainer() == true && attachTo == container) || (hasContainer == true && container.id != id) || this.currentAttachIndex > 0) {
 									
 									
 									
@@ -1794,11 +1896,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									
 									if (attachTo.IsContainer() == true && currentAttach.IsContainer() == true) {
 										
-										if (FlowSystem.AlreadyAttached(id, this.currentAttachId) == true) {
+										if (FlowSystem.AlreadyAttached(id, this.currentAttachId, this.currentAttachIndex) == true) {
 											
 											if (GUILayout.Button("Detach Here", buttonStyle) == true) {
 												
-												FlowSystem.Detach(this.currentAttachId, id, oneWay: false);
+												FlowSystem.Detach(this.currentAttachId, this.currentAttachIndex, id, oneWay: false);
+												if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, false);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
 											}
@@ -1807,7 +1910,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 											
 											if (GUILayout.Button("Attach Here", buttonStyle) == true) {
 												
-												FlowSystem.Attach(id, this.currentAttachId, oneWay: true);
+												FlowSystem.Attach(id, this.currentAttachId, this.currentAttachIndex, oneWay: true);
+												if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, true);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
 											}
@@ -1816,11 +1920,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 										
 									} else {
 										
-										if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
+										if (FlowSystem.AlreadyAttached(this.currentAttachId, this.currentAttachIndex, id) == true) {
 											
 											if (GUILayout.Button("Detach Here", buttonStyle) == true) {
 												
-												FlowSystem.Detach(this.currentAttachId, id, oneWay: false);
+												FlowSystem.Detach(this.currentAttachId, this.currentAttachIndex, id, oneWay: false);
+												if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, false);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
 											}
@@ -1829,7 +1934,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 											
 											if (GUILayout.Button("Attach Here", buttonStyle) == true) {
 												
-												FlowSystem.Attach(this.currentAttachId, id, oneWay: false);
+												FlowSystem.Attach(this.currentAttachId, this.currentAttachIndex, id, oneWay: false);
+												if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, true);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
 											}
@@ -2036,7 +2142,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					tagStyle.fixedWidth = drawRect.width;
 					
-					GUI.BeginGroup(drawRect);
+					GUI.BeginGroup(drawRect.PixelPerfect());
 					{
 						GUI.color = Color.black;
 						GUI.Label(new Rect(10f, backTopOffset, drawRect.width - 10f * 2f, drawRect.height - backTopOffset * 2f), string.Empty, shadow);
@@ -2381,24 +2487,34 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							if (currentAttach.IsContainer() == false) {
 								
-								if (FlowSystem.AlreadyAttached(this.currentAttachId, id) == true) {
+								if (FlowSystem.AlreadyAttached(this.currentAttachId, this.currentAttachIndex, id) == true) {
 									
 									if (GUILayout.Button(string.Format("Detach Here{0}", (Event.current.alt == true ? " (Double Direction)" : string.Empty)), buttonStyle) == true) {
 										
-										FlowSystem.Detach(this.currentAttachId, id, oneWay: Event.current.alt == false);
+										FlowSystem.Detach(this.currentAttachId, this.currentAttachIndex, id, oneWay: Event.current.alt == false);
+										if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, false);
 										if (Event.current.shift == false) this.WaitForAttach(-1);
 										
 									}
 									
 								} else {
-									
-									if (GUILayout.Button(string.Format("Attach Here{0}", (Event.current.alt == true ? " (Double Direction)" : string.Empty)), buttonStyle) == true) {
-										
-										FlowSystem.Attach(this.currentAttachId, id, oneWay: Event.current.alt == false);
-										if (Event.current.shift == false) this.WaitForAttach(-1);
-										
+
+									if (this.currentAttachIndex == 0 && 
+									    (currentAttach.IsABTest() == true ||
+									    (window.abTests.sourceWindowId >= 0 || currentAttach.attachItems.Any(x => FlowSystem.GetWindow(x.targetId).IsABTest() == true) == true))) {
+
+									} else {
+
+										if (GUILayout.Button(string.Format("Attach Here{0}", (Event.current.alt == true ? " (Double Direction)" : string.Empty)), buttonStyle) == true) {
+											
+											FlowSystem.Attach(this.currentAttachId, this.currentAttachIndex, id, oneWay: Event.current.alt == false);
+											if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, true);
+											if (Event.current.shift == false) this.WaitForAttach(-1);
+											
+										}
+
 									}
-									
+
 								}
 								
 							}
@@ -2418,7 +2534,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				} else {
 					
 					if (window.IsSmall() == false ||
-					    window.IsFunction() == true) {
+					    window.IsFunction() == true ||
+					    window.IsABTest() == true) {
 						
 						if (GUILayout.Button("Attach/Detach", buttonStyle) == true) {
 							
@@ -2544,6 +2661,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						var menu = new GenericMenu();
 						menu.AddItem(new GUIContent("Select Package"), on: false, func: () => { this.SelectWindow(window); });
+						
+						if (window.compiled == true) {
+
+							menu.AddItem(new GUIContent("Edit..."), on: false, func: () => {
+
+								var path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(window.GetScreen()));
+								var filename = window.compiledDerivedClassName + ".cs";
+								EditorUtility.OpenWithDefaultApp(string.Format("{0}/../{1}", path, filename));
+
+							});
+
+						}
+
 						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScene(window); });
 
 						var screen = window.GetScreen();
@@ -2648,20 +2778,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					if (window.IsSmall() == false ||
 					    window.IsFunction() == true) {
 						
-						if (FlowSystem.AlreadyAttached(this.currentAttachId, id, this.currentAttachComponent) == true) {
+						if (FlowSystem.AlreadyAttached(this.currentAttachId, this.currentAttachIndex, id, this.currentAttachComponent) == true) {
 							
 							if (GUILayout.Button("Detach Here", buttonStyle) == true) {
 								
-								FlowSystem.Detach(this.currentAttachId, id, oneWay: true, component: this.currentAttachComponent);
+								FlowSystem.Detach(this.currentAttachId, this.currentAttachIndex, id, oneWay: true, component: this.currentAttachComponent);
+								if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, false);
 								if (Event.current.shift == false) this.WaitForAttach(-1);
-								
+
 							}
 							
 						} else {
 							
 							if (GUILayout.Button("Attach Here", buttonStyle) == true) {
 								
-								FlowSystem.Attach(this.currentAttachId, id, oneWay: true, component: this.currentAttachComponent);
+								FlowSystem.Attach(this.currentAttachId, this.currentAttachIndex, id, oneWay: true, component: this.currentAttachComponent);
+								if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, true);
 								if (Event.current.shift == false) this.WaitForAttach(-1);
 								
 							}
@@ -2840,11 +2972,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		private int currentAttachId = -1;
+		private int currentAttachIndex = 0;
 		private bool waitForAttach = false;
+		private System.Action<int, int, bool> onAttach = null;
 		private WindowLayoutElement currentAttachComponent;
-		private void WaitForAttach(int id, WindowLayoutElement currentAttachComponent = null) {
-			
+		public void WaitForAttach(int id, WindowLayoutElement currentAttachComponent = null, int index = 0, System.Action<int, int, bool> onAttach = null) {
+
+			this.onAttach = onAttach;
 			this.currentAttachId = id;
+			this.currentAttachIndex = index;
 			this.currentAttachComponent = currentAttachComponent;
 			this.waitForAttach = id >= 0;
 			

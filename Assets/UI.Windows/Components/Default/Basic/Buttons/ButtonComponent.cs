@@ -259,6 +259,8 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool hoverIsActive = true;
 		[SerializeField]
 		private bool hoverOnAnyPointerState = false;
+		[SerializeField]
+		private bool hoverOnAnyButtonState = false;
 		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
 
 		[HideInInspector]
@@ -269,13 +271,19 @@ namespace UnityEngine.UI.Windows.Components {
 			this.hoverIsActive = state;
 			
 		}
-
+		
 		public void SetHoverOnAnyPointerState(bool state) {
-
+			
 			this.hoverOnAnyPointerState = state;
-
+			
 		}
 		
+		public void SetHoverOnAnyButtonState(bool state) {
+			
+			this.hoverOnAnyButtonState = state;
+			
+		}
+
 		public virtual void SetCallbackHover(UnityAction<bool> onHover) {
 			
 			this.onHover.AddListenerDistinct(onHover);
@@ -284,8 +292,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private bool ValidateHoverPointer(PointerEventData eventData) {
 
-			if (this.button.interactable == false) return false;
 			if (this.hoverIsActive == false) return false;
+			if (this.hoverOnAnyButtonState == false && this.button.interactable == false) return false;
 			if (this.hoverOnAnyPointerState == false && WindowSystemInput.GetPointerState() != PointerState.Default) return false;
 
 			return true;
@@ -338,6 +346,22 @@ namespace UnityEngine.UI.Windows.Components {
 			public void SetPreserveAspectState(bool state) {
 	
 				this.preserveAspect = state;
+	
+			}
+	
+			public void ResetImage() {
+	
+				if (this.image != null) {
+	
+					this.image.sprite = null;
+	
+				}
+	
+				if (this.rawImage != null) {
+	
+					this.rawImage.texture = null;
+	
+				}
 	
 			}
 	

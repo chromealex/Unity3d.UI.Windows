@@ -9,6 +9,8 @@ using System;
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows;
 using System.Collections.Generic;
+using UnityEditor.UI.Windows.Extensions;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -25,7 +27,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private Vector2 dataSelectionScroll;
 		private Texture splash;
-		public FlowData cachedData;
+		private FlowData cachedData;
 		private FlowData[] scannedData;
 
 		private GUISkin skin;
@@ -72,11 +74,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 
 		public void DrawLoader() {
-			
+
+			if (FlowSystemEditorWindow.defaultSkin == null) return;
+
 			this.editor.DrawBackground();
 			
 			var darkLabel = ME.Utilities.CacheStyle("FlowEditor.Minimap.Styles", "DarkLabel", (styleName) => {
-				
+
 				var _darkLabel = FlowSystemEditorWindow.defaultSkin.FindStyle(styleName);
 				_darkLabel.alignment = TextAnchor.MiddleCenter;
 				_darkLabel.stretchWidth = true;
@@ -112,7 +116,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			var padding = 20f;
 			
-			GUILayout.BeginArea(rectOffset);
+			GUILayout.BeginArea(rectOffset.PixelPerfect());
 			{
 				
 				var borderWidth = width - marginLeft - margin;
@@ -120,10 +124,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				var labelStyle = ME.Utilities.CacheStyle("FlowEditor.Minimap.Styles", "sv_iconselector_labelselection");
 				
-				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), labelStyle);
+				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight).PixelPerfect(), labelStyle);
 				{
 					
-					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f));
+					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f).PixelPerfect());
 					{
 						
 						GUILayout.Label("Loading...", darkLabel);
@@ -164,7 +168,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			var padding = 20f;
 			
-			GUILayout.BeginArea(rectOffset);
+			GUILayout.BeginArea(rectOffset.PixelPerfect());
 			{
 				
 				var borderWidth = width - marginLeft - margin;
@@ -172,10 +176,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				var labelStyle = ME.Utilities.CacheStyle("FlowEditor.DataSelection.Styles", "sv_iconselector_labelselection");
 				
-				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight), labelStyle);
+				GUILayout.BeginArea(new Rect(marginLeft, margin, borderWidth, borderHeight).PixelPerfect(), labelStyle);
 				{
 					
-					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f));
+					GUILayout.BeginArea(new Rect(padding, padding, borderWidth - padding * 2f, borderHeight - padding * 2f).PixelPerfect());
 					{
 
 						drawer.Invoke();
@@ -360,7 +364,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var filepath = projectFolder + "/" + projectNamespace;
 			var data = ME.EditorUtilities.CreateAsset<FlowData>(filepath);
-			data.flowWindowWithLayout = true;
+			data.flowView = FlowView.Layout | FlowView.Transitions;
 			data.namespaceName = projectNamespace;
 			data.version = VersionInfo.BUNDLE_VERSION;
 
@@ -507,7 +511,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				} else {
 
 					if (GUILayout.Button("Open", FlowSystemEditorWindow.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(40f)) == true) {
-						
+
 						FlowSystem.SetData(this.cachedData);
 						
 					}

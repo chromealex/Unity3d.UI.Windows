@@ -34,7 +34,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 			var functionName = functionContainer.title;
 			var functionCallName = functionContainer.directory;
-			var classNameWithNamespace = Tpl.GetNamespace(exitWindow) + "." + Tpl.GetDerivedClassName(exitWindow);
+			var classNameWithNamespace = Tpl.GetClassNameWithNamespace(exitWindow);
 			
 			result +=
 				part.Replace("{FUNCTION_NAME}", functionName)
@@ -80,7 +80,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			
 			var functionName = functionContainer.title;
 			var functionCallName = functionContainer.directory;
-			var classNameWithNamespace = Tpl.GetNamespace(root) + "." + Tpl.GetDerivedClassName(root);
+			var classNameWithNamespace = Tpl.GetClassNameWithNamespace(root);
 			var transitionMethods = Tpl.GenerateTransitionMethods(windowTo);
 			transitionMethods = transitionMethods.Replace("\r\n", "\r\n\t")
 				.Replace("\n", "\n\t");

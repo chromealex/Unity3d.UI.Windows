@@ -40,11 +40,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (state == true) {
 
-				this.infoWindow = WindowSystem.Show<TextTipWindowType>((window) => window.PrepareFor(this),
-				                                                       (window) => window.OnParametersPass(this.tipText)
-				                                                       ) as TipWindowType;
+				if (string.IsNullOrEmpty(this.tipText) == false) {
 
-				if (this.infoWindow != null) this.infoWindow.OnHover(this.transform as RectTransform);
+					this.infoWindow = WindowSystem.Show<TextTipWindowType>((window) => window.PrepareFor(this),
+					                                                       (window) => window.OnParametersPass(this.tipText)
+					                                                       ) as TipWindowType;
+
+					if (this.infoWindow != null) this.infoWindow.OnHover(this.transform as RectTransform);
+
+				}
 
 			} else {
 
@@ -62,7 +66,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void SetTextToTip(string tipText) {
 
-			this.tipText = tipText;
+			if (this.tipText != tipText) {
+
+				this.tipText = tipText;
+				this.OnStateChanged(state: false);
+
+			} else {
+
+				this.tipText = tipText;
+
+			}
 
 		}
 

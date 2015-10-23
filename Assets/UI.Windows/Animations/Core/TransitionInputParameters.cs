@@ -5,7 +5,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 	public class TransitionInputParameters : MonoBehaviour {
 
-		public bool useDefault = true;
+		public bool useDefault = false;
 
 		public virtual void SetDefaultParameters(TransitionBase.ParametersBase parameters) {}
 		

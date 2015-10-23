@@ -38,6 +38,22 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public void ResetImage() {
+
+			if (this.image != null) {
+
+				this.image.sprite = null;
+
+			}
+
+			if (this.rawImage != null) {
+
+				this.rawImage.texture = null;
+
+			}
+
+		}
+
 		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {
 
 			this.SetImage(sprite, this.preserveAspect, withPivotsAndSize);

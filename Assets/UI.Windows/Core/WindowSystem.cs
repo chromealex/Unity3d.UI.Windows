@@ -13,6 +13,7 @@ namespace UnityEngine.UI.Windows {
 
 	public interface IFunctionIteration {
 
+		WindowBase GetWindow();
 		int GetFunctionIterationIndex();
 		bool Hide();
 		bool Hide(AttachItem transitionItem);
@@ -25,9 +26,10 @@ namespace UnityEngine.UI.Windows {
 	[System.Serializable]
 	public class AttachItem {
 		
-		public static readonly AttachItem Empty = new AttachItem(-1);
+		public static readonly AttachItem Empty = new AttachItem(-1, 0);
 		
 		public int targetId;
+		public int index = 0;
 		
 		public TransitionBase transition;
 		public TransitionInputParameters transitionParameters;
@@ -42,9 +44,10 @@ namespace UnityEngine.UI.Windows {
 		public IPreviewEditor editorAudio;
 		#endif
 		
-		public AttachItem(int targetId) {
+		public AttachItem(int targetId, int index) {
 			
 			this.targetId = targetId;
+			this.index = index;
 			
 		}
 		
@@ -59,6 +62,12 @@ namespace UnityEngine.UI.Windows {
 
 			this.sourceWindow = sourceWindow;
 			this.index = index;
+
+		}
+
+		public WindowBase GetWindow() {
+
+			return this.sourceWindow;
 
 		}
 
@@ -90,6 +99,9 @@ namespace UnityEngine.UI.Windows {
 	}
 
 	public class WindowSystem : MonoBehaviour {
+		
+		public class OnDoTransitionEvent : UnityEvent<int, int, int> {}
+		public static OnDoTransitionEvent onTransition = new OnDoTransitionEvent();
 
 		public class Functions {
 
@@ -341,7 +353,13 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-		
+
+		public static void OnDoTransition(int index, int fromScreenId, int toScreenId) {
+
+			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId);
+
+		}
+
 		public static void AudioPlayFX(int id, int[] randomIds, bool randomize) {
 			
 			if (randomize == true) {
@@ -578,7 +596,9 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <returns>The current window.</returns>
 		public static WindowBase GetCurrentWindow() {
-			
+
+			if (WindowSystem.instance == null) return null;
+
 			return WindowSystem.instance.lastInstance;
 			
 		}
@@ -589,6 +609,8 @@ namespace UnityEngine.UI.Windows {
 		/// <returns>The previous window.</returns>
 		public static WindowBase GetPreviousWindow() {
 			
+			if (WindowSystem.instance == null) return null;
+
 			return WindowSystem.instance.previousInstance;
 			
 		}

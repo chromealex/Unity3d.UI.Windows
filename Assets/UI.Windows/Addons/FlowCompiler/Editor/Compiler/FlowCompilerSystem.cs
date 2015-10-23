@@ -111,7 +111,13 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		public static string GetNamespace(FD.FlowWindow window) {
 			
 			return Tpl.GetNamespace() + IO.GetRelativePath(window, ".");
-
+			
+		}
+		
+		public static string GetClassNameWithNamespace(FD.FlowWindow window) {
+			
+			return Tpl.GetNamespace(window) + "." + Tpl.GetDerivedClassName(window);
+			
 		}
 
 		public static string GenerateTransitionMethods(FD.FlowWindow window) {

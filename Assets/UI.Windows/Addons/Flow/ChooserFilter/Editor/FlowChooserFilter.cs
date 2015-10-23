@@ -207,11 +207,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public static void CreateTransition<T>(FD.FlowWindow flowWindow, FD.FlowWindow toWindow, string localPath, System.Action<T> callback = null) where T : TransitionInputTemplateParameters {
+		public static void CreateTransition<T>(FD.FlowWindow windowWithScreen, FD.FlowWindow flowWindow, FD.FlowWindow toWindow, int attachIndex, string localPath, string namePrefix, System.Action<T> callback = null) where T : TransitionInputTemplateParameters {
 
-			if (flowWindow.GetScreen() == null) return;
+			if (windowWithScreen.GetScreen() == null) return;
 
-			var screenPath = AssetDatabase.GetAssetPath(flowWindow.GetScreen());
+			var screenPath = AssetDatabase.GetAssetPath(windowWithScreen.GetScreen());
 			screenPath = System.IO.Path.GetDirectoryName(screenPath);
 			var splitted = screenPath.Split(new string[] {"/"}, System.StringSplitOptions.RemoveEmptyEntries);
 			var packagePath = string.Join("/", splitted, 0, splitted.Length - 1);
@@ -222,7 +222,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			    onSelect: (element) => {
 				
 				// Clean up previous transitions if exists
-				var attachItem = flowWindow.GetAttachItem(toWindow);
+				var attachItem = flowWindow.GetAttachItem(toWindow.id, (x) => x.index == attachIndex);
 				if (attachItem != null) {
 
 					if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
@@ -254,11 +254,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var prefix = string.Empty;
 				if (FlowSystem.GetData().modeLayer == ModeLayer.Flow) {
 					
-					prefix = "Transition";
+					prefix = "Transition-" + namePrefix;
 
 				} else if (FlowSystem.GetData().modeLayer == ModeLayer.Audio) {
 					
-					prefix = "AudioTransition";
+					prefix = "AudioTransition-" + namePrefix;
 
 				}
 
@@ -272,7 +272,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					var newInstance = AssetDatabase.LoadAssetAtPath<GameObject>(targetPath);
 					var instance = newInstance.GetComponent<T>();
-					instance.useDefault = true;
+					instance.useDefault = false;
 					instance.useAsTemplate = false;
 					EditorUtility.SetDirty(instance);
 

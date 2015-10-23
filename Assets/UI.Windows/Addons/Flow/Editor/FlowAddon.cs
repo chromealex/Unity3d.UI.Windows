@@ -11,6 +11,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		FlowSystemEditorWindow flowEditor { get; set; }
 		
+		void OnFlowWindow(FD.FlowWindow window);
 		void OnFlowWindowGUI(FD.FlowWindow window);
 		void OnFlowWindowLayoutGUI(Rect rect, FD.FlowWindow window);
 		void OnFlowSettingsGUI();
@@ -24,6 +25,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		string OnCompilerTransitionTypedAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names);
 		bool IsCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo);
 
+		Vector2 OnFlowDrawNodeCurveOffset(UnityEngine.UI.Windows.AttachItem attachItem, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSide);
+
+		void OnFlowWindowTransition(int index, FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool doubleSided, Vector2 centerOffset);
+
 		void OnGUI();
 
 		void Reset();
@@ -33,7 +38,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	}
 
-	public class FlowAddon : IWindowFlowAddon {
+	public abstract class FlowAddon : IWindowFlowAddon {
 		
 		public const string MODULE_INSTALLED = "The module is installed properly";
 		public const string MODULE_HAS_ERRORS = "{0} Please, try to re-open Unity and/or reinstall the module.";
@@ -52,6 +57,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public virtual void Show(System.Action onClose) {}
 		public virtual void OnFlowSettingsGUI() {}
+		public virtual void OnFlowWindow(FD.FlowWindow window) {}
 		public virtual void OnFlowWindowGUI(FD.FlowWindow window) {}
 		public virtual void OnFlowWindowLayoutGUI(Rect rect, FD.FlowWindow window) {}
 		public virtual void OnFlowToolbarGUI(GUIStyle buttonStyle) {}
@@ -63,6 +69,10 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public virtual string OnCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName) { return string.Empty; }
 		public virtual string OnCompilerTransitionTypedAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) { return string.Empty; }
 		public virtual bool IsCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo) { return false; }
+		
+		public virtual Vector2 OnFlowDrawNodeCurveOffset(UnityEngine.UI.Windows.AttachItem attachItem, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSide) { return Vector2.zero; }
+		
+		public virtual void OnFlowWindowTransition(int index, FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool doubleSided, Vector2 centerOffset) {}
 
 		public virtual void OnGUI() {}
 
@@ -206,6 +216,46 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			return null;
 
+		}
+		
+		public static Vector2 OnDrawNodeCurveOffset(FlowSystemEditorWindow flowEditor, UnityEngine.UI.Windows.AttachItem attachItem, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSide) {
+
+			var offset = Vector2.zero;
+
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				offset += addon.OnFlowDrawNodeCurveOffset(attachItem, fromWindow, toWindow, doubleSide);
+				
+			}
+
+			return offset;
+			
+		}
+		
+		public static void OnFlowWindowTransition(FlowSystemEditorWindow flowEditor, int index, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSided, Vector2 centerOffset) {
+			
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				addon.OnFlowWindowTransition(index, fromWindow, toWindow, doubleSided, centerOffset);
+				
+			}
+			
+		}
+		
+		public static void OnDrawWindow(FlowSystemEditorWindow flowEditor, FD.FlowWindow window) {
+			
+			var flowAddons = CoreUtilities.GetAddons<IWindowFlowAddon>();
+			foreach (var addon in flowAddons) {
+				
+				addon.flowEditor = flowEditor;
+				addon.OnFlowWindow(window);
+				
+			}
+			
 		}
 
 		public static void OnDrawWindowGUI(FlowSystemEditorWindow flowEditor, FD.FlowWindow window) {

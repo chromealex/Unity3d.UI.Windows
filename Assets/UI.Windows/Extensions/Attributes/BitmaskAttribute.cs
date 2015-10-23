@@ -15,8 +15,20 @@ public class BitMaskAttribute : PropertyAttribute
 
 #if UNITY_EDITOR
 public static class EditorExtension {
+	
+	public static int DrawBitMaskFieldLayout(int aMask, System.Type aType, GUIContent aLabel) {
+		
+		return DrawBitMaskField(new Rect(), aMask, aType, aLabel, layout: true);
 
+	}
+	
 	public static int DrawBitMaskField(Rect aPosition, int aMask, System.Type aType, GUIContent aLabel) {
+
+		return DrawBitMaskField(aPosition, aMask, aType, aLabel, layout: false);
+
+	}
+
+	public static int DrawBitMaskField(Rect aPosition, int aMask, System.Type aType, GUIContent aLabel, bool layout) {
 
 		var itemNames = System.Enum.GetNames(aType);
 		var itemValues = System.Enum.GetValues(aType) as int[];
@@ -42,7 +54,18 @@ public static class EditorExtension {
 			else if (val == 0)
 				maskVal |= 1 << i;
 		}
-		int newMaskVal = EditorGUI.MaskField(aPosition, aLabel, maskVal, itemNames);
+
+		var newMaskVal = 0;
+		if (layout == true) {
+			
+			newMaskVal = EditorGUILayout.MaskField(aLabel, maskVal, itemNames);
+
+		} else {
+
+			newMaskVal = EditorGUI.MaskField(aPosition, aLabel, maskVal, itemNames);
+
+		}
+
 		int changes = maskVal ^ newMaskVal;
 		
 		for(int i = 0; i < itemValues.Length; i++)

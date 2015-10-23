@@ -30,7 +30,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				var start = new Rect(from.rect.x + rect.x, from.rect.y + rect.y, rect.width, rect.height);
 				var end = to.rect;
-				
+
 				var zOffset = -4f;
 				
 				var offset = Vector2.zero;
@@ -62,7 +62,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public string DrawComponentCurve(Vector3 startPos, Vector3 endPos, Color color, float stopDistance, string label) {
+		private string DrawComponentCurve(Vector3 startPos, Vector3 endPos, Color color, float stopDistance, string label) {
 
 			var shadowColor = new Color(0f, 0f, 0f, 0.5f);
 			var lineColor = color;//new Color(1f, 1f, 1f, 1f);
@@ -177,19 +177,26 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public void DrawNodeCurve(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow from, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow to, bool doubleSide) {
+		public void DrawNodeCurve(UnityEngine.UI.Windows.AttachItem attachItem, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow from, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow to, bool doubleSide) {
 
 			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
 			
 			var fromRect = from.rect;
-			Rect centerStart = fromRect;
-			
 			var toRect = to.rect;
-			Rect centerEnd = toRect;
 			
+			if (from != null && to != null) {
+				
+				var delta = Flow.OnDrawNodeCurveOffset(this.editor, attachItem, from, to, doubleSide);
+				fromRect.center += delta;
+
+			}
+
+			Rect centerStart = fromRect;
+			Rect centerEnd = toRect;
+
 			var fromComponent = false;
 			var toComponent = false;
-			
+
 			if (from.IsFunction() == true &&
 			    from.IsContainer() == false) {
 				
@@ -252,8 +259,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 				
 			}
-			
-			if (FlowSystem.GetData().flowWindowWithLayout == true) {
+
+			if (FlowSystem.GetData().HasView(FlowView.Layout) == true) {
 				
 				var comps = from.attachedComponents.Where((c) => c.targetWindowId == to.id && c.sourceComponentTag != LayoutTag.None);
 				foreach (var comp in comps) {
@@ -329,6 +336,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var ray = new Ray(Vector3.zero, (rot * (end.center - start.center)).normalized);
 				
 				var offset = ray.GetPoint(size);
+
 				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
 				var endPos = new Vector3(centerEnd.center.x + offset.x, centerEnd.center.y + offset.y, zOffset);
 				
@@ -343,6 +351,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			} else {
 				
 				var offset = Vector2.zero;
+
 				var startPos = new Vector3(start.center.x + offset.x, start.center.y + offset.y, zOffset);
 				var endPos = new Vector3(centerEnd.center.x + offset.x, centerEnd.center.y + offset.y, zOffset);
 				

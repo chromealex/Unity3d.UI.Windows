@@ -12,6 +12,8 @@ using UnityEditor.UI.Windows.Plugins.Flow.Layout;
 using UnityEngine.UI.Windows.Types;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Components;
+using UnityEditor.UI.Windows.Extensions;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEditor.UI.Windows.Plugins.Layout {
 
@@ -39,7 +41,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 					this.backLock = this.skin.FindStyle("LayoutBackLock");
 					this.content = this.skin.FindStyle("LayoutContent");
 					this.contentScreen = this.skin.FindStyle("LayoutContentScreen");
-					this.closeButton = this.skin.FindStyle("CloseButton");
+					this.closeButton = new GUIStyle("TL SelectionBarCloseButton");
 					this.listButton = this.skin.FindStyle("ListButton");
 					this.listButtonSelected = this.skin.FindStyle("ListButtonSelected");
 
@@ -81,8 +83,6 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 		public override void OnGUI() {
 
 			if (this.opened == true) {
-				
-				GUI.Box(new Rect(0f, 0f, Screen.width, Screen.height), string.Empty, Layout.styles.dropShadow);
 
 				const float settingsWidth = 320f;
 				const float listHeight = 200f;
@@ -90,14 +90,15 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 				const float closeSize = 30f;
 				const float scrollWidth = 16f;
 
-				var rect = new Rect(0f, -OFFSET, Screen.width, Screen.height - OFFSET);
-				var rectContent = new Rect(rect.x + MARGIN + settingsWidth + padding, rect.y + MARGIN, rect.width - MARGIN * 2f - padding - settingsWidth, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT);
-				var rectList = new Rect(MARGIN, rect.y + MARGIN, settingsWidth, listHeight - padding);
-				var rectSettings = new Rect(MARGIN, rect.y + MARGIN + listHeight, settingsWidth, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT - listHeight);
-				var rectCloseButton = new Rect(rect.x + rect.width - closeSize, rect.y, closeSize, closeSize);
+				var rect = new Rect(0f, -OFFSET, Screen.width, Screen.height - OFFSET).PixelPerfect();
+				var rectContent = new Rect(rect.x + MARGIN + settingsWidth + padding, rect.y + MARGIN, rect.width - MARGIN * 2f - padding - settingsWidth, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT).PixelPerfect();
+				var rectList = new Rect(MARGIN, rect.y + MARGIN, settingsWidth, listHeight - padding).PixelPerfect();
+				var rectSettings = new Rect(MARGIN, rect.y + MARGIN + listHeight, settingsWidth, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT - listHeight).PixelPerfect();
+				var rectCloseButton = new Rect(rectContent.x + rectContent.width, rectContent.y - closeSize * 0.5f, closeSize, closeSize).PixelPerfect();
 				
-				GUI.Box(new Rect(rect.x + MARGIN, rect.y + MARGIN, rect.width - MARGIN * 2f, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT), string.Empty, Layout.styles.layoutBack);
+				GUI.Box(new Rect(rect.x + MARGIN, rect.y + MARGIN, rect.width - MARGIN * 2f, rect.height - MARGIN * 2f - FlowSystemEditorWindow.TOOLBAR_HEIGHT).PixelPerfect(), string.Empty, Layout.styles.layoutBack);
 				GUI.Box(rect, string.Empty, Layout.styles.backLock);
+				GUI.Box(new Rect(0f, 0f, Screen.width, Screen.height).PixelPerfect(), string.Empty, Layout.styles.dropShadow);
 				GUI.Box(rectList, string.Empty, Layout.styles.content);
 				GUI.Box(rectSettings, string.Empty, Layout.styles.content);
 				GUI.Box(rectContent, string.Empty, Layout.styles.contentScreen);
@@ -108,8 +109,8 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 						
 						const float offsetTop = 50f;
 						
-						var viewRect = new Rect(0f, 0f, rectSettings.width, 0f);
-						var scrollView = new Rect(0f, 0f + offsetTop, rectSettings.width, rectSettings.height - offsetTop);
+						var viewRect = new Rect(0f, 0f, rectSettings.width, 0f).PixelPerfect();
+						var scrollView = new Rect(0f, 0f + offsetTop, rectSettings.width, rectSettings.height - offsetTop).PixelPerfect();
 						
 						System.Action<WindowComponent> onChange = (WindowComponent component) => {
 
@@ -124,14 +125,14 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 						};
 
-						var c = EditorGUI.ObjectField(new Rect(5f, 5f, viewRect.width - 40f - 5f * 2f, 16f), this.component.component, typeof(WindowComponent), allowSceneObjects: false) as WindowComponent;
+						var c = EditorGUI.ObjectField(new Rect(5f, 5f, viewRect.width - 40f - 5f * 2f, 16f).PixelPerfect(), this.component.component, typeof(WindowComponent), allowSceneObjects: false) as WindowComponent;
 						if (c != this.component.component) {
 
 							onChange(c);
 
 						}
 
-						var nRect = new Rect(viewRect.width - 40f, 5f, 40f - 5f, 16f);
+						var nRect = new Rect(viewRect.width - 40f, 5f, 40f - 5f, 16f).PixelPerfect();
 						GUILayoutExt.DrawComponentChooser(nRect, this.screen.gameObject, this.component.component, (component) => {
 
 							onChange(component);
@@ -156,7 +157,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 							if (editor != null) {
 
 								var h = Mathf.Max(scrollView.height, (editor == null) ? 0f : editor.GetHeight());
-								viewRect = new Rect(scrollView.x, scrollView.y, viewRect.width - scrollWidth, h);
+								viewRect = new Rect(scrollView.x, scrollView.y, viewRect.width - scrollWidth, h).PixelPerfect();
 
 								var oldSkin = GUI.skin;
 								GUI.skin = FlowSystemEditorWindow.defaultSkin;
@@ -177,7 +178,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 							} else {
 
-								GUI.Label(new Rect(0f, 0f, rectSettings.width - scrollWidth, rectSettings.height), "Selected component have no parameters", EditorStyles.centeredGreyMiniLabel);
+								GUI.Label(new Rect(0f, 0f, rectSettings.width - scrollWidth, rectSettings.height).PixelPerfect(), "Selected component have no parameters", EditorStyles.centeredGreyMiniLabel);
 
 							}
 
@@ -185,7 +186,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 					} else {
 						
-						GUI.Label(new Rect(0f, 0f, rectSettings.width - scrollWidth, rectSettings.height), "Select an Element", EditorStyles.centeredGreyMiniLabel);
+						GUI.Label(new Rect(0f, 0f, rectSettings.width - scrollWidth, rectSettings.height).PixelPerfect(), "Select an Element", EditorStyles.centeredGreyMiniLabel);
 						
 					}
 				}
@@ -198,7 +199,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 					this.highlighted.Clear();
 
-					var viewRect = new Rect(0f, 0f, rectList.width - scrollWidth, 0f);
+					var viewRect = new Rect(0f, 0f, rectList.width - scrollWidth, 0f).PixelPerfect();
 					this.allListHeight = 0f;
 					for (int i = 0; i < this.props.Count; ++i) {
 						
@@ -219,7 +220,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 					var oldSkin = GUI.skin;
 					GUI.skin = FlowSystemEditorWindow.defaultSkin;
-					this.listScrollPosition = GUI.BeginScrollView(new Rect(0f, 0f, rectList.width, rectList.height), this.listScrollPosition, viewRect, false, true);
+					this.listScrollPosition = GUI.BeginScrollView(new Rect(0f, 0f, rectList.width, rectList.height).PixelPerfect(), this.listScrollPosition, viewRect, false, true);
 					GUI.skin = oldSkin;
 					{
 						GUI.BeginGroup(viewRect);
@@ -231,7 +232,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 								var root = this.screen.layout.layout.GetRootByTag(this.screen.layout.components[i].tag);
 								if (root.showInComponentsList == false) continue;
 
-								var r = new Rect(0f, h, viewRect.width, itemHeight);
+								var r = new Rect(0f, h, viewRect.width, itemHeight).PixelPerfect();
 								h += r.height;
 
 								var isSelected = (this.element == root);

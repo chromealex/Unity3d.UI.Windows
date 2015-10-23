@@ -1,0 +1,59 @@
+﻿		
+		/// <summary>
+		/// Call the A/B Test.
+		/// Use this method to filter users.
+		/// This method doesn't hide current window.
+		/// </summary>
+		public virtual void FlowABTest(
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
+			
+			this.INTERNAL_FlowABTest(false, onCondition, onAnyOther);
+			
+		}
+		
+		/// <summary>
+		/// Call the A/B Test.
+		/// Use this method to filter users.
+		/// This method hides current window.
+		/// </summary>
+		public virtual void FlowHideABTest(
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
+			
+			this.INTERNAL_FlowABTest(true, onCondition, onAnyOther);
+			
+		}
+		
+		private void INTERNAL_FlowABTest(
+			bool hide,
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
+			
+			var window = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow({FLOW_TO_ID});
+			if (window.IsABTest() == true) {
+				
+				AttachItem attachItem;
+				var wayId = window.abTests.Resolve(window, out attachItem);
+				
+				System.Action<AttachItem, bool>[] ways = new System.Action<AttachItem, bool>[] {
+					{METHOD_NAMES}
+				};
+				
+				if (wayId == 0) {
+					
+					if (onAnyOther != null) onAnyOther.Invoke();
+					
+				} else {
+					
+					if (onCondition != null) onCondition.Invoke(wayId);
+					
+				}
+				
+				var way = ways[wayId];
+				if (way != null) way.Invoke(attachItem, hide);
+				
+			}
+			
+		}
+		

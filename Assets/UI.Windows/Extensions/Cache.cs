@@ -27,7 +27,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 				
 			}
 			
-			this.isEmpty = sources.Count > 0;
+			this.isEmpty = (sources.Count == 0);
 			
 		}
 		

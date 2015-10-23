@@ -73,9 +73,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			
 			ShowDefault = 0x8,
 			IsFunction = 0x10,
-			Reserved1 = 0x20,
-			Reserved2 = 0x40,
-			Reserved3 = 0x80,
+			IsABTest = 0x20,
+			Reserved1 = 0x40,
+			Reserved2 = 0x80,
 			
 			Tag1 = 0x100,
 			Tag2 = 0x200,
@@ -113,6 +113,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		public Color randomColor;
 
 		public bool isVisibleState = false;
+		public bool isMovingState = false;
 
 		public int functionRootId = 0;
 		public int functionExitId = 0;
@@ -137,6 +138,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		public CompletedState[] states = new CompletedState[STATES_COUNT];
 
 		public int screenWindowId;	// used when storeType == ReUseScreen
+
+		public Plugins.ABTesting.ABTestingItems abTests;
 		#endregion
 
 		#if UNITY_EDITOR
@@ -198,6 +201,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 			return (this.flags & Flags.IsFunction) != 0;
 			
+		}
+
+		public bool IsABTest() {
+
+			return (this.flags & Flags.IsABTest) != 0;
+
 		}
 
 		public bool IsContainer() {
@@ -617,7 +626,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			
 			this.rect.x += delta.x;
 			this.rect.y += delta.y;
-			
+
+			this.isMovingState = true;
+
 			//this.rect = FlowSystem.Grid(this.rect);
 			
 		}
@@ -668,27 +679,33 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			return this.attachItems.Any((item) => item.targetId == windowId);
 			
 		}
-
+		
 		public AttachItem GetAttachItem(FlowWindow window) {
-
+			
 			return this.attachItems.FirstOrDefault((item) => item.targetId == window.id);
-
+			
+		}
+		
+		public AttachItem GetAttachItem(int targetId, System.Func<AttachItem, bool> predicate) {
+			
+			return this.attachItems.FirstOrDefault((item) => item.targetId == targetId && predicate(item) == true);
+			
 		}
 
 		#if UNITY_EDITOR
-		public bool AlreadyAttached(int id, WindowLayoutElement component = null) {
+		public bool AlreadyAttached(int id, int index = 0, WindowLayoutElement component = null) {
 			
 			if (component != null) {
 				
 				return this.attachedComponents.Any((c) => c.targetWindowId == id && c.sourceComponentTag == component.tag);
 				
 			}
-			
-			return this.attachItems.Any((item) => item.targetId == id);
-			
+
+			return this.attachItems.Any((item) => item.targetId == id && item.index == index);
+
 		}
 
-		public bool Attach(int id, bool oneWay = false, WindowLayoutElement component = null) {
+		public bool Attach(int id, int index = 0, bool oneWay = false, WindowLayoutElement component = null) {
 			
 			if (this.id == id) return false;
 
@@ -713,9 +730,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 			}
 
-			if (this.attachItems.Any((item) => item.targetId == id) == false) {
+			if (this.AlreadyAttached(id, index) == false) {
 				
-				this.attachItems.Add(new AttachItem(id));
+				this.attachItems.Add(new AttachItem(id, index));
 				
 				if (oneWay == false) {
 					
@@ -723,16 +740,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					window.Attach(this.id, oneWay: true);
 					
 				}
-				
+
 				return true;
 				
 			}
-			
+
 			return result;
 			
 		}
 		
-		public bool Detach(int id, bool oneWay = false, WindowLayoutElement component = null) {
+		public bool Detach(int id, int index = 0, bool oneWay = false, WindowLayoutElement component = null) {
 			
 			if (this.id == id) return false;
 			
@@ -750,11 +767,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 			} else {
 
-				if (this.attachItems.Any((item) => item.targetId == id) == true) {
-					
-					this.attachItems.RemoveAll((item) => item.targetId == id);
+				if (this.AlreadyAttached(id, index) == true) {
+
+					this.attachItems.RemoveAll((c) => c.targetId == id && c.index == index);
 					this.attachedComponents.RemoveAll((c) => c.targetWindowId == id);
-					
+
 					result = true;
 					
 				}

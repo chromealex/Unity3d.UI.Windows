@@ -11,18 +11,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99839ddb8ee5849c1be9ef77fbe191fa, type: 3}
   m_Name: ExampleProject
   m_EditorClassIdentifier: 
-  lastModified: 13.10.2015 06:46
-  lastModifiedUnix: 1444761997
+  lastModified: 22.10.2015 06:46
+  lastModifiedUnix: 1445539567
   version:
     major: 1
     minor: 0
-    release: 4
+    release: 5
     type: a
   namespaceName: ExampleProject.UI
   forceRecompile: 1
   minimalScriptsSize: 0
   zoom: 1
-  scrollPos: {x: -2908.99243, y: -4315.81885}
+  scrollPos: {x: -2924.52344, y: -4215.87451}
   rootWindow: 18
   defaultWindows: 200000002b000000
   windows: []
@@ -52,8 +52,8 @@ MonoBehaviour:
   audio:
     music: []
     fx: []
-  modeLayer: 1
-  flowWindowWithLayout: 1
+  modeLayer: 0
+  flowView: 7
   flowWindowWithLayoutScaleFactor: 0
   isDirty: 0
 --- !u!114 &11405146
@@ -80,12 +80,14 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 35
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0, g: 1, b: .0631012917, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 35
   functionExitId: 35
   functionId: 0
@@ -102,6 +104,9 @@ MonoBehaviour:
   smallStyleSelected: flow node 4 on
   states: 000000000000000000000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -129,29 +134,33 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 26
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   - targetId: 29
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   - targetId: 28
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 1, g: 0, b: .559586525, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayView/
   compiledNamespace: ExampleProject.UI.Gameplay.GameplayView
   compiledScreenName: GameplayView
@@ -161,6 +170,9 @@ MonoBehaviour:
   smallStyleSelected: 
   states: 000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -188,12 +200,14 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 25
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: .0739541054, g: 0, b: 1, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 34
@@ -210,6 +224,9 @@ MonoBehaviour:
   smallStyleSelected: flow node 3 on
   states: 000000000000000000000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -238,6 +255,7 @@ MonoBehaviour:
   attachItems: []
   randomColor: {r: 1, g: 0, b: .132748604, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
@@ -254,6 +272,9 @@ MonoBehaviour:
   smallStyleSelected: flow node 4 on
   states: 000000000000000000000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -281,12 +302,14 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 38
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0, g: .428380728, b: 1, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 34
@@ -303,6 +326,9 @@ MonoBehaviour:
   smallStyleSelected: flow node 3 on
   states: 000000000000000000000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -330,24 +356,27 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 26
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   - targetId: 40
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0, g: .142874718, b: 1, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/EndGame/
   compiledNamespace: ExampleProject.UI.Gameplay.EndGame
   compiledScreenName: EndGame
@@ -357,6 +386,9 @@ MonoBehaviour:
   smallStyleSelected: 
   states: 000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -385,6 +417,7 @@ MonoBehaviour:
   attachItems: []
   randomColor: {r: 0, g: 1, b: .124795437, a: 1}
   isVisibleState: 1
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
@@ -401,6 +434,9 @@ MonoBehaviour:
   smallStyleSelected: 
   states: 020201
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 11473904, guid: 3137a01eaa1264cd2bd317f4fa79c589, type: 2}
   isDirty: 0
@@ -428,22 +464,26 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 25
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   - targetId: 29
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   - targetId: 28
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: .883602381, g: 1, b: 0, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
@@ -460,6 +500,9 @@ MonoBehaviour:
   smallStyleSelected: 
   states: 0000000000000000000000000000000000000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -487,19 +530,21 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 34
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: .720338106, g: 1, b: 0, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Loader/Loading/
   compiledNamespace: ExampleProject.UI.Loader.Loading
   compiledScreenName: Loading
@@ -509,6 +554,9 @@ MonoBehaviour:
   smallStyleSelected: flow node 4 on
   states: 000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -536,12 +584,14 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 43
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 1, g: 0, b: .222830772, a: 1}
   isVisibleState: 1
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
@@ -558,6 +608,9 @@ MonoBehaviour:
   smallStyleSelected: 
   states: 
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -585,17 +638,20 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 32
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   - targetId: 43
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: .488009095, g: 1, b: 0, a: 1}
   isVisibleState: 1
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
@@ -612,6 +668,9 @@ MonoBehaviour:
   smallStyleSelected: 
   states: 020201
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 11432778, guid: be9166ce6cf2b4649a96d5721057231d, type: 2}
   isDirty: 0
@@ -639,17 +698,20 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 3
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   - targetId: 39
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: .657318354, g: 1, b: 0, a: 1}
   isVisibleState: 1
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
@@ -666,6 +728,9 @@ MonoBehaviour:
   smallStyleSelected: flow node 4 on
   states: 000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0
@@ -693,19 +758,21 @@ MonoBehaviour:
   attachedComponents: []
   attachItems:
   - targetId: 26
+    index: 0
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0, g: .220976353, b: 1, a: 1}
   isVisibleState: 0
+  isMovingState: 0
   functionRootId: 0
   functionExitId: 0
   functionId: 0
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayHUD/
   compiledNamespace: ExampleProject.UI.Gameplay.GameplayHUD
   compiledScreenName: GameplayHUD
@@ -715,6 +782,9 @@ MonoBehaviour:
   smallStyleSelected: 
   states: 000000
   screenWindowId: 0
+  abTests:
+    sourceWindowId: -1
+    items: []
   audioEditor: {fileID: 0}
   screen: {fileID: 0}
   isDirty: 0

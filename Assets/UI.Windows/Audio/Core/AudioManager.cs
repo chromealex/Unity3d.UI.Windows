@@ -91,12 +91,33 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 		
 		public static void Stop(WindowBase window, Source sourceInfo, ClipType clipType, int id) {
-			
-			var source = sourceInfo.GetSource(window, clipType, id);
-			if (source == null) return;
 
-			source.Stop();
-			source.clip = null;
+			if (id == 0) {
+
+				// Stop all
+				var sources = sourceInfo.GetSources(window, clipType);
+				if (sources == null) return;
+
+				foreach (var source in sources) {
+
+					if (source != null) {
+
+						source.Stop();
+						source.clip = null;
+
+					}
+
+				}
+
+			} else {
+
+				var source = sourceInfo.GetSource(window, clipType, id);
+				if (source == null) return;
+
+				source.Stop();
+				source.clip = null;
+
+			}
 
 		}
 

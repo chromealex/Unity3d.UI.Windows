@@ -49,7 +49,7 @@ namespace UnityEngine.UI.Windows.Audio {
 		public enum PlayType : byte {
 
 			KeepCurrent,
-			RestartIfEquals,
+			Replace,
 
 		};
 		
@@ -113,17 +113,21 @@ namespace UnityEngine.UI.Windows.Audio {
 
 			if (transition != null) {
 
-				WindowSystem.AudioPlay(this.window, this.clipType, this.id);
-				transition.SetResetState(transitionParameters, this.window, null);
-				transition.Play(this.window, transitionParameters, null, forward: true, callback: () => {
-					
-					if (callback != null) callback();
-					
-				});
+				if (this.id > 0 || this.playType == PlayType.Replace) {
+
+					WindowSystem.AudioPlay(this.window, this.clipType, this.id);
+					transition.SetResetState(transitionParameters, this.window, null);
+					transition.Play(this.window, transitionParameters, null, forward: true, callback: () => {
+						
+						if (callback != null) callback();
+						
+					});
+
+				}
 
 			} else {
 
-				WindowSystem.AudioPlay(this.window, this.clipType, this.id);
+				if (this.id > 0 || this.playType == PlayType.Replace) WindowSystem.AudioPlay(this.window, this.clipType, this.id);
 				if (callback != null) callback();
 
 			}
@@ -138,18 +142,25 @@ namespace UnityEngine.UI.Windows.Audio {
 		
 		public void OnHideBegin(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action callback) {
 
+			var newWindow = WindowSystem.GetCurrentWindow();
+			if (newWindow == null) return;
+
 			if (transition != null) {
-				
-				transition.Play(this.window, transitionParameters, null, forward: false, callback: () => {
 
-					WindowSystem.AudioStop(this.window, this.clipType, this.id);
-					if (callback != null) callback();
+				if (newWindow.audio.id > 0 || newWindow.audio.playType == PlayType.Replace) {
 
-				});
-				
+					transition.Play(this.window, transitionParameters, null, forward: false, callback: () => {
+
+						WindowSystem.AudioStop(this.window, this.clipType, this.id);
+						if (callback != null) callback();
+
+					});
+
+				}
+
 			} else {
 
-				WindowSystem.AudioStop(this.window, this.clipType, this.id);
+				if (newWindow.audio.id > 0 || newWindow.audio.playType == PlayType.Replace) WindowSystem.AudioStop(this.window, this.clipType, this.id);
 				if (callback != null) callback();
 				
 			}

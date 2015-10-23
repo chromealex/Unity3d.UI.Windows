@@ -26,6 +26,7 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetEnabledState(bool state);
 		void SetHoverState(bool state);
 		void SetHoverOnAnyPointerState(bool state);
+		void SetHoverOnAnyButtonState(bool state);
 		void SetCallbackHover(UnityAction<bool> callback);
 
 		void SetSFX(PointerEventState state, Audio.Component data);
@@ -59,6 +60,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 	public interface IImageComponent : IComponent {
 		
+		void ResetImage();
 		void SetImage(Sprite sprite, bool withPivotsAndSize = false);
 		void SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false);
 		void SetImage(Texture texture);

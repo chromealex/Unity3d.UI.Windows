@@ -67,8 +67,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public static void SetData(FlowData data) {
 
+			var _data = FlowSystem.instance.data;
+			if (_data != data && data != null) data.ResetCache();
+
 			FlowSystem.instance.data = data;
-			if (data != null) data.ResetCache();
 
 		}
 
@@ -260,6 +262,24 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return FlowSystem.instance.data.AlreadyAttached(source, other, component);
 
 		}
+		
+		public static void Attach(int source, int index, int other, bool oneWay, WindowLayoutElement component = null) {
+
+			FlowSystem.instance.data.Attach(source, index, other, oneWay, component);
+			
+		}
+		
+		public static void Detach(int source, int index, int other, bool oneWay, WindowLayoutElement component = null) {
+			
+			FlowSystem.instance.data.Detach(source, index, other, oneWay, component);
+			
+		}
+		
+		public static bool AlreadyAttached(int source, int index, int other, WindowLayoutElement component = null) {
+			
+			return FlowSystem.instance.data.AlreadyAttached(source, index, other, component);
+			
+		}
 		#endif
 		
 		public static void SetScrollPosition(Vector2 pos) {
@@ -281,8 +301,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public static void MoveContainerOrWindow(int id, Vector2 delta) {
 			
 			var window = FlowSystem.GetWindow(id);
+			window.isMovingState = true;
+
 			if (window.IsContainer() == true) {
-				
+
 				var childs = window.attachItems;
 				foreach (var child in childs) {
 					

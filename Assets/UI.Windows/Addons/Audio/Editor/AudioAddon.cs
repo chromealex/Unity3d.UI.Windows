@@ -77,7 +77,7 @@ namespace UnityEditor.UI.Windows.Plugins.Audio {
 					GUILayout.BeginHorizontal();
 					{
 						var playType = (int)screen.audio.playType;
-						playType = GUILayoutExt.Popup(playType, new string[2] { "Keep Current", "Restart If Equals" }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
+						playType = GUILayoutExt.Popup(playType, new string[2] { "Keep Current", "Replace" }, FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
 						screen.audio.playType = (UnityEngine.UI.Windows.Audio.Window.PlayType)playType;
 
 						var rect = GUILayoutUtility.GetLastRect();

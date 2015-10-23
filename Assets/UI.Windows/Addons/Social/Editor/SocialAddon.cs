@@ -93,25 +93,29 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 
 			if (this.InstallationNeeded() == false) {
 
-				menu.AddSeparator(prefix);
+				if (Social.settings != null) {
 
-				menu.AddItem(new GUIContent(prefix + "Social"), on: false, func: () => {
+					menu.AddSeparator(prefix);
 
-					this.flowEditor.CreateNewItem(() => {
+					menu.AddItem(new GUIContent(prefix + "Social"), on: false, func: () => {
 
-						var window = FlowSystem.CreateWindow(FD.FlowWindow.Flags.IsSmall | FD.FlowWindow.Flags.CantCompiled | Social.settings.uniqueTag);
-						window.smallStyleDefault = "flow node 1";
-						window.smallStyleSelected = "flow node 1 on";
-						window.title = "Social";
-						
-						window.rect.width = 150f;
-						window.rect.height = 100f;
+						this.flowEditor.CreateNewItem(() => {
 
-						return window;
+							var window = FlowSystem.CreateWindow(FD.FlowWindow.Flags.IsSmall | FD.FlowWindow.Flags.CantCompiled | Social.settings.uniqueTag);
+							window.smallStyleDefault = "flow node 1";
+							window.smallStyleSelected = "flow node 1 on";
+							window.title = "Social";
+							
+							window.rect.width = 150f;
+							window.rect.height = 100f;
+
+							return window;
+
+						});
 
 					});
 
-				});
+				}
 
 			}
 

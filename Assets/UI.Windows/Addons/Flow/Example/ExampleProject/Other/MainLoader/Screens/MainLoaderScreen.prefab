@@ -103,6 +103,7 @@ MonoBehaviour:
     randomIds: 
   hoverIsActive: 0
   hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
   hoverInCallback:
     m_PersistentCalls:
       m_Calls: []
@@ -298,6 +299,7 @@ MonoBehaviour:
     randomIds: 
   hoverIsActive: 0
   hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
   hoverInCallback:
     m_PersistentCalls:
       m_Calls: []
@@ -387,6 +389,7 @@ MonoBehaviour:
     randomIds: 
   hoverIsActive: 0
   hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
   hoverInCallback:
     m_PersistentCalls:
       m_Calls: []

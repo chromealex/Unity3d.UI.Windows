@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		public void OnStart() {
-			
+
 			if (this.showRootOnStart == true) {
 
 				var root = this.flow.GetRootScreen();
@@ -136,14 +136,30 @@ namespace UnityEngine.UI.Windows {
 		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, System.Action<T> onParametersPassCall) where T : WindowBase {
 			
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(from, to);
-			if (hide == true) screen.Hide(item);
+			return WindowSystemFlow.DoFlow<T>(screen, item, hide, onParametersPassCall);
 
-			return WindowSystem.Show<T>(
+		}
+
+		public static T DoFlow<T>(IFunctionIteration screen, AttachItem item, bool hide, System.Action<T> onParametersPassCall) where T : WindowBase {
+
+			var newWindow = WindowSystem.Show<T>(
 				(w) => w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex()),
 				item,
 				onParametersPassCall
-				);
+			);
+			
+			WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? FlowSystem.GetWindow(newWindow).id : item.targetId);
 
+			if (hide == true) screen.Hide(item);
+
+			return newWindow;
+
+		}
+
+		public static void OnDoTransition(int index, WindowBase fromScreen, int targetId) {
+			
+			WindowSystemFlow.OnDoTransition(index, FlowSystem.GetWindow(fromScreen).id, targetId);
+			
 		}
 
 	}

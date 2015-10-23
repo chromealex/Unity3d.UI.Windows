@@ -34,6 +34,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		
 	};
 
+	public enum FlowView : byte {
+
+		None = 0x0,
+		Layout = 0x1,
+		VideoTransitions = 0x2,
+		AudioTransitions = 0x4,
+
+		Transitions = VideoTransitions | AudioTransitions,
+
+	};
+
 	public class FlowData : ScriptableObject {
 
 		[Header("Version Data")]
@@ -75,7 +86,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		private List<int> selected = new List<int>();
 
 		[HideInInspector]
-		public bool flowWindowWithLayout = true;
+		public FlowView flowView = FlowView.Layout | FlowView.Transitions;
 		[HideInInspector]
 		public float flowWindowWithLayoutScaleFactor = 0f;
 
@@ -85,6 +96,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#if UNITY_EDITOR
 		#region UPGRADES
 		#pragma warning disable 612,618
+		public bool UpgradeTo105() {
+
+			this.flowView = FlowView.Layout | FlowView.Transitions;
+			
+			UnityEditor.EditorUtility.SetDirty(this);
+
+			return true;
+			
+		}
+
 		public bool UpgradeTo103() {
 
 			// Need to recompile
@@ -94,7 +115,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public bool UpgradeTo102() {
 
-			this.flowWindowWithLayout = true;
 			this.modeLayer = ModeLayer.Flow;
 
 			UnityEditor.EditorUtility.SetDirty(this);
@@ -173,7 +193,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				for (int i = 0; i < attachItems.Count; ++i) {
 					
 					var old = attachItems[i];
-					window.attachItems.Add(new AttachItem(old.targetId) { transition = old.transition, transitionParameters = old.transitionParameters, editor = old.editor });
+					window.attachItems.Add(new AttachItem(old.targetId, -1) { transition = old.transition, transitionParameters = old.transitionParameters, editor = old.editor });
 					
 				}
 				
@@ -240,6 +260,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		#endif
+
+		public bool HasView(FlowView view) {
+
+			return (this.flowView & view) != 0;
+
+		}
 
 		/*private void OnEnable() {
 
@@ -504,10 +530,34 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		#if UNITY_EDITOR
+		public void Attach(int source, int index, int other, bool oneWay, WindowLayoutElement component = null) {
+			
+			var window = this.GetWindow(source);
+			window.Attach(other, index, oneWay, component);
+			
+			this.isDirty = true;
+			
+		}
+		
+		public void Detach(int source, int index, int other, bool oneWay, WindowLayoutElement component = null) {
+			
+			var window = this.GetWindow(source);
+			window.Detach(other, index, oneWay, component);
+			
+			this.isDirty = true;
+			
+		}
+		
+		public bool AlreadyAttached(int source, int index, int other, WindowLayoutElement component = null) {
+
+			return this.windowAssets.Any((w) => w.id == source && w.AlreadyAttached(other, index, component));
+			
+		}
+
 		public void Attach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 
 			var window = this.GetWindow(source);
-			window.Attach(other, oneWay, component);
+			window.Attach(other, 0, oneWay, component);
 
 			this.isDirty = true;
 
@@ -516,21 +566,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public void Detach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 			
 			var window = this.GetWindow(source);
-			window.Detach(other, oneWay, component);
+			window.Detach(other, 0, oneWay, component);
 
 			this.isDirty = true;
 
 		}
-		
+
 		public bool AlreadyAttached(int source, int other, WindowLayoutElement component = null) {
-			
-			if (component != null) {
-				
-				return this.windowAssets.Any((w) => w.id == source && w.AlreadyAttached(other, component));
-				
-			}
-			
-			return this.windowAssets.Any((w) => w.id == source && w.AlreadyAttached(other));
+
+			return this.windowAssets.Any((w) => w.id == source && w.AlreadyAttached(other, 0, component));
 			
 		}
 		
@@ -625,9 +669,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			#if UNITY_EDITOR
 			window.name = window.ToString();
 			UnityEditor.AssetDatabase.AddObjectToAsset(window, this);
-			UnityEditor.AssetDatabase.ImportAsset(UnityEditor.AssetDatabase.GetAssetPath(window), UnityEditor.ImportAssetOptions.ForceUpdate);
-			UnityEditor.AssetDatabase.SaveAssets();
-			UnityEditor.EditorUtility.SetDirty(window);
 			#endif
 			window.Setup(newId, flags);
 
@@ -636,6 +677,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			this.isDirty = true;
 
 			this.Save();
+
+			#if UNITY_EDITOR
+			UnityEditor.AssetDatabase.ImportAsset(UnityEditor.AssetDatabase.GetAssetPath(window), UnityEditor.ImportAssetOptions.ForceUpdate);
+			UnityEditor.AssetDatabase.SaveAssets();
+			UnityEditor.EditorUtility.SetDirty(window);
+			#endif
 
 			return window;
 
