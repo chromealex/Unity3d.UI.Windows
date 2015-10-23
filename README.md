@@ -3,7 +3,7 @@
 ### Current Version: 1.0.5a
 
 ## 1.0.5a
-- Analytics alpha implementation (Unity Analytics support works now only)
+- Analytics alpha implementation (Unity Analytics works only)
 - A/B Testing module added. Now you can add tests to your flow and filter users by parameters.
 - Audio improvement
 - Bug fixes/minor improvements
