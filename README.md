@@ -1,6 +1,12 @@
 <img src="https://github.com/chromealex/Unity3d.UI.Windows/blob/master/UIWImage.png"/>
 
-### Current Version: 1.0.4a
+### Current Version: 1.0.5a
+
+## 1.0.5a
+- Analytics alpha implementation (Unity Analytics support works now only)
+- A/B Testing module added. Now you can add tests to your flow and filter users by parameters.
+- Audio improvement
+- Bug fixes/minor improvements
 
 ## 1.0.4a
 - SFX field improvements
