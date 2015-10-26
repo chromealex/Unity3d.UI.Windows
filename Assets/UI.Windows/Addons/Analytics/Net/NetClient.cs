@@ -37,7 +37,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Net {
 
                 if (client != ar.AsyncState) {
 
-                    Debug.Log("chat changed");
+                    Debug.Log("net changed");
 					((TcpClient)ar.AsyncState).Close();
 					if (this.onResult != null) this.onResult.Invoke(false);
                     return;

@@ -399,7 +399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1db5ab3ed53184c0b9f7b13bd9f60c3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: cb448cbf5bf8d425db551d7116f7e930, type: 2}
+  settings: {fileID: 11400000, guid: 67af7cb1a993f3d4fbfc9d0bfbc5153b, type: 2}
 --- !u!114 &11420508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -606,6 +606,11 @@ Prefab:
       propertyPath: flow
       value: 
       objectReference: {fileID: 11400000, guid: a1bd805bdc8434764bd048f65a277867,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: settings
+      value: 
+      objectReference: {fileID: 11400000, guid: 67af7cb1a993f3d4fbfc9d0bfbc5153b,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

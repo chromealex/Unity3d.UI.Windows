@@ -1,4 +1,5 @@
-﻿#if TEMPJSON
+﻿//#define TEMPJSON
+#if TEMPJSON
 using FullSerializer;
 #endif
 using ME;
@@ -16,8 +17,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		#region Transport
 		private NetClient net = new NetClient();
-		public bool logTcp = false;
-		public string host = "test.mushroomwars2.com";
+		public bool logTcp = true;
+		public string host = "test.unity3dflow.com";
+//		public string host = "localhost";
 		public int port = 9997;
 
 		public override void Update() {
@@ -56,7 +58,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			if (this.logTcp == true) {
 
-				Debug.Log("Stat> " + to.GetTypeTO());
+				if (to is StatReqTO) {
+					Debug.Log("Stat> " + to.GetTypeTO() + ":" + (to as StatReqTO).idx);
+				} else {
+					Debug.Log("Stat> " + to.GetTypeTO());
+				}
 
 			}
 
@@ -64,6 +70,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			
 		}
 		
+		#if UNITY_EDITOR
 		private void OnResponse(StatResTO resTO) {
 
 			if (this.responseMap.ContainsKey(resTO.idx) == true) {
@@ -73,8 +80,6 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 				onResult(resTO.result);
 
-				Debug.Log("Stat." + resTO.idx + " " + resTO.result.uniqueCount + ", " + resTO.result.count);
-				
 			} else {
 
 				Debug.LogWarning("Callback " + resTO.idx + " not found");
@@ -82,6 +87,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			}
 			
 		}
+		#endif
 
 		#if TEMPJSON
 		public static class JSON {
@@ -138,25 +144,29 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			}
 			
 			StatType type = (StatType)typeByte;
-			if (this.logTcp == true) {
+			StatResTO to = null;
 
-				Debug.Log(">Stat " + type + ": " + data.Length);
-
-			}
-			
 			if (StatType.OnStatResScreen == type) {
-				
-				this.OnResponse(this.Deserialize<StatResScreen>(data));
-				
+
+				to = this.Deserialize<StatResScreen>(data);
+
 			} else if (StatType.OnStatResScreenTransition == type) {
-				
-				this.OnResponse(this.Deserialize<StatResScreenTransition>(data));
-				
+
+				to = this.Deserialize<StatResScreenTransition>(data);
+
 			} else {
-				
+
 				Debug.LogWarning("Unknown request: " + type);
-				
+
 			}
+
+			if (this.logTcp == true && to != null) {
+
+				Debug.Log("Stat." + to.GetTypeTO() + ":" + to.idx + " " + to.result.uniqueCount + ", " + to.result.count);
+
+			}
+
+			this.OnResponse(to);
 			#else
 			Debug.LogWarning("Unknown request: " + typeShort);
 			#endif
@@ -302,12 +312,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 					if (newState == true) {
 
 						// Connecting
-						Debug.Log("Connecting");
 						this.OnEditorAuth(item.authKey, (result) => {
 
-							Debug.Log("Connected: " + result);
 							item.show = result;
-
 							item.processing = false;
 
 						});
@@ -319,8 +326,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 						this.OnEditorDisconnect((result) => {
 							
 							item.show = false;
-							
 							item.processing = false;
+							if (onReset != null) onReset.Invoke();
 
 						});
 						UnityEditor.EditorApplication.delayCall += () => this.Update();

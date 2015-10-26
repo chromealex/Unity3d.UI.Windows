@@ -21,7 +21,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 			var changed = false;
 
-			if (this.yearsArray == null) {
+			if (this.yearsArray == null || this.yearsArray.Length == 0) {
 				
 				var years = new List<string>();
 				years.Add("Any");
