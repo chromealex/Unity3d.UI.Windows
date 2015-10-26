@@ -55,7 +55,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 		
 		private void SendMsg<T>(T to) where T : StatTO {
-
+			
+			#if UNITY_EDITOR
 			if (this.logTcp == true) {
 
 				if (to is StatReqTO) {
@@ -65,6 +66,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 				}
 
 			}
+			#endif
 
 			this.net.SendMsg((byte)to.GetTypeTO(), this.Serialize(to));
 			
