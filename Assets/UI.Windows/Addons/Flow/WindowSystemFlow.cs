@@ -157,8 +157,11 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public static void OnDoTransition(int index, WindowBase fromScreen, int targetId, bool hide = true) {
-			
-			WindowSystem.OnDoTransition(index, FlowSystem.GetWindow(fromScreen).id, targetId, hide);
+
+			var window = FlowSystem.GetWindow(fromScreen);
+			if (window == null) return;
+
+			WindowSystem.OnDoTransition(index, window.id, targetId, hide);
 			
 		}
 

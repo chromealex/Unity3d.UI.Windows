@@ -325,22 +325,6 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 		}
 
 		public override bool InstallationNeeded() {
-			
-			//var moduleName = "Heatmap";
-
-			/*var data = FlowSystem.GetData();
-			if (data == null) return false;
-			
-			// Check directories
-			var dataPath = AssetDatabase.GetAssetPath(data);
-			var directory = Path.GetDirectoryName(dataPath);
-			var projectName = data.name;
-			
-			var modulesPath = Path.Combine(directory, projectName + ".Modules");
-
-			var settings = ME.EditorUtilities.GetAssetsOfType<HeatmapSettings>(modulesPath, useCache: false).FirstOrDefault();
-			
-			return settings == null;*/
 
 			return Heatmap.GetSettingsFile() == null;
 			

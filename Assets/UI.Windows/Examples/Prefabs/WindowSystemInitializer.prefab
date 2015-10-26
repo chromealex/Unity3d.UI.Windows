@@ -35,6 +35,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &142314
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 447444}
+  - 114: {fileID: 11416662}
+  - 114: {fileID: 11451540}
+  - 114: {fileID: 11437570}
+  - 114: {fileID: 11434120}
+  m_Layer: 0
+  m_Name: Analytics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &143580
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,9 +169,22 @@ Transform:
   - {fileID: 456438}
   - {fileID: 454564}
   - {fileID: 494284}
+  - {fileID: 447444}
   - {fileID: 481806}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!4 &447444
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 142314}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 443580}
+  m_RootOrder: 5
 --- !u!4 &450186
 Transform:
   m_ObjectHideFlags: 1
@@ -224,7 +256,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 443580}
-  m_RootOrder: 5
+  m_RootOrder: 6
 --- !u!4 &494284
 Transform:
   m_ObjectHideFlags: 1
@@ -356,6 +388,18 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160972}
   m_Enabled: 1
+--- !u!114 &11416662
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 142314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1db5ab3ed53184c0b9f7b13bd9f60c3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: cb448cbf5bf8d425db551d7116f7e930, type: 2}
 --- !u!114 &11420508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -378,6 +422,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e489ba4da6c24cccaa03011bd6fdfdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11434120
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 142314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f536b3d800a3f4dfd8313c4c7e67b58f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  analytics: {fileID: 11416662}
+--- !u!114 &11437570
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 142314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0834d0203e3ca4b96b74bb107e2b9e99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  analytics: {fileID: 11416662}
 --- !u!114 &11443580
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -434,6 +502,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ForceModuleActive: 0
+--- !u!114 &11451540
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 142314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 229d0b40efafd4958adc75dda5f357a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  analytics: {fileID: 11416662}
+  logTcp: 0
+  host: test.mushroomwars2.com
+  port: 9997
 --- !u!114 &11455104
 MonoBehaviour:
   m_ObjectHideFlags: 1
