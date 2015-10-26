@@ -1,4 +1,6 @@
-﻿using FullSerializer;
+﻿#if TEMPJSON
+using FullSerializer;
+#endif
 using ME;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,7 +82,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			}
 			
 		}
-		
+
+		#if TEMPJSON
 		public static class JSON {
 			
 			public static string Serialize<T>(T source) {
@@ -103,17 +106,24 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			}
 			
 		}
+		#endif
 		
 		private T Deserialize<T>(byte[] data) {
-			
+
+			#if TEMPJSON
 			return JSON.Deserialize<T>(Encoding.UTF8.GetString(data, 0, data.Length));
-			
+			#endif
+			return default(T);
+
 		}
 		
 		private byte[] Serialize<T>(T data) {
-			
+
+			#if TEMPJSON
 			return Encoding.UTF8.GetBytes(JSON.Serialize<T>(data));
-			
+			#endif
+			return null;
+
 		}
 		
 		private void OnRecMsg(short typeShort, byte[] data) {
