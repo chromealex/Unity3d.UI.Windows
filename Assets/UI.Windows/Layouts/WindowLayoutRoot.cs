@@ -91,6 +91,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public void LayoutComplete() {
+		}
+		
+		public void GraphicUpdateComplete() {
+		}
+
 		public bool IsDestroyed() {
 
 			return this == null;

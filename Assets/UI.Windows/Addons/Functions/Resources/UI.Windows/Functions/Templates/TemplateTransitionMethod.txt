@@ -40,7 +40,7 @@
 				onParametersPassCall
 			);
 			
-			WindowSystemFlow.OnDoTransition(item.index, {FLOW_FROM_ID}, {FLOW_TO_ID});
+			WindowSystemFlow.OnDoTransition(item.index, {FLOW_FROM_ID}, {FLOW_TO_ID}, hide);
 			
 			if (hide == true) this.Hide(item);
 			

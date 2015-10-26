@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI.Windows.Plugins.Social.ThirdParty;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows.Plugins.Social.Modules {
 

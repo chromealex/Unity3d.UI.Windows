@@ -44,6 +44,12 @@ namespace ME {
 		}
 
         public abstract void ModifyVertices(List<UIVertex> verteces);
+		
+		public override void ModifyMesh(VertexHelper helper) {
+
+
+
+		}
 
     #endif
 

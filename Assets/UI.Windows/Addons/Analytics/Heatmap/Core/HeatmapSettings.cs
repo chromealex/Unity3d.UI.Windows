@@ -6,7 +6,6 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Heatmap.Events;
 using UnityEngine.UI.Windows.Types;
 using System.Linq;
-using UnityEngine.UI.Windows.Plugins.Social.ThirdParty;
 using UnityEngine.UI.Windows.Plugins.Analytics;
 
 namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {

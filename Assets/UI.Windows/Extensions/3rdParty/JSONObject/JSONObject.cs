@@ -17,7 +17,7 @@ using Debug = UnityEngine.Debug;
  * Copyright Matt Schoen 2010 - 2013
  */
 
-namespace UnityEngine.UI.Windows.Plugins.Social.ThirdParty {
+namespace UnityEngine.UI.Windows.Extensions {
 
 	public class JSONObject {
 	#if POOLING

@@ -38,7 +38,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.rectTransform.anchoredPosition = Vector2.zero;
 
 		}
-
+		
 		public override void ModifyVertices(List<UIVertex> list) {
 		}
 

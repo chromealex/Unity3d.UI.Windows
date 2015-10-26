@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UnityEngine.UI.Windows.Plugins.Social.ThirdParty {
+namespace UnityEngine.UI.Windows.Extensions {
 
 	public static partial class JSONTemplates {
 

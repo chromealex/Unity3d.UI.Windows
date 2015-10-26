@@ -128,7 +128,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 		}
 
-		public static void OnScreenTransition(int index, int screenId, int toScreenId) {
+		public static void OnScreenTransition(int index, int screenId, int toScreenId, bool hide) {
 			
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) return;

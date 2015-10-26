@@ -100,7 +100,7 @@ namespace UnityEngine.UI.Windows {
 
 	public class WindowSystem : MonoBehaviour {
 		
-		public class OnDoTransitionEvent : UnityEvent<int, int, int> {}
+		public class OnDoTransitionEvent : UnityEvent<int, int, int, bool> {}
 		public static OnDoTransitionEvent onTransition = new OnDoTransitionEvent();
 
 		public class Functions {
@@ -354,9 +354,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void OnDoTransition(int index, int fromScreenId, int toScreenId) {
+		public static void OnDoTransition(int index, int fromScreenId, int toScreenId, bool hide = true) {
 
-			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId);
+			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId, hide);
 
 		}
 

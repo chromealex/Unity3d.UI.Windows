@@ -9,7 +9,7 @@ using System.Reflection;
  * Copyright Matt Schoen 2010
  */
 
-namespace UnityEngine.UI.Windows.Plugins.Social.ThirdParty {
+namespace UnityEngine.UI.Windows.Extensions {
 
 	public static partial class JSONTemplates {
 		static readonly HashSet<object> touched = new HashSet<object>();

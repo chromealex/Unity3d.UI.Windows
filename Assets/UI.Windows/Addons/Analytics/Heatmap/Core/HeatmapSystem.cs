@@ -9,7 +9,6 @@ using UnityEngine.UI.Windows.Types;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System;
-using UnityEngine.UI.Windows.Plugins.Social.ThirdParty;
 
 namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 	

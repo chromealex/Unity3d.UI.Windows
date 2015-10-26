@@ -96,13 +96,26 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		public override IEnumerator OnScreenTransition(int index, int screenId, int toScreenId) {
 
-			UnityEngine.Analytics.Analytics.CustomEvent("Screen Transition", new Dictionary<string, object>() {
+			if (toScreenId == -1) {
 				
-				{ "From", string.Format("{0}({1})", FlowSystem.GetWindow(screenId).title, screenId) },
-				{ "To", string.Format("{0}({1})", FlowSystem.GetWindow(toScreenId).title, toScreenId) }
-				
-			});
-			
+				UnityEngine.Analytics.Analytics.CustomEvent("Screen", new Dictionary<string, object>() {
+					
+					{ "Screen", string.Format("{0}({1})", FlowSystem.GetWindow(screenId).title, screenId) },
+
+				});
+
+			} else {
+
+				UnityEngine.Analytics.Analytics.CustomEvent("Screen Transition", new Dictionary<string, object>() {
+					
+					{ "From", string.Format("{0}({1})", FlowSystem.GetWindow(screenId).title, screenId) },
+					{ "To", string.Format("{0}({1})", FlowSystem.GetWindow(toScreenId).title, toScreenId) },
+					{ "Path", string.Format("Path Index: {0}", index) }
+					
+				});
+
+			}
+
 			yield return false;
 
 		}

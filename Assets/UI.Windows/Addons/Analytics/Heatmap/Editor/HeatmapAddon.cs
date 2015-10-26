@@ -28,35 +28,35 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			return "Analytics (pre-alpha)";
 			
 		}
-
-		public void DrawBubble(Vector2 position, ScreenResult result, Vector2 centerOffset, string styleName = "flow node hex 4", string format = "<b>All:</b> {0}\n<b>Unique:</b> {1}", int overflowY = 0) {
-
-			var topOffset = 22;
-
+		
+		public void DrawBubble(Vector2 position, string text, string styleName, Vector2 centerOffset) {
+			
 			var style = ME.Utilities.CacheStyle("UI.Windows.Plugins.Heatmap", styleName, (name) => {
-
-				var _style = new GUIStyle(name);
-				_style.alignment = TextAnchor.MiddleLeft;
-				_style.padding = new RectOffset(20, 20, 0, 0);
-				_style.margin = new RectOffset();
-				_style.richText = true;
-				return _style;
-
+				
+				return FlowSystemEditorWindow.defaultSkin.FindStyle(name);
+				
 			});
-
+			
 			if (style == null) return;
-			style.overflow = new RectOffset(0, 0, topOffset + overflowY, 0);
-
-			var content = string.Format(format, result.count, result.uniqueCount);
+			
+			var content = text;
 			var size = style.CalcSize(new GUIContent(content));
 			
 			float offset = Mathf.Max(size.x, size.y) * 0.5f + 5f;
-
-			EditorGUI.LabelField(new Rect(position - size * 0.5f + centerOffset * offset + Vector2.up * topOffset * 0.5f, size), content, style);
+			
+			EditorGUI.LabelField(new Rect(position - size * 0.5f + centerOffset * offset, size), content, style);
 
 		}
 
-		public void DrawBubble(Rect rect, int index, int fromScreenId, int toScreenId, Vector2 offset, string styleName = "flow node hex 4", string format = "<b>All:</b> {0}\n<b>Unique:</b> {1}", int overflowY = 0) {
+		public void DrawBubble(Vector2 position, ScreenResult result, Vector2 centerOffset, string styleName = "LabelYellow", string format = "<b>All:</b> {0}\n<b>Unique:</b> {1}") {
+
+			var content = string.Format(format, result.count, result.uniqueCount);
+
+			this.DrawBubble(position, content, styleName, centerOffset);
+
+		}
+
+		public void DrawBubble(Rect rect, int index, int fromScreenId, int toScreenId, Vector2 offset, string styleName = "LabelYellow", string format = "<b>All:</b> {0}\n<b>Unique:</b> {1}") {
 			
 			if (Heatmap.settings == null) Heatmap.settings = Heatmap.GetSettingsFile();
 			if (this.editor == null) return;
@@ -64,7 +64,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			var settings = Heatmap.settings;
 			foreach (var item in settings.keys) {
 
-				if (item.show == true && item.enabled == true) {
+				if (item.show == true && item.enabled == true && item.processing == false) {
 
 					foreach (var service in this.editor.services) {
 
@@ -78,11 +78,12 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 
 								if (result != null) {
 
-									this.DrawBubble(rect.center, result, offset, styleName, format, overflowY);
+									this.DrawBubble(rect.center, result, offset, styleName, format);
 
 								} else {
 
 									// still loading
+									this.DrawBubble(rect.center, "Loading...", "LabelYellow", Vector2.zero);
 
 								}
 
@@ -92,8 +93,9 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 								if (this.resultsTransitionCache.ContainsKey(keyTransition) == false) this.resultsTransitionCache.Add(keyTransition, 0);
 
 								if (toScreenId == -1) {
-									
-									service.GetScreen(item.authKey, fromScreenId, (_result) => {
+
+									Debug.Log("Screen Request");
+									service.GetScreen(fromScreenId, (_result) => {
 										
 										this.resultsCache[key] = _result as ScreenResult;
 										this.resultsTransitionCache[keyTransition] += (_result as ScreenResult).uniqueCount;
@@ -101,8 +103,9 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 									});
 
 								} else {
-
-									service.GetScreenTransition(item.authKey, index, fromScreenId, toScreenId, (_result) => {
+									
+									Debug.Log("Screen Transition Request");
+									service.GetScreenTransition(index, fromScreenId, toScreenId, (_result) => {
 
 										this.resultsCache[key] = _result as ScreenResult;
 										this.resultsTransitionCache[keyTransition] -= (_result as ScreenResult).uniqueCount;
@@ -165,6 +168,9 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 		public override void OnFlowWindow(FD.FlowWindow window) {
 
 			if (window.isVisibleState == false) return;
+			if (window.IsContainer() == true) return;
+			if (window.IsSmall() == true && window.IsFunction() == true) return;
+			if (window.IsShowDefault() == true) return;
 
 			if (Heatmap.settings == null) Heatmap.settings = Heatmap.GetSettingsFile();
 			
@@ -182,7 +188,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 							if (service.GetPlatformName() == item.platformName) {
 
 								var rect = window.rect;
-								this.DrawBubble(new Rect(new Vector2(rect.x + rect.width * 0.5f, rect.y), Vector2.zero), 0, window.id, -1, Vector2.zero, "flow node hex 3");
+								this.DrawBubble(new Rect(new Vector2(rect.x + rect.width * 0.5f, rect.y), Vector2.zero), 0, window.id, -1, Vector2.zero, "LabelGreen");
 
 								int value;
 								var keyTransition = string.Format("{0}_{1}", item.platformName, window.id);
@@ -195,7 +201,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 								if (result.uniqueCount > 0) {
 
 									// Draw exit bubble
-									this.DrawBubble(new Vector2(rect.x + rect.width * 0.5f, rect.y + rect.height), result, Vector2.zero, "flow node hex 6", "{1}", 5);
+									this.DrawBubble(new Vector2(rect.x + rect.width * 0.5f, rect.y + rect.height), result, Vector2.zero, "LabelRed", "{1}");
 
 								}
 

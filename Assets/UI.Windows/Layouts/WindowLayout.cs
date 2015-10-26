@@ -267,6 +267,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public void LayoutComplete() {
+		}
+
+		public void GraphicUpdateComplete() {
+		}
+
 		public void Rebuild(CanvasUpdate executing) {
 
 			if (this.root != null) this.root.Rebuild();

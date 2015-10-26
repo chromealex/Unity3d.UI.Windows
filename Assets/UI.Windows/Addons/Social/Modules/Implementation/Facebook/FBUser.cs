@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI.Windows.Plugins.Social.Core;
-using UnityEngine.UI.Windows.Plugins.Social.ThirdParty;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Impl.FB {
 

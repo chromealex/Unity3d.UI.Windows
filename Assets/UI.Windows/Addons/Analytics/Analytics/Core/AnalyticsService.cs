@@ -6,6 +6,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 	public interface IAnalyticsService {
 
 		bool isActive { set; get; }
+
+		void Update();
+
 		IEnumerator Auth(string key);
 		string GetPlatformName();
 		IEnumerator OnEvent(int screenId, string group1, string group2 = null, string group3 = null, int weight = 1);
@@ -19,8 +22,10 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 		IEnumerator SetUserBirthYear(int birthYear);
 
 		#if UNITY_EDITOR
-		void GetScreen(string key, int screenId, System.Action<Result> onResult);
-		void GetScreenTransition(string key, int index, int screenId, int toScreenId, System.Action<Result> onResult);
+		void OnEditorAuth(string key, System.Action<bool> onResult);
+		void OnEditorDisconnect(System.Action<bool> onResult);
+		void GetScreen(int screenId, System.Action<Result> onResult);
+		void GetScreenTransition(int index, int screenId, int toScreenId, System.Action<Result> onResult);
 		void OnInspectorGUI(HeatmapSettings settings, AnalyticsItem item, System.Action onReset, GUISkin skin);
 		#endif
 
@@ -50,6 +55,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 		}
 
+		public virtual void Update() {
+		}
+
 		public virtual IEnumerator Auth(string key) {
 
 			yield return false;
@@ -76,7 +84,19 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 		}
 
 		#if UNITY_EDITOR
-		public virtual void GetScreen(string key, int screenId, System.Action<Result> onResult) {
+		public virtual void OnEditorAuth(string key, System.Action<bool> onResult) {
+
+			if (onResult != null) onResult.Invoke(false);
+
+		}
+		
+		public virtual void OnEditorDisconnect(System.Action<bool> onResult) {
+			
+			if (onResult != null) onResult.Invoke(false);
+
+		}
+
+		public virtual void GetScreen(int screenId, System.Action<Result> onResult) {
 			
 			var result = new ScreenResult();
 			result.count = Random.Range(100, 200);
@@ -85,7 +105,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 			
 		}
 
-		public virtual void GetScreenTransition(string key, int index, int screenId, int toScreenId, System.Action<Result> onResult) {
+		public virtual void GetScreenTransition(int index, int screenId, int toScreenId, System.Action<Result> onResult) {
 
 			var result = new ScreenResult();
 			result.count = Random.Range(100, 200);

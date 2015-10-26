@@ -8,10 +8,15 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 		[System.NonSerialized]
 		public bool isChanged = false;
+		
+		[System.NonSerialized]
+		public bool show;
+		
+		[System.NonSerialized]
+		public bool processing;
 
 		public string platformName;
 		public bool enabled;
-		public bool show;
 		public string authKey;
 		
 		public UserFilter userFilter = new UserFilter();
