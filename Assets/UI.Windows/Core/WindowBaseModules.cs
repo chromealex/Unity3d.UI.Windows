@@ -587,6 +587,8 @@ namespace UnityEngine.UI.Windows {
 		[BitMask(typeof(History))]
 		public History history = History.Auto;
 
+		public bool forceSingleInstance = false;
+
 		[Header("Pool")]
 		public bool createPool = true;
 		[ReadOnly("createPool", state: false)]

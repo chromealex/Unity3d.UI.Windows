@@ -147,10 +147,14 @@ namespace UnityEngine.UI.Windows {
 				item,
 				onParametersPassCall
 			);
-			
-			WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? FlowSystem.GetWindow(newWindow).id : item.targetId, hide);
 
-			if (hide == true) screen.Hide(item);
+			WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);
+
+			if (hide == true) {
+
+				screen.Hide(item);
+
+			}
 
 			return newWindow;
 
@@ -158,10 +162,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void OnDoTransition(int index, WindowBase fromScreen, int targetId, bool hide = true) {
 
-			var window = FlowSystem.GetWindow(fromScreen);
-			if (window == null) return;
-
-			WindowSystem.OnDoTransition(index, window.id, targetId, hide);
+			WindowSystem.OnDoTransition(index, fromScreen.windowId, targetId, hide);
 			
 		}
 

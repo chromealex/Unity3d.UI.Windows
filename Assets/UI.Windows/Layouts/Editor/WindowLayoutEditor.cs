@@ -59,6 +59,42 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
+		public void CalculateRects(UnityEngine.UI.Windows.WindowLayout _target) {
+			
+			var elements = _target.elements;
+
+			var pos = _target.transform.localPosition;
+			_target.transform.localPosition = Vector3.zero;
+
+			for (int i = 0; i < elements.Count; ++i) {
+				
+				var element = elements[i];
+				if (element == null) continue;
+				
+				var rectTransform = (element.transform as RectTransform);
+				var corners = new Vector3[4];
+				rectTransform.GetWorldCorners(corners);
+				var rect = new Rect(corners[0].x, -corners[1].y, corners[2].x - corners[1].x, corners[2].y - corners[3].y);
+				element.editorRect = rect;
+				
+				if (i == 0) {
+					
+					_target.root.editorRect = rect;
+					
+				}
+				
+				//element.autoStretchX = (rectTransform.anchorMin.x != rectTransform.anchorMax.x);
+				//element.autoStretchY = (rectTransform.anchorMin.y != rectTransform.anchorMax.y);
+				
+			}
+			
+			_target.editorScale = _target.transform.localScale.x;
+			_target.root.editorRectLocal = (_target.root.transform as RectTransform).rect;
+			
+			(_target.transform as RectTransform).localPosition = pos;
+
+		}
+
 		public override void OnPreviewGUI(Rect rect, GUIStyle style) {
 			
 			this.OnPreviewGUI(Color.white, rect, style, drawInfo: true, selectable: false, hovered: false, selectedElement: null, onSelection: null, onElementGUI: null, highlighted: null);
@@ -94,7 +130,8 @@ namespace UnityEditor.UI.Windows {
 			this.OnPreviewGUI(color, rect, style, drawInfo: true, selectable: true, hovered: false, selectedElement: selectedElement, onSelection: onSelection, onElementGUI: null, highlighted: highlighted);
 			
 		}
-		
+
+		private bool processReconnection = false;
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, System.Action<WindowLayoutElement, Rect, bool> onElementGUI, List<WindowLayoutElement> highlighted) {
 
 			var oldColor = GUI.color;
@@ -115,37 +152,55 @@ namespace UnityEditor.UI.Windows {
 
 			if (ME.EditorUtilities.IsPrefab(_target.gameObject) == false && _target.gameObject.activeInHierarchy == true) {
 
-				var pos = _target.transform.localPosition;
-				_target.transform.localPosition = Vector3.zero;
-
-				foreach (var element in elements) {
-
-					if (element == null) continue;
-
-					var rectTransform = (element.transform as RectTransform);
-
-					var corners = new Vector3[4];
-					rectTransform.GetWorldCorners(corners);
-
-					var rect = new Rect(corners[0].x, -corners[1].y, corners[2].x - corners[1].x, corners[2].y - corners[3].y);
-
-					element.editorRect = rect;
-					
-					//element.autoStretchX = (rectTransform.anchorMin.x != rectTransform.anchorMax.x);
-					//element.autoStretchY = (rectTransform.anchorMin.y != rectTransform.anchorMax.y);
-
-				}
-
-				_target.editorScale = _target.transform.localScale.x;
-				_target.root.editorRect = (_target.root.transform as RectTransform).rect;
-				(_target.transform as RectTransform).localPosition = pos;
+				this.CalculateRects(_target);
 
 			}
 			
 			var scaleFactor = 0f;
 			if (elements.Count > 0) {
 
-				scaleFactor = this.GetFactor(new Vector2(_target.root.editorRect.width, _target.root.editorRect.height), new Vector2(r.width, r.height));
+				scaleFactor = this.GetFactor(new Vector2(_target.root.editorRectLocal.width, _target.root.editorRectLocal.height), new Vector2(r.width, r.height));
+
+			}
+
+			if (ME.EditorUtilities.IsPrefab(_target.gameObject) == true) {
+
+				if (this.processReconnection == false && scaleFactor == 0f) {
+
+					this.processReconnection = true;
+
+					// We must re-attach prefab
+					var tempGo = UnityEditor.PrefabUtility.InstantiatePrefab(_target.gameObject) as GameObject;
+					Selection.activeGameObject = tempGo;
+					foreach (var component in tempGo.GetComponents<Component>()) {
+
+						var editor = Editor.CreateEditor(component) as WindowLayoutEditor;
+						if (editor != null) {
+
+							editor.CalculateRects(component as UnityEngine.UI.Windows.WindowLayout);
+							EditorUtility.SetDirty(component);
+
+						}
+
+					}
+
+					var i = 0;
+					EditorApplication.update += () => {
+
+						++i;
+
+						if (i == 30) {
+
+							UnityEditor.PrefabUtility.ReplacePrefab(tempGo, PrefabUtility.GetPrefabParent(tempGo), ReplacePrefabOptions.ConnectToPrefab);
+							GameObject.DestroyImmediate(tempGo);
+
+							this.processReconnection = false;
+
+						}
+
+					};
+
+				}
 
 			}
 

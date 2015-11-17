@@ -8,7 +8,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 	public class InputField : UnityEngine.UI.InputField {
 
-		/*public override void OnSelect(BaseEventData eventData) {
+		public override void OnSelect(BaseEventData eventData) {
 
 			base.OnSelect(eventData);
 
@@ -31,7 +31,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 				    alignment == TextAnchor.MiddleCenter ||
 				    alignment == TextAnchor.MiddleRight) {
 					
-					offset += Vector2.up * this.textComponent.fontSize;
+					offset += Vector2.up * this.textComponent.fontSize * this.textComponent.lineSpacing;
 					pivot.y = 0f;
 					
 				}
@@ -40,7 +40,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 					alignment == TextAnchor.LowerCenter ||
 					alignment == TextAnchor.LowerRight) {
 					
-					offset += Vector2.up * this.textComponent.fontSize;
+					offset += Vector2.up * this.textComponent.fontSize * this.textComponent.lineSpacing;
 					pivot.y = 1f;
 					
 				}
@@ -51,7 +51,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 			}
 
-		}*/
+		}
 
 	}
 

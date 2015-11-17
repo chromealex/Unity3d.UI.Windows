@@ -1,6 +1,7 @@
 ﻿
 using System.Text.RegularExpressions;
-using System.Linq;namespace ME {
+using System.Linq;
+namespace ME {
 
 	public static class StringUtilities {
 		

@@ -291,7 +291,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnValidateEditor();
 
-			if (Application.isPlaying == false) return;
+			if (Application.isPlaying == true) return;
 
 			this.SetValue(this.currentValueNormalized, immediately: true);
 

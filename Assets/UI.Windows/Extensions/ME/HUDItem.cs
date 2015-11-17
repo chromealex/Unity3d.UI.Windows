@@ -95,13 +95,17 @@ public class HUDItem : MonoBehaviour {
 			}
 
 			var rPos = this.uiCamera.ViewportToWorldPoint(pos);
-			
-			this.transform.position = rPos;
-			pos = this.transform.localPosition;
-			pos.z = 0f;
-			
-			this.transform.localPosition = pos;
-			
+
+			if (rPos != this.transform.position) {
+
+				this.transform.position = rPos;
+				pos = this.transform.localPosition;
+				pos.z = 0f;
+				
+				this.transform.localPosition = pos;
+
+			}
+
 		}
 		
 	}

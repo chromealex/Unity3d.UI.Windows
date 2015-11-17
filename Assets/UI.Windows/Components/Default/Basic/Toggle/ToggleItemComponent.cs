@@ -7,6 +7,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class ToggleItemComponent : ButtonComponent {
 
+		[Header("Toggle Item Component")]
 		public Toggle toggle;
 
 		private ComponentEvent<bool> callbackToggle = new ComponentEvent<bool>();

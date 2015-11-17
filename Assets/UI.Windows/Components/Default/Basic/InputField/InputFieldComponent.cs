@@ -19,6 +19,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private ComponentEvent<string> onChange = new ComponentEvent<string>();
 		private ComponentEvent<string> onEditEnd = new ComponentEvent<string>();
+		private ComponentEvent<bool> onFocus = new ComponentEvent<bool>();
+		
+		private bool lastFocusValue = false;
 
 		public string GetText() {
 
@@ -89,11 +92,29 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.inputField != null) this.inputField.characterLimit = length;
 			
 		}
+		
+		public void SetOnChangeCallback(UnityAction<string> onChange) {
+			
+			if (onChange != null) this.onChange.AddListenerDistinct(onChange);
+			
+		}
+		
+		public void SetOnEditEndCallback(UnityAction<string> onEditEnd) {
+			
+			if (onEditEnd != null) this.onEditEnd.AddListenerDistinct(onEditEnd);
+			
+		}
+		
+		public void SetOnFocusChangedCallback(UnityAction<bool> onFocus) {
+			
+			if (onFocus != null) this.onFocus.AddListenerDistinct(onFocus);
+			
+		}
 
 		public void SetCallbacks(UnityAction<string> onChange, UnityAction<string> onEditEnd) {
 			
-			if (onChange != null) this.onChange.AddListenerDistinct(onChange);
-			if (onEditEnd != null) this.onEditEnd.AddListenerDistinct(onEditEnd);
+			this.SetOnChangeCallback(onChange);
+			this.SetOnEditEndCallback(onEditEnd);
 
 		}
 		
@@ -117,6 +138,8 @@ namespace UnityEngine.UI.Windows.Components {
 			this.inputField.onValueChange.AddListener(this.OnChange);
 			this.inputField.onEndEdit.AddListener(this.OnEditEnd);
 
+			this.lastFocusValue = this.HasFocus();
+
 		}
 
 		public override void OnDeinit() {
@@ -129,6 +152,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.onChange.RemoveAllListeners();
 			this.onEditEnd.RemoveAllListeners();
+			this.onFocus.RemoveAllListeners();
 
 		}
 
@@ -141,6 +165,17 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			return addedChar;
+
+		}
+
+		public virtual void LateUpdate() {
+
+			if (this.lastFocusValue != this.HasFocus()) {
+
+				this.onFocus.Invoke(this.HasFocus());
+				this.lastFocusValue = this.HasFocus();
+
+			}
 
 		}
 

@@ -32,8 +32,9 @@ namespace UnityEngine.UI.Windows.Components {
 				
 				if (this.count == 0) {
 					
-					throw new System.InvalidOperationException("Empty range has no to()");
-					
+					//throw new System.InvalidOperationException("Empty range has no to()");
+					return this.from;
+
 				}
 				
 				return (this.from + this.count - 1);
@@ -132,6 +133,14 @@ namespace UnityEngine.UI.Windows.Components {
 		#endregion
 		
 		#region Public API
+		private int maxOutputCount = -1;
+		public void SetMaxOutputCount(int max = -1) {
+
+			this.maxOutputCount = max;
+			this.ReloadData();
+
+		}
+
 		/// <summary>
 		/// The data source that will feed this table view with information. Required.
 		/// </summary>
@@ -197,7 +206,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.rowHeights = new float[this.dataSource.GetRowsCount(this)];
 
-			this.isEmpty = this.rowHeights.Length == 0;
+			this.isEmpty = (this.rowHeights.Length == 0);
 			this.Refresh();
 
 			if (this.isEmpty == true) {
@@ -441,13 +450,24 @@ namespace UnityEngine.UI.Windows.Components {
 			var startIndex = this.FindIndexOfRowAtY(startY);
 			var endIndex = this.FindIndexOfRowAtY(endY);
 
-			return new Range(startIndex, endIndex - startIndex + 1);
+			var visibleRows = new Range(startIndex, endIndex - startIndex + 1);
+
+			if (this.maxOutputCount > -1) {
+
+				var count = this.cumulativeRowHeights.Length;
+				visibleRows.from = Mathf.Max(0, count - this.maxOutputCount);
+				visibleRows.count = Mathf.Min(count, this.maxOutputCount);
+
+			}
+
+			return visibleRows;
 
 		}
 
 		private void SetInitialVisibleRows() {
 
 			var visibleRows = this.CalculateCurrentVisibleRowRange();
+
 			for (int i = 0; i < visibleRows.count; ++i) {
 
 				this.AddRow(visibleRows.from + i, true);

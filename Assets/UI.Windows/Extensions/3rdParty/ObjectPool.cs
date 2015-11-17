@@ -214,7 +214,7 @@ namespace UnityEngine.Extensions {
 		        instance.sceneLookup.Remove(obj);
 		        obj.gameObject.SetActive(false);
 
-		    } else if(instance.prefabLookup.ContainsKey(obj) == false) {
+		    } else if (instance.prefabLookup.ContainsKey(obj) == false) {
 
 				#if UNITY_EDITOR
 

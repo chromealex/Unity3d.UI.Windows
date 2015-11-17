@@ -111,6 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -133,18 +134,18 @@ MonoBehaviour:
   randomColor: {r: 1, g: 0, b: .80907774, a: 1}
   editorRect:
     serializedVersion: 2
-    x: -512
-    y: -384
-    width: 1024
-    height: 768
+    x: -692
+    y: -389.5
+    width: 1384
+    height: 779
   editorMinWidth: 0
   editorMinHeight: 0
   tempEditorRect:
     serializedVersion: 2
-    x: 28.6666718
-    y: 950
-    width: 406.666656
-    height: 305
+    x: 2
+    y: 933.67627
+    width: 408
+    height: 229.6474
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11440508
@@ -158,18 +159,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   canvasGroup: {fileID: 22592038}
   _rectTransform: {fileID: 22440490}
   mode: 0
   minWidth: 1024
   maxWidth: 1920
   margin: 100
+  editorRectLocal:
+    serializedVersion: 2
+    x: -692
+    y: -389.5
+    width: 1384
+    height: 779
   editorRect:
     serializedVersion: 2
-    x: -512
-    y: -384
-    width: 1024
-    height: 768
+    x: -692
+    y: -389.5
+    width: 1384
+    height: 779
 --- !u!114 &11440510
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -181,6 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b748d05ceffba45de94d80cd5a76d397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents:
@@ -196,7 +205,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11444498}
   initialized: 1
   isAlive: 0
-  editorScale: 0
+  editorScale: 1
   comment: Empty Layout
 --- !u!114 &11442514
 MonoBehaviour:
@@ -292,16 +301,16 @@ RectTransform:
   m_GameObject: {fileID: 140492}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 22440490}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!225 &22540488
 CanvasGroup:
   m_ObjectHideFlags: 1

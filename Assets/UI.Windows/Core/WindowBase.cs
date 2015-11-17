@@ -11,6 +11,9 @@ using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
+	public class CompilerIgnore : System.Attribute {
+	};
+
 	/// <summary>
 	/// Window or component object state.
 	/// </summary>
@@ -74,10 +77,18 @@ namespace UnityEngine.UI.Windows {
 			return this.source == y.source;
 			
 		}
-
+		
 		public void Setup(FlowData data) {
 
+			this.Setup(-1, data);
+
+		}
+
+		public void Setup(int id, FlowData data) {
+
 			#if UNITY_EDITOR
+			if (id >= 0) this.windowId = id;
+			if (this.audio == null) this.audio = new Audio.Window();
 			this.audio.flowData = data;
 			#endif
 
@@ -133,7 +144,7 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				this.onParametersPassCall(this);
+				if (this.onParametersPassCall != null) this.onParametersPassCall(this);
 
 			} else {
 				
@@ -215,11 +226,11 @@ namespace UnityEngine.UI.Windows {
 			var depthStep = WindowSystem.GetDepthStep() * 0.5f;
 			var camerasCount = cameras.Length;
 			
-			//var innerStep = depthStep / camerasCount;
+			var innerStep = depthStep / camerasCount;
 			for (int i = 0; i < camerasCount; ++i) {
 				
 				cameras[i].orthographicSize = this.workCamera.orthographicSize;
-				cameras[i].depth = currentDepth + depthStep * (i + 1) * (front == true ? 1f : -1f);
+				cameras[i].depth = currentDepth + innerStep * (i + 1) * (front == true ? 1f : -1f);
 				
 			}
 			
@@ -410,8 +421,6 @@ namespace UnityEngine.UI.Windows {
 				this.events.OnShowEnd();
 				this.transition.OnShowEnd();
 				if (onShowEnd != null) onShowEnd();
-
-				CanvasUpdater.ForceUpdate();
 
 			    this.currentState = WindowObjectState.Shown;
 
@@ -628,7 +637,15 @@ namespace UnityEngine.UI.Windows {
 		/// Example: OnParametersPass(T1 param1, T2 param2, etc.)
 		/// You can use any types in any order and call window with them.
 		/// </summary>
+		[CompilerIgnore]
 		public virtual void OnParametersPass() {}
+
+		[CompilerIgnore]
+		public void OnParametersPass(params object[] objects) {
+
+			throw new UnityException(string.Format("OnParametersPass is not valid for screen `{0}`", this.name));
+
+		}
 
 		/// <summary>
 		/// Raises the empty pass event.

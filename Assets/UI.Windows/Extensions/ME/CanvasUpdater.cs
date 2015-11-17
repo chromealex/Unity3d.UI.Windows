@@ -29,11 +29,11 @@ namespace UnityEngine.UI.Extensions {
 			
 		}
 		
-		public static void ForceUpdate() {
+		/*public static void ForceUpdate() {
 			
 			if (CanvasUpdater.onUpdate != null) CanvasUpdater.onUpdate.Invoke();
 			
-		}
+		}*/
 		
 		public static void ForceUpdate(Canvas canvas, CanvasScaler canvasScaler = null) {
 
@@ -58,7 +58,9 @@ namespace UnityEngine.UI.Extensions {
 		
 		#if UNITY_EDITOR
 		public void OnValidate() {
-			
+
+			if (Application.isPlaying == true) return;
+
 			this.canvas = this.GetComponent<Canvas>();
 			this.canvasScaler = this.GetComponent<CanvasScaler>();
 			

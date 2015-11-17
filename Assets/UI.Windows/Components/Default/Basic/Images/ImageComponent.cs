@@ -16,6 +16,13 @@ namespace UnityEngine.UI.Windows.Components {
 			#region source macros UI.Windows.Initialization.ImageComponent
 			{
 				if (inputParameters != null) inputParameters.Setup(this as IImageComponent);
+				
+				if (this.playOnStart == true) {
+					
+					this.Play(this.loop);
+					
+				}
+
 			}
 			#endregion
 			
@@ -32,26 +39,105 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		private RawImage rawImage;
 
+		[ReadOnly("rawImage", null)]
+		[SerializeField]
+		private  bool playOnStart;
+		[ReadOnly("rawImage", null)]
+		[SerializeField]
+		private  bool loop;
+
+		public void SetPlayOnStart(bool state) {
+
+			this.playOnStart = state;
+
+		}
+
+		public void SetLoop(bool state) {
+			
+			this.loop = state;
+
+		}
+
 		public void SetPreserveAspectState(bool state) {
 
 			this.preserveAspect = state;
 
 		}
+		
+		public void Play() {
+
+			this.Play(this.loop);
+
+		}
+
+		public void Play(bool loop) {
+
+			var image = this.GetRawImageSource();
+			if (image == null) return;
+
+			var movie = image.mainTexture as MovieTexture;
+			if (movie != null) {
+				
+				movie.loop = loop;
+				movie.Play();
+
+			}
+
+		}
+
+		public void Stop() {
+			
+			var image = this.GetRawImageSource();
+			if (image == null) return;
+			
+			var movie = image.mainTexture as MovieTexture;
+			if (movie != null) movie.Stop();
+
+		}
+
+		public void Pause() {
+			
+			var image = this.GetRawImageSource();
+			if (image == null) return;
+			
+			var movie = image.mainTexture as MovieTexture;
+			if (movie != null) movie.Pause();
+
+		}
 
 		public void ResetImage() {
-
+			
 			if (this.image != null) {
-
+				
 				this.image.sprite = null;
-
+				
 			}
-
+			
 			if (this.rawImage != null) {
-
+				
 				this.rawImage.texture = null;
-
+				
 			}
-
+			
+		}
+		
+		public Image GetImageSource() {
+			
+			return this.image;
+			
+		}
+		
+		public RawImage GetRawImageSource() {
+			
+			return this.rawImage;
+			
+		}
+		
+		public void SetImage(ImageComponent source) {
+			
+			if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
+			if (source.GetRawImageSource() != null) this.SetImage(source.GetRawImageSource().texture);
+			
 		}
 
 		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {

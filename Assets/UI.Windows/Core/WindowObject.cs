@@ -18,10 +18,17 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector]
 		private WindowBase window;
+		
+		//[HideInInspector]
+		[ReadOnly]
+		public int windowId;
 
 		internal virtual void Setup(WindowBase window) {
 			
 			this.window = window;
+
+			var flowWindow = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow(this.window);
+			this.windowId = (flowWindow != null ? flowWindow.id : -1);
 
 		}
 

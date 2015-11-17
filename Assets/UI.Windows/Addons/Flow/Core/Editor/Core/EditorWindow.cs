@@ -29,7 +29,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			public Styles() {
 				
-				this.skin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
+				this.skin = Resources.Load(string.Format("UI.Windows/Flow/Styles/Skin{0}", (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"))) as GUISkin;
 				if (this.skin != null) {
 
 					this.layoutBoxStyle = this.skin.FindStyle("LayoutBox");
@@ -37,10 +37,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 			}
-			
+
+			public bool IsValid() {
+
+				return this.skin != null && this.layoutBoxStyle != null;
+
+			}
+
 		}
 
-		public static Styles styles = new Styles();
+		public static Styles styles = null;
 
 		public static GUISkin defaultSkin {
 
@@ -135,42 +141,34 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		public override void Update() {
-			
-			if (FlowSystemEditorWindow.loading == true) {
-				
-				return;
-				
-			}
-			
+
 			if (FlowSystemEditorWindow.loaded == false) {
 				
+				if (FlowSystemEditorWindow.loading == true) {
+					
+					return;
+					
+				}
+
 				FlowSystemEditorWindow.loading = true;
 				
 				EditorApplication.delayCall += () => {
-					
-					if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
-					if (this.guiSplash == null) this.guiSplash = new FlowSplash(this);
-					FlowSystemEditorWindow.styles = new Styles();
 
 					// Cache
-					ME.EditorUtilities.GetAssetsOfType<FlowData>();
-					ME.EditorUtilities.GetPrefabsOfType<FlowWindowLayoutTemplate>();
-					ME.EditorUtilities.GetPrefabsOfType<FlowLayoutWindowTypeTemplate>();
-					ME.EditorUtilities.GetPrefabsOfType<WindowModule>(strongType: false);
+					ME.EditorUtilities.GetAssetsOfType<FlowData>(useCache: false);
+					ME.EditorUtilities.GetPrefabsOfType<FlowWindowLayoutTemplate>(useCache: false);
+					ME.EditorUtilities.GetPrefabsOfType<FlowLayoutWindowTypeTemplate>(useCache: false);
+					ME.EditorUtilities.GetPrefabsOfType<WindowModule>(strongType: false, useCache: false);
+					
+					CoreUtilities.LoadAddons(forced: true);
 
 					FlowSystemEditorWindow.settingsWidth = EditorPrefs.GetFloat("UI.Windows.Editor.Settings.Width", 280f);
 
 					FlowSystemEditorWindow.loading = false;
 					FlowSystemEditorWindow.loaded = true;
-					
+
 				};
-				
-				return;
-				
-			} else {
-				
-				CoreUtilities.LoadAddons();
-				
+
 			}
 			
 		}
@@ -188,13 +186,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private Texture2D _background;
 		private List<int> tempAttaches = new List<int>();
 		private void OnGUI() {
-
-			GUI.enabled = this.IsEnabled();
-
+			
 			if (this.guiDrawer == null) this.guiDrawer = new GUIDrawer(this);
 			if (this.guiSplash == null) this.guiSplash = new FlowSplash(this);
 			if (this.zoomDrawer == null) this.zoomDrawer = new EditorZoomArea(this);
-			if (FlowSystemEditorWindow.styles == null) FlowSystemEditorWindow.styles = new Styles();
+			if (FlowSystemEditorWindow.styles == null || FlowSystemEditorWindow.styles.IsValid() == false) FlowSystemEditorWindow.styles = new Styles();
+
+			GUI.enabled = this.IsEnabled();
 
 			if (this.guiSplash.Draw() == false) {
 
@@ -335,7 +333,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							this.BeginWindows();
 							
-							var containerPadding = new Vector4(50f, 100f, 50f, 50f);
+							var containerPadding = new Vector4(40f, 100f, 40f, 40f);
 							foreach (var container in containers) {
 								
 								if (this.IsVisible(container) == false) continue;
@@ -363,25 +361,35 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									var minY = float.MaxValue;
 									var maxX = float.MinValue;
 									var maxY = float.MinValue;
+									var count = 0;
 									foreach (var attachItem in attaches) {
 
 										var attachId = attachItem.targetId;
+										if (attachId == container.id) continue;
+
 										var window = FlowSystem.GetWindow(attachId);
-										
+
 										minX = Mathf.Min(minX, window.rect.xMin);
 										minY = Mathf.Min(minY, window.rect.yMin);
 										maxX = Mathf.Max(maxX, window.rect.xMax);
 										maxY = Mathf.Max(maxY, window.rect.yMax);
-										
+
+										++count;
+
 									}
-									
-									container.rect.xMin = minX - containerPadding.x;
-									container.rect.yMin = minY - containerPadding.y;
-									container.rect.xMax = maxX + containerPadding.z;
-									container.rect.yMax = maxY + containerPadding.w;
-									
+
+									if (count > 0) {
+
+										var r = new Rect();
+										r.min = new Vector2(minX - containerPadding.x, minY - containerPadding.y);
+										r.max = new Vector2(maxX + containerPadding.z, maxY + containerPadding.w);
+
+										container.rect = r;
+
+									}
+
 								}
-								
+
 								var style = container.GetEditorStyle(false);
 								
 								var rect = GUI.Window(container.id, container.rect, this.DrawNodeContainer, container.title, style);
@@ -401,7 +409,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 											
 											var delta = new Vector2(newRect.x - container.rect.x, newRect.y - container.rect.y);
 											if (delta != Vector2.zero) {
-												
+
 												selected.Clear();
 												if (selected.Contains(container.id) == false) selected.Add(container.id);
 												
@@ -410,7 +418,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 												FlowSystem.MoveContainerOrWindow(container.id, delta);
 												
 												selectionMain = container.id;
-												
+
 											}
 											
 										}
@@ -475,9 +483,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 											
 											var delta = new Vector2(newRect.x - window.rect.x, newRect.y - window.rect.y);
 											if (delta != Vector2.zero) {
-												
-												window.rect = newRect.PixelPerfect();
-												
+
+												if (window.IsContainer() == false) {
+
+													window.rect = newRect.PixelPerfect();
+
+												}
+
 												// Move all selected windows
 												foreach (var selectedId in selected) {
 													
@@ -658,6 +670,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		public void DrawTransitionChooser(AttachItem attach, FD.FlowWindow fromWindow, FD.FlowWindow toWindow, bool doubleSided) {
 			
+			if (this.drawWindowContent == false) return;
+
 			if (toWindow.IsEnabled() == false) return;
 			if (toWindow.IsContainer() == true) return;
 
@@ -673,7 +687,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				transitionsContainer = FlowSystem.GetWindow(fromWindow.abTests.sourceWindowId);
 				if (transitionsContainer == null) return;
 
-				namePrefix = "Variant" + attach.index.ToString();
+				namePrefix = string.Format("Variant{0}", attach.index.ToString());
 				factor = 0.2f;
 
 			} else {
@@ -1142,6 +1156,84 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				GUILayout.Label("Base Modules:", EditorStyles.largeLabel);
 				CustomGUI.Splitter();
 				
+				#region AUTH
+				Flow.DrawModuleSettingsGUI(null, "UIW Services Authorization", null, () => {
+					
+					var data = FlowSystem.GetData();
+					var isFull = true;
+					var isInvalid = false;
+
+					UnityEditor.EditorGUILayout.LabelField("Key:");
+					var newKey = UnityEditor.EditorGUILayout.TextArea(data.authKey, FlowSystemEditorWindow.defaultSkin.textArea, GUILayout.ExpandWidth(true));
+
+					GUILayout.BeginHorizontal();
+					{
+
+						if (data.IsValidAuthKey() == true) {
+
+							foreach (var permission in System.Enum.GetValues(typeof(AuthKeyPermissions))) {
+
+								var perm = (AuthKeyPermissions)permission;
+								if (perm == AuthKeyPermissions.None) continue;
+
+								if (data.IsValidAuthKey(perm) == true) {
+
+									GUILayout.Label(perm.ToString(), (GUIStyle)"sv_label_3", GUILayout.ExpandWidth(false));
+
+								} else {
+
+									isFull = false;
+
+								}
+
+							}
+
+						} else {
+
+							GUILayout.Label("Invalid Key", (GUIStyle)"sv_label_6", GUILayout.ExpandWidth(false));
+							isFull = false;
+							isInvalid = true;
+
+						}
+						
+					}
+					GUILayout.EndHorizontal();
+
+					if (newKey != data.authKey) {
+						
+						data.authKey = newKey;
+						data.ValidateAuthKey((result) => {
+							
+							if (result == true) {
+								
+								// key ok
+								
+							} else {
+								
+								// key failed
+								
+							}
+							
+							FlowSystem.SetDirty();
+							
+						});
+						FlowSystem.SetDirty();
+						
+					}
+
+					if (isInvalid == true) {
+						
+						FlowSystem.DrawEditorGetKeyButton(FlowSystemEditorWindow.defaultSkin);
+
+					} else if (isFull == false) {
+
+						FlowSystem.DrawEditorGetKeyButton(FlowSystemEditorWindow.defaultSkin, "Expand Key");
+						
+					}
+
+				});
+				#endregion
+
 				#region ROOT WINDOW
 				Flow.DrawModuleSettingsGUI(null, "Root Window", null, () => {
 					
@@ -1289,7 +1381,34 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				#region FLOW
 				Flow.DrawModuleSettingsGUI(null, "Flow Settings", null, () => {
 
-					var filter = (FlowView)EditorExtension.DrawBitMaskFieldLayout((int)FlowSystem.GetData().flowView, typeof(FlowView), new GUIContent("Filter:"));
+					GUILayout.Label("Filters:", EditorStyles.boldLabel);
+
+					var filter = FlowSystem.GetData().flowView;
+					var names = System.Enum.GetValues(typeof(FlowView));
+					foreach (var flag in names) {
+
+						var value = (FlowView)flag;
+						if (value == FlowView.None) continue;
+
+						var isSelected = (filter & value) == value;
+
+						var newValue = GUILayout.Toggle(isSelected, System.Enum.GetName(typeof(FlowView), value));
+						if (newValue != isSelected) {
+
+							if (newValue == true) {
+
+								filter |= value;
+
+							} else {
+
+								filter = (filter ^ value);
+
+							}
+
+						}
+
+					}
+
 					if (filter != FlowSystem.GetData().flowView) {
 						
 						FlowSystem.GetData().flowView = filter;
@@ -1298,6 +1417,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.Repaint();
 						
 					}
+					
+					GUILayout.Label("Settings:", EditorStyles.boldLabel);
+					var anySettings = false;
 
 					if (FlowSystem.GetData().HasView(FlowView.Layout) == true) {
 						
@@ -1314,26 +1436,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						}
 						
 						EditorGUIUtility.LookLikeControls();
-						
+
+						anySettings = true;
+
 					}
-					
+
+					if (anySettings == false) {
+
+						GUILayout.Label("There are no settings", EditorStyles.centeredGreyMiniLabel);
+
+					}
+
 				});
 				#endregion
-				
-				#region WINDOW EDITOR
-				
-				//GUILayout.Label("Window Editor", EditorStyles.boldLabel);
-				/*
-				var editorWindowAsPopup = GUILayout.Toggle(FlowSystem.GetData().editorWindowAsPopup, "Show as popup");
-				if (editorWindowAsPopup != FlowSystem.GetData().editorWindowAsPopup) {
 
-					FlowSystem.GetData().editorWindowAsPopup = editorWindowAsPopup;
-					FlowSystem.SetDirty();
-
-				}
-				*/
-				#endregion
-				
 				CustomGUI.Splitter();
 				GUILayout.Label("Installed Modules:", EditorStyles.largeLabel);
 				CustomGUI.Splitter();
@@ -1364,7 +1480,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			//GUI.BringWindowToFront(-1);
 			
 		}
-		
+
+		private bool drawWindowContent = true;
 		private bool scrollingMouse = false;
 		private bool selectionRectWait;
 		private Rect selectionRect;
@@ -1431,6 +1548,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (Event.current.type == EventType.MouseDown && button == 2) {
 					
+					this.drawWindowContent = true;
+
 					this.scrollingMouse = true;
 					
 					this.scrollingMouseAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
@@ -1445,11 +1564,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				if (Event.current.type == EventType.MouseDrag && this.scrollingMouse == true) {
 					
+					this.drawWindowContent = false;
+
 					this.Repaint();
 					
 					this.showTagsPopup = false;
 					this.showTagsPopupId = -1;
-					
+
 				}
 				
 				if (Event.current.type == EventType.MouseUp && this.scrollingMouse == true) {
@@ -1460,6 +1581,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					this.scrollingMouseAnimation.speed = 2f;
 					this.scrollingMouseAnimation.target = 0f;
 					
+					this.drawWindowContent = true;
+
 					this.Repaint();
 					
 				}
@@ -1477,6 +1600,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					this.selectionRectAnimation.speed = 2f;
 					this.selectionRectAnimation.target = 1f;
 					
+					this.drawWindowContent = true;
+
 				}
 				
 				if (Event.current.type == EventType.MouseDrag && this.selectionRectWait == true) {
@@ -1491,6 +1616,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					FlowSystem.SelectWindowsInRect(this.selectionRect);
 					
+					this.drawWindowContent = false;
+
 					this.Repaint();
 					
 					this.showTagsPopup = false;
@@ -1509,6 +1636,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					this.selectionRectAnimation.speed = 2f;
 					this.selectionRectAnimation.target = 0f;
 					
+					this.drawWindowContent = true;
+
 					this.Repaint();
 					
 				}
@@ -1910,7 +2039,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 											
 											if (GUILayout.Button("Attach Here", buttonStyle) == true) {
 												
-												FlowSystem.Attach(id, this.currentAttachId, this.currentAttachIndex, oneWay: true);
+												FlowSystem.Attach(id, this.currentAttachIndex, this.currentAttachId, oneWay: true);
 												if (this.onAttach != null) this.onAttach(id, this.currentAttachIndex, true);
 												if (!Event.current.shift) this.WaitForAttach(-1);
 												
@@ -2499,9 +2628,21 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									
 								} else {
 
+									var abTests = (window.abTests.sourceWindowId >= 0/* || currentAttach.attachItems.Any(x => FlowSystem.GetWindow(x.targetId).IsABTest() == true) == true*/);
+
 									if (this.currentAttachIndex == 0 && 
 									    (currentAttach.IsABTest() == true ||
-									    (window.abTests.sourceWindowId >= 0 || currentAttach.attachItems.Any(x => FlowSystem.GetWindow(x.targetId).IsABTest() == true) == true))) {
+									    abTests == true)) {
+										/*
+										if (abTests == true) {
+
+											if (GUILayout.Button("Attach Here", buttonStyle) == true) {
+
+												this.ShowNotification(new GUIContent("You can't connect using this method. Use `Attach` function on `A/B Test Condition`"));
+
+											}
+
+										}*/
 
 									} else {
 
@@ -2818,7 +2959,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		private void DrawNodeWindow(int id) {
-			
+
+			if (this.drawWindowContent == false) return;
+
 			var oldState = GUI.enabled;
 			GUI.enabled = this.IsEnabled();
 

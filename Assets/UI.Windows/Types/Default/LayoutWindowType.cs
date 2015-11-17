@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Components;
 using UnityEngine.UI.Windows.Extensions;
+using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows.Types {
 
@@ -440,7 +441,9 @@ namespace UnityEngine.UI.Windows.Types {
 		public void OnShowEnd() {
 
 			this.instance.OnShowEnd();
-		
+			
+			CanvasUpdater.ForceUpdate(this.instance.canvas, this.instance.canvasScaler);
+
 		}
 
 		public void OnHideBegin(System.Action callback, bool immediately = false) {

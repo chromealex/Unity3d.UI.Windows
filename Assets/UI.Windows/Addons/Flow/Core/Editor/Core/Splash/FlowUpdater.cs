@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using ME;
@@ -36,9 +36,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							// Need to recompile
 							var prevData = FlowSystem.GetData();
 							FlowSystem.SetData(data);
-							UnityEngine.UI.Windows.Plugins.FlowCompiler.FlowCompilerSystem.currentNamespace = data.namespaceName;
+							UnityEngine.UI.Windows.Plugins.FlowCompiler.CompilerSystem.currentNamespace = data.namespaceName;
 							var path = UnityEditor.AssetDatabase.GetAssetPath(data);
-							UnityEngine.UI.Windows.Plugins.FlowCompiler.FlowCompilerSystem.Generate(path, recompile: true);
+							UnityEngine.UI.Windows.Plugins.FlowCompiler.CompilerSystem.Generate(path, recompile: true);
 							FlowSystem.SetData(prevData);
 
 						}

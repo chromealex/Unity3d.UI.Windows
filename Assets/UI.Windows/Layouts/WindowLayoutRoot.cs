@@ -51,6 +51,9 @@ namespace UnityEngine.UI.Windows {
 
 		#if UNITY_EDITOR
 		//[HideInInspector]
+		public Rect editorRectLocal;
+		
+		//[HideInInspector]
 		public Rect editorRect;
 
 		public void OnValidate() {

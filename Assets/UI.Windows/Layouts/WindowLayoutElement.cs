@@ -36,7 +36,7 @@ namespace UnityEngine.UI.Windows {
 		private bool randomColorSetup;
 		[HideInInspector]
 		public Color randomColor;
-		[HideInInspector]
+		//[HideInInspector]
 		public Rect editorRect;
 
 		[HideInInspector]
@@ -44,7 +44,7 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		public float editorMinHeight = 0f;
 
-		[HideInInspector]
+		//[HideInInspector]
 		public Rect tempEditorRect;
 
 		[HideInInspector]

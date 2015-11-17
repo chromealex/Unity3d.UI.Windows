@@ -19,12 +19,12 @@ namespace UnityEditor.UI.Windows {
 		private static Dictionary<string, IWindowAddon> cache = new Dictionary<string, IWindowAddon>();
 
 		private static bool addonsLoaded = false;
-		public static void LoadAddons() {
+		public static void LoadAddons(bool forced = false) {
 
-			if (CoreUtilities.addonsLoaded == true) return;
+			if (forced == false && CoreUtilities.addonsLoaded == true) return;
 
-			cache.Clear();
-			cacheAvailable.Clear();
+			CoreUtilities.cache.Clear();
+			CoreUtilities.cacheAvailable.Clear();
 
 			var list = Resources.LoadAll("UI.Windows/AddonInfo");
 			foreach (var item in list) {
@@ -64,7 +64,7 @@ namespace UnityEditor.UI.Windows {
 
 		public static List<T> GetAddons<T>(System.Action<string, T> forEach = null) where T : IWindowAddon {
 
-			var list = cache.Where((a) => (a.Value is T));
+			var list = CoreUtilities.cache.Where((a) => (a.Value is T));
 			var output = new List<T>();
 
 			foreach (var addon in list) {
@@ -80,23 +80,23 @@ namespace UnityEditor.UI.Windows {
 
 		public static IWindowAddon GetAddon(string addonName) {
 
-			if (cacheAvailable.ContainsKey(addonName) == false || cacheAvailable[addonName] == false) {
+			if (CoreUtilities.cacheAvailable.ContainsKey(addonName) == false || CoreUtilities.cacheAvailable[addonName] == false) {
 
 				return null;
 
 			}
 
-			if (cache.ContainsKey(addonName) == true) {
+			if (CoreUtilities.cache.ContainsKey(addonName) == true) {
 
-				return cache[addonName];
+				return CoreUtilities.cache[addonName];
 
 			}
 
-			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName, string.Empty);
+			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName, string.Format("UnityEditor.UI.Windows.Plugins.{0}", addonName));
 			if (type != null) {
 
 				var addon = System.Activator.CreateInstance(type) as IWindowAddon;
-				cache.Add(addonName, addon);
+				CoreUtilities.cache.Add(addonName, addon);
 
 				return addon;
 
@@ -108,12 +108,12 @@ namespace UnityEditor.UI.Windows {
 
 		public static bool IsAddonAvailable(string addonName) {
 
-			if (cacheAvailable.ContainsKey(addonName) == true) return cacheAvailable[addonName];
+			if (CoreUtilities.cacheAvailable.ContainsKey(addonName) == true) return CoreUtilities.cacheAvailable[addonName];
 
-			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName, string.Empty);
+			var type = CoreUtilities.GetTypeFromAllAssemblies(addonName, string.Format("UnityEditor.UI.Windows.Plugins.{0}", addonName));
 			var isActive = type != null;
 
-			cacheAvailable.Add(addonName, isActive);
+			CoreUtilities.cacheAvailable.Add(addonName, isActive);
 			CoreUtilities.GetAddon(addonName);
 
 			return isActive;

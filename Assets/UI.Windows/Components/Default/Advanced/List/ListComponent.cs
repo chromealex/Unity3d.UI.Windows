@@ -20,6 +20,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public Extensions.ScrollRect scrollRect;
 		public GameObject content;
 		public GameObject noElements;
+		public GameObject loading;
 
 		[Header("Navigation")]
 		public Navigation.Mode navigationMode = Navigation.Mode.None;
@@ -30,6 +31,8 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnInit();
 
 			this.Refresh();
+			if (this.noElements != null) this.noElements.SetActive(false);
+			if (this.loading != null) this.loading.SetActive(true);
 
 		}
 
@@ -65,6 +68,7 @@ namespace UnityEngine.UI.Windows.Components {
 			instance.Setup(this.GetWindow());
 			this.list.Add(instance);
 			this.RegisterSubComponent(instance);
+			if (this.loading != null) this.loading.SetActive(false);
 
 			return instance;
 
@@ -87,6 +91,10 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.scrollRect != null && this.scrollRect.content != null) {
 
 				instance.SetParent(this.scrollRect.content, setTransformAsSource: false);
+
+			} else if (this.content != null) {
+
+				instance.SetParent(this.content.transform, setTransformAsSource: false);
 
 			}
 

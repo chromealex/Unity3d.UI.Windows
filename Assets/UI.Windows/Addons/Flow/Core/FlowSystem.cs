@@ -33,8 +33,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		public static Rect Grid(Rect rect) {
 			
-			rect.x = Mathf.Round(rect.x / FlowSystem.grid.x) * FlowSystem.grid.x;
-			rect.y = Mathf.Round(rect.y / FlowSystem.grid.y) * FlowSystem.grid.y;
+			rect.x = Mathf.Floor(rect.x / FlowSystem.grid.x) * FlowSystem.grid.x;
+			rect.y = Mathf.Floor(rect.y / FlowSystem.grid.y) * FlowSystem.grid.y;
 			
 			return rect;
 			
@@ -365,6 +365,28 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			FlowSystem.instance.data.ResetSelection();
 
 		}
+
+#if UNITY_EDITOR
+		public static void DrawEditorGetKeyButton(GUISkin skin, string title = "Get Key") {
+
+			GUILayout.BeginHorizontal();
+			{
+
+				GUILayout.FlexibleSpace();
+
+				if (GUILayout.Button(title, skin.button, GUILayout.Height(40f), GUILayout.Width(150f)) == true) {
+
+					Application.OpenURL(VersionInfo.GETKEY_LINK);
+
+				}
+				
+				GUILayout.FlexibleSpace();
+
+			}
+			GUILayout.EndHorizontal();
+
+		}
+#endif
 
 	}
 

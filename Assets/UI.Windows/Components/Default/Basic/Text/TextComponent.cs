@@ -83,6 +83,22 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.text != null) this.text.fontStyle = fontStyle;
 			
 		}
+		
+		public float GetContentHeight(float heightPadding = 0f) {
+			
+			if (this.text == null) return 0f;
+			
+			return this.GetContentHeight(this.GetText(), heightPadding);
+			
+		}
+		
+		public float GetContentHeight(string text, float heightPadding = 0f) {
+			
+			if (this.text == null) return 0f;
+			
+			return this.GetContentHeight(text, (this.transform.root as RectTransform).rect.size) + heightPadding;
+			
+		}
 
 		public float GetContentHeight(string text, Vector2 containerSize) {
 

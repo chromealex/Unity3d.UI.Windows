@@ -70,6 +70,8 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetColor(Color color);
 		void SetAlpha(float value);
 		void SetPreserveAspectState(bool state);
+		void SetPlayOnStart(bool state);
+		void SetLoop(bool state);
 
 	}
 	

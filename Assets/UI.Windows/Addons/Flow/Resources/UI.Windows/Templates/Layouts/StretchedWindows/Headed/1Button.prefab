@@ -197,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -226,10 +227,10 @@ MonoBehaviour:
   editorMinHeight: 30
   tempEditorRect:
     serializedVersion: 2
-    x: 146.615891
-    y: 1096.54297
-    width: 170.768219
-    height: 11.9140625
+    x: 142.6185
+    y: 1064.578
+    width: 126.763008
+    height: 8.84393024
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11464938
@@ -319,6 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -348,10 +350,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 202.214844
-    y: 1114.41406
-    width: 59.5703125
-    height: 19.8567696
+    x: 183.890167
+    y: 1077.84387
+    width: 44.2196541
+    height: 14.7398844
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11493862
@@ -365,6 +367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents:
@@ -395,10 +398,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 146.615891
-    y: 1112.42834
-    width: 170.768219
-    height: 23.828125
+    x: 142.6185
+    y: 1076.37
+    width: 126.763008
+    height: 17.6878605
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11493864
@@ -546,6 +549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -575,10 +579,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 146.615891
-    y: 1068.74353
-    width: 170.768219
-    height: 23.828125
+    x: 142.6185
+    y: 1043.94214
+    width: 126.763008
+    height: 17.6878605
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11493880
@@ -592,6 +596,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents:
@@ -626,10 +631,10 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 142.644531
-    y: 1064.77209
-    width: 178.710938
-    height: 75.4557266
+    x: 139.670517
+    y: 1040.99426
+    width: 132.658966
+    height: 56.0115623
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11493882
@@ -643,18 +648,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   canvasGroup: {fileID: 22542806}
   _rectTransform: {fileID: 22493886}
   mode: 0
   minWidth: 1024
   maxWidth: 1920
   margin: 100
+  editorRectLocal:
+    serializedVersion: 2
+    x: -692
+    y: -389.5
+    width: 1384
+    height: 779
   editorRect:
     serializedVersion: 2
-    x: -512
-    y: -384
-    width: 1024
-    height: 768
+    x: -225
+    y: -95
+    width: 450
+    height: 190
 --- !u!114 &11493884
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -666,6 +678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b748d05ceffba45de94d80cd5a76d397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents:
@@ -685,7 +698,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11411862}
   initialized: 1
   isAlive: 0
-  editorScale: 0
+  editorScale: 1
   comment: 'Stretched Window: 1 Button With Header'
 --- !u!114 &11493886
 MonoBehaviour:
@@ -857,16 +870,16 @@ RectTransform:
   m_GameObject: {fileID: 193888}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 22493886}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!225 &22542806
 CanvasGroup:
   m_ObjectHideFlags: 1

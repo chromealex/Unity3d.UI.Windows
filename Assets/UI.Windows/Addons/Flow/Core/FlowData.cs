@@ -45,6 +45,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 	};
 
+	public enum AuthKeyPermissions : byte {
+
+		None = 0x0,
+		ABTesting = 0x1,
+		Analytics = 0x2,
+
+	};
+
 	public class FlowData : ScriptableObject {
 
 		[Header("Version Data")]
@@ -52,6 +60,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public long lastModifiedUnix = 0;
 		public Version version;
 		
+		#if UNITY_EDITOR
+		[Header("Services Auth")]
+		public string authKey;
+		[HideInInspector]
+		public string editorAuthKey;
+		#endif
+		[HideInInspector]
+		public string buildAuthKey;
+		[HideInInspector]
+		public AuthKeyPermissions authKeyPermissions = AuthKeyPermissions.None;
+
 		[Header("Compiler Plugin")]
 		public string namespaceName;
 		public bool forceRecompile;
@@ -259,7 +278,70 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			}
 			
 		}
+
+		public void ValidateAuthKey(System.Action<bool> onResult) {
+
+			var splitted = this.authKey.Split('-');
+			if (splitted.Length == 2) {
+
+				this.buildAuthKey = splitted[0];
+				this.editorAuthKey = splitted[1];
+				
+				var rnd = Random.Range(0, 3);
+				if (rnd == 0) {
+					
+					this.authKeyPermissions = AuthKeyPermissions.ABTesting;
+
+				} else if (rnd == 1) {
+					
+					this.authKeyPermissions = AuthKeyPermissions.Analytics;
+
+				} else {
+
+					this.authKeyPermissions = AuthKeyPermissions.ABTesting | AuthKeyPermissions.Analytics;
+
+				}
+
+				onResult(true);
+
+			} else {
+
+				this.buildAuthKey = string.Empty;
+				this.editorAuthKey = string.Empty;
+				this.authKeyPermissions = AuthKeyPermissions.None;
+				
+				onResult(false);
+
+			}
+
+		}
+
+		public string GetAuthKeyEditor() {
+			
+			return this.editorAuthKey;
+			
+		}
+		
+		public bool IsValidAuthKey() {
+			
+			return string.IsNullOrEmpty(this.authKey) == false;
+			
+		}
 		#endif
+		
+		public string GetAuthKeyBuild() {
+			
+			return this.buildAuthKey;
+			
+		}
+
+		public bool IsValidAuthKey(AuthKeyPermissions permission) {
+
+			if (permission == AuthKeyPermissions.None) return true;
+
+			return (this.authKeyPermissions & permission) != 0;
+			
+		}
 
 		public bool HasView(FlowView view) {
 
@@ -342,7 +424,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				foreach (var window in this.windowAssets) {
 
 					this.VerifyRename(window.id);
-					if (window.GetScreen() != null) window.GetScreen().Setup(this);
+					if (window.GetScreen() != null) window.GetScreen().Setup(window.id, this);
 					window.isDirty = true;
 					window.Save();
 

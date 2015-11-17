@@ -9,6 +9,11 @@ namespace UnityEngine.UI.Windows {
 		[Header("Sub Components")]
 		public bool autoRegisterInRoot = true;
 		public bool autoRegisterSubComponents = true;
+		
+		/// <summary>
+		/// Show this component on start showing window or not.
+		/// </summary>
+		public bool showOnStart = true;
 
         [SerializeField]
         [ReadOnly]
@@ -24,6 +29,12 @@ namespace UnityEngine.UI.Windows {
 			
 			return this.currentState;
 			
+		}
+
+		public bool IsVisible() {
+
+			return this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding;
+
 		}
 
 		public virtual void SetComponentState(WindowObjectState state) {
@@ -177,10 +188,9 @@ namespace UnityEngine.UI.Windows {
 			switch (this.GetComponentState()) {
 				
 				case WindowObjectState.Hiding:
-
+					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						// after OnInit
 						subComponent.OnInit();
 						
 					}
@@ -190,14 +200,13 @@ namespace UnityEngine.UI.Windows {
 					break;
 
 				case WindowObjectState.Hidden:
-
+					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						// after OnInit
 						subComponent.OnInit();
 						
 					}
-					
+
 					subComponent.SetComponentState(this.GetComponentState());
 
 					break;
@@ -206,10 +215,9 @@ namespace UnityEngine.UI.Windows {
 				case WindowObjectState.Initialized:
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
-
-	                    // after OnInit
-	                    subComponent.OnInit();
-
+						
+						subComponent.OnInit();
+						
 					}
 
 	                break;
@@ -217,32 +225,40 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Showing:
                     
 					// after OnShowBegin
-
+					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
-
+						
 						subComponent.OnInit();
-
+						
 					}
 
-                    subComponent.OnShowBegin(null);
+					if (subComponent.showOnStart == true) {
+
+	                    subComponent.OnShowBegin(null);
+
+					}
 
                     break;
 
                 case WindowObjectState.Shown:
 
                     // after OnShowEnd
-
+					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
-
+						
 						subComponent.OnInit();
-
+						
 					}
 
-                    subComponent.OnShowBegin(() => {
+					if (subComponent.showOnStart == true) {
 
-                        subComponent.OnShowEnd();
+	                    subComponent.OnShowBegin(() => {
 
-                    });
+	                        subComponent.OnShowEnd();
+
+	                    });
+
+					}
 
                     break;
 
@@ -264,6 +280,10 @@ namespace UnityEngine.UI.Windows {
         /// </summary>
         /// <param name="subComponent">Sub component.</param>
 		public void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null) {
+
+#if UNITY_EDITOR
+			if (Application.isPlaying == false) return;
+#endif
 
 			var sendCallback = true;
 

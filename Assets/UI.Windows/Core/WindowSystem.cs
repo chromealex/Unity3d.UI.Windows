@@ -58,9 +58,9 @@ namespace UnityEngine.UI.Windows {
 		private int index;
 		private WindowBase sourceWindow;
 
-		public WindowRoutes(WindowBase sourceWindow, int index) {
+		public WindowRoutes(IFunctionIteration sourceWindow, int index) {
 
-			this.sourceWindow = sourceWindow;
+			this.sourceWindow = sourceWindow.GetWindow();
 			this.index = index;
 
 		}
@@ -328,7 +328,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.objectPool == null) {
 
-				Debug.LogError("WindowSystem need ObjectPool reference", this);
+				Debug.LogError("WindowSystem need `ObjectPool` reference", this);
 				return;
 
 			}
@@ -353,11 +353,11 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-
+		
 		public static void OnDoTransition(int index, int fromScreenId, int toScreenId, bool hide = true) {
-
+			
 			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId, hide);
-
+			
 		}
 
 		public static void AudioPlayFX(int id, int[] randomIds, bool randomize) {
@@ -440,6 +440,13 @@ namespace UnityEngine.UI.Windows {
 
 			foreach (var window in this.windows) {
 
+				if (window == null) {
+
+					Debug.LogWarning("Some windows was not setup correctly. Be sure all windows have their screens.");
+					continue;
+
+				}
+
 				if (window.preferences.createPool == false) continue;
 
 				if (window.preferences.preallocatedCount > 0) {
@@ -465,6 +472,12 @@ namespace UnityEngine.UI.Windows {
 		public static void RegisterFunctionCallback(WindowBase instance, UnityAction<int> onFunctionEnds) {
 
 			WindowSystem.instance.functions.Register(instance, onFunctionEnds);
+
+		}
+		
+		public static void CallFunction(WindowRoutes routes) {
+
+			throw new UnityException("Routes can't call function");
 
 		}
 
@@ -875,7 +888,7 @@ namespace UnityEngine.UI.Windows {
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T Create<T>(System.Action<WindowBase> onParametersPassCall, params object[] parameters) where T : WindowBase {
 			
-			var source = WindowSystem.instance.windows.FirstOrDefault((w) => w is T) as T;
+			var source = WindowSystem.instance.windows.FirstOrDefault(w => w is T) as T;
 			if (source == null) return null;
 
 			return WindowSystem.instance.Create_INTERNAL(source, onParametersPassCall, parameters) as T;
@@ -884,14 +897,22 @@ namespace UnityEngine.UI.Windows {
 
 		internal WindowBase Create_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, params object[] parameters) {
 
-			var instance = source.Spawn();
+			WindowBase instance = null;
+			if (source.preferences.forceSingleInstance == true) {
+
+				instance = this.currentWindows.FirstOrDefault(w => w.windowId == source.windowId);
+				if (instance != null) return instance;
+
+			}
+
+			instance = source.Spawn();
 			instance.transform.SetParent(null);
 			instance.transform.localPosition = Vector3.zero;
 			instance.transform.localRotation = Quaternion.identity;
 			instance.transform.localScale = Vector3.one;
 
 			#if UNITY_EDITOR
-			instance.gameObject.name = "Screen-" + source.GetType().Name;
+			instance.gameObject.name = string.Format("[Screen] {0}", source.GetType().Name);
 			#endif
 
 			instance.SetParameters(onParametersPassCall, parameters);
@@ -1151,7 +1172,22 @@ namespace UnityEngine.UI.Windows {
 				
 				var methods = screen.GetType().GetMethods().Where((info) => info.IsVirtual == false && info.Name == "OnParametersPass").ToList();
 				for (int i = 0; i < methods.Count; ++i) {
-					
+
+					var notValid = false;
+					var attrs = methods[i].GetCustomAttributes(true);
+					foreach (var attr in attrs) {
+
+						if (attr is CompilerIgnore) {
+
+							notValid = true;
+							break;
+
+						}
+
+					}
+
+					if (notValid == true) continue;
+
 					var method = methods[i];
 					var parameters = method.GetParameters();
 					

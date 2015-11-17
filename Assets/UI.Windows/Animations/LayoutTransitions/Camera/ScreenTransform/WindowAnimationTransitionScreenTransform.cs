@@ -90,9 +90,7 @@ namespace UnityEngine.UI.Windows.Animations {
 			}
 
 			public void Apply(Material material, WindowLayoutRoot root, State startState, State resultState, float value) {
-				
-				//CanvasUpdater.ForceUpdate();
-				
+
 				root.alpha = Mathf.Lerp(startState.alpha, resultState.alpha, value);
 
 				root.rectTransform.anchorMin = Vector2.Lerp(startState.anchorMin, resultState.anchorMin, value);
@@ -110,14 +108,10 @@ namespace UnityEngine.UI.Windows.Animations {
 
 				}
 
-				//CanvasUpdater.ForceUpdate();
-
 			}
 			
 			public void Apply(Material material, WindowLayoutRoot root, State state) {
-				
-				CanvasUpdater.ForceUpdate();
-				
+
 				root.alpha = state.alpha;
 
 				root.rectTransform.anchorMin = state.anchorMin;
@@ -134,8 +128,6 @@ namespace UnityEngine.UI.Windows.Animations {
 					material.SetFloat(this.GetMaterialStrengthName(), state.materialStrength);
 					
 				}
-
-				CanvasUpdater.ForceUpdate();
 
 			}
 
@@ -238,12 +230,10 @@ namespace UnityEngine.UI.Windows.Animations {
 				}).onComplete((obj) => {
 
 					if (callback != null) callback();
-					CanvasUpdater.ForceUpdate();
 
 				}).onCancel((obj) => {
 
 					if (callback != null) callback();
-					CanvasUpdater.ForceUpdate();
 
 				}).tag(tag).ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase));
 
@@ -251,7 +241,6 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 				param.Apply(material, rect, resultState);
 				if (callback != null) callback();
-				CanvasUpdater.ForceUpdate();
 				
 			}
 

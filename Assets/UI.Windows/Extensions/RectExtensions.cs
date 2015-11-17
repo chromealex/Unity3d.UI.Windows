@@ -11,9 +11,15 @@ namespace UnityEngine.UI.Windows.Extensions {
 			
 		}
 		
+		public static Rect PixelPerfect(this Rect rect, float grid) {
+			
+			return new Rect(Mathf.FloorToInt(rect.x / grid), Mathf.FloorToInt(rect.y / grid), Mathf.FloorToInt(rect.width / grid), Mathf.FloorToInt(rect.height / grid));
+			
+		}
+
 		public static Vector2 PixelPerfect(this Vector2 value) {
 			
-			return new Vector2(Mathf.Round(value.x), Mathf.Round(value.y));
+			return new Vector2(Mathf.Floor(value.x), Mathf.Floor(value.y));
 			
 		}
 		

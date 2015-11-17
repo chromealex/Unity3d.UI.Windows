@@ -54,6 +54,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: d176a31a4fd954f6d8a4cf220023f9b3, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300006, guid: 6cb33dcf72e944087986f51908e1d480, type: 3}
   m_Type: 3
   m_PreserveAspect: 1
@@ -104,7 +110,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -145,8 +151,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d7289cb2102049868f62d7d6a819050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  showOnStart: 1
   subComponents: []
   animation: {fileID: 0}
   childsShowMode: 0
@@ -155,6 +163,7 @@ MonoBehaviour:
   canvas: {fileID: 22575670}
   animationRefresh: 0
   lastAnimation: {fileID: 0}
+  heatmapActive: 1
   images:
   - {fileID: 11410988}
   duration: 1
@@ -162,7 +171,8 @@ MonoBehaviour:
   bar: {fileID: 11427968}
   continious: 1
   continiousWidth: 1
-  continiousAngleStep: 45
+  continiousAngleStep: 36
+  currentValueNormalized: 0
 --- !u!222 &22230330
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -277,6 +287,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_SizeDelta.y
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: continiousAngleStep
+      value: 36
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

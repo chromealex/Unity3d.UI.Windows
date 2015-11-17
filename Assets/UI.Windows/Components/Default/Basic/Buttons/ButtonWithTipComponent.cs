@@ -7,75 +7,117 @@ using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonWithTipComponent : ButtonComponent {
-
+	public class ButtonWithTipComponent : ButtonWithTipComponent<TextTipWindowType> {
+		
 		private string tipText;
-		private TipWindowType infoWindow;
+		
+		public void SetTextToTip(string tipText) {
+			
+			if (this.tipText != tipText) {
+				
+				this.tipText = tipText;
+				this.SetState(state: false);
+				
+			} else {
+				
+				this.tipText = tipText;
+				
+			}
+			
+		}
 
+		public override void OnParametersPass(TextTipWindowType window) {
+
+			window.OnParametersPass(this.tipText);
+
+		}
+
+		public override bool IsValid() {
+
+			return string.IsNullOrEmpty(this.tipText) == false;
+
+		}
+
+	}
+	
+	public abstract class ButtonWithTipComponent<T> : ButtonComponent where T : TipWindowType {
+
+		private TipWindowType infoWindow;
+		
 		public override void OnInit() {
 			
 			base.OnInit();
+			
+			this.SetState(state: false);
+			this.SetCallbackHover(this.SetState);
+			
+		}
+		
+		public override void OnDeinit() {
 
-			this.SetCallbackHover(this.OnStateChanged);
+			this.SetState(state: false);
+			
+			base.OnDeinit();
+
+		}
+
+		public override void OnShowBegin(System.Action callback, bool resetAnimation) {
+
+			base.OnShowBegin(callback, resetAnimation);
+
+			this.SetState(state: false);
+
+		}
+
+		public override void OnHideEnd() {
+
+			base.OnHideEnd();
+			
+			this.SetState(state: false);
+
+		}
+		
+		public override void OnHideBegin(System.Action callback, bool immediately = false) {
+			
+			base.OnHideBegin(callback, immediately);
+			
+			this.SetState(state: false);
 			
 		}
 
-		public override void OnDeinit() {
-
-			base.OnDeinit();
-
-			this.OnStateChanged(state: false);
-
-		}
-
-		public override void OnHideBegin(System.Action callback, bool immediately = false) {
-
-			base.OnHideBegin(callback, immediately);
-
-			this.OnStateChanged(state: false);
-
-		}
-
-		public void OnStateChanged(bool state) {
-
+		public void SetState(bool state) {
+			
 			if (state == true) {
-
-				if (string.IsNullOrEmpty(this.tipText) == false) {
-
-					this.infoWindow = WindowSystem.Show<TextTipWindowType>((window) => window.PrepareFor(this),
-					                                                       (window) => window.OnParametersPass(this.tipText)
+				
+				if (this.IsValid() == true) {
+					
+					this.infoWindow = WindowSystem.Show<T>((window) => window.PrepareFor(this),
+					                                                       (window) => this.OnParametersPass(window)
 					                                                       ) as TipWindowType;
-
+					
 					if (this.infoWindow != null) this.infoWindow.OnHover(this.transform as RectTransform);
-
+					
 				}
-
+				
 			} else {
-
+				
 				if (this.infoWindow != null) {
-
+					
 					this.infoWindow.OnLeave();
 					this.infoWindow.Hide();
 					this.infoWindow = null;
-
+					
 				}
-
+				
 			}
-
+			
 		}
 
-		public void SetTextToTip(string tipText) {
+		public abstract void OnParametersPass(T window);
 
-			if (this.tipText != tipText) {
+		public virtual bool IsValid() {
 
-				this.tipText = tipText;
-				this.OnStateChanged(state: false);
-
-			} else {
-
-				this.tipText = tipText;
-
-			}
+			return true;
 
 		}
 

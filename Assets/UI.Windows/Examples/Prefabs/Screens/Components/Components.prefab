@@ -74,6 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10d24bc53bb12a548adcedd984d2d26c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   editorInfoFold: 0
   workCamera: {fileID: 2036792}
   initialized: 1
@@ -82,6 +83,7 @@ MonoBehaviour:
     depth: 0
     dontDestroy: 1
     history: 0
+    forceSingleInstance: 0
     createPool: 1
     preallocatedCount: 0
     editorValidated: 1

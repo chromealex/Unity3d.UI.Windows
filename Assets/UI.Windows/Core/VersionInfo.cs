@@ -222,8 +222,9 @@ namespace UnityEngine.UI.Windows {
 	}
 
 	public class VersionInfo {
-
+		
 		public const string DOWNLOAD_LINK = "https://github.com/chromealex/Unity3d.UI.Windows";
+		public const string GETKEY_LINK = "http://unity3dwindows.com";
 		public const string DESCRIPTION = "Version {0}. MIT license Alex Feer <chrome.alex@gmail.com>";
 
 		public static readonly Version BUNDLE_VERSION = new Version(1, 0, 5, Version.Type.Alpha);

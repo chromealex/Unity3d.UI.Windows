@@ -276,6 +276,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents:
@@ -308,10 +309,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 136.6875
-    y: 1173.98438
-    width: 190.625
-    height: 23.828125
+    x: 135.248566
+    y: 1122.0636
+    width: 141.502884
+    height: 17.6878605
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11449116
@@ -325,6 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -354,10 +356,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 136.6875
-    y: 1007.1875
-    width: 190.625
-    height: 162.825516
+    x: 135.248566
+    y: 998.248535
+    width: 141.502884
+    height: 120.86705
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11449118
@@ -371,6 +373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents:
@@ -404,10 +407,10 @@ MonoBehaviour:
   editorMinHeight: 0
   tempEditorRect:
     serializedVersion: 2
-    x: 132.716156
-    y: 1003.21613
-    width: 198.567703
-    height: 198.567703
+    x: 132.300568
+    y: 995.300598
+    width: 147.398849
+    height: 147.398849
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11449120
@@ -421,18 +424,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3156591b4629045b9b5ebc95fa855dff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   canvasGroup: {fileID: 22524332}
   _rectTransform: {fileID: 22449120}
   mode: 0
   minWidth: 1024
   maxWidth: 1920
   margin: 100
+  editorRectLocal:
+    serializedVersion: 2
+    x: -692
+    y: -389.5
+    width: 1384
+    height: 779
   editorRect:
     serializedVersion: 2
-    x: -512
-    y: -384
-    width: 1024
-    height: 768
+    x: -250
+    y: -250
+    width: 500
+    height: 500
 --- !u!114 &11449122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -444,6 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b748d05ceffba45de94d80cd5a76d397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents:
@@ -464,7 +475,7 @@ MonoBehaviour:
   canvasUpdater: {fileID: 11435870}
   initialized: 1
   isAlive: 0
-  editorScale: 0
+  editorScale: 1
   comment: 'Modal Window: 3 Buttons'
 --- !u!114 &11453472
 MonoBehaviour:
@@ -477,6 +488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -506,10 +518,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 138.673187
-    y: 1175.97009
-    width: 59.5703125
-    height: 19.8567696
+    x: 136.722534
+    y: 1123.5376
+    width: 44.2196541
+    height: 14.7398844
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11453474
@@ -523,6 +535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -552,10 +565,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 202.214844
-    y: 1175.97009
-    width: 59.5703125
-    height: 19.8567696
+    x: 183.890167
+    y: 1123.5376
+    width: 44.2196541
+    height: 14.7398844
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11453476
@@ -643,6 +656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2505985fa2323423cb4bf5b9372f3e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   subComponents: []
@@ -672,10 +686,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 265.7565
-    y: 1175.97009
-    width: 59.5703125
-    height: 19.8567696
+    x: 231.0578
+    y: 1123.5376
+    width: 44.2196541
+    height: 14.7398844
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11487554
@@ -833,16 +847,16 @@ RectTransform:
   m_GameObject: {fileID: 149122}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 22449120}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!224 &22453472
 RectTransform:
   m_ObjectHideFlags: 1

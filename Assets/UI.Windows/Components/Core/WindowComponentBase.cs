@@ -56,9 +56,8 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="resetAnimation">If set to <c>true</c> reset animation.</param>
 		public virtual void Show(System.Action callback, bool resetAnimation) {
 			
-			this.OnShowBegin(() => {
+			this.OnShowBegin_INTERNAL(() => {
 
-				base.OnShowBegin(callback, resetAnimation);
 				this.OnShowEnd();
 
 			}, resetAnimation);
@@ -103,8 +102,7 @@ namespace UnityEngine.UI.Windows {
 			if (setupTempNeedInactive == true) this.tempNeedToInactive = true;
 			
 			this.OnHideBegin_INTERNAL(() => {
-				
-				base.OnHideBegin(callback, immediately);
+
 				this.OnHideEnd();
 				
 				if (setupTempNeedInactive == true) this.tempNeedToInactive = false;
@@ -165,38 +163,45 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="callback">Callback.</param>
 		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 			
+			if (this.showOnStart == false) {
+
+				if (callback != null) callback();
+				return;
+
+			}
+
+			this.OnShowBegin_INTERNAL(callback, resetAnimation);
+
+		}
+
+		private void OnShowBegin_INTERNAL(System.Action callback, bool resetAnimation = true) {
+			
 			this.SetComponentState(WindowObjectState.Showing);
-
+			
 			if (this.childsShowMode == ChildsBehaviourMode.Simultaneously) {
-
+				
 				var counter = 0;
 				System.Action callbackItem = () => {
-
+					
 					++counter;
 					if (counter < 2) return;
-
+					
 					base.OnShowBegin(callback, resetAnimation);
-
+					
 				};
-
-				this.OnShowBegin_INTERNAL(callback, resetAnimation);
-				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnShowBegin(c, resetAnimation); });
-
+				
+				this.OnShowBeginAnimation_INTERNAL(callback, resetAnimation);
+				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { if (e.showOnStart == false) { if (c != null) c(); } else { e.OnShowBegin(c, resetAnimation); } });
+				
 			} else if (this.childsShowMode == ChildsBehaviourMode.Consequentially) {
-
-				ME.Utilities.CallInSequence(() => this.OnShowBegin_INTERNAL(() => base.OnShowBegin(callback, resetAnimation), resetAnimation), this.subComponents, (e, c) => e.OnShowBegin(c, resetAnimation));
+				
+				ME.Utilities.CallInSequence(() => this.OnShowBeginAnimation_INTERNAL(() => base.OnShowBegin(callback, resetAnimation), resetAnimation), this.subComponents, (e, c) => { if (e.showOnStart == false) { if (c != null) c(); } else { e.OnShowBegin(c, resetAnimation); } });
 				
 			}
 
 		}
 
-		/// <summary>
-		/// Raises the show begin event.
-		/// Wait while all sub components return the callback.
-		/// </summary>
-		/// <param name="callback">Callback.</param>
-		/// <param name="resetAnimation">If set to <c>true</c> reset animation.</param>
-		private void OnShowBegin_INTERNAL(System.Action callback, bool resetAnimation, bool immediately = false) {
+		private void OnShowBeginAnimation_INTERNAL(System.Action callback, bool resetAnimation, bool immediately = false) {
 
 			System.Action callbackInner = () => {
 
@@ -211,7 +216,7 @@ namespace UnityEngine.UI.Windows {
 				if (immediately == true) {
 
 					this.animation.SetInState(this.animationInputParams, this.GetWindow(), this);
-					if (callbackInner != null) callbackInner();
+					callbackInner();
 
 				} else {
 
@@ -233,8 +238,15 @@ namespace UnityEngine.UI.Windows {
 		/// You can override this method but call it's base.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
+		/// <param name="immediately">If set to <c>true</c> immediately.</param>
 		public override void OnHideBegin(System.Action callback, bool immediately = false) {
-			
+
+			this.OnHideBegin_INTERNAL(callback, immediately);
+
+		}
+
+		private void OnHideBegin_INTERNAL(System.Action callback, bool immediately) {
+
 			this.SetComponentState(WindowObjectState.Hiding);
 
             if (this.childsHideMode == ChildsBehaviourMode.Simultaneously) {
@@ -249,24 +261,18 @@ namespace UnityEngine.UI.Windows {
 
 				};
 
-				this.OnHideBegin_INTERNAL(callbackItem, immediately);
+				this.OnHideBeginAnimation_INTERNAL(callbackItem, immediately);
 				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => { e.OnHideBegin(c, immediately); });
 
 			} else if (this.childsHideMode == ChildsBehaviourMode.Consequentially) {
 
-				ME.Utilities.CallInSequence(() => this.OnHideBegin_INTERNAL(() => base.OnHideBegin(callback, immediately), immediately), this.subComponents, (e, c) => e.OnHideBegin(c, immediately));
+				ME.Utilities.CallInSequence(() => this.OnHideBeginAnimation_INTERNAL(() => base.OnHideBegin(callback, immediately), immediately), this.subComponents, (e, c) => e.OnHideBegin(c, immediately));
 
 			}
 
 		}
 
-		/// <summary>
-		/// Raises the hide begin event.
-		/// Wait while all sub components return the callback.
-		/// </summary>
-		/// <param name="callback">Callback.</param>
-		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-        private void OnHideBegin_INTERNAL(System.Action callback, bool immediately) {
+        private void OnHideBeginAnimation_INTERNAL(System.Action callback, bool immediately) {
 
 			if (this == null) {
 				

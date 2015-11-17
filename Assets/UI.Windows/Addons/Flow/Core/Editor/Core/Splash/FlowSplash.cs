@@ -38,7 +38,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			this.editor = editor;
 
-			if (this.skin == null) this.skin = Resources.Load<GUISkin>("UI.Windows/Flow/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
+			if (this.skin == null) this.skin = Resources.Load<GUISkin>(string.Format("UI.Windows/Flow/Styles/{0}", (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight")));
 			if (this.splash == null) this.splash = Resources.Load<Texture>("UI.Windows/Flow/Splash");
 
 		}
@@ -391,7 +391,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			headerStyle.fontSize = 18;
 			headerStyle.alignment = TextAnchor.MiddleCenter;
 			
-			GUILayoutExt.LabelWithShadow("UI.Windows Flow Extension v" + VersionInfo.BUNDLE_VERSION, headerStyle);
+			GUILayoutExt.LabelWithShadow(string.Format("UI.Windows Flow Extension v{0}", VersionInfo.BUNDLE_VERSION), headerStyle);
 			
 			GUILayout.Space(10f);
 			
@@ -418,36 +418,41 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					center.alignment = TextAnchor.MiddleCenter;
 					center.wordWrap = true;
 					
-					GUILayout.Label("No projects was found. Create a new one by Right-Click on any folder in Project View and choosing Create->UI.Windows->Flow->Graph option.", center);
+					GUILayout.Label("No projects were found. Create a new one by Right-Click on any folder in Project View and choose `Create->UI.Windows->Flow->Graph` option.", center);
 					
 				} else {
 					
-					var buttonStyle = new GUIStyle("U2D.createRect");
+					var buttonStyle = new GUIStyle("flow node 1 on");
+					buttonStyle.alignment = TextAnchor.MiddleLeft;
 					buttonStyle.padding = new RectOffset(15, 15, 15, 15);
 					buttonStyle.margin = new RectOffset(2, 2, 2, 2);
+					buttonStyle.overflow = new RectOffset();
+					buttonStyle.contentOffset = Vector2.zero;
 					buttonStyle.fixedWidth = 0f;
 					buttonStyle.fixedHeight = 0f;
 					buttonStyle.stretchWidth = true;
 					buttonStyle.stretchHeight = false;
-					buttonStyle.normal.textColor = Color.black;
+					buttonStyle.normal.textColor = Color.white;
 					buttonStyle.fontSize = 12;
 					buttonStyle.richText = true;
 					
 					var buttonStyleSelected = new GUIStyle(buttonStyle);
-					
 					buttonStyle.normal.background = null;
+					buttonStyle.normal.textColor = Color.black;
 					
 					this.scannedData = this.scannedData.OrderByDescending((data) => (data != null ? data.lastModifiedUnix : 0)).ToArray();
 					
 					foreach (var data in this.scannedData) {
 						
 						if (data == null) continue;
-						
+
+						var isSelected = (this.cachedData == data);
+
 						var title = data.name + "\n";
-						title += "<color=#777><size=10>Modified: " + data.lastModified + "</size></color>\n";
-						title += "<color=#888><size=10>Version: " + data.version + "</size></color>";
+						title += string.Format("<color={1}><size=10>Modified: {0}</size></color>\n", data.lastModified, isSelected == true ? "#ccc" : "#999");
+						title += string.Format("<color={1}><size=10>Version: {0}</size></color>", data.version, isSelected == true ? "#ccc" : "#999");
 						
-						if (GUILayout.Button(title, this.cachedData == data ? buttonStyleSelected : buttonStyle) == true) {
+						if (GUILayout.Button(title, isSelected ? buttonStyleSelected : buttonStyle) == true) {
 							
 							this.cachedData = data;
 							

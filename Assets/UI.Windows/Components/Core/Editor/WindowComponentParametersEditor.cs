@@ -13,6 +13,7 @@ namespace UnityEditor.UI.Windows.Components {
 		
 	}
 
+	[CanEditMultipleObjects()]
 	[CustomEditor(typeof(WindowComponentParametersBase), editorForChildClasses: true)]
 	public class WindowComponentParametersEditor : ParametersEditor {
 
@@ -54,6 +55,13 @@ namespace UnityEditor.UI.Windows.Components {
 		}
 
 		public override void OnInspectorGUI() {
+
+			if (this.targets.Length != 1) {
+
+				EditorGUILayout.HelpBox("Can't edit multiply objects.", MessageType.Warning);
+				return;
+
+			}
 
 			var oldState = GUI.enabled;
 			GUI.enabled = false;
