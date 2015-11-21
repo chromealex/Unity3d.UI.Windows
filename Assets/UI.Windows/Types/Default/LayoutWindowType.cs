@@ -258,7 +258,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 				var instance = this.component.Spawn();
 				//instance.SetComponentState(WindowObjectState.NotInitialized);
-				instance.SetParent(root, setTransformAsSource: false);
+				instance.SetParent(root, setTransformAsSource: false, worldPositionStays: false);
 				instance.SetTransformAs();
 
 				if (this.componentParameters != null) {

@@ -691,7 +691,7 @@ namespace UnityEngine.UI.Windows {
 				var instance = this.GetInstance(window, parameters);
 
 				instance.SetParameters(onParametersPassCall: null, parameters: parameters);
-				instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
+				instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(instance.preferences), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
 				
 				instance.Show();
 
@@ -918,7 +918,7 @@ namespace UnityEngine.UI.Windows {
 			instance.SetParameters(onParametersPassCall, parameters);
 			instance.Init(source,
 			              WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth),
-			              WindowSystem.instance.GetNextZDepth(),
+			              WindowSystem.instance.GetNextZDepth(instance.preferences),
 			              WindowSystem.instance.GetNextRaycastPriority(),
 			              WindowSystem.instance.GetNextOrderInLayer()
 			              );
@@ -1118,10 +1118,34 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		private float GetNextZDepth() {
+		private float GetNextZDepth(Preferences preferences) {
+			
+			var depth = 0f;
 
-			this.currentZDepth += this.zDepthStep;
-			return this.currentZDepth;
+			if (preferences.depth == Preferences.Depth.AlwaysBack) {
+				
+				depth = 0f;
+				
+			} else if (preferences.depth == Preferences.Depth.AlwaysTop) {
+				
+				depth = 20000f;
+				
+			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer1) {
+				
+				depth = 30000f;
+				
+			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer2) {
+				
+				depth = 40000f;
+				
+			} else {
+				
+				this.currentZDepth += this.zDepthStep;
+				depth = this.currentZDepth;
+				
+			}
+
+			return depth;
 			
 		}
 

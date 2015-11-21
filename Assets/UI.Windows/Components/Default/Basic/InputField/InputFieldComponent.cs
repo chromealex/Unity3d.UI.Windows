@@ -23,6 +23,32 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		private bool lastFocusValue = false;
 
+		public void SetEnabledState(bool state) {
+
+			if (state == true) {
+
+				this.SetEnabled();
+
+			} else {
+
+				this.SetDisabled();
+
+			}
+
+		}
+
+		public void SetEnabled() {
+
+			this.inputField.interactable = true;
+
+		}
+
+		public void SetDisabled() {
+			
+			this.inputField.interactable = false;
+
+		}
+
 		public string GetText() {
 
 			return (this.inputField != null) ? this.inputField.text : string.Empty;

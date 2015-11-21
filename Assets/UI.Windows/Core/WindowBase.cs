@@ -66,6 +66,8 @@ namespace UnityEngine.UI.Windows {
 
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 		private WindowBase source;
+
+		private bool paused = false;
 		
 		public bool SourceEquals(WindowBase y) {
 
@@ -174,7 +176,7 @@ namespace UnityEngine.UI.Windows {
 			this.currentState = WindowObjectState.Initialized;
 
 		}
-		
+
 		public void SetFunctionIterationIndex(int iteration) {
 			
 			this.functionIterationIndex = iteration;
@@ -393,7 +395,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void Show_INTERNAL(System.Action onShowEnd, AttachItem transitionItem) {
+		private void Show_INTERNAL(System.Action onShowEnd, AttachItem transitionItem) {
 
 			if (WindowSystem.IsCallEventsEnabled() == false) {
 
@@ -405,6 +407,14 @@ namespace UnityEngine.UI.Windows {
 			this.currentState = WindowObjectState.Showing;
 			
 			WindowSystem.AddToHistory(this);
+
+			this.StartCoroutine(this.Show_INTERNAL_YIELD(onShowEnd, transitionItem));
+
+		}
+
+		private IEnumerator Show_INTERNAL_YIELD(System.Action onShowEnd, AttachItem transitionItem) {
+
+			while (this.paused == true) yield return false;
 
 			var counter = 0;
 			System.Action callback = () => {
@@ -511,7 +521,17 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
 			this.currentState = WindowObjectState.Hiding;
+
+			this.StartCoroutine(this.Hide_INTERNAL_YIELD(onHideEnd, transitionItem));
+
+			return true;
+
+		}
+		
+		private IEnumerator Hide_INTERNAL_YIELD(System.Action onHideEnd, AttachItem transitionItem) {
 			
+			while (this.paused == true) yield return false;
+
 			var counter = 0;
 			System.Action callback = () => {
 				
@@ -563,7 +583,19 @@ namespace UnityEngine.UI.Windows {
 			this.events.OnHideBegin(callback);
 			this.OnHideBegin(callback, immediately: false);
 
-			return true;
+			yield return true;
+
+		}
+		
+		public void Pause() {
+
+			this.paused = true;
+
+		}
+		
+		public void Resume() {
+			
+			this.paused = false;
 
 		}
 

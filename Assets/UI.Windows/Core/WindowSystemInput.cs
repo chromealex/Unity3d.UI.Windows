@@ -4,7 +4,7 @@ using UnityEngine.UI.Windows.Components.Events;
 using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows {
-	
+
 	public enum PointerState : byte {
 
 		Default,
@@ -27,7 +27,23 @@ namespace UnityEngine.UI.Windows {
 			if (Input.GetMouseButtonDown(2) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(2) == true) WindowSystemInput.onPointerUp.Invoke();
 			#endif
-			
+
+			if (Input.GetKeyDown(KeyCode.Tab) == true) {
+
+				var system = EventSystem.current;
+				var next = system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
+				
+				if (next != null) {
+					
+					var inputfield = next.GetComponent<InputField>();
+					if (inputfield != null) inputfield.OnPointerClick(new PointerEventData(system));
+					
+					system.SetSelectedGameObject(next.gameObject, new BaseEventData(system));
+
+				}
+				
+			}
+
 		}
 
 		public static Vector2 GetPointerPosition() {

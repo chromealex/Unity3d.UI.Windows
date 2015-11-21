@@ -52,11 +52,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 				this.net.Connect(host, port, (b) => {
 					if (b == false) {
-						onResult(false);
+						if (onResult != null) onResult.Invoke(false);
 					} else {
 						AuthTO authTO = new AuthTO() {key=key};
 						this.net.SendMsg(AuthTO.version, this.SerializeB(authTO));
-						onResult(true);
+						if (onResult != null) onResult.Invoke(true);
 					}
 				});
 				this.net.onRecMsg = this.OnRecMsg;
