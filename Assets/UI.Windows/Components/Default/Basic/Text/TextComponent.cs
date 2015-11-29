@@ -218,6 +218,7 @@ namespace UnityEngine.UI.Windows.Components {
 			TimeMSmsFromMilliseconds,		// 00:00`00
 
 			DateDMHMS,						// 12 Aug 00:00:00
+			DateDMHMSFromMilliseconds,
 
 		};
 		
@@ -305,7 +306,16 @@ namespace UnityEngine.UI.Windows.Components {
 					break;
 
 				}
-				
+					
+				case ValueFormat.DateDMHMSFromMilliseconds: {
+					
+					DateTime date = new DateTime((long)(value / 1000d));
+					output = date.ToString("dd MM hh:mm:ss");
+					
+					break;
+					
+				}
+
 				case ValueFormat.TimeHMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);

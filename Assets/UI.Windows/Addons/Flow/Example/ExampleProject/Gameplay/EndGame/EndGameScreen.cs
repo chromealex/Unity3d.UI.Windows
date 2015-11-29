@@ -7,10 +7,31 @@
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Components;
 
 namespace ExampleProject.UI.Gameplay.EndGame {
 
 	public class EndGameScreen : EndGameScreenBase {
+		
+		public override void OnInit() {
+			
+			base.OnInit();
+			
+			this.GetLayoutComponent<ButtonComponent>().SetCallback(() => {
+
+				this.FlowHideFunctionLoader((routes) => {
+
+					WindowSystem.HideAllAndClean(except: this, callback: () => {
+
+						routes.FlowDefault();
+
+					});
+
+				});
+
+			});
+
+		}
 
 	}
 

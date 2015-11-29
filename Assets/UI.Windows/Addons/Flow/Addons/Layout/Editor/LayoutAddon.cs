@@ -108,7 +108,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 				GUI.BeginGroup(rectSettings);
 				{
 					if (this.component != null) {
-						
+
 						const float offsetTop = 50f;
 						
 						var viewRect = new Rect(0f, 0f, rectSettings.width, 0f).PixelPerfect();
@@ -118,11 +118,17 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 							//Debug.Log(component + "!=" + this.component.component);
 							if (component != this.component.component) {
-								
-								this.component.component = component;
+
 								this.component.componentParametersEditor = null;
 								this.component.componentParameters = this.component.OnComponentChanged(this.screen, component);
-								
+
+								if (this.component.componentParameters != null) {
+									
+									var e = Editor.CreateEditor(this.component.componentParameters) as IParametersEditor;
+									this.component.componentParametersEditor = e;
+
+								}
+
 							}
 
 						};
@@ -142,19 +148,13 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 						});
 						
 						if (this.component.component != null) {
+							
+							var editor = this.component.componentParametersEditor;
 
 							nRect.x = 5f;
 							nRect.width = viewRect.width - 5f * 2f;
 							nRect.y += nRect.height + 5f;
 							this.component.sortingOrder = EditorGUI.IntField(nRect, new GUIContent("Sorting Order"), this.component.sortingOrder);
-
-							var editor = this.component.componentParametersEditor;
-							if (editor == null && this.component.componentParameters != null) {
-								
-								var e = Editor.CreateEditor(this.component.componentParameters) as IParametersEditor;
-								this.component.componentParametersEditor = e;
-								
-							}
 
 							if (editor != null) {
 
@@ -320,8 +320,14 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 						var component = components.GetArrayElementAtIndex(i);
 						this.props.Add(component);
 						
-						this.screen.layout.components[i].OnComponentChanged(this.screen, this.screen.layout.components[i].component);
-						
+						var componentParametersEditor = this.screen.layout.components[i].OnComponentChanged(this.screen, this.screen.layout.components[i].component);
+						if (componentParametersEditor != null) {
+							
+							var e = Editor.CreateEditor(componentParametersEditor) as IParametersEditor;
+							this.screen.layout.components[i].componentParametersEditor = e;
+							
+						}
+
 					}
 					
 					this.settingsScrollPosition = Vector2.zero;

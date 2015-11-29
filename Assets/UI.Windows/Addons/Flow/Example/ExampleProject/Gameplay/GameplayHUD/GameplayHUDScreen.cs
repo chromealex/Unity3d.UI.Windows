@@ -7,10 +7,41 @@
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Components;
 
 namespace ExampleProject.UI.Gameplay.GameplayHUD {
 
 	public class GameplayHUDScreen : GameplayHUDScreenBase {
+
+		private GameplayView.GameplayViewScreen gameplay;
+
+		public void OnParametersPass(GameplayView.GameplayViewScreen gameplay) {
+
+			this.gameplay = gameplay;
+
+		}
+
+		public override void OnInit() {
+
+			base.OnInit();
+			
+			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag2).SetCallback(() => { this.SetColor(Color.black); });
+			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag3).SetCallback(() => { this.SetColor(Color.white); });
+			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag4).SetCallback(() => { this.Quit(); });
+
+		}
+
+		private void SetColor(Color color) {
+			
+			this.gameplay.SetColor(color);
+
+		}
+
+		private void Quit() {
+
+			this.gameplay.Quit();
+
+		}
 
 	}
 

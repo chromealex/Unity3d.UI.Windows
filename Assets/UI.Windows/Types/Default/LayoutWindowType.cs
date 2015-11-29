@@ -268,9 +268,13 @@ namespace UnityEngine.UI.Windows.Types {
 				}
 
 				var rect = instance.transform as RectTransform;
-				rect.sizeDelta = (this.component.transform as RectTransform).sizeDelta;
-				rect.anchoredPosition = (this.component.transform as RectTransform).anchoredPosition;
-				
+				if (rect != null) {
+
+					rect.sizeDelta = (this.component.transform as RectTransform).sizeDelta;
+					rect.anchoredPosition = (this.component.transform as RectTransform).anchoredPosition;
+					
+				}
+
 				this.root.Setup(instance, this);
 				instance.Setup(window);
 				

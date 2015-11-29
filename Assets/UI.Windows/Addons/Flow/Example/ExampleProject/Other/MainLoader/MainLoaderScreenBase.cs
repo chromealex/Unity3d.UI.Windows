@@ -14,66 +14,92 @@ namespace ExampleProject.UI.Other.MainLoader {
 	public class MainLoaderScreenBase : LayoutWindowType {
 		
 		/// <summary>
-		/// Flows to the Background.
+		/// Flows to the UserInfo.
 		/// Use this method to play transition effect on B window only.
 		/// If you call Hide() on A window - it will hide with standard behaviour.
-		/// Full Name: ExampleProject.UI.Other.Background.BackgroundScreen
+		/// Full Name: ExampleProject.UI.Other.UserInfo.UserInfoScreen
 		/// </summary>
-		/// <returns>Background</returns>
-		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowBackground() {
+		/// <returns>UserInfo</returns>
+		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowUserInfo() {
 			
-			return this.INTERNAL_FlowBackground(hide: false);
+			return this.INTERNAL_FlowUserInfo(hide: false);
 			
 		}
 		
 		/// <summary>
-		/// Flows to the Background.
+		/// Flows to the UserInfo.
 		/// Hides current window.
 		/// Use this method to play transition effect on both windows (A and B).
-		/// Full Name: ExampleProject.UI.Other.Background.BackgroundScreen
+		/// Full Name: ExampleProject.UI.Other.UserInfo.UserInfoScreen
 		/// </summary>
-		/// <returns>Background</returns>
-		public virtual ExampleProject.UI.Other.Background.BackgroundScreen FlowHideBackground() {
+		/// <returns>UserInfo</returns>
+		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowHideUserInfo() {
 			
-			return this.INTERNAL_FlowBackground(hide: true);
+			return this.INTERNAL_FlowUserInfo(hide: true);
 			
 		}
 		
-		private ExampleProject.UI.Other.Background.BackgroundScreen INTERNAL_FlowBackground(bool hide, System.Action<ExampleProject.UI.Other.Background.BackgroundScreen> onParametersPassCall = null) {
+		private ExampleProject.UI.Other.UserInfo.UserInfoScreen INTERNAL_FlowUserInfo(bool hide, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onParametersPassCall = null) {
 			
-			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.Background.BackgroundScreen>(this, 18, 32, hide, onParametersPassCall);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.UserInfo.UserInfoScreen>(this, 18, 45, hide, onParametersPassCall);
 			
 		}
 				
 		/// <summary>
-		/// Flows to the MainMenu.
-		/// Use this method to play transition effect on B window only.
-		/// If you call Hide() on A window - it will hide with standard behaviour.
-		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+		/// Call the A/B Test.
+		/// Use this method to filter users.
+		/// This method doesn't hide current window.
 		/// </summary>
-		/// <returns>MainMenu</returns>
-		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowMainMenu() {
+		public virtual void FlowABTest(
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
 			
-			return this.INTERNAL_FlowMainMenu(hide: false);
+			this.INTERNAL_FlowABTest(false, onCondition, onAnyOther);
 			
 		}
 		
 		/// <summary>
-		/// Flows to the MainMenu.
-		/// Hides current window.
-		/// Use this method to play transition effect on both windows (A and B).
-		/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+		/// Call the A/B Test.
+		/// Use this method to filter users.
+		/// This method hides current window.
 		/// </summary>
-		/// <returns>MainMenu</returns>
-		public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowHideMainMenu() {
+		public virtual void FlowHideABTest(
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
 			
-			return this.INTERNAL_FlowMainMenu(hide: true);
+			this.INTERNAL_FlowABTest(true, onCondition, onAnyOther);
 			
 		}
 		
-		private ExampleProject.UI.Menu.MainMenu.MainMenuScreen INTERNAL_FlowMainMenu(bool hide, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onParametersPassCall = null) {
+		private void INTERNAL_FlowABTest(
+			bool hide,
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
 			
-			return WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, 18, 43, hide, onParametersPassCall);
+			var window = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow(44);
+			if (window.IsABTest() == true) {
+				
+				AttachItem attachItem;
+				var wayId = window.abTests.Resolve(window, out attachItem);
+				
+				System.Action<AttachItem, bool>[] ways = new System.Action<AttachItem, bool>[] {
+					(item, h) => WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, item, h, null), (item, h) => WindowSystemFlow.DoFlow<ExampleProject.UI.Other.Error.ErrorScreen>(this, item, h, null)
+				};
+				
+				if (wayId == 0) {
+					
+					if (onAnyOther != null) onAnyOther.Invoke();
+					
+				} else {
+					
+					if (onCondition != null) onCondition.Invoke(wayId);
+					
+				}
+				
+				var way = ways[wayId];
+				if (way != null) way.Invoke(attachItem, hide);
+				
+			}
 			
 		}
 		

@@ -69,7 +69,7 @@ namespace UnityEditor.UI.Windows {
 							var list = new List<string>();
 							foreach (var p in parameters) {
 
-								list.Add("<color=#000080ff>" + ME.Utilities.FormatParameter(p.ParameterType) + "</color> " + p.Name);
+								list.Add(string.Format("<color=#000080ff>{0}</color> {1}", ME.Utilities.FormatParameter(p.ParameterType), p.Name));
 
 							}
 

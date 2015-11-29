@@ -15,7 +15,7 @@ namespace ExampleProject.UI.Menu.MainMenu {
 		
 		public class FlowFunctionLoaderRoutes : WindowRoutes {
 			
-			public FlowFunctionLoaderRoutes(WindowBase window, int index) : base(window, index) {}
+			public FlowFunctionLoaderRoutes(IFunctionIteration window, int index) : base(window, index) {}
 					
 			/// <summary>
 			/// Flows to the GameplayView.
@@ -80,12 +80,17 @@ namespace ExampleProject.UI.Menu.MainMenu {
 		private ExampleProject.UI.Loader.Loading.LoadingScreen INTERNAL_FlowFunctionLoader(bool hide, UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, System.Action<ExampleProject.UI.Loader.Loading.LoadingScreen> onParametersPassCall = null) {
 			
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(43, 39);
-			if (hide == true) this.Hide(item);
-			return WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
+			var newWindow = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
 				(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunctionLoaderRoutes(this, index))),
 				item,
 				onParametersPassCall
 			);
+			
+			WindowSystemFlow.OnDoTransition(item.index, 43, 39, hide);
+			
+			if (hide == true) this.Hide(item);
+			
+			return newWindow;
 			
 		}
 		

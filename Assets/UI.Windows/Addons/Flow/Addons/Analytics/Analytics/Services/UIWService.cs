@@ -23,7 +23,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		private NetClient net = new NetClient();
 		public bool logTcp = true;
 		[System.NonSerialized]
+		#if PRODUCTION
+		public string host = "services.unity3dwindows.com";
+		#else
 		public string host = "test.unity3dwindows.com";
+		#endif
 //		public string host = "localhost";
 		[System.NonSerialized]
 		public int port = 9997;

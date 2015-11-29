@@ -129,6 +129,8 @@ namespace UnityEngine.UI.Windows.Components {
 			[ParamFlag(ParameterFlag.BP2)] public Sprite image;
 			[ParamFlag(ParameterFlag.BP3)] public Texture rawImage;
 			[ParamFlag(ParameterFlag.BP4)] public Color imageColor = Color.white;
+			[ParamFlag(ParameterFlag.BP5)] public bool playOnStart = false;
+			[ParamFlag(ParameterFlag.BP6)] public bool loop = false;
 	
 			public void Setup(IImageComponent component) {
 				
@@ -136,6 +138,8 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.IsChanged(ParameterFlag.BP2) == true) component.SetImage(this.image);
 				if (this.IsChanged(ParameterFlag.BP3) == true) component.SetImage(this.rawImage);
 				if (this.IsChanged(ParameterFlag.BP4) == true) component.SetColor(this.imageColor);
+				if (this.IsChanged(ParameterFlag.BP5) == true) component.SetPlayOnStart(this.playOnStart);
+				if (this.IsChanged(ParameterFlag.BP6) == true) component.SetLoop(this.loop);
 	
 			}
 	#endregion

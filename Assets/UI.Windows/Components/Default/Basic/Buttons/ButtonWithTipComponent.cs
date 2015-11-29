@@ -86,7 +86,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void SetState(bool state) {
-			
+
 			if (state == true) {
 				
 				if (this.IsValid() == true) {

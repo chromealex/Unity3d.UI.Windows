@@ -408,6 +408,7 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.AddToHistory(this);
 
+			if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
 			this.StartCoroutine(this.Show_INTERNAL_YIELD(onShowEnd, transitionItem));
 
 		}
@@ -521,7 +522,8 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
 			this.currentState = WindowObjectState.Hiding;
-
+			
+			if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
 			this.StartCoroutine(this.Hide_INTERNAL_YIELD(onHideEnd, transitionItem));
 
 			return true;

@@ -39,21 +39,37 @@ namespace UnityEditor.UI.Windows.Plugins.ABTesting {
 			var result = string.Empty;
 			var part = file.text;
 
-			var methodPattern = "(item, h) => WindowSystemFlow.DoFlow<{0}>(this, item, h, null)";
+			var methodPatternDefault = "(item, h) => WindowSystemFlow.DoFlow<{0}>(this, item, h, null)";
 			var methods = string.Empty;
 			var methodList = new List<string>();
 
 			foreach (var item in windowTo.abTests.items) {
 
 				var window = FlowSystem.GetWindow(item.attachItem.targetId);
+				
+				if (window.IsFunction() == true) {
+					
+					var winFunc = FlowSystem.GetWindow(window.functionId);
+					if (winFunc != null) {
+
+						window = FlowSystem.GetWindow(winFunc.functionRootId);
+
+					} else {
+
+						window = null;
+
+					}
+					
+				}
+
 				if (window == null) {
 					
 					methodList.Add("null");
 
 				} else {
-					
+
 					var classNameWithNamespace = Tpl.GetClassNameWithNamespace(window);
-					methodList.Add(string.Format(methodPattern, classNameWithNamespace));
+					methodList.Add(string.Format(methodPatternDefault, classNameWithNamespace));
 
 				}
 

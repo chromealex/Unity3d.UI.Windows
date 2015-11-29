@@ -118,6 +118,10 @@ namespace UnityEngine.UI.Windows {
 			
 			base.Init();
 
+		}
+
+		public void Start() {
+			
 			this.OnStart();
 
 		}

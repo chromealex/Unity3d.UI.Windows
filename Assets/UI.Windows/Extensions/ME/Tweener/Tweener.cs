@@ -19,7 +19,8 @@ namespace ME {
 			void RaiseCancel();
 			void RaiseComplete();
 			object getTag();
-			void update(float dt, bool debug);
+		    object getGroup();
+            void update(float dt, bool debug);
 			bool isDirty { get; set; }
 
 		}
@@ -53,7 +54,8 @@ namespace ME {
 			private float _elapsed = 0.0f;
 			private bool _completed = false;
 			private object _tag;
-			private int _loops = 1;
+            private object _group;
+            private int _loops = 1;
 			private System.Action<T, float> _update = null;
 			private System.Action<T> _complete = null;
 			private System.Action<T> _cancel = null;
@@ -94,8 +96,12 @@ namespace ME {
 			public object getTag() {
 				return _tag;
 			}
-			
-			public void update(float dt, bool debug = false) {
+
+            public object getGroup() {
+                return _group;
+            }
+
+            public void update(float dt, bool debug = false) {
 				_elapsed += dt;
 				
 				var target = _targets[_currentTarget];
@@ -169,7 +175,8 @@ namespace ME {
 				return this;
 			}
 	
-			public Tween<T> tag(object value) {
+			public Tween<T> tag(object value, object group = null) {
+			    _group = group;
 				_tag = value;
 				return this;
 			}
@@ -276,6 +283,12 @@ namespace ME {
 			Mark(tween => tween.getTag() == tweenerTag);
 			
 		}
+
+	    public void removeGroup(object tweenerGroup) {
+
+	        Mark(tween => tween.getGroup() == tweenerGroup);
+
+	    }
 
 		public virtual void Update() {
 

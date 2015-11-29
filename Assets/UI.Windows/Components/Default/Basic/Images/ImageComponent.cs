@@ -53,7 +53,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void SetLoop(bool state) {
-			
+
 			this.loop = state;
 
 		}

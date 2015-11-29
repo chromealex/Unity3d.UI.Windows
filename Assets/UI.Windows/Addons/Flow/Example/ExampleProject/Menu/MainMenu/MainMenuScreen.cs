@@ -7,10 +7,36 @@
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Components;
 
 namespace ExampleProject.UI.Menu.MainMenu {
 
 	public class MainMenuScreen : MainMenuScreenBase {
+
+		private ButtonComponent button;
+
+		public override void OnInit() {
+
+			base.OnInit();
+
+			this.GetLayoutComponent(out this.button);
+			this.button.SetCallback(() => {
+
+				this.FlowHideFunctionLoader((routes) => {
+					
+					WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: () => {
+
+						routes.FlowGameplayView();
+
+					});
+
+				});
+
+			});
+
+		}
+
+
 
 	}
 

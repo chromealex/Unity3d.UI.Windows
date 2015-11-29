@@ -7,10 +7,49 @@
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
+using ExampleProject.Gameplay.GameplayView.Components;
 
 namespace ExampleProject.UI.Gameplay.GameplayView {
 
 	public class GameplayViewScreen : GameplayViewScreenBase {
+
+		private GameplayComponent gameplayComponent;
+		private GameplayHUD.GameplayHUDScreen hud;
+
+		public override void OnInit() {
+
+			base.OnInit();
+
+			this.GetLayoutComponent(out this.gameplayComponent);
+
+		}
+
+		public override void OnShowBegin(System.Action callback, bool resetAnimation) {
+
+			base.OnShowBegin(callback, resetAnimation);
+			
+			this.hud = this.FlowGameplayHUD(this);
+			this.SetColor(Color.white);
+
+		}
+
+		public void SetColor(Color color) {
+			
+			this.gameplayComponent.SetColor(color);
+			
+		}
+		
+		public void Quit() {
+
+			var endGame = this.FlowEndGame();
+			endGame.events.onEveryInstance.onShowEnd.AddListener(() => {
+				
+				this.hud.Hide();
+				this.Hide();
+
+			});
+
+		}
 
 	}
 

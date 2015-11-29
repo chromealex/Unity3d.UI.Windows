@@ -2826,7 +2826,35 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						});
 
-						menu.AddDisabledItem(new GUIContent("Calls/Methods: " + methodsCount.ToString()));
+						if (Display.MultiDisplayLicense() == false) {
+
+							menu.AddDisabledItem(new GUIContent("Display/No Multi Display License"));
+
+						}
+
+						var displaysCount = 8;
+						for (int i = 0; i < displaysCount; ++i) {
+
+							var displayNumber = i + 1;
+
+							if (i >= Display.displays.Length || screen == null) {
+
+								menu.AddDisabledItem(new GUIContent(string.Format("Display/Display {0}", displayNumber)));
+
+							} else {
+
+								menu.AddItem(new GUIContent(string.Format("Display/Display {0}", displayNumber)), screen.workCamera.targetDisplay == i, (displayIndex) => {
+
+									screen.workCamera.targetDisplay = (int)displayIndex;
+									EditorUtility.SetDirty(screen);
+
+								}, i);
+
+							}
+
+						}
+
+						menu.AddDisabledItem(new GUIContent(string.Format("Calls/Methods: {0}", methodsCount.ToString())));
 						menu.AddSeparator("Calls/");
 
 						if (window.compiled == true &&
@@ -2842,8 +2870,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 								}
 
-								var paramsStr = parameters.Count > 0 ? "(" + string.Join(", ", parameters.ToArray()) + ")" : string.Empty;
-								menu.AddItem(new GUIContent("Calls/OnParametersPass" + paramsStr), on: false, func: () => {
+								var paramsStr = parameters.Count > 0 ? string.Format("({0})", string.Join(", ", parameters.ToArray())) : string.Empty;
+								menu.AddItem(new GUIContent(string.Format("Calls/OnParametersPass{0}", paramsStr)), on: false, func: () => {
 
 									Selection.activeObject = screen;
 

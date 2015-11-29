@@ -327,6 +327,8 @@ namespace UnityEngine.UI.Windows.Components {
 				
 			}
 
+			this.Refresh(withNoElements: true);
+
 		}
 
 		public virtual void SetItemsAsync<T>(int capacity, UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
@@ -351,6 +353,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (onComplete != null) onComplete.Invoke();
 			
+			this.Refresh(withNoElements: true);
+
 		}
 
 		public virtual void Clear() {
@@ -364,16 +368,21 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 			this.list.Clear();
-
-			this.Refresh();
+			
+			this.Refresh(withNoElements: true);
 
 		}
 
-		public void Refresh() {
+		public void Refresh(bool withNoElements = false) {
 
-			if (this.noElements != null) this.noElements.SetActive(this.IsEmpty() == true);
+			if (withNoElements == true && this.noElements != null) this.noElements.SetActive(this.IsEmpty() == true);
 			if (this.content != null) this.content.SetActive(this.IsEmpty() == false);
-			//if (this.scrollRect != null) this.scrollRect.UpdateDropdown();
+
+			if (this.IsEmpty() == false) {
+
+				if (this.loading != null) this.loading.SetActive(false);
+
+			}
 
 		}
 
