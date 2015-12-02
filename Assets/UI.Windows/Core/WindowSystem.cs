@@ -382,6 +382,22 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
+		
+		public static float GetVolume(ClipType clipType) {
+			
+			if (WindowSystem.instance == null) return 0f;
+			
+			return WindowSystem.instance.audio.GetVolume(clipType);
+			
+		}
+
+		public static void SetVolume(ClipType clipType, float value) {
+			
+			if (WindowSystem.instance == null) return;
+
+			WindowSystem.instance.audio.SetVolume(clipType, value);
+
+		}
 
 		public static void AudioStop(WindowBase window, ClipType clipType, int id) {
 
@@ -1089,7 +1105,7 @@ namespace UnityEngine.UI.Windows {
 					afterGetInstance(instance);
 					
 				}
-				
+
 				if (transitionItem != null && transitionItem.transition != null && transitionItem.transitionParameters != null) {
 
 					instance.Show(transitionItem);

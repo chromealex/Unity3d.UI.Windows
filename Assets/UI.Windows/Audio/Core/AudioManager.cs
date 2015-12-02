@@ -30,7 +30,7 @@ namespace UnityEngine.UI.Windows.Audio {
 			source.loop = audioSettings.loop;
 			
 			source.priority = audioSettings.priority;
-			source.volume = audioSettings.volume;
+			source.volume = audioSettings.volume * sourceInfo.GetVolume(clipType);
 			source.pitch = audioSettings.pitch;
 			source.panStereo = audioSettings.panStereo;
 			source.spatialBlend = audioSettings.spatialBlend;
@@ -76,6 +76,8 @@ namespace UnityEngine.UI.Windows.Audio {
 			}
 
 			Manager.Reset(source);
+
+			sourceInfo.ApplyVolume(clipType, source);
 
 			if (clipType == ClipType.Music) {
 

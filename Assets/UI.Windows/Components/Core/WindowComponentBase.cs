@@ -59,6 +59,7 @@ namespace UnityEngine.UI.Windows {
 			this.OnShowBegin_INTERNAL(() => {
 
 				this.OnShowEnd();
+				if (callback != null) callback.Invoke();
 
 			}, resetAnimation);
 			
@@ -107,6 +108,8 @@ namespace UnityEngine.UI.Windows {
 				
 				if (setupTempNeedInactive == true) this.tempNeedToInactive = false;
 				
+				if (callback != null) callback.Invoke();
+
 			}, immediately);
 			
 		}

@@ -11,6 +11,16 @@ using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
+	/*
+	 * Events order: (Any of OnShowBegin, OnHideBegin, etc.)
+	 * Layout
+	 * Modules
+	 * Audio
+	 * Events
+	 * Transitions
+	 * Screen
+	 */
+
 	public class CompilerIgnore : System.Attribute {
 	};
 
@@ -157,16 +167,17 @@ namespace UnityEngine.UI.Windows {
 			if (this.setup == false) {
 				
 				this.Setup(this);
-				
-				this.OnAudioInit();
-				this.OnTransitionInit();
+
 				this.OnLayoutInit(depth, raycastPriority, orderInLayer);
 				this.OnModulesInit();
-
+				this.OnAudioInit();
+				this.events.OnInit();
+				this.OnTransitionInit();
+				
 				if (WindowSystem.IsCallEventsEnabled() == true) {
-
+					
 					this.OnInit();
-
+					
 				}
 
 				this.setup = true;
@@ -425,12 +436,12 @@ namespace UnityEngine.UI.Windows {
 				++counter;
 				if (counter < 6) return;
 
-				this.OnShowEnd();
 				this.OnLayoutShowEnd();
-				this.audio.OnShowEnd();
 				this.modules.OnShowEnd();
+				this.audio.OnShowEnd();
 				this.events.OnShowEnd();
 				this.transition.OnShowEnd();
+				this.OnShowEnd();
 				if (onShowEnd != null) onShowEnd();
 
 			    this.currentState = WindowObjectState.Shown;
@@ -451,17 +462,18 @@ namespace UnityEngine.UI.Windows {
 
 			this.modules.OnShowBegin(callback);
 
-			if (transitionItem != null && transitionItem.transition != null) {
-
-				this.transition.OnShowBegin(transitionItem.transition, transitionItem.transitionParameters, callback);
-
-			} else {
-
-				this.transition.OnShowBegin(callback);
-
-			}
-
 			this.events.OnShowBegin(callback);
+			
+			if (transitionItem != null && transitionItem.transition != null) {
+				
+				this.transition.OnShowBegin(transitionItem.transition, transitionItem.transitionParameters, callback);
+				
+			} else {
+				
+				this.transition.OnShowBegin(callback);
+				
+			}
+			
 			this.OnShowBegin(callback);
 
 			this.gameObject.SetActive(true);
@@ -545,13 +557,13 @@ namespace UnityEngine.UI.Windows {
 				WindowSystem.AddToHistory(this);
 
 				this.Recycle();
-				
-				this.OnHideEnd();
+
 				this.OnLayoutHideEnd();
 				this.modules.OnHideEnd();
 				this.audio.OnHideEnd();
 				this.events.OnHideEnd();
 				this.transition.OnHideEnd();
+				this.OnHideEnd();
 				if (onHideEnd != null) onHideEnd();
 
 				this.currentState = WindowObjectState.Hidden;
@@ -559,6 +571,8 @@ namespace UnityEngine.UI.Windows {
 			};
 
 			this.OnLayoutHideBegin(callback);
+			
+			this.modules.OnHideBegin(callback);
 
 			if (transitionItem != null && transitionItem.audioTransition != null) {
 				
@@ -569,9 +583,9 @@ namespace UnityEngine.UI.Windows {
 				this.audio.OnHideBegin(callback);
 				
 			}
-
-			this.modules.OnHideBegin(callback);
 			
+			this.events.OnHideBegin(callback);
+
 			if (transitionItem != null && transitionItem.transition != null) {
 				
 				this.transition.OnHideBegin(transitionItem.transition, transitionItem.transitionParameters, callback);
@@ -581,8 +595,7 @@ namespace UnityEngine.UI.Windows {
 				this.transition.OnHideBegin(callback);
 				
 			}
-
-			this.events.OnHideBegin(callback);
+			
 			this.OnHideBegin(callback, immediately: false);
 
 			yield return true;
@@ -606,12 +619,10 @@ namespace UnityEngine.UI.Windows {
 			if (Application.isPlaying == false) return;
 
 			this.OnLayoutDeinit();
-			this.events.OnDeinit();
 			this.modules.OnDeinit();
-			this.transition.OnDeinit();
-
+			this.audio.OnDeinit();
 			this.events.OnDeinit();
-
+			this.transition.OnDeinit();
 			this.OnDeinit();
 
 		}

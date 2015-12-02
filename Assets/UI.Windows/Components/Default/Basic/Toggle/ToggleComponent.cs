@@ -22,7 +22,13 @@ namespace UnityEngine.UI.Windows.Components {
 			this.toggleGroup.allowSwitchOff = this.allowSwitchOff;
 
 			this.lastSelectedIndex = -1;
-			this.Select(-1);
+			this.Toggle(-1);
+
+			foreach (var item in this.GetItems()) {
+
+				this.Setup(item as ToggleItemComponent);
+
+			}
 
 		}
 		
@@ -43,25 +49,28 @@ namespace UnityEngine.UI.Windows.Components {
 		public override T AddItem<T>() {
 
 			var instance = base.AddItem<T>();
-
-			if (instance is ToggleItemComponent) {
-
-				var button = instance as ToggleItemComponent;
-				button.SetCallback((ToggleItemComponent element, bool state) => {
-
-					this.Select(element);
-					
-					if (this.callback != null) this.callback.Invoke(element.GetState());
-					if (this.callbackButton != null) this.callbackButton.Invoke(element, element.GetState());
-
-				});
-
-				button.Register(this.toggleGroup);
-				this.toggleGroup.RegisterToggle(button.toggle);
-
-			}
+			this.Setup(instance as ToggleItemComponent);
 
 			return instance;
+
+		}
+
+		public void Setup(ToggleItemComponent instance) {
+			
+			if (instance != null) {
+
+				var button = instance;
+				button.SetCallback((ToggleItemComponent element, bool state) => {
+
+					if (this.callback != null) this.callback.Invoke(element.GetState());
+					if (this.callbackButton != null) this.callbackButton.Invoke(element, element.GetState());
+					
+				});
+				
+				button.Register(this.toggleGroup);
+				this.toggleGroup.RegisterToggle(button.toggle);
+				
+			}
 
 		}
 
@@ -78,13 +87,24 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void Select(IComponent element) {
-
-			this.Select(this.GetIndexOf(element));
+		public void SwitchOff() {
+			
+			var items = this.GetItems<ToggleItemComponent>();
+			foreach (var item in items) {
+				
+				item.TurnOff();
+				
+			}
 
 		}
 
-		public void Select(int index) {
+		public void Toggle(IComponent element) {
+
+			this.Toggle(this.GetIndexOf(element));
+
+		}
+
+		public void Toggle(int index) {
 
 			if (this.lastSelectedIndex == index) {
 
@@ -101,6 +121,27 @@ namespace UnityEngine.UI.Windows.Components {
 
 			var item = this.GetItem<ToggleItemComponent>(index);
 			if (item != null) item.Toggle();
+			
+			this.lastSelectedIndex = index;
+
+		}
+		
+		public void Select(int index, bool state) {
+
+			var item = this.GetItem<ToggleItemComponent>(index);
+			if (item != null) {
+
+				if (state == true) {
+
+					item.TurnOn();
+
+				} else {
+
+					item.TurnOff();
+
+				}
+
+			}
 			
 			this.lastSelectedIndex = index;
 

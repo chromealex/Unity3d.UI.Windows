@@ -13,13 +13,65 @@ namespace UnityEngine.UI.Windows.Audio {
 		
 		private Dictionary<long, AudioSource> instances = new Dictionary<long, AudioSource>();
 		private Dictionary<ClipType, List<AudioSource>> instancesByType = new Dictionary<ClipType, List<AudioSource>>();
+		
+		private float musicVolume = 0f;
+		private float sfxVolume = 0f;
 
 		public void Init() {
 
 			this.source.CreatePool(10);
 
 		}
-		
+
+		public float GetVolume(ClipType clipType) {
+
+			var volume = 0f;
+
+			if (clipType == ClipType.Music) {
+				
+				volume = this.musicVolume;
+
+			} else if (clipType == ClipType.SFX) {
+				
+				volume = this.sfxVolume;
+				
+			}
+
+			return volume;
+
+		}
+
+		public void SetVolume(ClipType clipType, float value) {
+
+			if (clipType == ClipType.Music) {
+
+				this.musicVolume = value;
+
+			} else if (clipType == ClipType.SFX) {
+
+				this.sfxVolume = value;
+
+			}
+			
+			var sources = this.GetSources(null, clipType);
+			if (sources != null) {
+
+				foreach (var source in sources) {
+
+					this.ApplyVolume(clipType, source);
+
+				}
+
+			}
+
+		}
+
+		public void ApplyVolume(ClipType clipType, AudioSource source) {
+
+			source.volume = this.GetVolume(clipType);
+
+		}
+
 		public AudioSource GetSource(WindowBase window, ClipType clipType, int id) {
 			
 			#if UNITY_EDITOR
@@ -40,7 +92,6 @@ namespace UnityEngine.UI.Windows.Audio {
 				
 			}
 
-			
 			List<AudioSource> valuesByType;
 			if (this.instancesByType.TryGetValue(clipType, out valuesByType) == false) {
 
@@ -51,6 +102,8 @@ namespace UnityEngine.UI.Windows.Audio {
 				valuesByType.Add(value);
 
 			}
+			
+			this.ApplyVolume(clipType, value);
 
 			return value;
 			

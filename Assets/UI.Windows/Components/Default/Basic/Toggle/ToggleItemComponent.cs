@@ -17,9 +17,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.callbackToggle.AddListenerDistinct(callback);
 			this.callbackButton.RemoveAllListeners();
-
+			
 			this.SetCallback(() => {
-
+				
+				this.Toggle();
 				this.callbackToggle.Invoke(this.GetState());
 
 			});
@@ -30,9 +31,10 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			this.callbackButton.AddListenerDistinct(callback);
 			this.callbackToggle.RemoveAllListeners();
-			
+
 			this.SetCallback(() => {
-				
+
+				this.Toggle();
 				this.callbackButton.Invoke(this, this.GetState());
 				
 			});
@@ -48,6 +50,18 @@ namespace UnityEngine.UI.Windows.Components {
 		public void Toggle() {
 
 			this.toggle.isOn = !this.toggle.isOn;
+
+		}
+
+		public void TurnOn() {
+
+			this.toggle.isOn = true;
+
+		}
+
+		public void TurnOff() {
+
+			this.toggle.isOn = false;
 
 		}
 

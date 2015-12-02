@@ -40,7 +40,6 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			if (Application.isPlaying == true) return;
 
 			UnityEditor.EditorApplication.delayCall += () => this.Update();
-			ResendLost();
 			this.net.ReceiveMsg();
 
 		}
@@ -273,7 +272,6 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		#if UNITY_EDITOR
 		private int idx = 0;
 		private Dictionary<int, System.Action<Result>> responseMap = new Dictionary<int, System.Action<Result>>();
-		private List<KeyValuePair<long, StatReqTO>> requestList = new List<KeyValuePair<long, StatReqTO>>();
 
 		public override void OnEditorAuth(string key, System.Action<bool> onResult) {
 
@@ -312,7 +310,6 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			to.idx = this.idx++;
 			this.responseMap.Add(to.idx, onResult);
-			this.requestList.Add(new KeyValuePair<long, StatReqTO>(System.DateTime.UtcNow.Ticks, to));
 			this.SendEditorMsg(to);
 
 		}
@@ -320,50 +317,6 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		private void SendEditorMsg<T>(T to) where T : StatReqTO {
 
 			this.SendMsg(to);
-
-		}
-
-		private void ResendLost() {
-
-			if (requestList.Count == 0) return;
-
-			if (responseMap.Count == 0) {
-				this.requestList.Clear();
-				return;
-			}
-
-			if (this.net == null || this.net.Connected() == false) {
-				this.requestList.Clear();
-				return;
-			}
-
-			List<StatReqTO> toResend = new List<StatReqTO>();
-			long threshold = System.DateTime.UtcNow.Ticks - timeout * 100000L;
-
-			int i = 0;
-			for (; i < this.requestList.Count && this.requestList[i].Key < threshold; i++) {
-
-				var to = this.requestList[i].Value;
-
-				if (this.responseMap.ContainsKey(to.idx) == true) {
-
-					toResend.Add(to);
-
-				}
-
-			}
-
-			this.requestList.RemoveRange(0, i);
-
-			if (toResend.Count == 0) return;
-
-			Debug.LogWarning("ResendLost packets " + toResend.Count);
-			foreach(var to in toResend) {
-
-				this.requestList.Add(new KeyValuePair<long, StatReqTO>(System.DateTime.UtcNow.Ticks, to));
-				SendEditorMsg(to);
-
-			}
 
 		}
 
