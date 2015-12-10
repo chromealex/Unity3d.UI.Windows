@@ -417,7 +417,7 @@ namespace UnityEditor.UI.Windows.Extensions.Utilities {
 		private void OnGUI() {
 			if (m_Styles == null) m_Styles = new Styles();
 			
-			EditorGUIUtility.LookLikeControls(85, 0f);
+			EditorGUIUtilityExt.LookLikeControls(85, 0f);
 			
 			if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return && CanCreate()) Create();
 			

@@ -707,7 +707,11 @@ namespace UnityEngine.UI.Windows {
 				var instance = this.GetInstance(window, parameters);
 
 				instance.SetParameters(onParametersPassCall: null, parameters: parameters);
-				instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(instance.preferences), WindowSystem.instance.GetNextRaycastPriority(), WindowSystem.instance.GetNextOrderInLayer());
+				instance.Init(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth),
+				              WindowSystem.instance.GetNextZDepth(instance.preferences),
+				              WindowSystem.instance.GetNextRaycastPriority(),
+				              WindowSystem.instance.GetNextOrderInLayer()
+				              );
 				
 				instance.Show();
 
@@ -788,8 +792,19 @@ namespace UnityEngine.UI.Windows {
 				return result;
 
 			});
-			
-			WindowSystem.ResetDepth();
+
+			if (except != null) {
+				
+				WindowSystem.ResetDepth();
+				except.SetDepth(WindowSystem.instance.GetNextDepth(except.preferences, except.workCamera.depth), WindowSystem.instance.GetNextZDepth(except.preferences));
+				except.OnCameraReset();
+
+			} else {
+
+				WindowSystem.ResetDepth();
+
+			}
+
 			WindowSystem.RefreshHistory();
 			
 		}
@@ -815,7 +830,25 @@ namespace UnityEngine.UI.Windows {
 
 			});
 			
-			WindowSystem.ResetDepth();
+			if (except != null) {
+				
+				WindowSystem.ResetDepth();
+
+				for (int i = 0; i < except.Count; ++i) {
+
+					var instance = except[i];
+					if (instance == null) continue;
+					instance.SetDepth(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(instance.preferences));
+					instance.OnCameraReset();
+
+				}
+
+			} else {
+				
+				WindowSystem.ResetDepth();
+				
+			}
+
 			WindowSystem.RefreshHistory();
 			
 		}
@@ -880,7 +913,7 @@ namespace UnityEngine.UI.Windows {
 		public static void HideAll(List<WindowBase> except, System.Action callback) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
-			
+
 			ME.Utilities.CallInSequence(() => {
 				
 				if (callback != null) callback();

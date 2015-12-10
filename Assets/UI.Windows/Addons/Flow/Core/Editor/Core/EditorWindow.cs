@@ -323,8 +323,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								this.tempAttaches.Add(window.id);
 								
 							}
-							
+
 							var oldColor = GUI.backgroundColor;
+							var oldColor2 = GUI.color;
 							
 							this.bringFront.Clear();
 							
@@ -341,6 +342,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								var backColor = container.randomColor;
 								backColor.a = 0.3f;
 								GUI.backgroundColor = backColor;
+								GUI.color = backColor;
 								
 								var rootContainer = container.GetContainer();
 								if (rootContainer != null) {
@@ -429,6 +431,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								
 							}
 							GUI.backgroundColor = oldColor;
+							GUI.color = oldColor2;
 							
 							foreach (var window in windows) {
 
@@ -1435,7 +1438,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 						}
 						
-						EditorGUIUtility.LookLikeControls();
+						EditorGUIUtilityExt.LookLikeControls();
 
 						anySettings = true;
 
@@ -2183,7 +2186,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			GUI.enabled = oldState;
 			
-			EditorGUIUtility.LookLikeControls();
+			EditorGUIUtilityExt.LookLikeControls();
 			
 		}
 		
@@ -2503,7 +2506,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			EditorGUIUtility.LookLikeControls();
+			EditorGUIUtilityExt.LookLikeControls();
 			
 		}
 		
@@ -2826,18 +2829,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						});
 
-						if (Display.MultiDisplayLicense() == false) {
-
-							menu.AddDisabledItem(new GUIContent("Display/No Multi Display License"));
-
-						}
-
 						var displaysCount = 8;
 						for (int i = 0; i < displaysCount; ++i) {
 
 							var displayNumber = i + 1;
 
-							if (i >= Display.displays.Length || screen == null) {
+							if (/*i >= Display.displays.Length ||*/ screen == null) {
 
 								menu.AddDisabledItem(new GUIContent(string.Format("Display/Display {0}", displayNumber)));
 
@@ -3130,7 +3127,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			GUI.enabled = oldState;
 
-			EditorGUIUtility.LookLikeControls();
+			EditorGUIUtilityExt.LookLikeControls();
 			
 		}
 		

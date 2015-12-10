@@ -1,9 +1,22 @@
 ﻿using UnityEngine;
 using System;
+using System.Text.RegularExpressions;
 
 namespace UnityEngine.UI.Windows.Components {
 
 	public class TextComponent : ColoredComponent, ITextComponent {
+
+		public enum RichTextFlags : byte {
+
+			None = 0x0,
+			Color = 0x1,
+			Bold = 0x2,
+			Italic = 0x4,
+			Size = 0x8,
+			Material = 0x10,
+			Quad = 0x20,
+
+		};
 
 		public override void Setup(IComponentParameters parameters) {
 			
@@ -23,6 +36,8 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		private Text text;
 		public UnityEngine.UI.Windows.Components.TextComponent.ValueFormat valueFormat;
+		[BitMask(typeof(RichTextFlags))]
+		public RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
 
 		public void SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 			
@@ -165,7 +180,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void SetText(string text) {
 
-			if (this.text != null) this.text.text = text;
+			if (this.text != null) {
+
+				if (this.text.supportRichText == true) {
+
+					text = TextComponent.ParseRichText(text, this.richTextFlags);
+
+				}
+
+				this.text.text = text;
+
+			}
 
 		}
 
@@ -202,10 +227,63 @@ namespace UnityEngine.UI.Windows.Components {
 			#region source macros UI.Windows.Editor.TextComponent
 			var texts = this.GetComponentsInChildren<Text>(true);
 			if (texts.Length == 1) this.text = texts[0];
+
+			if (this.valueFormat != ValueFormat.None) {
+
+				this.SetValue(999999L);
+
+			}
 			#endregion
 			
 		}
 		#endif
+
+		public static string ParseRichText(string text, RichTextFlags flags) {
+			
+			if ((flags & RichTextFlags.Bold) == 0) {
+				
+				text = Regex.Replace(text, @"<b>", String.Empty);
+				text = Regex.Replace(text, @"</b>", String.Empty);
+				
+			}
+			
+			if ((flags & RichTextFlags.Italic) == 0) {
+				
+				text = Regex.Replace(text, @"<i>", String.Empty);
+				text = Regex.Replace(text, @"</i>", String.Empty);
+				
+			}
+			
+			if ((flags & RichTextFlags.Size) == 0) {
+				
+				text = Regex.Replace(text, @"<size=[0-9]+>", String.Empty);
+				text = Regex.Replace(text, @"</size>", String.Empty);
+				
+			}
+			
+			if ((flags & RichTextFlags.Color) == 0) {
+				
+				text = Regex.Replace(text, @"<color=[^>]+>", String.Empty);
+				text = Regex.Replace(text, @"</color>", String.Empty);
+				
+			}
+			
+			if ((flags & RichTextFlags.Material) == 0) {
+				
+				text = Regex.Replace(text, @"<material=[^>]+>", String.Empty);
+				text = Regex.Replace(text, @"</material>", String.Empty);
+				
+			}
+			
+			if ((flags & RichTextFlags.Quad) == 0) {
+				
+				text = Regex.Replace(text, @"<quad [^>]+>", String.Empty);
+				
+			}
+
+			return text;
+
+		}
 
 		public enum ValueFormat : byte {
 			
@@ -219,6 +297,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			DateDMHMS,						// 12 Aug 00:00:00
 			DateDMHMSFromMilliseconds,
+			TimeMSFromMilliseconds,			// 00:00
 
 		};
 		
@@ -252,7 +331,7 @@ namespace UnityEngine.UI.Windows.Components {
 					
 					if (value < 0f) {
 						
-						output = "-" + (-value).ToString("# ### ### ##0").Trim();
+						output = string.Format("-{0}", (-value).ToString("# ### ### ##0").Trim());
 						
 					} else {
 						
@@ -268,11 +347,11 @@ namespace UnityEngine.UI.Windows.Components {
 					
 					if (value < 0f) {
 						
-						output = "-" + (-value).ToString("#,### ### ##0").Trim(',');
+						output = string.Format("-{0}", (-value).ToString("#,### ### ##0").Trim(','));
 						
 					} else {
 						
-						output = value.ToString("#,### ### ##0").Trim(',');
+						output = value.ToString("#,### ### ##0").Trim(',').Trim(' ');
 						
 					}
 					
@@ -292,7 +371,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case ValueFormat.TimeHMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
-					output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
+						output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
 					
 					break;
 
@@ -301,7 +380,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case ValueFormat.TimeMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
-					output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
+						output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
 					
 					break;
 
@@ -319,7 +398,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case ValueFormat.TimeHMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
-					output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
+						output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
 					
 					break;
 
@@ -328,8 +407,17 @@ namespace UnityEngine.UI.Windows.Components {
 				case ValueFormat.TimeMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
-					output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);
+						output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);
 					
+					break;
+
+				}
+
+				case ValueFormat.TimeMSFromMilliseconds: {
+					
+					var t = TimeSpan.FromMilliseconds(value);
+					output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
+
 					break;
 
 				}

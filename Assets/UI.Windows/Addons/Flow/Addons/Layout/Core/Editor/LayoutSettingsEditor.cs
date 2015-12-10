@@ -171,6 +171,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					parameters.objectReferenceValue = components[index].OnComponentChanged(window, newComponent as WindowComponent);
 					components[index].componentParametersEditor = null;
 					
+					UnityEditor.EditorUtility.SetDirty(window);
+
 				}
 				
 				nRect.x += nRect.width;

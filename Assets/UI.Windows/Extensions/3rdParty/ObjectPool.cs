@@ -114,9 +114,14 @@ namespace UnityEngine.Extensions {
 
 			if (prefab == null) return null;
 
-			if (instance.objectLookup.ContainsKey(prefab)) {
+			T obj = null;
 
-				T obj = null;
+			if (instance.objectLookup.ContainsKey(prefab) == true) {
+				
+				#if UNITY_EDITOR
+				if (Application.isPlaying == true) {
+				#endif
+
 				var list = instance.objectLookup[prefab];
 				if (list.Count > 0) {
 					
@@ -144,12 +149,17 @@ namespace UnityEngine.Extensions {
 					
 				}
 
+				#if UNITY_EDITOR
+				}
+				#endif
+				
 				obj = ObjectPool.InstantiateSource<T>(prefab);
 				obj.transform.position = position;
 				obj.transform.rotation = rotation;
 				obj.transform.SetParent(prefab.transform.parent);
 				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
+				obj.gameObject.hideFlags = HideFlags.None;
 				obj.gameObject.SetActive(true);
 				instance.prefabLookup[obj] = prefab;
                 instance.sceneLookup.Add(obj, prefab);
@@ -158,13 +168,13 @@ namespace UnityEngine.Extensions {
 
 			} else {
 				
-				T obj = null;
 				obj = ObjectPool.InstantiateSource<T>(prefab);
 				obj.transform.position = position;
 				obj.transform.rotation = rotation;
 				obj.transform.SetParent(prefab.transform.parent);
 				obj.SetTransformAs(prefab);
 				obj.name = prefab.name;
+				obj.gameObject.hideFlags = HideFlags.None;
 				obj.gameObject.SetActive(true);
 
                 return (T)obj;
@@ -180,7 +190,12 @@ namespace UnityEngine.Extensions {
 
 				if (ME.EditorUtilities.IsPrefab(source.gameObject) == true) {
 
-					return UnityEditor.PrefabUtility.InstantiatePrefab(source) as T;
+					#if UNITY_5_3_0
+					Debug.LogWarning("Unity 5.3.0 bug: Creating through editor-mode from prefabs causes hidden gameobjects. You must create it manual: Screen first, Layout the second and components at last.");
+					#endif
+
+					var go = UnityEditor.PrefabUtility.InstantiatePrefab(source.gameObject, SceneManagement.SceneManager.GetActiveScene()) as GameObject;
+					return go.GetComponent<T>();
 
 				}
 

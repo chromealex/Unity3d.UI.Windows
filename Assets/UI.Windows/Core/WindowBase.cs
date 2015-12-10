@@ -106,6 +106,19 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public virtual void OnCameraReset() {
+		}
+		
+		public void SetDepth(float depth, float zDepth) {
+			
+			var pos = this.transform.position;
+			pos.z = zDepth;
+			this.transform.position = pos;
+			
+			this.workCamera.depth = depth;
+			
+		}
+
 		internal void Init(WindowBase source, float depth, float zDepth, int raycastPriority, int orderInLayer) {
 
 			this.source = source;
@@ -121,16 +134,13 @@ namespace UnityEngine.UI.Windows {
 				
 				this.currentState = WindowObjectState.NotInitialized;
 
-				Debug.LogError("Can't initialize window instance because of some components was not installed properly.", this);
+				Debug.LogError("Can't initialize window instance because of some components were not installed properly.", this);
 				return;
 
 			}
 
-			var pos = this.transform.position;
-			pos.z = zDepth;
-			this.transform.position = pos;
+			this.SetDepth(depth, zDepth);
 
-			this.workCamera.depth = depth;
 			if (this.preferences.IsDontDestroySceneChange() == true) {
 
 				GameObject.DontDestroyOnLoad(this.gameObject);

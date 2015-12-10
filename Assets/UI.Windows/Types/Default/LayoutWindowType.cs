@@ -438,6 +438,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
+			this.instance.OnWindowOpen();
 			this.instance.OnShowBegin(callback, resetAnimation);
 
 		}

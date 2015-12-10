@@ -138,7 +138,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			if (this.CheckMismatch(window, parameters) == false) {
 
-				callback();
+				if (callback != null) callback();
 				return;
 
 			}

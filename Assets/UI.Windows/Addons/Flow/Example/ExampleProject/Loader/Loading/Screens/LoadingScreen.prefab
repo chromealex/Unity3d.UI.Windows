@@ -62,7 +62,7 @@ Camera:
   m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
-  m_StereoSeparation: .0219999999
+  m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
 --- !u!114 &11427668
 MonoBehaviour:
@@ -79,7 +79,7 @@ MonoBehaviour:
   duration: 1
   minNormalizedValue: 0
   continious: 0
-  continiousWidth: .400000006
+  continiousWidth: 0.4
   continiousAngleStep: 0
   onChanged:
     m_PersistentCalls:

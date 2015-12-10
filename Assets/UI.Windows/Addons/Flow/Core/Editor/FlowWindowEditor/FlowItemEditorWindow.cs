@@ -10,6 +10,8 @@ using System.Linq;
 using System.IO;
 using UnityEditor.UI.Windows.Plugins.Flow.Editors;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -20,7 +22,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private FlowSystemEditorWindow rootWindow;
 		private FD.FlowWindow window;
-		private string currentScene;
+		private Scene currentScene;
 		private SceneView currentView;
 		private List<WindowLayout> layouts;
 		private List<WindowBase> screens;
@@ -75,18 +77,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			this.rootWindow = rootWindow;
 			this.window = window;
-			this.currentScene = EditorApplication.currentScene;
+			this.currentScene = EditorSceneManager.GetActiveScene();//EditorApplication.currentScene;
 			this.layouts = new List<WindowLayout>();
 			this.layoutPrefab = null;
 
 			this.screens = new List<WindowBase>();
 			this.screenPrefab = null;
 
-			#if UNITY_5_0
-			EditorApplication.NewEmptyScene();
-			#else
-			EditorApplication.NewScene();
-			#endif
+			EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene);
 
 			var popupOffset = 100f;
 			var popupSize = new Vector2(rootWindow.position.width - popupOffset * 2f, rootWindow.position.height - popupOffset * 2f);
@@ -210,13 +208,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			if (string.IsNullOrEmpty(this.currentScene) == true) {
+			if (this.currentScene.IsValid() == true) {
 
-				EditorApplication.NewScene();
+				EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
 
 			} else {
-				
-				EditorApplication.OpenScene(this.currentScene);
+
+				EditorSceneManager.OpenScene(this.currentScene.path);
 
 			}
 
@@ -853,7 +851,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 					}*/
 
-					EditorGUIUtility.LookLikeControls();
+					EditorGUIUtilityExt.LookLikeControls();
 
 					var layoutScreen = screen as LayoutWindowType;
 					if (this.layoutInstance != null && layoutScreen != null) {
@@ -884,7 +882,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 							if (GUI.changed == true) this.isLayoutDirty = true;
 							
-							EditorGUIUtility.LookLikeControls();
+							EditorGUIUtilityExt.LookLikeControls();
 
 						}
 
@@ -1313,7 +1311,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private static AnimatedValues.AnimFloat editAnimation;
 		public static void SetControl(FlowSystemEditorWindow rootWindow, FD.FlowWindow window, System.Action<float> onProgress) {
 
-			if (EditorApplication.SaveCurrentSceneIfUserWantsTo() == true) {
+			if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == true) {
 				
 				FlowSceneView.editAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
 

@@ -35,7 +35,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 			public Styles() {
 
-				this.skin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
+				this.skin = Resources.Load(string.Format("UI.Windows/Flow/Styles/Skin{0}", (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"))) as GUISkin;
 				if (this.skin != null) {
 
 					this.backLock = this.skin.FindStyle("LayoutBackLock");
@@ -129,6 +129,8 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 								}
 
+								UnityEditor.EditorUtility.SetDirty(this.screen);
+
 							}
 
 						};
@@ -172,7 +174,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 										//++EditorGUI.indentLevel;
 										editor.OnParametersGUI(viewRect);
 										//--EditorGUI.indentLevel;
-										EditorGUIUtility.LookLikeControls();
+										EditorGUIUtilityExt.LookLikeControls();
 										
 									}
 								}

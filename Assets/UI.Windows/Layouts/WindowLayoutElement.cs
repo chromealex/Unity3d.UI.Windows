@@ -139,8 +139,7 @@ namespace UnityEngine.UI.Windows {
 			var descr = string.Empty;
 			if (this.showFullDescription == true) {
 
-				descr = "<b>" + this.tag.ToString() + "</b>\n" + this.comment + "\n" + "(Animation: " + (this.animation != null ? this.animation.name : "None") + ")" +
-					(this.tempEditorComponent != null ? ("\n(Component: " + this.tempEditorComponent.name + ")") : "");
+				descr = string.Format("<b>{0}</b>\n{1}\n(Animation: {2}){3}", this.tag.ToString(), this.comment, (this.animation != null ? this.animation.name : "None"), (this.tempEditorComponent != null ? ("\n(Component: " + this.tempEditorComponent.name + ")") : ""));
 
 			} else {
 

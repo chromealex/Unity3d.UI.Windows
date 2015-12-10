@@ -478,7 +478,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting {
 			}
 			GUILayout.EndVertical();
 			
-			EditorGUIUtility.LookLikeControls();
+			EditorGUIUtilityExt.LookLikeControls();
 			
 		}
 		#endif

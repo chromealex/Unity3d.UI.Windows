@@ -45,13 +45,15 @@ namespace ME {
 				public float start;
 				public float value;
 				public float duration;
+				public float currentDelay = 0f;
+				public float delay = 0f;
 				public ITransition transition;
 				public bool inverse = false;
 			}
 			
 			private List<Target> _targets = new List<Target>();
 			int _currentTarget = 0;
-			private float _elapsed = 0.0f;
+			private float _elapsed = 0f;
 			private bool _completed = false;
 			private object _tag;
             private object _group;
@@ -102,11 +104,15 @@ namespace ME {
             }
 
             public void update(float dt, bool debug = false) {
-				_elapsed += dt;
-				
+
 				var target = _targets[_currentTarget];
 				//if (debug == true) Debug.Log(_currentTarget + " " + _elapsed + " " + target.duration);
 				
+				target.currentDelay += dt;
+				if (target.currentDelay <= target.delay) return;
+				
+				_elapsed += dt;
+
 				if (_elapsed >= target.duration) {
 					if ((_currentTarget + 1) == _targets.Count) {
 						if (_update != null)
@@ -181,6 +187,15 @@ namespace ME {
 				return this;
 			}
 	
+			public Tween<T> delay(float delay) {
+
+				_targets[_targets.Count - 1].delay = delay;
+				_targets[_targets.Count - 1].currentDelay = 0f;
+
+				return this;
+
+			}
+
 			public Tween<T> repeat() {
 				_loops = INFINITE_LOOPS;
 				return this;

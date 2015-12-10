@@ -45,7 +45,7 @@ public static class TweenerExt {
 	public static ME.Tweener.Tween<ParticleSystem.Particle> addTween<T>(this ME.Tweener tweener, ParticleSystem.Particle particle, float duration, Color start, Color end) {
 		return tweener.addTween(particle, duration, 0f, 1f)
 			.onUpdate((p, t) => {
-			p.color = Color.Lerp(start, end, t); });
+				p.startColor = Color.Lerp(start, end, t); });
 	}
 
 	// position

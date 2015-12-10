@@ -500,7 +500,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					
 				}
 				
-				var containerStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Container", styleNormal, (styleName) => {
+				var containerStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Container." + this.randomColor.ToString(), styleNormal, (styleName) => {
 					
 					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
 					_style.padding = new RectOffset(0, 0, 16, 1);
@@ -508,7 +508,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					_style.fontStyle = FontStyle.Bold;
 					_style.alignment = TextAnchor.UpperCenter;
 					_style.normal.textColor = Color.white;
-					
+					var tex = new Texture2D(4, 4);
+					var colors = tex.GetPixels();
+					for (var i = 0; i < colors.Length; ++i) {
+
+						colors[i] = this.randomColor;
+						colors[i].a = 0.2f;
+
+					}
+					tex.SetPixels(colors);
+					_style.normal.background = tex;
+
 					return _style;
 					
 				});

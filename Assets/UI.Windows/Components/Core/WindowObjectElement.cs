@@ -90,6 +90,16 @@ namespace UnityEngine.UI.Windows {
 
         }
 
+		/// <summary>
+		/// Raises the window open event.
+		/// Fires before OnShowBegin, but after OnInit/OnParametersPass/OnEmptyPass
+		/// </summary>
+		public virtual void OnWindowOpen() {
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnWindowOpen();
+
+		}
+
 	    /// <summary>
 	    /// Raises the init event.
 	    /// You can override this method but call it's base.

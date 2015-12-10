@@ -133,7 +133,7 @@ namespace UnityEditor.UI.Windows.Types {
 					
 				}
 
-				EditorGUIUtility.LookLikeControls();
+				EditorGUIUtilityExt.LookLikeControls();
 
 			}
 
