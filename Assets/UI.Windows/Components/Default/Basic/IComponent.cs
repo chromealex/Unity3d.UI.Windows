@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows.Components {
 	
@@ -11,50 +12,78 @@ namespace UnityEngine.UI.Windows.Components {
 		
 	};
 
+	public enum RichTextFlags : byte {
+
+		None = 0x0,
+		Color = 0x1,
+		Bold = 0x2,
+		Italic = 0x4,
+		Size = 0x8,
+		Material = 0x10,
+		Quad = 0x20,
+
+	};
+
+	public enum TextValueFormat : byte {
+
+		None,		 // 1234567890
+		WithSpace,	 // 1 234 567 890
+		WithComma,	 // 1,234 567 890
+		TimeHMSFromSeconds,				// 00:00:00
+		TimeMSFromSeconds,				// 00:00
+		TimeHMSmsFromMilliseconds,		// 00:00:00`00
+		TimeMSmsFromMilliseconds,		// 00:00`00
+
+		DateDMHMS,						// 12 Aug 00:00:00
+		DateDMHMSFromMilliseconds,
+		TimeMSFromMilliseconds,			// 00:00
+
+	};
+
 	public interface IComponent {
 
 	}
 
-	public interface ISelectable : IComponent {
+	public interface IButtonComponent : ITextComponent, IImageComponent, IComponent {
 
-		void Select();
-		void Deselect();
-		void SetCallback(UnityAction callback);
-		void SetCallback(UnityAction<ButtonComponent> callback);
+		IButtonComponent SetCallback(UnityAction callback);
+		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
 		Selectable GetSelectable();
 
-		void SetEnabledState(bool state);
-		void SetHoverState(bool state);
-		void SetHoverOnAnyPointerState(bool state);
-		void SetHoverOnAnyButtonState(bool state);
-		void SetCallbackHover(UnityAction<bool> callback);
+		IButtonComponent SetEnabledState(bool state);
+		IButtonComponent SetEnabled();
+		IButtonComponent SetDisabled();
+		IButtonComponent SetHoverState(bool state);
+		IButtonComponent SetHoverOnAnyPointerState(bool state);
+		IButtonComponent SetHoverOnAnyButtonState(bool state);
+		IButtonComponent SetCallbackHover(UnityAction<bool> callback);
 
-		void SetSFX(PointerEventState state, Audio.Component data);
+		IButtonComponent SetSFX(PointerEventState state, Audio.Component data);
 
 	}
 	
 	public interface ITextComponent : IComponent {
 		
-		void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format = UnityEngine.UI.Windows.Components.TextComponent.ValueFormat.None);
-		void SetText(string text);
+		ITextComponent SetValue(int value, TextValueFormat format = TextValueFormat.None);
+		ITextComponent SetText(string text);
 		string GetText();
-		void SetTextColor(Color color);
-		void SetValueFormat(UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format);
+		ITextComponent SetTextColor(Color color);
+		ITextComponent SetValueFormat(TextValueFormat format);
 
-		void SetFont(Font font);
-		void SetFontSize(int value);
+		ITextComponent SetFont(Font font);
+		ITextComponent SetFontSize(int value);
 
-		void SetLineSpacing(float value);
-		void SetFontStyle(FontStyle style);
-		void SetRichText(bool state);
+		ITextComponent SetLineSpacing(float value);
+		ITextComponent SetFontStyle(FontStyle style);
+		ITextComponent SetRichText(bool state);
 
-		void SetTextAlignment(TextAnchor anchor);
-		void SetTextVerticalOverflow(VerticalWrapMode mode);
-		void SetTextHorizontalOverflow(HorizontalWrapMode mode);
+		ITextComponent SetTextAlignment(TextAnchor anchor);
+		ITextComponent SetTextVerticalOverflow(VerticalWrapMode mode);
+		ITextComponent SetTextHorizontalOverflow(HorizontalWrapMode mode);
 
-		void SetBestFitState(bool state);
-		void SetBestFitMinSize(int value);
-		void SetBestFitMaxSize(int value);
+		ITextComponent SetBestFitState(bool state);
+		ITextComponent SetBestFitMinSize(int value);
+		ITextComponent SetBestFitMaxSize(int value);
 
 	}
 	

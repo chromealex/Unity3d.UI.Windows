@@ -10,7 +10,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[Multiline]
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P1)] public string text;
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P2)] public Color color = Color.white;
-		[ParamFlag(ParameterFlag./*{flagPrefix}*/P3)] public TextComponent.ValueFormat format = TextComponent.ValueFormat.None;
+		[ParamFlag(ParameterFlag./*{flagPrefix}*/P3)] public TextValueFormat format = TextValueFormat.None;
 
 		[Header("Text: Character")]
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P4)] public Font font;

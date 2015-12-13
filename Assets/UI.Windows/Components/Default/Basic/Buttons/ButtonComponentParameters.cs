@@ -22,7 +22,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag.P5)] public ComponentEvent hoverInCallback = new ComponentEvent();
 		[ParamFlag(ParameterFlag.P6)] public ComponentEvent hoverOutCallback = new ComponentEvent();
 
-		public void Setup(ISelectable component) {
+		public void Setup(IButtonComponent component) {
 			
 			if (this.IsChanged(ParameterFlag.P1) == true) component.SetEnabledState(this.interactableByDefault);
 			if (this.IsChanged(ParameterFlag.P2) == true) {
@@ -79,7 +79,7 @@ namespace UnityEngine.UI.Windows.Components {
 			[Multiline]
 			[ParamFlag(ParameterFlag.AP1)] public string text;
 			[ParamFlag(ParameterFlag.AP2)] public Color color = Color.white;
-			[ParamFlag(ParameterFlag.AP3)] public TextComponent.ValueFormat format = TextComponent.ValueFormat.None;
+			[ParamFlag(ParameterFlag.AP3)] public TextValueFormat format = TextValueFormat.None;
 	
 			[Header("Text: Character")]
 			[ParamFlag(ParameterFlag.AP4)] public Font font;

@@ -124,14 +124,42 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			var flowData = FlowSystem.GetData();
 			
-			var transitions = flowData.windowAssets.Where(w => window.attachItems.Any((item) => item.targetId == w.id) && w.CanCompiled() && !w.IsContainer());
+			var transitions = flowData.windowAssets.Where(w => window.attachItems.Any((item) => item.targetId == w.id) && !w.IsContainer());
 
 			var result = string.Empty;
 			foreach (var each in transitions) {
 				
 				var className = each.directory;
 				var classNameWithNamespace = Tpl.GetNamespace(each) + "." + Tpl.GetDerivedClassName(each);
-				
+
+				if (each.IsShowDefault() == true) {
+
+					// Collect all default windows
+					foreach (var defaultWindowId in FlowSystem.GetDefaultWindows()) {
+
+						var defaultWindow = FlowSystem.GetWindow(defaultWindowId);
+
+						className = defaultWindow.directory;
+						classNameWithNamespace = Tpl.GetNamespace(defaultWindow) + "." + Tpl.GetDerivedClassName(defaultWindow);
+
+						result += TemplateGenerator.GenerateWindowLayoutTransitionMethod(window, each, className, classNameWithNamespace);
+
+						WindowSystem.CollectCallVariations(each.GetScreen(), (listTypes, listNames) => {
+
+							result += TemplateGenerator.GenerateWindowLayoutTransitionTypedMethod(window, each, className, classNameWithNamespace, listTypes, listNames);
+
+						});
+
+					}
+
+					continue;
+
+				} else {
+
+					if (each.CanCompiled() == false) continue;
+
+				}
+
 				result += TemplateGenerator.GenerateWindowLayoutTransitionMethod(window, each, className, classNameWithNamespace);
 
 				WindowSystem.CollectCallVariations(each.GetScreen(), (listTypes, listNames) => {
@@ -142,7 +170,6 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			}
 
-			// Make FlowDefault() method if exists
 			var c = 0;
 			var everyPlatformHasUniqueName = false;
 			foreach (var attachItem in window.attachItems) {
@@ -163,6 +190,20 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				var attachedWindow = FlowSystem.GetWindow(attachId);
 				if (attachedWindow.IsShowDefault() == true) {
+
+					// Collect all default windows
+					foreach (var defaultWindowId in FlowSystem.GetDefaultWindows()) {
+
+						var defaultWindow = FlowSystem.GetWindow(defaultWindowId);
+
+						result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(window, defaultWindow, everyPlatformHasUniqueName);
+						WindowSystem.CollectCallVariations(attachedWindow.GetScreen(), (listTypes, listNames) => {
+
+							result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionTypedAttachedGeneration(window, defaultWindow, everyPlatformHasUniqueName, listTypes, listNames);
+
+						});
+
+					}
 
 					result += TemplateGenerator.GenerateWindowLayoutTransitionMethodDefault();
 

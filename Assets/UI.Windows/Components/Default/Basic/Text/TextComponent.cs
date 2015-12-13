@@ -5,19 +5,7 @@ using System.Text.RegularExpressions;
 namespace UnityEngine.UI.Windows.Components {
 
 	public class TextComponent : ColoredComponent, ITextComponent {
-
-		public enum RichTextFlags : byte {
-
-			None = 0x0,
-			Color = 0x1,
-			Bold = 0x2,
-			Italic = 0x4,
-			Size = 0x8,
-			Material = 0x10,
-			Quad = 0x20,
-
-		};
-
+		
 		public override void Setup(IComponentParameters parameters) {
 			
 			base.Setup(parameters);
@@ -35,11 +23,12 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Text Component")]
 		[SerializeField]
 		private Text text;
-		public UnityEngine.UI.Windows.Components.TextComponent.ValueFormat valueFormat;
-		[BitMask(typeof(RichTextFlags))]
-		public RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
+		[SerializeField]
+		private TextValueFormat valueFormat;
+		[SerializeField][BitMask(typeof(RichTextFlags))]
+		private RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
 
-		public void SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
+		public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 			
 			if (this.text != null) {
 				
@@ -48,55 +37,73 @@ namespace UnityEngine.UI.Windows.Components {
 				this.text.resizeTextMaxSize = maxSize;
 				
 			}
-			
+
+			return this;
+
 		}
 		
-		public void SetBestFitState(bool state) {
+		public ITextComponent SetBestFitState(bool state) {
 			
 			if (this.text != null) this.text.resizeTextForBestFit = state;
-			
+
+			return this;
+
 		}
 		
-		public void SetBestFitMinSize(int size) {
+		public ITextComponent SetBestFitMinSize(int size) {
 			
 			if (this.text != null) this.text.resizeTextMinSize = size;
-			
+
+			return this;
+
 		}
 		
-		public void SetBestFitMaxSize(int size) {
+		public ITextComponent SetBestFitMaxSize(int size) {
 			
 			if (this.text != null) this.text.resizeTextMaxSize = size;
-			
+
+			return this;
+
 		}
 
-		public void SetFont(Font font) {
+		public ITextComponent SetFont(Font font) {
 			
 			if (this.text != null) this.text.font = font;
-			
+
+			return this;
+
 		}
 
-		public void SetFontSize(int fontSize) {
+		public ITextComponent SetFontSize(int fontSize) {
 			
 			if (this.text != null) this.text.fontSize = fontSize;
-			
+
+			return this;
+
 		}
 
-		public void SetLineSpacing(float value) {
+		public ITextComponent SetLineSpacing(float value) {
 			
 			if (this.text != null) this.text.lineSpacing = value;
-			
+
+			return this;
+
 		}
 		
-		public void SetRichText(bool state) {
+		public ITextComponent SetRichText(bool state) {
 			
 			if (this.text != null) this.text.supportRichText = state;
-			
+
+			return this;
+
 		}
 		
-		public void SetFontStyle(FontStyle fontStyle) {
+		public ITextComponent SetFontStyle(FontStyle fontStyle) {
 			
 			if (this.text != null) this.text.fontStyle = fontStyle;
-			
+
+			return this;
+
 		}
 		
 		public float GetContentHeight(float heightPadding = 0f) {
@@ -124,52 +131,68 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetValueFormat(UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+		public ITextComponent SetValueFormat(TextValueFormat format) {
 
 			this.valueFormat = format;
 
+			return this;
+
 		}
 		
-		public void SetValue(long value) {
-			
-			this.SetValue(value, this.valueFormat);
-			
-		}
-		
-		public void SetValue(int value) {
+		public ITextComponent SetValue(long value) {
 			
 			this.SetValue(value, this.valueFormat);
 
+			return this;
+
+		}
+		
+		public ITextComponent SetValue(int value) {
+			
+			this.SetValue(value, this.valueFormat);
+
+			return this;
+
 		}
 
-		public void SetValue(long value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+		public ITextComponent SetValue(long value, TextValueFormat format) {
 			
 			this.SetText(TextComponent.FormatValue(value, format));
-			
+
+			return this;
+
 		}
 
-		public void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+		public ITextComponent SetValue(int value, TextValueFormat format) {
 			
 			this.SetText(TextComponent.FormatValue(value, format));
-			
+
+			return this;
+
 		}
 
-		public void SetTextVerticalOverflow(VerticalWrapMode mode) {
+		public ITextComponent SetTextVerticalOverflow(VerticalWrapMode mode) {
 			
 			if (this.text != null) this.text.verticalOverflow = mode;
-			
+
+			return this;
+
 		}
 		
-		public void SetTextHorizontalOverflow(HorizontalWrapMode mode) {
+		public ITextComponent SetTextHorizontalOverflow(HorizontalWrapMode mode) {
 			
 			if (this.text != null) this.text.horizontalOverflow = mode;
-			
+
+			return this;
+
 		}
 
-		public void SetTextAlignment(TextAnchor anchor) {
+		public ITextComponent SetTextAlignment(TextAnchor anchor) {
 			
 			if (this.text != null) this.text.alignment = anchor;
-			
+
+			return this;
+
 		}
 
 		public string GetText() {
@@ -178,7 +201,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetText(string text) {
+		public ITextComponent SetText(string text) {
 
 			if (this.text != null) {
 
@@ -192,20 +215,26 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
+			return this;
+
 		}
 
-		public virtual void SetTextAlpha(float value) {
+		public virtual ITextComponent SetTextAlpha(float value) {
 
 			var color = this.GetTextColor();
 			color.a = value;
 			this.SetTextColor(color);
 
+			return this;
+
 		}
 
-		public virtual void SetTextColor(Color color) {
+		public virtual ITextComponent SetTextColor(Color color) {
 			
 			if (this.text != null) this.text.color = color;
-			
+
+			return this;
+
 		}
 		
 		public virtual Color GetTextColor() {
@@ -228,7 +257,7 @@ namespace UnityEngine.UI.Windows.Components {
 			var texts = this.GetComponentsInChildren<Text>(true);
 			if (texts.Length == 1) this.text = texts[0];
 
-			if (this.valueFormat != ValueFormat.None) {
+			if (this.valueFormat != TextValueFormat.None) {
 
 				this.SetValue(999999L);
 
@@ -285,41 +314,25 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public enum ValueFormat : byte {
-			
-			None,		 // 1234567890
-			WithSpace,	 // 1 234 567 890
-			WithComma,	 // 1,234 567 890
-			TimeHMSFromSeconds,				// 00:00:00
-			TimeMSFromSeconds,				// 00:00
-			TimeHMSmsFromMilliseconds,		// 00:00:00`00
-			TimeMSmsFromMilliseconds,		// 00:00`00
-
-			DateDMHMS,						// 12 Aug 00:00:00
-			DateDMHMSFromMilliseconds,
-			TimeMSFromMilliseconds,			// 00:00
-
-		};
-		
-		public static string FormatValue(int value, ValueFormat format) {
+		public static string FormatValue(int value, TextValueFormat format) {
 			
 			return TextComponent.FormatValue((double)value, format);
 			
 		}
 		
-		public static string FormatValue(long value, ValueFormat format) {
+		public static string FormatValue(long value, TextValueFormat format) {
 			
 			return TextComponent.FormatValue((double)value, format);
 			
 		}
 
-		public static string FormatValue(double value, ValueFormat format) {
+		public static string FormatValue(double value, TextValueFormat format) {
 			
 			var output = string.Empty;
 			
 			switch (format) {
 				
-				case ValueFormat.None: {
+				case TextValueFormat.None: {
 					
 					output = value.ToString();
 					
@@ -327,7 +340,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.WithSpace: {
+				case TextValueFormat.WithSpace: {
 					
 					if (value < 0f) {
 						
@@ -343,7 +356,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.WithComma: {
+				case TextValueFormat.WithComma: {
 					
 					if (value < 0f) {
 						
@@ -359,7 +372,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.DateDMHMS: {
+				case TextValueFormat.DateDMHMS: {
 
 					DateTime date = new DateTime((long)value);
 					output = date.ToString("dd MM hh:mm:ss");
@@ -368,7 +381,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 
-				case ValueFormat.TimeHMSFromSeconds: {
+				case TextValueFormat.TimeHMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
 						output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
@@ -377,7 +390,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.TimeMSFromSeconds: {
+				case TextValueFormat.TimeMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
 						output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
@@ -386,7 +399,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 					
-				case ValueFormat.DateDMHMSFromMilliseconds: {
+				case TextValueFormat.DateDMHMSFromMilliseconds: {
 					
 					DateTime date = new DateTime((long)(value / 1000d));
 					output = date.ToString("dd MM hh:mm:ss");
@@ -395,7 +408,7 @@ namespace UnityEngine.UI.Windows.Components {
 					
 				}
 
-				case ValueFormat.TimeHMSmsFromMilliseconds: {
+				case TextValueFormat.TimeHMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
 						output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
@@ -404,7 +417,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				
-				case ValueFormat.TimeMSmsFromMilliseconds: {
+				case TextValueFormat.TimeMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
 						output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);
@@ -413,7 +426,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 
-				case ValueFormat.TimeMSFromMilliseconds: {
+				case TextValueFormat.TimeMSFromMilliseconds: {
 					
 					var t = TimeSpan.FromMilliseconds(value);
 					output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);

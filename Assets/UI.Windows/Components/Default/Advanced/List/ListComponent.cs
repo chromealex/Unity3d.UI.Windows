@@ -74,7 +74,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		private ISelectable lastSelectableInstance;
+		private IButtonComponent lastSelectableInstance;
 		public virtual T AddItem<T>() where T : IComponent {
 
 			return this.AddItem<T>(this.navigationMode, this.navigationInverse);
@@ -117,7 +117,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (navigationMode != Navigation.Mode.None) {
 
-					var selectableComp = instance as ISelectable;
+					var selectableComp = instance as IButtonComponent;
 					if (selectableComp != null) {
 
 						var selectable = selectableComp.GetSelectable();

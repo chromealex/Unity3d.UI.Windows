@@ -94,7 +94,7 @@ namespace UnityEngine.UI.Windows.Components {
 					this.infoWindow = WindowSystem.Show<T>((window) => window.PrepareFor(this),
 					                                                       (window) => this.OnParametersPass(window)
 					                                                       ) as TipWindowType;
-					
+
 					if (this.infoWindow != null) this.infoWindow.OnHover(this.transform as RectTransform);
 					
 				}

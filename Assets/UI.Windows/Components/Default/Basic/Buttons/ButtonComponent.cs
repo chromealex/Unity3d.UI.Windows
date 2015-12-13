@@ -10,7 +10,7 @@ using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonComponent : ColoredComponent, ISelectable, IImageComponent, ITextComponent, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler {
+	public class ButtonComponent : ColoredComponent, IButtonComponent, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler {
 		
 		public override void Setup(IComponentParameters parameters) {
 			
@@ -18,7 +18,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			var inputParameters = parameters as ButtonComponentParameters;
 			{
-				if (inputParameters != null) inputParameters.Setup(this as ISelectable);
+				if (inputParameters != null) inputParameters.Setup(this as IButtonComponent);
 			}
 
 			#region macros UI.Windows.Initialization.TextComponent 
@@ -108,11 +108,13 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public void SetEnabledState(System.Func<bool> onState) {
+		public IButtonComponent SetEnabledState(System.Func<bool> onState) {
 
 			this.onState = onState;
 			this.oldState = this.onState();
 			this.onStateActive = true;
+
+			return this;
 
 		}
 
@@ -128,7 +130,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public virtual void SetEnabledState(bool state) {
+		public virtual IButtonComponent SetEnabledState(bool state) {
 
 			if (state == true) {
 
@@ -140,33 +142,27 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
+			return this;
+
 		}
 
-		public virtual void SetDisabled() {
+		public virtual IButtonComponent SetDisabled() {
 		
 			if (this.button != null) this.button.interactable = false;
 
+			return this;
+
 		}
 
-		public virtual void SetEnabled() {
+		public virtual IButtonComponent SetEnabled() {
 			
 			if (this.button != null) this.button.interactable = true;
 
-		}
-
-		public void Select() {
-
-			this.button.interactable = false;
+			return this;
 
 		}
 
-		public void Deselect() {
-
-			this.button.interactable = true;
-
-		}
-		
-		public virtual void SetButtonColor(Color color) {
+		public virtual IButtonComponent SetButtonColor(Color color) {
 
 			if (this.button != null) {
 
@@ -174,9 +170,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
+			return this;
+
 		}
 
-		public virtual void SetCallback(UnityAction callback) {
+		public virtual IButtonComponent SetCallback(UnityAction callback) {
 
             this.callback.RemoveAllListeners();
             this.callback.AddListenerDistinct(callback);
@@ -185,17 +183,21 @@ namespace UnityEngine.UI.Windows.Components {
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
 
+			return this;
+
 		}
 		
-		public virtual void AddCallback(UnityAction callback) {
+		public virtual IButtonComponent AddCallback(UnityAction callback) {
 			
 			this.callback.AddListenerDistinct(callback);
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
-			
+
+			return this;
+
 		}
 
-		public virtual void SetCallback(UnityAction<ButtonComponent> callback) {
+		public virtual IButtonComponent SetCallback(UnityAction<ButtonComponent> callback) {
 
             this.callbackButton.RemoveAllListeners();
             this.callbackButton.AddListenerDistinct(callback);
@@ -204,15 +206,19 @@ namespace UnityEngine.UI.Windows.Components {
             this.button.onClick.RemoveAllListeners();
             // this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
-			
+
+			return this;
+
 		}
 		
-		public virtual void AddCallback(UnityAction<ButtonComponent> callback) {
+		public virtual IButtonComponent AddCallback(UnityAction<ButtonComponent> callback) {
 			
 			this.callbackButton.AddListenerDistinct(callback);
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
-			
+
+			return this;
+
 		}
 
 		public virtual void OnClick() {
@@ -244,7 +250,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		private Audio.Component sfxOnLeave = new Audio.Component();
 
-		public void SetSFX(PointerEventState state, Audio.Component data) {
+		public IButtonComponent SetSFX(PointerEventState state, Audio.Component data) {
 
 			if (state == PointerEventState.Click) {
 
@@ -259,6 +265,8 @@ namespace UnityEngine.UI.Windows.Components {
 				this.sfxOnLeave = data;
 
 			}
+
+			return this;
 
 		}
 		#endregion
@@ -276,28 +284,36 @@ namespace UnityEngine.UI.Windows.Components {
 		[HideInInspector]
 		private bool tempHoverState = false;
 
-		public void SetHoverState(bool state) {
+		public IButtonComponent SetHoverState(bool state) {
 			
 			this.hoverIsActive = state;
-			
+
+			return this;
+
 		}
 		
-		public void SetHoverOnAnyPointerState(bool state) {
+		public IButtonComponent SetHoverOnAnyPointerState(bool state) {
 			
 			this.hoverOnAnyPointerState = state;
-			
+
+			return this;
+
 		}
 		
-		public void SetHoverOnAnyButtonState(bool state) {
+		public IButtonComponent SetHoverOnAnyButtonState(bool state) {
 			
 			this.hoverOnAnyButtonState = state;
-			
+
+			return this;
+
 		}
 
-		public virtual void SetCallbackHover(UnityAction<bool> onHover) {
+		public virtual IButtonComponent SetCallbackHover(UnityAction<bool> onHover) {
 			
 			this.onHover.AddListenerDistinct(onHover);
-			
+
+			return this;
+
 		}
 
 		private bool ValidateHoverPointer(PointerEventData eventData) {
@@ -317,7 +333,6 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.ValidateHoverPointer(eventData) == false) return;
 			
 			this.sfxOnEnter.Play();
-
 			this.tempHoverState = true;
 			this.onHover.Invoke(true);
 			
@@ -328,9 +343,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.tempHoverState == false) return;
 			
 			this.sfxOnLeave.Play();
-
 			this.onHover.Invoke(false);
-			
 			this.tempHoverState = false;
 
 		}
@@ -562,9 +575,12 @@ namespace UnityEngine.UI.Windows.Components {
 	[Header("Text Component")]
 			[SerializeField]
 			private Text text;
-			public UnityEngine.UI.Windows.Components.TextComponent.ValueFormat valueFormat;
+			[SerializeField]
+			private TextValueFormat valueFormat;
+			[SerializeField][BitMask(typeof(RichTextFlags))]
+			private RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
 	
-			public void SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
+			public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 				
 				if (this.text != null) {
 					
@@ -573,55 +589,73 @@ namespace UnityEngine.UI.Windows.Components {
 					this.text.resizeTextMaxSize = maxSize;
 					
 				}
-				
+	
+				return this;
+	
 			}
 			
-			public void SetBestFitState(bool state) {
+			public ITextComponent SetBestFitState(bool state) {
 				
 				if (this.text != null) this.text.resizeTextForBestFit = state;
-				
+	
+				return this;
+	
 			}
 			
-			public void SetBestFitMinSize(int size) {
+			public ITextComponent SetBestFitMinSize(int size) {
 				
 				if (this.text != null) this.text.resizeTextMinSize = size;
-				
+	
+				return this;
+	
 			}
 			
-			public void SetBestFitMaxSize(int size) {
+			public ITextComponent SetBestFitMaxSize(int size) {
 				
 				if (this.text != null) this.text.resizeTextMaxSize = size;
-				
+	
+				return this;
+	
 			}
 	
-			public void SetFont(Font font) {
+			public ITextComponent SetFont(Font font) {
 				
 				if (this.text != null) this.text.font = font;
-				
+	
+				return this;
+	
 			}
 	
-			public void SetFontSize(int fontSize) {
+			public ITextComponent SetFontSize(int fontSize) {
 				
 				if (this.text != null) this.text.fontSize = fontSize;
-				
+	
+				return this;
+	
 			}
 	
-			public void SetLineSpacing(float value) {
+			public ITextComponent SetLineSpacing(float value) {
 				
 				if (this.text != null) this.text.lineSpacing = value;
-				
+	
+				return this;
+	
 			}
 			
-			public void SetRichText(bool state) {
+			public ITextComponent SetRichText(bool state) {
 				
 				if (this.text != null) this.text.supportRichText = state;
-				
+	
+				return this;
+	
 			}
 			
-			public void SetFontStyle(FontStyle fontStyle) {
+			public ITextComponent SetFontStyle(FontStyle fontStyle) {
 				
 				if (this.text != null) this.text.fontStyle = fontStyle;
-				
+	
+				return this;
+	
 			}
 			
 			public float GetContentHeight(float heightPadding = 0f) {
@@ -649,52 +683,68 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public void SetValueFormat(UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+			public ITextComponent SetValueFormat(TextValueFormat format) {
 	
 				this.valueFormat = format;
 	
+				return this;
+	
 			}
 			
-			public void SetValue(long value) {
-				
-				this.SetValue(value, this.valueFormat);
-				
-			}
-			
-			public void SetValue(int value) {
+			public ITextComponent SetValue(long value) {
 				
 				this.SetValue(value, this.valueFormat);
 	
+				return this;
+	
+			}
+			
+			public ITextComponent SetValue(int value) {
+				
+				this.SetValue(value, this.valueFormat);
+	
+				return this;
+	
 			}
 	
-			public void SetValue(long value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+			public ITextComponent SetValue(long value, TextValueFormat format) {
 				
 				this.SetText(TextComponent.FormatValue(value, format));
-				
+	
+				return this;
+	
 			}
 	
-			public void SetValue(int value, UnityEngine.UI.Windows.Components.TextComponent.ValueFormat format) {
+			public ITextComponent SetValue(int value, TextValueFormat format) {
 				
 				this.SetText(TextComponent.FormatValue(value, format));
-				
+	
+				return this;
+	
 			}
 	
-			public void SetTextVerticalOverflow(VerticalWrapMode mode) {
+			public ITextComponent SetTextVerticalOverflow(VerticalWrapMode mode) {
 				
 				if (this.text != null) this.text.verticalOverflow = mode;
-				
+	
+				return this;
+	
 			}
 			
-			public void SetTextHorizontalOverflow(HorizontalWrapMode mode) {
+			public ITextComponent SetTextHorizontalOverflow(HorizontalWrapMode mode) {
 				
 				if (this.text != null) this.text.horizontalOverflow = mode;
-				
+	
+				return this;
+	
 			}
 	
-			public void SetTextAlignment(TextAnchor anchor) {
+			public ITextComponent SetTextAlignment(TextAnchor anchor) {
 				
 				if (this.text != null) this.text.alignment = anchor;
-				
+	
+				return this;
+	
 			}
 	
 			public string GetText() {
@@ -703,24 +753,40 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public void SetText(string text) {
+			public ITextComponent SetText(string text) {
 	
-				if (this.text != null) this.text.text = text;
+				if (this.text != null) {
+	
+					if (this.text.supportRichText == true) {
+	
+						text = TextComponent.ParseRichText(text, this.richTextFlags);
+	
+					}
+	
+					this.text.text = text;
+	
+				}
+	
+				return this;
 	
 			}
 	
-			public virtual void SetTextAlpha(float value) {
+			public virtual ITextComponent SetTextAlpha(float value) {
 	
 				var color = this.GetTextColor();
 				color.a = value;
 				this.SetTextColor(color);
 	
+				return this;
+	
 			}
 	
-			public virtual void SetTextColor(Color color) {
+			public virtual ITextComponent SetTextColor(Color color) {
 				
 				if (this.text != null) this.text.color = color;
-				
+	
+				return this;
+	
 			}
 			
 			public virtual Color GetTextColor() {
@@ -749,6 +815,12 @@ namespace UnityEngine.UI.Windows.Components {
 	 */
 	var texts = this.GetComponentsInChildren<Text>(true);
 				if (texts.Length == 1) this.text = texts[0];
+	
+				if (this.valueFormat != TextValueFormat.None) {
+	
+					this.SetValue(999999L);
+	
+				}
 	#endregion
 
 			#region macros UI.Windows.Editor.ImageComponent 

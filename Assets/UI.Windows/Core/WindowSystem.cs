@@ -360,6 +360,14 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public static void DestroyWindow(WindowBase window) {
+
+			if (WindowSystem.instance == null) return;
+
+			WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, null);
+
+		}
+
 		public static void AudioPlayFX(int id, int[] randomIds, bool randomize) {
 			
 			if (randomize == true) {

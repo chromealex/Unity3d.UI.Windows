@@ -98,7 +98,7 @@ namespace UnityEngine.UI.Windows.Components {
 			canvas.sortingLayerName = this.GetWindow().GetSortingLayerName();
 
 			this.label.SetText(string.Empty);
-			if (this.label is ISelectable) (this.label as ISelectable).SetCallback(this.Toggle);
+			if (this.label is IButtonComponent) (this.label as IButtonComponent).SetCallback(this.Toggle);
 
 			//this.items.SetupAsDropdown(this.maxHeight);
 
@@ -287,8 +287,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			ISelectable prevText = null;
-			if (this.selectedIndex >= 0) prevText = this.items.GetItem<ISelectable>(this.selectedIndex);
+			IButtonComponent prevText = null;
+			if (this.selectedIndex >= 0) prevText = this.items.GetItem<IButtonComponent>(this.selectedIndex);
 			var text = this.items.GetItem<ITextComponent>(index);
 
 			this.selectedIndex = index;
@@ -296,14 +296,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (prevText != null) {
 
-				prevText.Deselect();
+				prevText.SetDisabled();
 
 			}
 
-			var selectable = text as ISelectable;
+			var selectable = text as IButtonComponent;
 			if (selectable != null) {
 
-				selectable.Select();
+				selectable.SetEnabled();
 
 			}
 

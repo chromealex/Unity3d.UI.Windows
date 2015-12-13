@@ -44,7 +44,7 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		public void OnHover(RectTransform uiElement) {
-
+			
 			this.uiElement = uiElement;
 
 			if (this.tempHud != null) this.tempHud.enabled = false;
@@ -196,10 +196,10 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		public void PrepareFor(WindowComponent component) {
-			
+
 			var canvasScaler = this.canvasScaler;
 			if (canvasScaler != null) {
-				
+
 				var sourceWindow = component.GetWindow<LayoutWindowType>();
 				if (sourceWindow != null) {
 
@@ -208,7 +208,11 @@ namespace UnityEngine.UI.Windows.Types {
 					var clearFlags = this.workCamera.clearFlags;
 					var farClipPlane = this.workCamera.farClipPlane;
 					var nearClipPlane = this.workCamera.nearClipPlane;
+
+					var pos = this.transform.position;
 					this.workCamera.CopyFrom(sourceWindow.workCamera);
+					this.transform.position = pos;
+
 					this.workCamera.depth = depth;
 					this.workCamera.cullingMask = cullingMask;
 					this.workCamera.clearFlags = clearFlags;
