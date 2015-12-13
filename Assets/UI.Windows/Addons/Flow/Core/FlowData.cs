@@ -727,7 +727,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return window;
 
 		}
-		
+
 		public Data.FlowWindow CreateContainer() {
 
 			return this.CreateWindow_INTERNAL(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.Flags.IsContainer);

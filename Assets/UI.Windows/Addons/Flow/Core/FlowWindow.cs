@@ -74,8 +74,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			ShowDefault = 0x8,
 			IsFunction = 0x10,
 			IsABTest = 0x20,
-			Reserved1 = 0x40,
-			Reserved2 = 0x80,
+			IsLinker = 0x40,
+			Reserved = 0x80,
 			
 			Tag1 = 0x100,
 			Tag2 = 0x200,
@@ -118,6 +118,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		public int functionRootId = 0;
 		public int functionExitId = 0;
 		public int functionId = 0;
+
+		public int linkerId = 0;
 
 		public StoreType storeType = StoreType.NewScreen;
 
@@ -191,6 +193,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		}
 
+		public int GetLinkerId() {
+
+			return this.linkerId;
+
+		}
+
 		public int GetFunctionId() {
 
 			return this.functionId;
@@ -226,11 +234,29 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			return (this.flags & Flags.ShowDefault) != 0;
 
 		}
-		
+
+		public bool IsLinker() {
+
+			return (this.flags & Flags.IsLinker) != 0;
+
+		}
+
 		public bool CanCompiled() {
 			
 			return (this.flags & Flags.CantCompiled) == 0;
 			
+		}
+
+		public bool CanDirectCall() {
+
+			return
+				this.IsFunction() == false &&
+				this.IsABTest() == false &&
+				this.IsShowDefault() == false &&
+				this.IsContainer() == false &&
+				this.IsLinker() == false &&
+				this.CanCompiled() == true;
+
 		}
 
 		public void Init(int id, FlowWindow.Flags flags = Flags.Default) {
@@ -446,6 +472,71 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		}
 
+		private Texture2D GetTexture_INTERNAL(string style, float alpha) {
+
+			Texture2D result = null;
+
+			switch (style) {
+
+				case "flow node 0":
+				case "flow node 0 on":
+					result = this.GetTexture_INTERNAL(new Color(0.5f, 0.5f, 0.5f), alpha);
+					break;
+
+				case "flow node 1":
+				case "flow node 1 on":
+					result = this.GetTexture_INTERNAL(new Color(0f, 0f, 1f), alpha);
+					break;
+
+				case "flow node 2":
+				case "flow node 2 on":
+					result = this.GetTexture_INTERNAL(new Color(0f, 1f, 1f), alpha);
+					break;
+
+				case "flow node 3":
+				case "flow node 3 on":
+					result = this.GetTexture_INTERNAL(new Color(0f, 1f, 0f), alpha);
+					break;
+
+				case "flow node 4":
+				case "flow node 4 on":
+					result = this.GetTexture_INTERNAL(Color.yellow, alpha);
+					break;
+
+				case "flow node 5":
+				case "flow node 5 on":
+					result = this.GetTexture_INTERNAL(new Color(1f, 0.82f, 0.116f), alpha);
+					break;
+
+				case "flow node 6":
+				case "flow node 6 on":
+					result = this.GetTexture_INTERNAL(new Color(1f, 0f, 0f), alpha);
+					break;
+
+			}
+
+			if (result == null) this.GetTexture_INTERNAL(Color.white, alpha);
+
+			return result;
+
+		}
+
+		private Texture2D GetTexture_INTERNAL(Color color, float alpha) {
+
+			var tex = new Texture2D(1, 1);
+			var colors = tex.GetPixels();
+			for (var i = 0; i < colors.Length; ++i) {
+
+				colors[i] = this.randomColor;
+				colors[i].a = alpha;
+
+			}
+			tex.SetPixels(colors);
+
+			return tex;
+
+		}
+
 		public GUIStyle GetEditorStyle(bool selected) {
 
 			if (this.IsSmall() == true) {
@@ -463,6 +554,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					_style.fontStyle = FontStyle.Bold;
 					_style.alignment = TextAnchor.UpperCenter;
 					_style.normal.textColor = Color.black;
+					//_style.normal.background = this.GetTexture_INTERNAL(styleName, 1f);
 
 					return _style;
 
@@ -476,6 +568,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					_style.fontStyle = FontStyle.Bold;
 					_style.alignment = TextAnchor.UpperCenter;
 					_style.normal.textColor = Color.black;
+					//_style.normal.background = this.GetTexture_INTERNAL(styleName, 1f);
 					
 					return _style;
 					
@@ -499,28 +592,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					//styleSelected = "flow node 6 on";
 					
 				}
-				
-				var containerStyle = ME.Utilities.CacheStyle("FlowWindow.GetEditorStyle.Container." + this.randomColor.ToString(), styleNormal, (styleName) => {
-					
+
+				var containerStyle = ME.Utilities.CacheStyle(string.Format("FlowWindow.GetEditorStyle.Container.{0}.{1}", this.randomColor.ToString(), this.randomColor.r + this.randomColor.g + this.randomColor.b), styleNormal, (styleName) => {
+
 					var _style = WindowLayoutStyles.styles.GetInstanceByName(styleName);
 					_style.padding = new RectOffset(0, 0, 16, 1);
 					_style.contentOffset = new Vector2(0f, -15f);
 					_style.fontStyle = FontStyle.Bold;
 					_style.alignment = TextAnchor.UpperCenter;
 					_style.normal.textColor = Color.white;
-					var tex = new Texture2D(4, 4);
-					var colors = tex.GetPixels();
-					for (var i = 0; i < colors.Length; ++i) {
-
-						colors[i] = this.randomColor;
-						colors[i].a = 0.2f;
-
-					}
-					tex.SetPixels(colors);
-					_style.normal.background = tex;
+					_style.normal.background = this.GetTexture_INTERNAL(this.randomColor, 0.2f);
 
 					return _style;
-					
+				
 				});
 
 				return containerStyle;
@@ -602,6 +686,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					_style.fontStyle = FontStyle.Bold;
 					_style.alignment = TextAnchor.UpperCenter;
 					_style.normal.textColor = Color.black;
+					//_style.normal.background = this.GetTexture_INTERNAL(styleName, 1f);
 
 					return _style;
 					
@@ -621,6 +706,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					_style.fontStyle = FontStyle.Bold;
 					_style.alignment = TextAnchor.UpperCenter;
 					_style.normal.textColor = Color.black;
+					//_style.normal.background = this.GetTexture_INTERNAL(styleName, 1f);
 
 					return _style;
 					

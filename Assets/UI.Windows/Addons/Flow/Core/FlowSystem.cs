@@ -233,9 +233,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		public static Data.FlowWindow CreateDefaultLink() {
-			
+
 			return FlowSystem.instance.data.CreateDefaultLink();
-			
+
 		}
 
 		#if UNITY_EDITOR
