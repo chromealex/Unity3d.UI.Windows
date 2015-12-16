@@ -4,6 +4,7 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine;
 using ME;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
+using System.IO;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 	
@@ -81,6 +82,50 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public virtual void Install() {}
 		public virtual void Reinstall() {}
 		public virtual bool InstallationNeeded() { return false; }
+
+		public bool InstallModule<T>(string name, string settingsName) where T : UnityEngine.UI.Windows.Plugins.Services.ServiceSettings {
+
+			var moduleName = name;
+			var settings = new[] {
+				new { type = typeof(T), name = settingsName, directory = "" }
+			};
+
+			var data = FlowSystem.GetData();
+			if (data == null) return false;
+
+			// Check directories
+			var dataPath = AssetDatabase.GetAssetPath(data);
+			var directory = Path.GetDirectoryName(dataPath);
+			var projectName = data.name;
+
+			var modulesPath = Path.Combine(directory, projectName + ".Modules");
+			var modulePath = Path.Combine(modulesPath, moduleName);
+
+			if (Directory.Exists(modulesPath) == false) Directory.CreateDirectory(modulesPath);
+			if (Directory.Exists(modulePath) == false) Directory.CreateDirectory(modulePath);
+
+			foreach (var file in settings) {
+
+				var path = Path.Combine(modulePath, file.directory);
+				if (Directory.Exists(path) == false) Directory.CreateDirectory(path);
+
+				if (File.Exists(path + "/" + file.name + ".asset") == false) {
+
+					var instance = ME.EditorUtilities.CreateAsset(file.type, path, file.name) as T;
+
+					if (instance != null) EditorUtility.SetDirty(instance);
+
+				}
+
+			}
+
+			ME.EditorUtilities.ResetCache<T>(modulesPath);
+
+			AssetDatabase.Refresh();
+
+			return true;
+
+		}
 
 	}
 

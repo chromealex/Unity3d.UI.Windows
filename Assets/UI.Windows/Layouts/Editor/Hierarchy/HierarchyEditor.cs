@@ -35,6 +35,8 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 			public ColorItem layoutElements = new ColorItem(new Color32(204, 102, 255, 255), Color.white);
 			public ColorItem linkers = new ColorItem(new Color32(255, 111, 207, 255), Color.white);
 
+			public ColorItem error = new ColorItem(new Color32(255, 0, 0, 255), Color.white);
+
 		}
 
 		public class Item {

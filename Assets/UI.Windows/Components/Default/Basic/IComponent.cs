@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI.Windows.Plugins.Localization;
 
 namespace UnityEngine.UI.Windows.Components {
 	
@@ -66,6 +67,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		ITextComponent SetValue(int value, TextValueFormat format = TextValueFormat.None);
 		ITextComponent SetText(string text);
+		ITextComponent SetText(LocalizationKey key, params object[] parameters);
 		string GetText();
 		ITextComponent SetTextColor(Color color);
 		ITextComponent SetValueFormat(TextValueFormat format);
@@ -94,6 +96,7 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false);
 		void SetImage(Texture texture);
 		void SetImage(Texture texture, bool preserveAspect);
+		void SetImage(LocalizationKey key, params object[] parameters);
 		void SetMaterial(Material material);
 		Color GetColor();
 		void SetColor(Color color);

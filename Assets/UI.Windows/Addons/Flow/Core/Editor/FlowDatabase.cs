@@ -64,7 +64,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		
 		public static TWith ReplaceComponents<TReplace, TWith>(TReplace source, System.Type withType) where TReplace : Component where TWith : Component {
 
-			var cachedFields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+			var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+			var cachedFields = source.GetType().GetFields(flags);
 
 			var fieldValues = new Dictionary<string, object>();
 			foreach (var cache in cachedFields) {
@@ -82,11 +83,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var go = source.gameObject;
 
 			// Destroy the old one
-			Object.DestroyImmediate(source);
+			Object.DestroyImmediate(source, true);
 			
 			// Add a new component
 			var newInstance = go.AddComponent(withType);
-			var newFields = newInstance.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+			var newFields = newInstance.GetType().GetFields(flags).Concat(newInstance.GetType().BaseType.GetFields(flags));
 
 			foreach (var field in newFields) {
 

@@ -19,6 +19,32 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnLocalizationChanged() {
+
+			base.OnLocalizationChanged();
+
+			#region source macros UI.Windows.OnLocalizationChanged.TextComponent
+			{
+
+				if (this.lastTextLocalization == true) {
+
+					this.SetText(this.lastTextLocalizationKey, this.lastTextLocalizationParameters);
+
+				} else {
+
+					if (this.text is UnityEngine.UI.Windows.Plugins.Localization.UI.LocalizationText) {
+
+						(this.text as UnityEngine.UI.Windows.Plugins.Localization.UI.LocalizationText).OnLocalizationChanged();
+
+					}
+
+				}
+
+			}
+			#endregion
+
+		}
+
 		#region source macros UI.Windows.TextComponent
 		[Header("Text Component")]
 		[SerializeField]
@@ -198,6 +224,19 @@ namespace UnityEngine.UI.Windows.Components {
 		public string GetText() {
 
 			return (this.text != null) ? this.text.text : string.Empty;
+
+		}
+
+		private bool lastTextLocalization = false;
+		private Plugins.Localization.LocalizationKey lastTextLocalizationKey;
+		private object[] lastTextLocalizationParameters;
+		public ITextComponent SetText(Plugins.Localization.LocalizationKey key, params object[] parameters) {
+
+			this.lastTextLocalization = true;
+			this.lastTextLocalizationKey = key;
+			this.lastTextLocalizationParameters = parameters;
+
+			return this.SetText(Plugins.Localization.LocalizationSystem.Get(key, parameters));
 
 		}
 

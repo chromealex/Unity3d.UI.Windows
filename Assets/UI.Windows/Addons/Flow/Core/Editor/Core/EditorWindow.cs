@@ -52,6 +52,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			get {
 
+				if (FlowSystemEditorWindow.styles == null) FlowSystemEditorWindow.styles = new Styles();
 				return FlowSystemEditorWindow.styles.skin;
 
 			}

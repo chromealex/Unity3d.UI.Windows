@@ -113,6 +113,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   text: BLACK
+  localizationKey:
+    key: 
+    parameters: 0
   color: {r: 1, g: 1, b: 1, a: 1}
   format: 0
   font: {fileID: 0}
@@ -128,6 +131,9 @@ MonoBehaviour:
   bestMaxSize: 40
   preserveAspect: 0
   image: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
   rawImage: {fileID: 0}
   imageColor: {r: 1, g: 1, b: 1, a: 1}
   playOnStart: 0
@@ -179,6 +185,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   text: Quit
+  localizationKey:
+    key: 
+    parameters: 0
   color: {r: 1, g: 0, b: 0, a: 1}
   format: 0
   font: {fileID: 0}
@@ -194,6 +203,9 @@ MonoBehaviour:
   bestMaxSize: 40
   preserveAspect: 0
   image: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
   rawImage: {fileID: 0}
   imageColor: {r: 1, g: 1, b: 1, a: 1}
   playOnStart: 0
@@ -361,6 +373,9 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   text: WHITE
+  localizationKey:
+    key: 
+    parameters: 0
   color: {r: 1, g: 1, b: 1, a: 1}
   format: 0
   font: {fileID: 0}
@@ -376,6 +391,9 @@ MonoBehaviour:
   bestMaxSize: 40
   preserveAspect: 0
   image: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
   rawImage: {fileID: 0}
   imageColor: {r: 1, g: 1, b: 1, a: 1}
   playOnStart: 0

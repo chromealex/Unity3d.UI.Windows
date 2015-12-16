@@ -640,7 +640,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 				
 			}
 
-			ME.EditorUtilities.ResetCache<HeatmapSettings>();
+			ME.EditorUtilities.ResetCache<HeatmapSettings>(modulesPath);
 
 			AssetDatabase.Refresh();
 			

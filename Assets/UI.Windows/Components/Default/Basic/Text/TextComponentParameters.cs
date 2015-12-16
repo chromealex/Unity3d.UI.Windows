@@ -9,6 +9,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Text: Base")]
 		[Multiline]
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P1)] public string text;
+		[ParamFlag(ParameterFlag./*{flagPrefix}*/P15)] public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey localizationKey;
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P2)] public Color color = Color.white;
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P3)] public TextValueFormat format = TextValueFormat.None;
 
@@ -28,8 +29,9 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P14)] public int bestMaxSize = 40;
 
 		public void Setup(ITextComponent component) {
-			
+
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P1) == true) component.SetText(this.text);
+			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P15) == true) component.SetText(this.localizationKey);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P2) == true) component.SetTextColor(this.color);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P3) == true) component.SetValueFormat(this.format);
 

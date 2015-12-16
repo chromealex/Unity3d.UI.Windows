@@ -33,13 +33,14 @@ namespace UnityEditor.UI.Windows.Extensions {
 		
 		//Поиск
 		/// <summary> Строка поиска </summary>
-		private string searchText = "";
+		public string searchText = "";
+
 		/// <summary> Активен ли поиск? </summary>
 		private bool hasSearch { get { return useSearch && !string.IsNullOrEmpty(searchText); } }
 		
 		//Анимация
 		private float _anim;
-		private int _animTarget;
+		private int _animTarget = 1;
 		private long _lastTime;
 		
 		//Элементы
@@ -210,7 +211,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 			for (int i = 0; i < submenu.Count; i++) {
 				var submenuItem = submenu[i];
 				string menuPath = submenuItem.path;
-				var separators = new[] {separator};
+				var separators = new[] { separator };
 				var pathParts = menuPath.Split(separators);
 				while (pathParts.Length - 1 < list.Count)
 					list.RemoveAt(list.Count - 1);
@@ -592,11 +593,14 @@ namespace UnityEditor.UI.Windows.Extensions {
 			
 			public Styles() {
 				header.font = EditorStyles.boldLabel.font;
+				header.richText = true;
 				componentItem.alignment = TextAnchor.MiddleLeft;
 				componentItem.padding.left -= 15;
 				componentItem.fixedHeight = 20f;
+				componentItem.richText = true;
 				groupItem = new GUIStyle(componentItem);
 				groupItem.padding.left += 0x11;
+				groupItem.richText = true;
 			}
 		}
 		

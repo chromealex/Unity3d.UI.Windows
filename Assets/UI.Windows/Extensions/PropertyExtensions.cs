@@ -142,7 +142,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 			}
 
 			//path = path.GetPathWithoutArray(property.name);
-			
+
 			return property.serializedObject.FindProperty(path);
 			
 		}
@@ -225,7 +225,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 					return thisSP.quaternionValue;
 					
 				default:
-					throw new NotImplementedException("Unimplemented propertyType "+thisSP.propertyType+".");
+					throw new NotImplementedException("Unimplemented propertyType " + thisSP.propertyType + ".");
 					
 			}
 			

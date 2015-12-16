@@ -68,7 +68,7 @@ namespace UnityEngine.UI.Windows.Audio {
 
 		public void ApplyVolume(ClipType clipType, AudioSource source) {
 
-			source.volume = this.GetVolume(clipType);
+			if (source != null) source.volume = this.GetVolume(clipType);
 
 		}
 

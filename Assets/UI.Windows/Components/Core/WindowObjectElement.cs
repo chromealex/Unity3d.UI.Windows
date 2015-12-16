@@ -100,6 +100,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public virtual void OnLocalizationChanged() {
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnLocalizationChanged();
+
+		}
+
 	    /// <summary>
 	    /// Raises the init event.
 	    /// You can override this method but call it's base.

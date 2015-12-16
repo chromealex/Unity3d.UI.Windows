@@ -78,6 +78,7 @@ namespace UnityEngine.UI.Windows.Components {
 	[Header("Text: Base")]
 			[Multiline]
 			[ParamFlag(ParameterFlag.AP1)] public string text;
+			[ParamFlag(ParameterFlag.AP15)] public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey localizationKey;
 			[ParamFlag(ParameterFlag.AP2)] public Color color = Color.white;
 			[ParamFlag(ParameterFlag.AP3)] public TextValueFormat format = TextValueFormat.None;
 	
@@ -97,8 +98,9 @@ namespace UnityEngine.UI.Windows.Components {
 			[ParamFlag(ParameterFlag.AP14)] public int bestMaxSize = 40;
 	
 			public void Setup(ITextComponent component) {
-				
+	
 				if (this.IsChanged(ParameterFlag.AP1) == true) component.SetText(this.text);
+				if (this.IsChanged(ParameterFlag.AP15) == true) component.SetText(this.localizationKey);
 				if (this.IsChanged(ParameterFlag.AP2) == true) component.SetTextColor(this.color);
 				if (this.IsChanged(ParameterFlag.AP3) == true) component.SetValueFormat(this.format);
 	
@@ -127,6 +129,7 @@ namespace UnityEngine.UI.Windows.Components {
 	[Header("Image: Base")]
 			[ParamFlag(ParameterFlag.BP1)] public bool preserveAspect;
 			[ParamFlag(ParameterFlag.BP2)] public Sprite image;
+			[ParamFlag(ParameterFlag.BP7)] public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
 			[ParamFlag(ParameterFlag.BP3)] public Texture rawImage;
 			[ParamFlag(ParameterFlag.BP4)] public Color imageColor = Color.white;
 			[ParamFlag(ParameterFlag.BP5)] public bool playOnStart = false;
@@ -137,6 +140,7 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.IsChanged(ParameterFlag.BP1) == true) component.SetPreserveAspectState(this.preserveAspect);
 				if (this.IsChanged(ParameterFlag.BP2) == true) component.SetImage(this.image);
 				if (this.IsChanged(ParameterFlag.BP3) == true) component.SetImage(this.rawImage);
+				if (this.IsChanged(ParameterFlag.BP7) == true) component.SetImage(this.imageLocalizationKey);
 				if (this.IsChanged(ParameterFlag.BP4) == true) component.SetColor(this.imageColor);
 				if (this.IsChanged(ParameterFlag.BP5) == true) component.SetPlayOnStart(this.playOnStart);
 				if (this.IsChanged(ParameterFlag.BP6) == true) component.SetLoop(this.loop);

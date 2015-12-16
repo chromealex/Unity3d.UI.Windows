@@ -68,6 +68,14 @@ namespace UnityEngine.UI.Windows.Types {
 			
 		}
 
+		public override void OnLocalizationChanged() {
+
+			base.OnLocalizationChanged();
+
+			this.layout.OnLocalizationChanged();
+
+		}
+
 		protected override void OnLayoutInit(float depth, int raycastPriority, int orderInLayer) {
 			
 			this.layout.Create(this, this.transform, depth, raycastPriority, orderInLayer);
@@ -424,6 +432,12 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 		
 		// Events
+		public void OnLocalizationChanged() {
+
+			this.instance.OnLocalizationChanged();
+
+		}
+
 		public void OnInit() {
 			
 			this.instance.OnInit();

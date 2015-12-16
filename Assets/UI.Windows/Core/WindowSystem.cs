@@ -368,6 +368,16 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void ForEachWindow(System.Action<WindowBase> onEach) {
+
+			foreach (var window in WindowSystem.instance.currentWindows) {
+
+				onEach.Invoke(window);
+
+			}
+
+		}
+
 		public static void AudioPlayFX(int id, int[] randomIds, bool randomize) {
 			
 			if (randomize == true) {

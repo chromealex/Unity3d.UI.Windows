@@ -301,6 +301,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public virtual void OnLocalizationChanged() {
+
+
+
+		}
+
 		/// <summary>
 		/// Gets the name of the sorting layer.
 		/// </summary>

@@ -373,6 +373,8 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 				
 			}
 
+			ME.EditorUtilities.ResetCache<SocialSettings>(modulesPath);
+
 			AssetDatabase.Refresh();
 
 			return false;

@@ -16,10 +16,13 @@ namespace UnityEditor.UI.Windows.Extensions {
 		
 		/// <summary> Позволяет использовать/убирать поиск </summary>
 		public bool useSearch { get { return window.useSearch; } set { window.useSearch = value; } }
-		
+
 		/// <summary> Название рута </summary>
 		public string title { get { return window.title; } set { window.title = value; } }
-		
+
+		/// <summary> Название рута </summary>
+		public string searchText { get { return window.searchText; } set { window.searchText = value; } }
+
 		/// <summary> Автоматически установить размер по высоте, узнав максимальное количество видимых элементов </summary>
 		public bool autoHeight { get { return window.autoHeight; } set { window.autoHeight = value; } }
 		

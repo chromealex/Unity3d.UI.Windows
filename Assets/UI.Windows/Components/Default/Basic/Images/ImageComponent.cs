@@ -28,6 +28,32 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
+		public override void OnLocalizationChanged() {
+
+			base.OnLocalizationChanged();
+
+			#region source macros UI.Windows.OnLocalizationChanged.ImageComponent
+			{
+				
+				if (this.lastImageLocalization == true) {
+
+					this.SetImage(this.lastImageLocalizationKey, this.lastImageLocalizationParameters);
+
+				} else {
+
+					if (this.image is UnityEngine.UI.Windows.Plugins.Localization.UI.LocalizationImage) {
+
+						(this.image as UnityEngine.UI.Windows.Plugins.Localization.UI.LocalizationImage).OnLocalizationChanged();
+
+					}
+
+				}
+
+			}
+			#endregion
+
+		}
+
 		#region source macros UI.Windows.ImageComponent
 		[Header("Image Component")]
 		[SerializeField]
@@ -132,7 +158,20 @@ namespace UnityEngine.UI.Windows.Components {
 			return this.rawImage;
 			
 		}
-		
+
+		private bool lastImageLocalization = false;
+		private Plugins.Localization.LocalizationKey lastImageLocalizationKey;
+		private object[] lastImageLocalizationParameters;
+		public void SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey key, params object[] parameters) {
+
+			this.lastImageLocalization = true;
+			this.lastImageLocalizationKey = key;
+			this.lastImageLocalizationParameters = parameters;
+
+			this.SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSprite(key, parameters));
+
+		}
+
 		public void SetImage(ImageComponent source) {
 			
 			if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);

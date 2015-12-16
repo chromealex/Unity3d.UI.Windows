@@ -18,7 +18,9 @@ namespace ME {
 				.Replace("+", ".")
 				.Replace(",", ", ");
 
-			return Regex.Replace(result, pattern, string.Empty);
+			result = Regex.Replace(result, pattern, string.Empty);
+			result = result.Replace("System.Object<>", "params object[]");
+			return result;
 
 		}
 
