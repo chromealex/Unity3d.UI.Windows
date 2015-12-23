@@ -110,8 +110,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 			if (text.Contains(",") == true) {
 
-				text = text.Trim();
-				text = text.Substring(1, text.Length - 2);
+				text = text.Trim().Trim(' ', '"');
 
 			}
 

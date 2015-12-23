@@ -61,7 +61,7 @@ Camera:
   m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
+  m_StereoSeparation: .0219999999
   m_StereoMirrorMode: 0
 --- !u!114 &11436792
 MonoBehaviour:
@@ -158,19 +158,19 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     layout: {fileID: 11485858, guid: 3becf982c61f7c6428b5243046c46262, type: 2}
     components:
-    - description: CONTENT BORDER EXAMPLE
+    - description: 434f4e54454e5420424f52444552204558414d504c45
       tag: 1
       component: {fileID: 11496998, guid: 1b505308e6b884c2690764cfd5472993, type: 2}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
-    - description: BUTTONS LIST
+    - description: 425554544f4e53204c495354
       tag: 3
       component: {fileID: 11494326, guid: a49ea7ffbbf70fe4987c6709a64cd11a, type: 2}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
-    - description: DYNAMIC CONTENT
+    - description: 44594e414d494320434f4e54454e54
       tag: 2
       component: {fileID: 0}
       sortingOrder: 0

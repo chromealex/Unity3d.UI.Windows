@@ -54,6 +54,24 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnInit() {
+
+			base.OnInit();
+
+			#region source macros UI.Windows.OnInit.ImageComponent
+			{
+
+				if (this.imageLocalizationKey.IsNone() == false) {
+
+					this.SetImage(this.imageLocalizationKey);
+
+				}
+
+			}
+			#endregion
+
+		}
+
 		#region source macros UI.Windows.ImageComponent
 		[Header("Image Component")]
 		[SerializeField]
@@ -64,6 +82,8 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		[SerializeField]
 		private RawImage rawImage;
+
+		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
 
 		[ReadOnly("rawImage", null)]
 		[SerializeField]

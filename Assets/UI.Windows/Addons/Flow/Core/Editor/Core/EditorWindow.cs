@@ -325,9 +325,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								
 							}
 
-							var oldColor = GUI.backgroundColor;
-							var oldColor2 = GUI.color;
-							
 							this.bringFront.Clear();
 							
 							var selectionMain = -1;
@@ -340,11 +337,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								
 								if (this.IsVisible(container) == false) continue;
 
-								var backColor = container.randomColor;
-								backColor.a = 0.3f;
-								GUI.backgroundColor = backColor;
-								GUI.color = backColor;
-								
 								var rootContainer = container.GetContainer();
 								if (rootContainer != null) {
 									
@@ -431,9 +423,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								}
 								
 							}
-							GUI.backgroundColor = oldColor;
-							GUI.color = oldColor2;
-							
+
 							foreach (var window in windows) {
 
 								if (this.IsVisible(window) == false) continue;

@@ -38,10 +38,10 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void SetComponentState(WindowObjectState state) {
+			
+			if (this == null) return;
 
 			this.currentState = state;
-
-			if (this == null) return;
 
 			var go = this.gameObject;
 

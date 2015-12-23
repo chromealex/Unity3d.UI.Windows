@@ -8,6 +8,12 @@ using System.Collections.Generic;
 namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 	public class LocalizationSystem : ServiceManager<LocalizationSystem> {
+		
+		public override string GetServiceName() {
+			
+			return "Localization";
+			
+		}
 
 		public const UnityEngine.SystemLanguage DEFAULT_EDITOR_LANGUAGE = UnityEngine.SystemLanguage.Russian;
 
@@ -18,15 +24,109 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		private static UnityEngine.SystemLanguage defaultLanguage;
 		private static UnityEngine.SystemLanguage currentLanguage;
 
-		public override string GetServiceName() {
+		private static bool isReady = false;
 
-			return "Localization";
+		/// <summary>
+		/// Gets the declension index by number.
+		/// String array must be like that:
+		/// 	Nominativ
+		/// 	Plural
+		/// 	Genetiv [Optional]
+		/// </summary>
+		/// <returns>The declension index by number.</returns>
+		/// <param name="number">Number.</param>
+		/// <param name="language">Language.</param>
+		public static int GetDeclensionIndexByNumber(int number, UnityEngine.SystemLanguage language) {
+
+			var result = 0;
+
+			switch (language) {
+				
+				case SystemLanguage.English:
+					
+					if (number == 1) {
+						
+						// single
+						result = 0;
+						
+					} else {
+
+						// multi
+						result = 1;
+
+					}
+
+					break;
+					
+				case SystemLanguage.Russian:
+
+					number = Mathf.Abs(number);
+
+					if (number % 10 == 1 && number % 100 != 11) {
+
+						result = 0;
+
+					} else if (number % 10 >= 2 && number % 10 <= 4 && (number % 100 < 10 || number % 100 >= 20)) {
+
+						result = 2;
+
+					} else {
+
+						result = 1;
+
+					}
+
+					break;
+
+			}
+
+			return result;
+
+		}
+
+		public static string FormatWithDeclension(string value, params object[] parameters) {
+
+			var result = Regex.Replace(value, @"({\d+, .*?})", new MatchEvaluator((Match match) => {
+
+				var val = match.Value.Trim('{').Trim('}');
+
+				var splitted = val.Split(',');
+				var num = int.Parse(splitted[0]);
+				var word = string.Empty;
+				var parValue = (int)parameters[num];
+
+				var index = 0;
+				if (splitted.Length == 3) {
+					
+					// Standart variant (English)
+					index = LocalizationSystem.GetDeclensionIndexByNumber(parValue, SystemLanguage.English);
+
+				} else if (splitted.Length == 4) {
+
+					// Super variant (Russian)
+					index = LocalizationSystem.GetDeclensionIndexByNumber(parValue, SystemLanguage.Russian);
+					
+				}
+
+				word = splitted[index + 1];
+
+				return string.Format("{0}{1}", "{" + num + "}", word);
+
+			}));
+
+			return string.Format(result, parameters);;
 
 		}
 
 		public override UnityEngine.UI.Windows.Plugins.Flow.AuthKeyPermissions GetAuthPermission() {
 
 			return UnityEngine.UI.Windows.Plugins.Flow.AuthKeyPermissions.None;
+
+		}
+
+		public static bool IsReady() {
+
+			return LocalizationSystem.isReady;
 
 		}
 
@@ -76,18 +176,30 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		public static string Get(string key, UnityEngine.SystemLanguage language) {
 
-			string[] values;
-			if (LocalizationSystem.valuesByLanguage.TryGetValue(language, out values) == true) {
+			if (LocalizationSystem.IsReady() == true) {
 
-				var keys = LocalizationSystem.GetKeys();
-				if (keys != null && key != null) {
-					
-					var index = System.Array.IndexOf(keys, key.ToLower());
-					if (index >= 0) {
+				string[] values;
+				if (LocalizationSystem.valuesByLanguage.TryGetValue(language, out values) == true) {
+
+					var keys = LocalizationSystem.GetKeys();
+					if (keys != null && key != null) {
 						
-						return values[index];
+						var index = System.Array.IndexOf(keys, key.ToLower());
+						if (index >= 0) {
+							
+							return values[index];
+
+						}
 
 					}
+
+				}
+
+			} else {
+
+				if (Application.isPlaying == true) {
+
+					Debug.LogWarningFormat("[ Localization ] System not ready. Do not use `LocalizationSystem.Get()` method while/before system starting. You can check it's state by `LocaliztionSystem.IsReady()` call. Key: `{0}`.", key);
 
 				}
 
@@ -142,6 +254,13 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			if (parameters.Length == key.parameters) {
 
 				var value = LocalizationSystem.Get(key.key, LocalizationSystem.GetCurrentLanguage());
+				if (key.formatWithDeclension == true) {
+
+					Debug.Log(key.key + " == " + value + ", " + LocalizationSystem.GetCurrentLanguage());
+					return LocalizationSystem.FormatWithDeclension(value, parameters);
+
+				}
+
 				return string.Format(value, parameters);
 
 			} else {
@@ -160,10 +279,18 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		}
 
-		public static int GetParametersCount(string key) {
+		public static bool IsNeedToFormatWithDeclension(string key, UnityEngine.SystemLanguage language) {
+			
+			var value = LocalizationSystem.Get(key, language);
+			var matches = Regex.Matches(value, @"{\d+, (.*?)}", RegexOptions.None);
+			return (matches != null && matches.Count > 0);
 
-			var value = LocalizationSystem.Get(key, LocalizationSystem.GetCurrentLanguage());
-			var matches = Regex.Matches(value, "{.*?}", RegexOptions.ExplicitCapture);
+		}
+
+		public static int GetParametersCount(string key, UnityEngine.SystemLanguage language) {
+
+			var value = LocalizationSystem.Get(key, language);
+			var matches = Regex.Matches(value, @"{.*?}", RegexOptions.None);
 			return matches.Count;
 
 		}
@@ -281,20 +408,24 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				var path = LocalizationSystem.GetCachePath();
 				System.IO.File.WriteAllText(path, data);
 
+				LocalizationSystem.currentLanguage = UnityEngine.SystemLanguage.Russian;//LocalizationSystem.defaultLanguage;
+
 				#if !UNITY_EDITOR
 				if (LocalizationSystem.instance.logEnabled == true) {
 				#endif
 					
-					Debug.LogFormat("[ Localization ] Loaded. Keys: {0}, Languages: {1}", keysCount, langCount);
+					Debug.LogFormat("[ Localization ] Loaded. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount);
 
 				#if !UNITY_EDITOR
 				}
 				#endif
 
+				LocalizationSystem.isReady = true;
+
 			} catch(System.Exception ex) {
 
 				// Nothing to do: failed to parse
-				Debug.LogError(string.Format("[ Localization ] Parser error: {0}", ex.Message));
+				Debug.LogError(string.Format("[ Localization ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
 
 				if (loadCacheOnFail == true) {
 

@@ -27,7 +27,9 @@ namespace UnityEngine.UI.Windows.Components {
 	 * Do not change anything
 	 */
 	{
+					
 					if (inputParameters != null) inputParameters.Setup(this as ITextComponent);
+	
 				}
 	#endregion
 
@@ -420,6 +422,8 @@ namespace UnityEngine.UI.Windows.Components {
 			[SerializeField]
 			private RawImage rawImage;
 	
+			public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
+	
 			[ReadOnly("rawImage", null)]
 			[SerializeField]
 			private  bool playOnStart;
@@ -646,6 +650,7 @@ namespace UnityEngine.UI.Windows.Components {
 			private TextValueFormat valueFormat;
 			[SerializeField][BitMask(typeof(RichTextFlags))]
 			private RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
+			public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey textLocalizationKey;
 	
 			public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 				

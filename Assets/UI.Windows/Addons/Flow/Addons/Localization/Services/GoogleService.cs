@@ -35,7 +35,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 				} else {
 
-					// Load from local location
+					LocalizationSystem.TryToLoadCache();
 
 				}
 
@@ -56,7 +56,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 			}
 			#endif
 
-			var www = new WWW(url);
+			var www = new WWW(url + "&www_cache=" + Random.Range(0, 100000).ToString());
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) {
 

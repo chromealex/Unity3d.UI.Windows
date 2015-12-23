@@ -53,6 +53,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public void SetManualShowHideControl() {
+
+			this.manualShowHideControl = true;
+
+		}
+
 		/// <summary>
 		/// Show component.
 		/// Animation component can use current layout element root or current component root.

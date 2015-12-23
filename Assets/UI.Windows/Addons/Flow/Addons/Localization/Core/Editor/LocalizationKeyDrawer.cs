@@ -22,14 +22,19 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 		}
 
 		public static void Draw(Rect position, SerializedProperty property, GUIContent label) {
-			
-			LocalizationSystem.TryToLoadCache();
 
-			property.serializedObject.Update();
+			if (Application.isPlaying == false) {
+
+				LocalizationSystem.TryToLoadCache();
+
+			}
+
+			//property.serializedObject.Update();
 
 			var keyProperty = property.FindPropertyRelative("key");
 			var parametersCountProperty = property.FindPropertyRelative("parameters");
-			if (keyProperty != null && parametersCountProperty != null) {
+			var formatWithDeclensionProperty = property.FindPropertyRelative("formatWithDeclension");
+			if (keyProperty != null && parametersCountProperty != null && formatWithDeclensionProperty != null) {
 
 				//GUILayout.BeginHorizontal();
 				{
@@ -44,7 +49,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 					var buttonRect = new Rect(position.x + labelWidth, position.y, position.width - labelWidth, position.height);
 
 					var keyValue = keyProperty.stringValue;
-					var keyFull = string.Format("{0} ({1})", keyValue, LocalizationSystem.Get(keyValue, LocalizationSystem.DEFAULT_EDITOR_LANGUAGE));
+					var keyFull = string.Format("[{0}] {1} ({2})", parametersCountProperty.intValue, keyValue, LocalizationSystem.Get(keyValue, LocalizationSystem.DEFAULT_EDITOR_LANGUAGE));
 					if (GUI.Button(buttonRect, keyFull, EditorStyles.textField) == true) {
 
 						var rect = position;
@@ -55,14 +60,19 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 						var popup = new Popup() { title = "Localization Keys", screenRect = new Rect(rect.x + labelWidth + offset.x, rect.y + rect.height + offset.y, rect.width - labelWidth - offset.x, 200f), searchText = keyProperty.stringValue, separator = '|' };
 						popup.Item("None", () => {
 
-							parametersCountProperty.serializedObject.Update();
 							keyProperty.serializedObject.Update();
+							parametersCountProperty.serializedObject.Update();
+							formatWithDeclensionProperty.serializedObject.Update();
 
 							keyProperty.stringValue = string.Empty;
 							parametersCountProperty.intValue = 0;
-
-							keyProperty.serializedObject.ApplyModifiedProperties();
+							formatWithDeclensionProperty.boolValue = false;
+							
+							formatWithDeclensionProperty.serializedObject.ApplyModifiedProperties();
 							parametersCountProperty.serializedObject.ApplyModifiedProperties();
+							keyProperty.serializedObject.ApplyModifiedProperties();
+
+							EditorUtility.SetDirty(keyProperty.serializedObject.targetObject);
 
 						});
 						foreach (var key in LocalizationSystem.GetKeys()) {
@@ -70,15 +80,20 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 							var finalKey = key;
 							var finalKeyFull = string.Format("{0} <color=grey>({1})</color>", finalKey, LocalizationSystem.Get(finalKey, LocalizationSystem.DEFAULT_EDITOR_LANGUAGE));
 							popup.Item(finalKeyFull, () => {
-
+								
+								formatWithDeclensionProperty.serializedObject.Update();
 								parametersCountProperty.serializedObject.Update();
 								keyProperty.serializedObject.Update();
 
 								keyProperty.stringValue = finalKey;
-								parametersCountProperty.intValue = LocalizationSystem.GetParametersCount(finalKey);
-
-								keyProperty.serializedObject.ApplyModifiedProperties();
+								parametersCountProperty.intValue = LocalizationSystem.GetParametersCount(finalKey, LocalizationSystem.DEFAULT_EDITOR_LANGUAGE);
+								formatWithDeclensionProperty.boolValue = LocalizationSystem.IsNeedToFormatWithDeclension(finalKey, LocalizationSystem.DEFAULT_EDITOR_LANGUAGE);
+								
+								formatWithDeclensionProperty.serializedObject.ApplyModifiedProperties();
 								parametersCountProperty.serializedObject.ApplyModifiedProperties();
+								keyProperty.serializedObject.ApplyModifiedProperties();
+
+								EditorUtility.SetDirty(keyProperty.serializedObject.targetObject);
 
 							});
 
@@ -106,7 +121,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 
 			}
 
-			property.serializedObject.ApplyModifiedProperties();
+			//property.serializedObject.ApplyModifiedProperties();
 
 		}
 

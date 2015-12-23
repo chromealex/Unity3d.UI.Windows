@@ -64,7 +64,7 @@ Camera:
   m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
+  m_StereoSeparation: .0219999999
   m_StereoMirrorMode: 0
 --- !u!114 &11404194
 MonoBehaviour:
@@ -116,6 +116,7 @@ MonoBehaviour:
   localizationKey:
     key: 
     parameters: 0
+    formatWithDeclension: 0
   color: {r: 1, g: 1, b: 1, a: 1}
   format: 0
   font: {fileID: 0}
@@ -134,6 +135,7 @@ MonoBehaviour:
   imageLocalizationKey:
     key: 
     parameters: 0
+    formatWithDeclension: 0
   rawImage: {fileID: 0}
   imageColor: {r: 1, g: 1, b: 1, a: 1}
   playOnStart: 0
@@ -188,6 +190,7 @@ MonoBehaviour:
   localizationKey:
     key: 
     parameters: 0
+    formatWithDeclension: 0
   color: {r: 1, g: 0, b: 0, a: 1}
   format: 0
   font: {fileID: 0}
@@ -206,6 +209,7 @@ MonoBehaviour:
   imageLocalizationKey:
     key: 
     parameters: 0
+    formatWithDeclension: 0
   rawImage: {fileID: 0}
   imageColor: {r: 1, g: 1, b: 1, a: 1}
   playOnStart: 0
@@ -376,6 +380,7 @@ MonoBehaviour:
   localizationKey:
     key: 
     parameters: 0
+    formatWithDeclension: 0
   color: {r: 1, g: 1, b: 1, a: 1}
   format: 0
   font: {fileID: 0}
@@ -394,6 +399,7 @@ MonoBehaviour:
   imageLocalizationKey:
     key: 
     parameters: 0
+    formatWithDeclension: 0
   rawImage: {fileID: 0}
   imageColor: {r: 1, g: 1, b: 1, a: 1}
   playOnStart: 0

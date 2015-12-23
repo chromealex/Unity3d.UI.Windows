@@ -18,7 +18,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization.UI {
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 
-			property.serializedObject.Update();
+			//property.serializedObject.Update();
 
 			var text = property.serializedObject.targetObject as UnityEngine.UI.Text;
 			var locText = property.serializedObject.targetObject as LocalizationText;
@@ -61,7 +61,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization.UI {
 
 			}
 
-			property.serializedObject.ApplyModifiedProperties();
+			//property.serializedObject.ApplyModifiedProperties();
 
 		}
 

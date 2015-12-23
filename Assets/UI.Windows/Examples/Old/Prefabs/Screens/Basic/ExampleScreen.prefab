@@ -61,7 +61,7 @@ Camera:
   m_HDR: 0
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
+  m_StereoSeparation: .0219999999
   m_StereoMirrorMode: 0
 --- !u!114 &11426760
 MonoBehaviour:
@@ -158,25 +158,25 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     layout: {fileID: 11440898, guid: c9b9f1a6f4f884e71bd029c7e78ddea9, type: 2}
     components:
-    - description: CONTENT BORDER EXAMPLE
+    - description: 434f4e54454e5420424f52444552204558414d504c45
       tag: 1
       component: {fileID: 11496998, guid: 1b505308e6b884c2690764cfd5472993, type: 2}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
-    - description: CONTENT INNER EXAMPLE
+    - description: 434f4e54454e5420494e4e4552204558414d504c45
       tag: 2
       component: {fileID: 11402024, guid: 47c8da40cafcc4e148f9cface0213628, type: 2}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
-    - description: BUTTON OK EXAMPLE
+    - description: 425554544f4e204f4b204558414d504c45
       tag: 3
       component: {fileID: 11496526, guid: 2ea8ca95afe354902a2edf9cab1a56b4, type: 2}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
-    - description: BUTTON ALERT EXAMPLE
+    - description: 425554544f4e20414c455254204558414d504c45
       tag: 4
       component: {fileID: 11470138, guid: abbc7a86fe20a42efbef867b9251265a, type: 2}
       sortingOrder: 0

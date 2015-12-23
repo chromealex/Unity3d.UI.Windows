@@ -10,8 +10,10 @@ using System.Linq;
 using System.IO;
 using UnityEditor.UI.Windows.Plugins.Flow.Editors;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
+#if !UNITY_5_2
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
+#endif
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
@@ -22,7 +24,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		private FlowSystemEditorWindow rootWindow;
 		private FD.FlowWindow window;
+		#if UNITY_5_2
+		private string currentScene;
+		#else
 		private Scene currentScene;
+		#endif
 		private SceneView currentView;
 		private List<WindowLayout> layouts;
 		private List<WindowBase> screens;
@@ -77,14 +83,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			this.rootWindow = rootWindow;
 			this.window = window;
-			this.currentScene = EditorSceneManager.GetActiveScene();//EditorApplication.currentScene;
+			#if UNITY_5_2
+			this.currentScene = EditorApplication.currentScene;
+			#else
+			this.currentScene = EditorSceneManager.GetActiveScene();
+			#endif
 			this.layouts = new List<WindowLayout>();
 			this.layoutPrefab = null;
 
 			this.screens = new List<WindowBase>();
 			this.screenPrefab = null;
 
+			#if UNITY_5_2
+			EditorApplication.NewEmptyScene();
+			#else
 			EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.EmptyScene);
+			#endif
 
 			var popupOffset = 100f;
 			var popupSize = new Vector2(rootWindow.position.width - popupOffset * 2f, rootWindow.position.height - popupOffset * 2f);
@@ -95,32 +109,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var title = "UI.Windows Flow Screen Editor ('{0}')";
 			title = string.Format(title, this.window.title);
-			#if !UNITY_4
 			this.view.titleContent = new GUIContent(string.Format(title, this.window.title));
-			#else
-			this.view.title = string.Format(title, this.window.title);
-			#endif
 			this.view.position = popupRect;
 			this.view.rootWindow = rootWindow;
-			
-			/*this.inspector = FlowInspectorWindow.CreateInstance<FlowInspectorWindow>();
-			this.inspector.position = popupRect;
-			this.inspector.rootWindow = rootWindow;
-			this.inspector.Repaint();
-			this.inspector.Focus();
-			
-			this.hierarchy = FlowHierarchyWindow.CreateInstance<FlowHierarchyWindow>();
-			this.hierarchy.position = popupRect;
-			this.hierarchy.rootWindow = rootWindow;
-			this.hierarchy.Repaint();
-			this.hierarchy.Focus();*/
 
 			this.Show();
 
-			//this.inspector.Repaint();
-			//this.inspector.Focus();
-			//this.hierarchy.Repaint();
-			//this.hierarchy.Focus();
 			this.view.Repaint();
 			this.view.Focus();
 
@@ -134,8 +128,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			progressValue.valueChanged.AddListener(() => {
 				
 				this.view.DrawProgress(progressValue.value);
-				//this.inspector.DrawProgress(progressValue.value);
-				//this.hierarchy.DrawProgress(progressValue.value);
 
 				if (progressValue.value == progressValue.target) {
 					
@@ -207,7 +199,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				close();
 
 			}
+			
+			#if UNITY_5_2
+			if (string.IsNullOrEmpty(this.currentScene) == false) {
 
+				EditorApplication.OpenScene(this.currentScene);
+
+			} else {
+
+				EditorApplication.NewEmptyScene();
+
+			}
+			#else
 			if (this.currentScene.IsValid() == true) {
 
 				EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
@@ -217,6 +220,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				EditorSceneManager.OpenScene(this.currentScene.path);
 
 			}
+			#endif
 
 			SceneView.onSceneGUIDelegate -= this.OnGUI;
 
@@ -1311,8 +1315,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private static AnimatedValues.AnimFloat editAnimation;
 		public static void SetControl(FlowSystemEditorWindow rootWindow, FD.FlowWindow window, System.Action<float> onProgress) {
 
+			#if UNITY_5_2
+			if (EditorApplication.SaveCurrentSceneIfUserWantsTo() == true) {
+			#else
 			if (UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo() == true) {
-				
+			#endif
+
 				FlowSceneView.editAnimation = new UnityEditor.AnimatedValues.AnimFloat(0f, () => {
 
 					onProgress(FlowSceneView.editAnimation.value);

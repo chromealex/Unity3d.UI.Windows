@@ -31,6 +31,8 @@ namespace UnityEngine.UI.Windows {
 			if (Input.GetKeyDown(KeyCode.Tab) == true) {
 
 				var system = EventSystem.current;
+				if (system == null || system.currentSelectedGameObject == null) return;
+
 				var next = system.currentSelectedGameObject.GetComponent<Selectable>().FindSelectableOnDown();
 				
 				if (next != null) {

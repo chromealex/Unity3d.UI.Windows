@@ -13,7 +13,9 @@ namespace UnityEngine.UI.Windows.Components {
 			var inputParameters = parameters as TextComponentParameters;
 			#region source macros UI.Windows.Initialization.TextComponent
 			{
+				
 				if (inputParameters != null) inputParameters.Setup(this as ITextComponent);
+
 			}
 			#endregion
 
@@ -45,6 +47,24 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnInit() {
+
+			base.OnInit();
+
+			#region source macros UI.Windows.OnInit.TextComponent
+			{
+
+				if (this.textLocalizationKey.IsNone() == false) {
+
+					this.SetText(this.textLocalizationKey);
+
+				}
+
+			}
+			#endregion
+
+		}
+
 		#region source macros UI.Windows.TextComponent
 		[Header("Text Component")]
 		[SerializeField]
@@ -53,6 +73,7 @@ namespace UnityEngine.UI.Windows.Components {
 		private TextValueFormat valueFormat;
 		[SerializeField][BitMask(typeof(RichTextFlags))]
 		private RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
+		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey textLocalizationKey;
 
 		public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 			

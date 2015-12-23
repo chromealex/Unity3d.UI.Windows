@@ -193,8 +193,12 @@ namespace UnityEngine.Extensions {
 					#if UNITY_5_3_0
 					Debug.LogWarning("Unity 5.3.0 bug: Creating through editor-mode from prefabs causes hidden gameobjects. You must create it manual: Screen first, Layout the second and components at last.");
 					#endif
-
+					
+					#if UNITY_5_2
+					var go = UnityEditor.PrefabUtility.InstantiatePrefab(source.gameObject) as GameObject;
+					#else
 					var go = UnityEditor.PrefabUtility.InstantiatePrefab(source.gameObject, SceneManagement.SceneManager.GetActiveScene()) as GameObject;
+					#endif
 					return go.GetComponent<T>();
 
 				}

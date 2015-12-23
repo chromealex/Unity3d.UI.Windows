@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI.Windows.Components.Events;
+using UnityEngine.UI.Windows.Plugins.Localization.UI;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -22,6 +23,18 @@ namespace UnityEngine.UI.Windows.Components {
 		private ComponentEvent<bool> onFocus = new ComponentEvent<bool>();
 		
 		private bool lastFocusValue = false;
+
+		public override void OnLocalizationChanged() {
+
+			base.OnLocalizationChanged();
+
+			if (this.placeholder != null && this.placeholder is LocalizationText) {
+
+				(this.placeholder as LocalizationText).OnLocalizationChanged();
+
+			}
+
+		}
 
 		public void SetEnabledState(bool state) {
 
@@ -161,7 +174,11 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnInit();
 
 			this.inputField.onValidateInput = this.OnValidateChar;
+			#if UNITY_5_2
+			this.inputField.onValueChange.AddListener(this.OnChange);
+			#else
 			this.inputField.onValueChanged.AddListener(this.OnChange);
+			#endif
 			this.inputField.onEndEdit.AddListener(this.OnEditEnd);
 
 			this.lastFocusValue = this.HasFocus();
@@ -173,7 +190,11 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnDeinit();
 
 			this.inputField.onValidateInput = null;
+			#if UNITY_5_2
+			this.inputField.onValueChange.RemoveListener(this.OnChange);
+			#else
 			this.inputField.onValueChanged.RemoveListener(this.OnChange);
+			#endif
 			this.inputField.onEndEdit.RemoveListener(this.OnEditEnd);
 
 			this.onChange.RemoveAllListeners();

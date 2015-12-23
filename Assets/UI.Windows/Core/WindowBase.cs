@@ -584,6 +584,12 @@ namespace UnityEngine.UI.Windows {
 
 				this.currentState = WindowObjectState.Hidden;
 
+				if (this != null && this.gameObject != null) {
+
+					this.gameObject.SetActive(false);
+
+				}
+
 			};
 
 			this.OnLayoutHideBegin(callback);

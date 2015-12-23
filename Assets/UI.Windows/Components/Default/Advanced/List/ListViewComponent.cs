@@ -6,7 +6,7 @@ using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	[RequireComponent(typeof(ScrollRect), typeof(VerticalLayoutGroup))]
+	[RequireComponent(typeof(ScrollRect))]
 	public class ListViewComponent : ListComponent, IListViewDataSource {
 
 		[System.Serializable]
@@ -222,9 +222,9 @@ namespace UnityEngine.UI.Windows.Components {
 			for (int i = 0; i < this.rowHeights.Length; ++i) {
 
 				this.rowHeights[i] = this.dataSource.GetRowHeight(this, i);
-				if (i > 0) {
+				if (this.verticalLayoutGroup != null && i > 0) {
 
-					this.rowHeights[i] += verticalLayoutGroup.spacing;
+					this.rowHeights[i] += this.verticalLayoutGroup.spacing;
 
 				}
 
@@ -260,9 +260,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 				WindowComponent cell = this.GetCellAtRow(row);
 				cell.GetComponent<LayoutElement>().preferredHeight = this.rowHeights[row];
-				if (row > 0) {
+				if (this.verticalLayoutGroup != null && row > 0) {
 
-					cell.GetComponent<LayoutElement>().preferredHeight -= verticalLayoutGroup.spacing;
+					cell.GetComponent<LayoutElement>().preferredHeight -= this.verticalLayoutGroup.spacing;
 
 				}
 
@@ -492,7 +492,7 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			layoutElement.preferredHeight = this.rowHeights[row];
-			if (row > 0) {
+			if (this.verticalLayoutGroup != null && row > 0) {
 
 				layoutElement.preferredHeight -= this.verticalLayoutGroup.spacing;
 
@@ -590,7 +590,7 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			var bottomPaddingHeight = this.scrollRect.content.rect.height - hiddenElementsHeightSum;
-			this.bottomPadding.preferredHeight = bottomPaddingHeight - this.verticalLayoutGroup.spacing;
+			this.bottomPadding.preferredHeight = bottomPaddingHeight - (this.verticalLayoutGroup != null ? this.verticalLayoutGroup.spacing : 0f);
 			this.bottomPadding.gameObject.SetActive(this.bottomPadding.preferredHeight > 0f);
 
 		}
@@ -712,8 +712,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (Application.isPlaying == true) return;
 
-			var items = this.GetComponentsInChildren<VerticalLayoutGroup>();
-			if (items != null && items.Length > 0) this.verticalLayoutGroup = items[0];
+			ME.Utilities.FindReference<VerticalLayoutGroup>(this, ref this.verticalLayoutGroup);
 
 		}
 		#endif
