@@ -33,10 +33,7 @@ namespace UnityEngine.UI.Windows.Components {
 	public interface IListViewItem {
 
 		string reuseIdentifier {
-			
 			get;
-			set;
-
 		}
 
 	}

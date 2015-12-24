@@ -968,19 +968,22 @@ namespace UnityEngine.UI.Windows {
 			if (source.preferences.forceSingleInstance == true) {
 
 				instance = this.currentWindows.FirstOrDefault(w => w.windowId == source.windowId);
-				if (instance != null) return instance;
 
 			}
 
-			instance = source.Spawn();
-			instance.transform.SetParent(null);
-			instance.transform.localPosition = Vector3.zero;
-			instance.transform.localRotation = Quaternion.identity;
-			instance.transform.localScale = Vector3.one;
+			if (instance == null) {
 
-			#if UNITY_EDITOR
-			instance.gameObject.name = string.Format("[Screen] {0}", source.GetType().Name);
-			#endif
+				instance = source.Spawn();
+				instance.transform.SetParent(null);
+				instance.transform.localPosition = Vector3.zero;
+				instance.transform.localRotation = Quaternion.identity;
+				instance.transform.localScale = Vector3.one;
+
+				#if UNITY_EDITOR
+				instance.gameObject.name = string.Format("[Screen] {0}", source.GetType().Name);
+				#endif
+
+			}
 
 			instance.SetParameters(onParametersPassCall, parameters);
 			instance.Init(source,
@@ -1133,10 +1136,10 @@ namespace UnityEngine.UI.Windows {
 		                        System.Action<T> onParametersPassCall,
 		                        params object[] parameters) where T : WindowBase {
 
-			System.Action<WindowBase> onInit = null;
+			System.Action<WindowBase> parametersPassCall = null;
 			if (onParametersPassCall != null) {
 
-				onInit = (WindowBase window) => {
+				parametersPassCall = (WindowBase window) => {
 
 					if (onParametersPassCall != null) {
 
@@ -1148,7 +1151,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			var instance = (source != null) ? WindowSystem.instance.Create_INTERNAL(source, onInit, parameters) as T : WindowSystem.Create<T>(onInit, parameters);
+			var instance = (source != null) ? WindowSystem.instance.Create_INTERNAL(source, parametersPassCall, parameters) as T : WindowSystem.Create<T>(parametersPassCall, parameters);
 			if (instance != null) {
 				
 				if (afterGetInstance != null) {

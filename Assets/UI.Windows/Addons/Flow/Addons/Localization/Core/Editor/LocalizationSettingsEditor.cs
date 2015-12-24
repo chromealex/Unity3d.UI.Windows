@@ -32,6 +32,32 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 		public override void OnInspectorGUI() {
 
 			this.DrawServices<LocalizationServiceItem>();
+			
+			CustomGUI.Splitter();
+			
+			GUILayout.Label("Languages", EditorStyles.boldLabel);
+
+			var oldEnable = GUI.enabled;
+			GUI.enabled = false;
+			
+			var currentLangs = LocalizationSystem.GetLanguagesList();
+			var langs = System.Enum.GetValues(typeof(UnityEngine.SystemLanguage));
+			foreach (var lang in langs) {
+				
+				var lng = (UnityEngine.SystemLanguage)lang;
+				if (currentLangs.Contains(lng) == true) {
+					
+					GUILayout.Toggle(true, lng.ToString());
+					
+				} else {
+					
+					GUILayout.Toggle(false, lng.ToString());
+					
+				}
+				
+			}
+			
+			GUI.enabled = oldEnable;
 
 		}
 

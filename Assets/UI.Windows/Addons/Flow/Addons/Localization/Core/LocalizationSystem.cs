@@ -41,23 +41,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			var result = 0;
 
 			switch (language) {
-				
-				case SystemLanguage.English:
-					
-					if (number == 1) {
-						
-						// single
-						result = 0;
-						
-					} else {
 
-						// multi
-						result = 1;
-
-					}
-
-					break;
-					
 				case SystemLanguage.Russian:
 
 					number = Mathf.Abs(number);
@@ -76,6 +60,22 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 					}
 
+					break;
+					
+				default:
+					
+					if (number == 1) {
+						
+						// single
+						result = 0;
+						
+					} else {
+						
+						// multi
+						result = 1;
+						
+					}
+					
 					break;
 
 			}

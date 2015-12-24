@@ -98,7 +98,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 					this.editor.OnInspectorGUI();
 					
 				}
-				
+
 			}
 			
 		}

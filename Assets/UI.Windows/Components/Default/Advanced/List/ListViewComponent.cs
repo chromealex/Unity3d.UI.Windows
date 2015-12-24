@@ -90,6 +90,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public override WindowComponent GetItem(int index) {
 
+			if (index >= 0 && index < this.list.Count) {
+
+				return base.GetItem(index);
+
+			}
+
 			return this.GetInstance(index);
 
 		}
@@ -128,6 +134,16 @@ namespace UnityEngine.UI.Windows.Components {
 			this.onItem = onItem;
 
 			this.dataSource = this;
+
+		}
+
+		public void UpdateCell(int index) {
+
+			if (index >= 0 && index < this.list.Count) {
+
+				this.onItem(this.list[index], index);
+
+			}
 
 		}
 		#endregion
