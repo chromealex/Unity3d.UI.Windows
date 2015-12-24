@@ -14,9 +14,19 @@ namespace UnityEngine.UI.Windows {
 
 	public class WindowSystemInput : MonoBehaviour {
 
+		public const string SCROLL_AXIS = "Mouse ScrollWheel";
+
 		public static ComponentEvent onPointerUp = new ComponentEvent();
 		public static ComponentEvent onPointerDown = new ComponentEvent();
-		
+
+		private static PointerEventData scrollEvent;
+
+		public void Start() {
+
+			WindowSystemInput.scrollEvent = new PointerEventData(EventSystem.current);
+
+		}
+
 		public void LateUpdate() {
 			
 			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
@@ -45,6 +55,18 @@ namespace UnityEngine.UI.Windows {
 				}
 				
 			}
+
+		}
+
+		public static PointerEventData GetPointerScroll() {
+
+			var scrollEvent = WindowSystemInput.scrollEvent;
+
+			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
+			scrollEvent.scrollDelta = new Vector2(0f, Input.GetAxisRaw(WindowSystemInput.SCROLL_AXIS));
+			#endif
+
+			return scrollEvent;
 
 		}
 
