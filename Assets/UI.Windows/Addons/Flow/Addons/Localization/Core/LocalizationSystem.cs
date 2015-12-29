@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows.Plugins.Services;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows.Utilities;
 
 namespace UnityEngine.UI.Windows.Plugins.Localization {
 
@@ -337,7 +338,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 			try {
 
-				var parsed = LocalizationParser.ReadCSV(data);
+				var parsed = CSVParser.ReadCSV(data);
 
 				var defaultLanguage = parsed[0][0];
 				LocalizationSystem.defaultLanguage = (UnityEngine.SystemLanguage)System.Enum.Parse(typeof(UnityEngine.SystemLanguage), defaultLanguage);

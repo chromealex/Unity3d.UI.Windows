@@ -60,6 +60,9 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		private RectTransform specialSize;
 
+		[SerializeField]
+		private float maxOutputFadeTime = 1f;
+
 		private int capacity;
 		private UnityAction<IComponent, int> onItem;
 
@@ -150,10 +153,81 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		#region Public API
 		private int maxOutputCount = -1;
-		public void SetMaxOutputCount(int max = -1) {
+		public void SetMaxOutputCount(int max = -1, bool immediately = false, System.Action callback = null) {
 
-			this.maxOutputCount = max;
-			this.ReloadData();
+			System.Action callbackInner = () => {
+				
+				this.maxOutputCount = max;
+				this.ReloadData();
+				
+				if (callback != null) callback();
+
+			};
+
+			System.Action<Range, Range, float> setAlpha = (Range currentRange, Range range, float alpha) => {
+
+				for (int i = currentRange.from; i < range.from; ++i) {
+					
+					var element = this.GetCellAtRow(i);
+					if (element != null) element.canvas.alpha = alpha;
+					
+				}
+
+			};
+
+			if (this.maxOutputFadeTime > 0f) {
+
+				var open = (max == -1);
+				var from = open ? 0f : 1f;
+				var to = open ? 1f : 0f;
+
+				Range currentRange;
+				Range range;
+
+				if (open == true) {
+
+					currentRange = this.CalculateCurrentVisibleRowRange(max);
+					range = this.CalculateCurrentVisibleRowRange();
+
+					this.maxOutputCount = max;
+					this.ReloadData();
+					
+					setAlpha(currentRange, range, 0f);
+
+				} else {
+
+					currentRange = this.CalculateCurrentVisibleRowRange();
+					range = this.CalculateCurrentVisibleRowRange(max);
+
+				}
+				
+				TweenerGlobal.instance.removeTweens(this);
+
+				if (immediately == true) {
+					
+					setAlpha(currentRange, range, to);
+					callbackInner();
+
+				} else {
+
+					TweenerGlobal.instance.addTween(this, this.maxOutputFadeTime, from, to).tag(this).onUpdate((item, value) => {
+						
+						setAlpha(currentRange, range, value);
+
+					}).onComplete(() => {
+						
+						setAlpha(currentRange, range, 1f);
+						callbackInner();
+
+					});
+
+				}
+
+			} else {
+
+				callbackInner();
+
+			}
 
 		}
 
@@ -459,7 +533,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		private Range CalculateCurrentVisibleRowRange() {
+		private Range CalculateCurrentVisibleRowRange(int max = -2) {
 
 			var startY = this.scrollY;
 			var endY = this.scrollY + (this.scrollRect.transform as RectTransform).rect.height;
@@ -468,11 +542,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 			var visibleRows = new Range(startIndex, endIndex - startIndex + 1);
 
-			if (this.maxOutputCount > -1) {
+			if (max == -2) {
+
+				max = this.maxOutputCount;
+
+			}
+
+			if (max > -1) {
 
 				var count = this.cumulativeRowHeights.Length;
-				visibleRows.from = Mathf.Max(0, count - this.maxOutputCount);
-				visibleRows.count = Mathf.Min(count, this.maxOutputCount);
+				visibleRows.from = Mathf.Max(0, count - max);
+				visibleRows.count = Mathf.Min(count, max);
 
 			}
 
@@ -612,8 +692,6 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		private void HideRow(bool last) {
-
-			//Debug.Log("Hiding row at scroll y " + this.scrollY.ToString("0.00"));
 
 			var row = last ? this.visibleRowRange.Last() : this.visibleRowRange.from;
 			var removedCell = this.visibleCells[row];

@@ -301,10 +301,10 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public virtual void OnVersionChanged() {
+		}
+
 		public virtual void OnLocalizationChanged() {
-
-
-
 		}
 
 		/// <summary>

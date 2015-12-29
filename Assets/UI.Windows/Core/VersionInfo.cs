@@ -1,6 +1,80 @@
 ﻿
-namespace UnityEngine.UI.Windows {
+using System.Text.RegularExpressions;namespace UnityEngine.UI.Windows {
+
+	[System.Serializable]
+	public struct VersionCheck {
+
+		public bool enabled;
+		public Version version;
+
+	}
 	
+	[System.Serializable]
+	public struct VersionCrc {
+
+		public int crc;
+
+		public VersionCrc(Version version) {
+
+			this.crc = (int)ME.Utilities.GetHash(version.ToString());
+
+		}
+
+		public VersionCrc(string version) : this(new Version(version)) {
+
+		}
+
+		public override bool Equals(object obj) {
+			
+			var version = (VersionCrc)obj;
+			return version == this;
+			
+		}
+		
+		public override int GetHashCode() {
+			
+			return this.crc;
+			
+		}
+		
+		public static bool operator ==(Version v1, VersionCrc v2) {
+			
+			return ME.Utilities.GetHash(v1.ToString()) == v2.crc;
+			
+		}
+		
+		public static bool operator !=(Version v1, VersionCrc v2) {
+			
+			return !(v1 == v2);
+			
+		}
+		
+		public static bool operator ==(VersionCrc v1, Version v2) {
+			
+			return ME.Utilities.GetHash(v2.ToString()) == v1.crc;
+			
+		}
+		
+		public static bool operator !=(VersionCrc v1, Version v2) {
+			
+			return !(v1 == v2);
+			
+		}
+
+		public static bool operator ==(VersionCrc v1, VersionCrc v2) {
+			
+			return v1.crc == v2.crc;
+			
+		}
+		
+		public static bool operator !=(VersionCrc v1, VersionCrc v2) {
+			
+			return !(v1 == v2);
+			
+		}
+
+	}
+
 	[System.Serializable]
 	public struct Version {
 		
@@ -12,6 +86,47 @@ namespace UnityEngine.UI.Windows {
 			public const string RTM = "rtm";
 			public const string GA = "ga";
 			public const string Production = "";
+
+			public static string[] GetValues() {
+
+				return new string[] { Type.Alpha, Type.Beta, Type.RC, Type.RTM, Type.GA, Type.Production };
+
+			}
+			
+			public static int GetIndex(string value) {
+
+				var index = -1;
+				switch (value) {
+					
+					case Type.Alpha:
+						index = 0;
+						break;
+						
+					case Type.Beta:
+						index = 1;
+						break;
+						
+					case Type.RC:
+						index = 2;
+						break;
+						
+					case Type.RTM:
+						index = 3;
+						break;
+						
+					case Type.GA:
+						index = 4;
+						break;
+						
+					case Type.Production:
+						index = 5;
+						break;
+
+				}
+
+				return index;
+
+			}
 
 		}
 		
@@ -29,15 +144,58 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public Version(string value) {
+
+			var pattern = @"^(\d+?)\.(\d+?)\.(\d+?)([a-z]*)$";
+			var matches = Regex.Match(value.Trim(), pattern, RegexOptions.IgnoreCase);
+			var groups = matches.Groups;
+			if (groups.Count == 5) {
+				
+				this.major = int.Parse(groups[1].Value);
+				this.minor = int.Parse(groups[2].Value);
+				this.release = int.Parse(groups[3].Value);
+				this.type = groups[4].Value;
+
+			} else {
+
+				this.major = 0;
+				this.minor = 0;
+				this.release = 0;
+				this.type = string.Empty;
+
+			}
+
+		}
+		
+		public static Version minValue {
+			
+			get {
+				
+				return new Version(0, 0, 0, Type.Alpha);
+				
+			}
+			
+		}
+
+		public static Version maxValue {
+
+			get {
+
+				return new Version(int.MaxValue, int.MaxValue, int.MaxValue, Type.Production);
+
+			}
+
+		}
+
 		public override string ToString() {
 
-			return string.Format("{0}.{1}.{2}{3}", this.major, this.minor, this.release, this.type.ToString());
+			return string.Format("{0}.{1}.{2}{3}", this.major, this.minor, this.release, this.type);
 
 		}
 		
 		public string ToSmallString() {
 			
-			return string.Format("{0}{1}{2}{3}", this.major, this.minor, this.release, this.type.ToString());
+			return string.Format("{0}{1}{2}{3}", this.major, this.minor, this.release, this.type);
 			
 		}
 		

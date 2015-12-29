@@ -21,6 +21,7 @@ namespace UnityEngine.UI.Windows {
 		
 		public ChildsBehaviourMode childsShowMode = ChildsBehaviourMode.Simultaneously;
 		public ChildsBehaviourMode childsHideMode = ChildsBehaviourMode.Simultaneously;
+		private int showHideIteration = 0;
 
 		[HideInInspector]
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
@@ -80,7 +81,7 @@ namespace UnityEngine.UI.Windows {
 
 			this.manualShowHideControl = true;
 
-			this.OnShowBegin_INTERNAL(() => {
+			this.OnShowBegin_INTERNAL(++this.showHideIteration, () => {
 
 				this.OnShowEnd_INTERNAL();
 				if (callback != null) callback.Invoke();
@@ -128,9 +129,9 @@ namespace UnityEngine.UI.Windows {
 
 			if (setupTempNeedInactive == true) this.tempNeedToInactive = true;
 			
-			this.OnHideBegin_INTERNAL(() => {
+			this.OnHideBegin_INTERNAL(++this.showHideIteration, () => {
 
-				this.OnHideEnd();
+				this.OnHideEnd_INTERNAL();
 				
 				if (setupTempNeedInactive == true) this.tempNeedToInactive = false;
 				
@@ -202,12 +203,21 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.showOnStart == false || this.manualShowHideControl == true) {
 
-				if (callback != null) callback();
+				if (this.manualShowHideControl == true) {
+
+					base.OnShowBegin(callback, resetAnimation);
+
+				} else {
+					
+					if (callback != null) callback();
+
+				}
+
 				return;
 
 			}
 
-			this.OnShowBegin_INTERNAL(callback, resetAnimation);
+			this.OnShowBegin_INTERNAL(++this.showHideIteration, callback, resetAnimation);
 
 		}
 		
@@ -215,6 +225,7 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.showOnStart == false || this.manualShowHideControl == true) {
 				
+				if (this.manualShowHideControl == true) base.OnShowEnd();
 				return;
 				
 			}
@@ -229,16 +240,24 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		private void OnShowBegin_INTERNAL(System.Action callback, bool resetAnimation = true) {
+		private void OnShowBegin_INTERNAL(int iteration, System.Action callback, bool resetAnimation = true) {
+
+			if ((this.GetComponentState() == WindowObjectState.Showing ||
+				this.GetComponentState() == WindowObjectState.Shown) && resetAnimation == false) {
+				
+				if (callback != null) callback();
+				return;
+
+			}
 
 			this.SetComponentState(WindowObjectState.Showing);
-			
+
 			if (this.childsShowMode == ChildsBehaviourMode.Simultaneously) {
-				
+
 				var counter = 0;
 				System.Action callbackItem = () => {
 
-					if (this.GetComponentState() != WindowObjectState.Showing) {
+					if (this.showHideIteration != iteration) {
 
 						if (callback != null) callback();
 						return;
@@ -255,6 +274,8 @@ namespace UnityEngine.UI.Windows {
 				this.OnShowBeginAnimation_INTERNAL(callbackItem, resetAnimation);
 				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => {
 					
+					if (this.showHideIteration != iteration) return;
+
 					var comp = e as WindowComponentBase;
 					comp.manualShowHideControl = false;
 					comp.OnShowBegin(c, resetAnimation);
@@ -264,8 +285,12 @@ namespace UnityEngine.UI.Windows {
 			} else if (this.childsShowMode == ChildsBehaviourMode.Consequentially) {
 				
 				ME.Utilities.CallInSequence(() => {
+					
+					if (this.showHideIteration != iteration) return;
 
 					this.OnShowBeginAnimation_INTERNAL(() => {
+						
+						if (this.showHideIteration != iteration) return;
 
 						base.OnShowBegin(callback, resetAnimation);
 
@@ -273,6 +298,8 @@ namespace UnityEngine.UI.Windows {
 
 				}, this.subComponents, (e, c) => {
 					
+					if (this.showHideIteration != iteration) return;
+
 					var comp = e as WindowComponentBase;
 					comp.manualShowHideControl = false;
 					comp.OnShowBegin(c, resetAnimation);
@@ -323,25 +350,41 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="immediately">If set to <c>true</c> immediately.</param>
 		public override void OnHideBegin(System.Action callback, bool immediately = false) {
 
-			this.OnHideBegin_INTERNAL(callback, immediately);
+			this.OnHideBegin_INTERNAL(++this.showHideIteration, callback, immediately);
 
 		}
 
-		private void OnHideBegin_INTERNAL(System.Action callback, bool immediately) {
+		private void OnHideBegin_INTERNAL(int iteration, System.Action callback, bool immediately) {
+			
+			if (this.GetComponentState() == WindowObjectState.Hiding ||
+			     this.GetComponentState() == WindowObjectState.Hidden) {
+
+				if (callback != null) callback();
+				return;
+				
+			}
 
 			this.SetComponentState(WindowObjectState.Hiding);
 
             if (this.childsHideMode == ChildsBehaviourMode.Simultaneously) {
 
+				//Debug.Log(this.showHideIteration + " :: " + iteration);
+
 				var counter = 0;
 				System.Action callbackItem = () => {
 					
+					//Debug.Log(this.showHideIteration + " :: " + iteration);
+
+					if (this.showHideIteration != iteration) return;
+
 					if (this.GetComponentState() != WindowObjectState.Hiding) {
 						
 						if (callback != null) callback();
 						return;
 						
 					}
+					
+					//Debug.Log(this.showHideIteration + " :: " + iteration + " :: " + counter);
 
 					++counter;
 					if (counter < 2) return;
@@ -352,6 +395,10 @@ namespace UnityEngine.UI.Windows {
 
 				this.OnHideBeginAnimation_INTERNAL(callbackItem, immediately);
 				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => {
+					
+					//Debug.Log(this.showHideIteration + " :: " + iteration);
+
+					if (this.showHideIteration != iteration) return;
 
 					var comp = e as WindowComponentBase;
 					comp.manualShowHideControl = false;
@@ -363,14 +410,20 @@ namespace UnityEngine.UI.Windows {
 				
 				ME.Utilities.CallInSequence(() => {
 					
+					if (this.showHideIteration != iteration) return;
+
 					this.OnHideBeginAnimation_INTERNAL(() => {
 						
+						if (this.showHideIteration != iteration) return;
+
 						base.OnHideBegin(callback, immediately);
 						
 					}, immediately);
 					
 				}, this.subComponents, (e, c) => {
 					
+					if (this.showHideIteration != iteration) return;
+
 					var comp = e as WindowComponentBase;
 					comp.manualShowHideControl = false;
 					comp.OnHideBegin(c, immediately);
@@ -378,6 +431,12 @@ namespace UnityEngine.UI.Windows {
 				});
 
 			}
+
+		}
+
+		private void OnHideEnd_INTERNAL() {
+
+			this.OnHideEnd();
 
 		}
 

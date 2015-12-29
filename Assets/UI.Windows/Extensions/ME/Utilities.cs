@@ -9,6 +9,18 @@ namespace ME {
 
 	public partial class Utilities {
 
+		public static uint GetHash(string s) {
+			
+			uint hash = 0;
+			foreach (char c in s) {
+				
+				hash = 31 * hash + c;
+				
+			}
+			return hash;
+			
+		}
+
 		public static string FormatParameter(System.Type type) {
 
 			var pattern = @"(`\d+)";

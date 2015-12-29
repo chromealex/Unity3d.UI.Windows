@@ -206,23 +206,40 @@ namespace UnityEditor.UI.Windows.Extensions {
 		}
 		
 		private void CreateComponentTree() {
+
 			var list = new List<string>();
 			var elements = new List<Element>();
+
 			for (int i = 0; i < submenu.Count; i++) {
+
 				var submenuItem = submenu[i];
 				string menuPath = submenuItem.path;
 				var separators = new[] { separator };
 				var pathParts = menuPath.Split(separators);
-				while (pathParts.Length - 1 < list.Count)
+
+				while (pathParts.Length - 1 < list.Count) {
+
 					list.RemoveAt(list.Count - 1);
-				while (list.Count > 0 && pathParts[list.Count - 1] != list[list.Count - 1])
+
+				}
+
+				while (list.Count > 0 && pathParts[list.Count - 1] != list[list.Count - 1]) {
+
 					list.RemoveAt(list.Count - 1);
+
+				}
+
 				while (pathParts.Length - 1 > list.Count) {
+
 					elements.Add(new GroupElement(list.Count, pathParts[list.Count]));
 					list.Add(pathParts[list.Count]);
+
 				}
+
 				elements.Add(new CallElement(list.Count, pathParts[pathParts.Length - 1], submenuItem));
+
 			}
+
 			_tree = elements.ToArray();
 			for (int i = 0; i < _tree.Length; i++) {
 				var elChilds = GetChildren(_tree, _tree[i]);
@@ -272,7 +289,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 				_lastTime = DateTime.Now.Ticks;
 			}
 			else {
-				var separatorSearch = new[] { ' ' };
+				var separatorSearch = new[] { ' ', separator };
 				var searchLowerWords = searchText.ToLower().Split(separatorSearch);
 				var firstElements = new List<Element>();
 				var otherElements = new List<Element>();

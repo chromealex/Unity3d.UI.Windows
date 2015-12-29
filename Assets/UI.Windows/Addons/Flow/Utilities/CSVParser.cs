@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace UnityEngine.UI.Windows.Plugins.Localization {
+namespace UnityEngine.UI.Windows.Utilities {
 
-	public static class LocalizationParser {
+	public static class CSVParser {
 
 		#region CSV
 
@@ -62,7 +62,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 					if (c == '\n' || c == ',') {
 						
-						LocalizationParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
+						CSVParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
 						if (c == '\n') {  // Stop the row on line breaks
 							
 							iStart++;
@@ -88,7 +88,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 			if (iStart > iWordStart) {
 				
-				LocalizationParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
+				CSVParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
 
 			}
 

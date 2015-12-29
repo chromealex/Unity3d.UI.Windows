@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEditor.UI.Windows.Plugins.Flow;
@@ -9,12 +9,12 @@ using ME;
 using UnityEngine.UI.Windows.Plugins.FlowCompiler;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 using UnityEditor.UI.Windows.Extensions;
-using UnityEngine.UI.Windows.Plugins.Localization;
+using UnityEngine.UI.Windows.Plugins.GameData;
 using UnityEngine.UI.Windows.Extensions;
 
-namespace UnityEditor.UI.Windows.Plugins.Localization {
+namespace UnityEditor.UI.Windows.Plugins.GameData {
 	
-	public class Localization : FlowAddon {
+	public class GameData : FlowAddon {
 		
 		public class Styles {
 			
@@ -65,23 +65,23 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 			
 		}
 
-		private static LocalizationSettings settings;
+		private static GameDataSettings settings;
 		private Editor editor;
 
 		public override string GetName() {
 
-			return "Localization";
+			return "GameData";
 
 		}
 
 		public override void OnFlowSettingsGUI() {
 
-			if (Localization.settings == null) Localization.settings = Localization.GetSettingsFile();
+			if (GameData.settings == null) GameData.settings = GameData.GetSettingsFile();
 			
-			var settings = Localization.settings;
+			var settings = GameData.settings;
 			if (settings == null) {
 				
-				EditorGUILayout.HelpBox(string.Format(FlowAddon.MODULE_HAS_ERRORS, "Settings file not found (LocalizationSettings)."), MessageType.Error);
+				EditorGUILayout.HelpBox(string.Format(FlowAddon.MODULE_HAS_ERRORS, "Settings file not found (GameDataSettings)."), MessageType.Error);
 				
 			} else {
 				
@@ -112,14 +112,14 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 			
 		}
 		
-		public static LocalizationSettings GetSettingsFile() {
+		public static GameDataSettings GetSettingsFile() {
 			
 			var data = FlowSystem.GetData();
 			if (data == null) return null;
 			
 			var modulesPath = data.GetModulesPath();
 			
-			var settings = ME.EditorUtilities.GetAssetsOfType<LocalizationSettings>(modulesPath, useCache: true);
+			var settings = ME.EditorUtilities.GetAssetsOfType<GameDataSettings>(modulesPath, useCache: true);
 			if (settings != null && settings.Length > 0) {
 				
 				return settings[0];
@@ -132,7 +132,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 		
 		public override bool InstallationNeeded() {
 			
-			return Localization.GetSettingsFile() == null;
+			return GameData.GetSettingsFile() == null;
 			
 		}
 		
@@ -150,9 +150,9 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 		
 		private bool Install_INTERNAL() {
 
-			var moduleName = "Localization";
-			var settingsName = "LocalizationSettings";
-			return this.InstallModule<LocalizationSettings>(moduleName, settingsName);
+			var moduleName = "GameData";
+			var settingsName = "GameDataSettings";
+			return this.InstallModule<GameDataSettings>(moduleName, settingsName);
 
 		}
 

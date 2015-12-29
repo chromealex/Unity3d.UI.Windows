@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using UnityEditor.UI.Windows.Plugins.Flow;
@@ -36,10 +36,9 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 			CustomGUI.Splitter();
 			
 			GUILayout.Label("Languages", EditorStyles.boldLabel);
-
-			var oldEnable = GUI.enabled;
-			GUI.enabled = false;
 			
+			EditorGUI.BeginDisabledGroup(true);
+
 			var currentLangs = LocalizationSystem.GetLanguagesList();
 			var langs = System.Enum.GetValues(typeof(UnityEngine.SystemLanguage));
 			foreach (var lang in langs) {
@@ -57,7 +56,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 				
 			}
 			
-			GUI.enabled = oldEnable;
+			EditorGUI.EndDisabledGroup();
 
 		}
 

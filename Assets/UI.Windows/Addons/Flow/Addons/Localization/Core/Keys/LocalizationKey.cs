@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace UnityEngine.UI.Windows.Plugins.Localization {
 
