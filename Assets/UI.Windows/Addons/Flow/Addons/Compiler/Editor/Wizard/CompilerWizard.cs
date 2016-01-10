@@ -12,7 +12,7 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 
 		public static object compilationSync = null;
 
-		public static CompilerWizard ShowEditor(System.Action onClose) {
+		public static CompilerWizard ShowEditor(System.Action onClose, System.Action onComplete) {
 
 			var rootWindow = EditorWindow.focusedWindow;
 			
@@ -54,6 +54,9 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 			editor.maxSize = new Vector2(width, height);
 			editor.minSize = editor.maxSize;
 
+			editor.onClose = onClose;
+			editor.onComplete = onComplete;
+
 			CompilerWizard.compilationSync = new object();
 
 			editor.defaultSkin = FlowSystemEditorWindow.defaultSkin;
@@ -73,7 +76,18 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 
 		private bool waitForCompileEnding;
 
+		private System.Action onClose;
+		private System.Action onComplete;
+
 		private Texture image;
+
+		public override void OnClose() {
+
+			base.OnClose();
+
+			if (this.onClose != null) this.onClose();
+
+		}
 
 		public override void Update() {
 			
@@ -458,6 +472,9 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 
 					if (lastPart == true) {
 						
+						if (this.onComplete != null) this.onComplete();
+						this.onComplete = null;
+
 						if (GUILayout.Button("Finish", this.defaultSkin.button, GUILayout.Width(100f), GUILayout.Height(30f)) == true) {
 
 							this.Close();

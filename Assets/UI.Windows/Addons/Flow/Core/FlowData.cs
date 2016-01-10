@@ -112,6 +112,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		[ReadOnly]
 		public bool isDirty = false;
 
+		[ReadOnly]
+		public bool recompileNeeded = false;
+
 		#if UNITY_EDITOR
 		#region UPGRADES
 		#pragma warning disable 612,618
@@ -328,6 +331,18 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		#endif
+
+		public bool IsCompileDirty() {
+
+			return this.recompileNeeded;
+
+		}
+
+		public void SetCompileDirty(bool state) {
+
+			this.recompileNeeded = state;
+
+		}
 		
 		public string GetAuthKeyBuild() {
 			

@@ -214,7 +214,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			}
 
 		}
-		
+
 		public override void OnFlowCreateMenuGUI(string prefix, GenericMenu menu) {
 
 			if (this.InstallationNeeded() == false) {

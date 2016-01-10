@@ -927,7 +927,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 
 		}
-		
+
 		public void DrawWaitForConnection() {
 			
 			if (this.waitForAttach == true && this.currentAttachId >= 0) {
@@ -1829,7 +1829,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var window = predicate();
 			window.rect.x = -(scrollPos.x - this.scrollRect.width * 0.5f + window.rect.width * 0.5f);
 			window.rect.y = -(scrollPos.y - this.scrollRect.height * 0.5f + window.rect.height * 0.5f);
-			
+
+			FlowSystem.SetCompileDirty();
+
 		}
 		
 		private void DrawToolbar() {
@@ -1947,7 +1949,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				menu.DropDown(this.layoutStateToolbarToolsButtonRect);
 				
 			}
-			
+
 			Flow.OnDrawToolbarGUI(this, buttonStyle);
 			
 			GUILayout.FlexibleSpace();
@@ -2115,7 +2117,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			{
 				
 				GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-				window.title = GUILayout.TextField(window.title);
+				var newTitle = GUILayout.TextField(window.title);
+				if (newTitle != window.title) {
+
+					window.title = newTitle;
+
+					FlowSystem.SetCompileDirty();
+					FlowSystem.SetDirty();
+
+				}
 				
 			}
 			GUILayout.EndHorizontal();
@@ -2124,8 +2134,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			{
 				
 				GUILayoutExt.LabelWithShadow("Directory:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-				window.directory = GUILayout.TextField(window.directory);
-				
+				var newDirectory = GUILayout.TextField(window.directory);
+				if (newDirectory != window.directory) {
+					
+					window.directory = newDirectory;
+					
+					FlowSystem.SetCompileDirty();
+					FlowSystem.SetDirty();
+					
+				}
+
 			}
 			GUILayout.EndHorizontal();
 			
@@ -2731,7 +2749,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							}
 							
 						}
-						
+
+						FlowSystem.SetCompileDirty();
 						FlowSystem.SetDirty();
 						
 					}
@@ -2775,6 +2794,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							
 						}
 						
+						FlowSystem.SetCompileDirty();
 						FlowSystem.SetDirty();
 						
 					}
@@ -3033,7 +3053,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						{
 							
 							GUILayoutExt.LabelWithShadow("Title:", FlowSystemEditorWindow.defaultSkin.label, GUILayout.Width(EditorGUIUtility.labelWidth));
-							window.title = GUILayout.TextField(window.title, textField);
+							var newTitle = GUILayout.TextField(window.title, textField);
+							if (newTitle != window.title) {
+								
+								window.title = newTitle;
+								
+								FlowSystem.SetCompileDirty();
+								FlowSystem.SetDirty();
+								
+							}
 							
 						}
 						GUILayout.EndHorizontal();
@@ -3051,8 +3079,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								window.storeType = FD.FlowWindow.StoreType.NewScreen;
 								
 								if (string.IsNullOrEmpty(window.directory) == true) window.directory = string.Empty;
-								window.directory = GUILayout.TextField(window.directory, textField);
-								
+								var newDirectory = GUILayout.TextField(window.directory, textField);
+								if (newDirectory != window.directory) {
+									
+									window.directory = newDirectory;
+									
+									FlowSystem.SetCompileDirty();
+									FlowSystem.SetDirty();
+									
+								}
+
 							} else if (typeId == 1) {
 								
 								// Re-use screen choosed

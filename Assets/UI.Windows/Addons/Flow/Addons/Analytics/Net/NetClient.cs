@@ -131,7 +131,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Net {
 			this.connected = false;
 			if (this.client != null) {
                 var client = this.client;
-                this.client = null;
+				this.client = null;
+				client.GetStream().Close();
                 client.Close();
             }
         }

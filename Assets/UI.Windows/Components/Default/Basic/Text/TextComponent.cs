@@ -328,7 +328,9 @@ namespace UnityEngine.UI.Windows.Components {
 		#endif
 
 		public static string ParseRichText(string text, RichTextFlags flags) {
-			
+
+			if (text == null) return text;
+
 			if ((flags & RichTextFlags.Bold) == 0) {
 				
 				text = Regex.Replace(text, @"<b>", String.Empty);

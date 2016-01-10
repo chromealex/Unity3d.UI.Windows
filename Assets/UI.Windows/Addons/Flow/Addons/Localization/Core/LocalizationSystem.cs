@@ -257,7 +257,6 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				var value = LocalizationSystem.Get(key.key, LocalizationSystem.GetCurrentLanguage());
 				if (key.formatWithDeclension == true) {
 
-					Debug.Log(key.key + " == " + value + ", " + LocalizationSystem.GetCurrentLanguage());
 					return LocalizationSystem.FormatWithDeclension(value, parameters);
 
 				}

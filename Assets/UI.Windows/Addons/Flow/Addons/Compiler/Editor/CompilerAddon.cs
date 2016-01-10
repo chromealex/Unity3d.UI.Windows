@@ -11,15 +11,15 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 		
 		private GUISkin skin;
 
-		public static void ShowEditor(System.Action onClose) {
+		public static void ShowEditor(System.Action onClose, System.Action onComplete) {
 
-			CompilerWizard.ShowEditor(onClose);
+			CompilerWizard.ShowEditor(onClose, onComplete);
 
 		}
 
 		public override void Show(System.Action onClose) {
 			
-			Compiler.ShowEditor(onClose);
+			Compiler.ShowEditor(onClose, null);
 
 		}
 
@@ -32,11 +32,36 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 			#else
 			menu.AddItem(new GUIContent(prefix + "Compile UI..."), on: false, func: () => {
 				
-				this.Show(null);
+				Compiler.ShowEditor(null, null);
 				
 			});
 			#endif
 
+		}
+		
+		public override void OnFlowToolbarGUI(GUIStyle buttonStyle) {
+			
+			base.OnFlowToolbarGUI(buttonStyle);
+			
+			if (FlowSystem.IsCompileDirty() == true) {
+				
+				var color = GUI.color;
+				
+				GUI.color = Color.red;
+				if (GUILayout.Button("Recompile needed", buttonStyle) == true) {
+					
+					Compiler.ShowEditor(null, () => {
+
+						FlowSystem.SetCompileDirty(state: false);
+
+					});
+					
+				}
+				
+				GUI.color = color;
+				
+			}
+			
 		}
 
 		public override void OnFlowSettingsGUI() {
@@ -111,24 +136,6 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 			
 			GUI.color = oldColor;
 			
-		}
-
-		public override void OnFlowToolbarGUI(GUIStyle buttonStyle) {
-			
-			/*var disabledDescr = string.Empty;
-			#if WEBPLAYER
-			GUI.enabled = false;
-			disabledDescr = " (WebPlayer Restriction)";
-			#endif
-			if (WindowGUIUtilities.ButtonAddon("FlowCompiler", "Compile UI... " + disabledDescr, buttonStyle) == true) {
-
-				this.Show(null);
-				
-			}
-			#if WEBPLAYER
-			GUI.enabled = true;
-			#endif*/
-
 		}
 
 	}

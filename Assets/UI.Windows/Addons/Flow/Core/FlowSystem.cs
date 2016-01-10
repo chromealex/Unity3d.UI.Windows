@@ -46,6 +46,25 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
+		public static bool IsCompileDirty() {
+
+			return FlowSystem.instance.data.IsCompileDirty();
+
+		}
+
+		public static void SetCompileDirty(bool state = true) {
+			
+			if (FlowSystem.instance == null ||
+			    FlowSystem.instance.data == null) {
+				
+				return;
+				
+			}
+			
+			FlowSystem.instance.data.SetCompileDirty(state);
+
+		}
+
 		public static void SetDirty() {
 
 			if (FlowSystem.instance == null ||
@@ -242,18 +261,21 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public static void DestroyWindow(int id) {
 
 			FlowSystem.instance.data.DestroyWindow(id);
+			FlowSystem.SetCompileDirty();
 
 		}
 		
 		public static void Attach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 
 			FlowSystem.instance.data.Attach(source, other, oneWay, component);
+			FlowSystem.SetCompileDirty();
 
 		}
 		
 		public static void Detach(int source, int other, bool oneWay, WindowLayoutElement component = null) {
 			
 			FlowSystem.instance.data.Detach(source, other, oneWay, component);
+			FlowSystem.SetCompileDirty();
 
 		}
 		
@@ -266,12 +288,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		public static void Attach(int source, int index, int other, bool oneWay, WindowLayoutElement component = null) {
 
 			FlowSystem.instance.data.Attach(source, index, other, oneWay, component);
+			FlowSystem.SetCompileDirty();
 			
 		}
 		
 		public static void Detach(int source, int index, int other, bool oneWay, WindowLayoutElement component = null) {
 			
 			FlowSystem.instance.data.Detach(source, index, other, oneWay, component);
+			FlowSystem.SetCompileDirty();
 			
 		}
 		
