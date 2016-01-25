@@ -4,12 +4,12 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [ExecuteInEditMode, RequireComponent(typeof(CanvasRenderer))]
-public class UIMeshRenderer : UIBehaviour {
+public class UIMeshRenderer : MaskableGraphic {
 
-	public CanvasRenderer canvasRenderer;
+	//public CanvasRenderer canvasRenderer;
 
-	public Material material;
-	public float scale = 1f;
+	//public Material material;
+	//public float scale = 1f;
 	
 	private Mesh _mesh;
 	public Mesh mesh {
@@ -17,7 +17,7 @@ public class UIMeshRenderer : UIBehaviour {
 		set {
 			
 			this._mesh = value;
-			this.SetMesh();
+			//this.SetMesh();
 			
 		}
 		
@@ -35,7 +35,7 @@ public class UIMeshRenderer : UIBehaviour {
 	private float currentScale;
 	#endif
 	
-	public void OnEnable() {
+	/*public void OnEnable() {
 
 		this.SetMesh();
 
@@ -43,11 +43,11 @@ public class UIMeshRenderer : UIBehaviour {
 
 	public void OnDisable() {
 
-		this.canvasRenderer.Clear();
+		//this.canvasRenderer.Clear();
 
-	}
+	}*/
 
-	#if UNITY_EDITOR // only compile in editor
+	/*#if UNITY_EDITOR // only compile in editor
 	public void Update() {
 
 		if (this.mesh != this.currentMesh || this.material != this.currentMaterial || !Mathf.Approximately(this.scale, this.currentScale)) {
@@ -57,11 +57,43 @@ public class UIMeshRenderer : UIBehaviour {
 		}
 
 	}
-	#endif
-	
-	public void SetMesh() {
+	#endif*/
 
-		this.canvasRenderer.Clear();
+	protected override void OnPopulateMesh(VertexHelper vh) {
+
+		if (this.mesh == null) return;
+
+		var color32 = this.color;
+		var uv = Vector4.zero;
+
+		vh.Clear();
+
+		var vs = this.mesh.vertices;
+
+		for (int i = 0; i < vs.Length; ++i) {
+
+			var v = vs[i];
+			vh.AddVert(new Vector3(v.x, v.y), color32, Vector2.zero);
+
+		}
+
+		var ts = this.mesh.triangles;
+		
+		for (int i = 0; i < ts.Length; i += 3) {
+
+			var t1 = ts[i];
+			var t2 = ts[i + 1];
+			var t3 = ts[i + 2];
+
+			vh.AddTriangle(t1, t2, t3);
+
+		}
+
+	}
+
+	/*public void SetMesh() {
+
+		//this.canvasRenderer.Clear();
 		
 		#if UNITY_EDITOR // only compile in editor
 		this.currentMesh = this.mesh;
@@ -81,12 +113,12 @@ public class UIMeshRenderer : UIBehaviour {
 
 		}
 
-		this.canvasRenderer.SetMaterial(this.material, null);
-		this.canvasRenderer.SetMesh(this.mesh);
+		//this.canvasRenderer.SetMaterial(this.material, null);
+		//this.canvasRenderer.SetMesh(this.mesh);
 
-	}
+	}*/
 	
-	public void ConvertMesh() {
+	/*public void ConvertMesh() {
 
 		Vector3[] vertices = this.mesh.vertices;
 
@@ -98,6 +130,6 @@ public class UIMeshRenderer : UIBehaviour {
 
 		this.mesh.vertices = vertices;
 
-	}
+	}*/
 
 }

@@ -727,15 +727,11 @@ MonoBehaviour:
   settings:
     file: {fileID: 11400000, guid: e892a1e1cddb74a2990bce11f8dfdbae, type: 2}
   defaults: []
-  windows:
-  - {fileID: 11456500, guid: 3137f50a97fed4857b39ffefb058dfb6, type: 2}
-  - {fileID: 11414994, guid: 26a0fc3b07d114a21a16ac5c05ce6276, type: 2}
-  - {fileID: 11431374, guid: 42c2cb1bef1cc4ada821ab95c6b40632, type: 2}
-  - {fileID: 11459970, guid: 7921cb4f9e58d42acbb212d99895b75b, type: 2}
+  windows: []
   history: []
   audio:
     source: {fileID: 8218868}
-  flow: {fileID: 11400000, guid: 94f1f649a03964a46ad1422f69f76088, type: 2}
+  flow: {fileID: 11400000, guid: a1bd805bdc8434764bd048f65a277867, type: 2}
   flowMobileOnly: {fileID: 0}
   flowStandaloneOnly: {fileID: 0}
   flowConsoleOnly: {fileID: 0}
@@ -942,6 +938,26 @@ Prefab:
       propertyPath: settings
       value: 
       objectReference: {fileID: 11400000, guid: 67af7cb1a993f3d4fbfc9d0bfbc5153b,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: windows.Array.data[0]
+      value: 
+      objectReference: {fileID: 11456500, guid: 3137f50a97fed4857b39ffefb058dfb6,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: windows.Array.data[1]
+      value: 
+      objectReference: {fileID: 11414994, guid: 26a0fc3b07d114a21a16ac5c05ce6276,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: windows.Array.data[2]
+      value: 
+      objectReference: {fileID: 11431374, guid: 42c2cb1bef1cc4ada821ab95c6b40632,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: windows.Array.data[3]
+      value: 
+      objectReference: {fileID: 11459970, guid: 7921cb4f9e58d42acbb212d99895b75b,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
