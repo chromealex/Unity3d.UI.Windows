@@ -242,13 +242,13 @@ namespace UnityEngine.UI.Windows {
 
 		private void OnShowBegin_INTERNAL(int iteration, System.Action callback, bool resetAnimation = true) {
 
-			if ((this.GetComponentState() == WindowObjectState.Showing ||
+			/*if ((this.GetComponentState() == WindowObjectState.Showing ||
 				this.GetComponentState() == WindowObjectState.Shown) && resetAnimation == false) {
 				
 				if (callback != null) callback();
 				return;
 
-			}
+			}*/
 
 			this.SetComponentState(WindowObjectState.Showing);
 
@@ -286,11 +286,21 @@ namespace UnityEngine.UI.Windows {
 				
 				ME.Utilities.CallInSequence(() => {
 					
-					if (this.showHideIteration != iteration) return;
+					if (this.showHideIteration != iteration) {
+						
+						if (callback != null) callback();
+						return;
+						
+					}
 
 					this.OnShowBeginAnimation_INTERNAL(() => {
 						
-						if (this.showHideIteration != iteration) return;
+						if (this.showHideIteration != iteration) {
+							
+							if (callback != null) callback();
+							return;
+							
+						}
 
 						base.OnShowBegin(callback, resetAnimation);
 
@@ -298,13 +308,18 @@ namespace UnityEngine.UI.Windows {
 
 				}, this.subComponents, (e, c) => {
 					
-					if (this.showHideIteration != iteration) return;
+					if (this.showHideIteration != iteration) {
+						
+						if (callback != null) callback();
+						return;
+						
+					}
 
 					var comp = e as WindowComponentBase;
 					comp.manualShowHideControl = false;
 					comp.OnShowBegin(c, resetAnimation);
 
-				});
+				}, waitPrevious: true);
 				
 			}
 
@@ -374,8 +389,13 @@ namespace UnityEngine.UI.Windows {
 				System.Action callbackItem = () => {
 					
 					//Debug.Log(this.showHideIteration + " :: " + iteration);
-
-					if (this.showHideIteration != iteration) return;
+					
+					if (this.showHideIteration != iteration) {
+						
+						if (callback != null) callback();
+						return;
+						
+					}
 
 					if (this.GetComponentState() != WindowObjectState.Hiding) {
 						
@@ -410,11 +430,21 @@ namespace UnityEngine.UI.Windows {
 				
 				ME.Utilities.CallInSequence(() => {
 					
-					if (this.showHideIteration != iteration) return;
+					if (this.showHideIteration != iteration) {
+						
+						if (callback != null) callback();
+						return;
+						
+					}
 
 					this.OnHideBeginAnimation_INTERNAL(() => {
 						
-						if (this.showHideIteration != iteration) return;
+						if (this.showHideIteration != iteration) {
+							
+							if (callback != null) callback();
+							return;
+							
+						}
 
 						base.OnHideBegin(callback, immediately);
 						
@@ -422,13 +452,18 @@ namespace UnityEngine.UI.Windows {
 					
 				}, this.subComponents, (e, c) => {
 					
-					if (this.showHideIteration != iteration) return;
+					if (this.showHideIteration != iteration) {
+						
+						if (callback != null) callback();
+						return;
+						
+					}
 
 					var comp = e as WindowComponentBase;
 					comp.manualShowHideControl = false;
 					comp.OnHideBegin(c, immediately);
 
-				});
+				}, waitPrevious: true);
 
 			}
 

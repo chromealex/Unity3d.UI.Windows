@@ -13,16 +13,31 @@ namespace UnityEngine.UI.Windows.Components {
 		protected Text text;
 		
 		[SerializeField]
-		protected InputField inputField;
+		protected Extensions.InputField inputField;
 		
 		[SerializeField]
 		protected Text placeholder;
+		
+		[SerializeField]
+		protected bool selectByDefault;
 
 		private ComponentEvent<string> onChange = new ComponentEvent<string>();
 		private ComponentEvent<string> onEditEnd = new ComponentEvent<string>();
 		private ComponentEvent<bool> onFocus = new ComponentEvent<bool>();
 		
 		private bool lastFocusValue = false;
+		
+		public virtual Selectable GetSelectable() {
+			
+			return this.inputField;
+			
+		}
+
+		public virtual void SetSelectByDefault(bool state) {
+			
+			this.selectByDefault = state;
+
+		}
 
 		public override void OnLocalizationChanged() {
 
@@ -91,6 +106,31 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
+		public void MoveCaretToStart(bool select = false) {
+
+			this.inputField.selectionAnchorPosition = 0;
+			this.inputField.selectionFocusPosition = 0;
+
+			this.inputField.MoveTextStart(select);
+			
+		}
+
+		public void MoveCaretToEnd(bool select = false) {
+
+			var len = this.GetText().Length;
+			this.inputField.selectionAnchorPosition = len;
+			this.inputField.selectionFocusPosition = len;
+
+			this.inputField.MoveTextEndFix(select);
+
+		}
+
+		public void SetCaretPosition(int position) {
+
+			this.inputField.caretPosition = position;
+
+		}
+
 		public bool HasFocus() {
 			
 			if (this.inputField != null) {
@@ -203,6 +243,24 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnShowBegin(System.Action callback, bool resetAnimation) {
+
+			base.OnShowBegin(callback, resetAnimation);
+			
+			if (this.selectByDefault == true) {
+				
+				this.Select();
+				
+			}
+
+		}
+
+		public void Select() {
+			
+			this.GetSelectable().Select();
+			
+		}
+
 		public char OnValidateChar(string text, int index, char addedChar) {
 
 			if (this.convertToUppercase == true) {
@@ -238,8 +296,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.text != null) this.text.supportRichText = false;
 
-			var inputFields = this.GetComponentsInChildren<InputField>(true);
-			if (inputFields.Length == 1) this.inputField = inputFields[0];
+			ME.Utilities.FindReference<Extensions.InputField>(this, ref this.inputField);
 
 			if (this.inputField != null && this.text != null) {
 

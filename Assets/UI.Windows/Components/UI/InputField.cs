@@ -16,6 +16,21 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		}
 
+		public void MoveTextEndFix(bool shift) {
+
+			this.StartCoroutine(this.MoveTextEnd_YIELD(shift));
+
+		}
+
+		public IEnumerator MoveTextEnd_YIELD(bool shift) {
+
+			//yield return new WaitForEndOfFrame();
+			yield return false;
+
+			this.MoveTextEnd(shift);
+
+		}
+
 		private RectTransform caret;
 		private void CorrectCaret() {
 

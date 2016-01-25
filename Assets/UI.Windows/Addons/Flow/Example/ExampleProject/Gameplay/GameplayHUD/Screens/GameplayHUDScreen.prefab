@@ -79,6 +79,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flags: 1048576
   interactableByDefault: 1
+  selectByDefault: 1
   callback:
     m_PersistentCalls:
       m_Calls: []
@@ -153,6 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flags: 3145728
   interactableByDefault: 1
+  selectByDefault: 1
   callback:
     m_PersistentCalls:
       m_Calls: []
@@ -343,6 +345,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flags: 1048576
   interactableByDefault: 1
+  selectByDefault: 1
   callback:
     m_PersistentCalls:
       m_Calls: []

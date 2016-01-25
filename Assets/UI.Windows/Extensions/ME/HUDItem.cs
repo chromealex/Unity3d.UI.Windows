@@ -48,6 +48,15 @@ public class HUDItem : MonoBehaviour {
 		
 	}
 
+    public void SetAlignToPoint(Vector3 point) {
+
+        this.alignToPoint = point;
+        this.pointAligned = true;
+
+        this.Reposition();
+
+    }
+
 	public void Reset() {
 
 		this.alignTo = null;
@@ -70,6 +79,8 @@ public class HUDItem : MonoBehaviour {
 	}
 
 	public void LateUpdate() {
+
+	    if (this.pointAligned == true) return;
 
 		if ((this.alignTo != null || this.pointAligned) && this.uiCamera != null && this.gameCamera != null) {
 

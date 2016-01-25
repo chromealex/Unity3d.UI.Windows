@@ -8,6 +8,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		[Header("Button: Base")]
 		[ParamFlag(ParameterFlag.P1)] public bool interactableByDefault = true;
+		[ParamFlag(ParameterFlag.P11)] public bool selectByDefault = false;
 		[ParamFlag(ParameterFlag.P2)] public ComponentEvent callback = new ComponentEvent();
 
 		[Header("Button: SFX")]
@@ -18,7 +19,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Button: Hover")]
 		[ParamFlag(ParameterFlag.P3)] public bool hoverIsActive = true;
 		[ParamFlag(ParameterFlag.P4)] public bool hoverOnAnyPointerState = false;
-		[ParamFlag(ParameterFlag.P4)] public bool hoverOnAnyButtonState = false;
+		[ParamFlag(ParameterFlag.P10)] public bool hoverOnAnyButtonState = false;
 		[ParamFlag(ParameterFlag.P5)] public ComponentEvent hoverInCallback = new ComponentEvent();
 		[ParamFlag(ParameterFlag.P6)] public ComponentEvent hoverOutCallback = new ComponentEvent();
 
@@ -66,6 +67,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.IsChanged(ParameterFlag.P8) == true) component.SetSFX(PointerEventState.Enter, this.sfxOnEnter);
 			if (this.IsChanged(ParameterFlag.P9) == true) component.SetSFX(PointerEventState.Leave, this.sfxOnLeave);
 			if (this.IsChanged(ParameterFlag.P10) == true) component.SetHoverOnAnyButtonState(this.hoverOnAnyButtonState);
+			if (this.IsChanged(ParameterFlag.P11) == true) component.SetSelectByDefault(this.selectByDefault);
 
 		}
 		

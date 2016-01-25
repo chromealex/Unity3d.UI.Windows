@@ -33,7 +33,7 @@ namespace UnityEditor.UI.Windows {
 			{
 
 				var labelWidth = EditorGUIUtility.labelWidth;
-				var offset = new Vector2(-23f - 100f - labelWidth, -7f - 16f);
+				//var offset = new Vector2(-23f - 100f - labelWidth, -7f - 16f);
 
 				var indent = EditorGUI.indentLevel * 16f;
 

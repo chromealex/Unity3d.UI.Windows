@@ -107,14 +107,14 @@ namespace ME {
 
 		}
 
-		public static void CallInSequence<T>(System.Action callback, IEnumerable<T> collection, System.Action<T, System.Action> each) {
+		public static void CallInSequence<T>(System.Action callback, IEnumerable<T> collection, System.Action<T, System.Action> each, bool waitPrevious = false) {
 
 			var count = collection.Count();
 
 			var completed = false;
 			var counter = 0;
 			System.Action callbackItem = () => {
-				
+
 				++counter;
 				if (counter < count) return;
 
@@ -124,20 +124,54 @@ namespace ME {
 				
 			};
 
-			var ie = collection.GetEnumerator();
-			while (ie.MoveNext() == true) {
+			if (waitPrevious == true) {
 
-				if (ie.Current != null) {
+				var ie = collection.GetEnumerator();
 
-					each(ie.Current, callbackItem);
+				System.Action doNext = null;
+				doNext = () => {
 
-				} else {
+					if (ie.MoveNext() == true) {
 
-					callbackItem();
+						if (ie.Current != null) {
+
+							each(ie.Current, () => {
+								
+								callbackItem();
+								doNext();
+
+							});
+
+						} else {
+
+							callbackItem();
+							doNext();
+
+						}
+
+					}
+
+				};
+				doNext();
+
+			} else {
+
+				var ie = collection.GetEnumerator();
+				while (ie.MoveNext() == true) {
+
+					if (ie.Current != null) {
+
+						each(ie.Current, callbackItem);
+
+					} else {
+
+						callbackItem();
+
+					}
+
+					if (completed == true) break;
 
 				}
-
-				if (completed == true) break;
 
 			}
 

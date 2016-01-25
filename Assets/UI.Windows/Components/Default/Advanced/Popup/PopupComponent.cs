@@ -296,14 +296,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (prevText != null) {
 
-				prevText.SetDisabled();
+				prevText.SetEnabled();
 
 			}
 
 			var selectable = text as IButtonComponent;
 			if (selectable != null) {
 
-				selectable.SetEnabled();
+				selectable.SetDisabled();
 
 			}
 

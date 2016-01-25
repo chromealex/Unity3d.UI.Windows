@@ -1,3 +1,6 @@
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
+#define UNITY_MOBILE
+#endif
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
@@ -29,7 +32,7 @@ namespace UnityEngine.UI.Windows.Components {
 	{
 					
 					if (inputParameters != null) inputParameters.Setup(this as ITextComponent);
-	
+
 				}
 	#endregion
 
@@ -126,7 +129,13 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnShowBegin(callback, resetAnimation);
 			
 			this.onStateActive = true;
-			
+
+			if (this.selectByDefault == true) {
+
+				this.Select();
+
+			}
+
 		}
 		
 		public override void OnHideEnd() {
@@ -157,9 +166,26 @@ namespace UnityEngine.UI.Windows.Components {
 		private System.Func<bool> onState;
 		private bool oldState = false;
 		private bool onStateActive = false;
+		
+		[SerializeField]
+		protected bool selectByDefault;
+		
+		public virtual IButtonComponent SetSelectByDefault(bool state) {
+			
+			this.selectByDefault = state;
+			
+			return this;
+			
+		}
+		
+		public void Select() {
+			
+			this.GetSelectable().Select();
+			
+		}
 
 		public virtual Selectable GetSelectable() {
-			
+
 			return this.button;
 			
 		}
@@ -456,7 +482,8 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 	
 			public void Play(bool loop) {
-	
+				
+				#if !UNITY_MOBILE
 				var image = this.GetRawImageSource();
 				if (image == null) return;
 	
@@ -467,26 +494,37 @@ namespace UnityEngine.UI.Windows.Components {
 					movie.Play();
 	
 				}
+				#else
+				WindowSystemLogger.Log(this, "`Play` method not supported on mobile platforms");
+				#endif
 	
 			}
 	
 			public void Stop() {
 				
+				#if !UNITY_MOBILE
 				var image = this.GetRawImageSource();
 				if (image == null) return;
 				
 				var movie = image.mainTexture as MovieTexture;
 				if (movie != null) movie.Stop();
+				#else
+				WindowSystemLogger.Log(this, "`Stop` method not supported on mobile platforms");
+				#endif
 	
 			}
 	
 			public void Pause() {
 				
+				#if !UNITY_MOBILE
 				var image = this.GetRawImageSource();
 				if (image == null) return;
 				
 				var movie = image.mainTexture as MovieTexture;
 				if (movie != null) movie.Pause();
+				#else
+				WindowSystemLogger.Log(this, "`Pause` method not supported on mobile platforms");
+				#endif
 	
 			}
 	

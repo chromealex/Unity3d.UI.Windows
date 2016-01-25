@@ -50,6 +50,7 @@ namespace UnityEngine.UI.Windows.Components {
 		IButtonComponent SetCallback(UnityAction callback);
 		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
 		Selectable GetSelectable();
+		IButtonComponent SetSelectByDefault(bool state);
 
 		IButtonComponent SetEnabledState(bool state);
 		IButtonComponent SetEnabled();

@@ -183,6 +183,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 				Range currentRange;
 				Range range;
+				
+				TweenerGlobal.instance.removeTweens(this);
 
 				if (open == true) {
 
@@ -200,8 +202,6 @@ namespace UnityEngine.UI.Windows.Components {
 					range = this.CalculateCurrentVisibleRowRange(max);
 
 				}
-				
-				TweenerGlobal.instance.removeTweens(this);
 
 				if (immediately == true) {
 					
@@ -218,6 +218,10 @@ namespace UnityEngine.UI.Windows.Components {
 						
 						setAlpha(currentRange, range, 1f);
 						callbackInner();
+
+					}).onCancel((list) => {
+						
+						setAlpha(currentRange, range, 1f);
 
 					});
 
