@@ -452,10 +452,21 @@ namespace UnityEngine.UI.Windows {
 			if (lastInstance != WindowSystem.instance.lastInstance) {
 
 				WindowSystem.instance.previousInstance = WindowSystem.instance.lastInstance;
+				if (WindowSystem.instance.previousInstance != null) {
+
+					WindowSystem.instance.previousInstance.SetInactive();
+
+				}
 
 			}
 
 			WindowSystem.instance.lastInstance = lastInstance;
+
+			if (WindowSystem.instance.lastInstance != null) {
+				
+				WindowSystem.instance.lastInstance.SetActive();
+				
+			}
 
 		}
 

@@ -8,6 +8,7 @@ using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Animations;
 using UnityEngine.UI.Extensions;
+using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows {
 
@@ -39,7 +40,15 @@ namespace UnityEngine.UI.Windows {
 		Hiding,
 		Hidden,
 
-	}
+	};
+
+	public enum ActiveState : byte {
+
+		None = 0,
+		Active,
+		Inactive,
+
+	};
 
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
@@ -64,6 +73,10 @@ namespace UnityEngine.UI.Windows {
 		#endif
 		public Transition transition;
 
+		private ActiveState activeState = ActiveState.None;
+		private WindowObjectState currentState = WindowObjectState.NotInitialized;
+		private bool paused = false;
+
 		private int functionIterationIndex = 0;
 
 		[HideInInspector]
@@ -74,11 +87,11 @@ namespace UnityEngine.UI.Windows {
 		private object[] parameters;
 		private System.Action<WindowBase> onParametersPassCall;
 
-		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 		private WindowBase source;
 
-		private bool paused = false;
-		
+		private GameObject firstSelectedGameObject;
+		private GameObject currentSelectedGameObject;
+
 		public bool SourceEquals(WindowBase y) {
 
 			if (y == null) return false;
@@ -146,7 +159,7 @@ namespace UnityEngine.UI.Windows {
 				GameObject.DontDestroyOnLoad(this.gameObject);
 
 			}
-			
+
 			if (this.passParams == true) {
 
 				if (this.parameters != null && this.parameters.Length > 0) {
@@ -298,6 +311,42 @@ namespace UnityEngine.UI.Windows {
 
 			this.modules.Create(this, this.GetLayoutRoot());
 			this.modules.OnInit();
+
+		}
+
+		public void SetActive() {
+
+			if (this.activeState != ActiveState.Active) {
+
+				this.activeState = ActiveState.Active;
+				this.OnActive();
+
+			}
+
+		}
+
+		public void SetInactive() {
+			
+			if (this.activeState != ActiveState.Inactive) {
+				
+				this.activeState = ActiveState.Inactive;
+				this.OnInactive();
+				
+			}
+
+		}
+
+		public virtual void OnActive() {
+			
+			EventSystem.current.firstSelectedGameObject = this.firstSelectedGameObject;
+			EventSystem.current.SetSelectedGameObject(this.currentSelectedGameObject);
+
+		}
+
+		public virtual void OnInactive() {
+			
+			this.firstSelectedGameObject = EventSystem.current.firstSelectedGameObject;
+			this.currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
 
 		}
 

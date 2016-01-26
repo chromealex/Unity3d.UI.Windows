@@ -13,7 +13,6 @@ public class UIMeshRenderer : MaskableGraphic {
 		if (this.mesh == null) return;
 
 		var color32 = this.color;
-		var uv = Vector4.zero;
 
 		vh.Clear();
 

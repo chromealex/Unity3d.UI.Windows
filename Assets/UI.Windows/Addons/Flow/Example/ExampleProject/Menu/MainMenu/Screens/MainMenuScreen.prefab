@@ -257,6 +257,9 @@ MonoBehaviour:
   transition:
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
+  activeState: 0
+  currentState: 0
+  paused: 0
   layout:
     scaleMode: 0
     fixedScaleResolution: {x: 1024, y: 768}
