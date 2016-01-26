@@ -53,7 +53,7 @@ public class ModifiedShadow : Shadow
 #if UNITY_5_2_1pX || UNITY_5_3
     public override void ModifyMesh(VertexHelper vh)
 #else
-    public void ModifyMesh(VertexHelper vh)
+    public override void ModifyMesh(VertexHelper vh)
 #endif
     {
         if (!this.IsActive())
