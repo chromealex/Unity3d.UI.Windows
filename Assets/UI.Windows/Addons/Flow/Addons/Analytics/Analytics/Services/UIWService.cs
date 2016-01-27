@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows.Extensions.Tiny;
-using UnityEngine.UI.Windows.Plugins.Analytics.Net;
+using UnityEngine.UI.Windows.Extensions.Net;
 using UnityEngine.UI.Windows.Plugins.Analytics.Net.Api;
 using UnityEngine.UI.Windows.Plugins.Flow;
 
@@ -58,7 +58,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 						if (onResult != null) onResult.Invoke(false);
 					} else {
 						AuthTO authTO = new AuthTO() {key=key};
-						this.net.SendMsg(AuthTO.version, this.SerializeB(authTO));
+						this.net.SendMsgSilently(AuthTO.version, this.SerializeB(authTO));
 						if (onResult != null) onResult.Invoke(true);
 					}
 				});
@@ -91,7 +91,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			}
 
-			this.net.SendMsg((byte)to.GetTypeTO(), this.SerializeB(to));
+			this.net.SendMsgSilently((byte)to.GetTypeTO(), this.SerializeB(to));
 
 /*
 			#if UNITY_EDITOR

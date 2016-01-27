@@ -9,6 +9,14 @@ namespace UnityEngine.UI.Windows.Extensions {
 		
 		public LayoutElement layoutElement;
 
+		protected override void Start() {
+
+			base.Start();
+
+			this.scrollSensitivity = WindowSystemInput.GetScrollSensitivity();
+
+		}
+
 		/*private bool horizontalLast;
 		private bool verticalLast;
 

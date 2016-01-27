@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 
-namespace UnityEngine.UI.Windows.Plugins.Analytics.Net {
+namespace UnityEngine.UI.Windows.Extensions.Net {
     /// <summary>
     /// Package Socket
     /// Based on: git@github.com:laizhihuan/unity-3d-chat.git
@@ -16,51 +16,55 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Net {
         private int len;
         private short type;
 
+		private string name = "net";
+
 		private System.Action<bool> onResult;
 
         /// <summary>
         /// Initialize the network connection
         /// </summary>
 		public void Connect(string host, int port, System.Action<bool> onResult = null) {
-
 			this.onResult = onResult;
             client = new TcpClient();
-			client.NoDelay = true;
+//			client.NoDelay = true;
 			client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
             isHead = true;
+        }
 
+        public void SetName(string value) {
+            this.name = value;
         }
 
 		private void DoСonnect(IAsyncResult ar) {
-
 			connected = false;
+
             try {
-
                 if (client != ar.AsyncState) {
-
-                    Debug.Log("net changed");
+                    Debug.Log(name + " changed");
 					((TcpClient)ar.AsyncState).Close();
 					if (this.onResult != null) this.onResult.Invoke(false);
                     return;
-
                 }
 
                 // Finish asynchronous connect
                 client.EndConnect(ar);
 				connected = true;
-				if (this.onResult != null) this.onResult.Invoke(true);
 
+				if (this.onResult != null) this.onResult.Invoke(true);
             } catch(Exception e) {
-				
 				if (this.onResult != null) this.onResult.Invoke(false);
                 Debug.Log(e);
-
             }
-
         }
 
         public bool Connected() {
             return connected;
+        }
+
+		public void SendMsgSilently(short type, byte[] msg) {
+            if (client == null) return;
+
+			SendMsg(type, msg);
         }
 
 		public void SendMsg(short type, byte[] msg) {
@@ -71,7 +75,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Net {
             msg.CopyTo(data, 4);
             var stream = client.GetStream();
             stream.Write(data, 0, data.Length);
-			client.GetStream().Flush();
+//			stream.Flush();
         }
 
         public void ReceiveMsg() {

@@ -15,11 +15,21 @@ namespace UnityEngine.UI.Windows {
 	public class WindowSystemInput : MonoBehaviour {
 
 		public const string SCROLL_AXIS = "Mouse ScrollWheel";
+		
+		public float scrollSensitivity = 10f;
 
 		public static ComponentEvent onPointerUp = new ComponentEvent();
 		public static ComponentEvent onPointerDown = new ComponentEvent();
 
 		private static PointerEventData scrollEvent;
+
+		private static WindowSystemInput instance;
+
+		public void Awake() {
+
+			WindowSystemInput.instance = this;
+
+		}
 
 		public void Start() {
 
@@ -55,6 +65,12 @@ namespace UnityEngine.UI.Windows {
 				}
 				
 			}
+
+		}
+
+		public static float GetScrollSensitivity() {
+
+			return WindowSystemInput.instance.scrollSensitivity;
 
 		}
 
