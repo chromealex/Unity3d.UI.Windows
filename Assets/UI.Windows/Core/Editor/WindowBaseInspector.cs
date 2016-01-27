@@ -17,8 +17,8 @@ namespace UnityEditor.UI.Windows {
 
 			this.serializedObject.Update();
 			
-			var win = this.serializedObject.targetObject as WindowBase;
-			var so = new SerializedObject(win);
+			var so = this.serializedObject;
+			var win = so.targetObject as WindowBase;
 			var isPrefab = ME.EditorUtilities.IsPrefab(win.gameObject);
 
 			GUILayout.Label(string.Empty, GUILayout.Height(0f));
@@ -130,34 +130,38 @@ namespace UnityEditor.UI.Windows {
 
 			var activeState = so.FindProperty("activeState");
 			var currentState = so.FindProperty("currentState");
-			var paused = so.FindProperty("paused");
+			var pausedState = so.FindProperty("paused");
 
-			GUILayout.BeginHorizontal(backStyle);
-			{
-				
-				GUILayout.BeginVertical();
+			if (activeState != null && currentState != null && pausedState != null) {
+
+				GUILayout.BeginHorizontal(backStyle);
 				{
-					GUILayout.Label("Active State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-					GUILayout.Label(activeState.enumNames[activeState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+					
+					GUILayout.BeginVertical();
+					{
+						GUILayout.Label("Active State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+						GUILayout.Label(activeState.enumNames[activeState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+					}
+					GUILayout.EndVertical();
+					
+					GUILayout.BeginVertical();
+					{
+						GUILayout.Label("Window State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+						GUILayout.Label(currentState.enumNames[currentState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+					}
+					GUILayout.EndVertical();
+					
+					GUILayout.BeginVertical();
+					{
+						GUILayout.Label("Paused State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+						GUILayout.Label(pausedState.boolValue.ToString(), isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+					}
+					GUILayout.EndVertical();
+
 				}
-				GUILayout.EndVertical();
-				
-				GUILayout.BeginVertical();
-				{
-					GUILayout.Label("Window State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-					GUILayout.Label(currentState.enumNames[currentState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
-				}
-				GUILayout.EndVertical();
-				
-				GUILayout.BeginVertical();
-				{
-					GUILayout.Label("Paused State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-					GUILayout.Label(paused.boolValue.ToString(), isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
-				}
-				GUILayout.EndVertical();
+				GUILayout.EndHorizontal();
 
 			}
-			GUILayout.EndHorizontal();
 
 			// Draw default
 			this.DrawDefaultInspector();
