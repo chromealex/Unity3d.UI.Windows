@@ -32,6 +32,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 		private static Version defaultVersion;
 		private static Version currentVersion;
+		private static int currentVersionNumber;
 
 		private static bool isReady = false;
 
@@ -44,6 +45,12 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 		public static bool IsReady() {
 
 			return GameDataSystem.isReady;
+
+		}
+
+		public static int GetCurrentVersionId() {
+
+			return GameDataSystem.currentVersionNumber;
 
 		}
 
@@ -282,7 +289,14 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 					if (i == 0) continue;
 
 					var col = parsed[0][i];
-					versions.Add(new Version(col));
+					var version = new Version(col);
+					versions.Add(version);
+					
+					if (version == GameDataSystem.defaultVersion) {
+						
+						GameDataSystem.currentVersionNumber = int.Parse(parsed[1][i]);
+						
+					}
 
 					++verCount;
 
