@@ -228,7 +228,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				if (System.IO.File.Exists(path) == false) return;
 
 				var text = System.IO.File.ReadAllText(path);
-				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: true);
+				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
@@ -237,7 +237,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				if (System.IO.File.Exists(path) == false) return;
 
 				var text = System.IO.File.ReadAllText(path);
-				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: true);
+				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			#if UNITY_EDITOR
 			}

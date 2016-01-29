@@ -316,7 +316,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				if (System.IO.File.Exists(path) == false) return;
 
 				var text = System.IO.File.ReadAllText(path);
-				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: true);
+				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
@@ -325,7 +325,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				if (System.IO.File.Exists(path) == false) return;
 
 				var text = System.IO.File.ReadAllText(path);
-				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: true);
+				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			#if UNITY_EDITOR
 			}
