@@ -55,8 +55,8 @@ namespace ME {
 			int _currentTarget = 0;
 			private float _elapsed = 0f;
 			private bool _completed = false;
-			private object _tag;
-            private object _group;
+			private object _tag = new object();
+			private object _group = new object();
             private int _loops = 1;
 			private System.Action<T, float> _update = null;
 			private System.Action<T> _complete = null;
@@ -281,6 +281,12 @@ namespace ME {
 			
 		}
 		
+		public bool hasTag(string tag) {
+			
+			return _tweens.FirstOrDefault((tween) => tween.getTag() != null && tween.getTag().ToString() == tag) != null;
+			
+		}
+
 		public bool hasTag(object tag) {
 			
 			return _tweens.FirstOrDefault((tween) => tween.getTag() == tag) != null;
@@ -289,7 +295,7 @@ namespace ME {
 		
 		public void removeTweens(string tweenerTag) {
 
-			Mark(tween => tween.getTag().ToString() == tweenerTag);
+			Mark(tween => tween.getTag() != null && tween.getTag().ToString() == tweenerTag);
 			
 		}
 

@@ -71,11 +71,11 @@ namespace UnityEngine.UI.Windows {
 
 		public static float GetScrollSensitivity() {
 
-#if UNITY_STANDALONE_OSX
+			#if UNITY_STANDALONE_OSX
 			return WindowSystemInput.instance.scrollSensitivityMac;
 			#else
 			return WindowSystemInput.instance.scrollSensitivityPC;
-#endif
+			#endif
 
 		}
 

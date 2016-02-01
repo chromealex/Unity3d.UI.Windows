@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.Extensions;
+using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -53,7 +54,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		[Header("List View Component")]
 		[SerializeField]
-		private VerticalLayoutGroup verticalLayoutGroup;
+		private LayoutGroup layoutGroup;
 
 		[Header("Get Size from Rect (Optional)")]
 		[Tooltip("By default size will get from source")]
@@ -316,9 +317,9 @@ namespace UnityEngine.UI.Windows.Components {
 			for (int i = 0; i < this.rowHeights.Length; ++i) {
 
 				this.rowHeights[i] = this.dataSource.GetRowHeight(this, i);
-				if (this.verticalLayoutGroup != null && i > 0) {
+				if (this.layoutGroup != null && i > 0) {
 
-					this.rowHeights[i] += this.verticalLayoutGroup.spacing;
+					this.rowHeights[i] += this.GetLayoutGroupSpacing();
 
 				}
 
@@ -328,6 +329,23 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.RecalculateVisibleRowsFromScratch();
 			this.requiresReload = false;
+
+		}
+
+		private float GetLayoutGroupSpacing() {
+
+			var spacing = 0f;
+			if (this.layoutGroup != null) {
+
+				if (this.layoutGroup is HorizontalOrVerticalLayoutGroup) {
+
+					spacing = (this.layoutGroup as HorizontalOrVerticalLayoutGroup).spacing;
+
+				}
+
+			}
+
+			return spacing;
 
 		}
 
@@ -354,9 +372,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 				WindowComponent cell = this.GetCellAtRow(row);
 				cell.GetComponent<LayoutElement>().preferredHeight = this.rowHeights[row];
-				if (this.verticalLayoutGroup != null && row > 0) {
+				if (this.layoutGroup != null && row > 0) {
 
-					cell.GetComponent<LayoutElement>().preferredHeight -= this.verticalLayoutGroup.spacing;
+					cell.GetComponent<LayoutElement>().preferredHeight -= this.GetLayoutGroupSpacing();
 
 				}
 
@@ -592,9 +610,9 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			layoutElement.preferredHeight = this.rowHeights[row];
-			if (this.verticalLayoutGroup != null && row > 0) {
+			if (this.layoutGroup != null && row > 0) {
 
-				layoutElement.preferredHeight -= this.verticalLayoutGroup.spacing;
+				layoutElement.preferredHeight -= this.GetLayoutGroupSpacing();
 
 			}
             
@@ -690,7 +708,7 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			var bottomPaddingHeight = this.scrollRect.content.rect.height - hiddenElementsHeightSum;
-			this.bottomPadding.preferredHeight = bottomPaddingHeight - (this.verticalLayoutGroup != null ? this.verticalLayoutGroup.spacing : 0f);
+			this.bottomPadding.preferredHeight = bottomPaddingHeight - (this.layoutGroup != null ? this.GetLayoutGroupSpacing() : 0f);
 			this.bottomPadding.gameObject.SetActive(this.bottomPadding.preferredHeight > 0f);
 
 		}
@@ -810,7 +828,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (Application.isPlaying == true) return;
 
-			ME.Utilities.FindReference<VerticalLayoutGroup>(this, ref this.verticalLayoutGroup);
+			ME.Utilities.FindReference(this, ref this.layoutGroup);
 
 		}
 		#endif
