@@ -15,7 +15,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.UI {
 
 		}
 
-		public override string text {
+		/*public override string text {
 			
 			get {
 				
@@ -29,11 +29,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.UI {
 
 			}
 
-		}
+		}*/
 
 		public void OnLocalizationChanged() {
 
-			this.text = base.text;
+			//this.text = base.text;
+			this.text = LocalizationSystem.Get(this.localizationKey);
 
 		}
 
