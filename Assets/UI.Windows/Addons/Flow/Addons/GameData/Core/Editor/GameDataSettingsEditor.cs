@@ -40,18 +40,11 @@ namespace UnityEditor.UI.Windows.Plugins.GameData {
 			EditorGUI.BeginDisabledGroup(true);
 
 			var currentVersions = GameDataSystem.GetVersionsList();
+			var currentVersion = GameDataSystem.GetCurrentVersion();
 			foreach (var ver in currentVersions) {
-				
-				if (currentVersions.Contains(ver) == true) {
-					
-					GUILayout.Toggle(true, ver.ToString());
-					
-				} else {
-					
-					GUILayout.Toggle(false, ver.ToString());
-					
-				}
-				
+
+				GUILayout.Toggle(currentVersion == ver, ver.ToString());
+
 			}
 			
 			EditorGUI.EndDisabledGroup();

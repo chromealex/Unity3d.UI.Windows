@@ -147,7 +147,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 		}
 
-		public static Version GetDefaultLanguage() {
+		public static Version GetDefaultVersion() {
 
 			return GameDataSystem.defaultVersion;
 
