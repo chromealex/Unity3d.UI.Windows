@@ -16,7 +16,14 @@ namespace UnityEngine.UI.Windows {
 		Warning,
 		Error,
 
-	}
+	};
+
+	public enum DragFlag : byte {
+
+		None = 0x0,
+		ViewportRestricted = 0x1,
+
+	};
 
 	namespace Modules {
 
@@ -207,10 +214,12 @@ namespace UnityEngine.UI.Windows {
 		public class BackButtonBehaviour {
 
 			public enum BackAction : byte {
+
 				None = 0x0,
 				HideCurrentWindow = 0x1,
 				ShowPreviousWindow = 0x2,
 				ShowSpecificWindow = 0x4,
+
 			};
 			
 			[BitMask(typeof(BackAction))]
@@ -577,9 +586,6 @@ namespace UnityEngine.UI.Windows {
 			DontSave = 0x1,
 		};
 
-		[HideInInspector][System.Obsolete("Use dontDestroy parameter.")]
-		public bool dontDestroyOnLoad = true;
-
 		[Header("Base")]
 		public Depth depth;
 		[BitMask(typeof(DontDestroy))]
@@ -593,6 +599,19 @@ namespace UnityEngine.UI.Windows {
 		public bool createPool = true;
 		[ReadOnly("createPool", state: false)]
 		public int preallocatedCount = 0;
+
+		[Header("Draggable")]
+		public bool draggable = false;
+		[Hidden("draggable", false)]
+		public LayoutTag dragTag;
+		[Hidden("draggable", false)]
+		public DragFlag dragFlags;
+
+		public bool IsDragViewportRestricted() {
+
+			return (this.dragFlags & DragFlag.ViewportRestricted) != 0;
+
+		}
 
 		public bool IsHistoryActive() {
 
@@ -619,19 +638,8 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		#if UNITY_EDITOR
-		[HideInInspector]
-		public bool editorValidated = false;
 		public void OnValidate() {
-			
-			if (this.editorValidated == false) {
 
-				#pragma warning disable 612,618
-				this.dontDestroy = this.dontDestroyOnLoad == true ? DontDestroy.OnSceneChange : DontDestroy.Auto;
-				this.editorValidated = true;
-				#pragma warning restore 612,618
-
-			}
-			
 		}
 		#endif
 

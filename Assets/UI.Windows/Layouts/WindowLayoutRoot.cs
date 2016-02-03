@@ -88,6 +88,18 @@ namespace UnityEngine.UI.Windows {
 
 		}*/
 
+		public void SetPosition(Vector2 position) {
+
+			this.rectTransform.anchoredPosition = position;
+
+		}
+
+		public void Move(Vector2 delta) {
+
+			this.rectTransform.anchoredPosition += delta;
+
+		}
+
 		public void Reset() {
 			
 			this.rectTransform.anchoredPosition3D = Vector3.zero;

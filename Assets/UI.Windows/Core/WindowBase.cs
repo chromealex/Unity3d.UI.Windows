@@ -50,9 +50,18 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
+	public enum DragState : byte {
+
+		None = 0,
+		Begin,
+		Move,
+		End,
+
+	};
+
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
-	public class WindowBase : WindowObject, IWindowEventsAsync, IFunctionIteration, IWindow {
+	public class WindowBase : WindowObject, IWindowEventsAsync, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
 		#if UNITY_EDITOR
 		[HideInInspector]
@@ -75,6 +84,7 @@ namespace UnityEngine.UI.Windows {
 
 		private ActiveState activeState = ActiveState.None;
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
+		private DragState dragState = DragState.None;
 		private bool paused = false;
 
 		private int functionIterationIndex = 0;
@@ -354,6 +364,125 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void OnLocalizationChanged() {
+		}
+
+		#region DRAG'n'DROP
+		private List<WindowLayoutElement> dragTempParent = new List<WindowLayoutElement>();
+		public void OnBeginDrag(PointerEventData eventData) {
+
+			this.SetMoveBegin(eventData);
+
+		}
+
+		public void OnDrag(PointerEventData eventData) {
+			
+			this.SetMove(eventData);
+
+		}
+
+		public void OnEndDrag(PointerEventData eventData) {
+			
+			this.SetMoveEnd(eventData);
+
+		}
+		
+		private void SetMoveBegin(PointerEventData eventData) {
+
+			if (this.preferences.draggable == false) return;
+			if (this.dragState != DragState.None) return;
+			if (eventData.pointerCurrentRaycast.gameObject == null) return;
+
+			this.dragTempParent.Clear();
+			eventData.pointerCurrentRaycast.gameObject.GetComponentsInParent<WindowLayoutElement>(includeInactive: true, results: this.dragTempParent);
+
+			if (this.dragTempParent.Count > 0) {
+
+				var layoutElement = this.dragTempParent[0];
+				if (this.preferences.dragTag == LayoutTag.None || this.preferences.dragTag == layoutElement.tag) {
+					
+					this.dragState = DragState.Begin;
+
+					this.OnMoveBegin(eventData);
+
+				}
+
+			}
+
+		}
+		
+		private void SetMove(PointerEventData eventData) {
+			
+			if (this.preferences.draggable == false) return;
+			if (this.dragState != DragState.Begin && this.dragState != DragState.Move) return;
+
+			this.dragState = DragState.Move;
+
+			var delta = eventData.delta;
+			var k = (this.GetLayoutRoot() as RectTransform).sizeDelta.x / Screen.width;
+
+			if (this.preferences.IsDragViewportRestricted() == true) {
+
+				var screenRect = WindowSystem.GetScreenRect();
+				var rect = this.GetRect();
+				rect.center += delta;
+
+				if (rect.xMin <= screenRect.xMin) {
+
+					delta.x += screenRect.xMin - rect.xMin;
+
+				}
+				if (rect.yMin - rect.height <= screenRect.yMin) {
+
+					delta.y += screenRect.yMin - (rect.yMin - rect.height);
+
+				}
+				if (rect.xMax >= screenRect.xMax) {
+
+					delta.x += screenRect.xMax - rect.xMax;
+
+				}
+				if (rect.yMax - rect.height >= screenRect.yMax) {
+
+					delta.y += screenRect.yMax - (rect.yMax - rect.height);
+
+				}
+
+			}
+
+			this.MoveLayout(delta * k);
+
+			this.OnMove(eventData);
+			
+		}
+		
+		private void SetMoveEnd(PointerEventData eventData) {
+			
+			if (this.preferences.draggable == false) return;
+			if (this.dragState != DragState.Begin && this.dragState != DragState.Move) return;
+			
+			this.dragState = DragState.End;
+
+			this.OnMoveEnd(eventData);
+
+			this.dragState = DragState.None;
+			
+		}
+
+		public virtual void OnMoveBegin(PointerEventData eventData) {
+		}
+
+		public virtual void OnMove(PointerEventData eventData) {
+		}
+
+		public virtual void OnMoveEnd(PointerEventData eventData) {
+		}
+		#endregion
+
+		public virtual Rect GetRect() {
+
+			var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(this.GetLayoutRoot());
+			return new Rect(new Vector2(bounds.center.x, bounds.center.y), new Vector2(bounds.size.x, bounds.size.y));
+
 		}
 
 		/// <summary>
@@ -699,6 +828,7 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		protected virtual Transform GetLayoutRoot() { return null; }
+		protected virtual void MoveLayout(Vector2 delta) {}
 
 		/// <summary>
 		/// Gets the duration of the layout animation.

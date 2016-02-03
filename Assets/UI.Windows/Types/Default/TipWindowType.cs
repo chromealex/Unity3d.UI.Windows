@@ -294,6 +294,12 @@ namespace UnityEngine.UI.Windows.Types {
 			return this.root;
 
 		}
+		
+		protected override void MoveLayout(Vector2 delta) {
+			
+			this.root.anchoredPosition += delta;
+			
+		}
 
 		public override float GetLayoutAnimationDuration(bool forward) {
 

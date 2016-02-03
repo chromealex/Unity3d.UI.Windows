@@ -61,11 +61,48 @@ namespace UnityEngine.UI.Windows.Types {
 			return this.layout.GetAnimationDuration(forward);
 			
 		}
+		
+		public override Rect GetRect() {
+
+			var bounds = new Rect();
+			var root = this.layout.GetLayoutInstance().root;
+			var baseSubElements = this.layout.GetLayoutInstance().GetSubComponents();
+			if (baseSubElements.Count == 1) {
+
+				var baseLayoutElement = baseSubElements[0];
+				var subElements = baseLayoutElement.GetSubComponents();
+				if (subElements.Count == 1) {
+
+					var layoutElement = subElements[0];
+
+					Vector3[] corners = new Vector3[4];
+					(layoutElement.transform as RectTransform).GetWorldCorners(corners);
+
+					var leftBottom = this.workCamera.WorldToScreenPoint(corners[0]);
+					var leftTop = this.workCamera.WorldToScreenPoint(corners[1]);
+					var rightTop = this.workCamera.WorldToScreenPoint(corners[2]);
+					var rightBottom = this.workCamera.WorldToScreenPoint(corners[3]);
+
+					bounds = new Rect(new Vector2(leftTop.x, leftTop.y), new Vector2(rightBottom.x - leftBottom.x, rightTop.y - rightBottom.y));
+
+				}
+
+			}
+
+			return bounds;
+
+		}
 
 		protected override Transform GetLayoutRoot() {
 			
 			return this.layout.GetRoot();
 			
+		}
+
+		protected override void MoveLayout(Vector2 delta) {
+
+			this.layout.GetLayoutInstance().root.Move(delta);
+
 		}
 
 		public override void OnLocalizationChanged() {

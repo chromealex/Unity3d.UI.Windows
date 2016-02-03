@@ -353,7 +353,14 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-		
+
+		public static Rect GetScreenRect() {
+
+			var size = new Vector2(Screen.width, Screen.height);
+			return new Rect(Vector2.zero, size);
+
+		}
+
 		public static void OnDoTransition(int index, int fromScreenId, int toScreenId, bool hide = true) {
 			
 			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId, hide);
