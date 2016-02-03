@@ -79,7 +79,6 @@ MonoBehaviour:
   workCamera: {fileID: 2058946}
   initialized: 1
   preferences:
-    dontDestroyOnLoad: 1
     depth: 0
     dontDestroy: 1
     history: 0
@@ -87,8 +86,8 @@ MonoBehaviour:
     createPool: 1
     preallocatedCount: 0
     draggable: 0
-    dragTags: 0
-    editorValidated: 1
+    dragTag: 0
+    dragFlags: 0
   audio:
     flowData: {fileID: 11400000, guid: a1bd805bdc8434764bd048f65a277867, type: 2}
     playType: 0
