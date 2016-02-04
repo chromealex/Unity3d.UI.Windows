@@ -20,7 +20,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 		public override string GetServiceName() {
 
-			return "Google Docs Localization";
+			return "Google Docs Data";
 
 		}
 

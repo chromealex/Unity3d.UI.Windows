@@ -163,56 +163,6 @@ namespace UnityEngine.UI.Windows {
 
 			public WindowSystemSettings file;
 
-			/*public float minZDepth {
-				
-				get {
-					
-					return this.file != null ? this.file.baseInfo.minZDepth : 0f;
-					
-				}
-
-			}
-
-			public float minDepth {
-
-				get {
-
-					return this.file != null ? this.file.baseInfo.minDepth : 90f;
-
-				}
-
-			}
-			
-			public float maxDepth {
-				
-				get {
-					
-					return this.file != null ? this.file.baseInfo.maxDepth : 98f;
-					
-				}
-				
-			}*/
-			/*
-			public float maxDepthLayer1 {
-				
-				get {
-					
-					return this.file != null ? this.file.baseInfo.maxDepthLayer1 : 200f;
-					
-				}
-				
-			}
-			
-			public float maxDepthLayer2 {
-				
-				get {
-					
-					return this.file != null ? this.file.baseInfo.maxDepthLayer2 : 300f;
-					
-				}
-				
-			}*/
-
 			public int poolSize {
 				
 				get {
@@ -296,8 +246,6 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector]
 		private float depthStep;
-		//[HideInInspector]
-		//private float currentDepth;
 		[HideInInspector]
 		private int currentOrderInLayer;
 		[HideInInspector]
@@ -308,8 +256,6 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector]
 		private float zDepthStep;
-		//[HideInInspector]
-		//private float currentZDepth;
 
 		private bool disabledCallEvents = false;
 
@@ -810,9 +756,6 @@ namespace UnityEngine.UI.Windows {
 				instance.currentZDepth[item] = instance.settings.GetMinZDepth(item);
 
 			}
-
-			//WindowSystem.instance.currentDepth = WindowSystem.instance.settings.minDepth;
-			//WindowSystem.instance.currentZDepth = WindowSystem.instance.settings.minZDepth;
 
 		}
 
