@@ -1191,6 +1191,10 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		private float GetNextZDepth(Preferences preferences) {
+			
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) return 0f;
+			#endif
 
 			var layer = (int)preferences.layer;
 
@@ -1213,7 +1217,11 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private float GetNextDepth(Preferences preferences, float windowDepth) {
-			
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) return 0f;
+			#endif
+
 			var layer = (int)preferences.layer;
 			
 			var depth = 0f;
