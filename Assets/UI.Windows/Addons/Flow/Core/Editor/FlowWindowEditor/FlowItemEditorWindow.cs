@@ -836,11 +836,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					EditorGUIUtility.labelWidth = 50f;
 
 					EditorGUILayout.HelpBox("By default all windows sorted by Z-Order and Camera's Depth. But you may need to show for example level loader at the top or put some window at the background (For example animated background).", MessageType.Info);
-					var depth = (Preferences.Depth)EditorGUILayout.EnumPopup("Depth:", prefs.depth, GUILayout.Width(width));
-					if (depth != prefs.depth) {
+					var layer = (DepthLayer)EditorGUILayout.EnumPopup("Layer:", prefs.layer, GUILayout.Width(width));
+					if (layer != prefs.layer) {
 
 						this.isScreenDirty = true;
-						prefs.depth = depth;
+						prefs.layer = layer;
 
 					}
 

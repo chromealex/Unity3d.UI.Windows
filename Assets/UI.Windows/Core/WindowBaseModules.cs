@@ -561,33 +561,42 @@ namespace UnityEngine.UI.Windows {
 		
 	}
 	
+	public enum DepthLayer : int {
+		
+		BackLayer4 = -4,
+		BackLayer3 = -3,
+		BackLayer2 = -2,
+		BackLayer1 = -1,
+		
+		Auto = 0,
+		
+		TopLayer1 = 1,
+		TopLayer2 = 2,
+		TopLayer3 = 3,
+		TopLayer4 = 4,
+		
+	};
+	
+	public enum DontDestroy : byte {
+		
+		Auto = 0x0,
+		OnSceneChange = 0x1,
+		OnClean = 0x2,
+
+	};
+	
+	public enum History : byte {
+		
+		Auto = 0x0,
+		DontSave = 0x1,
+		
+	};
+
 	[System.Serializable]
 	public class Preferences {
 
-		public enum Depth : byte {
-
-			Auto = 0,
-			AlwaysTop = 1,
-			AlwaysBack = 2,
-			
-			AlwaysTopLayer1 = 3,
-			AlwaysTopLayer2 = 4,
-
-		};
-
-		public enum DontDestroy : byte {
-			Auto = 0x0,
-			OnSceneChange = 0x1,
-			OnClean = 0x2,
-		};
-		
-		public enum History : byte {
-			Auto = 0x0,
-			DontSave = 0x1,
-		};
-
 		[Header("Base")]
-		public Depth depth;
+		public DepthLayer layer;
 		[BitMask(typeof(DontDestroy))]
 		public DontDestroy dontDestroy = DontDestroy.OnSceneChange;
 		[BitMask(typeof(History))]

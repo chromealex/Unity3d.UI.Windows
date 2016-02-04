@@ -1,21 +1,55 @@
 ﻿
-namespace UnityEngine.UI.Windows {
+using System.Linq;namespace UnityEngine.UI.Windows {
 
 	public class WindowSystemSettings : UnityEngine.ScriptableObject {
 
 		[System.Serializable]
 		public class Base {
-			
-			public float minDepth = 90f;
-			public float maxDepth = 98f;
-			public int poolSize = 100;
 
-			public float minZDepth = 0f;
+			[System.Serializable]
+			public struct DepthLayer {
+
+				public int layer;
+				public float minDepth;
+				public float maxDepth;
+				public float minZDepth;
+
+			}
 			
+			public int poolSize = 100;
 			public int preallocatedWindowsPoolSize = 0;
+
+			public float zDepthStep = 200f;
+
+			public DepthLayer[] depthLayers = new DepthLayer[] {
+				new DepthLayer() { layer = -4, minDepth = -89f, maxDepth = -70f, minZDepth = -40000f },
+				new DepthLayer() { layer = -3, minDepth = -69f, maxDepth = -50f, minZDepth = -30000f },
+				new DepthLayer() { layer = -2, minDepth = -49f, maxDepth = -30f, minZDepth = -20000f },
+				new DepthLayer() { layer = -1, minDepth = -29f, maxDepth = -10f, minZDepth = -10000f },
+				new DepthLayer() { layer = 0, minDepth = 1f, maxDepth = 20f, minZDepth = 0f },
+				new DepthLayer() { layer = 1, minDepth = 21f, maxDepth = 40f, minZDepth = 10000f },
+				new DepthLayer() { layer = 2, minDepth = 41f, maxDepth = 60f, minZDepth = 20000f },
+				new DepthLayer() { layer = 3, minDepth = 61f, maxDepth = 80f, minZDepth = 30000f },
+				new DepthLayer() { layer = 4, minDepth = 81f, maxDepth = 100f, minZDepth = 40000f }
+			};
+
+			public float GetMinDepth(int layer) {
+				
+				return this.depthLayers.First(x => x.layer == layer).minDepth;
+				
+			}
 			
-			public float maxDepthLayer1 = 200f;
-			public float maxDepthLayer2 = 300f;
+			public float GetMaxDepth(int layer) {
+				
+				return this.depthLayers.First(x => x.layer == layer).maxDepth;
+
+			}
+			
+			public float GetMinZDepth(int layer) {
+				
+				return this.depthLayers.First(x => x.layer == layer).minZDepth;
+
+			}
 
 		}
 

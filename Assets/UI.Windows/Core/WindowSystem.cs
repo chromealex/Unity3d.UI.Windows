@@ -163,7 +163,7 @@ namespace UnityEngine.UI.Windows {
 
 			public WindowSystemSettings file;
 
-			public float minZDepth {
+			/*public float minZDepth {
 				
 				get {
 					
@@ -191,8 +191,8 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 				
-			}
-			
+			}*/
+			/*
 			public float maxDepthLayer1 {
 				
 				get {
@@ -211,7 +211,7 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 				
-			}
+			}*/
 
 			public int poolSize {
 				
@@ -222,6 +222,16 @@ namespace UnityEngine.UI.Windows {
 				}
 				
 			}
+
+			public float zDepthStep {
+
+				get {
+
+					return this.file != null ? this.file.baseInfo.zDepthStep : 200f;
+
+				}
+
+			}
 			
 			public int preallocatedWindowsPoolSize {
 				
@@ -230,6 +240,24 @@ namespace UnityEngine.UI.Windows {
 					return this.file != null ? this.file.baseInfo.preallocatedWindowsPoolSize : 0;
 					
 				}
+				
+			}
+			
+			public float GetMinDepth(int layer) {
+				
+				return this.file != null ? this.file.baseInfo.GetMinDepth(layer) : 90f;
+				
+			}
+			
+			public float GetMaxDepth(int layer) {
+				
+				return this.file != null ? this.file.baseInfo.GetMaxDepth(layer) : 98f;
+				
+			}
+			
+			public float GetMinZDepth(int layer) {
+				
+				return this.file != null ? this.file.baseInfo.GetMinZDepth(layer) : 0f;
 				
 			}
 
@@ -268,17 +296,20 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector]
 		private float depthStep;
-		[HideInInspector]
-		private float currentDepth;
+		//[HideInInspector]
+		//private float currentDepth;
 		[HideInInspector]
 		private int currentOrderInLayer;
 		[HideInInspector]
 		private int currentRaycastPriority;
 		
+		private Dictionary<int, float> currentDepth = new Dictionary<int, float>();
+		private Dictionary<int, float> currentZDepth = new Dictionary<int, float>();
+
 		[HideInInspector]
 		private float zDepthStep;
-		[HideInInspector]
-		private float currentZDepth;
+		//[HideInInspector]
+		//private float currentZDepth;
 
 		private bool disabledCallEvents = false;
 
@@ -486,8 +517,8 @@ namespace UnityEngine.UI.Windows {
 			this.functions = new Functions();
 			this.audio.Init();
 
-			this.depthStep = (this.settings.maxDepth - this.settings.minDepth) / this.settings.poolSize;
-			this.zDepthStep = 200f;
+			this.depthStep = (this.settings.GetMaxDepth(0) - this.settings.GetMinDepth(0)) / this.settings.poolSize;
+			this.zDepthStep = this.settings.zDepthStep;
 			WindowSystem.ResetDepth();
 
 			foreach (var window in this.windows) {
@@ -529,7 +560,7 @@ namespace UnityEngine.UI.Windows {
 		
 		public static void CallFunction(WindowRoutes routes) {
 
-			throw new UnityException("Routes can't call function");
+			throw new UnityException("Routes can't call a function");
 
 		}
 
@@ -770,8 +801,18 @@ namespace UnityEngine.UI.Windows {
 
 		internal static void ResetDepth() {
 
-			WindowSystem.instance.currentDepth = WindowSystem.instance.settings.minDepth;
-			WindowSystem.instance.currentZDepth = WindowSystem.instance.settings.minZDepth;
+			var items = System.Enum.GetValues(typeof(DepthLayer));
+			var instance = WindowSystem.instance;
+
+			foreach (int item in items) {
+				
+				instance.currentDepth[item] = instance.settings.GetMinDepth(item);
+				instance.currentZDepth[item] = instance.settings.GetMinZDepth(item);
+
+			}
+
+			//WindowSystem.instance.currentDepth = WindowSystem.instance.settings.minDepth;
+			//WindowSystem.instance.currentZDepth = WindowSystem.instance.settings.minZDepth;
 
 		}
 
@@ -1207,31 +1248,12 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		private float GetNextZDepth(Preferences preferences) {
-			
-			var depth = 0f;
 
-			if (preferences.depth == Preferences.Depth.AlwaysBack) {
-				
-				depth = 0f;
-				
-			} else if (preferences.depth == Preferences.Depth.AlwaysTop) {
-				
-				depth = 20000f;
-				
-			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer1) {
-				
-				depth = 30000f;
-				
-			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer2) {
-				
-				depth = 40000f;
-				
-			} else {
-				
-				this.currentZDepth += this.zDepthStep;
-				depth = this.currentZDepth;
-				
-			}
+			var layer = (int)preferences.layer;
+
+			var depth = 0f;
+			this.currentZDepth[layer] += this.zDepthStep;
+			depth = this.currentZDepth[layer];
 
 			return depth;
 			
@@ -1248,32 +1270,13 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private float GetNextDepth(Preferences preferences, float windowDepth) {
-
-			var depth = 0f;
-
-			if (preferences.depth == Preferences.Depth.AlwaysBack) {
-				
-				depth = windowDepth;
-				
-			} else if (preferences.depth == Preferences.Depth.AlwaysTop) {
-				
-				depth = this.settings.maxDepth;
-				
-			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer1) {
-				
-				depth = this.settings.maxDepthLayer1;
-				
-			} else if (preferences.depth == Preferences.Depth.AlwaysTopLayer2) {
-				
-				depth = this.settings.maxDepthLayer2;
-				
-			} else {
-
-				this.currentDepth += this.depthStep;
-				depth = this.currentDepth;
-
-			}
 			
+			var layer = (int)preferences.layer;
+			
+			var depth = 0f;
+			this.currentDepth[layer] += this.depthStep;
+			depth = this.currentDepth[layer];
+
 			return depth;
 
 		}
