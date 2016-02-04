@@ -24,6 +24,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		private static UnityEngine.SystemLanguage defaultLanguage;
 		private static UnityEngine.SystemLanguage currentLanguage;
+		private static int currentVersionNumber;
 
 		private static bool isReady = false;
 
@@ -216,6 +217,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			return new Sprite[languagesCount];
 
 		}
+		
+		public static int GetCurrentVersionId() {
+			
+			return LocalizationSystem.currentVersionNumber;
+			
+		}
 
 		public static UnityEngine.SystemLanguage GetCurrentLanguage() {
 
@@ -373,6 +380,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 					var col = parsed[0][i];
 					languages.Add((UnityEngine.SystemLanguage)System.Enum.Parse(typeof(UnityEngine.SystemLanguage), col));
 
+					if (col == LocalizationSystem.defaultLanguage.ToString()) {
+						
+						LocalizationSystem.currentVersionNumber = int.Parse(parsed[1][i]);
+						
+					}
+
 					++langCount;
 
 				}
@@ -408,13 +421,13 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				var path = LocalizationSystem.GetCachePath();
 				System.IO.File.WriteAllText(path, data);
 
-				LocalizationSystem.currentLanguage = UnityEngine.SystemLanguage.Russian;//LocalizationSystem.defaultLanguage;
+				LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
 
 				#if !UNITY_EDITOR
 				if (LocalizationSystem.instance.logEnabled == true) {
 				#endif
 					
-					Debug.LogFormat("[ Localization ] Loaded. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount);
+					Debug.LogFormat("[ Localization ] Loaded version {3}. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount, LocalizationSystem.GetCurrentVersionId());
 
 				#if !UNITY_EDITOR
 				}

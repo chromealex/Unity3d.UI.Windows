@@ -348,7 +348,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				if (GameDataSystem.instance.logEnabled == true) {
 				#endif
 					
-					Debug.LogFormat("[ GameData ] Loaded. Cache saved to: {0}, Keys: {1}, Versions: {2}", path, keysCount, verCount);
+					Debug.LogFormat("[ GameData ] Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId());
 
 				#if !UNITY_EDITOR
 				}

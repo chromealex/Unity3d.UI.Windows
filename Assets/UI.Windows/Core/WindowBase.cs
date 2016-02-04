@@ -370,23 +370,23 @@ namespace UnityEngine.UI.Windows {
 		private List<WindowLayoutElement> dragTempParent = new List<WindowLayoutElement>();
 		public void OnBeginDrag(PointerEventData eventData) {
 
-			this.SetMoveBegin(eventData);
+			this.SetDragBegin(eventData);
 
 		}
 
 		public void OnDrag(PointerEventData eventData) {
 			
-			this.SetMove(eventData);
+			this.SetDrag(eventData);
 
 		}
 
 		public void OnEndDrag(PointerEventData eventData) {
 			
-			this.SetMoveEnd(eventData);
+			this.SetDragEnd(eventData);
 
 		}
-		
-		private void SetMoveBegin(PointerEventData eventData) {
+
+		private void SetDragBegin(PointerEventData eventData) {
 
 			if (this.preferences.draggable == false) return;
 			if (this.dragState != DragState.None) return;
@@ -410,7 +410,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		private void SetMove(PointerEventData eventData) {
+		private void SetDrag(PointerEventData eventData) {
 			
 			if (this.preferences.draggable == false) return;
 			if (this.dragState != DragState.Begin && this.dragState != DragState.Move) return;
@@ -455,7 +455,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		private void SetMoveEnd(PointerEventData eventData) {
+		private void SetDragEnd(PointerEventData eventData) {
 			
 			if (this.preferences.draggable == false) return;
 			if (this.dragState != DragState.Begin && this.dragState != DragState.Move) return;

@@ -6,6 +6,12 @@ using System;
 using System.Linq;
 
 namespace UnityEngine.UI.Windows.Plugins.Services {
+	
+	public interface IServiceManagerBase {
+		
+		IEnumerator Init(System.Action onComplete);
+		
+	}
 
 	public interface IServiceManager {
 		
@@ -17,7 +23,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 	};
 
-	public abstract class ServiceManagerBase : MonoBehaviour, IServiceManager {
+	public abstract class ServiceManagerBase : MonoBehaviour, IServiceManager, IServiceManagerBase {
 
 		public ServiceSettings settings;
 		public bool logEnabled = false;
@@ -35,6 +41,12 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 		}
 		
 		public IEnumerator Start() {
+
+			yield return this.StartCoroutine(this.Init());
+
+		}
+
+		public IEnumerator Init(System.Action onComplete = null) {
 
 			if (this.logEnabled == true) {
 
@@ -87,6 +99,8 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 			}
 
+			if (onComplete != null) onComplete.Invoke();
+
 		}
 		
 		public virtual void OnInitialized() {
@@ -126,7 +140,14 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			ServiceManager<T>.instance = (T)(this as IServiceManager);
 
 		}
-		
+
+		public static void Reinitialize(System.Action onComplete = null) {
+
+			var instance = ServiceManager<T>.instance as IServiceManagerBase;
+			(instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
+
+		}
+
 		public static void ForEachService<TService>(System.Action<TService> onService) where TService : IService {
 			
 			#if UNITY_EDITOR
