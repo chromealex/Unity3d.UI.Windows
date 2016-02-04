@@ -79,7 +79,7 @@ MonoBehaviour:
   workCamera: {fileID: 2020200}
   initialized: 1
   preferences:
-    depth: 0
+    layer: 0
     dontDestroy: 3
     history: 1
     forceSingleInstance: 0
