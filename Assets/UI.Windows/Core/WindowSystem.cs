@@ -684,8 +684,15 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Gets the last window in history with the predicate.
 		/// </summary>
-		/// <returns>The previous window.</returns>
-		/// <param name="current">Current.</param>
+		public static T GetWindow<T>() where T : WindowBase {
+
+			return WindowSystem.GetWindow((item) => item.window is T) as T;
+
+		}
+
+		/// <summary>
+		/// Gets the last window in history with the predicate.
+		/// </summary>
 		public static WindowBase GetWindow(System.Func<HistoryItem, bool> predicate = null) {
 			
 			WindowBase last = null;
@@ -701,6 +708,15 @@ namespace UnityEngine.UI.Windows {
 			
 			return last;
 			
+		}
+
+		/// <summary>
+		/// Finds the opened window.
+		/// </summary>
+		public static T FindOpened<T>() where T : WindowBase {
+
+			return WindowSystem.instance.currentWindows.FirstOrDefault((item) => item is T) as T;
+
 		}
 
 		/// <summary>

@@ -65,7 +65,7 @@ namespace UnityEngine.UI.Windows.Types {
 		public override Rect GetRect() {
 
 			var bounds = new Rect();
-			var root = this.layout.GetLayoutInstance().root;
+			//var root = this.layout.GetLayoutInstance().root;
 			var baseSubElements = this.layout.GetLayoutInstance().GetSubComponents();
 			if (baseSubElements.Count == 1) {
 

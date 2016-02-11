@@ -604,6 +604,8 @@ namespace UnityEngine.UI.Windows {
 
 		public bool forceSingleInstance = false;
 
+		public bool restoreSelectedElement = true;
+
 		[Header("Pool")]
 		public bool createPool = true;
 		[ReadOnly("createPool", state: false)]

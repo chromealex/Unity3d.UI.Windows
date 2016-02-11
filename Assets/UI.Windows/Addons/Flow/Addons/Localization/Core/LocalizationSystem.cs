@@ -40,6 +40,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		/// <param name="language">Language.</param>
 		public static int GetDeclensionIndexByNumber(int number, UnityEngine.SystemLanguage language) {
 
+			if (number <= int.MinValue || number >= int.MaxValue) {
+
+				number = 0;
+
+			}
+
 			var result = 0;
 
 			switch (language) {
@@ -85,8 +91,14 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			return result;
 
 		}
-
+		
 		public static string FormatWithDeclension(string value, params object[] parameters) {
+
+			return LocalizationSystem.FormatWithDeclension(value: value, returnWithNumber: true, parameters: parameters);
+
+		}
+
+		public static string FormatWithDeclension(string value, bool returnWithNumber, params object[] parameters) {
 
 			var result = Regex.Replace(value, @"({\d+, .*?})", new MatchEvaluator((Match match) => {
 
@@ -112,11 +124,19 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				word = splitted[index + 1];
 
-				return string.Format("{0}{1}", "{" + num + "}", word);
+				if (returnWithNumber == false) {
+
+					return word;
+
+				} else {
+
+					return string.Format("{0}{1}", "{" + num + "}", word);
+
+				}
 
 			}));
 
-			return string.Format(result, parameters);;
+			return string.Format(result, parameters);
 
 		}
 
@@ -264,7 +284,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				var value = LocalizationSystem.Get(key.key, LocalizationSystem.GetCurrentLanguage());
 				if (key.formatWithDeclension == true) {
 
-					return LocalizationSystem.FormatWithDeclension(value, parameters);
+					return LocalizationSystem.FormatWithDeclension(value, returnWithNumber: !key.outputDeclensionWithoutNumber, parameters: parameters);
 
 				}
 

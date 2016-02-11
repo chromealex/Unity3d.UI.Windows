@@ -82,9 +82,13 @@ namespace UnityEngine.UI.Windows {
 		#endif
 		public Transition transition;
 
+		[SerializeField][HideInInspector]
 		private ActiveState activeState = ActiveState.None;
+		[SerializeField][HideInInspector]
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
+		[SerializeField][HideInInspector]
 		private DragState dragState = DragState.None;
+		[SerializeField][HideInInspector]
 		private bool paused = false;
 
 		private int functionIterationIndex = 0;
@@ -347,16 +351,24 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void OnActive() {
-			
-			EventSystem.current.firstSelectedGameObject = this.firstSelectedGameObject;
-			EventSystem.current.SetSelectedGameObject(this.currentSelectedGameObject);
+
+			if (this.preferences.restoreSelectedElement == true) {
+
+				EventSystem.current.firstSelectedGameObject = this.firstSelectedGameObject;
+				EventSystem.current.SetSelectedGameObject(this.currentSelectedGameObject);
+
+			}
 
 		}
 
 		public virtual void OnInactive() {
 			
-			this.firstSelectedGameObject = EventSystem.current.firstSelectedGameObject;
-			this.currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+			if (this.preferences.restoreSelectedElement == true) {
+
+				this.firstSelectedGameObject = EventSystem.current.firstSelectedGameObject;
+				this.currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+
+			}
 
 		}
 
@@ -418,6 +430,14 @@ namespace UnityEngine.UI.Windows {
 			this.dragState = DragState.Move;
 
 			var delta = eventData.delta;
+			this.SetDrag_INTERNAL(delta);
+			
+			this.OnMove(eventData);
+
+		}
+
+		private void SetDrag_INTERNAL(Vector2 delta) {
+
 			var k = (this.GetLayoutRoot() as RectTransform).sizeDelta.x / Screen.width;
 
 			if (this.preferences.IsDragViewportRestricted() == true) {
@@ -451,8 +471,6 @@ namespace UnityEngine.UI.Windows {
 
 			this.MoveLayout(delta * k);
 
-			this.OnMove(eventData);
-			
 		}
 		
 		private void SetDragEnd(PointerEventData eventData) {

@@ -128,7 +128,7 @@ namespace UnityEngine.UI.Windows {
 			this.manualShowHideControl = true;
 
 			if (setupTempNeedInactive == true) this.tempNeedToInactive = true;
-			
+
 			this.OnHideBegin_INTERNAL(++this.showHideIteration, () => {
 
 				this.OnHideEnd_INTERNAL();

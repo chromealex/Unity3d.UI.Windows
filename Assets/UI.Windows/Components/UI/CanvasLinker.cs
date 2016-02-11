@@ -32,7 +32,9 @@ namespace UnityEngine.UI.Windows.Extensions {
 				var window = this.windowObject.GetWindow();
 				if (window == null) {
 
+					#if UNITY_EDITOR
 					Debug.LogWarning("[ CanvasLinker ] WindowObject::GetWindow() is null", this);
+					#endif
 					return;
 
 				}

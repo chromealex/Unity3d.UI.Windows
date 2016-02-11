@@ -83,6 +83,7 @@ MonoBehaviour:
     dontDestroy: 1
     history: 0
     forceSingleInstance: 0
+    restoreSelectedElement: 1
     createPool: 1
     preallocatedCount: 0
     draggable: 0
@@ -151,6 +152,10 @@ MonoBehaviour:
   transition:
     transition: {fileID: 11400000, guid: c49ba41c8a89747ceba96e53ee4582f3, type: 2}
     transitionParameters: {fileID: 0}
+  activeState: 0
+  currentState: 0
+  dragState: 0
+  paused: 0
   layout:
     scaleMode: 0
     fixedScaleResolution: {x: 1024, y: 768}

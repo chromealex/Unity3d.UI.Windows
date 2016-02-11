@@ -41,6 +41,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 	};
 
+	public enum FullTextFormat : byte {
+
+		None = 0x0,
+		UpperFirstLetter = 0x1,
+		LowerAll = 0x2,
+		UpperAll = 0x4,
+		UppercaseWords = 0x8,
+		TrimLeft = 0x10,
+		TrimRight = 0x20,
+		Trim = TrimLeft | TrimRight,
+		Percent = 0x40,
+
+	};
+
 	public interface IComponent {
 
 	}
@@ -72,6 +86,7 @@ namespace UnityEngine.UI.Windows.Components {
 		string GetText();
 		ITextComponent SetTextColor(Color color);
 		ITextComponent SetValueFormat(TextValueFormat format);
+		ITextComponent SetFullTextFormat(FullTextFormat format);
 
 		ITextComponent SetFont(Font font);
 		ITextComponent SetFontSize(int value);

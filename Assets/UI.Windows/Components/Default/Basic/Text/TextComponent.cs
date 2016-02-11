@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Text.RegularExpressions;
+using ME;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -71,8 +72,11 @@ namespace UnityEngine.UI.Windows.Components {
 		private Text text;
 		[SerializeField]
 		private TextValueFormat valueFormat;
+		[SerializeField][BitMask(typeof(FullTextFormat))]
+		private FullTextFormat fullTextFormat;
 		[SerializeField][BitMask(typeof(RichTextFlags))]
 		private RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
+
 		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey textLocalizationKey;
 
 		public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
@@ -177,6 +181,14 @@ namespace UnityEngine.UI.Windows.Components {
 			return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
 
 		}
+		
+		public ITextComponent SetFullTextFormat(FullTextFormat format) {
+			
+			this.fullTextFormat = format;
+			
+			return this;
+			
+		}
 
 		public ITextComponent SetValueFormat(TextValueFormat format) {
 
@@ -271,6 +283,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 
+				text = TextComponent.FullTextFormat(text, this.fullTextFormat);
+
 				this.text.text = text;
 
 			}
@@ -326,6 +340,56 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		#endif
+
+		public static string FullTextFormat(string text, FullTextFormat flags) {
+			
+			if ((flags & UnityEngine.UI.Windows.Components.FullTextFormat.LowerAll) != 0) {
+				
+				text = text.ToLower();
+				
+			}
+			
+			if ((flags & UnityEngine.UI.Windows.Components.FullTextFormat.UpperAll) != 0) {
+				
+				text = text.ToUpper();
+				
+			}
+			
+			if ((flags & UnityEngine.UI.Windows.Components.FullTextFormat.TrimLeft) != 0 ||
+			    (flags & UnityEngine.UI.Windows.Components.FullTextFormat.Trim) != 0) {
+				
+				text = text.TrimStart();
+				
+			}
+			
+			if ((flags & UnityEngine.UI.Windows.Components.FullTextFormat.TrimRight) != 0 ||
+			    (flags & UnityEngine.UI.Windows.Components.FullTextFormat.Trim) != 0) {
+				
+				text = text.TrimEnd();
+				
+			}
+			
+			if ((flags & UnityEngine.UI.Windows.Components.FullTextFormat.Percent) != 0) {
+				
+				text = string.Format("{0}%", text);
+				
+			}
+
+			if ((flags & UnityEngine.UI.Windows.Components.FullTextFormat.UpperFirstLetter) != 0) {
+				
+				text = text.UppercaseFirst();
+				
+			}
+			
+			if ((flags & UnityEngine.UI.Windows.Components.FullTextFormat.UppercaseWords) != 0) {
+				
+				text = text.UppercaseWords();
+				
+			}
+
+			return text;
+
+		}
 
 		public static string ParseRichText(string text, RichTextFlags flags) {
 

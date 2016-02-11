@@ -130,20 +130,25 @@ namespace UnityEditor.UI.Windows {
 
 			var activeState = so.FindProperty("activeState");
 			var currentState = so.FindProperty("currentState");
+			var dragState = so.FindProperty("dragState");
 			var pausedState = so.FindProperty("paused");
 
-			if (activeState != null && currentState != null && pausedState != null) {
+			if (activeState != null && dragState != null && currentState != null && pausedState != null) {
 
 				GUILayout.BeginHorizontal(backStyle);
 				{
-					
-					GUILayout.BeginVertical();
-					{
-						GUILayout.Label("Active State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-						GUILayout.Label(activeState.enumNames[activeState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+
+					if (win.preferences.IsHistoryActive() == true) {
+
+						GUILayout.BeginVertical();
+						{
+							GUILayout.Label("Active State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+							GUILayout.Label(activeState.enumNames[activeState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+						}
+						GUILayout.EndVertical();
+						
 					}
-					GUILayout.EndVertical();
-					
+
 					GUILayout.BeginVertical();
 					{
 						GUILayout.Label("Window State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
@@ -151,6 +156,17 @@ namespace UnityEditor.UI.Windows {
 					}
 					GUILayout.EndVertical();
 					
+					if (win.preferences.draggable == true) {
+
+						GUILayout.BeginVertical();
+						{
+							GUILayout.Label("Drag State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+							GUILayout.Label(dragState.enumNames[dragState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+						}
+						GUILayout.EndVertical();
+
+					}
+
 					GUILayout.BeginVertical();
 					{
 						GUILayout.Label("Paused State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));

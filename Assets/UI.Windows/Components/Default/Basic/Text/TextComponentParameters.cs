@@ -12,6 +12,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P15)] public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey localizationKey;
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P2)] public Color color = Color.white;
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P3)] public TextValueFormat format = TextValueFormat.None;
+		[ParamFlag(ParameterFlag./*{flagPrefix}*/P16)] public FullTextFormat fullTextFormat = FullTextFormat.None;
 
 		[Header("Text: Character")]
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P4)] public Font font;
@@ -34,6 +35,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P15) == true) component.SetText(this.localizationKey);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P2) == true) component.SetTextColor(this.color);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P3) == true) component.SetValueFormat(this.format);
+			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P16) == true) component.SetFullTextFormat(this.fullTextFormat);
 
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P4) == true) component.SetFont(this.font);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P5) == true) component.SetFontSize(this.fontSize);
