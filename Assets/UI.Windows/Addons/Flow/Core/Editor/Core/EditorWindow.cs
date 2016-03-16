@@ -450,8 +450,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								
 								var isSelected = selected.Contains(window.id) || (selected.Count == 0 && this.focusedGUIWindow == window.id);
 								var style = window.GetEditorStyle(isSelected);
-								
-								var rect = GUI.Window(window.id, window.rect, this.DrawNodeWindow, title, style);
+
+								var rect = window.rect;
+								rect = GUI.Window(window.id, rect, this.DrawNodeWindow, title, style);
 								GUI.BringWindowToFront(window.id);
 
 								GUI.Window(-window.id, new Rect(rect.x, rect.y + rect.height, rect.width, this.GetTagsHeight(window)), (id) => {

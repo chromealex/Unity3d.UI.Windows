@@ -410,15 +410,15 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public static void AudioPlay(WindowBase window, ClipType clipType, int id) {
+		public static void AudioPlay(WindowBase window, ClipType clipType, int id, bool replaceOnEquals = false) {
 			
 			if (WindowSystem.instance == null) return;
-
-			//Debug.Log("PLAY: " + id);
-			Audio.Manager.Play(window, WindowSystem.instance.audio, clipType, id);
+			
+			//Debug.Log("PLAY: " + id + ", " + replaceOnEquals);
+			Audio.Manager.Play(window, WindowSystem.instance.audio, clipType, id, replaceOnEquals);
 			
 		}
-		
+
 		public static void AudioChange(WindowBase window, ClipType clipType, int id, Audio.Window audioSettings) {
 			
 			if (WindowSystem.instance == null) return;
@@ -1362,6 +1362,13 @@ namespace UnityEngine.UI.Windows {
 			
 			return false;
 			
+		}
+
+		public static Vector2 ConvertScreenPoint(Vector2 screenPoint, WindowObject handler) {
+
+			var k = (handler.GetWindow().GetLayoutRoot() as RectTransform).sizeDelta.x / Screen.width;
+			return screenPoint * k;
+
 		}
 
 		public static Vector3 ConvertPoint(Vector3 point, WindowBase from, WindowBase to, bool withoutCamera = false) {

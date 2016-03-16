@@ -53,6 +53,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public void SetTurnState(bool state) {
+
+			this.toggle.isOn = state;
+
+		}
+
 		public void TurnOn() {
 
 			this.toggle.isOn = true;

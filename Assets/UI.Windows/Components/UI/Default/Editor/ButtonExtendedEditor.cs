@@ -17,6 +17,7 @@ namespace UnityEditor.UI {
 		SerializedProperty extSpriteStateProperty;
 		SerializedProperty extAnimTriggerProperty;
 		SerializedProperty extTargetGraphicProperty;
+		SerializedProperty extTargetGraphicsProperty;
 
 		AnimBool extShowScale = new AnimBool();
 		AnimBool extShowAlpha = new AnimBool();
@@ -38,6 +39,7 @@ namespace UnityEditor.UI {
 			extSpriteStateProperty = serializedObject.FindProperty("m_SpriteState");
 			extAnimTriggerProperty = serializedObject.FindProperty("m_AnimationTriggers");
 			extTargetGraphicProperty = serializedObject.FindProperty("m_TargetGraphic");
+			extTargetGraphicsProperty = serializedObject.FindProperty("m_TargetGraphics");
 
 			var trans = GetTransition(this.transitionExtended);
 			extShowScale.value = (trans & ButtonExtended.Transition.Scale) != 0;
@@ -91,6 +93,7 @@ namespace UnityEditor.UI {
 			if ((trans & ButtonExtended.Transition.ColorTint) != 0 ||
 			    (trans & ButtonExtended.Transition.SpriteSwap) != 0) {
 				EditorGUILayout.PropertyField(extTargetGraphicProperty);
+				EditorGUILayout.PropertyField(extTargetGraphicsProperty, includeChildren: true);
 				EditorGUILayout.Space();
 			}
 			
@@ -99,7 +102,7 @@ namespace UnityEditor.UI {
 				EditorGUILayout.Space();
 			}
 			EditorGUILayout.EndFadeGroup();
-			
+
 			if (EditorGUILayout.BeginFadeGroup(extShowAlpha.faded)) {
 				EditorGUILayout.PropertyField(extAlphaBlockProperty, includeChildren: true);
 				EditorGUILayout.Space();

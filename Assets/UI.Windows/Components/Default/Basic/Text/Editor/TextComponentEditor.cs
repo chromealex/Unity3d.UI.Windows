@@ -6,7 +6,7 @@ using UnityEngine.UI.Windows.Components;
 namespace UnityEditor.UI.Windows.Components {
 
 	[CustomEditor(typeof(TextComponent))]
-	public class TextComponentEditor : WindowComponentEditor {
+	public class TextComponentEditor : WindowComponentBaseEditor {
 
 
 	}

@@ -107,6 +107,22 @@ namespace UnityEngine.UI.Windows.Components {
 			this.UpdateDropState();
 
 		}
+		
+		public override void OnShowBegin() {
+			
+			base.OnShowBegin();
+			
+			this.SetState(this.opened, immediately: true);
+			
+		}
+
+		public override void OnShowEnd() {
+
+			base.OnShowEnd();
+			
+			this.SetState(this.opened, immediately: true);
+
+		}
 
 		public override void OnDeinit() {
 			
@@ -116,14 +132,6 @@ namespace UnityEngine.UI.Windows.Components {
 			this.callbackButton.RemoveAllListeners();
 
 			WindowSystemInput.onPointerDown.RemoveListener(this.OnPressDown);
-
-		}
-
-		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-
-			base.OnShowBegin(callback, resetAnimation);
-
-			this.SetState(this.opened, immediately: true);
 
 		}
 

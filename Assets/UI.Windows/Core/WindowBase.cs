@@ -22,46 +22,9 @@ namespace UnityEngine.UI.Windows {
 	 * Screen
 	 */
 
-	public class CompilerIgnore : System.Attribute {
-	};
-
-	/// <summary>
-	/// Window or component object state.
-	/// </summary>
-	public enum WindowObjectState : byte {
-
-		NotInitialized = 0,
-		Initializing,
-		Initialized,
-
-		Showing,
-		Shown,
-
-		Hiding,
-		Hidden,
-
-	};
-
-	public enum ActiveState : byte {
-
-		None = 0,
-		Active,
-		Inactive,
-
-	};
-
-	public enum DragState : byte {
-
-		None = 0,
-		Begin,
-		Move,
-		End,
-
-	};
-
 	[ExecuteInEditMode()]
 	[RequireComponent(typeof(Camera))]
-	public class WindowBase : WindowObject, IWindowEventsAsync, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler {
+	public abstract class WindowBase : WindowObject, IWindowEventsAsync, IWindowEventsController, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
 		#if UNITY_EDITOR
 		[HideInInspector]
@@ -115,6 +78,12 @@ namespace UnityEngine.UI.Windows {
 
 			return this.source == y.source;
 			
+		}
+
+		public WindowBase GetSource() {
+
+			return this.source;
+
 		}
 		
 		public void Setup(FlowData data) {
@@ -205,10 +174,10 @@ namespace UnityEngine.UI.Windows {
 				
 				this.Setup(this);
 
-				this.OnLayoutInit(depth, raycastPriority, orderInLayer);
+				this.DoLayoutInit(depth, raycastPriority, orderInLayer);
 				this.OnModulesInit();
 				this.OnAudioInit();
-				this.events.OnInit();
+				this.events.DoInit();
 				this.OnTransitionInit();
 				
 				if (WindowSystem.IsCallEventsEnabled() == true) {
@@ -309,7 +278,7 @@ namespace UnityEngine.UI.Windows {
 		private void OnAudioInit() {
 
 			this.audio.Setup(this);
-			this.audio.OnInit();
+			this.audio.DoInit();
 
 		}
 
@@ -317,14 +286,14 @@ namespace UnityEngine.UI.Windows {
 			
 			this.workCamera.clearFlags = CameraClearFlags.Depth;
 			this.transition.Setup(this);
-			this.transition.OnInit();
+			this.transition.DoInit();
 
 		}
 
 		private void OnModulesInit() {
 
 			this.modules.Create(this, this.GetLayoutRoot());
-			this.modules.OnInit();
+			this.modules.DoInit();
 
 		}
 
@@ -352,7 +321,7 @@ namespace UnityEngine.UI.Windows {
 
 		public virtual void OnActive() {
 
-			if (this.preferences.restoreSelectedElement == true) {
+			if (this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
 
 				EventSystem.current.firstSelectedGameObject = this.firstSelectedGameObject;
 				EventSystem.current.SetSelectedGameObject(this.currentSelectedGameObject);
@@ -363,7 +332,7 @@ namespace UnityEngine.UI.Windows {
 
 		public virtual void OnInactive() {
 			
-			if (this.preferences.restoreSelectedElement == true) {
+			if (this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
 
 				this.firstSelectedGameObject = EventSystem.current.firstSelectedGameObject;
 				this.currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
@@ -376,6 +345,9 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void OnLocalizationChanged() {
+		}
+
+		public virtual void OnManualEvent<T>(T data) where T : IManualEvent {
 		}
 
 		#region DRAG'n'DROP
@@ -639,6 +611,8 @@ namespace UnityEngine.UI.Windows {
 		private IEnumerator Show_INTERNAL_YIELD(System.Action onShowEnd, AttachItem transitionItem) {
 
 			while (this.paused == true) yield return false;
+			
+			this.gameObject.SetActive(true);
 
 			var counter = 0;
 			System.Action callback = () => {
@@ -648,48 +622,48 @@ namespace UnityEngine.UI.Windows {
 				++counter;
 				if (counter < 6) return;
 
-				this.OnLayoutShowEnd();
-				this.modules.OnShowEnd();
-				this.audio.OnShowEnd();
-				this.events.OnShowEnd();
-				this.transition.OnShowEnd();
-				this.OnShowEnd();
+				this.DoLayoutShowEnd();
+				this.modules.DoShowEnd();
+				this.audio.DoShowEnd();
+				this.events.DoShowEnd();
+				this.transition.DoShowEnd();
+				this.DoShowEnd();
 				if (onShowEnd != null) onShowEnd();
 
 			    this.currentState = WindowObjectState.Shown;
 
 			};
+			
+			var parameters = AppearanceParameters.Default().ReplaceCallback(callback);
 
-			this.OnLayoutShowBegin(callback);
+			this.DoLayoutShowBegin(parameters);
+			
+			this.modules.DoShowBegin(parameters);
 
 			if (transitionItem != null && transitionItem.audioTransition != null) {
 
-				this.audio.OnShowBegin(transitionItem.audioTransition, transitionItem.audioTransitionParameters, callback);
+				this.audio.DoShowBegin(transitionItem.audioTransition, transitionItem.audioTransitionParameters, parameters);
 
 			} else {
 
-				this.audio.OnShowBegin(callback);
+				this.audio.DoShowBegin(parameters);
 
 			}
 
-			this.modules.OnShowBegin(callback);
-
-			this.events.OnShowBegin(callback);
+			this.events.DoShowBegin(parameters);
 			
 			if (transitionItem != null && transitionItem.transition != null) {
 				
-				this.transition.OnShowBegin(transitionItem.transition, transitionItem.transitionParameters, callback);
+				this.transition.DoShowBegin(transitionItem.transition, transitionItem.transitionParameters, parameters);
 				
 			} else {
 				
-				this.transition.OnShowBegin(callback);
+				this.transition.DoShowBegin(parameters);
 				
 			}
 			
-			this.OnShowBegin(callback);
+			this.DoShowBegin(parameters);
 
-			this.gameObject.SetActive(true);
-			
 		}
 
 		/// <summary>
@@ -770,12 +744,12 @@ namespace UnityEngine.UI.Windows {
 
 				this.Recycle();
 
-				this.OnLayoutHideEnd();
-				this.modules.OnHideEnd();
-				this.audio.OnHideEnd();
-				this.events.OnHideEnd();
-				this.transition.OnHideEnd();
-				this.OnHideEnd();
+				this.DoLayoutHideEnd();
+				this.modules.DoHideEnd();
+				this.audio.DoHideEnd();
+				this.events.DoHideEnd();
+				this.transition.DoHideEnd();
+				this.DoHideEnd();
 				if (onHideEnd != null) onHideEnd();
 
 				this.currentState = WindowObjectState.Hidden;
@@ -788,33 +762,35 @@ namespace UnityEngine.UI.Windows {
 
 			};
 
-			this.OnLayoutHideBegin(callback);
+			var parameters = AppearanceParameters.Default().ReplaceCallback(callback);
+
+			this.DoLayoutHideBegin(parameters);
 			
-			this.modules.OnHideBegin(callback);
+			this.modules.DoHideBegin(parameters);
 
 			if (transitionItem != null && transitionItem.audioTransition != null) {
 				
-				this.audio.OnHideBegin(transitionItem.audioTransition, transitionItem.audioTransitionParameters, callback);
+				this.audio.DoHideBegin(transitionItem.audioTransition, transitionItem.audioTransitionParameters, parameters);
 				
 			} else {
 				
-				this.audio.OnHideBegin(callback);
+				this.audio.DoHideBegin(parameters);
 				
 			}
 			
-			this.events.OnHideBegin(callback);
+			this.events.DoHideBegin(parameters);
 
 			if (transitionItem != null && transitionItem.transition != null) {
 				
-				this.transition.OnHideBegin(transitionItem.transition, transitionItem.transitionParameters, callback);
+				this.transition.DoHideBegin(transitionItem.transition, transitionItem.transitionParameters, parameters);
 				
 			} else {
 				
-				this.transition.OnHideBegin(callback);
+				this.transition.DoHideBegin(parameters);
 				
 			}
 			
-			this.OnHideBegin(callback, immediately: false);
+			this.DoHideBegin(parameters);
 
 			yield return true;
 
@@ -836,16 +812,16 @@ namespace UnityEngine.UI.Windows {
 
 			if (Application.isPlaying == false) return;
 
-			this.OnLayoutDeinit();
-			this.modules.OnDeinit();
-			this.audio.OnDeinit();
-			this.events.OnDeinit();
-			this.transition.OnDeinit();
+			this.DoLayoutDeinit();
+			this.modules.DoDeinit();
+			this.audio.DoDeinit();
+			this.events.DoDeinit();
+			this.transition.DoDeinit();
 			this.OnDeinit();
 
 		}
 		
-		protected virtual Transform GetLayoutRoot() { return null; }
+		public virtual Transform GetLayoutRoot() { return null; }
 		protected virtual void MoveLayout(Vector2 delta) {}
 
 		/// <summary>
@@ -865,34 +841,34 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="depth">Depth.</param>
 		/// <param name="raycastPriority">Raycast priority.</param>
 		/// <param name="orderInLayer">Order in layer.</param>
-		protected virtual void OnLayoutInit(float depth, int raycastPriority, int orderInLayer) {}
+		protected virtual void DoLayoutInit(float depth, int raycastPriority, int orderInLayer) {}
 
 		/// <summary>
 		/// Raises the layout deinit event.
 		/// </summary>
-		protected virtual void OnLayoutDeinit() {}
+		protected virtual void DoLayoutDeinit() {}
 
 		/// <summary>
 		/// Raises the layout show begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		protected virtual void OnLayoutShowBegin(System.Action callback) { if (callback != null) callback(); }
+		protected virtual void DoLayoutShowBegin(AppearanceParameters parameters) { parameters.Call(); }
 
 		/// <summary>
 		/// Raises the layout show end event.
 		/// </summary>
-		protected virtual void OnLayoutShowEnd() {}
+		protected virtual void DoLayoutShowEnd() {}
 
 		/// <summary>
 		/// Raises the layout hide begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		protected virtual void OnLayoutHideBegin(System.Action callback) { if (callback != null) callback(); }
+		protected virtual void DoLayoutHideBegin(AppearanceParameters parameters) { parameters.Call(); }
 
 		/// <summary>
 		/// Raises the layout hide end event.
 		/// </summary>
-		protected virtual void OnLayoutHideEnd() {}
+		protected virtual void DoLayoutHideEnd() {}
 
 		/// <summary>
 		/// Raises the parameters pass event.
@@ -919,40 +895,95 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the init event.
 		/// </summary>
-		public virtual void OnInit() {}
+		public virtual void DoInit() {
+
+			this.OnInit();
+
+		}
 
 		/// <summary>
 		/// Raises the deinit event.
 		/// </summary>
-		public virtual void OnDeinit() {}
+		public virtual void DoDeinit() {
+
+			this.OnDeinit();
+
+		}
 
 		/// <summary>
 		/// Raises the show begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) { if (callback != null) callback(); }
+		public virtual void DoShowBegin(AppearanceParameters parameters) {
+
+			this.OnShowBegin();
+			this.OnShowBegin(parameters);
+			#pragma warning disable
+			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
+			#pragma warning restore
+
+			parameters.Call();
+
+		}
 
 		/// <summary>
 		/// Raises the show end event.
 		/// </summary>
-		public virtual void OnShowEnd() {}
+		public virtual void DoShowEnd() {
+			
+			this.OnShowEnd();
+			
+		}
 
 		/// <summary>
 		/// Raises the hide begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void OnHideBegin(System.Action callback, bool immediately = false) { if (callback != null) callback(); }
+		public virtual void DoHideBegin(AppearanceParameters parameters) {
+
+			this.OnHideBegin();
+			this.OnHideBegin(parameters);
+			#pragma warning disable
+			this.OnHideBegin(parameters.callback, parameters.immediately);
+			#pragma warning restore
+
+			parameters.Call();
+
+		}
 
 		/// <summary>
 		/// Raises the hide end event.
 		/// </summary>
+		public virtual void DoHideEnd() {
+
+			this.OnHideEnd();
+
+		}
+		
+		public virtual void OnInit() {}
+		public virtual void OnDeinit() {}
+
+		public virtual void OnShowEnd() {}
 		public virtual void OnHideEnd() {}
 		
+		public virtual void OnShowBegin() {}
+		public virtual void OnShowBegin(AppearanceParameters parameters) {}
+		
+		public virtual void OnHideBegin() {}
+		public virtual void OnHideBegin(AppearanceParameters parameters) {}
+
+		[System.Obsolete("Use OnShowBegin with AppearanceParameters or OnShowBegin without parameters")]
+		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
+		[System.Obsolete("Use OnHideBegin with AppearanceParameters or OnHideBegin without parameters")]
+		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {}
+
 		#if UNITY_EDITOR
 		/// <summary>
 		/// Raises the validate event. Editor only.
 		/// </summary>
 		public virtual void OnValidate() {
+
+			if (Application.isPlaying == true) return;
 
 			this.preferences.OnValidate();
 

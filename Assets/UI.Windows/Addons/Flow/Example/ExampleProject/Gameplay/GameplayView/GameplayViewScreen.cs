@@ -24,9 +24,9 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 
 		}
 
-		public override void OnShowBegin(System.Action callback, bool resetAnimation) {
+		public override void OnShowBegin() {
 
-			base.OnShowBegin(callback, resetAnimation);
+			base.OnShowBegin();
 			
 			this.hud = this.FlowGameplayHUD(this);
 			this.SetColor(Color.white);

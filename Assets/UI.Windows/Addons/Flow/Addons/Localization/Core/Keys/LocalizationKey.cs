@@ -9,14 +9,14 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		public int parameters;
 		public bool formatWithDeclension;
 		public bool outputDeclensionWithoutNumber;
-
+		
 		public LocalizationKey(string key) {
-
+			
 			this.key = key;
 			this.parameters = LocalizationSystem.GetParametersCount(key, LocalizationSystem.GetCurrentLanguage());
 			this.formatWithDeclension = LocalizationSystem.IsNeedToFormatWithDeclension(key, LocalizationSystem.GetCurrentLanguage());
 			this.outputDeclensionWithoutNumber = false;
-
+			
 		}
 
 		public bool IsNone() {

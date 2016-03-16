@@ -29,11 +29,11 @@ public class UIWindowExampleComponents : LayoutWindowType {
 		}
 
 	}
-
-	public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-
-		base.OnShowBegin(callback, resetAnimation);
+	
+	public override void OnShowBegin() {
 		
+		base.OnShowBegin();
+
 		this.tabs.Load(0, immediately: true);
 
 	}

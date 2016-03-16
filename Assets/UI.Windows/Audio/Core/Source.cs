@@ -17,9 +17,11 @@ namespace UnityEngine.UI.Windows.Audio {
 		private float musicVolume = 0f;
 		private float sfxVolume = 0f;
 
+		private int currentMusicId;
+
 		public void Init() {
 
-			this.source.CreatePool(10);
+			this.source.CreatePool(2);
 
 		}
 
@@ -53,7 +55,7 @@ namespace UnityEngine.UI.Windows.Audio {
 
 			}
 			
-			var sources = this.GetSources(null, clipType);
+			var sources = this.GetPlayingSources(null, clipType);
 			if (sources != null) {
 
 				foreach (var source in sources) {
@@ -72,6 +74,20 @@ namespace UnityEngine.UI.Windows.Audio {
 
 		}
 
+		public int GetCurrentMusicId() {
+
+			return this.currentMusicId;
+
+		}
+
+		public long GetKey(WindowBase window, ClipType clipType, int id) {
+			
+			var key = (long)(((int)clipType << 16) | (id & 0xffff));
+
+			return key;
+
+		}
+
 		public AudioSource GetSource(WindowBase window, ClipType clipType, int id) {
 			
 			#if UNITY_EDITOR
@@ -81,13 +97,22 @@ namespace UnityEngine.UI.Windows.Audio {
 				
 			}
 			#endif
-			
-			var key = (window != null) ? (long)window.GetInstanceID() : (long)(((int)clipType << 16) | (id & 0xffff));
-			
+
+			if (clipType == ClipType.Music) {
+				
+				this.currentMusicId = id;
+				
+			}
+
+			var key = this.GetKey(window, clipType, id);
+
 			AudioSource value;
 			if (this.instances.TryGetValue(key, out value) == false) {
 				
 				value = this.source.Spawn();
+				#if UNITY_EDITOR
+				value.gameObject.name = string.Format("[ AudioSource ] {0} {1} {2}", (window != null ? window.name : string.Empty), clipType, id);
+				#endif
 				this.instances.Add(key, value);
 				
 			}
@@ -108,8 +133,33 @@ namespace UnityEngine.UI.Windows.Audio {
 			return value;
 			
 		}
-		
-		public List<AudioSource> GetSources(WindowBase window, ClipType clipType) {
+
+		public AudioSource GetPlayingSource(WindowBase window, ClipType clipType, int id) {
+			
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+				
+				return null;
+				
+			}
+			#endif
+
+			var key = this.GetKey(window, clipType, id);
+
+			AudioSource value;
+			if (this.instances.TryGetValue(key, out value) == false) {
+				
+				return null;
+				
+			} else {
+				
+				return value;
+				
+			}
+
+		}
+
+		public List<AudioSource> GetPlayingSources(WindowBase window, ClipType clipType) {
 			
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) {

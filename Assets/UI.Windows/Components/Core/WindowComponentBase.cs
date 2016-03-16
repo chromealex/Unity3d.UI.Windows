@@ -8,20 +8,14 @@ namespace UnityEngine.UI.Windows {
 
     public class WindowComponentBase : WindowObjectElement, IWindowAnimation {
 
-		public enum ChildsBehaviourMode : byte {
-
-			Simultaneously = 0,		// Call Show/Hide methods on all childs
-			Consequentially = 1,	// Call Show/Hide after all childs complete hide
-
-		};
-
 		[Header("Animation Info")]
 		[SceneEditOnly]
 		new public WindowAnimationBase animation;
 		
 		public ChildsBehaviourMode childsShowMode = ChildsBehaviourMode.Simultaneously;
 		public ChildsBehaviourMode childsHideMode = ChildsBehaviourMode.Simultaneously;
-		private int showHideIteration = 0;
+
+		public WindowComponentHistoryTracker eventsHistoryTracker = new WindowComponentHistoryTracker();
 
 		[HideInInspector]
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
@@ -29,116 +23,454 @@ namespace UnityEngine.UI.Windows {
 		public CanvasGroup canvas;
 		[HideInInspector]
 		public bool animationRefresh = false;
-
+		
+		[SerializeField][HideInInspector]
 		private bool manualShowHideControl = false;
 
-		private bool tempNeedToInactive = false;
+		public override void OnInit() {
+			
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.Init);
 
-		public override bool NeedToInactive() {
-
-			return this.tempNeedToInactive == true || this.animation != null;
+			base.OnInit();
 
 		}
 
+		public override void OnDeinit() {
+			
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.Deinit);
+
+			base.OnDeinit();
+
+		}
+
+		public override void DoWindowOpen() {
+
+			base.DoWindowOpen();
+			
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowOpen);
+
+			this.manualShowHideControl = false;
+
+		}
+
+		public override void DoWindowClose() {
+
+			base.DoWindowClose();
+			
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowClose);
+
+			this.manualShowHideControl = false;
+
+		}
+
+		#region OBSOLETE
+		public void HideExcludeChilds(System.Action callback = null, bool immediately = false) {
+			
+			this.Hide(AppearanceParameters.Default()
+			          .ReplaceCallback(callback: callback)
+			          .ReplaceImmediately(immediately: immediately)
+			          .ReplaceIncludeChilds(includeChilds: false));
+
+		}
+
+		public void Hide(bool immediately) {
+			
+			this.Hide(AppearanceParameters.Default()
+			          .ReplaceImmediately(immediately: immediately));
+			
+		}
+		
+		public void Hide(System.Action callback, bool immediately) {
+			
+			this.Hide(AppearanceParameters.Default()
+			          .ReplaceCallback(callback: callback)
+			          .ReplaceImmediately(immediately: immediately));
+			
+		}
+		
+		public void ShowExcludeChilds(System.Action callback = null, bool resetAnimation = true) {
+			
+			this.Show(AppearanceParameters.Default()
+			          .ReplaceCallback(callback: callback)
+			          .ReplaceResetAnimation(resetAnimation: resetAnimation)
+			          .ReplaceIncludeChilds(includeChilds: false));
+			
+		}
+
+		public void Show(bool resetAnimation) {
+			
+			this.Show(AppearanceParameters.Default()
+			          .ReplaceResetAnimation(resetAnimation: resetAnimation));
+			
+		}
+
+		public void Show(System.Action callback, bool resetAnimation) {
+
+			this.Show(AppearanceParameters.Default()
+			          .ReplaceCallback(callback: callback)
+			          .ReplaceResetAnimation(resetAnimation: resetAnimation));
+
+		}
+		#endregion
+
+		#region Manual Events
 		public void ShowHide(bool state) {
 
+			this.ShowHide(state, AppearanceParameters.Default());
+
+		}
+
+		public void ShowHide(bool state, AppearanceParameters parameters) {
+			
 			if (state == true && this.GetComponentState() != WindowObjectState.Shown) {
-
-				this.Show();
-
+				
+				this.Show(parameters);
+				
 			} else if (state == false && this.GetComponentState() != WindowObjectState.Hidden) {
-
-				this.Hide();
-
+				
+				this.Hide(parameters);
+				
 			}
 
 		}
 
-		public void SetManualShowHideControl() {
+		public void Show() {
 
-			this.manualShowHideControl = true;
+			this.Show(AppearanceParameters.Default());
 
 		}
 
-		/// <summary>
-		/// Show component.
-		/// Animation component can use current layout element root or current component root.
-		/// </summary>
-		/// <param name="resetAnimation">If set to <c>true</c> reset animation.</param>
-		public void Show(bool resetAnimation = true) {
-			
-			this.Show(null, resetAnimation);
-			
-		}
-
-		/// <summary>
-		/// Show component with callback after end.
-		/// Animation component can use current layout element root or current component root.
-		/// </summary>
-		/// <param name="callback">Callback.</param>
-		/// <param name="resetAnimation">If set to <c>true</c> reset animation.</param>
-		public virtual void Show(System.Action callback, bool resetAnimation) {
-
-			this.manualShowHideControl = true;
-
-			this.OnShowBegin_INTERNAL(++this.showHideIteration, () => {
-
-				this.OnShowEnd_INTERNAL();
-				if (callback != null) callback.Invoke();
-
-			}, resetAnimation);
-			
-		}
-
-		/// <summary>
-		/// Hide this instance.
-		/// Animation component can use current layout element root or current component root.
-		/// </summary>
 		public void Hide() {
-			
-			this.Hide(null, immediately: false);
-			
-		}
 
-		/// <summary>
-		/// Hide the specified immediately.
-		/// Animation component can use current layout element root or current component root.
-		/// </summary>
-		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		public void Hide(bool immediately) {
-
-			this.Hide(null, immediately);
+			this.Hide(AppearanceParameters.Default());
 
 		}
+		
+		public void Show(AppearanceParameters parameters) {
 
-		/// <summary>
-		/// Hide the specified callback and immediately.
-		/// Animation component can use current layout element root or current component root.
-		/// </summary>
-		/// <param name="callback">Callback.</param>
-		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		public virtual void Hide(System.Action callback, bool immediately) {
+			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.ShowManual);
 
-			this.Hide(callback, immediately, setupTempNeedInactive: true);
+			this.manualShowHideControl = true;
+			
+			var callback = parameters.callback;
+			parameters.callback = () => {
+				
+				this.DoShowEnd_INTERNAL();
+				if (callback != null) callback.Invoke();
+				
+			};
+			
+			this.DoShowBegin_INTERNAL(parameters);
 			
 		}
 
-		public void Hide(System.Action callback, bool immediately, bool setupTempNeedInactive) {
+		public void Hide(AppearanceParameters parameters) {
+			
+			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.HideManual);
 
 			this.manualShowHideControl = true;
 
-			if (setupTempNeedInactive == true) this.tempNeedToInactive = true;
+			var callback = parameters.callback;
+			parameters.callback = () => {
 
-			this.OnHideBegin_INTERNAL(++this.showHideIteration, () => {
-
-				this.OnHideEnd_INTERNAL();
-				
-				if (setupTempNeedInactive == true) this.tempNeedToInactive = false;
-				
+				this.DoHideEnd_INTERNAL();
 				if (callback != null) callback.Invoke();
 
-			}, immediately);
+			};
+
+			this.DoHideBegin_INTERNAL(parameters);
+
+		}
+		#endregion
+
+		#region Base Events
+		public override void DoShowEnd() {
 			
+			if (this.manualShowHideControl == true || this.showOnStart == false) {
+
+				return;
+				
+			}
+			
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.ShowEnd);
+
+			this.DoShowEnd_INTERNAL();
+
+		}
+
+		public override void DoShowBegin(AppearanceParameters parameters) {
+
+			if (this.manualShowHideControl == true || this.showOnStart == false) {
+
+				parameters.Call();
+				return;
+
+			}
+			
+			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.ShowBegin);
+
+			this.DoShowBegin_INTERNAL(parameters);
+
+		}
+
+		public override void DoHideEnd() {
+			
+			if (this.manualShowHideControl == true) {
+				
+				return;
+				
+			}
+			
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.HideEnd);
+
+			this.DoHideEnd_INTERNAL();
+			
+		}
+
+		public override void DoHideBegin(AppearanceParameters parameters) {
+			
+			if (this.manualShowHideControl == true) {
+				
+				parameters.Call();
+				return;
+				
+			}
+			
+			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.HideBegin);
+
+			this.DoHideBegin_INTERNAL(parameters);
+
+		}
+		#endregion
+		
+		private void DoShowBegin_INTERNAL(AppearanceParameters parameters) {
+
+			this.SetComponentState(WindowObjectState.Showing);
+
+			var parametersCallback = parameters.callback;
+			System.Action onResult = () => {
+
+				parameters = parameters.ReplaceCallback(parametersCallback);
+
+				this.OnShowBegin();
+				this.OnShowBegin(parameters);
+				this.OnShowBegin(parameters.callback, parameters.resetAnimation);
+				
+				parameters.Call();
+				
+			};
+
+			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
+			
+			/*var resetAnimation = parameters.GetResetAnimation(defaultValue: true);
+			if (resetAnimation == true) {
+
+				if (includeChilds == true) {
+
+					this.DoResetState();
+
+				} else {
+					
+					this.SetResetState();
+
+				}
+
+			}*/
+
+			#region Include Childs
+			if (includeChilds == false) {
+
+				// without childs
+				this.DoShowBeginAnimation_INTERNAL(onResult, parameters);
+				return;
+
+			}
+			#endregion
+
+			var childsBehaviour = parameters.GetChildsBehaviourMode(this.childsShowMode);
+			if (childsBehaviour == ChildsBehaviourMode.Simultaneously) {
+
+				#region Childs Simultaneously
+				var counter = 0;
+				System.Action callback = () => {
+
+					++counter;
+					if (counter < 2) return;
+
+					onResult.Invoke();
+					
+				};
+
+				this.DoShowBeginAnimation_INTERNAL(callback, parameters);
+
+				ME.Utilities.CallInSequence(callback, this.subComponents, (e, c) => {
+
+					e.DoShowBegin(parameters.ReplaceCallback(c));
+
+				});
+				#endregion
+
+			} else if (childsBehaviour == ChildsBehaviourMode.Consequentially) {
+
+				#region Childs Consequentially
+				ME.Utilities.CallInSequence(() => {
+
+					this.DoShowBeginAnimation_INTERNAL(onResult, parameters);
+					
+				}, this.subComponents, (e, c) => {
+
+					e.DoShowBegin(parameters.ReplaceCallback(c));
+					
+				}, waitPrevious: true);
+				#endregion
+
+			}
+
+		}
+		
+		private void DoShowEnd_INTERNAL() {
+			
+			base.DoShowEnd();
+			
+		}
+		
+		private void DoHideBegin_INTERNAL(AppearanceParameters parameters) {
+			
+			this.SetComponentState(WindowObjectState.Hiding);
+			
+			var parametersCallback = parameters.callback;
+			System.Action onResult = () => {
+				
+				parameters = parameters.ReplaceCallback(parametersCallback);
+				
+				this.OnHideBegin();
+				this.OnHideBegin(parameters);
+				this.OnHideBegin(parameters.callback, parameters.resetAnimation);
+				
+				parameters.Call();
+				
+			};
+			
+			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
+			#region Include Childs
+			if (includeChilds == false) {
+				
+				// without childs
+				this.DoHideBeginAnimation_INTERNAL(onResult, parameters);
+				return;
+				
+			}
+			#endregion
+			
+			var childsBehaviour = parameters.GetChildsBehaviourMode(this.childsHideMode);
+			if (childsBehaviour == ChildsBehaviourMode.Simultaneously) {
+				
+				#region Childs Simultaneously
+				var counter = 0;
+				System.Action callback = () => {
+					
+					++counter;
+					if (counter < 2) return;
+					
+					onResult.Invoke();
+					
+				};
+				
+				this.DoHideBeginAnimation_INTERNAL(callback, parameters);
+				
+				ME.Utilities.CallInSequence(callback, this.subComponents, (e, c) => {
+					
+					e.DoHideBegin(parameters.ReplaceCallback(c));
+					
+				});
+				#endregion
+				
+			} else if (childsBehaviour == ChildsBehaviourMode.Consequentially) {
+				
+				#region Childs Consequentially
+				ME.Utilities.CallInSequence(() => {
+					
+					this.DoHideBeginAnimation_INTERNAL(onResult, parameters);
+					
+				}, this.subComponents, (e, c) => {
+					
+					e.DoHideBegin(parameters.ReplaceCallback(c));
+					
+				}, waitPrevious: true);
+				#endregion
+				
+			}
+
+		}
+		
+		private void DoHideEnd_INTERNAL() {
+			
+			base.DoHideEnd();
+			
+		}
+		
+		private void DoShowBeginAnimation_INTERNAL(System.Action callback, AppearanceParameters parameters) {
+			
+			var resetAnimation = parameters.GetResetAnimation(defaultValue: true);
+			var immediately = parameters.GetImmediately(defaultValue: false);
+			
+			if (this.animation != null) {
+				
+				if (resetAnimation == true) this.SetResetState();
+				
+				if (immediately == true) {
+					
+					this.animation.SetInState(this.animationInputParams, this.GetWindow(), this);
+					callback.Invoke();
+					
+				} else {
+					
+					this.animation.Play(this.GetWindow(), this.animationInputParams, this, true, callback);
+					
+				}
+				
+			} else {
+				
+				callback.Invoke();
+				
+			}
+			
+		}
+		
+		private void DoHideBeginAnimation_INTERNAL(System.Action callback, AppearanceParameters parameters) {
+			
+			var resetAnimation = parameters.GetResetAnimation(defaultValue: false);
+			var immediately = parameters.GetImmediately(defaultValue: false);
+			
+			if (this.animation != null) {
+				
+				if (resetAnimation == true) this.SetResetState();
+				
+				if (immediately == true) {
+					
+					this.animation.SetOutState(this.animationInputParams, this.GetWindow(), this);
+					callback.Invoke();
+					
+				} else {
+					
+					this.animation.Play(this.GetWindow(), this.animationInputParams, this, false, callback);
+					
+				}
+				
+			} else {
+				
+				callback.Invoke();
+				
+			}
+			
+		}
+
+		public void DoResetState() {
+
+			this.SetResetState();
+
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as WindowComponentBase).DoResetState();
+
 		}
 
 		/// <summary>
@@ -167,7 +499,7 @@ namespace UnityEngine.UI.Windows {
 			if (this.animation != null) this.animation.SetOutState(this.animationInputParams, this.GetWindow(), this);
 			
 		}
-
+		
 		/// <summary>
 		/// Gets the duration of the animation.
 		/// </summary>
@@ -183,335 +515,6 @@ namespace UnityEngine.UI.Windows {
 			
 			return 0f;
 			
-		}
-
-		public override void OnWindowOpen() {
-
-			base.OnWindowOpen();
-
-			this.manualShowHideControl = false;
-
-		}
-
-		/// <summary>
-		/// Raises the show begin event.
-		/// Wait while all sub components return the callback.
-		/// You can override this method but call it's base.
-		/// </summary>
-		/// <param name="callback">Callback.</param>
-		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-			
-			if (this.showOnStart == false || this.manualShowHideControl == true) {
-
-				if (this.manualShowHideControl == true) {
-
-					base.OnShowBegin(callback, resetAnimation);
-
-				} else {
-					
-					if (callback != null) callback();
-
-				}
-
-				return;
-
-			}
-
-			this.OnShowBegin_INTERNAL(++this.showHideIteration, callback, resetAnimation);
-
-		}
-		
-		public override void OnShowEnd() {
-			
-			if (this.showOnStart == false || this.manualShowHideControl == true) {
-				
-				if (this.manualShowHideControl == true) base.OnShowEnd();
-				return;
-				
-			}
-			
-			this.OnShowEnd_INTERNAL();
-			
-		}
-		
-		private void OnShowEnd_INTERNAL() {
-
-			base.OnShowEnd();
-			
-		}
-
-		private void OnShowBegin_INTERNAL(int iteration, System.Action callback, bool resetAnimation = true) {
-
-			/*if ((this.GetComponentState() == WindowObjectState.Showing ||
-				this.GetComponentState() == WindowObjectState.Shown) && resetAnimation == false) {
-				
-				if (callback != null) callback();
-				return;
-
-			}*/
-
-			this.SetComponentState(WindowObjectState.Showing);
-
-			if (this.childsShowMode == ChildsBehaviourMode.Simultaneously) {
-
-				var counter = 0;
-				System.Action callbackItem = () => {
-
-					if (this.showHideIteration != iteration) {
-
-						if (callback != null) callback();
-						return;
-
-					}
-
-					++counter;
-					if (counter < 2) return;
-					
-					base.OnShowBegin(callback, resetAnimation);
-					
-				};
-				
-				this.OnShowBeginAnimation_INTERNAL(callbackItem, resetAnimation);
-				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => {
-					
-					if (this.showHideIteration != iteration) return;
-
-					var comp = e as WindowComponentBase;
-					comp.manualShowHideControl = false;
-					comp.OnShowBegin(c, resetAnimation);
-
-				});
-				
-			} else if (this.childsShowMode == ChildsBehaviourMode.Consequentially) {
-				
-				ME.Utilities.CallInSequence(() => {
-					
-					if (this.showHideIteration != iteration) {
-						
-						if (callback != null) callback();
-						return;
-						
-					}
-
-					this.OnShowBeginAnimation_INTERNAL(() => {
-						
-						if (this.showHideIteration != iteration) {
-							
-							if (callback != null) callback();
-							return;
-							
-						}
-
-						base.OnShowBegin(callback, resetAnimation);
-
-					}, resetAnimation);
-
-				}, this.subComponents, (e, c) => {
-					
-					if (this.showHideIteration != iteration) {
-						
-						if (callback != null) callback();
-						return;
-						
-					}
-
-					var comp = e as WindowComponentBase;
-					comp.manualShowHideControl = false;
-					comp.OnShowBegin(c, resetAnimation);
-
-				}, waitPrevious: true);
-				
-			}
-
-		}
-
-		private void OnShowBeginAnimation_INTERNAL(System.Action callback, bool resetAnimation, bool immediately = false) {
-
-			System.Action callbackInner = () => {
-
-				if (callback != null) callback();
-
-			};
-
-			if (this.animation != null) {
-				
-				if (resetAnimation == true) this.SetResetState();
-
-				if (immediately == true) {
-
-					this.animation.SetInState(this.animationInputParams, this.GetWindow(), this);
-					callbackInner();
-
-				} else {
-
-					this.animation.Play(this.GetWindow(), this.animationInputParams, this, true, callbackInner);
-
-				}
-
-			} else {
-				
-				callbackInner();
-				
-			}
-			
-		}
-
-		/// <summary>
-		/// Raises the hide begin event.
-		/// Wait while all sub components return the callback.
-		/// You can override this method but call it's base.
-		/// </summary>
-		/// <param name="callback">Callback.</param>
-		/// <param name="immediately">If set to <c>true</c> immediately.</param>
-		public override void OnHideBegin(System.Action callback, bool immediately = false) {
-
-			this.OnHideBegin_INTERNAL(++this.showHideIteration, callback, immediately);
-
-		}
-
-		private void OnHideBegin_INTERNAL(int iteration, System.Action callback, bool immediately) {
-			
-			if (this.GetComponentState() == WindowObjectState.Hiding ||
-			     this.GetComponentState() == WindowObjectState.Hidden) {
-
-				if (callback != null) callback();
-				return;
-				
-			}
-
-			this.SetComponentState(WindowObjectState.Hiding);
-
-            if (this.childsHideMode == ChildsBehaviourMode.Simultaneously) {
-
-				//Debug.Log(this.showHideIteration + " :: " + iteration);
-
-				var counter = 0;
-				System.Action callbackItem = () => {
-					
-					//Debug.Log(this.showHideIteration + " :: " + iteration);
-					
-					if (this.showHideIteration != iteration) {
-						
-						if (callback != null) callback();
-						return;
-						
-					}
-
-					if (this.GetComponentState() != WindowObjectState.Hiding) {
-						
-						if (callback != null) callback();
-						return;
-						
-					}
-					
-					//Debug.Log(this.showHideIteration + " :: " + iteration + " :: " + counter);
-
-					++counter;
-					if (counter < 2) return;
-					
-					base.OnHideBegin(callback, immediately);
-
-				};
-
-				this.OnHideBeginAnimation_INTERNAL(callbackItem, immediately);
-				ME.Utilities.CallInSequence(callbackItem, this.subComponents, (e, c) => {
-					
-					//Debug.Log(this.showHideIteration + " :: " + iteration);
-
-					if (this.showHideIteration != iteration) return;
-
-					var comp = e as WindowComponentBase;
-					comp.manualShowHideControl = false;
-					comp.OnHideBegin(c, immediately);
-					
-				});
-
-			} else if (this.childsHideMode == ChildsBehaviourMode.Consequentially) {
-				
-				ME.Utilities.CallInSequence(() => {
-					
-					if (this.showHideIteration != iteration) {
-						
-						if (callback != null) callback();
-						return;
-						
-					}
-
-					this.OnHideBeginAnimation_INTERNAL(() => {
-						
-						if (this.showHideIteration != iteration) {
-							
-							if (callback != null) callback();
-							return;
-							
-						}
-
-						base.OnHideBegin(callback, immediately);
-						
-					}, immediately);
-					
-				}, this.subComponents, (e, c) => {
-					
-					if (this.showHideIteration != iteration) {
-						
-						if (callback != null) callback();
-						return;
-						
-					}
-
-					var comp = e as WindowComponentBase;
-					comp.manualShowHideControl = false;
-					comp.OnHideBegin(c, immediately);
-
-				}, waitPrevious: true);
-
-			}
-
-		}
-
-		private void OnHideEnd_INTERNAL() {
-
-			this.OnHideEnd();
-
-		}
-
-        private void OnHideBeginAnimation_INTERNAL(System.Action callback, bool immediately) {
-
-			if (this == null) {
-				
-				if (callback != null) callback();
-
-				return;
-
-			}
-
-			System.Action callbackInner = () => {
-
-				if (callback != null) callback();
-
-			};
-			
-			this.SetComponentState(WindowObjectState.Hiding);
-			
-			if (this.animation != null) {
-				
-				if (immediately == true) {
-					
-					this.animation.SetOutState(this.animationInputParams, this.GetWindow(), this);
-					callbackInner();
-					
-				} else {
-					
-					this.animation.Play(this.GetWindow(), this.animationInputParams, this, false, callbackInner);
-					
-				}
-				
-			} else {
-				
-				callbackInner();
-				
-			}
-
 		}
 
 		#if UNITY_EDITOR

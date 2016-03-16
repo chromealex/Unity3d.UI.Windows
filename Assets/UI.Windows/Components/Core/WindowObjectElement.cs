@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
 	[UnityEngine.DisallowMultipleComponent]
-	public class WindowObjectElement : WindowObject {
+	public class WindowObjectElement : WindowObject, IWindowEventsAsync, IWindowEventsController {
 		
 		[Header("Sub Components")]
 		public bool autoRegisterInRoot = true;
@@ -15,10 +16,10 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public bool showOnStart = true;
 
-        [SerializeField]
-        [ReadOnly]
-        protected List<WindowObjectElement> subComponents = new List<WindowObjectElement>();
-		
+        [SerializeField][ReadOnly]
+		protected List<WindowObjectElement> subComponents = new List<WindowObjectElement>();
+
+		[SerializeField][HideInInspector]
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 		
 		/// <summary>
@@ -33,11 +34,11 @@ namespace UnityEngine.UI.Windows {
 
 		public bool IsVisible() {
 
-			return this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding;
+			return this.currentState == WindowObjectState.Shown || this.currentState == WindowObjectState.Showing;
 
 		}
 
-		public virtual void SetComponentState(WindowObjectState state) {
+		public virtual void SetComponentState(WindowObjectState state, bool dontInactivate = false) {
 			
 			if (this == null) return;
 
@@ -54,7 +55,7 @@ namespace UnityEngine.UI.Windows {
 			           this.currentState == WindowObjectState.NotInitialized ||
 			           this.currentState == WindowObjectState.Initializing) {
 				
-				if (go != null && this.NeedToInactive() == true) go.SetActive(false);
+				if (go != null && this.NeedToInactive() == true && dontInactivate == false) go.SetActive(false);
 
 			}
 
@@ -91,30 +92,55 @@ namespace UnityEngine.UI.Windows {
         }
 
 		/// <summary>
-		/// Raises the window open event.
-		/// Fires before OnShowBegin, but after OnInit/OnParametersPass/OnEmptyPass
+		/// Raises the window open/close event.
+		/// Fires before OnShowBegin/OnHideBegin, but after OnInit/OnParametersPass/OnEmptyPass
 		/// </summary>
-		public virtual void OnWindowOpen() {
+		#region OnWindowOpen/Close
+		public virtual void DoWindowOpen() {
 			
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnWindowOpen();
-
+			this.OnWindowOpen();
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowOpen();
+			
 		}
+		
+		public virtual void DoWindowClose() {
+			
+			this.OnWindowClose();
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowClose();
+			
+		}
+
+		public virtual void OnWindowOpen() {}
+		public virtual void OnWindowClose() {}
+		#endregion
 
 		public virtual void OnLocalizationChanged() {
 			
 			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnLocalizationChanged();
 
 		}
+		
+		public virtual void OnManualEvent<T>(T data) where T : IManualEvent {
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnManualEvent<T>(data);
 
+		}
+
+		#region Base Events
 	    /// <summary>
 	    /// Raises the init event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-	    public virtual void OnInit() {
+	    public virtual void DoInit() {
 			
 			this.SetComponentState(WindowObjectState.Initializing);
 
-            for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnInit();
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoInit();
+
+			this.SetComponentState(WindowObjectState.Initialized);
+			this.OnInit();
 			
 			//this.SetComponentState(WindowObjectState.Initialized);
 
@@ -124,11 +150,14 @@ namespace UnityEngine.UI.Windows {
 	    /// Raises the deinit event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-        public virtual void OnDeinit() {
+        public virtual void DoDeinit() {
+			
+			this.SetComponentState(WindowObjectState.Deinitializing);
 
-            for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnDeinit();
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoDeinit();
 			
 			this.SetComponentState(WindowObjectState.NotInitialized);
+			this.OnDeinit();
 
         }
 
@@ -136,11 +165,12 @@ namespace UnityEngine.UI.Windows {
 	    /// Raises the show end event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-        public virtual void OnShowEnd() {
+        public virtual void DoShowEnd() {
 
-            for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnShowEnd();
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoShowEnd();
 			
 			this.SetComponentState(WindowObjectState.Shown);
+			this.OnShowEnd();
 
         }
 
@@ -148,50 +178,63 @@ namespace UnityEngine.UI.Windows {
 	    /// Raises the hide end event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-	    public virtual void OnHideEnd() {
+	    public virtual void DoHideEnd() {
 
-            for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnHideEnd();
-			
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoHideEnd();
+
 			this.SetComponentState(WindowObjectState.Hidden);
+			this.OnHideEnd();
 
 	    }
 		
-		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public void DoShowBegin(System.Action callback) {
 
-			// At the top of the level - setup Shown state (may be must be declared in OnShowEnd method)
-			if (this.GetComponentState() == WindowObjectState.Showing) {
-				
-				this.SetComponentState(WindowObjectState.Shown);
-				
-			}
-
-			if (callback != null) callback();
+			this.DoShowBegin(AppearanceParameters.Default().ReplaceCallback(callback: callback));
 
 		}
 
-		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {
+		public virtual void DoShowBegin(AppearanceParameters parameters) {
 
-			// At the top of the level - setup Hidden state (may be must be declared in OnHideEnd method)
-			if (this.GetComponentState() == WindowObjectState.Hiding) {
-				
-				this.SetComponentState(WindowObjectState.Hidden);
-				
-			}
+			this.SetComponentState(WindowObjectState.Showing);
+			this.OnShowBegin();
+			this.OnShowBegin(parameters);
+			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
 
-			//this.SetComponentState(WindowObjectState.Hiding);
-
-			if (callback != null) callback();
-
+			var callback = parameters.callback;
+			ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoShowBegin(parameters.ReplaceCallback(cb)));
+			
+		}
+		
+		public void DoHideBegin(System.Action callback) {
+			
+			this.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(callback: callback));
+			
 		}
 
-        /*public virtual void DeactivateComponents() {
+		public virtual void DoHideBegin(AppearanceParameters parameters) {
+			
+			this.SetComponentState(WindowObjectState.Hiding);
+			this.OnHideBegin();
+			this.OnHideBegin(parameters);
+			this.OnHideBegin(parameters.callback, parameters.immediately);
 
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DeactivateComponents();
+			var callback = parameters.callback;
+			ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoHideBegin(parameters.ReplaceCallback(cb)));
 
-            if (this == null) return;
-            this.gameObject.SetActive(false);
-
-        }*/
+		}
+		
+		public virtual void OnInit() {}
+		public virtual void OnDeinit() {}
+		public virtual void OnShowEnd() {}
+		public virtual void OnHideEnd() {}
+		public virtual void OnShowBegin() {}
+		public virtual void OnHideBegin() {}
+		public virtual void OnShowBegin(AppearanceParameters parameters) {}
+		public virtual void OnHideBegin(AppearanceParameters parameters) {}
+		
+		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
+		public virtual void OnHideBegin(System.Action callback, bool immediately) {}
+		#endregion
 
         /// <summary>
         /// Registers the sub component.
@@ -199,15 +242,26 @@ namespace UnityEngine.UI.Windows {
         /// </summary>
         /// <param name="subComponent">Sub component.</param>
 		public virtual void RegisterSubComponent(WindowObjectElement subComponent) {
+			
+			//Debug.Log("TRY REGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState(), this);
+			if (this.subComponents.Contains(subComponent) == false) {
+				
+				this.subComponents.Add(subComponent);
+				
+			} else {
+				
+				WindowSystemLogger.Warning(this, "RegisterSubComponent can't complete because of duplicate item.");
+				return;
 
-			//Debug.Log("REGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState());
+			}
+
 			switch (this.GetComponentState()) {
 				
 				case WindowObjectState.Hiding:
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.OnInit();
+						subComponent.DoInit();
 						
 					}
 
@@ -219,7 +273,7 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.OnInit();
+						subComponent.DoInit();
 						
 					}
 
@@ -232,7 +286,7 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.OnInit();
+						subComponent.DoInit();
 						
 					}
 
@@ -244,13 +298,13 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.OnInit();
+						subComponent.DoInit();
 						
 					}
 
 					if (subComponent.showOnStart == true) {
 
-	                    subComponent.OnShowBegin(null);
+						subComponent.DoShowBegin(null);
 
 					}
 
@@ -262,15 +316,15 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.OnInit();
+						subComponent.DoInit();
 						
 					}
 
 					if (subComponent.showOnStart == true) {
 
-	                    subComponent.OnShowBegin(() => {
+						subComponent.DoShowBegin(() => {
 
-	                        subComponent.OnShowEnd();
+							subComponent.DoShowEnd();
 
 	                    });
 
@@ -286,8 +340,6 @@ namespace UnityEngine.UI.Windows {
                 // subComponent.Setup(this.GetLayoutRoot());
 
             }
-
-            if (this.subComponents.Contains(subComponent) == false) this.subComponents.Add(subComponent);
 
         }
 
@@ -312,10 +364,10 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Shown:
 
                     // after OnShowEnd
-                    subComponent.OnHideBegin(() => {
+                    subComponent.DoHideBegin(() => {
 
-                        subComponent.OnHideEnd();
-                        subComponent.OnDeinit();
+                        subComponent.DoHideEnd();
+                        subComponent.DoDeinit();
 
 						if (callback != null) callback();
 
@@ -328,7 +380,7 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Hiding:
 
                     // after OnHideBegin
-                    subComponent.OnHideBegin(null);
+                    subComponent.DoHideBegin(null);
 
 					sendCallback = false;
 					if (callback != null) callback();
@@ -338,10 +390,10 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Hidden:
 
                     // after OnHideEnd
-                    subComponent.OnHideBegin(() => {
+					subComponent.DoHideBegin(() => {
 
-                        subComponent.OnHideEnd();
-                        subComponent.OnDeinit();
+						subComponent.DoHideEnd();
+						subComponent.DoDeinit();
 						
 						if (callback != null) callback();
 
@@ -378,6 +430,8 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private void Update_EDITOR() {
+			
+			this.SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
 
 			if (this.autoRegisterSubComponents == true) {
 				

@@ -7,8 +7,8 @@ using UnityEngine.UI.Extensions;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	[RequireComponent(typeof(ScrollRect))]
-	public class ListViewComponent : ListComponent, IListViewDataSource {
+	//[RequireComponent(typeof(ScrollRect))]
+	public class ListViewComponent : ListComponent, IListViewDataSource, ILayoutController {
 
 		[System.Serializable]
 		public struct Range {
@@ -66,6 +66,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private int capacity;
 		private UnityAction<IComponent, int> onItem;
+		
+		#region ILayoutController
+		public void SetLayoutHorizontal() {
+
+			this.requiresReload = true;
+
+		}
+		
+		public void SetLayoutVertical() {
+			
+			this.requiresReload = true;
+
+		}
+		#endregion
 
 		#region IListViewDataSource
 		public override bool IsEmpty() {
@@ -139,15 +153,18 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.dataSource = this;
 
+			this.ReloadData();
+
 		}
 
+		/// <summary>
+		/// Updates the cell.
+		/// Update action onItem will fired with null IComponent. Be sure you'd check it for null.
+		/// </summary>
+		/// <param name="index">Cell index in your data array.</param>
 		public void UpdateCell(int index) {
 
-			if (index >= 0 && index < this.list.Count) {
-
-				this.onItem(this.list[index], index);
-
-			}
+			this.onItem(null, index);
 
 		}
 		#endregion
@@ -489,9 +506,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private void ClearAllRows() {
 
-			while (this.visibleCells.Count > 0) {
+			if (this.visibleCells != null) {
 
-				this.HideRow(false);
+				while (this.visibleCells.Count > 0) {
+
+					this.HideRow(false);
+
+				}
 
 			}
 
@@ -522,7 +543,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.isEmpty = true;
 			this.topPadding = this.CreateEmptyPaddingElement("TopPadding");
 			this.topPadding.transform.SetParent(this.scrollRect.content, false);
-			this.bottomPadding = this.CreateEmptyPaddingElement("Bottom");
+			this.bottomPadding = this.CreateEmptyPaddingElement("BottomPadding");
 			this.bottomPadding.transform.SetParent(this.scrollRect.content, false);
 			this.visibleCells = new Dictionary<int, WindowComponent>();
 

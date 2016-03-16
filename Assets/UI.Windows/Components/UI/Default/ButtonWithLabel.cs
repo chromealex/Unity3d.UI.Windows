@@ -27,9 +27,9 @@ namespace UnityEngine.UI {
 		private void ApplyState(Selectable.SelectionState state, bool instant) {
 
 			if (this.label != null) {
-				
+
 				switch (state) {
-					
+
 					case SelectionState.Disabled:
 						this.label.CrossFadeColor(this.labelColor.disabledColor, instant == true ? 0f : this.labelColor.fadeDuration, false, true);
 						break;
@@ -49,6 +49,24 @@ namespace UnityEngine.UI {
 				}
 				
 			}
+
+		}
+
+		public void Refresh() {
+
+			if (this.IsDestroyed() == true) return;
+
+			var colors = this.labelColor;
+			var fadeDuration = colors.fadeDuration;
+			colors.fadeDuration = 0f;
+			this.labelColor = colors;
+			
+			this.interactable = !this.interactable;
+			this.interactable = !this.interactable;
+			
+			colors = this.labelColor;
+			colors.fadeDuration = fadeDuration;
+			this.labelColor = colors;
 
 		}
 

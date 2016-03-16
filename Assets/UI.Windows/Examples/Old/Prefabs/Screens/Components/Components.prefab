@@ -152,6 +152,11 @@ MonoBehaviour:
           m_Calls: []
         m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEnd, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowOpen:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowOpen, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   transition:
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
@@ -162,6 +167,7 @@ MonoBehaviour:
   layout:
     scaleMode: 0
     fixedScaleResolution: {x: 1024, y: 768}
+    layoutPreferences: {fileID: 0}
     layout: {fileID: 11485858, guid: 3becf982c61f7c6428b5243046c46262, type: 2}
     components:
     - description: 434f4e54454e5420424f52444552204558414d504c45

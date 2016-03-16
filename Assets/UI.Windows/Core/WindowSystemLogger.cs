@@ -14,7 +14,8 @@ namespace UnityEngine.UI.Windows {
 
 		};
 
-		private class Logger {
+		[System.Serializable]
+		public class Logger {
 
 			public bool enabled;
 
@@ -22,14 +23,25 @@ namespace UnityEngine.UI.Windows {
 
 				if (this.enabled == false) return;
 
-				Debug.Log(string.Format("[ {0} ] {1}",  @object.name, data),  @object);
+				Debug.Log(string.Format("[ {0} ] {1}", @object.name, data), @object);
 
 			}
 
-		};
+			public void Warning(WindowObject @object, string data) {
+				
+				if (this.enabled == false) return;
+				
+				Debug.LogWarning(string.Format("[ {0} ] {1}", @object.name, data), @object);
+				
+			}
 
+		};
+		
 		[BitMask(typeof(ActiveType))]
-		public ActiveType active;
+		public ActiveType textLogs;
+		
+		[BitMask(typeof(ActiveType))]
+		public ActiveType componentsLogs;
 
 		private static WindowSystemLogger instance;
 		private Logger logger;
@@ -38,18 +50,33 @@ namespace UnityEngine.UI.Windows {
 
 			this.logger = new Logger() {
 				enabled = 
-					(Application.isEditor == true && (this.active & ActiveType.InEditor) != 0) ||
-					(Application.isEditor == false && (this.active & ActiveType.InBuild) != 0)
+					(Application.isEditor == true && (this.textLogs & ActiveType.InEditor) != 0) ||
+					(Application.isEditor == false && (this.textLogs & ActiveType.InBuild) != 0)
 			};
 
 			WindowSystemLogger.instance = this;
 
 		}
 
+		public static bool IsActiveComponents() {
+
+			var active = WindowSystemLogger.instance.componentsLogs;
+			return 
+				(Application.isEditor == true && (active & ActiveType.InEditor) != 0) ||
+				(Application.isEditor == false && (active & ActiveType.InBuild) != 0);
+
+		}
+
 		public static void Log(WindowObject @object, string data) {
-
+			
 			WindowSystemLogger.instance.logger.Log(@object, data);
-
+			
+		}
+		
+		public static void Warning(WindowObject @object, string data) {
+			
+			WindowSystemLogger.instance.logger.Warning(@object, data);
+			
 		}
 
 	}

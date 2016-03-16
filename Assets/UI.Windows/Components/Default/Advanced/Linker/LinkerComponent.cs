@@ -68,6 +68,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				this.instance = this.prefab.Spawn();
 				this.instance.SetParent(this, false);
+				this.instance.transform.SetAsFirstSibling();
 				this.instance.SetTransformAs(this.prefab);
 
 				if (this.prefabParameters != null) {

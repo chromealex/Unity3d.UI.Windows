@@ -6,7 +6,7 @@ using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows.Audio {
 
-	public class Manager {
+	public static class Manager {
 
 		private static Data currentData = new Data();
 
@@ -39,7 +39,9 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 
 		public static void Reset(AudioSource source) {
-			
+
+			source.clip = null;
+
 			source.bypassEffects = false;
 			source.bypassListenerEffects = false;
 			source.bypassReverbZones = false;
@@ -54,8 +56,30 @@ namespace UnityEngine.UI.Windows.Audio {
 
 		}
 
-		public static void Play(WindowBase window, Source sourceInfo, ClipType clipType, int id) {
-			
+		public static void Play(WindowBase window, Source sourceInfo, ClipType clipType, int id, bool replaceOnEquals) {
+
+			if (clipType == ClipType.Music) {
+
+				var currentMusicId = sourceInfo.GetCurrentMusicId();
+				if (currentMusicId > 0) {
+
+					var equals = (currentMusicId == id);
+					if (equals == false || replaceOnEquals == true) {
+
+						// Stop
+						Manager.Stop(window, sourceInfo, clipType, currentMusicId);
+
+					} else if (equals == true) {
+
+						// Don't play anything
+						return;
+
+					}
+
+				}
+
+			}
+
 			var source = sourceInfo.GetSource(window, clipType, id);
 			if (source == null) return;
 
@@ -97,7 +121,7 @@ namespace UnityEngine.UI.Windows.Audio {
 			if (id == 0) {
 
 				// Stop all
-				var sources = sourceInfo.GetSources(window, clipType);
+				var sources = sourceInfo.GetPlayingSources(window, clipType);
 				if (sources == null) return;
 
 				foreach (var source in sources) {
@@ -113,7 +137,7 @@ namespace UnityEngine.UI.Windows.Audio {
 
 			} else {
 
-				var source = sourceInfo.GetSource(window, clipType, id);
+				var source = sourceInfo.GetPlayingSource(window, clipType, id);
 				if (source == null) return;
 
 				source.Stop();

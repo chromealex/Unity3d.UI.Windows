@@ -39,12 +39,6 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			this.services.Add(service);
 
 		}
-		
-		public IEnumerator Start() {
-
-			yield return this.StartCoroutine(this.Init());
-
-		}
 
 		public IEnumerator Init(System.Action onComplete = null) {
 
@@ -117,6 +111,8 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 	public abstract class ServiceManager<T> : ServiceManagerBase where T : IServiceManager {
 
+		public bool initializeOnStart = true;
+
 		private static T _instance;
 		protected static T instance {
 
@@ -141,11 +137,24 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
-		public static void Reinitialize(System.Action onComplete = null) {
+		public void Start() {
 
+			if (this.initializeOnStart == true) ServiceManager<T>.InitializeAsync();
+
+		}
+		
+		public static void InitializeAsync(System.Action onComplete = null) {
+			
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
 			(instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
-
+			
+		}
+		
+		public static IEnumerator Initialize(System.Action onComplete = null) {
+			
+			var instance = ServiceManager<T>.instance as IServiceManagerBase;
+			yield return (instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
+			
 		}
 
 		public static void ForEachService<TService>(System.Action<TService> onService) where TService : IService {
@@ -159,8 +168,8 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			if (list == null) return;
 
 			foreach (var serviceBase in list) {
-				
-				if (serviceBase.isActive == true) {
+
+				if (serviceBase.isActive == true && serviceBase is TService) {
 					
 					onService((TService)serviceBase);
 					

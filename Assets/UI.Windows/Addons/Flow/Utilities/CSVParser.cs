@@ -60,15 +60,14 @@ namespace UnityEngine.UI.Windows.Utilities {
 
 				} else { //-----[ Separators ]----------------------
 
-					if (c == '\n' || c == ',') {
-						
-						CSVParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
-						if (c == '\n') {  // Stop the row on line breaks
-							
-							iStart++;
-							break;
+					if (c == ',') {
 
-						}
+						CSVParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
+
+					} else if (c == '\n') {
+
+						break;
+
 
 					} else { //--------[ Start Quote ]--------------------
 
@@ -86,9 +85,12 @@ namespace UnityEngine.UI.Windows.Utilities {
 
 			}
 
-			if (iStart > iWordStart) {
-				
-				CSVParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
+
+			CSVParser.AddCSVtoken(ref list, ref line, iStart, ref iWordStart);
+
+			if (iStart < textLength) {
+
+				iStart++;
 
 			}
 

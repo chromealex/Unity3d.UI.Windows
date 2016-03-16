@@ -296,69 +296,79 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			WindowLayoutElement.waitForComponentConnectionTemp = false;
 
 			var screen = this.GetScreen() as LayoutWindowType;
-			if (screen != null && screen.layout.layout != null) {
+			if (this.GetScreen() != null && (this.GetScreen() is LayoutWindowType) == false) {
 
-				var layout = screen.layout.layout;
-				if (layout != null) {
-
-					if (this.editorCache == null) this.editorCache = UnityEditor.Editor.CreateEditor(layout) as IPreviewEditor;
-					if (this.editorCache != null) this.editorCache.OnPreviewGUI(Color.white, rect, background, drawInfo, selectable);
-
-					if (WindowLayoutElement.waitForComponentConnectionTemp == true) {
-
-						return true;
-
-					}
-
-				}
+				UnityEditor.EditorGUI.HelpBox(rect, "This window doesn't have `LayoutWindowType` inheritance.", UnityEditor.MessageType.Info);
 
 			} else {
 
-				this.editorCache = null;
+				if (screen != null && screen.layout.layout != null) {
 
-				GUI.Box(rect, string.Empty, background);
-				if (this.compiled == false) {
+					var layout = screen.layout.layout;
+					if (layout != null) {
 
-					GUI.Label(rect, "You need to compile window to start using layout functions.", buttonStyle);
+						if (this.editorCache == null)
+							this.editorCache = UnityEditor.Editor.CreateEditor(layout) as IPreviewEditor;
+						if (this.editorCache != null)
+							this.editorCache.OnPreviewGUI(Color.white, rect, background, drawInfo, selectable);
+
+						if (WindowLayoutElement.waitForComponentConnectionTemp == true) {
+
+							return true;
+
+						}
+
+					}
 
 				} else {
 
-					if (screen != null) {
+					this.editorCache = null;
 
-						var layout = screen.layout.layout;
-						if (layout == null) {
-							
-							GUI.BeginGroup(rect);
-							{
+					GUI.Box(rect, string.Empty, background);
+					if (this.compiled == false) {
+						
+						UnityEditor.EditorGUI.HelpBox(rect, "You need to compile window to start using layout functions.", UnityEditor.MessageType.Warning);
+
+					} else {
+
+						if (screen != null) {
+
+							var layout = screen.layout.layout;
+							if (layout == null) {
 								
-								var width = rect.width * 0.7f;
-								var height = 50f;
-								if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Layout", buttonStyle) == true) {
+								GUI.BeginGroup(rect);
+								{
 									
-									onCreateLayout();
+									var width = rect.width * 0.7f;
+									var height = 50f;
+									if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Layout", buttonStyle) == true) {
+										
+										onCreateLayout();
+										
+									}
 									
 								}
-								
+								GUI.EndGroup();
+
+							}
+
+						} else {
+
+							GUI.BeginGroup(rect);
+							{
+
+								var width = rect.width * 0.7f;
+								var height = 50f;
+								if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Screen", buttonStyle) == true) {
+
+									onCreateScreen();
+
+								}
+
 							}
 							GUI.EndGroup();
 
 						}
-
-					} else {
-
-						GUI.BeginGroup(rect);
-						{
-
-							var width = rect.width * 0.7f;
-							var height = 50f;
-							if (GUI.Button(new Rect(rect.width * 0.5f - width * 0.5f, rect.height * 0.5f - height * 0.5f, width, height), "Create Screen", buttonStyle) == true) {
-
-								onCreateScreen();
-
-							}
-
-						}
-						GUI.EndGroup();
 
 					}
 

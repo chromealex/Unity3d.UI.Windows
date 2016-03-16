@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -12,6 +13,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
     /// </summary>
     public class NetClient {
         private TcpClient client;
+        private NetworkStream stream;
         private bool isHead;
         private int len;
         private short type;
@@ -25,8 +27,10 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         /// </summary>
 		public void Connect(string host, int port, System.Action<bool> onResult = null) {
 			this.onResult = onResult;
-            client = new TcpClient();
+            client = new TcpClientDebug();
 //			client.NoDelay = true;
+			Debug.Log(name + " C: Connect(" + connected + ")");
+			connected = false;
 			client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
             isHead = true;
         }
@@ -36,8 +40,6 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
 		private void DoСonnect(IAsyncResult ar) {
-			connected = false;
-
             try {
                 if (client != ar.AsyncState) {
                     Debug.Log(name + " changed");
@@ -48,6 +50,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 
                 // Finish asynchronous connect
                 client.EndConnect(ar);
+				stream = client.GetStream();
 				connected = true;
 
 				if (this.onResult != null) this.onResult.Invoke(true);
@@ -62,19 +65,20 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
 		public void SendMsgSilently(short type, byte[] msg) {
-            if (client == null) return;
+            if (connected == false) return;
 
+			Log();
 			SendMsg(type, msg);
         }
 
 		public void SendMsg(short type, byte[] msg) {
+			//TODO ?? unknown reason, better to remove
 			if (client == null) return;
             // Message structure: the message body length + message body
             byte[] data = new byte[4 + msg.Length];
             IntToBytes((int)type << 16 | msg.Length & 0xFFFF) .CopyTo(data, 0);
             msg.CopyTo(data, 4);
-            var stream = client.GetStream();
-            stream.Write(data, 0, data.Length);
+            /*if (stream.CanWrite == true)*/ stream.Write(data, 0, data.Length);
 //			stream.Flush();
         }
 
@@ -82,7 +86,6 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 			if (client == null || connected == false || client.Connected == false) {
                 return;
             }
-            NetworkStream stream = client.GetStream();
             if (!stream.CanRead) {
                 return;
             }
@@ -132,14 +135,27 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
         public void Close() {
+			Debug.Log(name + " C: close(" + connected + ")");
 			this.connected = false;
 			if (this.client != null) {
-                var client = this.client;
+				Log();
+				var client = this.client;
 				this.client = null;
+				this.stream = null;
 				client.GetStream().Close();
                 client.Close();
             }
         }
+
+		/**
+		 * Temporarily, debug purposes
+		 */
+		public void Log() {
+			var client = this.client;
+            Debug.Log(name + " C: " + client.GetHashCode() + "(" + client.Connected + ")"
+                + " S: " + stream.GetHashCode() + "(" + stream.CanRead + "/" + stream.CanWrite + ")"
+                + " So: " + client.Client.GetHashCode() + "(" + client.Client.Connected + ")");
+		}
 
         public delegate void OnRevMsg(short type, byte[] msg);
 
@@ -147,4 +163,33 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 
         private bool connected;
     }
+
+	/**
+	 * Temporarily, debug purposes
+	 */
+	public class TcpClientDebug : TcpClient {
+		public TcpClientDebug() {
+			initialize2();
+		}
+
+		protected override void Dispose(bool disposing) {
+			Debug.Log("TcpDisposed1");
+			base.Dispose(disposing);
+			Debug.Log("TcpDisposed2");
+		}
+		private void initialize2() {
+			this.Client = new SocketDebug(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		}
+	}
+
+	public class SocketDebug : Socket {
+		public SocketDebug(System.Net.Sockets.AddressFamily family, System.Net.Sockets.SocketType type, System.Net.Sockets.ProtocolType proto) : base(family, type, proto) {
+		}
+
+		protected override void Dispose(bool disposing) {
+			Debug.Log("SoDisposed1");
+			base.Dispose(disposing);
+			Debug.Log("SoDisposed2: " + new StackTrace().ToString());
+		}
+	}
 }

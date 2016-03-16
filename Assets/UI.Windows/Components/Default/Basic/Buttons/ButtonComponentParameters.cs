@@ -10,6 +10,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag.P1)] public bool interactableByDefault = true;
 		[ParamFlag(ParameterFlag.P11)] public bool selectByDefault = false;
 		[ParamFlag(ParameterFlag.P2)] public ComponentEvent callback = new ComponentEvent();
+		[ParamFlag(ParameterFlag.P12)] public Navigation.Mode navigationMode = Navigation.Mode.Automatic;
 
 		[Header("Button: SFX")]
 		[ParamFlag(ParameterFlag.P7)] public Audio.Component sfxOnClick = new Audio.Component();
@@ -68,6 +69,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.IsChanged(ParameterFlag.P9) == true) component.SetSFX(PointerEventState.Leave, this.sfxOnLeave);
 			if (this.IsChanged(ParameterFlag.P10) == true) component.SetHoverOnAnyButtonState(this.hoverOnAnyButtonState);
 			if (this.IsChanged(ParameterFlag.P11) == true) component.SetSelectByDefault(this.selectByDefault);
+			if (this.IsChanged(ParameterFlag.P12) == true) component.SetNavigationMode(this.navigationMode);
 
 		}
 		
@@ -146,7 +148,7 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.IsChanged(ParameterFlag.BP3) == true) component.SetImage(this.rawImage);
 				if (this.IsChanged(ParameterFlag.BP7) == true) component.SetImage(this.imageLocalizationKey);
 				if (this.IsChanged(ParameterFlag.BP4) == true) component.SetColor(this.imageColor);
-				if (this.IsChanged(ParameterFlag.BP5) == true) component.SetPlayOnStart(this.playOnStart);
+				if (this.IsChanged(ParameterFlag.BP5) == true) component.SetPlayOnShow(this.playOnStart);
 				if (this.IsChanged(ParameterFlag.BP6) == true) component.SetLoop(this.loop);
 	
 			}

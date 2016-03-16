@@ -19,12 +19,6 @@ namespace UnityEngine.UI.Windows.Components {
 			#region source macros UI.Windows.Initialization.ImageComponent
 			{
 				if (inputParameters != null) inputParameters.Setup(this as IImageComponent);
-				
-				if (this.playOnStart == true) {
-					
-					this.Play(this.loop);
-					
-				}
 
 			}
 			#endregion
@@ -74,6 +68,52 @@ namespace UnityEngine.UI.Windows.Components {
 			#endregion
 
 		}
+		
+		public override void OnDeinit() {
+			
+			base.OnDeinit();
+			
+			#region source macros UI.Windows.OnDeinit.ImageComponent
+			{
+				
+				this.Stop();
+				
+			}
+			#endregion
+			
+		}
+
+		public override void OnShowBegin() {
+
+			base.OnShowBegin();
+			
+			#region source macros UI.Windows.OnShowBegin.ImageComponent
+			{
+
+				if (this.playOnShow == true) {
+					
+					this.Play();
+					
+				}
+				
+			}
+			#endregion
+
+		}
+
+		public override void OnHideEnd() {
+			
+			base.OnHideEnd();
+			
+			#region source macros UI.Windows.OnHideEnd.ImageComponent
+			{
+				
+				this.Stop();
+				
+			}
+			#endregion
+			
+		}
 
 		#region source macros UI.Windows.ImageComponent
 		[Header("Image Component")]
@@ -89,45 +129,95 @@ namespace UnityEngine.UI.Windows.Components {
 		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
 
 		[ReadOnly("rawImage", null)]
-		[SerializeField]
-		private  bool playOnStart;
+		[SerializeField][UnityEngine.Serialization.FormerlySerializedAs("playOnStart")]
+		private bool playOnShow;
 		[ReadOnly("rawImage", null)]
 		[SerializeField]
-		private  bool loop;
+		private bool loop;
 
-		public void SetPlayOnStart(bool state) {
-
-			this.playOnStart = state;
-
-		}
-
-		public void SetLoop(bool state) {
-
-			this.loop = state;
-
-		}
-
-		public void SetPreserveAspectState(bool state) {
+		public IImageComponent SetPreserveAspectState(bool state) {
 
 			this.preserveAspect = state;
 
+			return this;
+
 		}
 		
-		public void Play() {
-
-			this.Play(this.loop);
+		public IImageComponent SetLoop(bool state) {
+			
+			this.loop = state;
+			
+			return this;
 
 		}
 
-		public void Play(bool loop) {
+		public bool IsMovie() {
 			
+			var image = this.GetRawImageSource();
+			if (image == null) return false;
+			
+			return image.mainTexture is MovieTexture;
+			
+		}
+
+		public IImageComponent SetMovieTexture(Texture texture) {
+
+			this.Stop();
+			this.SetImage(texture);
+			
+			return this;
+
+		}
+
+		public bool GetPlayOnShow() {
+			
+			return this.playOnShow;
+			
+		}
+		
+		public IImageComponent SetPlayOnShow(bool state) {
+			
+			this.playOnShow = state;
+			
+			return this;
+
+		}
+		
+		public bool IsPlaying() {
+
 			#if !UNITY_MOBILE
 			var image = this.GetRawImageSource();
-			if (image == null) return;
+			if (image == null) return false;
+			
+			var movie = image.mainTexture as MovieTexture;
+			if (movie != null) {
+
+				return movie.isPlaying;
+				
+			}
+			#else
+			WindowSystemLogger.Log(this, "`IsPlaying` method not supported on mobile platforms");
+			#endif
+
+			return false;
+
+		}
+
+		public IImageComponent Play() {
+
+			return this.Play(this.loop);
+
+		}
+
+		public IImageComponent Play(bool loop) {
+
+			#if !UNITY_MOBILE
+			var image = this.GetRawImageSource();
+			if (image == null) return this;
 
 			var movie = image.mainTexture as MovieTexture;
 			if (movie != null) {
-				
+
 				movie.loop = loop;
 				movie.Play();
 
@@ -135,38 +225,49 @@ namespace UnityEngine.UI.Windows.Components {
 			#else
 			WindowSystemLogger.Log(this, "`Play` method not supported on mobile platforms");
 			#endif
+			
+			return this;
 
 		}
 
-		public void Stop() {
+		public IImageComponent Stop() {
 			
 			#if !UNITY_MOBILE
 			var image = this.GetRawImageSource();
-			if (image == null) return;
-			
+			if (image == null) return this;
+
 			var movie = image.mainTexture as MovieTexture;
-			if (movie != null) movie.Stop();
+			if (movie != null) {
+
+				movie.Stop();
+
+			}
+
 			#else
 			WindowSystemLogger.Log(this, "`Stop` method not supported on mobile platforms");
 			#endif
+			
+			return this;
 
 		}
 
-		public void Pause() {
+		public IImageComponent Pause() {
 			
 			#if !UNITY_MOBILE
 			var image = this.GetRawImageSource();
-			if (image == null) return;
+			if (image == null) return this;
 			
 			var movie = image.mainTexture as MovieTexture;
 			if (movie != null) movie.Pause();
 			#else
 			WindowSystemLogger.Log(this, "`Pause` method not supported on mobile platforms");
 			#endif
+			
+			return this;
 
 		}
 
-		public void ResetImage() {
+		public IImageComponent ResetImage() {
 			
 			if (this.image != null) {
 				
@@ -175,11 +276,14 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			
 			if (this.rawImage != null) {
-				
+
+				this.Stop();
 				this.rawImage.texture = null;
 				
 			}
 			
+			return this;
+
 		}
 		
 		public Image GetImageSource() {
@@ -197,30 +301,36 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool lastImageLocalization = false;
 		private Plugins.Localization.LocalizationKey lastImageLocalizationKey;
 		private object[] lastImageLocalizationParameters;
-		public void SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey key, params object[] parameters) {
+		public IImageComponent SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey key, params object[] parameters) {
 
 			this.lastImageLocalization = true;
 			this.lastImageLocalizationKey = key;
 			this.lastImageLocalizationParameters = parameters;
 
 			this.SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSprite(key, parameters));
+			
+			return this;
 
 		}
 
-		public void SetImage(ImageComponent source) {
+		public IImageComponent SetImage(ImageComponent source) {
 			
 			if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
 			if (source.GetRawImageSource() != null) this.SetImage(source.GetRawImageSource().texture);
 			
+			return this;
+
 		}
 
-		public void SetImage(Sprite sprite, bool withPivotsAndSize = false) {
+		public IImageComponent SetImage(Sprite sprite, bool withPivotsAndSize = false) {
 
 			this.SetImage(sprite, this.preserveAspect, withPivotsAndSize);
+			
+			return this;
 
 		}
 
-		public void SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false) {
+		public IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false) {
 			
 			if (this.image != null) {
 
@@ -239,15 +349,19 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 			
+			return this;
+
 		}
 
-		public void SetImage(Texture texture) {
+		public IImageComponent SetImage(Texture texture) {
 
 			this.SetImage(texture, this.preserveAspect);
+			
+			return this;
 
 		}
 
-		public void SetImage(Texture texture, bool preserveAspect) {
+		public IImageComponent SetImage(Texture texture, bool preserveAspect) {
 			
 			if (this.rawImage != null) {
 
@@ -256,6 +370,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 			
+			return this;
+
 		}
 		
 		public /*{overrideColor}*/ Color GetColor() {
@@ -289,15 +405,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetAlpha(float value) {
+		public IImageComponent SetAlpha(float value) {
 
 			var color = this.GetColor();
 			color.a = value;
 			this.SetColor(color);
+			
+			return this;
 
 		}
 
-		public void SetMaterial(Material material) {
+		public IImageComponent SetMaterial(Material material) {
 
 			if (this.image != null) {
 
@@ -310,6 +428,8 @@ namespace UnityEngine.UI.Windows.Components {
 				this.rawImage.SetMaterialDirty();
 
 			}
+			
+			return this;
 
 		}
 		#endregion

@@ -23,15 +23,28 @@ public static class EnumerableExtensions {
 	public static void Shuffle<T>(this T[] source) {
 		
 		Random rng = new Random(UnityEngine.Random.Range(0, 9999999));
-	    var sourceArray = source.ToList();
+		var sourceArray = source.ToList();
+		
+		for (var i = 0; i < source.Length; ++i) {
+			
+			var k = rng.Next(0, sourceArray.Count);
+			source[i] = sourceArray[k];
+			sourceArray.RemoveAt(k);
+			
+		}
+		
+	}
+	
+	public static T[] Reverse<T>(this T[] source) {
 
-	    for (var i = 0; i < source.Length; ++i) {
-	        
-            var k = rng.Next(0, sourceArray.Count);
-	        source[i] = sourceArray[k];
-            sourceArray.RemoveAt(k);
+		var copy = new T[source.Length];
+		for (int k = 0, i = source.Length - 1; i >= 0; --i, ++k) {
 
-        }
+			copy[i] = source[k];
+
+		}
+
+		return copy;
 
 	}
 

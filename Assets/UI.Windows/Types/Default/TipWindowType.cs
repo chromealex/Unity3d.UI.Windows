@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using ME;
 using UnityEngine.UI.Extensions;
@@ -240,56 +240,58 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 		
-		protected override void OnLayoutInit(float depth, int raycastPriority, int orderInLayer) {
+		protected override void DoLayoutInit(float depth, int raycastPriority, int orderInLayer) {
 
-			if (this.animationRoot != null) this.animationRoot.OnInit();
+			if (this.animationRoot != null) this.animationRoot.DoInit();
 
 		}
-		protected override void OnLayoutDeinit() {
+		protected override void DoLayoutDeinit() {
 
-			if (this.animationRoot != null) this.animationRoot.OnDeinit();
+			if (this.animationRoot != null) this.animationRoot.DoDeinit();
 			
 		}
-		protected override void OnLayoutHideEnd() {
+		protected override void DoLayoutHideEnd() {
 
-			if (this.animationRoot != null) this.animationRoot.OnHideEnd();
-
-		}
-		protected override void OnLayoutShowEnd() {
-
-			if (this.animationRoot != null) this.animationRoot.OnShowEnd();
+			if (this.animationRoot != null) this.animationRoot.DoHideEnd();
 
 		}
+		protected override void DoLayoutShowEnd() {
 
-		protected override void OnLayoutShowBegin(System.Action callback) {
+			if (this.animationRoot != null) this.animationRoot.DoShowEnd();
+
+		}
+
+		protected override void DoLayoutShowBegin(AppearanceParameters parameters) {
 
 			if (this.animationRoot != null) {
 
-				this.animationRoot.OnShowBegin(callback);
+				this.animationRoot.DoWindowOpen();
+				this.animationRoot.DoShowBegin(parameters);
 				
 			} else {
 				
-				if (callback != null) callback();
+				parameters.Call();
 				
 			}
 
 		}
 
-		protected override void OnLayoutHideBegin(System.Action callback) {
+		protected override void DoLayoutHideBegin(AppearanceParameters parameters) {
 
 			if (this.animationRoot != null) {
-
-				this.animationRoot.OnHideBegin(callback);
+				
+				this.animationRoot.DoWindowClose();
+				this.animationRoot.DoHideBegin(parameters);
 
 			} else {
 
-				if (callback != null) callback();
+				parameters.Call();
 
 			}
 
 		}
 
-		protected override Transform GetLayoutRoot() {
+		public override Transform GetLayoutRoot() {
 
 			return this.root;
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,7 +93,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		protected override Transform GetLayoutRoot() {
+		public override Transform GetLayoutRoot() {
 			
 			return this.layout.GetRoot();
 			
@@ -104,49 +104,59 @@ namespace UnityEngine.UI.Windows.Types {
 			this.layout.GetLayoutInstance().root.Move(delta);
 
 		}
-
+		
 		public override void OnLocalizationChanged() {
-
-			base.OnLocalizationChanged();
-
-			this.layout.OnLocalizationChanged();
-
-		}
-
-		protected override void OnLayoutInit(float depth, int raycastPriority, int orderInLayer) {
 			
+			base.OnLocalizationChanged();
+			
+			this.layout.OnLocalizationChanged();
+			
+		}
+
+		public override void OnManualEvent<T>(T data) {
+
+			base.OnManualEvent<T>(data);
+
+			this.layout.OnManualEvent<T>(data);
+
+		}
+
+		protected override void DoLayoutInit(float depth, int raycastPriority, int orderInLayer) {
+
 			this.layout.Create(this, this.transform, depth, raycastPriority, orderInLayer);
-			this.layout.OnInit();
+			this.layout.DoInit();
 
 		}
 
-		protected override void OnLayoutDeinit() {
+		protected override void DoLayoutDeinit() {
 
-			this.layout.OnDeinit();
-
-		}
-
-		protected override void OnLayoutShowBegin(System.Action callback) {
-
-			this.layout.OnShowBegin(callback);
+			this.layout.DoDeinit();
 
 		}
 
-		protected override void OnLayoutShowEnd() {
+		protected override void DoLayoutShowBegin(AppearanceParameters parameters) {
 
-			this.layout.OnShowEnd();
-
-		}
-
-		protected override void OnLayoutHideBegin(System.Action callback) {
-
-			this.layout.OnHideBegin(callback);
+			this.layout.DoWindowOpen();
+			this.layout.DoShowBegin(parameters);
 
 		}
 
-		protected override void OnLayoutHideEnd() {
+		protected override void DoLayoutShowEnd() {
 
-			this.layout.OnHideEnd();
+			this.layout.DoShowEnd();
+
+		}
+
+		protected override void DoLayoutHideBegin(AppearanceParameters parameters) {
+			
+			this.layout.DoWindowClose();
+			this.layout.DoHideBegin(parameters);
+
+		}
+
+		protected override void DoLayoutHideEnd() {
+
+			this.layout.DoHideEnd();
 
 		}
 
@@ -165,7 +175,7 @@ namespace UnityEngine.UI.Windows.Types {
 	}
 	
 	[System.Serializable]
-	public class Layout : IWindowEventsAsync {
+	public class Layout : IWindowEventsController {
 		
 		private class ComponentComparer : IEqualityComparer<Component> {
 			
@@ -376,6 +386,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public WindowLayout.ScaleMode scaleMode;
 		public Vector2 fixedScaleResolution = new Vector2(1024f, 768f);
+		public WindowLayoutPreferences layoutPreferences;
 
 		public WindowLayout layout;
 		public Component[] components;
@@ -396,12 +407,12 @@ namespace UnityEngine.UI.Windows.Types {
 			rect.anchoredPosition = (this.layout.transform as RectTransform).anchoredPosition;
 			
 			instance.Setup(window);
-			instance.Init(depth, raycastPriority, orderInLayer, this.scaleMode, this.fixedScaleResolution);
+			instance.Init(depth, raycastPriority, orderInLayer, this.scaleMode, this.fixedScaleResolution, this.layoutPreferences);
 			
 			this.instance = instance;
 			
 			foreach (var component in this.components) component.Create(window, instance.GetRootByTag(component.tag));
-			
+
 		}
 
 		public WindowLayout GetLayoutInstance() {
@@ -470,49 +481,69 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		// Events
 		public void OnLocalizationChanged() {
-
+			
 			this.instance.OnLocalizationChanged();
-
-		}
-
-		public void OnInit() {
 			
-			this.instance.OnInit();
-
 		}
-
-		public void OnDeinit() {
+		
+		public void OnManualEvent<T>(T data) where T : IManualEvent {
 			
-			if (this.instance != null) this.instance.OnDeinit();
+			this.instance.OnManualEvent<T>(data);
+			
+		}
+		
+		public void DoWindowOpen() {
+			
+			this.instance.DoWindowOpen();
+			
+		}
+		
+		public void DoWindowClose() {
+			
+			this.instance.DoWindowClose();
+			
+		}
+
+		#region Base Events
+		// Base Events
+		public void DoInit() {
+
+			this.instance.DoInit();
 
 		}
 
-		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-
-			this.instance.OnWindowOpen();
-			this.instance.OnShowBegin(callback, resetAnimation);
+		public void DoDeinit() {
+			
+			if (this.instance != null) this.instance.DoDeinit();
 
 		}
 
-		public void OnShowEnd() {
+		public void DoShowBegin(AppearanceParameters parameters) {
 
-			this.instance.OnShowEnd();
+			this.instance.DoShowBegin(parameters);
+
+		}
+
+		public void DoShowEnd() {
+
+			this.instance.DoShowEnd();
 			
 			CanvasUpdater.ForceUpdate(this.instance.canvas, this.instance.canvasScaler);
 
 		}
 
-		public void OnHideBegin(System.Action callback, bool immediately = false) {
+		public void DoHideBegin(AppearanceParameters parameters) {
 
-			this.instance.OnHideBegin(callback, immediately); 
-
-		}
-
-		public void OnHideEnd() {
-
-			this.instance.OnHideEnd();
+			this.instance.DoHideBegin(parameters); 
 
 		}
+
+		public void DoHideEnd() {
+
+			this.instance.DoHideEnd();
+
+		}
+		#endregion
 		
 		public static WindowComponentParametersBase AddParametersFor(WindowBase window, WindowComponent component) {
 

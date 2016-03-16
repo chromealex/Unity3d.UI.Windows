@@ -35,7 +35,7 @@ namespace UnityEngine.UI.Windows.Audio {
 	}
 
 	[System.Serializable]
-	public class Window : IWindowEventsAsync {
+	public class Window : IWindowEventsController {
 		
 		[HideInInspector]
 		private WindowBase window;
@@ -98,28 +98,32 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 
 		// Events
-		public void OnInit() { }
-		public void OnDeinit() { }
-		public void OnShowEnd() { }
-		public void OnHideEnd() { }
+		public void DoInit() { }
+		public void DoDeinit() { }
+		public void DoShowEnd() { }
+		public void DoHideEnd() { }
 		
-		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public void DoShowBegin(AppearanceParameters parameters) {
 			
-			this.OnShowBegin(this.transition, this.transitionParameters, callback);
+			this.DoShowBegin(this.transition, this.transitionParameters, parameters);
 			
 		}
 
-		public void OnShowBegin(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action callback) {
+		public void DoShowBegin(TransitionBase transition, TransitionInputParameters transitionParameters, AppearanceParameters parameters) {
+
+			var needToPlay = (this.id > 0 || this.playType == PlayType.Replace);
+
+			if (this.playType == PlayType.Replace) WindowSystem.AudioStop(null, this.clipType, this.id);
 
 			if (transition != null) {
 
-				if (this.id > 0 || this.playType == PlayType.Replace) {
+				if (needToPlay == true) {
 
-					WindowSystem.AudioPlay(this.window, this.clipType, this.id);
+					WindowSystem.AudioPlay(this.window, this.clipType, this.id, this.playType == PlayType.Replace);
 					transition.SetResetState(transitionParameters, this.window, null);
 					transition.Play(this.window, transitionParameters, null, forward: true, callback: () => {
 						
-						if (callback != null) callback();
+						parameters.Call();
 						
 					});
 
@@ -127,84 +131,24 @@ namespace UnityEngine.UI.Windows.Audio {
 
 			} else {
 
-				if (this.id > 0 || this.playType == PlayType.Replace) WindowSystem.AudioPlay(this.window, this.clipType, this.id);
-				if (callback != null) callback();
+				if (needToPlay == true) WindowSystem.AudioPlay(this.window, this.clipType, this.id, this.playType == PlayType.Replace);
+				parameters.Call();
 
 			}
 			
 		}
 		
-		public void OnHideBegin(System.Action callback, bool immediately = false) {
+		public void DoHideBegin(AppearanceParameters parameters) {
 			
-			this.OnHideBegin(this.transition, this.transitionParameters, callback);
+			this.DoHideBegin(this.transition, this.transitionParameters, parameters);
 			
 		}
 		
-		public void OnHideBegin(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action callback) {
-
-			var newWindow = WindowSystem.GetCurrentWindow();
-			if (newWindow == null) return;
-
-			if (transition != null) {
-
-				if (newWindow.audio.id > 0 || newWindow.audio.playType == PlayType.Replace) {
-
-					transition.Play(this.window, transitionParameters, null, forward: false, callback: () => {
-
-						WindowSystem.AudioStop(this.window, this.clipType, this.id);
-						if (callback != null) callback();
-
-					});
-
-				}
-
-			} else {
-
-				if (newWindow.audio.id > 0 || newWindow.audio.playType == PlayType.Replace) WindowSystem.AudioStop(this.window, this.clipType, this.id);
-				if (callback != null) callback();
-				
-			}
+		public void DoHideBegin(TransitionBase transition, TransitionInputParameters transitionParameters, AppearanceParameters parameters) {
 			
+			parameters.Call();
+
 		}
-		/*
-		private void TryToPlay(System.Action callback) {
-			
-			var equals = false;
-
-			var prevWindow = WindowSystem.GetPreviousWindow();
-			if (prevWindow != null) {
-				
-				equals = (prevWindow.audio.id == this.id || prevWindow.audio.id == 0);
-				
-				if (this.playType == PlayType.RestartIfEquals && equals == true) {
-
-					WindowSystem.AudioStop(this.window, this.clipType, prevWindow.audio.id);
-
-				} else if (equals == false) {
-
-					WindowSystem.AudioStop(this.window, this.clipType, prevWindow.audio.id);
-
-				}
-				
-			}
-
-			if (this.playType == PlayType.KeepCurrent && equals == true) {
-				
-				// Keep current
-				
-			} else {
-				
-				if (this.id > 0) {
-
-					WindowSystem.AudioPlay(this.window, this.clipType, this.id);
-
-				}
-				
-			}
-			
-			if (callback != null) callback();
-
-		}*/
 
 		public void Apply(TransitionBase transition, TransitionInputParameters parameters, bool forward, float value, bool reset) {
 			

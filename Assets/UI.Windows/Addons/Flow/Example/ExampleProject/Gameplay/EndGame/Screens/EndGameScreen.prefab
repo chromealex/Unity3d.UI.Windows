@@ -152,6 +152,11 @@ MonoBehaviour:
           m_Calls: []
         m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEnd, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowOpen:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowOpen, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   transition:
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
@@ -162,6 +167,7 @@ MonoBehaviour:
   layout:
     scaleMode: 0
     fixedScaleResolution: {x: 1024, y: 768}
+    layoutPreferences: {fileID: 0}
     layout: {fileID: 11487960, guid: 1b4d2ebc8f57947c68a8269ba1ffc2b6, type: 2}
     components:
     - description: BORDER
@@ -253,7 +259,7 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   rawImage: {fileID: 0}
   imageColor: {r: 0, g: 0, b: 0, a: 1}
-  playOnStart: 0
+  playOnShow: 0
   loop: 0
 --- !u!114 &11487372
 MonoBehaviour:
@@ -274,6 +280,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  navigationMode: 3
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0

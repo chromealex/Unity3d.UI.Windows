@@ -16,6 +16,7 @@ namespace UnityEngine.UI.Windows.Animations {
 				Position = 0x1,
 				AnchorMin = 0x2,
 				AnchorMax = 0x4,
+				Scale = 0x8,
 				
 			};
 
@@ -27,6 +28,7 @@ namespace UnityEngine.UI.Windows.Animations {
 				public Vector2 anchorMin;
 				public Vector2 anchorMax;
 				public Vector2 to;
+				public Vector2 scale;
 
 				public State() {
 				}
@@ -36,6 +38,7 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.anchorMin = rect.anchorMin;
 					this.anchorMax = rect.anchorMax;
 					this.to = rect.anchoredPosition;
+					this.scale = rect.localScale;
 
 				}
 
@@ -44,6 +47,7 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.anchorMin = source.anchorMin;
 					this.anchorMax = source.anchorMax;
 					this.to = source.to;
+					this.scale = source.scale;
 
 				}
 
@@ -87,8 +91,14 @@ namespace UnityEngine.UI.Windows.Animations {
 					rect.anchorMin = Vector2.Lerp(startState.anchorMin, resultState.anchorMin, value);
 					
 				}
+				
+				if ((this.stateApply & ApplyTo.Scale) != 0) {
+					
+					rect.localScale = Vector2.Lerp(startState.scale, resultState.scale, value);
+					
+				}
 
-				if ((this.stateApply & ApplyTo.Position) != 0 || (this.stateApply & ApplyTo.Default) == ApplyTo.Default) {
+				if ((this.stateApply & ApplyTo.Position) != 0 || this.stateApply == ApplyTo.Default) {
 					
 					rect.anchoredPosition = Vector2.Lerp(startState.to, resultState.to, value);
 					
@@ -109,8 +119,14 @@ namespace UnityEngine.UI.Windows.Animations {
 					rect.anchorMin = state.anchorMin;
 					
 				}
+				
+				if ((this.stateApply & ApplyTo.Scale) != 0) {
+					
+					rect.localScale = state.scale;
+					
+				}
 
-				if ((this.stateApply & ApplyTo.Position) != 0 || (this.stateApply & ApplyTo.Default) == ApplyTo.Default) {
+				if ((this.stateApply & ApplyTo.Position) != 0 || this.stateApply == ApplyTo.Default) {
 					
 					rect.anchoredPosition = state.to;
 					

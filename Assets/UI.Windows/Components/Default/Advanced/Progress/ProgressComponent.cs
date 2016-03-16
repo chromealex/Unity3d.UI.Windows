@@ -63,7 +63,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
 
-			base.OnShowBegin(callback, resetAnimation);
+			base.OnShowBegin();
 
 			this.getValueActive = true;
 
@@ -162,6 +162,8 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void SetAnimation() {
+
+			if (TweenerGlobal.instance == null) return;
 
 			if (this.continious == true && this.bar.canReceiveEvents == false) {
 

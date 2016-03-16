@@ -7,7 +7,7 @@ using UnityEngine.UI.Windows.Types;
 namespace UnityEditor.UI.Windows.Components {
 
 	[CustomEditor(typeof(LinkerComponent))]
-	public class LinkerComponentEditor : Editor {
+	public class LinkerComponentEditor : WindowComponentBaseEditor {
 		
 		private SerializedProperty prefab;
 		private SerializedProperty prefabParameters;
@@ -29,7 +29,8 @@ namespace UnityEditor.UI.Windows.Components {
 
 			var offset = 2f;
 
-			this.DrawDefaultInspector();
+			//this.DrawDefaultInspector();
+			base.OnInspectorGUI();
 
 			var newComponent = this.prefab.objectReferenceValue as WindowComponent;
 			if (this.oldComponent != newComponent) {

@@ -1,11 +1,12 @@
 using ME;
+using MW2.Managers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI.Windows.Extensions;
-using UnityEngine.UI.Windows.Extensions.Tiny;
 using UnityEngine.UI.Windows.Extensions.Net;
+using UnityEngine.UI.Windows.Extensions.Tiny;
 using UnityEngine.UI.Windows.Plugins.Analytics.Net.Api;
 using UnityEngine.UI.Windows.Plugins.Flow;
 
@@ -47,6 +48,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		private void Connect(string key, System.Action<bool> onResult = null) {
 
+			Debug.Log(host);
 			if (this.net.Connected() == true) {
 
 				if (onResult != null) onResult.Invoke(true);

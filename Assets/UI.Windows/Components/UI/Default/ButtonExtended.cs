@@ -120,6 +120,8 @@ namespace UnityEngine.UI {
 
 		[BitMask(typeof(Transition))]
 		public Transition transitionExtended;
+
+		public Graphic[] m_TargetGraphics;
 		
 		private void StartScaleTween(float targetScale, bool instant) {
 			
@@ -157,10 +159,20 @@ namespace UnityEngine.UI {
 		
 		private void StartColorTween(Color targetColor, bool instant) {
 			
+			if (this.m_TargetGraphics != null) {
+
+				for (int i = 0; i < this.m_TargetGraphics.Length; ++i) {
+
+					this.m_TargetGraphics[i].CrossFadeColor(targetColor, instant ? 0f : this.colors.fadeDuration, true, true);
+
+				}
+
+			}
+
 			if (this.targetGraphic == null) return;
 			
 			this.targetGraphic.CrossFadeColor(targetColor, instant ? 0f : this.colors.fadeDuration, true, true);
-			
+
 		}
 
 		private void DoSpriteSwap(Sprite newSprite) {

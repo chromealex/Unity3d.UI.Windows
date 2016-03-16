@@ -15,6 +15,14 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.UI {
 
 		}
 
+		protected override void OnEnable() {
+
+			base.OnEnable();
+
+			this.OnLocalizationChanged();
+
+		}
+
 		/*public override string text {
 			
 			get {
@@ -33,8 +41,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.UI {
 
 		public void OnLocalizationChanged() {
 
-			//this.text = base.text;
-			this.text = LocalizationSystem.Get(this.localizationKey);
+			if (this.localizationKey.IsNone() == false) {
+
+				//this.text = base.text;
+				this.text = LocalizationSystem.Get(this.localizationKey);
+
+			}
 
 		}
 

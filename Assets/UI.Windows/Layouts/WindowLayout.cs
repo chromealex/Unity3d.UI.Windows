@@ -9,13 +9,14 @@ namespace UnityEngine.UI.Windows {
 
 	[RequireComponent(typeof(Canvas))]
 	[RequireComponent(typeof(CanvasUpdater))]
-    public class WindowLayout : WindowObjectElement, ICanvasElement, IWindowEventsAsync {
+    public class WindowLayout : WindowObjectElement, ICanvasElement, IWindowEventsAsync, IWindowEventsController {
 
 		public enum ScaleMode : byte {
 
 			Normal,
 			Fixed,
 			Custom,
+			Preferences,
 
 		};
 
@@ -90,7 +91,7 @@ namespace UnityEngine.UI.Windows {
 		}
 		#endif
 
-		public void Init(float depth, int raycastPriority, int orderInLayer, WindowLayout.ScaleMode scaleMode, Vector2 fixedScaleResolution) {
+		public void Init(float depth, int raycastPriority, int orderInLayer, WindowLayout.ScaleMode scaleMode, Vector2 fixedScaleResolution, WindowLayoutPreferences layoutPreferences) {
 			
 			if (this.initialized == false) {
 				
@@ -107,9 +108,32 @@ namespace UnityEngine.UI.Windows {
 			
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 
+			if (scaleMode == ScaleMode.Preferences) {
+
+				var fixedScale = layoutPreferences.fixedScale;
+				if (fixedScale == true) {
+
+					scaleMode = ScaleMode.Fixed;
+
+				} else {
+
+					scaleMode = ScaleMode.Normal;
+
+				}
+
+				fixedScaleResolution = layoutPreferences.fixedScaleResolution;
+
+			}
+
 			this.SetScale(scaleMode, fixedScaleResolution);
 
-			for (int i = 0; i < this.elements.Count; ++i) this.elements[i].Setup(this.GetWindow());
+			for (int i = 0; i < this.elements.Count; ++i) {
+
+				this.elements[i].Setup(this.GetWindow());
+				this.elements[i].SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
+
+			}
+
 			this.root.Setup(this.GetWindow());
 
 		}

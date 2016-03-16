@@ -49,11 +49,11 @@ namespace UnityEngine.UI.Windows {
 		public float maxWidth = 1920f;
 		public float margin = 100f;
 
-		public void Start() {
+		/*public void Start() {
 
 			this.rectTransform.sizeDelta = new Vector2(2f, 2f) * 2f;
 
-		}
+		}*/
 
 		#if UNITY_EDITOR
 		//[HideInInspector]

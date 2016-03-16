@@ -4,19 +4,57 @@ using UnityEngine.UI.Windows;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows.Types;
 using UnityEngine.EventSystems;
+using UnityEngine.UI.Windows.Plugins.Localization;
 
 namespace UnityEngine.UI.Windows.Components {
 
 	public class ButtonWithTipComponent : ButtonWithTipComponent<TextTipWindowType> {
 		
+		public LocalizationKey keyTooltipNormal;
+		public LocalizationKey keyTooltipDisabled;
+
 		private string tipText;
+
+		public override void OnShowBegin() {
+
+			base.OnShowBegin();
+
+			if (this.keyTooltipNormal.IsNone() == false) {
+
+				this.SetTextToTip(this.keyTooltipNormal);
+
+			}
+
+		}
+
+		public override void OnInteractableChanged() {
+
+			base.OnInteractableChanged();
+
+			var key = (this.IsInteractable() == true ? this.keyTooltipNormal : this.keyTooltipDisabled);
+
+			if (key.IsNone() == false) {
+				
+				this.SetTextToTip(key);
+				
+			}
+
+		}
+
+		public override void OnLocalizationChanged() {
+
+			base.OnLocalizationChanged();
+
+			this.OnInteractableChanged();
+
+		}
 		
 		public void SetTextToTip(string tipText) {
 			
 			if (this.tipText != tipText) {
 				
 				this.tipText = tipText;
-				this.SetState(state: false);
+				this.UpdateTip();
 				
 			} else {
 				
@@ -24,6 +62,12 @@ namespace UnityEngine.UI.Windows.Components {
 				
 			}
 			
+		}
+		
+		public void SetTextToTip(LocalizationKey tipKey, params object[] parameters) {
+
+			this.SetTextToTip(LocalizationSystem.Get(tipKey, parameters));
+
 		}
 
 		public override void OnParametersPass(TextTipWindowType window) {
@@ -61,9 +105,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnShowBegin(System.Action callback, bool resetAnimation) {
+		public override void OnShowBegin() {
 
-			base.OnShowBegin(callback, resetAnimation);
+			base.OnShowBegin();
 
 			this.SetState(state: false);
 
@@ -83,6 +127,16 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			this.SetState(state: false);
 			
+		}
+
+		public void UpdateTip() {
+
+			if (this.infoWindow != null) {
+
+				this.OnParametersPass(this.infoWindow as T);
+
+			}
+
 		}
 
 		public void SetState(bool state) {

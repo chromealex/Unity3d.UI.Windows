@@ -1,4 +1,5 @@
 ﻿using ME;
+using MW2.Managers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -54,7 +55,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 		public override IEnumerator Auth(string key) {
 
 			var request = "{\"key\": \"" + key + "\"}";
-
+			Debug.Log(host);
 			return net.JsonPost(host, "/v/auth", request, response => {
 				var to = DeserializeT<ResponseData<string>>(response);
 
@@ -76,6 +77,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 
 		#if UNITY_EDITOR
 		public override void OnEditorAuth(string key, System.Action<bool> onResult) {
+
 			Debug.Log("AbTest Editor connecting...");
 
 			var request = "{\"key\": \"" + key + "\"}";

@@ -28,17 +28,17 @@ namespace UnityEngine.UI.Windows {
 	namespace Modules {
 
 		[System.Serializable]
-		public class Modules : IWindowEventsAsync {
+		public class Modules : IWindowEventsController {
 			
 			[System.Serializable]
-			public class ModuleInfo : IWindowEventsAsync {
+			public class ModuleInfo : IWindowEventsController {
 
 				public WindowModule moduleSource;
 				public int sortingOrder;
 				public bool backgroundLayer;
 
 				[HideInInspector][System.NonSerialized]
-				private IWindowAnimation instance;
+				private WindowModule instance;
 
 				public ModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
 
@@ -80,38 +80,38 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 				
-				public void OnInit() { if (this.instance != null) this.instance.OnInit(); }
-				public void OnDeinit() { if (this.instance != null) this.instance.OnDeinit(); }
-				public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+				public void DoInit() { if (this.instance != null) this.instance.DoInit(); }
+				public void DoDeinit() { if (this.instance != null) this.instance.DoDeinit(); }
+				public void DoShowBegin(AppearanceParameters parameters) {
 
 					if (this.instance != null) {
 
-						this.instance.OnShowBegin(callback, resetAnimation);
+						this.instance.DoShowBegin(parameters);
 
 					} else {
 
-						if (callback != null) callback();
+						parameters.Call();
 
 					}
 
 				}
 
-				public void OnShowEnd() { if (this.instance != null) this.instance.OnShowEnd(); }
-				public void OnHideBegin(System.Action callback, bool immediately = false) {
+				public void DoShowEnd() { if (this.instance != null) this.instance.DoShowEnd(); }
+				public void DoHideBegin(AppearanceParameters parameters) {
 					
 					if (this.instance != null) {
 						
-						this.instance.OnHideBegin(callback, immediately);
+						this.instance.DoHideBegin(parameters);
 						
 					} else {
 						
-						if (callback != null) callback();
-						
+						parameters.Call();
+
 					}
 
 				}
 
-				public void OnHideEnd() { if (this.instance != null) this.instance.OnHideEnd(); }
+				public void DoHideEnd() { if (this.instance != null) this.instance.DoHideEnd(); }
 				
 			}
 
@@ -188,27 +188,29 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			// Events
-			public void OnInit() { foreach (var element in this.elements) element.OnInit(); }
-			public void OnDeinit() { foreach (var element in this.elements) element.OnDeinit(); }
-			public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
-				
-				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnShowBegin(c, resetAnimation); });
+			public void DoInit() { foreach (var element in this.elements) element.DoInit(); }
+			public void DoDeinit() { foreach (var element in this.elements) element.DoDeinit(); }
+			public void DoShowBegin(AppearanceParameters parameters) {
+
+				var callback = parameters.callback;
+				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoShowBegin(parameters.ReplaceCallback(c)); });
 
 			}
-			public void OnShowEnd() { foreach (var element in this.elements) element.OnShowEnd(); }
-			public void OnHideBegin(System.Action callback, bool immediately = false) {
+			public void DoShowEnd() { foreach (var element in this.elements) element.DoShowEnd(); }
+			public void DoHideBegin(AppearanceParameters parameters) {
 				
-				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.OnHideBegin(c, immediately); });
+				var callback = parameters.callback;
+				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoHideBegin(parameters.ReplaceCallback(c)); });
 
 			}
-			public void OnHideEnd() { foreach (var element in this.elements) element.OnHideEnd(); }
+			public void DoHideEnd() { foreach (var element in this.elements) element.DoHideEnd(); }
 			
 		}
 
 	}
 
 	[System.Serializable]
-	public class Events : IWindowEventsAsync {
+	public class Events : IWindowEventsController {
 		
 		[System.Serializable]
 		public class BackButtonBehaviour {
@@ -415,6 +417,10 @@ namespace UnityEngine.UI.Windows {
 			[System.Serializable]
 			public class OnHideEnd : UnityEvent {}
 			public OnHideEnd onHideEnd = new OnHideEnd();
+			
+			[System.Serializable]
+			public class OnWindowOpen : UnityEvent {}
+			public OnWindowOpen onWindowOpen = new OnWindowOpen();
 
 			public void Clear() {
 
@@ -422,6 +428,7 @@ namespace UnityEngine.UI.Windows {
 				this.onShowEnd.RemoveAllListeners();
 				this.onHideBegin.RemoveAllListeners();
 				this.onHideEnd.RemoveAllListeners();
+				this.onWindowOpen.RemoveAllListeners();
 
 			}
 			
@@ -443,6 +450,10 @@ namespace UnityEngine.UI.Windows {
 						
 					case WindowEventType.OnHideEnd:
 						this.onHideEnd.AddListener(callback);
+						break;
+						
+					case WindowEventType.OnWindowOpen:
+						this.onWindowOpen.AddListener(callback);
 						break;
 
 				}
@@ -468,6 +479,10 @@ namespace UnityEngine.UI.Windows {
 					case WindowEventType.OnHideEnd:
 						this.onHideEnd.RemoveListener(callback);
 						break;
+						
+					case WindowEventType.OnWindowOpen:
+						this.onWindowOpen.RemoveListener(callback);
+						break;
 
 				}
 				
@@ -491,6 +506,10 @@ namespace UnityEngine.UI.Windows {
 						
 					case WindowEventType.OnHideEnd:
 						this.onHideEnd.Invoke();
+						break;
+						
+					case WindowEventType.OnWindowOpen:
+						this.onWindowOpen.Invoke();
 						break;
 
 				}
@@ -520,13 +539,13 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		// Events
-		public void OnInit() {
+		public void DoInit() {
 
 			this.ReleaseEvents(WindowEventType.OnInit);
 
 		}
 
-		public void OnDeinit() {
+		public void DoDeinit() {
 
 			this.ReleaseEvents(WindowEventType.OnDeinit);
 			
@@ -535,27 +554,33 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public void DoShowBegin(AppearanceParameters parameters) {
 
 			this.ReleaseEvents(WindowEventType.OnShowBegin);
-			if (callback != null) callback();
+			parameters.Call();
 
 		}
 
-		public void OnShowEnd() {
+		public void DoShowEnd() {
 
 			this.ReleaseEvents(WindowEventType.OnShowEnd);
 
 		}
-		public void OnHideBegin(System.Action callback, bool immediately = false) {
+		public void DoHideBegin(AppearanceParameters parameters) {
 
 			this.ReleaseEvents(WindowEventType.OnHideBegin);
-			if (callback != null) callback();
+			parameters.Call();
 
 		}
-		public void OnHideEnd() {
+		public void DoHideEnd() {
 
 			this.ReleaseEvents(WindowEventType.OnHideEnd);
+
+		}
+
+		public void DoWindowOpen() {
+
+			this.ReleaseEvents(WindowEventType.OnWindowOpen);
 
 		}
 		
@@ -657,7 +682,7 @@ namespace UnityEngine.UI.Windows {
 	}
 	
 	[System.Serializable]
-	public class Transition : IWindowEventsAsync {
+	public class Transition : IWindowEventsController {
 
 		[Header("Default")]
 		public TransitionBase transition;
@@ -677,28 +702,28 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		// Events
-		public void OnInit() {
+		public void DoInit() {
 
 			if (this.transition != null) this.transition.OnInit();
 
 		}
 
-		public void OnDeinit() {}
-		public void OnShowEnd() {}
-		public void OnHideEnd() {}
+		public void DoDeinit() {}
+		public void DoShowEnd() {}
+		public void DoHideEnd() {}
 		
-		public void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public void DoShowBegin(AppearanceParameters parameters) {
 
-			this.OnShowBegin(this.transition, this.transitionParameters, callback);
+			this.DoShowBegin(this.transition, this.transitionParameters, parameters);
 
 		}
 
-		public void OnShowBegin(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action callback) {
+		public void DoShowBegin(TransitionBase transition, TransitionInputParameters transitionParameters, AppearanceParameters parameters) {
 
 			if (transition != null) {
 				
 				transition.SetResetState(transitionParameters, this.window, null);
-				transition.Play(this.window, transitionParameters, null, forward: true, callback: callback);
+				transition.Play(this.window, transitionParameters, null, forward: true, callback: parameters.callback);
 				
 			} else {
 
@@ -710,28 +735,28 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				if (callback != null) callback();
+				parameters.Call();
 				
 			}
 			
 		}
 		
-		public void OnHideBegin(System.Action callback, bool immediately = false) {
+		public void DoHideBegin(AppearanceParameters parameters) {
 			
-			this.OnHideBegin(this.transition, this.transitionParameters, callback);
+			this.DoHideBegin(this.transition, this.transitionParameters, parameters);
 
 		}
 
-		public void OnHideBegin(TransitionBase transition, TransitionInputParameters transitionParameters, System.Action callback) {
+		public void DoHideBegin(TransitionBase transition, TransitionInputParameters transitionParameters, AppearanceParameters parameters) {
 
 			if (transition != null) {
 
-				transition.Play(this.window, transitionParameters, null, forward: false, callback: callback);
+				transition.Play(this.window, transitionParameters, null, forward: false, callback: parameters.callback);
 				
 			} else {
 				
-				if (callback != null) callback();
-				
+				parameters.Call();
+
 			}
 			
 		}

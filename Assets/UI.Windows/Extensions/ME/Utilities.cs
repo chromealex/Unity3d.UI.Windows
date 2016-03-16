@@ -80,7 +80,16 @@ namespace ME {
 
 		}
 
-		public static void FindReferenceParent<T>(Component root, ref T link) where T : Component {
+        public static T FindReferenceParent<T>(GameObject root) {
+
+            var items = root.GetComponentsInParent<T>(true);
+            if (items.Length > 0) return (T)items[0];
+
+            return default(T);
+
+        }
+
+        public static void FindReferenceParent<T>(Component root, ref T link) where T : Component {
 			
 			var items = root.GetComponentsInParent<T>(true);
 			if (items.Length > 0) link = items[0] as T;

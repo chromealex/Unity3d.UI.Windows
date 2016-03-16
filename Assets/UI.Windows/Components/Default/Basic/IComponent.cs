@@ -65,6 +65,7 @@ namespace UnityEngine.UI.Windows.Components {
 		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
 		Selectable GetSelectable();
 		IButtonComponent SetSelectByDefault(bool state);
+		IButtonComponent SetNavigationMode(Navigation.Mode mode);
 
 		IButtonComponent SetEnabledState(bool state);
 		IButtonComponent SetEnabled();
@@ -107,19 +108,31 @@ namespace UnityEngine.UI.Windows.Components {
 	
 	public interface IImageComponent : IComponent {
 		
-		void ResetImage();
-		void SetImage(Sprite sprite, bool withPivotsAndSize = false);
-		void SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false);
-		void SetImage(Texture texture);
-		void SetImage(Texture texture, bool preserveAspect);
-		void SetImage(LocalizationKey key, params object[] parameters);
-		void SetMaterial(Material material);
+		IImageComponent ResetImage();
+		IImageComponent SetImage(Sprite sprite, bool withPivotsAndSize = false);
+		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false);
+		IImageComponent SetImage(Texture texture);
+		IImageComponent SetImage(Texture texture, bool preserveAspect);
+		IImageComponent SetImage(LocalizationKey key, params object[] parameters);
+		IImageComponent SetMaterial(Material material);
 		Color GetColor();
 		void SetColor(Color color);
-		void SetAlpha(float value);
-		void SetPreserveAspectState(bool state);
-		void SetPlayOnStart(bool state);
-		void SetLoop(bool state);
+		IImageComponent SetAlpha(float value);
+		IImageComponent SetPreserveAspectState(bool state);
+
+		bool IsMovie();
+		bool GetPlayOnShow();
+		IImageComponent SetPlayOnShow(bool state);
+		IImageComponent SetLoop(bool state);
+		IImageComponent SetMovieTexture(Texture texture);
+		bool IsPlaying();
+		IImageComponent Play();
+		IImageComponent Play(bool loop);
+		IImageComponent Stop();
+		IImageComponent Pause();
+
+		Image GetImageSource();
+		RawImage GetRawImageSource();
 
 	}
 	

@@ -243,9 +243,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnShowBegin(System.Action callback, bool resetAnimation) {
+		public override void OnShowBegin() {
 
-			base.OnShowBegin(callback, resetAnimation);
+			base.OnShowBegin();
 			
 			if (this.selectByDefault == true) {
 				

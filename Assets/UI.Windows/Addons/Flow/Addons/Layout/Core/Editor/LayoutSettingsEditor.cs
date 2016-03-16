@@ -287,6 +287,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			
 			var scaleMode = property.FindPropertyRelative("scaleMode");
 			var fixedScaleSize = property.FindPropertyRelative("fixedScaleResolution");
+			var layoutPreferences = property.FindPropertyRelative("layoutPreferences");
 			var layout = property.FindPropertyRelative("layout");
 			
 			if (EditorGUI.PropertyField(position, property, label, false) == true) {
@@ -309,7 +310,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 						GUI.changed = true;
 						this.window.layout.components = new UnityEngine.UI.Windows.Types.Layout.Component[0];
 						this.window.OnValidate();
-						
+
 					}
 					
 				}
@@ -339,7 +340,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					
 					var enabled = true;
 					if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Normal || // Normal mode
-					    mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed) { // Fixed mode
+					    mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed || // Fixed mode
+					    mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences) { // Custom mode
 						
 						var layoutSource = layout.objectReferenceValue as UnityEngine.UI.Windows.WindowLayout;
 						if (layoutSource != null) {
@@ -348,6 +350,27 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 								
 								EditorGUILayout.PropertyField(fixedScaleSize, new GUIContent("Resolution:"));
 								
+							} else if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences) {
+
+								EditorGUILayout.PropertyField(layoutPreferences, new GUIContent("File Link:"));
+								if (layoutPreferences.objectReferenceValue != null) {
+
+									var obj = new SerializedObject(layoutPreferences.objectReferenceValue);
+									var fixedScale = obj.FindProperty("fixedScale").boolValue;
+									fixedScaleSize.vector2Value = obj.FindProperty("fixedScaleResolution").vector2Value;
+
+									if (fixedScale == true) {
+
+										mode = UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed;
+
+									} else {
+										
+										mode = UnityEngine.UI.Windows.WindowLayout.ScaleMode.Normal;
+
+									}
+
+								}
+
 							}
 							
 							layoutSource.SetScale(mode, fixedScaleSize.vector2Value);
@@ -356,11 +379,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 						enabled = false;
 						
 					}
-					
-					var oldState = GUI.enabled;
-					GUI.enabled = enabled;
+
+					EditorGUI.BeginDisabledGroup(!enabled);
 					if (this.canvasScalerEditor != null) this.canvasScalerEditor.OnInspectorGUI();
-					GUI.enabled = oldState;
+					EditorGUI.EndDisabledGroup();
+
 					CustomGUI.Splitter();
 					
 				}
