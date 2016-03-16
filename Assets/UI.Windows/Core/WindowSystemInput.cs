@@ -71,6 +71,8 @@ namespace UnityEngine.UI.Windows {
 
 		public static float GetScrollSensitivity() {
 
+			if (WindowSystemInput.instance == null) return 0f;
+
 			#if UNITY_STANDALONE_OSX
 			return WindowSystemInput.instance.scrollSensitivityMac;
 			#else

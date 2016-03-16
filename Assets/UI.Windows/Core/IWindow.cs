@@ -217,25 +217,16 @@ namespace UnityEngine.UI.Windows {
 		OnWindowOpen,
 
 	};
-	/*
-	public interface IWindowEvents {
-		
-		void OnInit();
-		void OnDeinit();
-		void OnShowBegin();
-		void OnShowEnd();
-		void OnHideBegin();
-		void OnHideEnd();
-		
-	}*/
-	
+
 	public interface IWindowEventsAsync {
 		
 		void OnInit();
 		void OnDeinit();
-		void OnShowBegin(System.Action callback, bool resetAnimation = true);
+		void OnShowBegin();
+		void OnShowBegin(AppearanceParameters appearanceParameters);
 		void OnShowEnd();
-		void OnHideBegin(System.Action callback, bool immediately = false);
+		void OnHideBegin();
+		void OnHideBegin(AppearanceParameters appearanceParameters);
 		void OnHideEnd();
 		
 	}

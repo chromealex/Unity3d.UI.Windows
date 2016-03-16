@@ -329,22 +329,12 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public override void OnShowBegin() {
 
 			this.isAlive = true;
 			CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
-
-			this.SetComponentState(WindowObjectState.Showing);
-
-			ME.Utilities.CallInSequence(() => base.OnShowBegin(callback, resetAnimation), this.subComponents, (e, c) => e.OnShowBegin(c, resetAnimation));
-
-		}
-		
-		public override void OnHideBegin(System.Action callback, bool immediately = false) {
 			
-			this.SetComponentState(WindowObjectState.Hiding);
-
-			ME.Utilities.CallInSequence(() => base.OnHideBegin(callback, immediately), this.subComponents, (e, c) => e.OnHideBegin(c, immediately));
+			base.OnShowBegin();
 
 		}
 
@@ -356,15 +346,7 @@ namespace UnityEngine.UI.Windows {
 			base.OnHideEnd();
 
 		}
-		
-		/*public virtual void OnInit() {}
-		public virtual void OnDeinit() {}
-		public virtual void OnShowEnd() {}
-		public virtual void OnHideBegin(System.Action callback, bool immediately = false) { if (callback != null) callback(); }*/
-		/*
-		public virtual void OnShowBeginEvent() {}
-		public virtual void OnHideEndEvent() {}
-*/
+
 	}
 
 }

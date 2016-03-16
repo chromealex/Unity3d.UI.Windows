@@ -54,6 +54,28 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 		}
 
 		[System.Serializable]
+		public class Canvas {
+
+			public bool overridePixelPerfect;
+			[ReadOnly("overridePixelPerfect", state: false)]
+			public bool pixelPerfect;
+
+			public string sortingLayerName = "Windows";
+			
+			public void Apply(UnityEngine.Canvas canvas) {
+
+			}
+
+			public void ApplyEveryInstance(UnityEngine.Canvas canvas) {
+
+				if (this.overridePixelPerfect == true) canvas.pixelPerfect = this.pixelPerfect;
+				canvas.sortingLayerName = this.sortingLayerName;
+
+			}
+
+		}
+
+		[System.Serializable]
 		public class Camera {
 
 			public bool orthographic = true;
@@ -62,7 +84,7 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 			public float farClipPlane = 100f;
 			public bool useOcclusionCulling = false;
 			public bool hdr = false;
-			
+
 			public void Apply(UnityEngine.Camera camera) {
 				
 				camera.orthographic = this.orthographic;
@@ -73,25 +95,28 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 				camera.hdr = this.hdr;
 
 			}
-
-		}
-
-		[System.Serializable]
-		public class SortingLayer {
-
-			public string name = "Windows";
+			
+			public void ApplyEveryInstance(UnityEngine.Camera camera) {
+			}
 
 		}
 
 		public Base baseInfo;
+		public Canvas canvas;
 		public Camera camera;
-		public SortingLayer sortingLayer;
-
+		
 		public void Apply(UnityEngine.Camera camera = null, UnityEngine.Canvas canvas = null) {
-
+			
 			if (camera != null) this.camera.Apply(camera);
-			if (canvas != null) canvas.sortingLayerName = this.sortingLayer.name;
-
+			if (canvas != null) this.canvas.Apply(canvas);
+			
+		}
+		
+		public void ApplyEveryInstance(UnityEngine.Camera camera = null, UnityEngine.Canvas canvas = null) {
+			
+			if (camera != null) this.camera.ApplyEveryInstance(camera);
+			if (canvas != null) this.canvas.ApplyEveryInstance(canvas);
+			
 		}
 
 		#if UNITY_EDITOR

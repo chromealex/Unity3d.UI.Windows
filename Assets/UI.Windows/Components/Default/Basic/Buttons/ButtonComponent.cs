@@ -186,7 +186,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public override void OnShowBegin(System.Action callback, bool resetAnimation = true) {
+		public override void OnShowBegin() {
 			
 			base.OnShowBegin();
 			
@@ -242,9 +242,9 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public override void OnHideBegin(System.Action callback, bool immediately = false) {
+		public override void OnHideBegin() {
 			
-			base.OnHideBegin(callback, immediately);
+			base.OnHideBegin();
 			
 			this.OnPointerExit(null);
 			
@@ -673,21 +673,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			public bool IsPlaying() {
 	
-				#if !UNITY_MOBILE
-				var image = this.GetRawImageSource();
-				if (image == null) return false;
-				
-				var movie = image.mainTexture as MovieTexture;
-				if (movie != null) {
-	
-					return movie.isPlaying;
-					
-				}
-				#else
-				WindowSystemLogger.Log(this, "`IsPlaying` method not supported on mobile platforms");
-				#endif
-	
-				return false;
+				return MovieSystem.IsPlaying(this);
 	
 			}
 	
@@ -699,53 +685,24 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			public IImageComponent Play(bool loop) {
 	
-				#if !UNITY_MOBILE
-				var image = this.GetRawImageSource();
-				if (image == null) return this;
+				MovieSystem.Play(this, loop);
 	
-				var movie = image.mainTexture as MovieTexture;
-				if (movie != null) {
-	
-					movie.loop = loop;
-					movie.Play();
-	
-				}
-				#else
-				WindowSystemLogger.Log(this, "`Play` method not supported on mobile platforms");
-				#endif
-				
 				return this;
 	
 			}
 	
 			public IImageComponent Stop() {
-				
-				#if !UNITY_MOBILE
-				var image = this.GetRawImageSource();
-				if (image == null) return this;
-				
-				var movie = image.mainTexture as MovieTexture;
-				if (movie != null) movie.Stop();
-				#else
-				WindowSystemLogger.Log(this, "`Stop` method not supported on mobile platforms");
-				#endif
-				
+	
+				MovieSystem.Stop(this);
+	
 				return this;
 	
 			}
 	
 			public IImageComponent Pause() {
-				
-				#if !UNITY_MOBILE
-				var image = this.GetRawImageSource();
-				if (image == null) return this;
-				
-				var movie = image.mainTexture as MovieTexture;
-				if (movie != null) movie.Pause();
-				#else
-				WindowSystemLogger.Log(this, "`Pause` method not supported on mobile platforms");
-				#endif
-				
+	
+				MovieSystem.Pause(this);
+	
 				return this;
 	
 			}
@@ -759,7 +716,8 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 				
 				if (this.rawImage != null) {
-					
+	
+					this.Stop();
 					this.rawImage.texture = null;
 					
 				}

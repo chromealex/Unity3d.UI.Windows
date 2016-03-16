@@ -198,7 +198,9 @@ namespace UnityEngine.UI.Windows {
 			this.SetComponentState(WindowObjectState.Showing);
 			this.OnShowBegin();
 			this.OnShowBegin(parameters);
+			#pragma warning disable
 			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
+			#pragma warning restore
 
 			var callback = parameters.callback;
 			ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoShowBegin(parameters.ReplaceCallback(cb)));
@@ -216,7 +218,9 @@ namespace UnityEngine.UI.Windows {
 			this.SetComponentState(WindowObjectState.Hiding);
 			this.OnHideBegin();
 			this.OnHideBegin(parameters);
+			#pragma warning disable
 			this.OnHideBegin(parameters.callback, parameters.immediately);
+			#pragma warning restore
 
 			var callback = parameters.callback;
 			ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoHideBegin(parameters.ReplaceCallback(cb)));
@@ -232,8 +236,10 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnShowBegin(AppearanceParameters parameters) {}
 		public virtual void OnHideBegin(AppearanceParameters parameters) {}
 		
+		[System.Obsolete("Use OnShowBegin with AppearanceParameters or OnShowBegin without parameters")]
 		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
-		public virtual void OnHideBegin(System.Action callback, bool immediately) {}
+		[System.Obsolete("Use OnHideBegin with AppearanceParameters or OnHideBegin without parameters")]
+		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {}
 		#endregion
 
         /// <summary>

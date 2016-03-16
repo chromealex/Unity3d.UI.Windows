@@ -28,6 +28,12 @@ namespace UnityEngine.UI.Windows.Types {
 		private float scaleFactorOut = 1f;
 
 		private HUDItem tempHud;
+		
+		public override Canvas GetCanvas() {
+			
+			return this.canvas;
+			
+		}
 
 		public void OnHover(Transform worldElement, Vector3 worldPoint, Camera gameCamera, Vector3 offset = default(Vector3)) {
 			

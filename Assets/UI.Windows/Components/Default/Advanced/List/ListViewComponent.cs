@@ -720,7 +720,9 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			this.topPadding.preferredHeight = hiddenElementsHeightSum;
-			this.topPadding.gameObject.SetActive(this.topPadding.preferredHeight > 0f);
+			var topEnabled = this.topPadding.preferredHeight > 0f;
+			this.topPadding.gameObject.SetActive(topEnabled);
+			if (this.top != null) this.top.SetActive(topEnabled);
 
 			for (var i = this.visibleRowRange.from; i <= this.visibleRowRange.Last(); ++i) {
 
@@ -730,7 +732,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 			var bottomPaddingHeight = this.scrollRect.content.rect.height - hiddenElementsHeightSum;
 			this.bottomPadding.preferredHeight = bottomPaddingHeight - (this.layoutGroup != null ? this.GetLayoutGroupSpacing() : 0f);
-			this.bottomPadding.gameObject.SetActive(this.bottomPadding.preferredHeight > 0f);
+			var bottomEnabled = this.bottomPadding.preferredHeight > 0f;
+			this.bottomPadding.gameObject.SetActive(bottomEnabled);
+			if (this.bottom != null) this.bottom.SetActive(bottomEnabled);
 
 		}
 

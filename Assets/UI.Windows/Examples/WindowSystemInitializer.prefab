@@ -137,6 +137,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &144316
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 473900}
+  - 114: {fileID: 11499270}
+  m_Layer: 0
+  m_Name: Movies
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &150844
 GameObject:
   m_ObjectHideFlags: 1
@@ -311,6 +327,7 @@ Transform:
   - {fileID: 434628}
   - {fileID: 481472}
   - {fileID: 425610}
+  - {fileID: 473900}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &447722
@@ -386,6 +403,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 494284}
   m_RootOrder: 0
+--- !u!4 &473900
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 144316}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 443580}
+  m_RootOrder: 12
 --- !u!4 &481472
 Transform:
   m_ObjectHideFlags: 1
@@ -625,6 +654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: b63209b3ed5204d6bbfceeccd6b4eae9, type: 2}
   logEnabled: 0
+  initializeOnStart: 1
 --- !u!114 &11410740
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -652,6 +682,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: bb8516afccca84171b47c68dd74cc546, type: 2}
   logEnabled: 0
+  initializeOnStart: 1
 --- !u!114 &11420508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -674,7 +705,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13e09f13f6f2a48ad8079565adda6865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 1
+  textLogs: 0
+  componentsLogs: 0
 --- !u!114 &11427980
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -688,6 +720,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: cb448cbf5bf8d425db551d7116f7e930, type: 2}
   logEnabled: 0
+  initializeOnStart: 1
 --- !u!114 &11430846
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -699,6 +732,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e489ba4da6c24cccaa03011bd6fdfdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scrollSensitivityPC: 100
+  scrollSensitivityMac: 10
 --- !u!114 &11432764
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -712,6 +747,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: 1ca08e35004f44b8fa762e80a29df803, type: 2}
   logEnabled: 0
+  initializeOnStart: 1
 --- !u!114 &11443580
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -911,6 +947,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serviceManager: {fileID: 11432764}
   logNetwork: 0
+--- !u!114 &11499270
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 144316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 950a34065bb674241a139c5f085af91c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!124 &12427498
 Behaviour:
   m_ObjectHideFlags: 1

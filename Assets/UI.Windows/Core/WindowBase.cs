@@ -185,6 +185,8 @@ namespace UnityEngine.UI.Windows {
 					this.OnInit();
 					
 				}
+				
+				WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
 
 				this.setup = true;
 
@@ -220,6 +222,12 @@ namespace UnityEngine.UI.Windows {
 				this.passParams = (onParametersPassCall != null);
 
 			}
+
+		}
+
+		public virtual Canvas GetCanvas() {
+
+			return null;
 
 		}
 

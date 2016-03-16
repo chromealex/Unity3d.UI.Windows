@@ -48,7 +48,6 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		private void Connect(string key, System.Action<bool> onResult = null) {
 
-			Debug.Log(host);
 			if (this.net.Connected() == true) {
 
 				if (onResult != null) onResult.Invoke(true);

@@ -228,7 +228,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public override void DoHideBegin(AppearanceParameters parameters) {
-			
+
 			if (this.manualShowHideControl == true) {
 				
 				parameters.Call();
@@ -244,6 +244,14 @@ namespace UnityEngine.UI.Windows {
 		#endregion
 		
 		private void DoShowBegin_INTERNAL(AppearanceParameters parameters) {
+			
+			if (this.GetComponentState() == WindowObjectState.Showing ||
+			    this.GetComponentState() == WindowObjectState.Shown) {
+				
+				parameters.Call();
+				return;
+				
+			}
 
 			this.SetComponentState(WindowObjectState.Showing);
 
@@ -254,7 +262,9 @@ namespace UnityEngine.UI.Windows {
 
 				this.OnShowBegin();
 				this.OnShowBegin(parameters);
+				#pragma warning disable
 				this.OnShowBegin(parameters.callback, parameters.resetAnimation);
+				#pragma warning restore
 				
 				parameters.Call();
 				
@@ -336,6 +346,14 @@ namespace UnityEngine.UI.Windows {
 		
 		private void DoHideBegin_INTERNAL(AppearanceParameters parameters) {
 			
+			if (this.GetComponentState() == WindowObjectState.Hiding ||
+			    this.GetComponentState() == WindowObjectState.Hidden) {
+				
+				parameters.Call();
+				return;
+				
+			}
+
 			this.SetComponentState(WindowObjectState.Hiding);
 			
 			var parametersCallback = parameters.callback;
@@ -345,7 +363,9 @@ namespace UnityEngine.UI.Windows {
 				
 				this.OnHideBegin();
 				this.OnHideBegin(parameters);
+				#pragma warning disable
 				this.OnHideBegin(parameters.callback, parameters.resetAnimation);
+				#pragma warning restore
 				
 				parameters.Call();
 				

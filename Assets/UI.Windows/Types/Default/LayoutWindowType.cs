@@ -20,6 +20,12 @@ namespace UnityEngine.UI.Windows.Types {
 			
 		}
 		
+		public override Canvas GetCanvas() {
+			
+			return this.layout.GetLayoutInstance().canvas;
+			
+		}
+
 		public void GetLayoutComponent<T>(out T component, LayoutTag tag = LayoutTag.None) where T : WindowComponent {
 			
 			component = this.GetLayoutComponent<T>(tag);

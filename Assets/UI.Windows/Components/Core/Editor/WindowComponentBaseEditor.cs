@@ -137,7 +137,7 @@ namespace UnityEditor.UI.Windows {
 				
 			}
 
-			ME.EditorUtilitiesEx.DrawInspector(this);
+			ME.EditorUtilitiesEx.DrawInspector(this, typeof(WindowComponentBase), new List<string>() { "WindowComponentBase" });
 
 			// Draw default
 			//this.DrawDefaultInspector();

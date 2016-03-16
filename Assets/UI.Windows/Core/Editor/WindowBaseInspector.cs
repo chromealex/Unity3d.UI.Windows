@@ -92,7 +92,7 @@ namespace UnityEditor.UI.Windows {
 							var list = new List<string>();
 							foreach (var p in parameters) {
 
-								list.Add(string.Format("<color=#000080ff>{0}</color> {1}", ME.Utilities.FormatParameter(p.ParameterType), p.Name));
+								list.Add(string.Format("<color=#000080fff>{0}</color> {1}", ME.Utilities.FormatParameter(p.ParameterType), p.Name));
 
 							}
 
@@ -179,8 +179,10 @@ namespace UnityEditor.UI.Windows {
 
 			}
 
+			ME.EditorUtilitiesEx.DrawInspector(this, typeof(WindowBase));
+
 			// Draw default
-			this.DrawDefaultInspector();
+			//this.DrawDefaultInspector();
 
 			this.serializedObject.ApplyModifiedProperties();
 

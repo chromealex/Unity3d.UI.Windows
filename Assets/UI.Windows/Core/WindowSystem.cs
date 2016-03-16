@@ -550,6 +550,20 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void ApplyToSettingsInstance(Camera camera, Canvas canvas) {
+
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+
+				// no settings file
+
+			} else {
+
+				WindowSystem.instance.settings.file.ApplyEveryInstance(camera, canvas);
+
+			}
+
+		}
+
 		/// <summary>
 		/// Applies settings file (or default) to camera.
 		/// </summary>

@@ -21,6 +21,9 @@ namespace UnityEngine.UI.Windows.Components {
 		public GameObject content;
 		public GameObject noElements;
 		public GameObject loading;
+		
+		public GameObject top;
+		public GameObject bottom;
 
 		[Header("Navigation")]
 		public Navigation.Mode navigationMode = Navigation.Mode.None;

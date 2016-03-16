@@ -5,10 +5,11 @@ using UnityEngine.UI.Windows.Components;
 public class UIWindowExampleButtonComponent : ButtonComponent {
 
 	public UIWindowExampleHover hover;
+	
+	public override void OnHideBegin() {
+		
+		base.OnHideBegin();
 
-	public override void OnHideBegin(System.Action callback, bool immediately = false) {
-
-		base.OnHideBegin(callback, immediately);
 		this.hover.OnLeave();
 
 	}

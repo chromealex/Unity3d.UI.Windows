@@ -60,6 +60,8 @@ namespace UnityEngine.UI.Windows {
 
 		public static bool IsActiveComponents() {
 
+			if (WindowSystemLogger.instance == null) return false;
+
 			var active = WindowSystemLogger.instance.componentsLogs;
 			return 
 				(Application.isEditor == true && (active & ActiveType.InEditor) != 0) ||

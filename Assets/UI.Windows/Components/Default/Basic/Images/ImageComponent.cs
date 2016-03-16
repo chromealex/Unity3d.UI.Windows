@@ -1,6 +1,3 @@
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-#define UNITY_MOBILE
-#endif
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows;
@@ -185,21 +182,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public bool IsPlaying() {
 
-			#if !UNITY_MOBILE
-			var image = this.GetRawImageSource();
-			if (image == null) return false;
-			
-			var movie = image.mainTexture as MovieTexture;
-			if (movie != null) {
-
-				return movie.isPlaying;
-				
-			}
-			#else
-			WindowSystemLogger.Log(this, "`IsPlaying` method not supported on mobile platforms");
-			#endif
-
-			return false;
+			return MovieSystem.IsPlaying(this);
 
 		}
 
@@ -211,58 +194,24 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public IImageComponent Play(bool loop) {
 
-			#if !UNITY_MOBILE
-			var image = this.GetRawImageSource();
-			if (image == null) return this;
+			MovieSystem.Play(this, loop);
 
-			var movie = image.mainTexture as MovieTexture;
-			if (movie != null) {
-
-				movie.loop = loop;
-				movie.Play();
-
-			}
-			#else
-			WindowSystemLogger.Log(this, "`Play` method not supported on mobile platforms");
-			#endif
-			
 			return this;
 
 		}
 
 		public IImageComponent Stop() {
-			
-			#if !UNITY_MOBILE
-			var image = this.GetRawImageSource();
-			if (image == null) return this;
 
-			var movie = image.mainTexture as MovieTexture;
-			if (movie != null) {
+			MovieSystem.Stop(this);
 
-				movie.Stop();
-
-			}
-
-			#else
-			WindowSystemLogger.Log(this, "`Stop` method not supported on mobile platforms");
-			#endif
-			
 			return this;
 
 		}
 
 		public IImageComponent Pause() {
-			
-			#if !UNITY_MOBILE
-			var image = this.GetRawImageSource();
-			if (image == null) return this;
-			
-			var movie = image.mainTexture as MovieTexture;
-			if (movie != null) movie.Pause();
-			#else
-			WindowSystemLogger.Log(this, "`Pause` method not supported on mobile platforms");
-			#endif
-			
+
+			MovieSystem.Pause(this);
+
 			return this;
 
 		}

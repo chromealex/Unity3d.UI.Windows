@@ -9,14 +9,36 @@ namespace ME {
 
 	public partial class EditorUtilitiesEx {
 
-		public static void DrawInspector(WindowComponentBaseEditor wcEditor) {
-
-			var labelStyle = ME.Utilities.CacheStyle("UI.Windows.EditorUtilitiesEx.labelStyle", "labelStyle", (name) => {
-
+		private static GUIStyle GetLabelStyle() {
+			
+			return ME.Utilities.CacheStyle("UI.Windows.EditorUtilitiesEx.labelStyle", "labelStyle", (name) => {
+				
 				var _style = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
 				return _style;
-
+				
 			});
+
+		}
+
+		public static void DrawSplitter(string label) {
+
+			var splitted = label.Split('`');
+			if (splitted.Length > 1) {
+
+				label = splitted[0];
+
+			}
+
+			var labelStyle = EditorUtilitiesEx.GetLabelStyle();
+			var size = labelStyle.CalcSize(new GUIContent(label.ToSentenceCase()));
+			GUILayout.Label(label.ToSentenceCase().UppercaseWords(), labelStyle);
+			var lastRect = GUILayoutUtility.GetLastRect();
+			CustomGUI.Splitter(new Rect(lastRect.x, lastRect.y + lastRect.height * 0.5f, lastRect.width * 0.5f - size.x * 0.5f, 1f));
+			CustomGUI.Splitter(new Rect(lastRect.x + lastRect.width * 0.5f + size.x * 0.5f, lastRect.y + lastRect.height * 0.5f, lastRect.width * 0.5f - size.x * 0.5f, 1f));
+
+		}
+
+		public static void DrawInspector(Editor wcEditor, System.Type baseType, List<string> ignoreClasses = null) {
 
 			var so = new SerializedObject(wcEditor.targets);
 			var target = wcEditor.target;
@@ -24,47 +46,51 @@ namespace ME {
 			so.Update();
 
 			var baseTypes = new List<System.Type>();
-			var baseType = target.GetType();
-			baseTypes.Add(baseType);
-			while (typeof(WindowComponentBase) != baseType) {
+			var baseTargetType = target.GetType();
+			baseTypes.Add(baseTargetType);
+			while (baseType != baseTargetType) {
 
-				baseType = baseType.BaseType;
-				baseTypes.Add(baseType);
+				baseTargetType = baseTargetType.BaseType;
+				baseTypes.Add(baseTargetType);
 
 			}
 			baseTypes.Reverse();
 
 			SerializedProperty prop = so.GetIterator();
-			prop.NextVisible(true);
+			var result = prop.NextVisible(true);
 
 			EditorGUILayout.PropertyField(prop, false);
 
-			var currentType = EditorUtilitiesEx.FindTypeByProperty(baseTypes, prop);
-			EditorGUILayout.BeginVertical();
-			{
-				while (prop.NextVisible(false) == true) {
-					
-					var cType = EditorUtilitiesEx.FindTypeByProperty(baseTypes, prop);
-					if (cType != currentType) {
+			if (result == true) {
+
+				var currentType = EditorUtilitiesEx.FindTypeByProperty(baseTypes, prop);
+				EditorGUILayout.BeginVertical();
+				{
+
+					while (prop.NextVisible(false) == true) {
 						
-						currentType = cType;
+						var cType = EditorUtilitiesEx.FindTypeByProperty(baseTypes, prop);
+						if (cType != currentType) {
+							
+							currentType = cType;
 
-						var name = cType.Name;
-						if (name == "WindowComponentBase") continue;
+							var name = cType.Name;
+							if (ignoreClasses != null && ignoreClasses.Contains(name) == true) continue;
 
-						var size = labelStyle.CalcSize(new GUIContent(name.ToSentenceCase()));
-						GUILayout.Label(name.ToSentenceCase().UppercaseWords(), labelStyle);
-						var lastRect = GUILayoutUtility.GetLastRect();
-						CustomGUI.Splitter(new Rect(lastRect.x, lastRect.y + lastRect.height * 0.5f, lastRect.width * 0.5f - size.x * 0.5f, 1f));
-						CustomGUI.Splitter(new Rect(lastRect.x + lastRect.width * 0.5f + size.x * 0.5f, lastRect.y + lastRect.height * 0.5f, lastRect.width * 0.5f - size.x * 0.5f, 1f));
+							EditorUtilitiesEx.DrawSplitter(name);
+
+						}
+
+						EditorGUILayout.PropertyField(prop, true);
 
 					}
-					EditorGUILayout.PropertyField(prop, true);
+
+					prop.Reset();
 
 				}
-				prop.Reset();
+				EditorGUILayout.EndVertical();
+
 			}
-			EditorGUILayout.EndVertical();
 
 			so.ApplyModifiedProperties();
 
