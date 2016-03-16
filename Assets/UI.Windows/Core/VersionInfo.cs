@@ -385,7 +385,7 @@ using System.Text.RegularExpressions;namespace UnityEngine.UI.Windows {
 		public const string GETKEY_LINK = "http://unity3dwindows.com";
 		public const string DESCRIPTION = "Version {0}. MIT license Alex Feer <chrome.alex@gmail.com>";
 
-		public static readonly Version BUNDLE_VERSION = new Version(1, 0, 5, Version.Type.Alpha);
+		public static readonly Version BUNDLE_VERSION = new Version(1, 0, 6, Version.Type.Alpha);
 
 	}
 

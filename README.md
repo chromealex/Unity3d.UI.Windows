@@ -1,11 +1,35 @@
 <img src="https://github.com/chromealex/Unity3d.UI.Windows/blob/master/UIWImage.png"/>
 
-### Current Version: 1.0.5a
+### Current Version: 1.0.6a
+
+## 1.0.6a
+- Audio Manager play queue fixes
+- Components and Windows Hide/Show behaviour full refactoring
+- Many other fixes
 
 ## 1.0.5a
+- Draggable windows
+- FullTextFormat added to TextComponent
+- Window statuses output fix
+- FindOpened method added to WindowSystem
+- GD & Loc versions added
+- GameData service name fix
+- WARNING! Old window Preferences->Depth removed. New layers are come!
+- Window Layers implemented
 - Analytics alpha implementation (Unity Analytics works only)
 - A/B Testing module added. Now you can add tests to your flow and filter users by parameters.
 - Audio improvement
+- Global scroll sens added
+- Netclient fixes
+- UI mesh renderer clean up
+- Modifiedmesh fix
+- Logger added
+- WindowSystemInput GetPointerScroll
+- "Need compile" flag implemented
+- LocalizationSystem declinations fixes
+- ListViewComponent GetItem fix
+- WindowSystem forceSingleInstance fix
+- Linker window type added
 - Bug fixes/minor improvements
 
 ## 1.0.4a
