@@ -125,7 +125,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			public void Call(WindowBase instance) {
+			public void Call(WindowBase instance, bool reusable) {
 
 				var iteration = instance.GetFunctionIterationIndex();
 
@@ -133,9 +133,16 @@ namespace UnityEngine.UI.Windows {
 				if (this.items.TryGetValue(iteration, out list) == true) {
 
 					foreach (var item in list) item.Invoke(iteration);
-					this.items.Remove(iteration);
+					if (reusable == false) this.items.Remove(iteration);
 
 				}
+
+			}
+
+			public void Remove(WindowBase instance) {
+				
+				var iteration = instance.GetFunctionIterationIndex();
+				this.items.Remove(iteration);
 
 			}
 
@@ -502,11 +509,17 @@ namespace UnityEngine.UI.Windows {
 			throw new UnityException("Routes can't call a function");
 
 		}
-
-		public static void CallFunction(WindowBase instance) {
-
-			WindowSystem.instance.functions.Call(instance);
-
+		
+		public static void CallFunction(WindowBase instance, bool reusable) {
+			
+			WindowSystem.instance.functions.Call(instance, reusable);
+			
+		}
+		
+		public static void RemoveFunction(WindowBase instance) {
+			
+			WindowSystem.instance.functions.Remove(instance);
+			
 		}
 
 		public static WindowBase GetByType<T>() where T : WindowBase {

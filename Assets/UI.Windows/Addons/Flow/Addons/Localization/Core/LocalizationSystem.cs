@@ -12,8 +12,14 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		
 		public override string GetServiceName() {
 			
-			return "Localization";
+			return LocalizationSystem.GetName();
 			
+		}
+
+		public static string GetName() {
+
+			return "Localization";
+
 		}
 
 		public const UnityEngine.SystemLanguage DEFAULT_EDITOR_LANGUAGE = UnityEngine.SystemLanguage.Russian;
@@ -221,7 +227,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				if (Application.isPlaying == true) {
 
-					Debug.LogWarningFormat("[ Localization ] System not ready. Do not use `LocalizationSystem.Get()` method while/before system starting. You can check it's state by `LocaliztionSystem.IsReady()` call. Key: `{0}`.", key);
+					WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("System not ready. Do not use `LocalizationSystem.Get()` method while/before system starting. You can check it's state by `LocaliztionSystem.IsReady()` call. Key: `{0}`.", key));
 
 				}
 
@@ -292,7 +298,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 			} else {
 
-				Debug.LogWarningFormat("[ Localization ] Wrong parameters length in key `{0}`", key.key);
+				WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Wrong parameters length in key `{0}`", key.key));
 
 			}
 
@@ -324,7 +330,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		public static string GetCachePath() {
 			
-			return Application.persistentDataPath + "/Localization.dat";
+			return string.Format("{0}/Localization.dat", Application.persistentDataPath);
 
 		}
 
@@ -447,7 +453,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				if (LocalizationSystem.instance.logEnabled == true) {
 				#endif
 					
-					Debug.LogFormat("[ Localization ] Loaded version {3}. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount, LocalizationSystem.GetCurrentVersionId());
+					WindowSystemLogger.Log(LocalizationSystem.GetName(), string.Format("Loaded version {3}. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount, LocalizationSystem.GetCurrentVersionId()));
 
 				#if !UNITY_EDITOR
 				}
@@ -458,7 +464,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			} catch(System.Exception ex) {
 
 				// Nothing to do: failed to parse
-				Debug.LogError(string.Format("[ Localization ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+				WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
 
 				if (loadCacheOnFail == true) {
 

@@ -17,9 +17,9 @@ namespace ExampleProject.UI.Loader.Loading {
 		/// Call the end of current function Loader.
 		/// Function: Loading
 		/// </summary>
-		public void FlowFunctionReturn() {
+		public void FlowFunctionReturn(bool reusable = false) {
 			
-			WindowSystem.CallFunction(this);
+			WindowSystem.CallFunction(this, reusable);
 			
 		}
 
@@ -27,10 +27,10 @@ namespace ExampleProject.UI.Loader.Loading {
 		/// Call the end of current function Loader and hides current.
 		/// Function: Loading
 		/// </summary>
-		public void FlowHideFunctionReturn() {
+		public void FlowHideFunctionReturn(bool reusable = false) {
 			
 			this.Hide();
-			WindowSystem.CallFunction(this);
+			WindowSystem.CallFunction(this, reusable);
 			
 		}
 

@@ -7,7 +7,13 @@ using System.Linq;
 
 namespace UnityEngine.UI.Windows.Plugins.Services {
 	
-	public interface IService {
+	public interface IServiceBase {
+		
+		string GetServiceName();
+		
+	};
+
+	public interface IService : IServiceBase {
 		
 		bool isActive { set; get; }
 		
@@ -15,7 +21,6 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 		AuthKeyPermissions GetAuthPermissions();
 		
 		IEnumerator Auth(string key);
-		string GetServiceName();
 
 		#if UNITY_EDITOR
 		void OnEditorAuth(string key, System.Action<bool> onResult);

@@ -50,7 +50,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 			if (this.serviceManager.logEnabled == true) {
 			#endif
 				
-				Debug.LogFormat("[ Localization ] Loading: {0}", url);
+				WindowSystemLogger.Log(this, string.Format("Loading: {0}", url));
 				
 			#if !UNITY_EDITOR
 			}

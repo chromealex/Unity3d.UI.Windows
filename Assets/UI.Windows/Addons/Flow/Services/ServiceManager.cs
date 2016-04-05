@@ -6,19 +6,18 @@ using System;
 using System.Linq;
 
 namespace UnityEngine.UI.Windows.Plugins.Services {
-	
-	public interface IServiceManagerBase {
+
+	public interface IServiceManagerBase : IServiceBase {
 		
 		IEnumerator Init(System.Action onComplete);
 		
-	}
+	};
 
-	public interface IServiceManager {
+	public interface IServiceManager : IServiceBase {
 		
 		List<IService> services { get; set; }
 		void Register(IService service);
-		
-		string GetServiceName();
+
 		AuthKeyPermissions GetAuthPermission();
 
 	};
@@ -44,7 +43,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 			if (this.logEnabled == true) {
 
-				Debug.LogFormat("[ {0} ] Initializing...", this.GetServiceName());
+				WindowSystemLogger.Log(this, "Initializing...");
 
 			}
 
@@ -52,7 +51,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 				
 				if (this.logEnabled == true) {
 
-					Debug.LogWarningFormat("[ {0} ] Permission denied.", this.GetServiceName());
+					WindowSystemLogger.Warning(this, "Permission denied");
 
 				}
 				yield break;
@@ -89,7 +88,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			
 			if (this.logEnabled == true) {
 
-				Debug.LogFormat("[ {0} ] Initialized", this.GetServiceName());
+				WindowSystemLogger.Log(this, "Initialized");
 
 			}
 
