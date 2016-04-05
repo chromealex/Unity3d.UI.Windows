@@ -21,11 +21,11 @@ namespace UnityEngine.UI.Windows {
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
 		[HideInInspector]
 		public CanvasGroup canvas;
-		[HideInInspector]
-		public bool animationRefresh = false;
 		
 		[SerializeField][HideInInspector]
 		private bool manualShowHideControl = false;
+
+		private string animationTag = null;
 
 		public override void OnInit() {
 			
@@ -60,6 +60,19 @@ namespace UnityEngine.UI.Windows {
 			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowClose);
 
 			this.manualShowHideControl = false;
+
+		}
+		
+		public string GetTag() {
+			
+			if (this.animationTag == null) this.animationTag = this.GetCustomTag("WindowComponentBase");
+			return this.animationTag;
+			
+		}
+		
+		public string GetCustomTag(string custom) {
+			
+			return string.Format("{0}_{1}", this.GetInstanceID(), custom);
 
 		}
 
@@ -122,11 +135,11 @@ namespace UnityEngine.UI.Windows {
 
 		public void ShowHide(bool state, AppearanceParameters parameters) {
 			
-			if (state == true && this.GetComponentState() != WindowObjectState.Shown) {
+			if (state == true) {
 				
 				this.Show(parameters);
 				
-			} else if (state == false && this.GetComponentState() != WindowObjectState.Hidden) {
+			} else if (state == false) {
 				
 				this.Hide(parameters);
 				
@@ -148,6 +161,14 @@ namespace UnityEngine.UI.Windows {
 		
 		public void Show(AppearanceParameters parameters) {
 
+			if ((this.GetComponentState() == WindowObjectState.Shown ||
+				this.GetComponentState() == WindowObjectState.Showing) &&
+			    parameters.GetForced(defaultValue: false) == false) {
+
+				return;
+
+			}
+
 			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.ShowManual);
 
 			this.manualShowHideControl = true;
@@ -155,7 +176,14 @@ namespace UnityEngine.UI.Windows {
 			var callback = parameters.callback;
 			parameters.callback = () => {
 				
-				this.DoShowEnd_INTERNAL();
+				if (this.GetComponentState() != WindowObjectState.Showing) {
+					
+					if (callback != null) callback.Invoke();
+					return;
+					
+				}
+
+				this.DoShowEnd_INTERNAL(parameters);
 				if (callback != null) callback.Invoke();
 				
 			};
@@ -166,14 +194,29 @@ namespace UnityEngine.UI.Windows {
 
 		public void Hide(AppearanceParameters parameters) {
 			
+			if ((this.GetComponentState() == WindowObjectState.Hidden ||
+			    this.GetComponentState() == WindowObjectState.Hiding) &&
+			    parameters.GetForced(defaultValue: false) == false) {
+				
+				return;
+				
+			}
+
 			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.HideManual);
 
 			this.manualShowHideControl = true;
 
 			var callback = parameters.callback;
 			parameters.callback = () => {
+				
+				if (this.GetComponentState() != WindowObjectState.Hiding) {
+					
+					if (callback != null) callback.Invoke();
+					return;
 
-				this.DoHideEnd_INTERNAL();
+				}
+				
+				this.DoHideEnd_INTERNAL(parameters);
 				if (callback != null) callback.Invoke();
 
 			};
@@ -184,7 +227,7 @@ namespace UnityEngine.UI.Windows {
 		#endregion
 
 		#region Base Events
-		public override void DoShowEnd() {
+		public override void DoShowEnd(AppearanceParameters parameters) {
 			
 			if (this.manualShowHideControl == true || this.showOnStart == false) {
 
@@ -194,7 +237,7 @@ namespace UnityEngine.UI.Windows {
 			
 			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.ShowEnd);
 
-			this.DoShowEnd_INTERNAL();
+			this.DoShowEnd_INTERNAL(parameters);
 
 		}
 
@@ -213,7 +256,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public override void DoHideEnd() {
+		public override void DoHideEnd(AppearanceParameters parameters) {
 			
 			if (this.manualShowHideControl == true) {
 				
@@ -223,7 +266,7 @@ namespace UnityEngine.UI.Windows {
 			
 			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.HideEnd);
 
-			this.DoHideEnd_INTERNAL();
+			this.DoHideEnd_INTERNAL(parameters);
 			
 		}
 
@@ -245,8 +288,9 @@ namespace UnityEngine.UI.Windows {
 		
 		private void DoShowBegin_INTERNAL(AppearanceParameters parameters) {
 			
-			if (this.GetComponentState() == WindowObjectState.Showing ||
-			    this.GetComponentState() == WindowObjectState.Shown) {
+			if ((this.GetComponentState() == WindowObjectState.Showing ||
+			    this.GetComponentState() == WindowObjectState.Shown) &&
+			    parameters.GetForced(defaultValue: false) == false) {
 				
 				parameters.Call();
 				return;
@@ -259,16 +303,15 @@ namespace UnityEngine.UI.Windows {
 			System.Action onResult = () => {
 
 				parameters = parameters.ReplaceCallback(parametersCallback);
-
-				this.OnShowBegin();
-				this.OnShowBegin(parameters);
-				#pragma warning disable
-				this.OnShowBegin(parameters.callback, parameters.resetAnimation);
-				#pragma warning restore
-				
 				parameters.Call();
-				
+
 			};
+			
+			this.OnShowBegin();
+			this.OnShowBegin(parameters);
+			#pragma warning disable
+			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
+			#pragma warning restore
 
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			
@@ -338,16 +381,17 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		private void DoShowEnd_INTERNAL() {
+		private void DoShowEnd_INTERNAL(AppearanceParameters parameters) {
 			
-			base.DoShowEnd();
+			base.DoShowEnd(parameters);
 			
 		}
 		
 		private void DoHideBegin_INTERNAL(AppearanceParameters parameters) {
 			
-			if (this.GetComponentState() == WindowObjectState.Hiding ||
-			    this.GetComponentState() == WindowObjectState.Hidden) {
+			if ((this.GetComponentState() == WindowObjectState.Hiding ||
+			    this.GetComponentState() == WindowObjectState.Hidden) &&
+			    parameters.GetForced(defaultValue: false) == false) {
 				
 				parameters.Call();
 				return;
@@ -358,23 +402,22 @@ namespace UnityEngine.UI.Windows {
 			
 			var parametersCallback = parameters.callback;
 			System.Action onResult = () => {
-				
+
 				parameters = parameters.ReplaceCallback(parametersCallback);
-				
-				this.OnHideBegin();
-				this.OnHideBegin(parameters);
-				#pragma warning disable
-				this.OnHideBegin(parameters.callback, parameters.resetAnimation);
-				#pragma warning restore
-				
 				parameters.Call();
-				
+
 			};
 			
+			this.OnHideBegin();
+			this.OnHideBegin(parameters);
+			#pragma warning disable
+			this.OnHideBegin(parameters.callback, parameters.resetAnimation);
+			#pragma warning restore
+
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			#region Include Childs
 			if (includeChilds == false) {
-				
+
 				// without childs
 				this.DoHideBeginAnimation_INTERNAL(onResult, parameters);
 				return;
@@ -423,9 +466,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		private void DoHideEnd_INTERNAL() {
-			
-			base.DoHideEnd();
+		private void DoHideEnd_INTERNAL(AppearanceParameters parameters) {
+
+			base.DoHideEnd(parameters);
 			
 		}
 		
@@ -433,56 +476,106 @@ namespace UnityEngine.UI.Windows {
 			
 			var resetAnimation = parameters.GetResetAnimation(defaultValue: true);
 			var immediately = parameters.GetImmediately(defaultValue: false);
+			var delay = parameters.GetDelay(defaultValue: 0f);
 			
-			if (this.animation != null) {
+			System.Action callbackInner = () => {
 				
-				if (resetAnimation == true) this.SetResetState();
-				
-				if (immediately == true) {
+				if (this.animation != null) {
 					
-					this.animation.SetInState(this.animationInputParams, this.GetWindow(), this);
-					callback.Invoke();
+					if (resetAnimation == true) this.SetResetState();
+					
+					if (immediately == true) {
+						
+						this.animation.SetInState(this.animationInputParams, this.GetWindow(), this);
+						callback.Invoke();
+						
+					} else {
+						
+						this.animation.Play(this.GetWindow(), this.animationInputParams, this, true, callback);
+						
+					}
 					
 				} else {
 					
-					this.animation.Play(this.GetWindow(), this.animationInputParams, this, true, callback);
+					callback.Invoke();
 					
 				}
+
+			};
+
+			var tag = this.GetTag();
+			TweenerGlobal.instance.removeTweens(tag);
+			if (immediately == false && delay > 0f) {
+				
+				TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
+					
+					callbackInner.Invoke();
+					
+				}).onCancel((obj) => {
+					
+					callbackInner.Invoke();
+					
+				});
 				
 			} else {
 				
-				callback.Invoke();
+				callbackInner.Invoke();
 				
 			}
-			
+
 		}
 		
 		private void DoHideBeginAnimation_INTERNAL(System.Action callback, AppearanceParameters parameters) {
 			
 			var resetAnimation = parameters.GetResetAnimation(defaultValue: false);
 			var immediately = parameters.GetImmediately(defaultValue: false);
-			
-			if (this.animation != null) {
+			var delay = parameters.GetDelay(defaultValue: 0f);
+
+			System.Action callbackInner = () => {
 				
-				if (resetAnimation == true) this.SetResetState();
-				
-				if (immediately == true) {
+				if (this.animation != null) {
 					
-					this.animation.SetOutState(this.animationInputParams, this.GetWindow(), this);
-					callback.Invoke();
+					if (resetAnimation == true) this.SetResetState();
+					
+					if (immediately == true) {
+						
+						this.animation.SetOutState(this.animationInputParams, this.GetWindow(), this);
+						callback.Invoke();
+						
+					} else {
+						
+						this.animation.Play(this.GetWindow(), this.animationInputParams, this, false, callback);
+						
+					}
 					
 				} else {
 					
-					this.animation.Play(this.GetWindow(), this.animationInputParams, this, false, callback);
+					callback.Invoke();
 					
 				}
-				
+
+			};
+
+			var tag = this.GetTag();
+			TweenerGlobal.instance.removeTweens(tag);
+			if (immediately == false && delay > 0f) {
+
+				TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
+
+					callbackInner.Invoke();
+
+				}).onCancel((obj) => {
+					
+					callbackInner.Invoke();
+
+				});
+
 			} else {
-				
-				callback.Invoke();
-				
+
+				callbackInner.Invoke();
+
 			}
-			
+
 		}
 
 		public void DoResetState() {
@@ -547,8 +640,9 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		[HideInInspector]
+		public bool animationRefresh = false;
+		[HideInInspector]
 		private List<TransitionInputParameters> componentsToDestroy = new List<TransitionInputParameters>();
-
 		[HideInInspector][SerializeField]
 		private WindowAnimationBase lastAnimation;
 

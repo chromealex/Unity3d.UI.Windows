@@ -16,18 +16,30 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
     root: {fileID: 0}
     stateApply: 1
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
-      anchorMin: {x: 0, y: 0}
-      anchorMax: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
-      anchorMin: {x: 0, y: 0}
-      anchorMax: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
-      to: {x: 0, y: 30}
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
+      to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}

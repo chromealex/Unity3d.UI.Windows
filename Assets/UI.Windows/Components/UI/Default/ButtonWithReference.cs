@@ -69,14 +69,14 @@ namespace UnityEngine.UI {
 		new public bool interactable {
 
 			set {
-	
+				
+				base.interactable = value;
+
 				if (this.rootButton != null) {
 
 					this.rootButton.interactable = value;
 
 				} else {
-					
-					base.interactable = value;
 
 					if (this.referenceButton != null) {
 

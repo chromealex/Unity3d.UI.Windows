@@ -7,6 +7,22 @@ using System.Text.RegularExpressions;
 
 namespace ME {
 
+	public class Math {
+		
+		public static long Lerp(long a, long b, float t) {
+			
+			return a + (long)((b - a) * Mathf.Clamp01(t));
+			
+		}
+		
+		public static int Lerp(int a, int b, float t) {
+			
+			return a + (int)((b - a) * Mathf.Clamp01(t));
+			
+		}
+
+	}
+
 	public partial class Utilities {
 
 		public static uint GetHash(string s) {

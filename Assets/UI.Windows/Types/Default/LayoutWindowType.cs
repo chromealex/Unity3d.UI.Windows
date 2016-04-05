@@ -50,12 +50,6 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		public override string GetSortingLayerName() {
-			
-			return this.layout.GetSortingLayerName();
-			
-		}
-		
 		public override int GetSortingOrder() {
 			
 			return this.layout.GetSortingOrder();
@@ -147,9 +141,9 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		protected override void DoLayoutShowEnd() {
+		protected override void DoLayoutShowEnd(AppearanceParameters parameters) {
 
-			this.layout.DoShowEnd();
+			this.layout.DoShowEnd(parameters);
 
 		}
 
@@ -160,9 +154,9 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		protected override void DoLayoutHideEnd() {
+		protected override void DoLayoutHideEnd(AppearanceParameters parameters) {
 
-			this.layout.DoHideEnd();
+			this.layout.DoHideEnd(parameters);
 
 		}
 
@@ -392,6 +386,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public WindowLayout.ScaleMode scaleMode;
 		public Vector2 fixedScaleResolution = new Vector2(1024f, 768f);
+		public float matchWidthOrHeight = 0f;
 		public WindowLayoutPreferences layoutPreferences;
 
 		public WindowLayout layout;
@@ -472,13 +467,7 @@ namespace UnityEngine.UI.Windows.Types {
 			return default(T);
 			
 		}
-		
-		public string GetSortingLayerName() {
-			
-			return this.instance.canvas.sortingLayerName;
-			
-		}
-		
+
 		public int GetSortingOrder() {
 			
 			return this.instance.canvas.sortingOrder;
@@ -530,9 +519,9 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		public void DoShowEnd() {
+		public void DoShowEnd(AppearanceParameters parameters) {
 
-			this.instance.DoShowEnd();
+			this.instance.DoShowEnd(parameters);
 			
 			CanvasUpdater.ForceUpdate(this.instance.canvas, this.instance.canvasScaler);
 
@@ -544,9 +533,9 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		public void DoHideEnd() {
+		public void DoHideEnd(AppearanceParameters parameters) {
 
-			this.instance.DoHideEnd();
+			this.instance.DoHideEnd(parameters);
 
 		}
 		#endregion

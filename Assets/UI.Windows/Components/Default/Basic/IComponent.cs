@@ -81,7 +81,16 @@ namespace UnityEngine.UI.Windows.Components {
 	
 	public interface ITextComponent : IComponent {
 		
-		ITextComponent SetValue(int value, TextValueFormat format = TextValueFormat.None);
+		ITextComponent SetValue(int value);
+		ITextComponent SetValue(long value);
+		ITextComponent SetValue(int value, TextValueFormat format);
+		ITextComponent SetValue(long value, TextValueFormat format);
+		ITextComponent SetValue(int value, TextValueFormat format, bool animate);
+		ITextComponent SetValue(long value, TextValueFormat format, bool animate);
+		
+		ITextComponent SetValueAnimate(bool state);
+		ITextComponent SetValueAnimateDuration(float duration);
+
 		ITextComponent SetText(string text);
 		ITextComponent SetText(LocalizationKey key, params object[] parameters);
 		string GetText();
@@ -91,6 +100,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		ITextComponent SetFont(Font font);
 		ITextComponent SetFontSize(int value);
+		int GetFontSize();
 
 		ITextComponent SetLineSpacing(float value);
 		ITextComponent SetFontStyle(FontStyle style);

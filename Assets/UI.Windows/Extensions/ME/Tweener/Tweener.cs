@@ -53,11 +53,13 @@ namespace ME {
 			
 			private List<Target> _targets = new List<Target>();
 			int _currentTarget = 0;
+			private bool _started = false;
 			private float _elapsed = 0f;
 			private bool _completed = false;
 			private object _tag = new object();
 			private object _group = new object();
-            private int _loops = 1;
+			private int _loops = 1;
+			private System.Action<T> _begin = null;
 			private System.Action<T, float> _update = null;
 			private System.Action<T> _complete = null;
 			private System.Action<T> _cancel = null;
@@ -71,12 +73,20 @@ namespace ME {
 				target.transition = Ease.Linear;
 				
 				_completed = false;
+				_started = false;
 				
 				_targets.Add(target);
 
 				isDirty = false;
 			}
 			
+			public void RaiseBegin() {
+				
+				if (_begin != null)
+					_begin(_obj);
+				
+			}
+
 			public void RaiseComplete() {
 				
 				if (_complete != null)
@@ -115,8 +125,15 @@ namespace ME {
 
 				if (_elapsed >= target.duration) {
 					if ((_currentTarget + 1) == _targets.Count) {
-						if (_update != null)
-							_update(_obj, target.inverse ? target.start : target.value);
+
+						if (_started == false && _begin != null) {
+
+							_begin(_obj);
+							_started = true;
+
+						}
+
+						if (_update != null) _update(_obj, target.inverse ? target.start : target.value);
 						
 						if (_loops != INFINITE_LOOPS) {
 							
@@ -160,7 +177,17 @@ namespace ME {
 				return this;
 
 			}
-	
+			
+			public Tween<T> onBegin(System.Action<T> func) {
+				_begin += func;
+				return this;
+			}
+			
+			public Tween<T> onBegin(System.Action func) {
+				_begin += self => func();
+				return this;
+			}
+
 			public Tween<T> onUpdate(System.Action<T, float> func) {
 				_update += func;
 				return this;
@@ -180,7 +207,12 @@ namespace ME {
 				_cancel += func;
 				return this;
 			}
-	
+			
+			public Tween<T> onCancel(System.Action func) {
+				_cancel += self => func();
+				return this;
+			}
+
 			public Tween<T> tag(object value, object group = null) {
 			    _group = group;
 				_tag = value;

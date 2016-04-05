@@ -6,6 +6,8 @@ namespace UnityEngine.UI.Windows {
 		
 		public bool fixedScale;
 		public Vector2 fixedScaleResolution = new Vector2(1024f, 768f);
+		[Range(0f, 1f)]
+		public float matchWidthOrHeight = 0f;
 
 		#if UNITY_EDITOR
 		[UnityEditor.MenuItem("Assets/Create/UI Windows/Layout Preferences")]

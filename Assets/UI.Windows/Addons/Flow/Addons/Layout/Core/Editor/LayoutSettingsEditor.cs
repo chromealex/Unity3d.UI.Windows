@@ -190,6 +190,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 							components[i].componentParametersEditor = null;
 							item.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 							
+							UnityEditor.EditorUtility.SetDirty(window);
+
 						}
 						
 					});
@@ -210,6 +212,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 				components[index].OnComponentChanged(window, components[index].component);
 				LayoutSettingsEditor.componentParametersSearched[index] = true;
 				
+				UnityEditor.EditorUtility.SetDirty(window);
+
 			}
 
 			if (withParameters == true) {
@@ -287,6 +291,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			
 			var scaleMode = property.FindPropertyRelative("scaleMode");
 			var fixedScaleSize = property.FindPropertyRelative("fixedScaleResolution");
+			var matchWidthOrHeight = property.FindPropertyRelative("matchWidthOrHeight");
 			var layoutPreferences = property.FindPropertyRelative("layoutPreferences");
 			var layout = property.FindPropertyRelative("layout");
 			
@@ -337,7 +342,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					}
 					
 					var mode = (UnityEngine.UI.Windows.WindowLayout.ScaleMode)System.Enum.GetValues(typeof(UnityEngine.UI.Windows.WindowLayout.ScaleMode)).GetValue(scaleMode.enumValueIndex);
-					
+
 					var enabled = true;
 					if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Normal || // Normal mode
 					    mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed || // Fixed mode
@@ -358,6 +363,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 									var obj = new SerializedObject(layoutPreferences.objectReferenceValue);
 									var fixedScale = obj.FindProperty("fixedScale").boolValue;
 									fixedScaleSize.vector2Value = obj.FindProperty("fixedScaleResolution").vector2Value;
+									matchWidthOrHeight.floatValue = obj.FindProperty("matchWidthOrHeight").floatValue;
 
 									if (fixedScale == true) {
 
@@ -373,7 +379,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 
 							}
 							
-							layoutSource.SetScale(mode, fixedScaleSize.vector2Value);
+							layoutSource.SetScale(mode, fixedScaleSize.vector2Value, matchWidthOrHeight.floatValue);
 							
 						}
 						enabled = false;

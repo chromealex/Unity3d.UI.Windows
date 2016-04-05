@@ -58,26 +58,40 @@ namespace UnityEditor.UI.Windows.Extensions {
 					var inverseCondition = attribute.inverseCondition;
 					var needState = attribute.state;
 					var prop = PropertyExtensions.GetRelativeProperty(property, property.propertyPath, attribute.fieldName);
-					
-					var value = PropertyExtensions.GetRawValue(prop, attribute);
-					if (bitMask == true) {
-						
-						state = true;
-						if (inverseCondition == true) {
-							
-							if (((int)value & (int)needState) != 0) state = false;
+					if (prop != null) {
+
+						var value = PropertyExtensions.GetRawValue(prop, attribute);
+						if (bitMask == true) {
+
+							var result = 0;
+							if (needState is byte) {
+
+								result = ((int)value & (byte)needState);
+
+							} else if (needState is int) {
+
+								result = ((int)value & (int)needState);
+
+							}
+
+							state = true;
+							if (inverseCondition == true) {
+								
+								if (result != 0) state = false;
+								
+							} else {
+								
+								if (result == 0) state = false;
+								
+							}
 							
 						} else {
 							
-							if (((int)value & (int)needState) == 0) state = false;
+							state = true;
+							if (object.Equals(needState, value) == !inverseCondition) state = false;
 							
 						}
-						
-					} else {
-						
-						state = true;
-						if (object.Equals(needState, value) == !inverseCondition) state = false;
-						
+
 					}
 
 				}
@@ -130,9 +144,14 @@ namespace UnityEditor.UI.Windows.Extensions {
 					path = string.Join(".", splitted, 0, splitted.Length - 3) + "." + fieldName;
 					
 				} else {
-					
-					path = string.Join(".", splitted, 0, splitted.Length - 1) + "." + fieldName;
-					
+
+					var fieldSplitted = fieldName.Split('<');
+					var fromEnd = fieldSplitted.Length;
+
+					fieldName = fieldSplitted[fieldSplitted.Length - 1];
+
+					path = string.Join(".", splitted, 0, splitted.Length - fromEnd) + "." + fieldName;
+
 				}
 				
 			} else {
@@ -140,41 +159,11 @@ namespace UnityEditor.UI.Windows.Extensions {
 				path = fieldName;
 				
 			}
-
-			//path = path.GetPathWithoutArray(property.name);
 
 			return property.serializedObject.FindProperty(path);
 			
 		}
-		/*
-		public static SerializedProperty GetRelativeProperty(this SerializedProperty property, string path, string fieldName) {
-			
-			var splitted = path.Split('.');
-			if (splitted.Length > 1) {
 
-				if (splitted.Length > 2 && splitted[splitted.Length - 1] == "Array") {
-
-					path = string.Join(".", splitted, 0, splitted.Length - 2) + "." + fieldName;
-
-				} else {
-
-					path = string.Join(".", splitted, 0, splitted.Length - 1) + "." + fieldName;
-					
-				}
-
-			} else {
-				
-				path = fieldName;
-				
-			}
-
-			Debug.Log(path + " :: " + fieldName);
-			//path = path.GetPathWithoutArray(property.name);
-
-			return property.serializedObject.FindProperty(path);
-			
-		}*/
-		
 		public static object GetRawValue(SerializedProperty thisSP, BitmaskBaseAttribute attribute) {
 			
 			if (thisSP == null) return null;

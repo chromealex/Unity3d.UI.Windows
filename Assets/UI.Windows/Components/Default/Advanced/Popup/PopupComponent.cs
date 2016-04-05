@@ -92,11 +92,6 @@ namespace UnityEngine.UI.Windows.Components {
 			this.stateDown = new State(this.list.transform as RectTransform, this.items, Vector2.zero, new Vector2(1f, 0f), false);
 			this.stateUp = new State(this.list.transform as RectTransform, this.items, new Vector2(0f, 1f), new Vector2(1f, 1f), true);
 
-			var canvas = this.items.GetComponent<Canvas>();
-			canvas.overrideSorting = true;
-			canvas.sortingOrder = this.GetWindow().GetSortingOrder() + 1;
-			canvas.sortingLayerName = this.GetWindow().GetSortingLayerName();
-
 			this.label.SetText(string.Empty);
 			if (this.label is IButtonComponent) (this.label as IButtonComponent).SetCallback(this.Toggle);
 
@@ -147,9 +142,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.opened == false) return;
 
-			var current = EventSystem.current.currentSelectedGameObject;
-			if (current == (this.label as Component).gameObject) return;
+			var raycast = (EventSystem.current.currentInputModule as WindowSystemInputModule).GetCurrentRaycast();
+			var current = raycast.gameObject;
 
+			if (current == (this.label as Component).gameObject) return;
 			if (current == null || current.GetComponentsInParent<CanvasGroup>().Contains(this.list.canvas) == false) {
 				
 				// Close

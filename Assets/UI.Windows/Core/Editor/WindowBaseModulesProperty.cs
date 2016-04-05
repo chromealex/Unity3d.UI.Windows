@@ -19,6 +19,18 @@ namespace UnityEditor.UI.Windows {
 				this.elements = new ReorderableList(property.serializedObject, property, true, true, true, true);
 				this.elements.elementHeight = 70f;
 
+				this.elements.onAddCallback += (list) => {
+					
+					property.InsertArrayElementAtIndex(property.arraySize);
+					property.serializedObject.ApplyModifiedProperties();
+					
+				};
+				this.elements.onRemoveCallback += (list) => {
+
+					property.DeleteArrayElementAtIndex(list.index);
+					property.serializedObject.ApplyModifiedProperties();
+					
+				};
 				this.elements.drawHeaderCallback += rect => GUI.Label(rect, label);
 				this.elements.drawElementCallback += (rect, index, active, focused) => {
 
@@ -53,6 +65,8 @@ namespace UnityEditor.UI.Windows {
 
 					this.elements.elementHeight = height + heightOffset;
 					
+					property.serializedObject.ApplyModifiedProperties();
+
 				};
 
 			}
@@ -70,6 +84,8 @@ namespace UnityEditor.UI.Windows {
 				this.elements.DoLayoutList();
 
 			}
+			
+			property.serializedObject.ApplyModifiedProperties();
 
 		}
 

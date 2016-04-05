@@ -331,13 +331,6 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static Rect GetScreenRect() {
-
-			var size = new Vector2(Screen.width, Screen.height);
-			return new Rect(Vector2.zero, size);
-
-		}
-
 		public static void OnDoTransition(int index, int fromScreenId, int toScreenId, bool hide = true) {
 			
 			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId, hide);
@@ -548,6 +541,22 @@ namespace UnityEngine.UI.Windows {
 
 			return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 
+		}
+		
+		public static string GetSortingLayerName() {
+			
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+				
+				// no settings file
+				
+			} else {
+				
+				return WindowSystem.instance.settings.file.canvas.sortingLayerName;
+				
+			}
+				
+			return string.Empty;
+				
 		}
 
 		public static void ApplyToSettingsInstance(Camera camera, Canvas canvas) {
@@ -794,15 +803,15 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null) {
+		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null, bool forceAll = false) {
 			
 			WindowSystem.HideAll(except, () => {
 				
-				WindowSystem.Clean(except);
+				WindowSystem.Clean(except, forceAll);
 				
 				if (callback != null) callback();
 				
-			});
+			}, forceAll);
 			
 		}
 
@@ -811,15 +820,15 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null) {
+		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null, bool forceAll = false) {
 			
 			WindowSystem.HideAll(except, () => {
 				
-				WindowSystem.Clean(except);
+				WindowSystem.Clean(except, forceAll);
 				
 				if (callback != null) callback();
 				
-			});
+			}, forceAll);
 			
 		}
 
@@ -827,12 +836,11 @@ namespace UnityEngine.UI.Windows {
 		/// Clean the specified except.
 		/// </summary>
 		/// <param name="except">Except.</param>
-		public static void Clean(WindowBase except = null) {
+		public static void Clean(WindowBase except = null, bool forceAll = false) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
 				
-				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, except);
-				
+				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, except, forceAll);
 				if (result == true) {
 					
 					if (window != null) WindowBase.DestroyImmediate(window.gameObject);
@@ -842,16 +850,13 @@ namespace UnityEngine.UI.Windows {
 				return result;
 
 			});
+			
+			WindowSystem.ResetDepth();
 
 			if (except != null) {
-				
-				WindowSystem.ResetDepth();
+
 				except.SetDepth(WindowSystem.instance.GetNextDepth(except.preferences, except.workCamera.depth), WindowSystem.instance.GetNextZDepth(except.preferences));
 				except.OnCameraReset();
-
-			} else {
-
-				WindowSystem.ResetDepth();
 
 			}
 
@@ -863,12 +868,11 @@ namespace UnityEngine.UI.Windows {
 		/// Clean the specified except.
 		/// </summary>
 		/// <param name="except">Except.</param>
-		public static void Clean(List<WindowBase> except) {
+		public static void Clean(List<WindowBase> except, bool forceAll = false) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
 
-				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, except, null);
-
+				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, except, null, forceAll);
 				if (result == true) {
 
 					if (window != null) WindowBase.DestroyImmediate(window.gameObject);
@@ -880,9 +884,9 @@ namespace UnityEngine.UI.Windows {
 
 			});
 			
+			WindowSystem.ResetDepth();
+
 			if (except != null) {
-				
-				WindowSystem.ResetDepth();
 
 				for (int i = 0; i < except.Count; ++i) {
 
@@ -893,21 +897,17 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-			} else {
-				
-				WindowSystem.ResetDepth();
-				
 			}
 
 			WindowSystem.RefreshHistory();
 			
 		}
 
-		private bool DestroyWindowCheckOnClean_INTERNAL(WindowBase window, List<WindowBase> exceptList, WindowBase exceptItem) {
+		private bool DestroyWindowCheckOnClean_INTERNAL(WindowBase window, List<WindowBase> exceptList, WindowBase exceptItem, bool forceAll = false) {
 			
 			if (window != null) {
 				
-				if (window.preferences.IsDontDestroyClean() == true) {
+				if (forceAll == false && window.preferences.IsDontDestroyOnClean() == true) {
 
 					return false;
 
@@ -933,13 +933,13 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAll(WindowBase except = null, System.Action callback = null) {
+		public static void HideAll(WindowBase except = null, System.Action callback = null, bool forceAll = false) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
 			var list = WindowSystem.instance.currentWindows.Where((w) => {
 
-				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except);
+				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
 
 			});
 
@@ -960,7 +960,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAll(List<WindowBase> except, System.Action callback) {
+		public static void HideAll(List<WindowBase> except, System.Action callback, bool forceAll = false) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
@@ -970,7 +970,7 @@ namespace UnityEngine.UI.Windows {
 
 			}, WindowSystem.instance.currentWindows.Where((w) => {
 
-				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, except, null);
+				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, except, null, forceAll);
 
 			}), (window, wait) => {
 				
@@ -985,21 +985,33 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="parameters">Parameters.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Create<T>(System.Action<WindowBase> onParametersPassCall, params object[] parameters) where T : WindowBase {
-			
+		public static T Create<T>(System.Action<WindowBase> onParametersPassCall, out bool ignoreActions, params object[] parameters) where T : WindowBase {
+
+			ignoreActions = false;
+
 			var source = WindowSystem.instance.windows.FirstOrDefault(w => w is T) as T;
 			if (source == null) return null;
 
-			return WindowSystem.instance.Create_INTERNAL(source, onParametersPassCall, parameters) as T;
+			return WindowSystem.instance.CreateWithIgnore_INTERNAL(source, onParametersPassCall, out ignoreActions, parameters) as T;
+
+		}
+		
+		internal WindowBase Create_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, params object[] parameters) {
+
+			bool ignoreActions;
+			return this.CreateWithIgnore_INTERNAL(source, onParametersPassCall, out ignoreActions, parameters);
 
 		}
 
-		internal WindowBase Create_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, params object[] parameters) {
+		internal WindowBase CreateWithIgnore_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, out bool ignoreActions, params object[] parameters) {
+
+			ignoreActions = false;
 
 			WindowBase instance = null;
 			if (source.preferences.forceSingleInstance == true) {
 
 				instance = this.currentWindows.FirstOrDefault(w => w.windowId == source.windowId);
+				if (instance != null) ignoreActions = source.preferences.singleInstanceIgnoreActions;
 
 			}
 
@@ -1016,14 +1028,18 @@ namespace UnityEngine.UI.Windows {
 				#endif
 
 			}
+			
+			if (ignoreActions == false) {
 
-			instance.SetParameters(onParametersPassCall, parameters);
-			instance.Init(source,
-			              WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth),
-			              WindowSystem.instance.GetNextZDepth(instance.preferences),
-			              WindowSystem.instance.GetNextRaycastPriority(),
-			              WindowSystem.instance.GetNextOrderInLayer()
-			              );
+				instance.SetParameters(onParametersPassCall, parameters);
+				instance.Init(source,
+				              WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth),
+				              WindowSystem.instance.GetNextZDepth(instance.preferences),
+				              WindowSystem.instance.GetNextRaycastPriority(),
+				              WindowSystem.instance.GetNextOrderInLayer()
+				);
+
+			}
 
 			if (WindowSystem.instance.currentWindows.Contains(instance) == false) {
 
@@ -1183,7 +1199,8 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			var instance = (source != null) ? WindowSystem.instance.Create_INTERNAL(source, parametersPassCall, parameters) as T : WindowSystem.Create<T>(parametersPassCall, parameters);
+			var ignoreActions = false;
+			var instance = (source != null) ? WindowSystem.instance.CreateWithIgnore_INTERNAL(source, parametersPassCall, out ignoreActions, parameters) as T : WindowSystem.Create<T>(parametersPassCall, out ignoreActions, parameters);
 			if (instance != null) {
 				
 				if (afterGetInstance != null) {
@@ -1192,16 +1209,20 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 
-				if (transitionItem != null && transitionItem.transition != null && transitionItem.transitionParameters != null) {
+				if (ignoreActions == false) {
 
-					instance.Show(transitionItem);
-					
-				} else {
-					
-					instance.Show();
-					
+					if (transitionItem != null && transitionItem.transition != null && transitionItem.transitionParameters != null) {
+
+						instance.Show(transitionItem);
+						
+					} else {
+						
+						instance.Show();
+						
+					}
+
 				}
-				
+
 			}
 			
 			return instance;
@@ -1377,8 +1398,29 @@ namespace UnityEngine.UI.Windows {
 			return false;
 			
 		}
+		
+		public static Rect GetScreenRect() {
+			
+			var size = new Vector2(Screen.width, Screen.height);
+			return new Rect(Vector2.zero, size);
+			
+		}
 
-		public static Vector2 ConvertScreenPoint(Vector2 screenPoint, WindowObject handler) {
+		public static Vector2 ConvertPointWindowToUnityScreen(Vector2 point, WindowObject handler) {
+
+			var size = (handler.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>().layout.GetLayoutInstance().transform as RectTransform).sizeDelta;
+			return new Vector2(size.x * 0.5f + point.x, size.y * 0.5f + point.y);
+
+		}
+
+		public static Vector2 ConvertPointWindowToScreen(Vector2 screenPoint, WindowObject handler) {
+			
+			var k = (handler.GetWindow().GetLayoutRoot() as RectTransform).sizeDelta.x / Screen.width;
+			return screenPoint / k;
+			
+		}
+
+		public static Vector2 ConvertPointScreenToWindow(Vector2 screenPoint, WindowObject handler) {
 
 			var k = (handler.GetWindow().GetLayoutRoot() as RectTransform).sizeDelta.x / Screen.width;
 			return screenPoint * k;

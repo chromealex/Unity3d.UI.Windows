@@ -12,13 +12,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 ||  UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5_0 || UNITY_5_1 || UNITY_5_2
 using analyticsResultNamespace = UnityEngine.Analytics;
 using analyticsEventNamespace = UnityEngine.Analytics.Analytics;
-#else
-using analyticsResultNamespace = UnityEngine.Cloud.Analytics;
-using analyticsEventNamespace = UnityEngine.Cloud.Analytics.UnityAnalytics;
-#endif
 
 
 namespace UnityAnalyticsHeatmap

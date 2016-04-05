@@ -128,6 +128,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 					.Replace("{FLOW_TO_ID}", to.id.ToString())
 					.Replace("{CLASS_NAME_WITH_NAMESPACE}", targetClassNameWithNamespace)
 					.Replace("{PARAMETERS_DEFINITION}", string.Join(", ", definition))
+					.Replace("{PARAMETERS_DEFINITION_WITH_INSTANCE}", (definition.Length > 0 ? string.Join(", ", definition) + ", " : string.Empty))
 					.Replace("{PARAMETERS_CALL}", string.Join(", ", call))
 					.Replace("{PARAMETERS_DESCRIPTION}", string.Join(System.Environment.NewLine, description));
 			

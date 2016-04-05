@@ -251,19 +251,22 @@ namespace UnityEngine.UI.Windows.Types {
 			if (this.animationRoot != null) this.animationRoot.DoInit();
 
 		}
+
 		protected override void DoLayoutDeinit() {
 
 			if (this.animationRoot != null) this.animationRoot.DoDeinit();
 			
 		}
-		protected override void DoLayoutHideEnd() {
 
-			if (this.animationRoot != null) this.animationRoot.DoHideEnd();
+		protected override void DoLayoutHideEnd(AppearanceParameters parameters) {
+
+			if (this.animationRoot != null) this.animationRoot.DoHideEnd(parameters);
 
 		}
-		protected override void DoLayoutShowEnd() {
 
-			if (this.animationRoot != null) this.animationRoot.DoShowEnd();
+		protected override void DoLayoutShowEnd(AppearanceParameters parameters) {
+
+			if (this.animationRoot != null) this.animationRoot.DoShowEnd(parameters);
 
 		}
 

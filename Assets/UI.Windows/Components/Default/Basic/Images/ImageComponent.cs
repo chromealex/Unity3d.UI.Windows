@@ -346,7 +346,9 @@ namespace UnityEngine.UI.Windows.Components {
 				
 				this.image.color = color;
 				
-			} else if (this.rawImage != null) {
+			}
+
+			if (this.rawImage != null) {
 				
 				this.rawImage.color = color;
 				

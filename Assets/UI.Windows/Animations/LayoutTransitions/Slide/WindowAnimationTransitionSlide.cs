@@ -12,11 +12,12 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 			public enum ApplyTo : byte {
 				
-				Default = 0x0,
+				None = 0x0,
 				Position = 0x1,
 				AnchorMin = 0x2,
 				AnchorMax = 0x4,
 				Scale = 0x8,
+				Rotation = 0x10,
 				
 			};
 
@@ -25,10 +26,16 @@ namespace UnityEngine.UI.Windows.Animations {
 			[System.Serializable]
 			public class State {
 				
+				[ReadOnly("<stateApply", state: (byte)ApplyTo.AnchorMin, bitMask: true)]
 				public Vector2 anchorMin;
+				[ReadOnly("<stateApply", state: (byte)ApplyTo.AnchorMax, bitMask: true)]
 				public Vector2 anchorMax;
+				[ReadOnly("<stateApply", state: (byte)ApplyTo.Position, bitMask: true)]
 				public Vector2 to;
+				[ReadOnly("<stateApply", state: (byte)ApplyTo.Scale, bitMask: true)]
 				public Vector2 scale;
+				[ReadOnly("<stateApply", state: (byte)ApplyTo.Rotation, bitMask: true)]
+				public Vector3 rotation;
 
 				public State() {
 				}
@@ -39,6 +46,7 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.anchorMax = rect.anchorMax;
 					this.to = rect.anchoredPosition;
 					this.scale = rect.localScale;
+					this.rotation = rect.localRotation.eulerAngles;
 
 				}
 
@@ -48,16 +56,19 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.anchorMax = source.anchorMax;
 					this.to = source.to;
 					this.scale = source.scale;
+					this.rotation = source.rotation;
 
 				}
 
 			}
 
+			[Header("Root")]
 			public bool moveRoot = false;
 			public RectTransform root;
 
+			[Header("States")]
 			[BitMask(typeof(ApplyTo))]
-			public ApplyTo stateApply = ApplyTo.Default;
+			public ApplyTo stateApply = ApplyTo.Position;
 			public State resetState = new State();
 			public State inState = new State();
 			public State outState = new State();
@@ -97,8 +108,14 @@ namespace UnityEngine.UI.Windows.Animations {
 					rect.localScale = Vector2.Lerp(startState.scale, resultState.scale, value);
 					
 				}
+				
+				if ((this.stateApply & ApplyTo.Rotation) != 0) {
+					
+					rect.localRotation = Quaternion.Euler(Vector3.Lerp(startState.rotation, resultState.rotation, value));
+					
+				}
 
-				if ((this.stateApply & ApplyTo.Position) != 0 || this.stateApply == ApplyTo.Default) {
+				if ((this.stateApply & ApplyTo.Position) != 0) {
 					
 					rect.anchoredPosition = Vector2.Lerp(startState.to, resultState.to, value);
 					
@@ -125,8 +142,14 @@ namespace UnityEngine.UI.Windows.Animations {
 					rect.localScale = state.scale;
 					
 				}
+				
+				if ((this.stateApply & ApplyTo.Rotation) != 0) {
+					
+					rect.localRotation = Quaternion.Euler(state.rotation);
+					
+				}
 
-				if ((this.stateApply & ApplyTo.Position) != 0 || this.stateApply == ApplyTo.Default) {
+				if ((this.stateApply & ApplyTo.Position) != 0) {
 					
 					rect.anchoredPosition = state.to;
 					

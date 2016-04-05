@@ -200,6 +200,7 @@ MonoBehaviour:
     dontDestroy: 1
     history: 0
     forceSingleInstance: 0
+    singleInstanceIgnoreActions: 0
     restoreSelectedElement: 1
     createPool: 1
     preallocatedCount: 0
@@ -300,6 +301,7 @@ MonoBehaviour:
   windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
   showOnStart: 1
   subComponents: []
   currentState: 0
@@ -312,8 +314,8 @@ MonoBehaviour:
   - {fileID: 11456504}
   - {fileID: 11456506}
   canvas: {fileID: 22556496}
-  animationRefresh: 1
   manualShowHideControl: 0
+  animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
 --- !u!114 &11456504
 MonoBehaviour:
@@ -375,16 +377,19 @@ MonoBehaviour:
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11456508
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -9,6 +9,9 @@ namespace UnityEngine.UI.Windows {
 		public bool replaceCallback;
 		public System.Action callback;
 		
+		public bool replaceDelay;
+		public float delay;
+
 		public bool replaceImmediately;
 		public bool immediately;
 		
@@ -20,12 +23,18 @@ namespace UnityEngine.UI.Windows {
 
 		public bool replaceChildsBehaviourMode; 
 		public ChildsBehaviourMode childsBehaviourMode;
+		
+		public bool replaceForced;
+		public bool forced;
 
 		public AppearanceParameters(AppearanceParameters other) {
 
 			this.replaceCallback = other.replaceCallback;
 			this.callback = other.callback;
-
+			
+			this.replaceDelay = other.replaceDelay;
+			this.delay = other.delay;
+			
 			this.replaceImmediately = other.replaceImmediately;
 			this.immediately = other.immediately;
 
@@ -37,6 +46,9 @@ namespace UnityEngine.UI.Windows {
 
 			this.replaceChildsBehaviourMode = other.replaceChildsBehaviourMode;
 			this.childsBehaviourMode = other.childsBehaviourMode;
+			
+			this.replaceForced = other.replaceForced;
+			this.forced = other.forced;
 
 		}
 
@@ -47,6 +59,9 @@ namespace UnityEngine.UI.Windows {
 				replaceCallback = false,
 				callback = null,
 				
+				replaceDelay = false,
+				delay = 0f,
+
 				replaceImmediately = false,
 				immediately = false,
 				
@@ -58,7 +73,10 @@ namespace UnityEngine.UI.Windows {
 				
 				replaceChildsBehaviourMode = false,
 				childsBehaviourMode = ChildsBehaviourMode.Simultaneously,
-				
+
+				replaceForced = false,
+				forced = false,
+
 			};
 
 		}
@@ -66,6 +84,22 @@ namespace UnityEngine.UI.Windows {
 		public System.Action GetCallback(System.Action defaultValue) {
 			
 			if (this.replaceCallback == true) return this.callback;
+			
+			return defaultValue;
+			
+		}
+		
+		public bool GetForced(bool defaultValue) {
+			
+			if (this.replaceForced == true) return this.forced;
+			
+			return defaultValue;
+			
+		}
+		
+		public float GetDelay(float defaultValue) {
+			
+			if (this.replaceDelay == true) return this.delay;
 			
 			return defaultValue;
 			
@@ -78,7 +112,7 @@ namespace UnityEngine.UI.Windows {
 			return defaultValue;
 			
 		}
-		
+
 		public bool GetResetAnimation(bool defaultValue) {
 			
 			if (this.replaceResetAnimation == true) return this.resetAnimation;
@@ -108,6 +142,12 @@ namespace UnityEngine.UI.Windows {
 			return new AppearanceParameters(this) { replaceCallback = true, callback = callback };
 			
 		}
+		
+		public AppearanceParameters ReplaceDelay(float delay) {
+			
+			return new AppearanceParameters(this) { replaceDelay = true, delay = delay };
+			
+		}
 
 		public AppearanceParameters ReplaceImmediately(bool immediately) {
 
@@ -131,6 +171,12 @@ namespace UnityEngine.UI.Windows {
 			
 			return new AppearanceParameters(this) { replaceChildsBehaviourMode = true, childsBehaviourMode = childsBehaviourMode };
 
+		}
+		
+		public AppearanceParameters ReplaceForced(bool forced) {
+			
+			return new AppearanceParameters(this) { replaceForced = true, forced = forced };
+			
 		}
 
 		public void Call() {
@@ -225,9 +271,11 @@ namespace UnityEngine.UI.Windows {
 		void OnShowBegin();
 		void OnShowBegin(AppearanceParameters appearanceParameters);
 		void OnShowEnd();
+		void OnShowEnd(AppearanceParameters appearanceParameters);
 		void OnHideBegin();
 		void OnHideBegin(AppearanceParameters appearanceParameters);
 		void OnHideEnd();
+		void OnHideEnd(AppearanceParameters appearanceParameters);
 		
 	}
 	
@@ -236,9 +284,9 @@ namespace UnityEngine.UI.Windows {
 		void DoInit();
 		void DoDeinit();
 		void DoShowBegin(AppearanceParameters appearanceParameters);
-		void DoShowEnd();
+		void DoShowEnd(AppearanceParameters appearanceParameters);
 		void DoHideBegin(AppearanceParameters appearanceParameters);
-		void DoHideEnd();
+		void DoHideEnd(AppearanceParameters appearanceParameters);
 		
 	}
 

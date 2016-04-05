@@ -52,24 +52,6 @@ namespace UnityEngine.UI {
 
 		}
 
-		public void Refresh() {
-
-			if (this.IsDestroyed() == true) return;
-
-			var colors = this.labelColor;
-			var fadeDuration = colors.fadeDuration;
-			colors.fadeDuration = 0f;
-			this.labelColor = colors;
-			
-			this.interactable = !this.interactable;
-			this.interactable = !this.interactable;
-			
-			colors = this.labelColor;
-			colors.fadeDuration = fadeDuration;
-			this.labelColor = colors;
-
-		}
-
 	}
 
 }

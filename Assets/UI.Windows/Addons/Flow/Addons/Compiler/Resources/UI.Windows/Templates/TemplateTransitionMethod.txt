@@ -25,9 +25,9 @@
 			
 		}
 		
-		private {CLASS_NAME_WITH_NAMESPACE} INTERNAL_Flow{CLASS_NAME}(bool hide, System.Action<{CLASS_NAME_WITH_NAMESPACE}> onParametersPassCall = null) {
+		private {CLASS_NAME_WITH_NAMESPACE} INTERNAL_Flow{CLASS_NAME}(bool hide, System.Action<{CLASS_NAME_WITH_NAMESPACE}> onParametersPassCall = null, System.Action<{CLASS_NAME_WITH_NAMESPACE}> onInstance = null) {
 			
-			return WindowSystemFlow.DoFlow<{CLASS_NAME_WITH_NAMESPACE}>(this, {FLOW_FROM_ID}, {FLOW_TO_ID}, hide, onParametersPassCall);
+			return WindowSystemFlow.DoFlow<{CLASS_NAME_WITH_NAMESPACE}>(this, {FLOW_FROM_ID}, {FLOW_TO_ID}, hide, onParametersPassCall, onInstance);
 			
 		}
 		

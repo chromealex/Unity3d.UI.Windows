@@ -78,6 +78,12 @@ namespace UnityEngine.UI.Windows.Components {
 		private RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
 
 		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey textLocalizationKey;
+		
+		[SerializeField]
+		private bool valueAnimate = false;
+		[SerializeField][ReadOnly("valueAnimate", state: false)]
+		private float valueAnimateDuration = 2f;
+		private long valueAnimateLastValue;
 
 		public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 			
@@ -123,6 +129,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 			return this;
 
+		}
+		
+		public int GetFontSize() {
+			
+			if (this.text != null) return this.text.fontSize;
+			
+			return 0;
+			
 		}
 
 		public ITextComponent SetFontSize(int fontSize) {
@@ -182,6 +196,22 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
+		public ITextComponent SetValueAnimate(bool state) {
+			
+			this.valueAnimate = state;
+			
+			return this;
+			
+		}
+		
+		public ITextComponent SetValueAnimateDuration(float duration) {
+			
+			this.valueAnimateDuration = duration;
+			
+			return this;
+			
+		}
+
 		public ITextComponent SetFullTextFormat(FullTextFormat format) {
 			
 			this.fullTextFormat = format;
@@ -198,15 +228,27 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public ITextComponent SetValue(long value) {
+		public ITextComponent SetValue(int value) {
 			
 			this.SetValue(value, this.valueFormat);
-
+			
 			return this;
-
+			
 		}
 		
-		public ITextComponent SetValue(int value) {
+		public ITextComponent SetValue(int value, TextValueFormat format) {
+			
+			return this.SetValue(value, format, this.valueAnimate);
+			
+		}
+		
+		public ITextComponent SetValue(int value, TextValueFormat format, bool animate) {
+			
+			return this.SetValue((long)value, format, animate);
+			
+		}
+
+		public ITextComponent SetValue(long value) {
 			
 			this.SetValue(value, this.valueFormat);
 
@@ -215,17 +257,33 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public ITextComponent SetValue(long value, TextValueFormat format) {
-			
-			this.SetText(TextComponent.FormatValue(value, format));
 
-			return this;
+			return this.SetValue(value, format, this.valueAnimate);
 
 		}
 
-		public ITextComponent SetValue(int value, TextValueFormat format) {
-			
-			this.SetText(TextComponent.FormatValue(value, format));
+		public ITextComponent SetValue(long value, TextValueFormat format, bool animate) {
 
+			return this.SetValue_INTERNAL(value, format, animate, fromTweener: false);
+
+		}
+		
+		private ITextComponent SetValue_INTERNAL(long value, TextValueFormat format, bool animate, bool fromTweener) {
+			
+			if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this);
+
+			if (animate == true && TweenerGlobal.instance != null) {
+
+				var duration = this.valueAnimateDuration;
+				if (Mathf.Abs(this.valueAnimateLastValue - value) < 2) duration = 0.2f;
+				TweenerGlobal.instance.addTweenCount(this, duration, this.valueAnimateLastValue, value, format, (v) => { this.valueAnimateLastValue = v; this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true); }).tag(this);
+				
+			} else {
+				
+				this.SetText_INTERNAL(TextComponent.FormatValue(value, format));
+				
+			}
+			
 			return this;
 
 		}
@@ -274,22 +332,30 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public ITextComponent SetText(string text) {
+			
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this);
 
-			if (this.text != null) {
-
-				if (this.text.supportRichText == true) {
-
-					text = TextComponent.ParseRichText(text, this.richTextFlags);
-
-				}
-
-				text = TextComponent.FullTextFormat(text, this.fullTextFormat);
-
-				this.text.text = text;
-
-			}
+			this.SetText_INTERNAL(text);
 
 			return this;
+
+		}
+
+		private void SetText_INTERNAL(string text) {
+			
+			if (this.text != null) {
+				
+				if (this.text.supportRichText == true) {
+					
+					text = TextComponent.ParseRichText(text, this.GetFontSize(), this.richTextFlags);
+					
+				}
+				
+				text = TextComponent.FullTextFormat(text, this.fullTextFormat);
+				
+				this.text.text = text;
+				
+			}
 
 		}
 
@@ -337,7 +403,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 			#endregion
-			
+
 		}
 		#endif
 
@@ -391,7 +457,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public static string ParseRichText(string text, RichTextFlags flags) {
+		public static string ParseRichText(string text, int fontSize, RichTextFlags flags) {
 
 			if (text == null) return text;
 
@@ -410,10 +476,28 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			
 			if ((flags & RichTextFlags.Size) == 0) {
-				
+
 				text = Regex.Replace(text, @"<size=[0-9]+>", String.Empty);
 				text = Regex.Replace(text, @"</size>", String.Empty);
 				
+			} else {
+
+				text = Regex.Replace(text, @"<size=(?<Percent>[0-9]+)%>", new MatchEvaluator((Match match) => {
+
+					var value = match.Groups["Percent"].Value;
+					var newValue = value;
+
+					float fValue;
+					if (float.TryParse(value, out fValue) == true) {
+
+						newValue = ((int)(fontSize * (fValue / 100f))).ToString();
+
+					}
+
+					return string.Format("<size={0}>", newValue);
+
+				}));
+
 			}
 			
 			if ((flags & RichTextFlags.Color) == 0) {

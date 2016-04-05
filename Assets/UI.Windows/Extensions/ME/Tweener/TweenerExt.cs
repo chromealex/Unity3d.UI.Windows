@@ -1,7 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UI.Windows.Components;
 
 public static class TweenerExt {
+	
+	public static ME.Tweener.Tween<ITextComponent> addTweenCount(this ME.Tweener tweener, ITextComponent textComponent, float duration, long start, long end, TextValueFormat format, System.Action<long> onValue) {
+
+		return tweener.addTween(textComponent, duration, 0f, 1f).onUpdate((c, t) => {
+
+			var value = ME.Math.Lerp(start, end, t);
+			onValue(value);
+
+		});
+
+	}
+
 	public static ME.Tweener.Tween<RectTransform> addTweenAnchoredPosition(this ME.Tweener tweener, RectTransform rect, float duration, Vector2 end) {
 		return tweener.addTweenAnchoredPosition(rect, duration, rect.anchoredPosition, end);
 	}

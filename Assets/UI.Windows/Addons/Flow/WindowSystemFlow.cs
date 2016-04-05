@@ -137,19 +137,29 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, System.Action<T> onParametersPassCall) where T : WindowBase {
+		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null) where T : WindowBase {
 			
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(from, to);
-			return WindowSystemFlow.DoFlow<T>(screen, item, hide, onParametersPassCall);
+			return WindowSystemFlow.DoFlow<T>(screen, item, hide, onParametersPassCall, onInstance);
 
 		}
 
-		public static T DoFlow<T>(IFunctionIteration screen, AttachItem item, bool hide, System.Action<T> onParametersPassCall) where T : WindowBase {
+		/// <summary>
+		/// Dos the flow.
+		/// </summary>
+		/// <returns>The flow.</returns>
+		/// <param name="screen">Screen.</param>
+		/// <param name="item">Item.</param>
+		/// <param name="hide">If set to <c>true</c> hide.</param>
+		/// <param name="onParametersPassCall">On parameters pass call.</param>
+		/// <param name="onInstance">On instance.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T DoFlow<T>(IFunctionIteration screen, AttachItem item, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null) where T : WindowBase {
 
 			var newWindow = WindowSystem.Show<T>(
-				(w) => w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex()),
-				item,
-				onParametersPassCall
+				transitionItem: item,
+				afterGetInstance: (w) => { if (onInstance != null) onInstance(w); w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex()); },
+				onParametersPassCall: onParametersPassCall
 			);
 
 			WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);

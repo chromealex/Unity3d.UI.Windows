@@ -108,6 +108,8 @@ namespace UnityEngine.UI.Windows {
 			
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 
+			var matchWidthOrHeight = 0f;
+
 			if (scaleMode == ScaleMode.Preferences) {
 
 				var fixedScale = layoutPreferences.fixedScale;
@@ -122,10 +124,11 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				fixedScaleResolution = layoutPreferences.fixedScaleResolution;
+				matchWidthOrHeight = layoutPreferences.matchWidthOrHeight;
 
 			}
 
-			this.SetScale(scaleMode, fixedScaleResolution);
+			this.SetScale(scaleMode, fixedScaleResolution, matchWidthOrHeight);
 
 			for (int i = 0; i < this.elements.Count; ++i) {
 
@@ -262,7 +265,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		public void SetScale(WindowLayout.ScaleMode scaleMode, Vector2 fixedResolution) {
+		public void SetScale(WindowLayout.ScaleMode scaleMode, Vector2 fixedResolution, float matchWidthOrHeight) {
 
 			this.ValidateCanvasScaler();
 
@@ -278,7 +281,7 @@ namespace UnityEngine.UI.Windows {
 
 					this.canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
 					this.canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-					this.canvasScaler.matchWidthOrHeight = 0f;
+					this.canvasScaler.matchWidthOrHeight = matchWidthOrHeight;
 					this.canvasScaler.referenceResolution = new Vector2(fixedResolution.x, fixedResolution.y);
 
 				} else if (scaleMode == ScaleMode.Custom) {

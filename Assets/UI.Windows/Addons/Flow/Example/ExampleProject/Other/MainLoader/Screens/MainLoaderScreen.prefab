@@ -133,6 +133,8 @@ MonoBehaviour:
   bestFit: 0
   bestMinSize: 10
   bestMaxSize: 40
+  valueAnimate: 0
+  valueAnimateDuration: 2
   preserveAspect: 0
   image: {fileID: 0}
   imageLocalizationKey:
@@ -187,6 +189,7 @@ MonoBehaviour:
     dontDestroy: 1
     history: 0
     forceSingleInstance: 0
+    singleInstanceIgnoreActions: 0
     restoreSelectedElement: 1
     createPool: 1
     preallocatedCount: 0
@@ -268,6 +271,7 @@ MonoBehaviour:
   layout:
     scaleMode: 0
     fixedScaleResolution: {x: 1024, y: 768}
+    matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
     layout: {fileID: 11415392, guid: 4f4a913ebab724c42bf9280db46030f5, type: 2}
     components:

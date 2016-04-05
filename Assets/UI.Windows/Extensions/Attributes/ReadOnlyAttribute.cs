@@ -35,7 +35,7 @@ public class ReadOnlyAttributeDrawer : PropertyDrawer {
 		var state = ReadOnlyAttributeDrawer.IsEnabled(this, property);
 
 		var oldState = GUI.enabled;
-		GUI.enabled = state;
+		GUI.enabled = state && oldState;
 		EditorGUI.PropertyField(position, property, label, true);
 		GUI.enabled = oldState;
 

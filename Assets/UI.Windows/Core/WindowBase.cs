@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer) {
-			
+
 			this.currentState = WindowObjectState.Initializing;
 
 			if (this.initialized == false) {
@@ -137,7 +137,7 @@ namespace UnityEngine.UI.Windows {
 
 			this.SetDepth(depth, zDepth);
 
-			if (this.preferences.IsDontDestroySceneChange() == true) {
+			if (this.preferences.IsDontDestroyOnSceneChange() == true) {
 
 				GameObject.DontDestroyOnLoad(this.gameObject);
 
@@ -171,22 +171,24 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			if (this.setup == false) {
-				
+
 				this.Setup(this);
+				
+				this.OnPreInit();
 
 				this.DoLayoutInit(depth, raycastPriority, orderInLayer);
+				WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
+
 				this.OnModulesInit();
 				this.OnAudioInit();
 				this.events.DoInit();
 				this.OnTransitionInit();
-				
+
 				if (WindowSystem.IsCallEventsEnabled() == true) {
 					
 					this.OnInit();
 					
 				}
-				
-				WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
 
 				this.setup = true;
 
@@ -489,7 +491,7 @@ namespace UnityEngine.UI.Windows {
 		/// <returns>The sorting layer name.</returns>
 		public virtual string GetSortingLayerName() {
 
-			return string.Empty;
+			return WindowSystem.GetSortingLayerName();
 
 		}
 
@@ -622,6 +624,8 @@ namespace UnityEngine.UI.Windows {
 			
 			this.gameObject.SetActive(true);
 
+			var parameters = AppearanceParameters.Default();
+
 			var counter = 0;
 			System.Action callback = () => {
 
@@ -630,19 +634,19 @@ namespace UnityEngine.UI.Windows {
 				++counter;
 				if (counter < 6) return;
 
-				this.DoLayoutShowEnd();
-				this.modules.DoShowEnd();
-				this.audio.DoShowEnd();
-				this.events.DoShowEnd();
-				this.transition.DoShowEnd();
-				this.DoShowEnd();
+				this.DoLayoutShowEnd(parameters);
+				this.modules.DoShowEnd(parameters);
+				this.audio.DoShowEnd(parameters);
+				this.events.DoShowEnd(parameters);
+				this.transition.DoShowEnd(parameters);
+				this.DoShowEnd(parameters);
 				if (onShowEnd != null) onShowEnd();
 
 			    this.currentState = WindowObjectState.Shown;
 
 			};
 			
-			var parameters = AppearanceParameters.Default().ReplaceCallback(callback);
+			parameters = parameters.ReplaceCallback(callback);
 
 			this.DoLayoutShowBegin(parameters);
 			
@@ -740,6 +744,8 @@ namespace UnityEngine.UI.Windows {
 			
 			while (this.paused == true) yield return false;
 
+			var parameters = AppearanceParameters.Default();
+
 			var counter = 0;
 			System.Action callback = () => {
 				
@@ -752,12 +758,12 @@ namespace UnityEngine.UI.Windows {
 
 				this.Recycle();
 
-				this.DoLayoutHideEnd();
-				this.modules.DoHideEnd();
-				this.audio.DoHideEnd();
-				this.events.DoHideEnd();
-				this.transition.DoHideEnd();
-				this.DoHideEnd();
+				this.DoLayoutHideEnd(parameters);
+				this.modules.DoHideEnd(parameters);
+				this.audio.DoHideEnd(parameters);
+				this.events.DoHideEnd(parameters);
+				this.transition.DoHideEnd(parameters);
+				this.DoHideEnd(parameters);
 				if (onHideEnd != null) onHideEnd();
 
 				this.currentState = WindowObjectState.Hidden;
@@ -770,7 +776,7 @@ namespace UnityEngine.UI.Windows {
 
 			};
 
-			var parameters = AppearanceParameters.Default().ReplaceCallback(callback);
+			parameters = parameters.ReplaceCallback(callback);
 
 			this.DoLayoutHideBegin(parameters);
 			
@@ -865,7 +871,7 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the layout show end event.
 		/// </summary>
-		protected virtual void DoLayoutShowEnd() {}
+		protected virtual void DoLayoutShowEnd(AppearanceParameters parameters) {}
 
 		/// <summary>
 		/// Raises the layout hide begin event.
@@ -876,7 +882,7 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the layout hide end event.
 		/// </summary>
-		protected virtual void DoLayoutHideEnd() {}
+		protected virtual void DoLayoutHideEnd(AppearanceParameters parameters) {}
 
 		/// <summary>
 		/// Raises the parameters pass event.
@@ -917,6 +923,8 @@ namespace UnityEngine.UI.Windows {
 			this.OnDeinit();
 
 		}
+		
+		public virtual void OnPreInit() {}
 
 		/// <summary>
 		/// Raises the show begin event.
@@ -937,9 +945,10 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the show end event.
 		/// </summary>
-		public virtual void DoShowEnd() {
-			
+		public virtual void DoShowEnd(AppearanceParameters parameters) {
+
 			this.OnShowEnd();
+			this.OnShowEnd(parameters);
 			
 		}
 
@@ -962,17 +971,21 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the hide end event.
 		/// </summary>
-		public virtual void DoHideEnd() {
-
+		public virtual void DoHideEnd(AppearanceParameters parameters) {
+			
 			this.OnHideEnd();
+			this.OnHideEnd(parameters);
 
 		}
 		
 		public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
-
+		
 		public virtual void OnShowEnd() {}
+		public virtual void OnShowEnd(AppearanceParameters parameters) {}
+
 		public virtual void OnHideEnd() {}
+		public virtual void OnHideEnd(AppearanceParameters parameters) {}
 		
 		public virtual void OnShowBegin() {}
 		public virtual void OnShowBegin(AppearanceParameters parameters) {}

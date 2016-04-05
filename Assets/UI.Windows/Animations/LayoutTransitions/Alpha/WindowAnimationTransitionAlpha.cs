@@ -23,6 +23,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 			
+			[Header("States")]
 			public State resetState;
 			public State inState;
 			public State outState;

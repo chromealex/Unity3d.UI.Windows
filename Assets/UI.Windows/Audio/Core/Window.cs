@@ -10,7 +10,7 @@ namespace UnityEngine.UI.Windows.Audio {
 	
 	[System.Serializable]
 	public class Component {
-
+		
 		#if UNITY_EDITOR
 		//[HideInInspector]
 		[FlowDataPopup]
@@ -19,17 +19,17 @@ namespace UnityEngine.UI.Windows.Audio {
 		
 		[SerializeField]
 		private bool randomize = false;
-
+		
 		[SerializeField][ReadOnly("randomize", state: true, order = 1)][AudioPopup(ClipType.SFX, order = 2)]
 		private int id = 0;
-
+		
 		[SerializeField][ReadOnly("randomize", state: false, order = 1)][AudioPopup(ClipType.SFX, order = 2)]
 		public int[] randomIds = new int[0];
-
+		
 		public void Play() {
-
+			
 			WindowSystem.AudioPlayFX(this.id, this.randomIds, this.randomize);
-
+			
 		}
 		
 	}
@@ -52,7 +52,7 @@ namespace UnityEngine.UI.Windows.Audio {
 			Replace,
 
 		};
-		
+
 		#if UNITY_EDITOR
 		[Header("Source")]
 		//[HideInInspector]
@@ -100,8 +100,8 @@ namespace UnityEngine.UI.Windows.Audio {
 		// Events
 		public void DoInit() { }
 		public void DoDeinit() { }
-		public void DoShowEnd() { }
-		public void DoHideEnd() { }
+		public void DoShowEnd(AppearanceParameters parameters) { }
+		public void DoHideEnd(AppearanceParameters parameters) { }
 		
 		public void DoShowBegin(AppearanceParameters parameters) {
 			

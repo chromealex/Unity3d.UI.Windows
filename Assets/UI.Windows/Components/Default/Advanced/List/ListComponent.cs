@@ -21,9 +21,11 @@ namespace UnityEngine.UI.Windows.Components {
 		public GameObject content;
 		public GameObject noElements;
 		public GameObject loading;
+
+		public WindowComponent loader;
 		
-		public GameObject top;
-		public GameObject bottom;
+		public WindowComponent top;
+		public WindowComponent bottom;
 
 		[Header("Navigation")]
 		public Navigation.Mode navigationMode = Navigation.Mode.None;
@@ -36,6 +38,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.Refresh();
 			if (this.noElements != null) this.noElements.SetActive(false);
 			if (this.loading != null) this.loading.SetActive(true);
+			if (this.loader != null) this.loader.Show();
 
 		}
 
@@ -72,6 +75,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.list.Add(instance);
 			this.RegisterSubComponent(instance);
 			if (this.loading != null) this.loading.SetActive(false);
+			if (this.loader != null) this.loader.Hide();
 
 			return instance;
 
@@ -300,9 +304,19 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public void ForEach<T>(UnityAction<T, int> onItem = null) where T : IComponent {
 
-			for (int i = 0, capacity = this.Count(); i < capacity; ++i) {
+			this.ForEach<T>((element, index) => {
 
-				var instance = this.GetItem<T>(i);
+				if (onItem != null) onItem.Invoke((T)element, index);
+
+			});
+
+		}
+		
+		public void ForEach(UnityAction<IComponent, int> onItem = null) {
+
+			for (int i = 0, capacity = this.Count(); i < capacity; ++i) {
+				
+				var instance = this.GetItem(i);
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 				
 			}
@@ -320,7 +334,14 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 		
 		protected virtual void SetItems(int capacity, UnityAction<IComponent, int> onItem) {
-			
+
+			if (capacity == this.Count() && capacity > 0) {
+
+				this.ForEach(onItem);
+				return;
+
+			}
+
 			this.Clear();
 			
 			for (int i = 0; i < capacity; ++i) {
@@ -376,16 +397,27 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void Refresh(bool withNoElements = false) {
+		public void BeginLoad() {
 
-			if (withNoElements == true && this.noElements != null) this.noElements.SetActive(this.IsEmpty() == true);
+			if (this.noElements != null) this.noElements.SetActive(false);
+			if (this.content != null) this.content.SetActive(false);
+
+			if (this.loading != null) this.loading.SetActive(true);
+			if (this.loader != null) this.loader.Show();
+
+		}
+
+		public void EndLoad() {
+			
+			if (this.loading != null) this.loading.SetActive(false);
+			if (this.loader != null) this.loader.Hide();
+
+			if (this.noElements != null) this.noElements.SetActive(this.IsEmpty() == true);
 			if (this.content != null) this.content.SetActive(this.IsEmpty() == false);
 
-			if (this.IsEmpty() == false) {
+		}
 
-				if (this.loading != null) this.loading.SetActive(false);
-
-			}
+		public void Refresh(bool withNoElements = false) {
 
 		}
 

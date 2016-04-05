@@ -101,6 +101,10 @@ namespace UnityEngine.UI.Windows.Components {
 			[ParamFlag(ParameterFlag.AP12)] public bool bestFit = false;
 			[ParamFlag(ParameterFlag.AP13)] public int bestMinSize = 10;
 			[ParamFlag(ParameterFlag.AP14)] public int bestMaxSize = 40;
+			
+			[Header("Text: Animation")]
+			[ParamFlag(ParameterFlag.AP17)] public bool valueAnimate = false;
+			[ParamFlag(ParameterFlag.AP18)] public float valueAnimateDuration = 2f;
 	
 			public void Setup(ITextComponent component) {
 	
@@ -122,6 +126,9 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.IsChanged(ParameterFlag.AP12) == true) component.SetBestFitState(this.bestFit);
 				if (this.IsChanged(ParameterFlag.AP13) == true) component.SetBestFitMinSize(this.bestMinSize);
 				if (this.IsChanged(ParameterFlag.AP14) == true) component.SetBestFitMaxSize(this.bestMaxSize);
+				
+				if (this.IsChanged(ParameterFlag.AP17) == true) component.SetValueAnimate(this.valueAnimate);
+				if (this.IsChanged(ParameterFlag.AP18) == true) component.SetValueAnimateDuration(this.valueAnimateDuration);
 	
 			}
 	#endregion

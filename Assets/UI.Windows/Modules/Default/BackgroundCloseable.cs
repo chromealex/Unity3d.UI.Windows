@@ -9,6 +9,14 @@ namespace UnityEngine.UI.Windows.Modules {
 		private System.Action callback;
 		private bool overrideAutoHide = false;
 
+		private bool enabledState;
+
+		public void SetEnableState(bool state) {
+
+			this.enabledState = state;
+
+		}
+
 		public void SetCallback(System.Action callback, bool overrideAutoHide = true) {
 
 			this.overrideAutoHide = overrideAutoHide;
@@ -23,6 +31,8 @@ namespace UnityEngine.UI.Windows.Modules {
 		}
 
 		public void HideWindow() {
+
+			if (this.enabledState == false) return;
 
 			if (this.callback != null) {
 

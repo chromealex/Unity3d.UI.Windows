@@ -84,6 +84,7 @@ GameObject:
   - 225: {fileID: 22591026}
   - 114: {fileID: 11491026}
   - 114: {fileID: 11491028}
+  - 114: {fileID: 11439774}
   m_Layer: 5
   m_Name: PopupItems
   m_TagString: Untagged
@@ -268,6 +269,22 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+--- !u!114 &11439774
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 173206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cda5e30a4530842a9a55011585649ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windowObject: {fileID: 11473206}
+  canvas: {fileID: 22334116}
+  raycaster: {fileID: 11480016}
+  orderDelta: 1
+  raycasterSource: {fileID: 0}
 --- !u!114 &11470026
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -288,6 +305,8 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
   animationRefresh: 0
@@ -317,6 +336,8 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11491026}
   - {fileID: 11491028}
@@ -331,6 +352,8 @@ MonoBehaviour:
   content: {fileID: 100510}
   noElements: {fileID: 100514}
   loading: {fileID: 0}
+  top: {fileID: 0}
+  bottom: {fileID: 0}
   navigationMode: 0
   navigationInverse: 0
 --- !u!114 &11473208
@@ -607,14 +630,17 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
 --- !u!114 &11497476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -945,6 +971,22 @@ Prefab:
       propertyPath: autoRegisterInRoot
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: orderDelta
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: windowObject
+      value: 
+      objectReference: {fileID: 11473206}
+    - target: {fileID: 0}
+      propertyPath: canvas
+      value: 
+      objectReference: {fileID: 22334116}
+    - target: {fileID: 0}
+      propertyPath: raycaster
+      value: 
+      objectReference: {fileID: 11480016}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 173206}

@@ -10,7 +10,8 @@ namespace UnityEngine.UI.Windows {
 		[Header("Sub Components")]
 		public bool autoRegisterInRoot = true;
 		public bool autoRegisterSubComponents = true;
-		
+		public bool setInactiveOnHiddenState = true;
+
 		/// <summary>
 		/// Show this component on start showing window or not.
 		/// </summary>
@@ -63,7 +64,7 @@ namespace UnityEngine.UI.Windows {
 		
 		public virtual bool NeedToInactive() {
 
-			return true;
+			return this.setInactiveOnHiddenState;
 
 		}
 
@@ -165,12 +166,18 @@ namespace UnityEngine.UI.Windows {
 	    /// Raises the show end event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-        public virtual void DoShowEnd() {
-
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoShowEnd();
+		public virtual void DoShowEnd(AppearanceParameters parameters) {
 			
+			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
+			if (includeChilds == true) {
+
+				for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoShowEnd(parameters);
+
+			}
+
 			this.SetComponentState(WindowObjectState.Shown);
 			this.OnShowEnd();
+			this.OnShowEnd(parameters);
 
         }
 
@@ -178,12 +185,18 @@ namespace UnityEngine.UI.Windows {
 	    /// Raises the hide end event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-	    public virtual void DoHideEnd() {
+		public virtual void DoHideEnd(AppearanceParameters parameters) {
 
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoHideEnd();
+			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
+			if (includeChilds == true) {
+
+				for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoHideEnd(parameters);
+
+			}
 
 			this.SetComponentState(WindowObjectState.Hidden);
 			this.OnHideEnd();
+			this.OnHideEnd(parameters);
 
 	    }
 		
@@ -201,10 +214,19 @@ namespace UnityEngine.UI.Windows {
 			#pragma warning disable
 			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
 			#pragma warning restore
-
-			var callback = parameters.callback;
-			ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoShowBegin(parameters.ReplaceCallback(cb)));
 			
+			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
+			if (includeChilds == true) {
+
+				var callback = parameters.callback;
+				ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoShowBegin(parameters.ReplaceCallback(cb)));
+
+			} else {
+
+				parameters.Call();
+
+			}
+
 		}
 		
 		public void DoHideBegin(System.Action callback) {
@@ -222,8 +244,17 @@ namespace UnityEngine.UI.Windows {
 			this.OnHideBegin(parameters.callback, parameters.immediately);
 			#pragma warning restore
 
-			var callback = parameters.callback;
-			ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoHideBegin(parameters.ReplaceCallback(cb)));
+			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
+			if (includeChilds == true) {
+
+				var callback = parameters.callback;
+				ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoHideBegin(parameters.ReplaceCallback(cb)));
+
+			} else {
+
+				parameters.Call();
+
+			}
 
 		}
 		
@@ -231,6 +262,8 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
 		public virtual void OnHideEnd() {}
+		public virtual void OnShowEnd(AppearanceParameters parameters) {}
+		public virtual void OnHideEnd(AppearanceParameters parameters) {}
 		public virtual void OnShowBegin() {}
 		public virtual void OnHideBegin() {}
 		public virtual void OnShowBegin(AppearanceParameters parameters) {}
@@ -310,7 +343,7 @@ namespace UnityEngine.UI.Windows {
 
 					if (subComponent.showOnStart == true) {
 
-						subComponent.DoShowBegin(null);
+						subComponent.DoShowBegin(AppearanceParameters.Default());
 
 					}
 
@@ -328,11 +361,11 @@ namespace UnityEngine.UI.Windows {
 
 					if (subComponent.showOnStart == true) {
 
-						subComponent.DoShowBegin(() => {
+						subComponent.DoShowBegin(AppearanceParameters.Default().ReplaceCallback(() => {
 
-							subComponent.DoShowEnd();
+							subComponent.DoShowEnd(AppearanceParameters.Default());
 
-	                    });
+	                    }));
 
 					}
 
@@ -370,14 +403,14 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Shown:
 
                     // after OnShowEnd
-                    subComponent.DoHideBegin(() => {
+					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
 
-                        subComponent.DoHideEnd();
+						subComponent.DoHideEnd(AppearanceParameters.Default());
                         subComponent.DoDeinit();
 
 						if (callback != null) callback();
 
-                    });
+                    }));
 
 					sendCallback = false;
 
@@ -386,7 +419,7 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Hiding:
 
                     // after OnHideBegin
-                    subComponent.DoHideBegin(null);
+					subComponent.DoHideBegin(AppearanceParameters.Default());
 
 					sendCallback = false;
 					if (callback != null) callback();
@@ -396,14 +429,14 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Hidden:
 
                     // after OnHideEnd
-					subComponent.DoHideBegin(() => {
+					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
 
-						subComponent.DoHideEnd();
+						subComponent.DoHideEnd(AppearanceParameters.Default());
 						subComponent.DoDeinit();
 						
 						if (callback != null) callback();
 
-					});
+					}));
 
 					sendCallback = false;
 

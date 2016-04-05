@@ -28,6 +28,10 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P12)] public bool bestFit = false;
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P13)] public int bestMinSize = 10;
 		[ParamFlag(ParameterFlag./*{flagPrefix}*/P14)] public int bestMaxSize = 40;
+		
+		[Header("Text: Animation")]
+		[ParamFlag(ParameterFlag./*{flagPrefix}*/P17)] public bool valueAnimate = false;
+		[ParamFlag(ParameterFlag./*{flagPrefix}*/P18)] public float valueAnimateDuration = 2f;
 
 		public void Setup(ITextComponent component) {
 
@@ -49,6 +53,9 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P12) == true) component.SetBestFitState(this.bestFit);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P13) == true) component.SetBestFitMinSize(this.bestMinSize);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P14) == true) component.SetBestFitMaxSize(this.bestMaxSize);
+			
+			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P17) == true) component.SetValueAnimate(this.valueAnimate);
+			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P18) == true) component.SetValueAnimateDuration(this.valueAnimateDuration);
 
 		}
 		#endregion

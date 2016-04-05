@@ -9,6 +9,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 	//[RequireComponent(typeof(ScrollRect))]
 	public class ListViewComponent : ListComponent, IListViewDataSource, ILayoutController {
+		
+		[System.Serializable]
+		public class CellVisibilityChangeEvent : UnityEvent<int, bool> {}
 
 		[System.Serializable]
 		public struct Range {
@@ -47,6 +50,12 @@ namespace UnityEngine.UI.Windows.Components {
 				return num >= this.from && num < (this.from + this.count);
 				
 			}
+
+			public override string ToString() {
+
+				return string.Format("{1} - {0}", this.count, this.from);
+
+			}
 			
 		}
 
@@ -55,18 +64,26 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("List View Component")]
 		[SerializeField]
 		private LayoutGroup layoutGroup;
+		
+		[Header("Offsets")]
+		public float offsetStartY = 0f;
+		public float offsetEndY = 0f;
 
 		[Header("Get Size from Rect (Optional)")]
 		[Tooltip("By default size will get from source")]
 		[SerializeField]
 		private RectTransform specialSize;
 
-		[SerializeField]
-		private float maxOutputFadeTime = 1f;
-
 		private int capacity;
 		private UnityAction<IComponent, int> onItem;
-		
+
+		/// <summary>
+		/// This event will be called when a cell's visibility changes
+		/// First param (int) is the row index, second param (bool) is whether or not it is visible
+		/// </summary>
+		public CellVisibilityChangeEvent onCellVisibilityChanged;
+
+
 		#region ILayoutController
 		public void SetLayoutHorizontal() {
 
@@ -171,7 +188,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		#region Public API
 		private int maxOutputCount = -1;
-		public void SetMaxOutputCount(int max = -1, bool immediately = false, System.Action callback = null) {
+		public void SetMaxOutputCount(int max = -1, System.Action callback = null) {
 
 			System.Action callbackInner = () => {
 				
@@ -182,74 +199,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			};
 
-			System.Action<Range, Range, float> setAlpha = (Range currentRange, Range range, float alpha) => {
-
-				for (int i = currentRange.from; i < range.from; ++i) {
-					
-					var element = this.GetCellAtRow(i);
-					if (element != null) element.canvas.alpha = alpha;
-					
-				}
-
-			};
-
-			if (this.maxOutputFadeTime > 0f) {
-
-				var open = (max == -1);
-				var from = open ? 0f : 1f;
-				var to = open ? 1f : 0f;
-
-				Range currentRange;
-				Range range;
-				
-				TweenerGlobal.instance.removeTweens(this);
-
-				if (open == true) {
-
-					currentRange = this.CalculateCurrentVisibleRowRange(max);
-					range = this.CalculateCurrentVisibleRowRange();
-
-					this.maxOutputCount = max;
-					this.ReloadData();
-					
-					setAlpha(currentRange, range, 0f);
-
-				} else {
-
-					currentRange = this.CalculateCurrentVisibleRowRange();
-					range = this.CalculateCurrentVisibleRowRange(max);
-
-				}
-
-				if (immediately == true) {
-					
-					setAlpha(currentRange, range, to);
-					callbackInner();
-
-				} else {
-
-					TweenerGlobal.instance.addTween(this, this.maxOutputFadeTime, from, to).tag(this).onUpdate((item, value) => {
-						
-						setAlpha(currentRange, range, value);
-
-					}).onComplete(() => {
-						
-						setAlpha(currentRange, range, 1f);
-						callbackInner();
-
-					}).onCancel((list) => {
-						
-						setAlpha(currentRange, range, 1f);
-
-					});
-
-				}
-
-			} else {
-
-				callbackInner();
-
-			}
+			callbackInner();
 
 		}
 
@@ -272,15 +222,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
         
-		[System.Serializable]
-		public class CellVisibilityChangeEvent : UnityEvent<int, bool> {}
-
-		/// <summary>
-		/// This event will be called when a cell's visibility changes
-		/// First param (int) is the row index, second param (bool) is whether or not it is visible
-		/// </summary>
-		public CellVisibilityChangeEvent onCellVisibilityChanged;
-
 		/// <summary>
 		/// Get a cell that is no longer in use for reusing
 		/// </summary>
@@ -319,11 +260,11 @@ namespace UnityEngine.UI.Windows.Components {
 			this.rowHeights = new float[this.dataSource.GetRowsCount(this)];
 
 			this.isEmpty = (this.rowHeights.Length == 0);
-			this.Refresh();
 
 			if (this.isEmpty == true) {
 
 				this.ClearAllRows();
+				this.Refresh(withNoElements: true);
 				return;
 
 			}
@@ -346,6 +287,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.RecalculateVisibleRowsFromScratch();
 			this.requiresReload = false;
+			
+			this.Refresh(withNoElements: true);
 
 		}
 
@@ -552,6 +495,9 @@ namespace UnityEngine.UI.Windows.Components {
 			this.reusableCellContainer.gameObject.SetActive(false);
 			this.reusableCells = new Dictionary<string, LinkedList<WindowComponent>>();
 
+			if (this.top != null) this.top.Hide(immediately: true);
+			if (this.bottom != null) this.bottom.Hide(immediately: true);
+
 			this.dataSource = this;
 
 		}
@@ -578,8 +524,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private Range CalculateCurrentVisibleRowRange(int max = -2) {
 
-			var startY = this.scrollY;
-			var endY = this.scrollY + (this.scrollRect.transform as RectTransform).rect.height;
+			var startY = this.scrollY - this.offsetStartY;
+			var endY = this.scrollY + (this.scrollRect.transform as RectTransform).rect.height + this.offsetEndY;
 			var startIndex = this.FindIndexOfRowAtY(startY);
 			var endIndex = this.FindIndexOfRowAtY(endY);
 
@@ -722,7 +668,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.topPadding.preferredHeight = hiddenElementsHeightSum;
 			var topEnabled = this.topPadding.preferredHeight > 0f;
 			this.topPadding.gameObject.SetActive(topEnabled);
-			if (this.top != null) this.top.SetActive(topEnabled);
+			if (this.top != null) this.top.ShowHide(topEnabled);
 
 			for (var i = this.visibleRowRange.from; i <= this.visibleRowRange.Last(); ++i) {
 
@@ -734,7 +680,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.bottomPadding.preferredHeight = bottomPaddingHeight - (this.layoutGroup != null ? this.GetLayoutGroupSpacing() : 0f);
 			var bottomEnabled = this.bottomPadding.preferredHeight > 0f;
 			this.bottomPadding.gameObject.SetActive(bottomEnabled);
-			if (this.bottom != null) this.bottom.SetActive(bottomEnabled);
+			if (this.bottom != null) this.bottom.ShowHide(bottomEnabled);
 
 		}
 

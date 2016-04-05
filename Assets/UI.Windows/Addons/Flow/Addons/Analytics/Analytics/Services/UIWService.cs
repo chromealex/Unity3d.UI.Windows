@@ -195,21 +195,38 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 
 		public override IEnumerator Auth(string key) {
+			net.SetName("stat");
 
-			this.Connect(key);
+			var startDT = System.DateTime.UtcNow;
+
+			var hasError = false;
+			this.Connect(key, (resultOk) => hasError = !resultOk);
 
 			while (this.net.Connected() == false) {
 
+				if (hasError == true) break;
 				yield return false;
 
 			}
-
-			Debug.Log("Stat connected: " + host);
-
-			foreach(StatTO to in userMap.Values) {
-				SendMsg(to);
+			
+			var seconds = (System.DateTime.UtcNow - startDT).TotalSeconds;
+			if (hasError == true) {
+				
+				WindowSystemLogger.Warning(this, string.Format("Stat connecting error to host: {0} in {1} s", host, seconds));
+				
+			} else {
+				
+				WindowSystemLogger.Warning(this, string.Format("Stat connected: {0} in {1} s", host, seconds));
+				
 			}
-			userMap.Clear();
+
+			foreach (StatTO to in this.userMap.Values) {
+
+				this.SendMsg(to);
+
+			}
+
+			this.userMap.Clear();
 
 			yield return false;
 
@@ -275,7 +292,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		private Dictionary<int, System.Action<Result>> responseMap = new Dictionary<int, System.Action<Result>>();
 
 		public override void OnEditorAuth(string key, System.Action<bool> onResult) {
-
+			net.SetName("statEditor");
 			this.Connect(key, (b) => {
 				Debug.Log("Stat Editor connected: " + host);
 				onResult(b);

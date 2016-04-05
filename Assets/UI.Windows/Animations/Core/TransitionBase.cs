@@ -11,6 +11,7 @@ namespace UnityEngine.UI.Windows.Animations {
 		[System.Serializable]
 		public abstract class ParametersBase {
 			
+			[Header("Base")]
 			public float inDelay;
 			public float outDelay;
 			
@@ -71,7 +72,8 @@ namespace UnityEngine.UI.Windows.Animations {
 		public class ParametersVideoBase : ParametersBase {
 
 			public const string MATERIAL_STRENGTH_NAME_DEFAULT = "_Value";
-
+			
+			[Header("Material")]
 			public Material material;
 			public string materialStrengthName;
 			public bool materialLerpA = false;

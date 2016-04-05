@@ -107,6 +107,7 @@ MonoBehaviour:
     dontDestroy: 1
     history: 0
     forceSingleInstance: 0
+    singleInstanceIgnoreActions: 0
     restoreSelectedElement: 1
     createPool: 1
     preallocatedCount: 0
@@ -188,6 +189,7 @@ MonoBehaviour:
   layout:
     scaleMode: 0
     fixedScaleResolution: {x: 1024, y: 768}
+    matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
     layout: {fileID: 11417546, guid: 43471c08672684197b79a669c64ea4f6, type: 2}
     components:

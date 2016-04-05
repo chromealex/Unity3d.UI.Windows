@@ -293,15 +293,52 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
+		public void SetLabelStateColor(ColorState state, Color color) {
+			
+			if (this.button.IsDestroyed() == true) return;
+
+			var button = this.button as ButtonWithLabel;
+			if (button == null) return;
+
+			var colors = button.labelColor;
+			if (state == ColorState.Normal) colors.normalColor = color;
+			if (state == ColorState.Highlighted) colors.highlightedColor = color;
+			if (state == ColorState.Pressed) colors.pressedColor = color;
+			if (state == ColorState.Disabled) colors.disabledColor = color;
+			button.labelColor = colors;
+			
+			this.Refresh();
+
+		}
+		
+		public Color GetLabelStateColor(ColorState state) {
+			
+			var button = this.button as ButtonWithLabel;
+			if (button == null) return default(Color);
+			
+			var colors = button.labelColor;
+			if (state == ColorState.Normal) return colors.normalColor;
+			if (state == ColorState.Highlighted) return colors.highlightedColor;
+			if (state == ColorState.Pressed) return colors.pressedColor;
+			if (state == ColorState.Disabled) return colors.disabledColor;
+			
+			return default(Color);
+			
+		}
+
 		public void SetStateColor(ColorState state, Color color) {
 			
+			if (this.button.IsDestroyed() == true) return;
+
 			var colors = this.button.colors;
 			if (state == ColorState.Normal) colors.normalColor = color;
 			if (state == ColorState.Highlighted) colors.highlightedColor = color;
 			if (state == ColorState.Pressed) colors.pressedColor = color;
 			if (state == ColorState.Disabled) colors.disabledColor = color;
 			this.button.colors = colors;
-			
+
+			this.Refresh();
+
 		}
 		
 		public Color GetStateColor(ColorState state) {
@@ -313,6 +350,44 @@ namespace UnityEngine.UI.Windows.Components {
 			if (state == ColorState.Disabled) return colors.disabledColor;
 
 			return default(Color);
+
+		}
+
+		public void Refresh() {
+			
+			if (this.button.IsDestroyed() == true) return;
+
+			ColorBlock colors;
+			var labelFadeDuration = 0f;
+			var buttonLabel = this.button as ButtonWithLabel;
+			if (buttonLabel != null) {
+
+				colors = buttonLabel.labelColor;
+				labelFadeDuration = colors.fadeDuration;
+				colors.fadeDuration = 0f;
+				buttonLabel.labelColor = colors;
+
+			}
+
+			colors = this.button.colors;
+			var fadeDuration = colors.fadeDuration;
+			colors.fadeDuration = 0f;
+			this.button.colors = colors;
+
+			this.button.interactable = !this.button.interactable;
+			this.button.interactable = !this.button.interactable;
+			
+			colors = this.button.colors;
+			colors.fadeDuration = fadeDuration;
+			this.button.colors = colors;
+
+			if (buttonLabel != null) {
+
+				colors = buttonLabel.labelColor;
+				colors.fadeDuration = labelFadeDuration;
+				buttonLabel.labelColor = colors;
+
+			}
 
 		}
 
@@ -890,6 +965,12 @@ namespace UnityEngine.UI.Windows.Components {
 			private RichTextFlags richTextFlags = RichTextFlags.Color | RichTextFlags.Bold | RichTextFlags.Italic | RichTextFlags.Size | RichTextFlags.Material | RichTextFlags.Quad;
 	
 			public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey textLocalizationKey;
+			
+			[SerializeField]
+			private bool valueAnimate = false;
+			[SerializeField][ReadOnly("valueAnimate", state: false)]
+			private float valueAnimateDuration = 2f;
+			private long valueAnimateLastValue;
 	
 			public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 				
@@ -935,6 +1016,14 @@ namespace UnityEngine.UI.Windows.Components {
 	
 				return this;
 	
+			}
+			
+			public int GetFontSize() {
+				
+				if (this.text != null) return this.text.fontSize;
+				
+				return 0;
+				
 			}
 	
 			public ITextComponent SetFontSize(int fontSize) {
@@ -994,6 +1083,22 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 			
+			public ITextComponent SetValueAnimate(bool state) {
+				
+				this.valueAnimate = state;
+				
+				return this;
+				
+			}
+			
+			public ITextComponent SetValueAnimateDuration(float duration) {
+				
+				this.valueAnimateDuration = duration;
+				
+				return this;
+				
+			}
+	
 			public ITextComponent SetFullTextFormat(FullTextFormat format) {
 				
 				this.fullTextFormat = format;
@@ -1010,15 +1115,27 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 			
-			public ITextComponent SetValue(long value) {
+			public ITextComponent SetValue(int value) {
 				
 				this.SetValue(value, this.valueFormat);
-	
+				
 				return this;
-	
+				
 			}
 			
-			public ITextComponent SetValue(int value) {
+			public ITextComponent SetValue(int value, TextValueFormat format) {
+				
+				return this.SetValue(value, format, this.valueAnimate);
+				
+			}
+			
+			public ITextComponent SetValue(int value, TextValueFormat format, bool animate) {
+				
+				return this.SetValue((long)value, format, animate);
+				
+			}
+	
+			public ITextComponent SetValue(long value) {
 				
 				this.SetValue(value, this.valueFormat);
 	
@@ -1027,17 +1144,31 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 	
 			public ITextComponent SetValue(long value, TextValueFormat format) {
-				
-				this.SetText(TextComponent.FormatValue(value, format));
 	
-				return this;
+				return this.SetValue(value, format, this.valueAnimate);
 	
 			}
 	
-			public ITextComponent SetValue(int value, TextValueFormat format) {
-				
-				this.SetText(TextComponent.FormatValue(value, format));
+			public ITextComponent SetValue(long value, TextValueFormat format, bool animate) {
 	
+				return this.SetValue_INTERNAL(value, format, animate, fromTweener: false);
+	
+			}
+			
+			private ITextComponent SetValue_INTERNAL(long value, TextValueFormat format, bool animate, bool fromTweener) {
+				
+				if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this);
+	
+				if (animate == true && TweenerGlobal.instance != null) {
+	
+					TweenerGlobal.instance.addTweenCount(this, this.valueAnimateDuration, this.valueAnimateLastValue, value, format, (v) => { this.valueAnimateLastValue = v; this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true); }).tag(this);
+					
+				} else {
+					
+					this.SetText(TextComponent.FormatValue(value, format));
+					
+				}
+				
 				return this;
 	
 			}
@@ -1091,7 +1222,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					if (this.text.supportRichText == true) {
 	
-						text = TextComponent.ParseRichText(text, this.richTextFlags);
+						text = TextComponent.ParseRichText(text, this.GetFontSize(), this.richTextFlags);
 	
 					}
 	

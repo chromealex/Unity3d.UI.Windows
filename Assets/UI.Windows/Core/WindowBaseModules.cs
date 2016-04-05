@@ -96,7 +96,7 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				public void DoShowEnd() { if (this.instance != null) this.instance.DoShowEnd(); }
+				public void DoShowEnd(AppearanceParameters parameters) { if (this.instance != null) this.instance.DoShowEnd(parameters); }
 				public void DoHideBegin(AppearanceParameters parameters) {
 					
 					if (this.instance != null) {
@@ -111,7 +111,7 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				public void DoHideEnd() { if (this.instance != null) this.instance.DoHideEnd(); }
+				public void DoHideEnd(AppearanceParameters parameters) { if (this.instance != null) this.instance.DoHideEnd(parameters); }
 				
 			}
 
@@ -196,14 +196,14 @@ namespace UnityEngine.UI.Windows {
 				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoShowBegin(parameters.ReplaceCallback(c)); });
 
 			}
-			public void DoShowEnd() { foreach (var element in this.elements) element.DoShowEnd(); }
+			public void DoShowEnd(AppearanceParameters parameters) { foreach (var element in this.elements) element.DoShowEnd(parameters); }
 			public void DoHideBegin(AppearanceParameters parameters) {
 				
 				var callback = parameters.callback;
 				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoHideBegin(parameters.ReplaceCallback(c)); });
 
 			}
-			public void DoHideEnd() { foreach (var element in this.elements) element.DoHideEnd(); }
+			public void DoHideEnd(AppearanceParameters parameters) { foreach (var element in this.elements) element.DoHideEnd(parameters); }
 			
 		}
 
@@ -265,7 +265,18 @@ namespace UnityEngine.UI.Windows {
 				if (WindowSystem.GetCurrentWindow() == window) {
 
 					if (UnityEngine.Input.GetKeyDown(KeyCode.Escape) == true) {
-						
+
+					    if (MW2.Gameplay.Battle.current != null && MW2.Gameplay.Battle.current.HasMode(MW2.Gameplay.Battle.Mode.Replay) == false) {
+
+                            var me = MW2.Gameplay.Battle.current.players.me;
+					        if (me != null && MW2.Gameplay.Battle.current.skills.CancelAll(me) == true) {
+
+					            return;
+
+					        }
+
+                        }
+					    
 						if (this.callback != null) {
 							
 							this.callback();
@@ -548,9 +559,7 @@ namespace UnityEngine.UI.Windows {
 		public void DoDeinit() {
 
 			this.ReleaseEvents(WindowEventType.OnDeinit);
-			
 			this.once.Clear();
-			this.onEveryInstance.Clear();
 
 		}
 
@@ -561,7 +570,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void DoShowEnd() {
+		public void DoShowEnd(AppearanceParameters parameters) {
 
 			this.ReleaseEvents(WindowEventType.OnShowEnd);
 
@@ -572,9 +581,10 @@ namespace UnityEngine.UI.Windows {
 			parameters.Call();
 
 		}
-		public void DoHideEnd() {
+		public void DoHideEnd(AppearanceParameters parameters) {
 
 			this.ReleaseEvents(WindowEventType.OnHideEnd);
+			this.onEveryInstance.Clear();
 
 		}
 
@@ -626,8 +636,10 @@ namespace UnityEngine.UI.Windows {
 		public DontDestroy dontDestroy = DontDestroy.OnSceneChange;
 		[BitMask(typeof(History))]
 		public History history = History.Auto;
-
+		
 		public bool forceSingleInstance = false;
+		[ReadOnly("forceSingleInstance", state: false)][Tooltip("Ignores `new` instance initialize and layout events")]
+		public bool singleInstanceIgnoreActions = false;
 
 		public bool restoreSelectedElement = true;
 
@@ -661,13 +673,13 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public bool IsDontDestroySceneChange() {
+		public bool IsDontDestroyOnSceneChange() {
 			
 			return (this.dontDestroy & DontDestroy.OnSceneChange) != 0;
 			
 		}
 		
-		public bool IsDontDestroyClean() {
+		public bool IsDontDestroyOnClean() {
 			
 			return (this.dontDestroy & DontDestroy.OnClean) != 0;
 			
@@ -709,8 +721,8 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public void DoDeinit() {}
-		public void DoShowEnd() {}
-		public void DoHideEnd() {}
+		public void DoShowEnd(AppearanceParameters parameters) {}
+		public void DoHideEnd(AppearanceParameters parameters) {}
 		
 		public void DoShowBegin(AppearanceParameters parameters) {
 
