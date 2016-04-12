@@ -1,14 +1,11 @@
-using ME;
-using MW2.Managers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
-using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows.Extensions.Net;
 using UnityEngine.UI.Windows.Extensions.Tiny;
 using UnityEngine.UI.Windows.Plugins.Analytics.Net.Api;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using System;
 
 namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
@@ -35,6 +32,22 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public int timeout = 3000;
 		public Dictionary<StatType, StatTO> userMap = new Dictionary<StatType, StatTO>();
 
+		[System.NonSerialized]
+		private AuthTO authTO = null;
+		[System.NonSerialized]
+		private System.DateTime connectDT;
+		[System.NonSerialized]
+		private bool connecting = false;
+		[System.NonSerialized]
+		private bool needReconnect = false;
+		[System.NonSerialized]
+		private int minDelay = 5;
+		[System.NonSerialized]
+		private int maxDelay = 5 * 128;
+		[System.NonSerialized]
+		private int reconnectDelay = 5;
+
+
 		#if UNITY_EDITOR
 		public void Update() {
 
@@ -54,29 +67,45 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			} else {
 
+				this.connectDT = System.DateTime.UtcNow;
+				this.connecting = true;
 				this.net.Connect(host, port, (b) => {
+					this.connecting = false;
+
 					if (b == false) {
 						if (onResult != null) onResult.Invoke(false);
+
 					} else {
-						AuthTO authTO = new AuthTO() {key=key};
+						this.authTO = new AuthTO() {key=key};
 						this.net.SendMsgSilently(AuthTO.version, this.SerializeB(authTO));
 						if (onResult != null) onResult.Invoke(true);
 					}
 				});
 				this.net.onRecMsg = this.OnRecMsg;
-
 			}
 
 		}
 
 		private void Disconnect(System.Action<bool> onResult = null) {
+			Debug.Log("Closing stat");
 
+			this.authTO = null;
 			this.net.Close();
+			this.connecting = false;
 			if (onResult != null) onResult.Invoke(true);
 
 		}
-		
+
+		public void OnApplicationQuit() {
+
+			this.Disconnect();
+
+		}
+
 		private void SendMsg<T>(T to) where T : StatTO {
+			if (!net.Connected() && this.needReconnect == true) {
+				Reconnect();
+			}
 
 			if (this.logTcp == true) {
 
@@ -196,40 +225,60 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		public override IEnumerator Auth(string key) {
 			net.SetName("stat");
-
-			var startDT = System.DateTime.UtcNow;
+			this.needReconnect = true;
 
 			var hasError = false;
 			this.Connect(key, (resultOk) => hasError = !resultOk);
 
-			while (this.net.Connected() == false) {
+			while (this.net.Connected() == false && hasError == false) {
 
-				if (hasError == true) break;
 				yield return false;
 
 			}
-			
-			var seconds = (System.DateTime.UtcNow - startDT).TotalSeconds;
-			if (hasError == true) {
-				
-				WindowSystemLogger.Warning(this, string.Format("Stat connecting error to host: {0} in {1} s", host, seconds));
-				
-			} else {
-				
+
+			var seconds = (System.DateTime.UtcNow - connectDT).TotalSeconds;
+
+			if (hasError == false) {
 				WindowSystemLogger.Warning(this, string.Format("Stat connected: {0} in {1} s", host, seconds));
-				
+
+				foreach (var identityMsg in this.userMap.Values) {
+					this.SendMsg(identityMsg);
+				}
+
+			} else {
+				WindowSystemLogger.Warning(this, string.Format("Stat connecting error to host: {0} in {1} s", host, seconds));
 			}
-
-			foreach (StatTO to in this.userMap.Values) {
-
-				this.SendMsg(to);
-
-			}
-
-			this.userMap.Clear();
 
 			yield return false;
 
+		}
+
+		private void Reconnect() {
+			// if previous successful connection disconnected in 20s
+			if (this.connecting == false &&  this.reconnectDelay == this.minDelay && (System.DateTime.UtcNow - this.connectDT).TotalSeconds < 20) {
+				this.reconnectDelay = this.maxDelay;
+			}
+
+			// this.authTO != null -> had a successful connection
+			if (this.connecting == false && this.authTO != null && (System.DateTime.UtcNow - this.connectDT).TotalSeconds > this.reconnectDelay) {
+				Debug.Log(string.Format("Stat reconnecting to host: {0} ...", host));
+
+				Connect(authTO.key, (success) => {
+					var seconds = (System.DateTime.UtcNow - connectDT).TotalSeconds;
+
+					Debug.Log(string.Format("Stat reconnect to host: {0} r: {1} s: {2}", host, success, seconds));
+					if (success) {
+						reconnectDelay = minDelay;
+
+						foreach (var identityMsg in this.userMap.Values) {
+							this.SendMsg(identityMsg);
+						}
+
+					} else {
+						reconnectDelay = Math.Min(reconnectDelay * 2, maxDelay);
+					}
+				});
+			}
 		}
 
 		public override IEnumerator OnEvent(int screenId, string group1, string group2, string group3, int weight) {
@@ -279,9 +328,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		private IEnumerator SetUserData(StatTO to) {
 			if (this.net.Connected()) {
 				this.SendMsg(to);
-			} else {
-				this.userMap[to.GetTypeTO()] = to;
 			}
+			this.userMap[to.GetTypeTO()] = to;
 			yield return false;
 		}
 		#endregion
@@ -293,6 +341,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		public override void OnEditorAuth(string key, System.Action<bool> onResult) {
 			net.SetName("statEditor");
+			this.needReconnect = true;
 			this.Connect(key, (b) => {
 				Debug.Log("Stat Editor connected: " + host);
 				onResult(b);

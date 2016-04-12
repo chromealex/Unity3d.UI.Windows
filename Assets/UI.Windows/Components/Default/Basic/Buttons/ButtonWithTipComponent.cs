@@ -86,6 +86,8 @@ namespace UnityEngine.UI.Windows.Components {
 	
 	public abstract class ButtonWithTipComponent<T> : ButtonComponent where T : TipWindowType {
 
+		public TipWindowType.ShowPriority tipShowPriority = TipWindowType.ShowPriority.Up;
+
 		private TipWindowType infoWindow;
 		
 		public override void OnInit() {
@@ -149,7 +151,7 @@ namespace UnityEngine.UI.Windows.Components {
 					                                                       (window) => this.OnParametersPass(window)
 					                                                       ) as TipWindowType;
 
-					if (this.infoWindow != null) this.infoWindow.OnHover(this.transform as RectTransform);
+					if (this.infoWindow != null) this.infoWindow.OnHover(this.transform as RectTransform, this.tipShowPriority);
 					
 				}
 				

@@ -1419,7 +1419,19 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public static Vector2 ConvertPointWindowToUnityScreen(Vector2 point, WindowObject handler) {
+        public static Vector2 ConvertPointWindowToGLScreen(Vector2 point, WindowObject handler) {
+
+            var size = (handler.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>().layout.GetLayoutInstance().transform as RectTransform).sizeDelta;
+            var screenSize = new Vector2(Screen.width, Screen.height);
+
+            var result = new Vector2(screenSize.x / size.x, screenSize.y / size.y);
+            result.Scale(new Vector2(size.x * 0.5f + point.x, size.y * 0.5f - point.y));
+
+            return result;
+
+        }
+
+        public static Vector2 ConvertPointWindowToUnityScreen(Vector2 point, WindowObject handler) {
 
 			var size = (handler.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>().layout.GetLayoutInstance().transform as RectTransform).sizeDelta;
 			return new Vector2(size.x * 0.5f + point.x, size.y * 0.5f + point.y);

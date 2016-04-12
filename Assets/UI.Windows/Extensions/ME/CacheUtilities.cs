@@ -46,7 +46,7 @@ namespace ME {
 			if (Utilities.cacheAssets.TryGetValue(key, out value) == false) {
 				
 				value = func().Cast<ScriptableObject>().ToArray();
-				Utilities.cacheAssets.Add(key, value);
+				if (Utilities.cacheAssets.ContainsKey(key) == false) Utilities.cacheAssets.Add(key, value);
 				
 			}
 			
@@ -62,7 +62,7 @@ namespace ME {
 			if (Utilities.cacheObjects.TryGetValue(key, out value) == false) {
 				
 				value = func().Cast<Object>().ToArray();
-				Utilities.cacheObjects.Add(key, value);
+				if (Utilities.cacheObjects.ContainsKey(key) == false) Utilities.cacheObjects.Add(key, value);
 				
 			}
 			

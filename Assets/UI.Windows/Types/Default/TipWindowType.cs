@@ -8,6 +8,11 @@ namespace UnityEngine.UI.Windows.Types {
 	[ExecuteInEditMode()]
 	public class TipWindowType : WindowBase {
 
+		public enum ShowPriority : byte {
+			Up,
+			Down,
+		};
+
 		public RectTransform layoutRoot;
 		public RectTransform root;
 		public WindowLayoutBase animationRoot;
@@ -49,7 +54,7 @@ namespace UnityEngine.UI.Windows.Types {
 			
 		}
 
-		public void OnHover(RectTransform uiElement) {
+		public void OnHover(RectTransform uiElement, ShowPriority showPriority = ShowPriority.Up) {
 			
 			this.uiElement = uiElement;
 
@@ -67,7 +72,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 			if (this.layoutRoot != null) {
 
-				this.CheckPivot(uiElement.rect.size, canvas.transform as RectTransform);
+				this.CheckPivot(uiElement.rect.size, canvas.transform as RectTransform, showPriority);
 
 			} else {
 				
@@ -110,34 +115,61 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		public void CheckPivot(Vector2 size, RectTransform sourceRect) {
+		public void CheckPivot(Vector2 size, RectTransform sourceRect, ShowPriority showPriority) {
 			
-			this.StartCoroutine(this.CheckPivot_YIELD(size, sourceRect));
+			this.StartCoroutine(this.CheckPivot_YIELD(size, sourceRect, showPriority));
 
 		}
 
-		public IEnumerator CheckPivot_YIELD(Vector2 size, RectTransform sourceTransform) {
+		public IEnumerator CheckPivot_YIELD(Vector2 size, RectTransform sourceTransform, ShowPriority showPriority) {
 
 			// Get pivot point according on screen rect
 
 			// Check points
-			var checks = new Vector2[] {
-				new Vector2(0.5f, 1f), 	// top center
-				new Vector2(0.5f, 0f), 	// bottom center
-				new Vector2(0f, 0f), 	// bottom left
-				new Vector2(1f, 0f), 	// bottom right
-				new Vector2(0f, 1f), 	// top left
-				new Vector2(1f, 1f) 	// top right
-			};
+			var checks = new Vector2[0];
+			var offsetDirs = new Vector2[0];
 
-			var offsetDirs = new Vector2[] {
-				Vector2.down,
-				Vector2.up,
-				Vector2.up,
-				Vector2.up,
-				Vector2.down,
-				Vector2.down
-			};
+			if (showPriority == ShowPriority.Down) {
+
+				checks = new Vector2[] {
+					new Vector2(0.5f, 1f), 	// top center
+					new Vector2(0f, 1f), 	// top left
+					new Vector2(1f, 1f), 	// top right
+					new Vector2(0.5f, 0f), 	// bottom center
+					new Vector2(0f, 0f), 	// bottom left
+					new Vector2(1f, 0f), 	// bottom right
+				};
+
+				offsetDirs = new Vector2[] {
+					Vector2.down,
+					Vector2.down,
+					Vector2.down,
+					Vector2.up,
+					Vector2.up,
+					Vector2.up,
+				};
+
+			} else if (showPriority == ShowPriority.Up) {
+				
+				checks = new Vector2[] {
+					new Vector2(0.5f, 0f), 	// bottom center
+					new Vector2(0f, 0f), 	// bottom left
+					new Vector2(1f, 0f), 	// bottom right
+					new Vector2(0.5f, 1f), 	// top center
+					new Vector2(0f, 1f), 	// top left
+					new Vector2(1f, 1f), 	// top right
+				};
+				
+				offsetDirs = new Vector2[] {
+					Vector2.up,
+					Vector2.up,
+					Vector2.up,
+					Vector2.down,
+					Vector2.down,
+					Vector2.down,
+				};
+
+			}
 
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 			yield return false;

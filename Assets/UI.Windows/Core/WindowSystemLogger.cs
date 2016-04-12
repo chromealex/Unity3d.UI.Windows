@@ -39,19 +39,19 @@ namespace UnityEngine.UI.Windows {
 			#endregion
 
 			#region WindowObject
-			public void Log(WindowObject @object, string data) {
+			public void Log(IWindowObject @object, string data) {
 				
 				if (this.enabled == false) return;
 				
-				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", @object.name, data), @object);
+				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
 				
 			}
 			
-			public void Warning(WindowObject @object, string data) {
+			public void Warning(IWindowObject @object, string data) {
 				
 				if (this.enabled == false) return;
 				
-				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", @object.name, data), @object);
+				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
 				
 			}
 			#endregion
@@ -157,13 +157,13 @@ namespace UnityEngine.UI.Windows {
 		#endregion
 
 		#region WindowObject
-		public static void Log(WindowObject @object, string data) {
+		public static void Log(IWindowObject @object, string data) {
 			
 			WindowSystemLogger.instance.logger.Log(@object, data);
 			
 		}
 		
-		public static void Warning(WindowObject @object, string data) {
+		public static void Warning(IWindowObject @object, string data) {
 			
 			WindowSystemLogger.instance.logger.Warning(@object, data);
 			

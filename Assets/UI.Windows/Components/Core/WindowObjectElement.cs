@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI.Windows.Extensions;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
 	[UnityEngine.DisallowMultipleComponent]
-	public class WindowObjectElement : WindowObject, IWindowEventsAsync, IWindowEventsController {
+	public class WindowObjectElement : WindowObject, IWindowEventsAsync, IWindowEventsController, IComponentElement {
 		
 		[Header("Sub Components")]
 		public bool autoRegisterInRoot = true;

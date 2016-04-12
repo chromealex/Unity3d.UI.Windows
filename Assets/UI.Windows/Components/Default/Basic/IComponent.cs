@@ -55,7 +55,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 	};
 
-	public interface IComponent {
+	public interface IComponentElement : IWindowObject {
+
+		WindowObjectState GetComponentState();
+		void SetComponentState(WindowObjectState state, bool dontInactivate = false);
+
+	}
+
+	public interface IComponent : IComponentElement {
 
 	}
 
@@ -116,7 +123,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	}
 	
-	public interface IImageComponent : IComponent {
+	public interface IImageComponent : IComponent, ILoadableResource {
 		
 		IImageComponent ResetImage();
 		IImageComponent SetImage(Sprite sprite, bool withPivotsAndSize = false);

@@ -1,18 +1,37 @@
-﻿#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-#define UNITY_MOBILE
+﻿#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY || UNITY_WEBGL
+#define MOVIE_TEXTURE_NO_SUPPORT
 #endif
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Components;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEngine.UI.Windows {
 
 	public class MovieSystem : MonoBehaviour {
-		
+
+		[System.Serializable]
+		public class QualityItem {
+
+			public int qualityIndex;
+			public bool canPlay;
+			[Tooltip("Any of width or height must be greater than minSize to play/pause them")]
+			public int minSize;
+
+		};
+
+		public float delayToPause = 0.1f;
+		public bool defaultPlayingState = true;
+		public QualityItem[] quality;
+
+		private int lastQualityIndex = -1;
+
 		private Dictionary<long, int> playing = new Dictionary<long, int>();
 		private List<IImageComponent> playingByComponent = new List<IImageComponent>();
+		#if !MOVIE_TEXTURE_NO_SUPPORT
 		private List<MovieTexture> playingByTextures = new List<MovieTexture>();
+		#endif
 
 		private static MovieSystem instance;
 
@@ -22,10 +41,119 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public void LateUpdate() {
+
+			if (this.lastQualityIndex != QualitySettings.GetQualityLevel()) {
+
+				this.lastQualityIndex = QualitySettings.GetQualityLevel();
+
+				MovieSystem.PlayPauseAll();
+
+			}
+
+		}
+
+		public static QualityItem GetQualityItem() {
+
+			return MovieSystem.instance.quality.FirstOrDefault(x => x.qualityIndex == QualitySettings.GetQualityLevel());
+
+		}
+
+		private bool CanPlayByQuality_INTERNAL(Texture texture) {
+
+			var item = MovieSystem.GetQualityItem();
+			if (item == null) return this.defaultPlayingState;
+
+			if (texture.width > item.minSize || texture.height > item.minSize) {
+
+				return item.canPlay;
+
+			}
+
+			return this.defaultPlayingState;
+
+		}
+
+		#if !MOVIE_TEXTURE_NO_SUPPORT
 		private long GetKey(MovieTexture texture, IImageComponent component) {
 
 			return texture.GetInstanceID();//(texture.GetInstanceID() << 16 | (component as MonoBehaviour).GetInstanceID()& 0xffff);
 
+		}
+		#endif
+
+		public static bool IsMovie(Texture texture) {
+			
+			#if !MOVIE_TEXTURE_NO_SUPPORT
+			return texture is MovieTexture;
+			#else
+			return false;
+			#endif
+
+		}
+		
+		public static void PlayPauseAll() {
+			
+			MovieSystem.instance.PlayPauseAll_INTERNAL();
+			
+		}
+		
+		private void PlayPauseAll_INTERNAL() {
+			
+			#if !MOVIE_TEXTURE_NO_SUPPORT
+			this.StopAllCoroutines();
+			foreach (var movie in this.playingByTextures) {
+				
+				if (this.CanPlayByQuality_INTERNAL(movie) == true) {
+
+					movie.Play();
+
+				} else {
+
+					this.StartCoroutine(this.PauseWithDelay_YIELD(movie, this.delayToPause));
+
+				}
+				
+			}
+			#endif
+			
+		}
+
+		public static void PlayAll() {
+			
+			MovieSystem.instance.PlayAll_INTERNAL();
+			
+		}
+		
+		private void PlayAll_INTERNAL() {
+			
+			#if !MOVIE_TEXTURE_NO_SUPPORT
+			foreach (var movie in this.playingByTextures) {
+				
+				movie.Play();
+				
+			}
+			#endif
+			
+		}
+
+		public static void PauseAll() {
+			
+			MovieSystem.instance.PauseAll_INTERNAL();
+			
+		}
+		
+		private void PauseAll_INTERNAL() {
+			
+			#if !MOVIE_TEXTURE_NO_SUPPORT
+			this.StopAllCoroutines();
+			foreach (var movie in this.playingByTextures) {
+				
+				this.StartCoroutine(this.PauseWithDelay_YIELD(movie, this.delayToPause));
+				
+			}
+			#endif
+			
 		}
 
 		public static void StopAll() {
@@ -35,7 +163,8 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private void StopAll_INTERNAL() {
-
+			
+			#if !MOVIE_TEXTURE_NO_SUPPORT
 			this.playingByComponent.Clear();
 			this.playing.Clear();
 
@@ -46,12 +175,13 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.playingByTextures.Clear();
+			#endif
 
 		}
 
 		private void Play_INTERNAL(IImageComponent component, bool loop) {
 			
-			#if !UNITY_MOBILE
+			#if !MOVIE_TEXTURE_NO_SUPPORT
 			var image = component.GetRawImageSource();
 			if (image == null) return;
 			
@@ -73,6 +203,12 @@ namespace UnityEngine.UI.Windows {
 						movie.loop = loop;
 						movie.Play();
 
+						if (this.CanPlayByQuality_INTERNAL(movie) == false) {
+
+							this.StartCoroutine(this.PauseWithDelay_YIELD(movie, this.delayToPause));
+
+						}
+
 						this.playingByTextures.Add(movie);
 
 					}
@@ -93,14 +229,30 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			#else
-			WindowSystemLogger.Log(component, "`Play` method not supported on mobile platforms");
+			WindowSystemLogger.Log(component, "`Play` method not supported on current platform");
 			#endif
 			
 		}
 		
+		#if !MOVIE_TEXTURE_NO_SUPPORT
+		private IEnumerator PauseWithDelay_YIELD(MovieTexture movie, float delay) {
+
+			var timer = 0f;
+			while (timer < delay) {
+
+				timer += Time.unscaledDeltaTime;
+				yield return false;
+
+			}
+
+			movie.Pause();
+
+		}
+		#endif
+		
 		private void Stop_INTERNAL(IImageComponent component) {
 			
-			#if !UNITY_MOBILE
+			#if !MOVIE_TEXTURE_NO_SUPPORT
 			var image = component.GetRawImageSource();
 			if (image == null) return;
 			
@@ -134,14 +286,14 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			#else
-			WindowSystemLogger.Log(component, "`Stop` method not supported on mobile platforms");
+			WindowSystemLogger.Log(component, "`Stop` method not supported on current platform");
 			#endif
 			
 		}
 		
 		private void Pause_INTERNAL(IImageComponent component) {
 			
-			#if !UNITY_MOBILE
+			#if !MOVIE_TEXTURE_NO_SUPPORT
 			var image = component.GetRawImageSource();
 			if (image == null) return;
 			
@@ -152,14 +304,14 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			#else
-			WindowSystemLogger.Log(component, "`Pause` method not supported on mobile platforms");
+			WindowSystemLogger.Log(component, "`Pause` method not supported on current platform");
 			#endif
 			
 		}
 		
 		private bool IsPlaying_INTERNAL(IImageComponent component) {
 			
-			#if !UNITY_MOBILE
+			#if !MOVIE_TEXTURE_NO_SUPPORT
 			var image = component.GetRawImageSource();
 			if (image == null) return false;
 			
@@ -170,7 +322,7 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			#else
-			WindowSystemLogger.Log(component, "`IsPlaying` method not supported on mobile platforms");
+			WindowSystemLogger.Log(component, "`IsPlaying` method not supported on current platform");
 			#endif
 			
 			return false;
@@ -179,24 +331,26 @@ namespace UnityEngine.UI.Windows {
 
 		public static void Play(IImageComponent component, bool loop) {
 
-			MovieSystem.instance.Play_INTERNAL(component, loop);
+			if (MovieSystem.instance != null) MovieSystem.instance.Play_INTERNAL(component, loop);
 
 		}
 		
 		public static void Stop(IImageComponent component) {
 			
-			MovieSystem.instance.Stop_INTERNAL(component);
+			if (MovieSystem.instance != null) MovieSystem.instance.Stop_INTERNAL(component);
 
 		}
 
 		public static void Pause(IImageComponent component) {
 			
-			MovieSystem.instance.Pause_INTERNAL(component);
+			if (MovieSystem.instance != null) MovieSystem.instance.Pause_INTERNAL(component);
 
 		}
 
 		public static bool IsPlaying(IImageComponent component) {
-			
+
+			if (MovieSystem.instance == null) return false;
+
 			return MovieSystem.instance.IsPlaying_INTERNAL(component);
 
 		}

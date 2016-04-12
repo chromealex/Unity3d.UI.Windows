@@ -235,7 +235,13 @@ namespace UnityEngine.UI.Windows {
 		End,
 		
 	};
-	
+
+	public interface ILoadableResource {
+		
+		AutoResourceItem GetResource();
+		
+	}
+
 	public interface IManualEvent {}
 
 	public interface IPreviewEditor {

@@ -98,6 +98,8 @@ namespace ME {
 				
 				if (_cancel != null)
 					_cancel(_obj);
+
+				this.isDirty = false;
 				
 			}
 	
@@ -122,16 +124,16 @@ namespace ME {
 				if (target.currentDelay <= target.delay) return;
 				
 				_elapsed += dt;
+				
+				if (_started == false && _begin != null) {
+					
+					_begin(_obj);
+					_started = true;
+					
+				}
 
 				if (_elapsed >= target.duration) {
 					if ((_currentTarget + 1) == _targets.Count) {
-
-						if (_started == false && _begin != null) {
-
-							_begin(_obj);
-							_started = true;
-
-						}
 
 						if (_update != null) _update(_obj, target.inverse ? target.start : target.value);
 						
@@ -160,7 +162,7 @@ namespace ME {
 					_elapsed = _elapsed - target.duration;
 					target = _targets[++_currentTarget];
 				}
-	
+
 				if (_update != null) {
 					float t = target.inverse ? target.duration - _elapsed : _elapsed;
 					float v = target.transition.interpolate(target.start, target.value - target.start, t, target.duration);
@@ -326,20 +328,38 @@ namespace ME {
 		}
 		
 		public void removeTweens(string tweenerTag) {
-
-			Mark(tween => tween.getTag() != null && tween.getTag().ToString() == tweenerTag);
+			
+			this.removeTweens(tweenerTag, immediately: false);
 			
 		}
-
+		
 		public void removeTweens(object tweenerTag) {
-
-			Mark(tween => tween.getTag() == tweenerTag);
+			
+			this.removeTweens(tweenerTag, immediately: false);
+			
+		}
+		
+		public void removeGroup(object tweenerGroup) {
+			
+			this.removeGroup(tweenerGroup, immediately: false);
 			
 		}
 
-	    public void removeGroup(object tweenerGroup) {
+		public void removeTweens(string tweenerTag, bool immediately) {
 
-	        Mark(tween => tween.getGroup() == tweenerGroup);
+			Mark(tween => tween.getTag() != null && tween.getTag().ToString() == tweenerTag, immediately);
+			
+		}
+
+		public void removeTweens(object tweenerTag, bool immediately) {
+
+			Mark(tween => tween.getTag() == tweenerTag, immediately);
+			
+		}
+
+		public void removeGroup(object tweenerGroup, bool immediately) {
+
+			Mark(tween => tween.getGroup() == tweenerGroup, immediately);
 
 	    }
 
@@ -390,12 +410,33 @@ namespace ME {
 
 		}
 
-		void Mark(System.Func<ITween, bool> predicate) {
+		void Mark(System.Func<ITween, bool> predicate, bool immediately = false) {
 
 			foreach (var each in _tweens.Where( predicate )) {
 
 				each.isDirty = true;
-				
+
+			}
+
+			if (immediately == true) {
+
+				for (var node = _tweens.First; node != null;) {
+					
+					var next = node.Next;
+					var each = node.Value;
+					
+					if (each.isCompleted() || each.isDirty == true) {
+						
+						if (each.isDirty == true && each.isCompleted() == false) each.RaiseCancel();
+						
+						_tweens.Remove(node);
+						
+					}
+					
+					node = next;
+					
+				}
+
 			}
 
 		}

@@ -149,6 +149,10 @@ namespace UnityEngine.UI.Windows.Components {
 	
 						this.SetImage(this.imageLocalizationKey);
 	
+					} else {
+						
+						WindowSystemResources.LoadAuto(this, onShowHide: false);
+	
 					}
 	
 				}
@@ -170,9 +174,11 @@ namespace UnityEngine.UI.Windows.Components {
 	 * Do not change anything
 	 */
 	{
-					
+	
 					this.Stop();
 					
+					WindowSystemResources.UnloadAuto(this, onShowHide: false);
+	
 				}
 	#endregion
 
@@ -208,12 +214,14 @@ namespace UnityEngine.UI.Windows.Components {
 	 */
 	{
 	
+					WindowSystemResources.LoadAuto(this, onShowHide: true);
+	
 					if (this.playOnShow == true) {
 						
 						this.Play();
 						
 					}
-					
+	
 				}
 	#endregion
 
@@ -234,7 +242,9 @@ namespace UnityEngine.UI.Windows.Components {
 	{
 					
 					this.Stop();
-					
+	
+					WindowSystemResources.UnloadAuto(this, onShowHide: true);
+	
 				}
 	#endregion
 
@@ -698,6 +708,15 @@ namespace UnityEngine.UI.Windows.Components {
 			[SerializeField]
 			private bool loop;
 	
+			[SerializeField]
+		public AutoResourceItem imageResource = new AutoResourceItem();
+	
+		public AutoResourceItem GetResource() {
+	
+				return this.imageResource;
+	
+			}
+	
 			public IImageComponent SetPreserveAspectState(bool state) {
 	
 				this.preserveAspect = state;
@@ -713,13 +732,31 @@ namespace UnityEngine.UI.Windows.Components {
 				return this;
 	
 			}
-	
+			
 			public bool IsMovie() {
 				
 				var image = this.GetRawImageSource();
 				if (image == null) return false;
 				
-				return image.mainTexture is MovieTexture;
+				return MovieSystem.IsMovie(image.mainTexture);
+				
+			}
+	
+			public IImageComponent Unload(ResourceBase resource) {
+	
+				WindowSystemResources.Unload(this, resource);
+	
+				return this;
+	
+			}
+	
+			public IImageComponent SetMovieTexture(TextureResource textureResource, System.Action callback) {
+				
+				this.Stop();
+	
+				WindowSystemResources.Load(this, textureResource, callback);
+	
+				return this;
 				
 			}
 	
@@ -782,6 +819,24 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
+			public Texture GetTexture() {
+	
+				if (this.image != null) {
+	
+					return (this.image.sprite != null ? this.image.sprite.texture : null);
+	
+				}
+	
+				if (this.rawImage != null) {
+	
+					return this.rawImage.texture;
+	
+				}
+	
+				return null;
+	
+			}
+	
 			public IImageComponent ResetImage() {
 				
 				if (this.image != null) {
@@ -812,6 +867,15 @@ namespace UnityEngine.UI.Windows.Components {
 				return this.rawImage;
 				
 			}
+			
+			public IImageComponent SetImage(ImageComponent source) {
+				
+				if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
+				if (source.GetRawImageSource() != null) this.SetImage(source.GetRawImageSource().texture);
+				
+				return this;
+				
+			}
 	
 			private bool lastImageLocalization = false;
 			private Plugins.Localization.LocalizationKey lastImageLocalizationKey;
@@ -822,17 +886,9 @@ namespace UnityEngine.UI.Windows.Components {
 				this.lastImageLocalizationKey = key;
 				this.lastImageLocalizationParameters = parameters;
 	
-				this.SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSprite(key, parameters));
-				
-				return this;
+				//this.SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSprite(key, parameters));
+				WindowSystemResources.LoadAuto(this, customResourcePath: UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSpritePath(key, parameters));
 	
-			}
-	
-			public IImageComponent SetImage(ImageComponent source) {
-				
-				if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
-				if (source.GetRawImageSource() != null) this.SetImage(source.GetRawImageSource().texture);
-				
 				return this;
 	
 			}
@@ -912,7 +968,9 @@ namespace UnityEngine.UI.Windows.Components {
 					
 					this.image.color = color;
 					
-				} else if (this.rawImage != null) {
+				}
+	
+				if (this.rawImage != null) {
 					
 					this.rawImage.color = color;
 					
@@ -1270,8 +1328,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.gameObject.activeSelf == false) return;
 
-			var buttons = this.GetComponentsInChildren<Button>(true);
-			if (buttons.Length == 1) this.button = buttons[0];
+			if (this.button == null) {
+
+				var buttons = this.GetComponentsInChildren<Button>(true);
+				if (buttons.Length == 1) this.button = buttons[0];
+
+			}
 
 			#region macros UI.Windows.Editor.TextComponent 
 	/*
@@ -1295,6 +1357,8 @@ namespace UnityEngine.UI.Windows.Components {
 	 */
 	if (this.image == null) this.image = this.GetComponent<Image>();
 				if (this.rawImage == null) this.rawImage = this.GetComponent<RawImage>();
+	
+				WindowSystemResources.Validate(this);
 	#endregion
 
 		}

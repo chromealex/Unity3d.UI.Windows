@@ -266,17 +266,6 @@ namespace UnityEngine.UI.Windows {
 
 					if (UnityEngine.Input.GetKeyDown(KeyCode.Escape) == true) {
 
-					    if (MW2.Gameplay.Battle.current != null && MW2.Gameplay.Battle.current.HasMode(MW2.Gameplay.Battle.Mode.Replay) == false) {
-
-                            var me = MW2.Gameplay.Battle.current.players.me;
-					        if (me != null && MW2.Gameplay.Battle.current.skills.CancelAll(me) == true) {
-
-					            return;
-
-					        }
-
-                        }
-					    
 						if (this.callback != null) {
 							
 							this.callback();
@@ -299,7 +288,7 @@ namespace UnityEngine.UI.Windows {
 				var showPrev = this.IsBackActionShowPrevious();
 				var showSpec = this.IsBackActionShowSpecific();
 
-				if (window.GetState() == WindowObjectState.Shown) {
+				if (window.GetState() == WindowObjectState.Shown || window.GetState() == WindowObjectState.Showing) {
 
 					this.onBackAction.Invoke();
 

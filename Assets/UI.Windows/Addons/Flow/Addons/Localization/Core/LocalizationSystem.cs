@@ -227,7 +227,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				if (Application.isPlaying == true) {
 
-					WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("System not ready. Do not use `LocalizationSystem.Get()` method while/before system starting. You can check it's state by `LocaliztionSystem.IsReady()` call. Key: `{0}`.", key));
+					WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("System not ready. Do not use `LocalizationSystem.Get()` method while/before system starting. You can check it's state by `LocalizationSystem.IsReady()` call. Key: `{0}`.", key));
 
 				}
 
@@ -267,12 +267,16 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			return LocalizationSystem.defaultLanguage;
 
 		}
+		
+		public static string GetSpritePath(LocalizationKey key, params object[] parameters) {
+			
+			return LocalizationSystem.Get(key, parameters).Trim();
+
+		}
 
 		public static Sprite GetSprite(LocalizationKey key, params object[] parameters) {
 
-			var spriteName = LocalizationSystem.Get(key, parameters).Trim();
-			var sprite = Resources.Load<Sprite>(spriteName);
-
+			var sprite = Resources.Load<Sprite>(LocalizationSystem.GetSpritePath(key, parameters));
 			return sprite as Sprite;
 
 		}

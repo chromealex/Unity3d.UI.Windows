@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using UnityEngine;
 
 namespace UnityEngine.UI.Windows.Extensions.Net {
     /// <summary>
@@ -25,12 +21,14 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         /// <summary>
         /// Initialize the network connection
         /// </summary>
+        //TODO onResult is called in a foreign thread
 		public void Connect(string host, int port, System.Action<bool> onResult = null) {
+			if (client != null) Close();
 			this.onResult = onResult;
-            client = new TcpClientDebug();
+			client = new TcpClientDebug(name);
 //			client.NoDelay = true;
-			Debug.Log(name + " C: Connect(" + connected + ")");
-			connected = false;
+			Debug.Log(name + " C: Connect(" + endConnected + ")");
+			endConnected = false;
 			client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
             isHead = true;
         }
@@ -51,29 +49,30 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
                 // Finish asynchronous connect
                 client.EndConnect(ar);
 				stream = client.GetStream();
-				connected = true;
+				endConnected = true;
 
+				Log();
+				Debug.Log(string.Format("R/W stream.Timeout: {0}/{1} client.Timeout: {2}/{3} client.Buffer: {4}/{5} ",
+						this.stream.ReadTimeout, this.stream.WriteTimeout, this.client.ReceiveTimeout, this.client.SendTimeout, this.client.ReceiveBufferSize, this.client.SendBufferSize));
 				if (this.onResult != null) this.onResult.Invoke(true);
             } catch(Exception e) {
 				if (this.onResult != null) this.onResult.Invoke(false);
                 Debug.Log(e);
             }
+			this.onResult = null;
         }
 
         public bool Connected() {
-            return connected;
+            return client != null && endConnected == true && client.Connected == true;
         }
 
 		public void SendMsgSilently(short type, byte[] msg) {
-            if (connected == false) return;
+            if (endConnected == false) return;
 
-			Log();
 			SendMsg(type, msg);
         }
 
 		public void SendMsg(short type, byte[] msg) {
-			//TODO ?? unknown reason, better to remove
-			if (client == null) return;
             // Message structure: the message body length + message body
             byte[] data = new byte[4 + msg.Length];
             IntToBytes((int)type << 16 | msg.Length & 0xFFFF) .CopyTo(data, 0);
@@ -83,7 +82,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
         public void ReceiveMsg() {
-			if (client == null || connected == false || client.Connected == false) {
+			if (!Connected()) {
                 return;
             }
             if (!stream.CanRead) {
@@ -135,8 +134,8 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
         public void Close() {
-			Debug.Log(name + " C: close(" + connected + ")");
-			this.connected = false;
+			Debug.Log(name + " C: close(" + endConnected + ")");
+			this.endConnected = false;
 			if (this.client != null) {
 				Log();
 				var client = this.client;
@@ -161,35 +160,41 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 
         public OnRevMsg onRecMsg;
 
-        private bool connected;
+        private bool endConnected;
     }
 
 	/**
 	 * Temporarily, debug purposes
 	 */
 	public class TcpClientDebug : TcpClient {
-		public TcpClientDebug() {
+		private string name = "net";
+
+		public TcpClientDebug(string name) {
+			this.name = name;
 			initialize2();
 		}
 
 		protected override void Dispose(bool disposing) {
-			Debug.Log("TcpDisposed1");
+//			Debug.Log(name + " TcpDisposed1");
 			base.Dispose(disposing);
-			Debug.Log("TcpDisposed2");
+			Debug.Log(name + " TcpDisposed2");
 		}
 		private void initialize2() {
-			this.Client = new SocketDebug(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			this.Client = new SocketDebug(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp, name);
 		}
 	}
 
 	public class SocketDebug : Socket {
-		public SocketDebug(System.Net.Sockets.AddressFamily family, System.Net.Sockets.SocketType type, System.Net.Sockets.ProtocolType proto) : base(family, type, proto) {
+		private string name = "net";
+
+		public SocketDebug(System.Net.Sockets.AddressFamily family, System.Net.Sockets.SocketType type, System.Net.Sockets.ProtocolType proto, string name) : base(family, type, proto) {
+			this.name = name;
 		}
 
 		protected override void Dispose(bool disposing) {
-			Debug.Log("SoDisposed1");
+//			Debug.Log(name + " SoDisposed1");
 			base.Dispose(disposing);
-			Debug.Log("SoDisposed2: " + new StackTrace().ToString());
+			Debug.Log(name + " SoDisposed2: " + new StackTrace().ToString());
 		}
 	}
 }

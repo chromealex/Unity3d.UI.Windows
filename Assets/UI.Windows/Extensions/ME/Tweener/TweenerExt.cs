@@ -26,12 +26,23 @@ public static class TweenerExt {
 				c.anchoredPosition = Vector2.Lerp(start, end, t); });
 	}
 	
-	public static ME.Tweener.Tween<Image> addTweenAlpha(this ME.Tweener tweener, Image image, float duration, float end) {
-		return tweener.addTweenAlpha(image, duration, image != null ? image.color.a : 0f, end);
+	public static ME.Tweener.Tween<Graphic> addTweenColor(this ME.Tweener tweener, Graphic graphic, float duration, Color end) {
+		return tweener.addTweenColor(graphic, duration, graphic.color, end);
 	}
 	
-	public static ME.Tweener.Tween<Image> addTweenAlpha(this ME.Tweener tweener, Image image, float duration, float start, float end) {
-		return tweener.addTween(image, duration, start, end)
+	public static ME.Tweener.Tween<Graphic> addTweenColor(this ME.Tweener tweener, Graphic graphic, float duration, Color start, Color end) {
+		return tweener.addTween(graphic, duration, 0f, 1f)
+			.onUpdate((c, t) => {
+				if (c != null)
+					c.color = Color.Lerp(start, end, t); });
+	}
+
+	public static ME.Tweener.Tween<Graphic> addTweenAlpha(this ME.Tweener tweener, Graphic graphic, float duration, float end) {
+		return tweener.addTweenAlpha(graphic, duration, graphic != null ? graphic.color.a : 0f, end);
+	}
+	
+	public static ME.Tweener.Tween<Graphic> addTweenAlpha(this ME.Tweener tweener, Graphic graphic, float duration, float start, float end) {
+		return tweener.addTween(graphic, duration, start, end)
 			.onUpdate((c, t) => {
 			if (c != null)
 				c.color = new Color(c.color.r, c.color.g, c.color.b, t); });
