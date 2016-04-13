@@ -919,7 +919,13 @@ namespace UnityEngine.UI.Windows {
 		private bool DestroyWindowCheckOnClean_INTERNAL(WindowBase window, List<WindowBase> exceptList, WindowBase exceptItem, bool forceAll = false) {
 			
 			if (window != null) {
-				
+
+				if (window.preferences.IsDontDestroyEver() == true) {
+
+					return false;
+
+				}
+
 				if (forceAll == false && window.preferences.IsDontDestroyOnClean() == true) {
 
 					return false;

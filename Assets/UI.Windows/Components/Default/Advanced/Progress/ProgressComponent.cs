@@ -230,9 +230,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetValue(float value, bool immediately = false) {
+		public IProgressComponent SetValue(float value, bool immediately = false, System.Action callback = null) {
 
-			if (this.continious == true && immediately == false) return;
+			if (this.continious == true && immediately == false) {
+
+				if (callback != null) callback.Invoke();
+				return this;
+
+			}
 
 			value = Mathf.Clamp01(value);
 
@@ -251,15 +256,18 @@ namespace UnityEngine.UI.Windows.Components {
 
 						}
 
-					}).tag(this.bar);
+					}).tag(this.bar).onComplete(callback);
 
 				} else {
 
 					this.SetValue_INTERNAL(value);
+					if (callback != null) callback.Invoke();
 
 				}
 
 			}
+
+			return this;
 
 		}
 

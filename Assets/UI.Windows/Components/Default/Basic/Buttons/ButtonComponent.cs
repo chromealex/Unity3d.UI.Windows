@@ -506,6 +506,42 @@ namespace UnityEngine.UI.Windows.Components {
 			return this;
 
 		}
+		
+		public virtual IButtonComponent RemoveAllCallbacks() {
+			
+			this.callback.RemoveAllListeners();
+			this.callbackButton.RemoveAllListeners();
+			
+			this.button.onClick.RemoveListener(this.OnClick);
+			this.button.onClick.AddListener(this.OnClick);
+			
+			return this;
+			
+		}
+
+		public virtual IButtonComponent RemoveCallback(UnityAction callback) {
+			
+			this.callback.RemoveListener(callback);
+			this.callbackButton.RemoveAllListeners();
+			
+			this.button.onClick.RemoveListener(this.OnClick);
+			this.button.onClick.AddListener(this.OnClick);
+			
+			return this;
+			
+		}
+		
+		public virtual IButtonComponent RemoveCallback(UnityAction<ButtonComponent> callback) {
+
+			this.callback.RemoveAllListeners();
+			this.callbackButton.RemoveListener(callback);
+			
+			this.button.onClick.RemoveListener(this.OnClick);
+			this.button.onClick.AddListener(this.OnClick);
+			
+			return this;
+			
+		}
 
 		public virtual IButtonComponent SetCallback(UnityAction callback) {
 
@@ -520,6 +556,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
+		public virtual IButtonComponent SetCallback(UnityAction<ButtonComponent> callback) {
+			
+			this.callbackButton.RemoveAllListeners();
+			this.callbackButton.AddListenerDistinct(callback);
+			this.callback.RemoveAllListeners();
+			
+			this.button.onClick.RemoveAllListeners();
+			// this.button.onClick.RemoveListener(this.OnClick);
+			this.button.onClick.AddListener(this.OnClick);
+			
+			return this;
+			
+		}
+
 		public virtual IButtonComponent AddCallback(UnityAction callback) {
 			
 			this.callback.AddListenerDistinct(callback);
@@ -530,20 +580,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public virtual IButtonComponent SetCallback(UnityAction<ButtonComponent> callback) {
-
-            this.callbackButton.RemoveAllListeners();
-            this.callbackButton.AddListenerDistinct(callback);
-			this.callback.RemoveAllListeners();
-
-            this.button.onClick.RemoveAllListeners();
-            // this.button.onClick.RemoveListener(this.OnClick);
-			this.button.onClick.AddListener(this.OnClick);
-
-			return this;
-
-		}
-		
 		public virtual IButtonComponent AddCallback(UnityAction<ButtonComponent> callback) {
 			
 			this.callbackButton.AddListenerDistinct(callback);
@@ -709,9 +745,9 @@ namespace UnityEngine.UI.Windows.Components {
 			private bool loop;
 	
 			[SerializeField]
-		public AutoResourceItem imageResource = new AutoResourceItem();
+			public AutoResourceItem imageResource = new AutoResourceItem();
 	
-		public AutoResourceItem GetResource() {
+			public AutoResourceItem GetResource() {
 	
 				return this.imageResource;
 	
@@ -760,11 +796,23 @@ namespace UnityEngine.UI.Windows.Components {
 				
 			}
 	
-			public IImageComponent SetMovieTexture(Texture texture) {
+			public IImageComponent SetMovieTexture(Texture texture, bool play = false, bool pause = false) {
 	
 				this.Stop();
 				this.SetImage(texture);
 				
+				if (play == true) {
+	
+					this.Play();
+	
+				}
+	
+				if (pause == true) {
+	
+					MovieSystem.PlayAndPause(this, this.loop);
+	
+				}
+	
 				return this;
 	
 			}
@@ -872,6 +920,14 @@ namespace UnityEngine.UI.Windows.Components {
 				
 				if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
 				if (source.GetRawImageSource() != null) this.SetImage(source.GetRawImageSource().texture);
+				
+				return this;
+				
+			}
+			
+			public IImageComponent SetImage(ResourceBase resource, System.Action callback) {
+	
+				WindowSystemResources.Load(this, resource, callback);
 				
 				return this;
 				

@@ -181,37 +181,37 @@ namespace ME {
 			}
 			
 			public Tween<T> onBegin(System.Action<T> func) {
-				_begin += func;
+				if (func != null) _begin += func;
 				return this;
 			}
 			
 			public Tween<T> onBegin(System.Action func) {
-				_begin += self => func();
+				if (func != null) _begin += self => func();
 				return this;
 			}
 
 			public Tween<T> onUpdate(System.Action<T, float> func) {
-				_update += func;
+				if (func != null) _update += func;
 				return this;
 			}
 			
 			public Tween<T> onComplete(System.Action<T> func) {
-				_complete += func;
+				if (func != null) _complete += func;
 				return this;
 			}
 
 			public Tween<T> onComplete(System.Action func) {
-				_complete += self => func();
+				if (func != null) _complete += self => func();
 				return this;
 			}
 			
 			public Tween<T> onCancel(System.Action<T> func) {
-				_cancel += func;
+				if (func != null) _cancel += func;
 				return this;
 			}
 			
 			public Tween<T> onCancel(System.Action func) {
-				_cancel += self => func();
+				if (func != null) _cancel += self => func();
 				return this;
 			}
 

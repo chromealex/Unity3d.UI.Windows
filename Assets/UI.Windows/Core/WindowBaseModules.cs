@@ -606,6 +606,7 @@ namespace UnityEngine.UI.Windows {
 		Auto = 0x0,
 		OnSceneChange = 0x1,
 		OnClean = 0x2,
+		Ever = 0x4,
 
 	};
 	
@@ -626,10 +627,11 @@ namespace UnityEngine.UI.Windows {
 		[BitMask(typeof(History))]
 		public History history = History.Auto;
 		
+		[Tooltip("Forces one instance only on scene")]
 		public bool forceSingleInstance = false;
 		[ReadOnly("forceSingleInstance", state: false)][Tooltip("Ignores `new` instance initialize and layout events")]
 		public bool singleInstanceIgnoreActions = false;
-
+		[Tooltip("Restores UI.EventSystem last selected element on window activation")]
 		public bool restoreSelectedElement = true;
 
 		[Header("Pool")]
@@ -672,6 +674,12 @@ namespace UnityEngine.UI.Windows {
 			
 			return (this.dontDestroy & DontDestroy.OnClean) != 0;
 			
+		}
+
+		public bool IsDontDestroyEver() {
+
+			return (this.dontDestroy & DontDestroy.Ever) != 0;
+
 		}
 
 		#if UNITY_EDITOR

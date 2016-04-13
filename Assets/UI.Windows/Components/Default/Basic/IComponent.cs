@@ -67,7 +67,10 @@ namespace UnityEngine.UI.Windows.Components {
 	}
 
 	public interface IButtonComponent : ITextComponent, IImageComponent, IComponent {
-
+		
+		IButtonComponent RemoveAllCallbacks();
+		IButtonComponent RemoveCallback(UnityAction callback);
+		IButtonComponent RemoveCallback(UnityAction<ButtonComponent> callback);
 		IButtonComponent SetCallback(UnityAction callback);
 		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
 		Selectable GetSelectable();
@@ -141,7 +144,8 @@ namespace UnityEngine.UI.Windows.Components {
 		bool GetPlayOnShow();
 		IImageComponent SetPlayOnShow(bool state);
 		IImageComponent SetLoop(bool state);
-		IImageComponent SetMovieTexture(Texture texture);
+		IImageComponent SetMovieTexture(TextureResource textureResource, System.Action callback);
+		IImageComponent SetMovieTexture(Texture texture, bool play = false, bool pause = false);
 		bool IsPlaying();
 		IImageComponent Play();
 		IImageComponent Play(bool loop);
@@ -161,7 +165,7 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetContiniousWidth(float continiousWidth);
 		void SetContiniousAngleStep(float continiousAngleStep);
 		void SetCallback(UnityAction<float> onChanged);
-		void SetValue(float value, bool immediately = false);
+		IProgressComponent SetValue(float value, bool immediately = false, System.Action callback = null);
 		
 	}
 

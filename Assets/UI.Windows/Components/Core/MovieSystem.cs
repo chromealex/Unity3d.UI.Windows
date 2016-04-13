@@ -146,6 +146,9 @@ namespace UnityEngine.UI.Windows {
 		private void PauseAll_INTERNAL() {
 			
 			#if !MOVIE_TEXTURE_NO_SUPPORT
+			this.playingByComponent.Clear();
+			this.playing.Clear();
+
 			this.StopAllCoroutines();
 			foreach (var movie in this.playingByTextures) {
 				
@@ -179,7 +182,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void Play_INTERNAL(IImageComponent component, bool loop) {
+		public static void PlayAndPause(IImageComponent component, bool loop) {
+
+			MovieSystem.instance.Play_INTERNAL(component, loop, pause: true);
+
+		}
+
+		private void Play_INTERNAL(IImageComponent component, bool loop, bool pause) {
 			
 			#if !MOVIE_TEXTURE_NO_SUPPORT
 			var image = component.GetRawImageSource();
@@ -203,9 +212,9 @@ namespace UnityEngine.UI.Windows {
 						movie.loop = loop;
 						movie.Play();
 
-						if (this.CanPlayByQuality_INTERNAL(movie) == false) {
+						if (pause == true || this.CanPlayByQuality_INTERNAL(movie) == false) {
 
-							this.StartCoroutine(this.PauseWithDelay_YIELD(movie, this.delayToPause));
+							this.StartCoroutine(this.PauseWithDelay_YIELD(component, movie, this.delayToPause));
 
 						}
 
@@ -236,21 +245,35 @@ namespace UnityEngine.UI.Windows {
 		
 		#if !MOVIE_TEXTURE_NO_SUPPORT
 		private IEnumerator PauseWithDelay_YIELD(MovieTexture movie, float delay) {
-
+			
 			var timer = 0f;
 			while (timer < delay) {
-
+				
 				timer += Time.unscaledDeltaTime;
 				yield return false;
-
+				
+			}
+			
+			movie.Pause();
+			
+		}
+		
+		private IEnumerator PauseWithDelay_YIELD(IImageComponent component, MovieTexture movie, float delay) {
+			
+			var timer = 0f;
+			while (timer < delay) {
+				
+				timer += Time.unscaledDeltaTime;
+				yield return false;
+				
 			}
 
-			movie.Pause();
-
+			this.Pause_INTERNAL(component);
+			
 		}
 		#endif
 		
-		private void Stop_INTERNAL(IImageComponent component) {
+		private void Stop_INTERNAL(IImageComponent component, bool pause) {
 			
 			#if !MOVIE_TEXTURE_NO_SUPPORT
 			var image = component.GetRawImageSource();
@@ -276,7 +299,15 @@ namespace UnityEngine.UI.Windows {
 
 					if (count <= 0) {
 
-						movie.Stop();
+						if (pause == true) {
+
+							movie.Pause();
+
+						} else {
+
+							movie.Stop();
+
+						}
 
 						this.playingByTextures.Remove(movie);
 
@@ -294,15 +325,7 @@ namespace UnityEngine.UI.Windows {
 		private void Pause_INTERNAL(IImageComponent component) {
 			
 			#if !MOVIE_TEXTURE_NO_SUPPORT
-			var image = component.GetRawImageSource();
-			if (image == null) return;
-			
-			var movie = image.mainTexture as MovieTexture;
-			if (movie != null) {
-
-				movie.Pause();
-
-			}
+			this.Stop_INTERNAL(component, pause: true);
 			#else
 			WindowSystemLogger.Log(component, "`Pause` method not supported on current platform");
 			#endif
@@ -331,13 +354,13 @@ namespace UnityEngine.UI.Windows {
 
 		public static void Play(IImageComponent component, bool loop) {
 
-			if (MovieSystem.instance != null) MovieSystem.instance.Play_INTERNAL(component, loop);
+			if (MovieSystem.instance != null) MovieSystem.instance.Play_INTERNAL(component, loop, pause: false);
 
 		}
 		
 		public static void Stop(IImageComponent component) {
 			
-			if (MovieSystem.instance != null) MovieSystem.instance.Stop_INTERNAL(component);
+			if (MovieSystem.instance != null) MovieSystem.instance.Stop_INTERNAL(component, pause: false);
 
 		}
 

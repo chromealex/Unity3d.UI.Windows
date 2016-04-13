@@ -194,11 +194,23 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public IImageComponent SetMovieTexture(Texture texture) {
+		public IImageComponent SetMovieTexture(Texture texture, bool play = false, bool pause = false) {
 
 			this.Stop();
 			this.SetImage(texture);
 			
+			if (play == true) {
+
+				this.Play();
+
+			}
+
+			if (pause == true) {
+
+				MovieSystem.PlayAndPause(this, this.loop);
+
+			}
+
 			return this;
 
 		}
