@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &124220
 GameObject:
   m_ObjectHideFlags: 1
@@ -99,15 +99,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ddf9696929a7524dbccdd1af32a71f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animation: {fileID: 0}
-  animationInputParams: []
-  canvas: {fileID: 0}
-  animationRefresh: 0
-  lastAnimation: {fileID: 0}
+  windowId: 0
+  autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents:
   - {fileID: 11481540}
   - {fileID: 11424228}
+  currentState: 0
+  animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
+  animationInputParams: []
+  canvas: {fileID: 0}
+  manualShowHideControl: 0
+  animationRefresh: 0
+  lastAnimation: {fileID: 0}
+  heatmapActive: 1
   image: {fileID: 11424228}
   text: {fileID: 11481540}
 --- !u!114 &11424220
@@ -123,6 +134,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: .383001715, g: .555035174, b: .676470578, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -180,15 +197,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b9d6c44b51acf4bad7a9a1bbb12a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
+  preserveAspect: 0
   image: {fileID: 0}
   rawImage: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  playOnShow: 0
+  loop: 0
+  imageResource:
+    async: 1
+    assetPath: 
+    resourcesPath: 
+    loadable: 0
+    multiObjects: 0
+    objectIndex: 0
+    customResourcePath: 
+    controlType: 0
+    tempSprite: {fileID: 0}
+    tempTexture: {fileID: 0}
 --- !u!114 &11481538
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -214,14 +261,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 681b23972fd7f4cd69c127c4b7d8e8b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
+  images: []
   text: {fileID: 11481542}
+  valueFormat: 0
+  fullTextFormat: 0
+  richTextFlags: 63
+  textLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  valueAnimate: 0
+  valueAnimateDuration: 2
 --- !u!114 &11481542
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -235,6 +304,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: .91911763, g: .91911763, b: .91911763, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 16
@@ -279,6 +354,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -405,4 +486,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 124218}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

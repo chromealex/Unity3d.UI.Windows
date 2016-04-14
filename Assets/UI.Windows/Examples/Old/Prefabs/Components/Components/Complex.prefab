@@ -157,7 +157,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &105764
 GameObject:
   m_ObjectHideFlags: 1
@@ -484,14 +484,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11405714
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -532,20 +538,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11405714}
   - {fileID: 11405712}
   canvas: {fileID: 22505712}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11488866, guid: eb7fe667c013441e4bfd64c852412e1e, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11405718
 MonoBehaviour:
@@ -858,14 +872,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11405866
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -906,8 +926,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac17aefe4cc4445bc9766411c8973a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents:
   - {fileID: 11481008}
   - {fileID: 11405896}
@@ -924,11 +947,15 @@ MonoBehaviour:
   - {fileID: 11438484}
   - {fileID: 11480990}
   - {fileID: 11480978}
+  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
@@ -973,20 +1000,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11405866}
   - {fileID: 11405864}
   canvas: {fileID: 22505742}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11438718, guid: fd2f485077cf8490394662d4006747cc, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11405898
 MonoBehaviour:
@@ -1074,14 +1109,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11438482
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1122,20 +1163,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11438482}
   - {fileID: 11438480}
   canvas: {fileID: 22538476}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11488866, guid: eb7fe667c013441e4bfd64c852412e1e, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11475990
 MonoBehaviour:
@@ -1187,14 +1236,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11475994
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1253,20 +1308,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11475994}
   - {fileID: 11475992}
   canvas: {fileID: 22575990}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11476000
 MonoBehaviour:
@@ -1298,14 +1361,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11476002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1364,20 +1433,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11476002}
   - {fileID: 11476000}
   canvas: {fileID: 22575992}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11425682, guid: c4d97fb32d5604e409a4a701481ab08e, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11476008
 MonoBehaviour:
@@ -1426,20 +1503,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11480980}
   - {fileID: 11480982}
   canvas: {fileID: 22581030}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11425584, guid: 800de739529bb4cb8a5a6ce699119a67, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11480980
 MonoBehaviour:
@@ -1500,14 +1585,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11480984
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1575,20 +1666,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11480992}
   - {fileID: 11480994}
   canvas: {fileID: 22581032}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11425584, guid: bf1ee9c4c4f7a4243885b8043c3c1a5d, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11480992
 MonoBehaviour:
@@ -1649,14 +1748,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11480996
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1687,14 +1792,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11480998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1735,20 +1846,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11480998}
   - {fileID: 11480996}
   canvas: {fileID: 22581034}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11466706, guid: 9254a95111c4148689933450de93d8a4, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11481002
 MonoBehaviour:
@@ -1798,14 +1917,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11481006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1846,20 +1971,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11481006}
   - {fileID: 11481004}
   canvas: {fileID: 22581036}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   heatmapActive: 1
   prefab: {fileID: 11471902, guid: 8afbd17274a09430e962e078de2934f9, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 0
 --- !u!114 &11481010
 MonoBehaviour:
@@ -1980,18 +2113,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
   prefab: {fileID: 11475670, guid: e60b9db910e09405bbe3667645dd57d6, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 1
 --- !u!114 &11481024
 MonoBehaviour:
@@ -2004,18 +2145,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
   prefab: {fileID: 11475670, guid: ec9073e296fb04dfca40d210d6a8f6ec, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 1
 --- !u!114 &11481026
 MonoBehaviour:
@@ -2028,18 +2177,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
   prefab: {fileID: 11475670, guid: 7c00c84ecfce8430bac124ad9b4abb6f, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 1
 --- !u!114 &11481028
 MonoBehaviour:
@@ -2052,18 +2209,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
   prefab: {fileID: 11475670, guid: fc620340f96eb449caecf160206cad7e, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 1
 --- !u!114 &11481030
 MonoBehaviour:
@@ -2076,18 +2241,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
   prefab: {fileID: 11475670, guid: 4f4bd4f9c46b94263af83d2043fc4b7b, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 1
 --- !u!114 &11481032
 MonoBehaviour:
@@ -2100,18 +2273,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents: []
+  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
   prefab: {fileID: 11475670, guid: 32c01de1150e2488c95cc6baaac76977, type: 2}
+  prefabParameters: {fileID: 0}
   fitToRoot: 1
 --- !u!114 &11481034
 MonoBehaviour:

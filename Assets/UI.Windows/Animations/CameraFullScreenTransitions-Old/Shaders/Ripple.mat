@@ -32,16 +32,16 @@ Material:
     m_Floats:
       data:
         first:
+          name: _Speed
+        second: 50
+      data:
+        first:
           name: _Value
-        second: 0
+        second: 1
       data:
         first:
           name: _Amplitude
         second: 80
-      data:
-        first:
-          name: _Speed
-        second: 50
     m_Colors:
       data:
         first:

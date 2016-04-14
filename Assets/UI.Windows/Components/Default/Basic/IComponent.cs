@@ -38,6 +38,7 @@ namespace UnityEngine.UI.Windows.Components {
 		DateDMHMS,						// 12 Aug 00:00:00
 		DateDMHMSFromMilliseconds,
 		TimeMSFromMilliseconds,			// 00:00
+		TimeHMSFromMilliseconds,			// 00:00:00
 
 	};
 

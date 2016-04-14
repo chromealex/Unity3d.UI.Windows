@@ -139,6 +139,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: .0196078438}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -186,8 +192,13 @@ MonoBehaviour:
   m_Inertia: 1
   m_DecelerationRate: .135000005
   m_ScrollSensitivity: 10
+  m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 11411382}
+  m_HorizontalScrollbarVisibility: 0
+  m_VerticalScrollbarVisibility: 0
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -254,6 +265,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: .38981384, b: .757352948, a: .701960802}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -275,6 +292,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: .38981384, b: .757352948, a: .309803933}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -306,18 +329,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d455a79c15aef491e9fb7cb5ebed6b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animation: {fileID: 0}
-  animationInputParams: []
-  canvas: {fileID: 0}
-  animationRefresh: 0
-  lastAnimation: {fileID: 0}
+  windowId: 0
+  autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents:
   - {fileID: 11411400}
-  scrollRect: {fileID: 11411380}
+  currentState: 0
+  animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
+  animationInputParams: []
+  canvas: {fileID: 0}
+  manualShowHideControl: 0
+  animationRefresh: 0
+  lastAnimation: {fileID: 0}
+  heatmapActive: 1
+  list: []
   source: {fileID: 11411400}
+  scrollRect: {fileID: 11411380}
   content: {fileID: 0}
   noElements: {fileID: 0}
+  loading: {fileID: 0}
+  loader: {fileID: 0}
+  top: {fileID: 0}
+  bottom: {fileID: 0}
+  navigationMode: 0
+  navigationInverse: 0
 --- !u!114 &11411398
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -331,6 +372,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -350,15 +397,84 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5577662f03d44ef429c5a86564dfb57d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 0
+  subComponents: []
+  currentState: 0
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
+  images: []
   button: {fileID: 11413428}
+  callback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  selectByDefault: 0
+  setDefaultNavigationModeOnStart: 1
+  defaultNavigationMode: 0
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
+  preserveAspect: 0
+  image: {fileID: 0}
+  rawImage: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  playOnShow: 0
+  loop: 0
+  imageResource:
+    async: 1
+    assetPath: 
+    resourcesPath: 
+    loadable: 0
+    multiObjects: 0
+    objectIndex: 0
+    customResourcePath: 
+    controlType: 0
+    tempSprite: {fileID: 0}
+    tempTexture: {fileID: 0}
   text: {fileID: 11413424}
+  valueFormat: 0
+  fullTextFormat: 0
+  richTextFlags: 63
+  textLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  valueAnimate: 0
+  valueAnimateDuration: 2
 --- !u!114 &11413422
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -390,6 +506,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 20
@@ -416,6 +538,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -468,8 +596,7 @@ MonoBehaviour:
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -657,9 +784,12 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: showOnStart
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 199266}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

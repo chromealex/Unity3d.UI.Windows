@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &161040
 GameObject:
   m_ObjectHideFlags: 0
@@ -46,6 +46,7 @@ GameObject:
   - 224: {fileID: 22461042}
   - 114: {fileID: 11461038}
   - 114: {fileID: 11461036}
+  - 114: {fileID: 11423460}
   m_Layer: 5
   m_Name: ButtonWithText
   m_TagString: Untagged
@@ -63,6 +64,7 @@ GameObject:
   - 224: {fileID: 22461044}
   - 114: {fileID: 11461040}
   - 114: {fileID: 11461042}
+  - 114: {fileID: 11497214}
   m_Layer: 5
   m_Name: ButtonHover
   m_TagString: Untagged
@@ -87,6 +89,87 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11423460
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 161042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flags: 0
+  interactableByDefault: 1
+  selectByDefault: 0
+  callback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  navigationMode: 3
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
+  hoverInCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  hoverOutCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  text: 
+  localizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  format: 0
+  fullTextFormat: 0
+  font: {fileID: 0}
+  fontSize: 16
+  fontStyle: 0
+  lineSpacing: 1
+  richText: 0
+  alignment: 0
+  verticalWrap: 0
+  horizontalWrap: 0
+  bestFit: 0
+  bestMinSize: 10
+  bestMaxSize: 40
+  valueAnimate: 0
+  valueAnimateDuration: 2
+  preserveAspect: 0
+  image: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  rawImage: {fileID: 0}
+  imageColor: {r: 1, g: 1, b: 1, a: 1}
+  playOnStart: 0
+  loop: 0
 --- !u!114 &11444042
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -120,6 +203,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: .383001715, g: .555035174, b: .676470578, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -139,17 +228,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d402ef3b07f25c41a4730bf8820ec3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animation: {fileID: 0}
-  animationInputParams: []
-  canvas: {fileID: 0}
-  animationRefresh: 0
-  lastAnimation: {fileID: 0}
+  windowId: 0
+  autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents:
   - {fileID: 11461034}
   - {fileID: 11461036}
   - {fileID: 11461042}
   - {fileID: 11461044}
+  currentState: 0
+  animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
+  animationInputParams: []
+  canvas: {fileID: 0}
+  manualShowHideControl: 0
+  animationRefresh: 0
+  lastAnimation: {fileID: 0}
+  heatmapActive: 1
   button1Linker: {fileID: 11461034}
   button2Linker: {fileID: 11461036}
   button3Linker: {fileID: 11461042}
@@ -183,14 +283,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11461036
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -202,14 +315,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
-  prefab: {fileID: 11476240, guid: 3d5b9924423c843e0a12d8060b02680f, type: 2}
+  heatmapActive: 1
+  prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  prefabParameters: {fileID: 11423460}
+  fitToRoot: 1
 --- !u!114 &11461038
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -257,14 +383,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
-  prefab: {fileID: 11406914, guid: e0b06adbb67424c38be971edecf157f1, type: 2}
+  heatmapActive: 1
+  prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  prefabParameters: {fileID: 11497214}
+  fitToRoot: 1
 --- !u!114 &11461044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -276,14 +415,108 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams: []
   canvas: {fileID: 0}
+  manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11418414, guid: ecb3c205dca124cecb126fa284b5e7f5, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
+--- !u!114 &11497214
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 161044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flags: 0
+  interactableByDefault: 1
+  selectByDefault: 0
+  callback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  navigationMode: 3
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
+  hoverInCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  hoverOutCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  text: 
+  localizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  format: 0
+  fullTextFormat: 0
+  font: {fileID: 0}
+  fontSize: 16
+  fontStyle: 0
+  lineSpacing: 1
+  richText: 0
+  alignment: 0
+  verticalWrap: 0
+  horizontalWrap: 0
+  bestFit: 0
+  bestMinSize: 10
+  bestMaxSize: 40
+  valueAnimate: 0
+  valueAnimateDuration: 2
+  preserveAspect: 0
+  image: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  rawImage: {fileID: 0}
+  imageColor: {r: 1, g: 1, b: 1, a: 1}
+  playOnStart: 0
+  loop: 0
 --- !u!114 &11497592
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -403,9 +636,17 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: prefabParameters
+      value: 
+      objectReference: {fileID: 11497214}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 144048}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

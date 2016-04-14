@@ -84,6 +84,8 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField][ReadOnly("valueAnimate", state: false)]
 		private float valueAnimateDuration = 2f;
 		private long valueAnimateLastValue;
+		private long tempLastValue = long.MinValue;
+		private TextValueFormat tempLastFormat = TextValueFormat.None;
 
 		public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 			
@@ -267,9 +269,13 @@ namespace UnityEngine.UI.Windows.Components {
 			return this.SetValue_INTERNAL(value, format, animate, fromTweener: false);
 
 		}
-		
+
 		private ITextComponent SetValue_INTERNAL(long value, TextValueFormat format, bool animate, bool fromTweener) {
-			
+
+			if (this.tempLastValue == value && this.tempLastFormat == format) return this;
+			this.tempLastValue = value;
+			this.tempLastFormat = format;
+
 			if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this);
 
 			if (animate == true && TweenerGlobal.instance != null) {
@@ -644,7 +650,16 @@ namespace UnityEngine.UI.Windows.Components {
 					break;
 
 				}
-				
+					
+				case TextValueFormat.TimeHMSFromMilliseconds: {
+					
+					var t = TimeSpan.FromMilliseconds(value);
+					output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
+					
+					break;
+					
+				}
+
 			}
 			
 			return output;

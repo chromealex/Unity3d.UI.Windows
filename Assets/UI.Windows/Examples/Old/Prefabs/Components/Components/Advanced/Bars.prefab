@@ -482,7 +482,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &148628
 GameObject:
   m_ObjectHideFlags: 1
@@ -496,6 +496,8 @@ GameObject:
   - 225: {fileID: 22540542}
   - 114: {fileID: 11440554}
   - 114: {fileID: 11440556}
+  - 114: {fileID: 11434386}
+  - 114: {fileID: 11419462}
   m_Layer: 5
   m_Name: RandomizeColor
   m_TagString: Untagged
@@ -533,6 +535,8 @@ GameObject:
   - 225: {fileID: 22555504}
   - 114: {fileID: 11455512}
   - 114: {fileID: 11455514}
+  - 114: {fileID: 11436238}
+  - 114: {fileID: 11418018}
   m_Layer: 5
   m_Name: RandomizeValue
   m_TagString: Untagged
@@ -852,16 +856,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11401006}
   - {fileID: 11401008}
   canvas: {fileID: 22500972}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: b4a297c41113e4c24ac1b9853c0a2a74, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11400966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -891,16 +908,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11401002}
   - {fileID: 11401004}
   canvas: {fileID: 22500970}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 7316bb163107c4c4daa818336140eaf9, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11400970
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -930,16 +960,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11400998}
   - {fileID: 11401000}
   canvas: {fileID: 22500968}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 99d0d25ac20704092be5d4c540f9cd3c, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11400974
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -969,16 +1012,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11400994}
   - {fileID: 11400996}
   canvas: {fileID: 22500966}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 575196589d64b4605987cf840bb8204f, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11400978
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1008,16 +1064,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11400990}
   - {fileID: 11400992}
   canvas: {fileID: 22500964}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 776b0dfbfca3c4a0884ccdad5d94db95, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11400982
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1047,16 +1116,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11400986}
   - {fileID: 11400988}
   canvas: {fileID: 22500962}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: a987507f63e0d45f0af4fa0efb832a65, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11400986
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1074,6 +1156,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1097,13 +1185,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11400990
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1121,6 +1229,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1144,13 +1258,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11400994
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1168,6 +1302,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1191,13 +1331,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11400998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1215,6 +1375,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1238,13 +1404,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11401002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1262,6 +1448,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1285,13 +1477,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11401006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1309,6 +1521,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1332,13 +1550,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11404156
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1368,16 +1606,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11440546}
   - {fileID: 11440548}
   canvas: {fileID: 22540538}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: e1d1a5f9770de48b9aaa75f98f860132, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11416214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1395,13 +1646,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11416216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1419,6 +1690,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1454,16 +1731,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11416216}
   - {fileID: 11416214}
   canvas: {fileID: 22516214}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 54804da85b06a4e2ead3124fc735a3b6, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11416222
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1481,13 +1771,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11416224
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1505,6 +1815,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1540,16 +1856,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11416224}
   - {fileID: 11416222}
   canvas: {fileID: 22516216}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 28bdfe4f01b714e95acef2f4b2efcbe6, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11416230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1567,13 +1896,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11416232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1591,6 +1940,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1626,16 +1981,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11416232}
   - {fileID: 11416230}
   canvas: {fileID: 22516218}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: fddc73fcb2cc44b8da2745fd75078eff, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11416238
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1653,13 +2021,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11416240
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1677,6 +2065,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1712,16 +2106,191 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11416240}
   - {fileID: 11416238}
   canvas: {fileID: 22516220}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: ea581de2fff394d4a9ecd9ef33ac8a30, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
+--- !u!114 &11418018
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 155506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flags: 0
+  interactableByDefault: 1
+  selectByDefault: 0
+  callback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  navigationMode: 3
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
+  hoverInCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  hoverOutCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  text: 
+  localizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  format: 0
+  fullTextFormat: 0
+  font: {fileID: 0}
+  fontSize: 16
+  fontStyle: 0
+  lineSpacing: 1
+  richText: 0
+  alignment: 0
+  verticalWrap: 0
+  horizontalWrap: 0
+  bestFit: 0
+  bestMinSize: 10
+  bestMaxSize: 40
+  valueAnimate: 0
+  valueAnimateDuration: 2
+  preserveAspect: 0
+  image: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  rawImage: {fileID: 0}
+  imageColor: {r: 1, g: 1, b: 1, a: 1}
+  playOnStart: 0
+  loop: 0
+--- !u!114 &11419462
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 148628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flags: 0
+  interactableByDefault: 1
+  selectByDefault: 0
+  callback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  navigationMode: 3
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
+  hoverOnAnyButtonState: 0
+  hoverInCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  hoverOutCallback:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  text: 
+  localizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  format: 0
+  fullTextFormat: 0
+  font: {fileID: 0}
+  fontSize: 16
+  fontStyle: 0
+  lineSpacing: 1
+  richText: 0
+  alignment: 0
+  verticalWrap: 0
+  horizontalWrap: 0
+  bestFit: 0
+  bestMinSize: 10
+  bestMaxSize: 40
+  valueAnimate: 0
+  valueAnimateDuration: 2
+  preserveAspect: 0
+  image: {fileID: 0}
+  imageLocalizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  rawImage: {fileID: 0}
+  imageColor: {r: 1, g: 1, b: 1, a: 1}
+  playOnStart: 0
+  loop: 0
 --- !u!114 &11421820
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1739,13 +2308,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11421822
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1763,6 +2352,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1798,16 +2393,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11421822}
   - {fileID: 11421820}
   canvas: {fileID: 22521820}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: a1182dbff09da4ba6a7db9658e9ac74f, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11421828
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1825,13 +2433,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11421830
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1849,6 +2477,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1884,16 +2518,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11421830}
   - {fileID: 11421828}
   canvas: {fileID: 22521822}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 64ccabc2c4d944d5bbcaf6b623e6da31, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11421836
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1905,16 +2552,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11421840}
   - {fileID: 11421842}
   canvas: {fileID: 22521824}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 762fb24dccff649e781c49bddf45c45d, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11421838
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1950,6 +2610,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -1973,13 +2639,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11423610
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2049,16 +2735,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11440530}
   - {fileID: 11440532}
   canvas: {fileID: 22540530}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: e0f5863d92e7340feb18a9396e63c35b, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11426792
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2070,16 +2769,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11440534}
   - {fileID: 11440536}
   canvas: {fileID: 22540532}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 9b1ef483de30748adb5f980d0dbdc4a6, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11426794
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2127,16 +2839,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11440538}
   - {fileID: 11440540}
   canvas: {fileID: 22540534}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 8ad52f362cd7f421fa921f19fe31e8e0, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11433280
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2154,13 +2879,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11433282
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2178,6 +2923,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2213,16 +2964,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11433282}
   - {fileID: 11433280}
   canvas: {fileID: 22533280}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 9b09212025887412184ba183439ec12e, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11433288
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2234,16 +2998,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11433292}
   - {fileID: 11433294}
   canvas: {fileID: 22533282}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 195d8f03e6d9044c79c3493b59803d7d, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11433290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2279,6 +3056,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2302,13 +3085,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11433296
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2346,13 +3149,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11433300
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2370,6 +3193,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2405,16 +3234,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11433300}
   - {fileID: 11433298}
   canvas: {fileID: 22533284}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 3f9c0ada5fd28440da5ca2dd1289f27d, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
+--- !u!114 &11434386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 148628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62ccaa00834c041e09877ce0a20d5b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flags: 0
+  duration: 1
+  minNormalizedValue: 0
+  continious: 0
+  continiousWidth: .400000006
+  continiousAngleStep: 0
+  onChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  currentValueNormalized: 0
 --- !u!114 &11434552
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2433,6 +3298,29 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+--- !u!114 &11436238
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 155506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62ccaa00834c041e09877ce0a20d5b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flags: 0
+  duration: 1
+  minNormalizedValue: 0
+  continious: 0
+  continiousWidth: .400000006
+  continiousAngleStep: 0
+  onChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  currentValueNormalized: 0
 --- !u!114 &11440530
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2450,6 +3338,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2473,13 +3367,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11440534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2497,6 +3411,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2520,13 +3440,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11440538
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2544,6 +3484,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2567,13 +3513,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11440542
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2591,6 +3557,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2614,13 +3586,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11440546
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2638,6 +3630,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2661,13 +3659,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11440550
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2685,6 +3703,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2708,13 +3732,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11440554
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2732,6 +3776,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -2755,13 +3805,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11440720
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2791,16 +3861,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11440542}
   - {fileID: 11440544}
   canvas: {fileID: 22540536}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 88f8156b107b340018a652541137ff51, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11444404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2814,6 +3897,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: .383001715, g: .555035174, b: .676470578, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -2833,12 +3922,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6ed3d812ea36426cb47b4428b428671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animation: {fileID: 0}
-  animationInputParams: []
-  canvas: {fileID: 0}
-  animationRefresh: 0
-  lastAnimation: {fileID: 0}
+  windowId: 0
+  autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
   subComponents:
   - {fileID: 11455510}
   - {fileID: 11448628}
@@ -2871,6 +3959,18 @@ MonoBehaviour:
   - {fileID: 11433288}
   - {fileID: 11433286}
   - {fileID: 11461480}
+  currentState: 0
+  animation: {fileID: 0}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
+  animationInputParams: []
+  canvas: {fileID: 0}
+  manualShowHideControl: 0
+  animationRefresh: 0
+  lastAnimation: {fileID: 0}
+  heatmapActive: 1
   buttonValueLinker: {fileID: 11455510}
   buttonColorLinker: {fileID: 11448628}
   bars:
@@ -2932,16 +4032,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11440554}
   - {fileID: 11440556}
   canvas: {fileID: 22540542}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
-  prefab: {fileID: 11476240, guid: 3d5b9924423c843e0a12d8060b02680f, type: 2}
+  heatmapActive: 1
+  prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  prefabParameters: {fileID: 11419462}
+  fitToRoot: 1
 --- !u!114 &11455504
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3009,16 +4122,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11455512}
   - {fileID: 11455514}
   canvas: {fileID: 22555504}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
-  prefab: {fileID: 11476240, guid: 3d5b9924423c843e0a12d8060b02680f, type: 2}
+  heatmapActive: 1
+  prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  prefabParameters: {fileID: 11418018}
+  fitToRoot: 1
 --- !u!114 &11455512
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3036,6 +4162,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3059,13 +4191,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11461430
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3126,6 +4278,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: .38981384, b: .757352948, a: .309803933}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -3147,6 +4305,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: .38981384, b: .757352948, a: .701960802}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -3168,6 +4332,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: .0196078438}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -3195,8 +4365,13 @@ MonoBehaviour:
   m_Inertia: 1
   m_DecelerationRate: .135000005
   m_ScrollSensitivity: 1
+  m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 11461430}
+  m_HorizontalScrollbarVisibility: 0
+  m_VerticalScrollbarVisibility: 0
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3285,13 +4460,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11461450
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3309,6 +4504,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3326,16 +4527,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11461450}
   - {fileID: 11461448}
   canvas: {fileID: 22561430}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 0c57f31cad67148cbab4bd2883f88cf4, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11461454
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3383,16 +4597,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11461460}
   - {fileID: 11461462}
   canvas: {fileID: 22561432}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: dd1f6ba6dceb24c66bb2f5b3e90b0363, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11461460
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3410,6 +4637,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3433,13 +4666,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11461464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3457,13 +4710,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11461466
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3481,6 +4754,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3498,16 +4777,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11461466}
   - {fileID: 11461464}
   canvas: {fileID: 22561434}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11435158, guid: a3e16fc2476e044b1926d4025c5ea26a, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11461470
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3613,16 +4905,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11461482}
   - {fileID: 11461484}
   canvas: {fileID: 22561436}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 596168c5e516247f3b2c337612e5bcd7, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11461482
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3640,6 +4945,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3663,13 +4974,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11495870
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3687,13 +5018,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11495872
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3711,6 +5062,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3746,16 +5103,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11495872}
   - {fileID: 11495870}
   canvas: {fileID: 22595870}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 3bbfcb117d1984bfb8bb22546c54feb3, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11495878
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3767,16 +5137,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11495882}
   - {fileID: 11495884}
   canvas: {fileID: 22595872}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 5f57c3a067a7a4347804ae67926b59de, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11495880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3812,6 +5195,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3835,13 +5224,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11495886
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3853,16 +5262,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11495890}
   - {fileID: 11495892}
   canvas: {fileID: 22595874}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 765409e6defea4a16addd0428f9bdf25, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!114 &11495888
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3898,6 +5320,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 0
     inState:
@@ -3921,13 +5349,33 @@ MonoBehaviour:
     outDelay: 0
     inDuration: .100000001
     outDuration: .100000001
+    inEase: 0
+    outEase: 0
+    material: {fileID: 0}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     moveRoot: 0
+    root: {fileID: 0}
+    stateApply: 0
     resetState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     inState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
     outState:
+      anchorMin: {x: 0, y: 0}
+      anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
+      scale: {x: 0, y: 0}
+      rotation: {x: 0, y: 0, z: 0}
 --- !u!114 &11496900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3939,16 +5387,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0725dec752be24345aaaf5629e5f1204, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  windowId: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
+  setInactiveOnHiddenState: 1
+  showOnStart: 1
+  subComponents: []
+  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  childsShowMode: 0
+  childsHideMode: 0
+  eventsHistoryTracker:
+    items: []
   animationInputParams:
   - {fileID: 11440550}
   - {fileID: 11440552}
   canvas: {fileID: 22540540}
+  manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  autoRegisterSubComponents: 1
-  subComponents: []
+  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 9ffb7034cdb3a4de2ad0f2e3e68b60d3, type: 2}
+  prefabParameters: {fileID: 0}
+  fitToRoot: 1
 --- !u!222 &22244406
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -5098,4 +6559,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 144406}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

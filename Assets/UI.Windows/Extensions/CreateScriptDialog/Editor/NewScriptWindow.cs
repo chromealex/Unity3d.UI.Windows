@@ -468,8 +468,8 @@ namespace UnityEditor.UI.Windows.Extensions.Utilities {
 		private void Create() {
 			CreateScript();
 
-			if (CanAddComponent()) InternalEditorUtility.AddScriptComponentUnchecked(m_GameObjectToAddTo,
-				                                                   AssetDatabase.LoadAssetAtPath(TargetPath(), typeof(MonoScript)) as MonoScript);
+			//if (CanAddComponent()) InternalEditorUtility.AddScriptComponentUnchecked(m_GameObjectToAddTo,
+			//	                                                   AssetDatabase.LoadAssetAtPath(TargetPath(), typeof(MonoScript)) as MonoScript);
 			
 			Close();
 			GUIUtility.ExitGUI();
