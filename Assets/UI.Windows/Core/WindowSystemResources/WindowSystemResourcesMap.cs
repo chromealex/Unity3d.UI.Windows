@@ -12,9 +12,9 @@ namespace UnityEngine.UI.Windows {
 		public class Item {
 			
 			#if UNITY_EDITOR
-			public Texture texture;
+			public Object texture;
 			#endif
-			public ImageComponent component;
+			public WindowComponent component;
 
 		}
 
@@ -25,7 +25,7 @@ namespace UnityEngine.UI.Windows {
 			foreach (var item in this.items) {
 
 				var image = item.component;
-				if (image.GetResource().controlType != AutoResourceItem.ControlType.None) image.ResetImage();
+				if ((image as IImageComponent).GetResource().controlType != AutoResourceItem.ControlType.None) (image as IImageComponent).ResetImage();
 
 			}
 
@@ -38,19 +38,21 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void Register(ImageComponent component) {
+		public void Register(ILoadableResource component) {
 
 			this.CleanUp();
 
+			if (component == null) return;
+
 			if (this.items.Any(x => x.component == component) == false) {
 				
-				this.items.Add(new Item() { component = component, texture = component.GetTexture() });
+				this.items.Add(new Item() { component = component as WindowComponent, texture = component.GetResource().tempObject });
 				
 			}
 			
 		}
 		
-		public void Unregister(ImageComponent component) {
+		public void Unregister(ILoadableResource component) {
 			
 			this.CleanUp();
 

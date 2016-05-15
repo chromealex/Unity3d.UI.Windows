@@ -29,7 +29,7 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 			
 			public ColorItem screens = new ColorItem(new Color32(102, 204, 255, 255), Color.white);
 			public ColorItem layouts = new ColorItem(new Color32(255, 204, 102, 255), new Color32(100, 100, 100, 255));
-			public ColorItem transitions = new ColorItem(new Color32(204, 255, 102, 255), Color.white);
+			public ColorItem transitions = new ColorItem(new Color32(204, 255, 102, 255), new Color32(100, 100, 100, 255));
 			public ColorItem modules = new ColorItem(new Color32(204, 204, 204, 255), new Color32(100, 100, 100, 255));
 			public ColorItem components = new ColorItem(new Color32(255, 255, 102, 255), new Color32(100, 100, 100, 255));
 			public ColorItem layoutElements = new ColorItem(new Color32(204, 102, 255, 255), Color.white);

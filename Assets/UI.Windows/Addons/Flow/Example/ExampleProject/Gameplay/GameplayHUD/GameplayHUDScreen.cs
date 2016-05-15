@@ -8,12 +8,16 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Components;
+using ExampleProject.UI.Gameplay.GameplayView;
 
 namespace ExampleProject.UI.Gameplay.GameplayHUD {
 
 	public class GameplayHUDScreen : GameplayHUDScreenBase {
 
 		private GameplayView.GameplayViewScreen gameplay;
+
+		private ButtonComponent blackButton;
+		private ButtonComponent whiteButton;
 
 		public void OnParametersPass(GameplayView.GameplayViewScreen gameplay) {
 
@@ -24,20 +28,50 @@ namespace ExampleProject.UI.Gameplay.GameplayHUD {
 		public override void OnInit() {
 
 			base.OnInit();
-			
-			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag2).SetCallback(() => { this.SetColor(Color.black); });
-			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag3).SetCallback(() => { this.SetColor(Color.white); });
-			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag4).SetCallback(() => { this.Quit(); });
+
+			this.GetLayoutComponent<ButtonComponent>(out this.blackButton, LayoutTag.Tag2);
+			this.GetLayoutComponent<ButtonComponent>(out this.whiteButton, LayoutTag.Tag3);
+
+			this.blackButton.SetCallback(this.OnBlackButton);
+			this.whiteButton.SetCallback(this.OnWhiteButton);
+			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag4).SetCallback(this.OnQuit);
 
 		}
 
-		private void SetColor(Color color) {
-			
-			this.gameplay.SetColor(color);
+		private void OnBlackButton() {
+
+			this.SetSide(Side.Black);
 
 		}
 
-		private void Quit() {
+		private void OnWhiteButton() {
+
+			this.SetSide(Side.White);
+
+		}
+
+		public void SetSide(Side side) {
+
+			this.whiteButton.SetEnabled();
+			this.blackButton.SetEnabled();
+
+			switch (side) {
+				
+				case Side.Black:
+					this.blackButton.SetDisabled();
+					break;
+
+				case Side.White:
+					this.whiteButton.SetDisabled();
+					break;
+
+			}
+
+			this.gameplay.SetSide(side);
+
+		}
+
+		public void OnQuit() {
 
 			this.gameplay.Quit();
 

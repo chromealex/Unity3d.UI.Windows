@@ -37,11 +37,11 @@ Material:
       data:
         first:
           name: _MaxSize
-        second: .0517857149
+        second: 0.051785715
       data:
         first:
           name: _BlurSize
-        second: .0500000007
+        second: 0.05
     m_Colors:
       data:
         first:

@@ -2,354 +2,72 @@
 using System.Collections;
 using UnityEngine.UI.Windows.Components;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEngine.UI.Windows {
 
-	public class ResourceBase {
-		
-		public bool @async = true;
-		
-		[ReadOnly] public string assetPath;
-		[ReadOnly] public string resourcesPath;
-		[ReadOnly] public bool loadable = false;
-		
-		[ReadOnly] public bool multiObjects;
-		[ReadOnly] public int objectIndex;
+	public class ResourceAsyncOperation : YieldInstruction, System.IDisposable {
 
-		[ReadOnly] public string customResourcePath;
+		public ResourceAsyncOperation() {}
 
-		private Dictionary<Graphic, int> iterations = new Dictionary<Graphic, int>();
+		~ResourceAsyncOperation() {
 
-		public IEnumerator Load<T>(Graphic graphic, string customResourcePath, System.Action<T> callback) where T : Object {
-
-			customResourcePath = customResourcePath ?? (string.IsNullOrEmpty(this.customResourcePath) == true ? null : this.customResourcePath);
-			this.customResourcePath = customResourcePath;
-			
-			if (this.loadable == true || string.IsNullOrEmpty(customResourcePath) == false) {
-				
-				var resourcePath = customResourcePath ?? this.resourcesPath;
-				
-				if (this.async == true) {
-
-					var iteration = 0;
-					var oldColor = Color.white;
-					if (graphic != null) {
-
-						TweenerGlobal.instance.removeTweens(graphic, immediately: true);
-						oldColor = graphic.color;
-
-						if (this.iterations.TryGetValue(graphic, out iteration) == false) {
-
-							this.iterations.Add(graphic, iteration);
-
-						}
-
-						++this.iterations[graphic];
-						iteration = this.iterations[graphic];
-
-					}
-
-					var task = Resources.LoadAsync<T>(resourcePath);
-					while (task.isDone == false) {
-						
-						yield return false;
-						
-					}
-
-					if (graphic == null || iteration == this.iterations[graphic]) {
-
-						if (this.multiObjects == true && this.objectIndex >= 0) {
-							
-							callback.Invoke(Resources.LoadAll(resourcePath)[this.objectIndex] as T);
-							
-						} else {
-							
-							callback.Invoke(task.asset as T);
-							
-						}
-
-						if (graphic != null) {
-
-							TweenerGlobal.instance.addTweenAlpha(graphic, WindowSystemResources.GetAsyncLoadFadeTime(), 0f, oldColor.a).tag(graphic).onCancel((g) => { g.color = oldColor; });
-
-						}
-
-					}
-
-				} else {
-					
-					if (this.multiObjects == true && this.objectIndex >= 0) {
-						
-						callback.Invoke(Resources.LoadAll(resourcePath)[this.objectIndex] as T);
-						
-					} else {
-						
-						var asset = Resources.Load<T>(this.resourcesPath);
-						callback.Invoke(asset);
-						
-					}
-					
-				}
-				
-			}
-			
-		}
-		
-		public void Unload(Object item) {
-			
-			Resources.UnloadAsset(item);
-			
-		}
-
-		#if UNITY_EDITOR
-		public virtual void Reset() {
-			
-			this.customResourcePath = null;
-			this.resourcesPath = null;
-			this.loadable = false;
+			this.Dispose();
 
 		}
-		
-		public virtual void Validate(Object item) {
-			
-			if (item == null) {
 
-				return;
+		public int priority { get; set; }
+		public bool isDone { get; private set; }
+		public float progress { get; private set; }
+		public Object asset { get; private set; }
 
-			}
+		internal void SetValues(bool isDone, float progress, Object asset) {
 
-			this.assetPath = UnityEditor.AssetDatabase.GetAssetPath(item);
-
-			var resourcePath = (this.assetPath.Contains("/Resources/") == true ? this.assetPath.Split(new string[] { "/Resources/" }, System.StringSplitOptions.None)[1] : string.Empty);
-			var ext = System.IO.Path.GetExtension(resourcePath);
-			this.resourcesPath = resourcePath.Substring(0, resourcePath.Length - ext.Length);
-			
-			this.loadable = (string.IsNullOrEmpty(this.resourcesPath) == false);
-			
-		}
-		#endif
-
-	};
-
-	[System.Serializable]
-	public class MonoResource : ResourceBase {
-		
-		#if UNITY_EDITOR
-		//[HideInInspector]
-		public MonoBehaviour tempResource;
-		
-		public override void Reset() {
-			
-			base.Reset();
-			
-			this.tempResource = null;
-			
-		}
-		
-		public override void Validate(Object item) {
-			
-			if (item == null) {
-				
-				if (this.tempResource != null) {
-					
-					item = this.tempResource;
-					
-				}
-				
-				if (item == null) return;
-				
-			}
-			
-			this.tempResource = item as MonoBehaviour;
-			
-			base.Validate(item);
-			
-		}
-		#endif
-
-	};
-
-	[System.Serializable]
-	public class TextureResource : ResourceBase {
-		
-		#if UNITY_EDITOR
-		//[HideInInspector]
-		public Texture tempTexture;
-		
-		public override void Reset() {
-			
-			base.Reset();
-			
-			this.tempTexture = null;
-			
-		}
-		
-		public override void Validate(Object item) {
-
-			if (item == null) {
-				
-				if (this.tempTexture != null) {
-					
-					item = this.tempTexture;
-					
-				}
-				
-				if (item == null) return;
-				
-			}
-
-			this.tempTexture = item as Texture;
-			
-			base.Validate(item);
-			
-		}
-		#endif
-		
-	};
-	
-	[System.Serializable]
-	public class SpriteResource : ResourceBase {
-		
-		#if UNITY_EDITOR
-		//[HideInInspector]
-		public Sprite tempSprite;
-		
-		public override void Reset() {
-			
-			base.Reset();
-			
-			this.tempSprite = null;
-			
-		}
-		
-		public override void Validate(Object item) {
-
-			if (item == null) {
-				
-				if (this.tempSprite != null) {
-					
-					item = this.tempSprite;
-					
-				}
-				
-				if (item == null) return;
-				
-			}
-
-			this.tempSprite = item as Sprite;
-
-			if (this.tempSprite != null) {
-				
-				var imp = UnityEditor.TextureImporter.GetAtPath(this.assetPath) as UnityEditor.TextureImporter;
-				var allObjects = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(this.assetPath);
-				this.multiObjects = false;
-				if (imp.spriteImportMode == UnityEditor.SpriteImportMode.Multiple) {
-					
-					this.multiObjects = true;
-					this.objectIndex = System.Array.IndexOf(allObjects, item);
-					
-				}
-				
-			}
-
-			base.Validate(item);
-			
-		}
-		#endif
-
-	};
-	
-	[System.Serializable]
-	public class AutoResourceItem : ResourceBase {
-		
-		public enum ControlType : byte {
-			
-			None = 0x0,
-			OnShowHide,
-			OnInitDeinit,
-			
-		};
-
-		public ControlType controlType = ControlType.None;
-
-		#if UNITY_EDITOR
-		//[HideInInspector]
-		public Sprite tempSprite;
-		//[HideInInspector]
-		public Texture tempTexture;
-		#endif
-
-		#if UNITY_EDITOR
-		public override void Reset() {
-
-			base.Reset();
-
-			this.tempSprite = null;
-			this.tempTexture = null;
-			
-		}
-		
-		public override void Validate(Object item) {
-			
-			if (item == null) {
-				
-				if (this.tempSprite != null) {
-					
-					item = this.tempSprite;
-					
-				}
-				
-				if (this.tempTexture != null) {
-					
-					item = this.tempTexture;
-					
-				}
-
-				if (item == null) return;
-				
-			}
-			
-			this.tempSprite = item as Sprite;
-
-			if (this.tempSprite != null) {
-				
-				var imp = UnityEditor.TextureImporter.GetAtPath(this.assetPath) as UnityEditor.TextureImporter;
-				var allObjects = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(this.assetPath);
-				this.multiObjects = false;
-				if (imp.spriteImportMode == UnityEditor.SpriteImportMode.Multiple) {
-					
-					this.multiObjects = true;
-					this.objectIndex = System.Array.IndexOf(allObjects, item);
-					
-				}
-				
-			}
-			
-			this.tempTexture = item as Texture;
-
-			base.Validate(item);
+			this.isDone = isDone;
+			this.progress = progress;
+			this.asset = asset;
 
 		}
-		#endif
-		
+
+		public void Dispose() {
+
+			this.asset = null;
+			System.GC.SuppressFinalize(this);
+
+		}
+
 	}
 
 	public class WindowSystemResources : MonoBehaviour {
 
+		[System.Serializable]
+		public class Item {
+
+			public long id;
+			public Object @object;
+			public System.Action onObjectLoaded;
+			public List<WindowComponent> references;
+
+			public Object loadedObject;
+			public int loadedObjectId;
+
+			public bool loaded;
+
+		};
+
 		public float resourceAsyncLoadFadeTime = 0.5f;
 
 		public WindowSystemResourcesMap resourcesMap;
+
+		public List<Item> loaded = new List<Item>();
+		private Dictionary<int, Coroutine> loading = new Dictionary<int, Coroutine>();
 
 		private static WindowSystemResources instance;
 
 		public void Awake() {
 
 			WindowSystemResources.instance = this;
-
-		}
-
-		public void Start() {
-
+			
 			this.resourcesMap.Reset();
 
 		}
@@ -370,151 +88,277 @@ namespace UnityEngine.UI.Windows {
 			
 			if (resource is MonoResource) {
 
-				this.StartCoroutine(resource.Load<T>(null, null, callback));
+				this.StartCoroutine(resource.Load<T>(null, null, null, callback));
 				
 			}
 			
 		}
 
-		public static void Load(ILoadableResource resourceController, ResourceBase resource, System.Action callback) {
+		public static void Load(ILoadableResource resourceController, System.Action onDataLoaded, System.Action onComplete, string customResourcePath = null) {
 			
-			WindowSystemResources.instance.Load_INTERNAL(resourceController, resource, callback);
+			WindowSystemResources.instance.Load_INTERNAL(resourceController, onDataLoaded, onComplete, customResourcePath);
 			
 		}
 		
-		private void Load_INTERNAL(ILoadableResource resourceController, ResourceBase resource, System.Action callback) {
+		private void Load_INTERNAL(ILoadableResource resourceController, System.Action onDataLoaded, System.Action onComplete, string customResourcePath = null) {
 
-			if (resource is SpriteResource) {
-				
-				var image = resourceController as IImageComponent;
-				var source = image.GetImageSource();
-				this.StartCoroutine(resource.Load<Sprite>(source, null, (data) => {
-
-					image.SetImage(data);
-					callback.Invoke();
-
-				}));
-
-			} else if (resource is TextureResource) {
-				
-				var image = resourceController as IImageComponent;
-				var source = image.GetRawImageSource();
-				this.StartCoroutine(resource.Load<Texture>(source, null, (data) => {
-
-					image.SetImage(data);
-					callback.Invoke();
-
-				}));
-				
-			}
+			this.LoadAuto_INTERNAL(resourceController, onDataLoaded, onComplete, customResourcePath);
 
 		}
 
-		public static void LoadAuto(ILoadableResource resourceController, string customResourcePath) {
-
-			WindowSystemResources.instance.LoadAuto_INTERNAL(resourceController, customResourcePath);
-			
-		}
-
-		public static void LoadAuto(ILoadableResource resourceController, bool onShowHide) {
+		public static void LoadAuto(ILoadableResource resourceController, System.Action onDataLoaded, System.Action onComplete, bool onShowHide) {
 
 			var type = resourceController.GetResource().controlType;
-			if (onShowHide == true && type == AutoResourceItem.ControlType.OnShowHide) {
+			if (onShowHide == true && (type & AutoResourceItem.ControlType.Show) != 0) {
 
-				WindowSystemResources.instance.LoadAuto_INTERNAL(resourceController);
+				WindowSystemResources.instance.LoadAuto_INTERNAL(resourceController, onDataLoaded, onComplete);
 
-			} else if (onShowHide == false && type == AutoResourceItem.ControlType.OnInitDeinit) {
+			} else if (onShowHide == false && (type & AutoResourceItem.ControlType.Init) != 0) {
 				
-				WindowSystemResources.instance.LoadAuto_INTERNAL(resourceController);
+				WindowSystemResources.instance.LoadAuto_INTERNAL(resourceController, onDataLoaded, onComplete);
 
 			}
 
 		}
 
-		private void LoadAuto_INTERNAL(ILoadableResource resourceController, string customResourcePath = null) {
+		private void LoadAuto_INTERNAL(ILoadableResource resourceController, System.Action onDataLoaded, System.Action onComplete, string customResourcePath = null) {
 
 			var image = resourceController as IImageComponent;
-			var source = image.GetImageSource();
-			if (source != null) {
 
-				this.StartCoroutine(resourceController.GetResource().Load<Sprite>(source, customResourcePath, (data) => image.SetImage(data)));
+			System.Action<Object> setup = (data) => {
+
+				if (data == null) {
+
+					WindowSystemLogger.Error(image, string.Format("Error in ResourcesManager: Required resource can't be loaded. Resource: {0}", image.GetResource().GetId()));
+					return;
+
+				}
+
+				var res = resourceController.GetResource();
+				res.loadedObject = data;
+				res.loadedObjectId = data.GetInstanceID();
+				res.loaded = true;
+
+			};
+
+			Graphic source = image.GetImageSource();
+			if (source != null) {
+				
+				this.LoadAndSetup_INTERNAL<Sprite>(image, source, (data) => {
+
+					setup.Invoke(data);
+					image.SetImage(data, () => {
+
+						if (onComplete != null) onComplete.Invoke();
+
+					});
+
+					if (onDataLoaded != null) onDataLoaded.Invoke();
+
+				}, customResourcePath);
 
 			} else {
 
-				var sourceRaw = image.GetRawImageSource();
-				if (sourceRaw != null) {
+				source = image.GetRawImageSource();
+				if (source != null) {
 					
-					this.StartCoroutine(resourceController.GetResource().Load<Texture>(sourceRaw, customResourcePath, (data) => image.SetImage(data)));
+					this.LoadAndSetup_INTERNAL<Texture>(image, source, (data) => {
+
+						setup.Invoke(data);
+						image.SetImage(data, () => {
+
+							if (onComplete != null) onComplete.Invoke();
+
+						});
+
+						if (onDataLoaded != null) onDataLoaded.Invoke();
+
+					}, customResourcePath);
 
 				}
 
 			}
 
 		}
-		
+
+		private void LoadAndSetup_INTERNAL<T>(IImageComponent image, Graphic graphic, System.Action<T> callbackOnLoad, string customResourcePath = null) where T : Object {
+
+			var key = (image as WindowComponent).GetInstanceID();
+
+			Coroutine coroutine;
+			/*if (this.loading.TryGetValue(key, out coroutine) == true) {
+
+				this.StopCoroutine(coroutine);
+				this.loading.Remove(key);
+
+			}*/
+
+			/*this.loaded.ForEach(z => { z.references.Remove(image as WindowComponent); });
+			this.loaded.RemoveAll(x => {
+
+				if (x.references.Count == 0) {
+
+					//if (x.loadedObjectId < 0) Object.Destroy(x.loadedObject);
+					return true;
+
+				}
+
+				return false;
+
+			});*/
+
+			Item item;
+			if (this.IsLoaded<T>(image as WindowComponent, image.GetResource(), out item, callbackOnLoad) == false) {
+				
+				coroutine = this.StartCoroutine(image.GetResource().Load<T>(image, graphic, customResourcePath, (data) => {
+
+					if (data == null) {
+
+						WindowSystemLogger.Error(image, string.Format("Error in ResourcesManager: Required resource can't loaded. Resource: {0}", image.GetResource().GetId()));
+						return;
+
+					}
+
+					item.@object = data;
+					
+					item.loadedObject = data;
+					item.loadedObjectId = data.GetInstanceID();
+					item.loaded = true;
+
+					if (item.onObjectLoaded != null) item.onObjectLoaded.Invoke();
+					callbackOnLoad(data);
+
+					this.loading.Remove(key);
+
+				}));
+
+				this.loading.Add(key, coroutine);
+				
+			}
+
+		}
+
+		private bool IsLoaded<T>(WindowComponent reference, ResourceBase resource, out Item item, System.Action<T> callback) where T : Object {
+
+			var itemInner = this.loaded.FirstOrDefault(x => x.id == resource.GetId()/*(x.@object == null || x.@object is T)*/);
+			if (itemInner != null) {
+				
+				item = itemInner;
+
+				if (itemInner.references.Contains(reference) == false) {
+
+					itemInner.references.Add(reference);
+
+					if (itemInner.loaded == false) {
+
+						System.Action callbackInner = null;
+						callbackInner = () => {
+
+							itemInner.onObjectLoaded -= callbackInner;
+							callback.Invoke(itemInner.@object as T);
+
+						};
+
+						itemInner.onObjectLoaded += callbackInner;
+
+					} else {
+						
+						callback(itemInner.@object as T);
+
+					}
+
+				} else {
+
+					Debug.LogError("IsLoaded returns `true` but reference already in list.", reference);
+
+				}
+
+				return true;
+
+			}
+
+			item = new Item() { id = resource.GetId(), @object = null, loaded = false, references = new List<WindowComponent>() { reference } };
+			this.loaded.Add(item);
+
+			return false;
+
+		}
+
 		public static void Unload(ResourceBase resource, Object source) {
 
 			resource.Unload(source);
 
 		}
 
-		public static void Unload(ILoadableResource resourceController, ResourceBase resource) {
+		public static void Unload(ILoadableResource resourceController, ResourceBase resource, bool resetController = true) {
 
-			var image = resourceController as IImageComponent;
-			var source = image.GetImageSource();
-			if (source != null) {
-				
-				image.ResetImage();
-				resource.Unload(source.sprite);
-				
-			} else {
-				
-				var sourceRaw = image.GetRawImageSource();
-				if (sourceRaw != null) {
-					
-					image.ResetImage();
-					resource.Unload(sourceRaw.texture);
-					
-				}
-				
-			}
+			WindowSystemResources.instance.Unload_INTERNAL(resourceController, resource, resetController);
 
 		}
 
 		public static void UnloadAuto(ILoadableResource resourceController, bool onShowHide) {
 			
 			var type = resourceController.GetResource().controlType;
-			if (onShowHide == true && type == AutoResourceItem.ControlType.OnShowHide) {
+			if (onShowHide == true && (type & AutoResourceItem.ControlType.Hide) != 0) {
 				
-				WindowSystemResources.instance.Unload_INTERNAL(resourceController);
+				WindowSystemResources.instance.Unload_INTERNAL(resourceController, resourceController.GetResource());
 				
-			} else if (onShowHide == false && type == AutoResourceItem.ControlType.OnInitDeinit) {
+			} else if (onShowHide == false && (type & AutoResourceItem.ControlType.Deinit) != 0) {
 				
-				WindowSystemResources.instance.Unload_INTERNAL(resourceController);
+				WindowSystemResources.instance.Unload_INTERNAL(resourceController, resourceController.GetResource());
 				
 			}
 
 		}
 		
-		private void Unload_INTERNAL(ILoadableResource resourceController) {
-			
-			var image = resourceController as IImageComponent;
-			var source = image.GetImageSource();
-			if (source != null) {
-				
-				image.ResetImage();
-				resourceController.GetResource().Unload(source.sprite);
+		private void Unload_INTERNAL(ILoadableResource resourceController, ResourceBase resource, bool resetController = true) {
 
-			} else {
-				
-				var sourceRaw = image.GetRawImageSource();
-				if (sourceRaw != null) {
+			if (resource.loaded == false) return;
+
+			//Debug.LogWarning("Unload: " + resource.GetId(), resourceController as MonoBehaviour);
+			var item = this.loaded.FirstOrDefault(x => x.id == resource.GetId());
+			if (item != null) {
+
+				if (item.references.Remove(resourceController as WindowComponent) == true) {
 					
-					image.ResetImage();
-					resourceController.GetResource().Unload(sourceRaw.texture);
+					this.loaded.RemoveAll(x => {
+
+						if (x.id == resource.GetId() && x.references.Count == 0) {
+
+							if (x.loadedObjectId < 0) Object.Destroy(x.loadedObject);
+							return true;
+
+						}
+
+						return false;
+
+					});
 
 				}
-				
+
+			}
+
+			if (resetController == true) {
+
+				var image = resourceController as IImageComponent;
+				var source = image.GetImageSource();
+				if (source != null) {
+					
+					image.ResetImage();
+					resource.Unload(source.sprite);
+
+				} else {
+					
+					var sourceRaw = image.GetRawImageSource();
+					if (sourceRaw != null) {
+						
+						image.ResetImage();
+						resource.Unload(sourceRaw.texture);
+
+					}
+					
+				}
+
 			}
 			
 		}
@@ -530,7 +374,7 @@ namespace UnityEngine.UI.Windows {
 			if (resourceController.GetResource().controlType != AutoResourceItem.ControlType.None) {
 
 				var image = resourceController as IImageComponent;
-				mapInstance.Register(image as ImageComponent);
+				mapInstance.Register(image);
 
 				var source = image.GetImageSource();
 				if (source != null) {
@@ -546,21 +390,22 @@ namespace UnityEngine.UI.Windows {
 						
 						resourceController.GetResource().Validate(sourceRaw.texture);
 						image.ResetImage();
-						//image.SetImage(resourceController.GetResource().tempTexture);
 
 					}
 					
 				}
 
+				resourceController.GetResource().Validate(resourceController.GetResource().tempObject);
+
 			} else {
 
-				if (resourceController.GetResource().loadable == true) {
+				if (resourceController.GetResource().loadableResource == true) {
 					
 					var image = resourceController as IImageComponent;
-					mapInstance.Unregister(image as ImageComponent);
+					mapInstance.Unregister(image);
 
-					image.SetImage(resourceController.GetResource().tempSprite);
-					image.SetImage(resourceController.GetResource().tempTexture);
+					image.SetImage(resourceController.GetResource().tempObject as Sprite);
+					image.SetImage(resourceController.GetResource().tempObject as Texture);
 					
 					resourceController.GetResource().Reset();
 

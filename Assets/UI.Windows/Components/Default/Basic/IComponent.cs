@@ -129,12 +129,20 @@ namespace UnityEngine.UI.Windows.Components {
 	
 	public interface IImageComponent : IComponent, ILoadableResource {
 		
+		Texture GetTexture();
+
 		IImageComponent ResetImage();
-		IImageComponent SetImage(Sprite sprite, bool withPivotsAndSize = false);
-		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false);
-		IImageComponent SetImage(Texture texture);
-		IImageComponent SetImage(Texture texture, bool preserveAspect);
+
+		IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null);
+
+		IImageComponent SetImage(Sprite sprite, System.Action onComplete = null);
+		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete = null);
+
+		IImageComponent SetImage(Texture texture, System.Action onComplete = null);
+		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete = null);
+
 		IImageComponent SetImage(LocalizationKey key, params object[] parameters);
+
 		IImageComponent SetMaterial(Material material);
 		Color GetColor();
 		void SetColor(Color color);
@@ -143,16 +151,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 		bool IsMovie();
 		bool GetPlayOnShow();
+		IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null);
 		IImageComponent SetPlayOnShow(bool state);
 		IImageComponent SetLoop(bool state);
-		IImageComponent SetMovieTexture(TextureResource textureResource, System.Action callback);
-		IImageComponent SetMovieTexture(Texture texture, bool play = false, bool pause = false);
 		bool IsPlaying();
 		IImageComponent Play();
 		IImageComponent Play(bool loop);
 		IImageComponent Stop();
 		IImageComponent Pause();
 
+		Graphic GetGraphicSource();
 		Image GetImageSource();
 		RawImage GetRawImageSource();
 

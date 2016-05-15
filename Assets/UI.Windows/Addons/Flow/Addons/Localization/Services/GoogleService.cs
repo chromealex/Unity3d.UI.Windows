@@ -94,8 +94,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 		#if UNITY_EDITOR
 		protected override void OnInspectorGUI(LocalizationSettings settings, LocalizationServiceItem item, System.Action onReset, GUISkin skin) {
 
-			var data = FlowSystem.GetData();
-			if (data == null) return;
+			//var data = FlowSystem.GetData();
 
 			GUILayout.Label("URL:");
 			var newKey = GUILayout.TextArea(settings.url);
@@ -116,7 +115,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 					// Connecting
 					this.OnEditorAuth(item.authKey, (result) => {
 
-						UnityEditor.EditorApplication.delayCall += () => {
+						//UnityEditor.EditorApplication.delayCall += () => {
 
 							this.StartCoroutine(this.GetData(settings.url, (res) => {
 								
@@ -130,7 +129,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 							}));
 
-						};
+						//};
 						
 					});
 

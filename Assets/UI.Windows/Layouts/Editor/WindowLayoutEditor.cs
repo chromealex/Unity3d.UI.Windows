@@ -14,15 +14,28 @@ namespace UnityEditor.UI.Windows {
 		private bool isDirty = false;
 		
 		public void OnEnable() {
+
+			EditorApplication.update += this.ValidateElements;
+
 		}
 
-		public void OnDisable() {}
+		public void OnDisable() {
+
+			EditorApplication.update -= this.ValidateElements;
+
+		}
 
 		public override void OnInspectorGUI() {
 
 			this.DrawDefaultInspector();
 
 			if (Application.isPlaying == true) return;
+
+			this.ValidateElements();
+
+		}
+
+		public void ValidateElements() {
 
 			var _target = this.target as UnityEngine.UI.Windows.WindowLayout;
 			if (_target == null) return;

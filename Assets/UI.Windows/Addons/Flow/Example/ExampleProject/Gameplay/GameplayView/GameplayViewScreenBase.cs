@@ -39,9 +39,9 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 			
 		}
 		
-		private ExampleProject.UI.Gameplay.EndGame.EndGameScreen INTERNAL_FlowEndGame(bool hide, System.Action<ExampleProject.UI.Gameplay.EndGame.EndGameScreen> onParametersPassCall = null) {
+		private ExampleProject.UI.Gameplay.EndGame.EndGameScreen INTERNAL_FlowEndGame(bool hide, System.Action<ExampleProject.UI.Gameplay.EndGame.EndGameScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Gameplay.EndGame.EndGameScreen> onInstance = null) {
 			
-			return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(this, 25, 28, hide, onParametersPassCall);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.EndGame.EndGameScreen>(this, 25, 28, hide, onParametersPassCall, onInstance);
 			
 		}
 				
@@ -71,9 +71,9 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 			
 		}
 		
-		private ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen INTERNAL_FlowGameplayHUD(bool hide, System.Action<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen> onParametersPassCall = null) {
+		private ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen INTERNAL_FlowGameplayHUD(bool hide, System.Action<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen> onInstance = null) {
 			
-			return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(this, 25, 29, hide, onParametersPassCall);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen>(this, 25, 29, hide, onParametersPassCall, onInstance);
 			
 		}
 				
@@ -93,6 +93,21 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		
 		/// <summary>
 		/// Flows to the GameplayHUD.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
+		/// Full Name: ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen
+		/// </summary>
+		/// <param name="gameplay">gameplay to OnParametersPass</param>
+		/// <param name="onInstance">Calls after window created, but before any method called</param>
+		/// <returns>GameplayHUD</returns>
+		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowGameplayHUD(ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen gameplay, System.Action<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen> onInstance) {
+			
+			return this.INTERNAL_FlowGameplayHUD(false, (w) => w.OnParametersPass(gameplay), onInstance);
+			
+		}
+		
+		/// <summary>
+		/// Flows to the GameplayHUD.
 		/// Hides current window.
 		/// Use this method to play transition effect on both windows (A and B).
 		/// Full Name: ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen
@@ -102,6 +117,21 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowHideGameplayHUD(ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen gameplay) {
 			
 			return this.INTERNAL_FlowGameplayHUD(true, (w) => w.OnParametersPass(gameplay));
+			
+		}
+		
+		/// <summary>
+		/// Flows to the GameplayHUD.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen
+		/// </summary>
+		/// <param name="gameplay">gameplay to OnParametersPass</param>
+		/// <param name="onInstance">Calls after window created, but before any method called</param>
+		/// <returns>GameplayHUD</returns>
+		public virtual ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen FlowHideGameplayHUD(ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen gameplay, System.Action<ExampleProject.UI.Gameplay.GameplayHUD.GameplayHUDScreen> onInstance) {
+			
+			return this.INTERNAL_FlowGameplayHUD(true, (w) => w.OnParametersPass(gameplay), onInstance);
 			
 		}
 		

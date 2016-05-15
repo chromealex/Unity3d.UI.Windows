@@ -116,7 +116,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 					// Connecting
 					this.OnEditorAuth(item.authKey, (result) => {
 
-						UnityEditor.EditorApplication.delayCall += () => {
+						//UnityEditor.EditorApplication.delayCall += () => {
 
 							this.StartCoroutine(this.GetData(settings.url, (res) => {
 								
@@ -130,7 +130,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 							}));
 
-						};
+						//};
 						
 					});
 

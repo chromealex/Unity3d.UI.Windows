@@ -228,6 +228,12 @@ namespace UnityEngine.UI.Windows {
 		
 		[Header("Window System")]
 		/// <summary>
+		/// The root screen.
+		/// Use WindowSystem.ShowRoot() to show it.
+		/// </summary>
+		public WindowBase rootScreen;
+
+		/// <summary>
 		/// Default windows list.
 		/// Use WindowSystem.ShowDefault() to show them.
 		/// </summary>
@@ -238,7 +244,7 @@ namespace UnityEngine.UI.Windows {
 		/// If you want to use WindowSystem.Show<T>() you must register window here.
 		/// </summary>
 		public List<WindowBase> windows = new List<WindowBase>();
-		
+
 		[System.NonSerialized][HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 		
@@ -784,6 +790,17 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		/// <summary>
+		/// Shows the default list windows.
+		/// </summary>
+		/// <param name="parameters">Parameters.</param>
+		public static void ShowRoot(params object[] parameters) {
+
+			var root = WindowSystem.instance.rootScreen;
+			if (root != null) WindowSystem.Show(root, parameters);
+
+		}
+
 		private WindowBase GetInstance(WindowBase window, params object[] parameters) {
 
 			var instance = this.currentWindows.FirstOrDefault((w) => w != null && w.GetType().IsInstanceOfType(window));
@@ -816,7 +833,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null, bool forceAll = false) {
+		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) {
 			
 			WindowSystem.HideAll(except, () => {
 				
@@ -824,7 +841,7 @@ namespace UnityEngine.UI.Windows {
 				
 				if (callback != null) callback();
 				
-			}, forceAll);
+			}, forceAll, immediately);
 			
 		}
 
@@ -833,7 +850,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null, bool forceAll = false) {
+		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null, bool forceAll = false, bool immediately = false) {
 			
 			WindowSystem.HideAll(except, () => {
 				
@@ -841,7 +858,7 @@ namespace UnityEngine.UI.Windows {
 				
 				if (callback != null) callback();
 				
-			}, forceAll);
+			}, forceAll, immediately);
 			
 		}
 
@@ -952,24 +969,31 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAll(WindowBase except = null, System.Action callback = null, bool forceAll = false) {
+		public static void HideAll(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
-
-			var list = WindowSystem.instance.currentWindows.Where((w) => {
-
-				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
-
-			});
 
 			ME.Utilities.CallInSequence(() => {
 
 				if (callback != null) callback();
 				
-			}, list, (window, wait) => {
+			}, WindowSystem.instance.currentWindows.Where((w) => {
 
-				if (window.Hide(wait) == false) wait.Invoke();
-				
+				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
+
+			}), (window, wait) => {
+
+				if (immediately == true) {
+
+					window.Hide();
+					wait.Invoke();
+
+				} else {
+
+					if (window.Hide(wait) == false) wait.Invoke();
+
+				}
+
 			});
 
 		}
@@ -979,7 +1003,7 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAll(List<WindowBase> except, System.Action callback, bool forceAll = false) {
+		public static void HideAll(List<WindowBase> except, System.Action callback, bool forceAll = false, bool immediately = false) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
@@ -993,7 +1017,16 @@ namespace UnityEngine.UI.Windows {
 
 			}), (window, wait) => {
 				
-				if (window.Hide(wait) == false) wait.Invoke();
+				if (immediately == true) {
+
+					window.Hide();
+					wait.Invoke();
+
+				} else {
+
+					if (window.Hide(wait) == false) wait.Invoke();
+
+				}
 				
 			});
 
@@ -1011,25 +1044,25 @@ namespace UnityEngine.UI.Windows {
 			var source = WindowSystem.instance.windows.FirstOrDefault(w => w is T) as T;
 			if (source == null) return null;
 
-			return WindowSystem.instance.CreateWithIgnore_INTERNAL(source, onParametersPassCall, out ignoreActions, parameters) as T;
+			return WindowSystem.CreateWithIgnore_INTERNAL(source, onParametersPassCall, out ignoreActions, parameters) as T;
 
 		}
 		
 		internal WindowBase Create_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, params object[] parameters) {
 
 			bool ignoreActions;
-			return this.CreateWithIgnore_INTERNAL(source, onParametersPassCall, out ignoreActions, parameters);
+			return WindowSystem.CreateWithIgnore_INTERNAL(source, onParametersPassCall, out ignoreActions, parameters);
 
 		}
 
-		internal WindowBase CreateWithIgnore_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, out bool ignoreActions, params object[] parameters) {
+		internal static WindowBase CreateWithIgnore_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, out bool ignoreActions, params object[] parameters) {
 
 			ignoreActions = false;
 
 			WindowBase instance = null;
 			if (source.preferences.forceSingleInstance == true) {
 
-				instance = this.currentWindows.FirstOrDefault(w => w.windowId == source.windowId);
+				instance = WindowSystem.instance.currentWindows.FirstOrDefault(w => w.windowId == source.windowId);
 				if (instance != null) ignoreActions = source.preferences.singleInstanceIgnoreActions;
 
 			}
@@ -1219,7 +1252,7 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			var ignoreActions = false;
-			var instance = (source != null) ? WindowSystem.instance.CreateWithIgnore_INTERNAL(source, parametersPassCall, out ignoreActions, parameters) as T : WindowSystem.Create<T>(parametersPassCall, out ignoreActions, parameters);
+			var instance = (source != null) ? WindowSystem.CreateWithIgnore_INTERNAL(source, parametersPassCall, out ignoreActions, parameters) as T : WindowSystem.Create<T>(parametersPassCall, out ignoreActions, parameters);
 			if (instance != null) {
 				
 				if (afterGetInstance != null) {

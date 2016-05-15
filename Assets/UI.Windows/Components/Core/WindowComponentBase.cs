@@ -503,20 +503,28 @@ namespace UnityEngine.UI.Windows {
 
 			};
 
-			var tag = this.GetTag();
-			TweenerGlobal.instance.removeTweens(tag);
-			if (immediately == false && delay > 0f) {
-				
-				TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
-					
+			if (TweenerGlobal.instance != null) {
+
+				var tag = this.GetTag();
+				TweenerGlobal.instance.removeTweens(tag);
+				if (immediately == false && delay > 0f) {
+
+					TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
+
+						callbackInner.Invoke();
+
+					}).onCancel((obj) => {
+
+						callbackInner.Invoke();
+
+					});
+
+				} else {
+
 					callbackInner.Invoke();
-					
-				}).onCancel((obj) => {
-					
-					callbackInner.Invoke();
-					
-				});
-				
+
+				}
+
 			} else {
 				
 				callbackInner.Invoke();
@@ -526,7 +534,9 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		private void DoHideBeginAnimation_INTERNAL(System.Action callback, AppearanceParameters parameters) {
-			
+
+			if (TweenerGlobal.instance == null) return;
+
 			var resetAnimation = parameters.GetResetAnimation(defaultValue: false);
 			var immediately = parameters.GetImmediately(defaultValue: false);
 			var delay = parameters.GetDelay(defaultValue: 0f);
@@ -556,19 +566,27 @@ namespace UnityEngine.UI.Windows {
 
 			};
 
-			var tag = this.GetTag();
-			TweenerGlobal.instance.removeTweens(tag);
-			if (immediately == false && delay > 0f) {
+			if (TweenerGlobal.instance != null) {
+				
+				var tag = this.GetTag();
+				TweenerGlobal.instance.removeTweens(tag);
+				if (immediately == false && delay > 0f) {
 
-				TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
+					TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
+
+						callbackInner.Invoke();
+
+					}).onCancel((obj) => {
+						
+						callbackInner.Invoke();
+
+					});
+
+				} else {
 
 					callbackInner.Invoke();
 
-				}).onCancel((obj) => {
-					
-					callbackInner.Invoke();
-
-				});
+				}
 
 			} else {
 

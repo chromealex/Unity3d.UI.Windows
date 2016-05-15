@@ -18,6 +18,38 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 			public FlowFunctionLoaderRoutes(IFunctionIteration window, int index) : base(window, index) {}
 					
 			/// <summary>
+			/// Flows to the MainMenu.
+			/// Use this method to play transition effect on B window only.
+			/// If you call Hide() on A window - it will hide with standard behaviour.
+			/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+			/// </summary>
+			/// <returns>MainMenu</returns>
+			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowMainMenu() {
+				
+				return this.INTERNAL_FlowMainMenu(hide: false);
+				
+			}
+			
+			/// <summary>
+			/// Flows to the MainMenu.
+			/// Hides current window.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+			/// </summary>
+			/// <returns>MainMenu</returns>
+			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowHideMainMenu() {
+				
+				return this.INTERNAL_FlowMainMenu(hide: true);
+				
+			}
+			
+			private ExampleProject.UI.Menu.MainMenu.MainMenuScreen INTERNAL_FlowMainMenu(bool hide, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onInstance = null) {
+				
+				return WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, 40, 38, hide, onParametersPassCall, onInstance);
+				
+			}
+					
+			/// <summary>
 			/// Flows to the Default.
 			/// </summary>
 			/// <returns>Default</returns>

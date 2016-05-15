@@ -43,9 +43,67 @@ namespace ExampleProject.UI.Menu.MainMenu {
 				
 			}
 			
-			private ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen INTERNAL_FlowGameplayView(bool hide, System.Action<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen> onParametersPassCall = null) {
+			private ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen INTERNAL_FlowGameplayView(bool hide, System.Action<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen> onInstance = null) {
 				
-				return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>(this, 39, 25, hide, onParametersPassCall);
+				return WindowSystemFlow.DoFlow<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen>(this, 39, 25, hide, onParametersPassCall, onInstance);
+				
+			}
+					
+			/// <summary>
+			/// Flows to the GameplayView.
+			/// Use this method to play transition effect on B window only.
+			/// If you call Hide() on A window - it will hide with standard behaviour.
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
+			/// </summary>
+			/// <param name="startSide">startSide to OnParametersPass</param>
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowGameplayView(ExampleProject.UI.Gameplay.GameplayView.Side startSide) {
+				
+				return this.INTERNAL_FlowGameplayView(false, (w) => w.OnParametersPass(startSide));
+				
+			}
+			
+			/// <summary>
+			/// Flows to the GameplayView.
+			/// Use this method to play transition effect on B window only.
+			/// If you call Hide() on A window - it will hide with standard behaviour.
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
+			/// </summary>
+			/// <param name="startSide">startSide to OnParametersPass</param>
+			/// <param name="onInstance">Calls after window created, but before any method called</param>
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowGameplayView(ExampleProject.UI.Gameplay.GameplayView.Side startSide, System.Action<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen> onInstance) {
+				
+				return this.INTERNAL_FlowGameplayView(false, (w) => w.OnParametersPass(startSide), onInstance);
+				
+			}
+			
+			/// <summary>
+			/// Flows to the GameplayView.
+			/// Hides current window.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
+			/// </summary>
+			/// <param name="startSide">startSide to OnParametersPass</param>
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowHideGameplayView(ExampleProject.UI.Gameplay.GameplayView.Side startSide) {
+				
+				return this.INTERNAL_FlowGameplayView(true, (w) => w.OnParametersPass(startSide));
+				
+			}
+			
+			/// <summary>
+			/// Flows to the GameplayView.
+			/// Hides current window.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen
+			/// </summary>
+			/// <param name="startSide">startSide to OnParametersPass</param>
+			/// <param name="onInstance">Calls after window created, but before any method called</param>
+			/// <returns>GameplayView</returns>
+			public virtual ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen FlowHideGameplayView(ExampleProject.UI.Gameplay.GameplayView.Side startSide, System.Action<ExampleProject.UI.Gameplay.GameplayView.GameplayViewScreen> onInstance) {
+				
+				return this.INTERNAL_FlowGameplayView(true, (w) => w.OnParametersPass(startSide), onInstance);
 				
 			}
 			

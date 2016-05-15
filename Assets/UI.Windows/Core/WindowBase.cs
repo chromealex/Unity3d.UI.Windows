@@ -137,9 +137,13 @@ namespace UnityEngine.UI.Windows {
 
 			this.SetDepth(depth, zDepth);
 
-			if (this.preferences.IsDontDestroyOnSceneChange() == true) {
+			if (Application.isPlaying == true) {
+				
+				if (this.preferences.IsDontDestroyOnSceneChange() == true) {
 
-				GameObject.DontDestroyOnLoad(this.gameObject);
+					GameObject.DontDestroyOnLoad(this.gameObject);
+
+				}
 
 			}
 

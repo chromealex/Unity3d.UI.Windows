@@ -39,9 +39,9 @@ namespace ExampleProject.UI.Other.MainLoader {
 			
 		}
 		
-		private ExampleProject.UI.Other.UserInfo.UserInfoScreen INTERNAL_FlowUserInfo(bool hide, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onParametersPassCall = null) {
+		private ExampleProject.UI.Other.UserInfo.UserInfoScreen INTERNAL_FlowUserInfo(bool hide, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onInstance = null) {
 			
-			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.UserInfo.UserInfoScreen>(this, 18, 45, hide, onParametersPassCall);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.UserInfo.UserInfoScreen>(this, 18, 45, hide, onParametersPassCall, onInstance);
 			
 		}
 				

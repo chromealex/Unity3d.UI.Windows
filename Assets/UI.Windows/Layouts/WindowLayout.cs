@@ -55,8 +55,6 @@ namespace UnityEngine.UI.Windows {
 
 			base.OnValidateEditor();
 
-			if (Application.isPlaying == true) return;
-
 			if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) {
 
 				this.transform.localScale = Vector3.one * this.editorScale;

@@ -11,10 +11,23 @@ using ExampleProject.Gameplay.GameplayView.Components;
 
 namespace ExampleProject.UI.Gameplay.GameplayView {
 
+	public enum Side : byte {
+		Black,
+		White,
+	};
+
 	public class GameplayViewScreen : GameplayViewScreenBase {
 
 		private GameplayComponent gameplayComponent;
 		private GameplayHUD.GameplayHUDScreen hud;
+
+		private Side startSide;
+
+		public void OnParametersPass(Side startSide) {
+
+			this.startSide = startSide;
+
+		}
 
 		public override void OnInit() {
 
@@ -29,14 +42,24 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 			base.OnShowBegin();
 			
 			this.hud = this.FlowGameplayHUD(this);
-			this.SetColor(Color.white);
+			this.hud.SetSide(this.startSide);
 
 		}
 
-		public void SetColor(Color color) {
-			
-			this.gameplayComponent.SetColor(color);
-			
+		public void SetSide(Side side) {
+
+			switch (side) {
+
+				case Side.Black:
+					this.gameplayComponent.SetColor(Color.black);
+					break;
+
+				case Side.White:
+					this.gameplayComponent.SetColor(Color.white);
+					break;
+
+			}
+
 		}
 		
 		public void Quit() {

@@ -316,9 +316,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 		public void RemoveLayoutElement(Transform element) {
 			
 			EditorApplication.delayCall += () => {
-
-				EditorApplication.delayCall = null;
-
+				
 				//GameObject.DestroyImmediate(element.gameObject);
 				//FlowSceneView.GetItem().SetLayoutDirty();
 
@@ -332,8 +330,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			
 			EditorApplication.delayCall += () => {
 				
-				EditorApplication.delayCall = null;
-
 				FlowDatabase.AddLayoutElementComponent("LayoutElement", element.parent, element.GetSiblingIndex());
 
 			};

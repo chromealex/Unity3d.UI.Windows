@@ -90,7 +90,12 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		public void DrawInspectorGUI(ScriptableObject settings, ServiceItem item, System.Action onReset, GUISkin skin) {
 
-			if (FlowSystem.GetData() == null) return;
+			if (FlowSystem.GetData() == null) {
+
+				GUILayout.Label("No Data");
+				return;
+
+			}
 
 			++UnityEditor.EditorGUI.indentLevel;
 			try {

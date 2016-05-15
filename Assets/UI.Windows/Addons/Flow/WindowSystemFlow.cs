@@ -60,7 +60,7 @@ namespace UnityEngine.UI.Windows {
 		public bool showRootOnStart = true;
 
 		protected override void Init() {
-
+			
 			#region FLOW DEFAULT
 			{
 				var flow = this.flow;
@@ -87,6 +87,8 @@ namespace UnityEngine.UI.Windows {
 
 				this.defaults.AddRange(flow.GetDefaultScreens());
 				this.windows.AddRange(flow.GetAllScreens());
+
+				this.rootScreen = this.flow.GetRootScreen();
 
 			}
 			#endregion

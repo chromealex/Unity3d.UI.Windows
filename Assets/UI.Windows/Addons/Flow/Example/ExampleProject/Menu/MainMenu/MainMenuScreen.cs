@@ -8,35 +8,43 @@
 using UnityEngine;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Components;
+using ExampleProject.UI.Gameplay.GameplayView;
 
 namespace ExampleProject.UI.Menu.MainMenu {
 
 	public class MainMenuScreen : MainMenuScreenBase {
 
-		private ButtonComponent button;
-
 		public override void OnInit() {
 
 			base.OnInit();
 
-			this.GetLayoutComponent(out this.button);
-			this.button.SetCallback(() => {
+			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag5).SetCallback(() => {
 
-				this.FlowHideFunctionLoader((routes) => {
-					
-					WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: () => {
+				this.Play(Side.White);
 
-						routes.FlowGameplayView();
+			});
 
-					});
+			this.GetLayoutComponent<ButtonComponent>(LayoutTag.Tag6).SetCallback(() => {
+
+				this.Play(Side.Black);
+
+			});
+
+		}
+
+		public void Play(Side side) {
+
+			this.FlowHideFunctionLoader((routes) => {
+
+				WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: () => {
+
+					routes.FlowGameplayView(side);
 
 				});
 
 			});
 
 		}
-
-
 
 	}
 

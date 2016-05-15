@@ -28,13 +28,21 @@ namespace UnityEngine.UI.Windows {
 				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", @object, data));
 				
 			}
-			
+
 			public void Warning(string @object, string data) {
-				
+
 				if (this.enabled == false) return;
-				
+
 				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", @object, data));
-				
+
+			}
+
+			public void Error(string @object, string data) {
+
+				if (this.enabled == false) return;
+
+				Debug.LogError(string.Format("[ <b>{0}</b> ] {1}", @object, data));
+
 			}
 			#endregion
 
@@ -46,13 +54,21 @@ namespace UnityEngine.UI.Windows {
 				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
 				
 			}
-			
+
 			public void Warning(IWindowObject @object, string data) {
-				
+
 				if (this.enabled == false) return;
-				
+
 				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
-				
+
+			}
+
+			public void Error(IWindowObject @object, string data) {
+
+				if (this.enabled == false) return;
+
+				Debug.LogError(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
+
 			}
 			#endregion
 			
@@ -64,13 +80,21 @@ namespace UnityEngine.UI.Windows {
 				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", @object.GetServiceName(), data), @object as MonoBehaviour);
 				
 			}
-			
+
 			public void Warning(IServiceBase @object, string data) {
-				
+
 				if (this.enabled == false) return;
-				
+
 				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", @object.GetServiceName(), data), @object as MonoBehaviour);
-				
+
+			}
+
+			public void Error(IServiceBase @object, string data) {
+
+				if (this.enabled == false) return;
+
+				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", @object.GetServiceName(), data), @object as MonoBehaviour);
+
 			}
 			#endregion
 
@@ -148,11 +172,17 @@ namespace UnityEngine.UI.Windows {
 			WindowSystemLogger.instance.logger.Log(@object, data);
 			
 		}
-		
+
 		public static void Warning(string @object, string data) {
-			
+
 			WindowSystemLogger.instance.logger.Warning(@object, data);
-			
+
+		}
+
+		public static void Error(string @object, string data) {
+
+			WindowSystemLogger.instance.logger.Error(@object, data);
+
 		}
 		#endregion
 
@@ -162,11 +192,17 @@ namespace UnityEngine.UI.Windows {
 			WindowSystemLogger.instance.logger.Log(@object, data);
 			
 		}
-		
+
 		public static void Warning(IWindowObject @object, string data) {
-			
+
 			WindowSystemLogger.instance.logger.Warning(@object, data);
-			
+
+		}
+
+		public static void Error(IWindowObject @object, string data) {
+
+			WindowSystemLogger.instance.logger.Error(@object, data);
+
 		}
 		#endregion
 
@@ -176,11 +212,17 @@ namespace UnityEngine.UI.Windows {
 			WindowSystemLogger.instance.logger.Log(@object, data);
 			
 		}
-		
+
 		public static void Warning(IServiceBase @object, string data) {
-			
+
 			WindowSystemLogger.instance.logger.Warning(@object, data);
-			
+
+		}
+
+		public static void Error(IServiceBase @object, string data) {
+
+			WindowSystemLogger.instance.logger.Error(@object, data);
+
 		}
 		#endregion
 

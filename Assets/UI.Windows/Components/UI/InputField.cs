@@ -7,14 +7,14 @@ using System.Linq;
 namespace UnityEngine.UI.Windows.Extensions {
 
 	public class InputField : UnityEngine.UI.InputField {
-
+		/*
 		public override void OnSelect(BaseEventData eventData) {
 
 			base.OnSelect(eventData);
 
 			this.CorrectCaret();
 
-		}
+		}*/
 
 		public void MoveTextEndFix(bool shift) {
 
@@ -30,7 +30,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 			this.MoveTextEnd(shift);
 
 		}
-
+		/*
 		private RectTransform caret;
 		private void CorrectCaret() {
 
@@ -66,7 +66,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 			}
 
-		}
+		}*/
 
 	}
 

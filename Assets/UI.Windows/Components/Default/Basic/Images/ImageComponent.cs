@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI.Windows;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows.Extensions;
+using UnityEngine.UI.Windows.Components.Modules;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -55,15 +56,33 @@ namespace UnityEngine.UI.Windows.Components {
 			#region source macros UI.Windows.OnInit.ImageComponent
 			{
 
+				this.tempImagePlayOnShow = false;
+
 				if (this.imageLocalizationKey.IsNone() == false) {
 
 					this.SetImage(this.imageLocalizationKey);
 
 				} else {
 					
-					WindowSystemResources.LoadAuto(this, onShowHide: false);
+					WindowSystemResources.LoadAuto(this, onDataLoaded: () => {
+
+						this.tempImagePlayOnShow = true;
+
+						if (this.IsVisible() == true) {
+
+							if (this.playOnShow == true) {
+
+								this.Play();
+
+							}
+
+						}
+
+					}, onComplete: null, onShowHide: false);
 
 				}
+
+				this.imageCrossFadeModule.Init(this);
 
 			}
 			#endregion
@@ -89,16 +108,28 @@ namespace UnityEngine.UI.Windows.Components {
 		public override void OnShowBegin() {
 
 			base.OnShowBegin();
-			
+
 			#region source macros UI.Windows.OnShowBegin.ImageComponent
 			{
+				
+				WindowSystemResources.LoadAuto(this, onDataLoaded: () => {
 
-				WindowSystemResources.LoadAuto(this, onShowHide: true);
+					if (this.playOnShow == true) {
 
-				if (this.playOnShow == true) {
-					
-					this.Play();
-					
+						this.Play();
+
+					}
+
+				}, onComplete: null, onShowHide: true);
+
+				if (this.tempImagePlayOnShow == true) {
+
+					if (this.playOnShow == true) {
+
+						this.Play();
+
+					}
+
 				}
 
 			}
@@ -125,13 +156,12 @@ namespace UnityEngine.UI.Windows.Components {
 		#region source macros UI.Windows.ImageComponent
 		[Header("Image Component")]
 		[SerializeField]
-		private bool preserveAspect;
+		private Image image;
+		[BeginGroup("image")][SerializeField]
+		private RawImage rawImage;
 
 		[SerializeField]
-		private Image image;
-		
-		[SerializeField]
-		private RawImage rawImage;
+		private bool preserveAspect;
 
 		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
 
@@ -143,7 +173,12 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool loop;
 
 		[SerializeField]
-		public AutoResourceItem imageResource = new AutoResourceItem();
+		private AutoResourceItem imageResource = new AutoResourceItem();
+
+		[EndGroup][SerializeField]
+		private ImageCrossFadeModule imageCrossFadeModule = new ImageCrossFadeModule();
+
+		private bool tempImagePlayOnShow = false;
 
 		public AutoResourceItem GetResource() {
 
@@ -184,35 +219,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public IImageComponent SetMovieTexture(TextureResource textureResource, System.Action callback) {
+		public IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null) {
 			
 			this.Stop();
-
-			WindowSystemResources.Load(this, textureResource, callback);
+			this.SetImage(resource, onDataLoaded, onComplete);
 
 			return this;
 			
-		}
-
-		public IImageComponent SetMovieTexture(Texture texture, bool play = false, bool pause = false) {
-
-			this.Stop();
-			this.SetImage(texture);
-			
-			if (play == true) {
-
-				this.Play();
-
-			}
-
-			if (pause == true) {
-
-				MovieSystem.PlayAndPause(this, this.loop);
-
-			}
-
-			return this;
-
 		}
 
 		public bool GetPlayOnShow() {
@@ -233,6 +246,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 			return MovieSystem.IsPlaying(this);
 
+		}
+		
+		public IImageComponent PlayAndPause() {
+
+			MovieSystem.PlayAndPause(this, this.loop);
+			return this;
+			
 		}
 
 		public IImageComponent Play() {
@@ -301,7 +321,13 @@ namespace UnityEngine.UI.Windows.Components {
 			return this;
 
 		}
-		
+
+		public Graphic GetGraphicSource() {
+
+			return this.image;
+
+		}
+
 		public Image GetImageSource() {
 			
 			return this.image;
@@ -322,11 +348,28 @@ namespace UnityEngine.UI.Windows.Components {
 			return this;
 			
 		}
-		
-		public IImageComponent SetImage(ResourceBase resource, System.Action callback) {
 
-			WindowSystemResources.Load(this, resource, callback);
-			
+		public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null) {
+
+			var oldResource = this.imageResource;
+			var newResource = resource;
+			this.imageResource = resource;
+
+			//Debug.Log("Loading resource: " + newResource.GetId());
+			WindowSystemResources.Load(this, onDataLoaded: onDataLoaded, onComplete: () => {
+
+				//Debug.Log("Resource loaded: " + newResource.GetId());
+				if (newResource.GetId() != oldResource.GetId()) {
+
+					//Debug.Log("Unloading: " + newResource.GetId() + " != " + oldResource.GetId());
+					WindowSystemResources.Unload(this, oldResource, resetController: false);
+
+				}
+
+				if (onComplete != null) onComplete.Invoke();
+
+			});
+
 			return this;
 			
 		}
@@ -341,57 +384,87 @@ namespace UnityEngine.UI.Windows.Components {
 			this.lastImageLocalizationParameters = parameters;
 
 			//this.SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSprite(key, parameters));
-			WindowSystemResources.LoadAuto(this, customResourcePath: UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSpritePath(key, parameters));
+			WindowSystemResources.Unload(this, this.GetResource());
+			WindowSystemResources.Load(this, onDataLoaded: null, onComplete: null, customResourcePath: UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSpritePath(key, parameters));
 
 			return this;
 
 		}
 
-		public IImageComponent SetImage(Sprite sprite, bool withPivotsAndSize = false) {
+		public IImageComponent SetImage(Sprite sprite, System.Action onComplete = null) {
 
-			this.SetImage(sprite, this.preserveAspect, withPivotsAndSize);
-			
+			this.SetImage(sprite, this.preserveAspect, withPivotsAndSize: false, onComplete: onComplete);
+
 			return this;
 
 		}
 
-		public IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize = false) {
+		public IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete = null) {
 			
 			if (this.image != null) {
-
-				this.image.sprite = sprite;
+				
 				this.image.preserveAspect = preserveAspect;
 
 				if (withPivotsAndSize == true && sprite != null) {
 
 					var rect = (this.transform as RectTransform);
-
 					rect.sizeDelta = sprite.rect.size;
 					rect.pivot = sprite.GetPivot();
 					rect.anchoredPosition = Vector2.zero;
 
 				}
 
+				if (this.imageCrossFadeModule.IsValid() == true) {
+
+					this.imageCrossFadeModule.FadeTo(sprite, onComplete);
+
+				} else {
+
+					this.image.sprite = sprite;
+
+					if (onComplete != null) onComplete.Invoke();
+
+				}
+
+			} else {
+
+				if (onComplete != null) onComplete.Invoke();
+
 			}
+
+			return this;
+
+		}
+
+		public IImageComponent SetImage(Texture texture, System.Action onComplete = null) {
+
+			this.SetImage(texture, this.preserveAspect, onComplete);
 			
 			return this;
 
 		}
 
-		public IImageComponent SetImage(Texture texture) {
-
-			this.SetImage(texture, this.preserveAspect);
-			
-			return this;
-
-		}
-
-		public IImageComponent SetImage(Texture texture, bool preserveAspect) {
+		public IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete = null) {
 			
 			if (this.rawImage != null) {
-
-				this.rawImage.texture = texture;
+				
 				if (this.preserveAspect == true) ME.Utilities.PreserveAspect(this.rawImage);
+
+				if (this.imageCrossFadeModule.IsValid() == true) {
+
+					this.imageCrossFadeModule.FadeTo(texture, onComplete);
+
+				} else {
+
+					this.rawImage.texture = texture;
+
+					if (onComplete != null) onComplete.Invoke();
+
+				}
+
+			} else {
+
+				if (onComplete != null) onComplete.Invoke();
 
 			}
 			
@@ -469,10 +542,17 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.gameObject.activeSelf == false) return;
 
 			#region source macros UI.Windows.Editor.ImageComponent
-			if (this.image == null) this.image = this.GetComponent<Image>();
-			if (this.rawImage == null) this.rawImage = this.GetComponent<RawImage>();
+			{
+				
+				//if (this.image == null) this.image = this.GetComponent<Image>();
+				//if (this.rawImage == null) this.rawImage = this.GetComponent<RawImage>();
 
-			WindowSystemResources.Validate(this);
+				WindowSystemResources.Validate(this);
+
+				this.imageCrossFadeModule.Init(this);
+				this.imageCrossFadeModule.OnValidateEditor();
+
+			}
 			#endregion
 
 		}

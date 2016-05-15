@@ -7,10 +7,31 @@
 //------------------------------------------------------------------------------
 using UnityEngine;
 using UnityEngine.UI.Windows;
+using UnityEngine.UI.Windows.Components;
 
 namespace ExampleProject.UI.Other.Error {
 
 	public class ErrorScreen : ErrorScreenBase {
+
+		private ButtonComponent button;
+
+		public override void OnInit() {
+
+			base.OnInit();
+
+			this.GetLayoutComponent(out this.button);
+
+			this.button.SetCallback(() => {
+
+				WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: () => {
+
+					WindowSystem.ShowRoot();
+
+				}, forceAll: true, immediately: true);
+
+			});
+
+		}
 
 	}
 

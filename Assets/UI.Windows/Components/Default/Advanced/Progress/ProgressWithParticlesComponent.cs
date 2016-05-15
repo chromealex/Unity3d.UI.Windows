@@ -5,7 +5,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class ProgressWithParticlesComponent : ProgressComponent {
 
-		public ParticleSystemCached effect;
+		public ME.ParticleSystemCached effect;
 
 		public override void OnInit() {
 

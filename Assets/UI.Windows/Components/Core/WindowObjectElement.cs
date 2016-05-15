@@ -454,7 +454,9 @@ namespace UnityEngine.UI.Windows {
 		/// Raises the validate event. Editor Only.
 		/// </summary>
 		public void OnValidate() {
-			
+
+			if (Application.isPlaying == true) return;
+
 			this.OnValidateEditor();
 			
 		}

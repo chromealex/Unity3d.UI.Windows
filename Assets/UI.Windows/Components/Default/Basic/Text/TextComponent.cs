@@ -68,6 +68,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		#region source macros UI.Windows.TextComponent
 		[Header("Text Component")]
+		[BeginGroup]
 		[SerializeField]
 		private Text text;
 		[SerializeField]
@@ -81,6 +82,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		[SerializeField]
 		private bool valueAnimate = false;
+		[EndGroup]
 		[SerializeField][ReadOnly("valueAnimate", state: false)]
 		private float valueAnimateDuration = 2f;
 		private long valueAnimateLastValue;
@@ -276,13 +278,14 @@ namespace UnityEngine.UI.Windows.Components {
 			this.tempLastValue = value;
 			this.tempLastFormat = format;
 
-			if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this);
+			var tag = this.GetCustomTag("TextComponent");
+			if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			if (animate == true && TweenerGlobal.instance != null) {
 
 				var duration = this.valueAnimateDuration;
 				if (Mathf.Abs(this.valueAnimateLastValue - value) < 2) duration = 0.2f;
-				TweenerGlobal.instance.addTweenCount(this, duration, this.valueAnimateLastValue, value, format, (v) => { this.valueAnimateLastValue = v; this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true); }).tag(this);
+				TweenerGlobal.instance.addTweenCount(this, duration, this.valueAnimateLastValue, value, format, (v) => { this.valueAnimateLastValue = v; this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true); }).tag(tag);
 				
 			} else {
 				
@@ -321,6 +324,12 @@ namespace UnityEngine.UI.Windows.Components {
 		public string GetText() {
 
 			return (this.text != null) ? this.text.text : string.Empty;
+
+		}
+
+		public ITextComponent SetHyphenSymbol() {
+
+			return this.SetText("\u2014");
 
 		}
 

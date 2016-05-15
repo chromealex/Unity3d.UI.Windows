@@ -250,7 +250,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public void SetItems(int capacity, UnityAction<IComponent, int> onItem = null) {
 			
-			this.items.SetItems(capacity, onItem);
+			this.SetItems(capacity, onItem);
 			
 		}
 
@@ -262,6 +262,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : ITextComponent {
 
+			this.items.BeginLoad();
 			this.items.SetItems<T>(capacity, (element, index) => {
 
 				if (element is ButtonComponent) {
@@ -277,6 +278,7 @@ namespace UnityEngine.UI.Windows.Components {
 				if (onItem != null) onItem.Invoke(element, index);
 
 			});
+			this.items.EndLoad();
 
 		}
 
