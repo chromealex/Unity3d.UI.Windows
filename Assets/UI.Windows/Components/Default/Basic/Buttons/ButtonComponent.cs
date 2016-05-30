@@ -114,6 +114,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnInit();
 
+			this.button.onClick.RemoveListener(this.OnClick);
+			this.button.onClick.AddListener(this.OnClick);
+
 			if (this.setDefaultNavigationModeOnStart == true) {
 
 				this.SetNavigationMode(this.defaultNavigationMode);
@@ -620,7 +623,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public virtual void OnClick() {
 
-			if (this.GetWindow().GetState() != WindowObjectState.Shown &&
+			if (this.GetWindow() != null &&
+				this.GetWindow().GetState() != WindowObjectState.Shown &&
 			    this.GetWindow().GetState() != WindowObjectState.Showing) {
 
 				#if UNITY_EDITOR || DEBUGBUILD
@@ -951,15 +955,16 @@ namespace UnityEngine.UI.Windows.Components {
 			public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null) {
 	
 				var oldResource = this.imageResource;
+				var newResource = resource;
 				this.imageResource = resource;
 	
-				//Debug.Log("Loading resource: " + this.GetResource().GetId());
+				//Debug.Log("Loading resource: " + newResource.GetId());
 				WindowSystemResources.Load(this, onDataLoaded: onDataLoaded, onComplete: () => {
 	
-					//Debug.Log("Resource loaded: " + this.GetResource().GetId());
-					if (this.GetResource().GetId() != oldResource.GetId()) {
+					//Debug.Log("Resource loaded: " + newResource.GetId());
+					if (newResource.GetId() != oldResource.GetId()) {
 	
-						//Debug.Log("Unloading: " + this.GetResource().GetId() + " != " + oldResource.GetId());
+						//Debug.Log("Unloading: " + newResource.GetId() + " != " + oldResource.GetId());
 						WindowSystemResources.Unload(this, oldResource, resetController: false);
 	
 					}
@@ -1103,7 +1108,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public IImageComponent SetAlpha(float value) {
+			public IAlphaComponent SetAlpha(float value) {
 	
 				var color = this.GetColor();
 				color.a = value;
@@ -1152,8 +1157,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			[SerializeField]
 			private bool valueAnimate = false;
-			[EndGroup]
-			[SerializeField][ReadOnly("valueAnimate", state: false)]
+			[SerializeField][EndGroupReadOnly("valueAnimate", state: false)]
 			private float valueAnimateDuration = 2f;
 			private long valueAnimateLastValue;
 			private long tempLastValue = long.MinValue;
@@ -1394,6 +1398,12 @@ namespace UnityEngine.UI.Windows.Components {
 			public string GetText() {
 	
 				return (this.text != null) ? this.text.text : string.Empty;
+	
+			}
+	
+			public ITextComponent SetHyphenSymbol() {
+	
+				return this.SetText("\u2014");
 	
 			}
 	

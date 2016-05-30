@@ -200,6 +200,7 @@ namespace UnityEditor.UI.Windows.Plugins.Linker {
 						);
 
 						window.title = "Linker";
+						window.name = window.ToString();
 						window.rect.width = 150f;
 						window.rect.height = 90f;
 
@@ -245,7 +246,7 @@ namespace UnityEditor.UI.Windows.Plugins.Linker {
 			
 		}*/
 
-		public override string OnCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName) {
+		/*public override string OnCompilerTransitionAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName) {
 			
 			if (windowTo.IsLinker() == true &&
 				windowTo.GetLinkerId() > 0) {
@@ -257,11 +258,11 @@ namespace UnityEditor.UI.Windows.Plugins.Linker {
 				var className = linkerWindow.directory;
 				var classNameWithNamespace = Tpl.GetNamespace(linkerWindow) + "." + Tpl.GetDerivedClassName(linkerWindow);
 
-				result += TemplateGenerator.GenerateWindowLayoutTransitionMethod(windowTo, linkerWindow, className, classNameWithNamespace);
+				result += TemplateGenerator.GenerateWindowLayoutTransitionMethod(windowFrom, linkerWindow, className, classNameWithNamespace);
 
 				WindowSystem.CollectCallVariations(linkerWindow.GetScreen(), (listTypes, listNames) => {
 
-					result += TemplateGenerator.GenerateWindowLayoutTransitionTypedMethod(windowTo, linkerWindow, className, classNameWithNamespace, listTypes, listNames);
+					result += TemplateGenerator.GenerateWindowLayoutTransitionTypedMethod(windowFrom, linkerWindow, className, classNameWithNamespace, listTypes, listNames);
 
 				});
 
@@ -271,7 +272,7 @@ namespace UnityEditor.UI.Windows.Plugins.Linker {
 
 			return base.OnCompilerTransitionAttachedGeneration(windowFrom, windowTo, everyPlatformHasUniqueName);
 
-		}
+		}*/
 
 		/*public override string OnCompilerTransitionTypedAttachedGeneration(FD.FlowWindow windowFrom, FD.FlowWindow windowTo, bool everyPlatformHasUniqueName, System.Type[] types, string[] names) {
 			
@@ -358,17 +359,54 @@ namespace UnityEditor.UI.Windows.Plugins.Linker {
 
 				var oldColor = GUI.color;
 				GUI.color = isActiveSelected ? Color.white : Color.grey;
-				var result = GUILayout.Button(linker != null ? linker.title : "None", FlowSystemEditorWindow.defaultSkin.button, GUILayout.ExpandHeight(true));
+				var result = GUILayout.Button(linker != null ? string.Format("{0} ({1})", linker.title, linker.directory) : "None", FlowSystemEditorWindow.defaultSkin.button, GUILayout.ExpandHeight(true));
 				GUI.color = oldColor;
 				var rect = GUILayoutUtility.GetLastRect();
 				rect.y += rect.height;
 
 				if (result == true) {
 
+					System.Action<int> onApply = (int id) => {
+
+						var linkerSources = new List<FD.FlowWindow>();
+						foreach (var w in data.windowAssets) {
+
+							if (w.AlreadyAttached(window.id) == true) {
+
+								linkerSources.Add(w);
+
+							}
+
+						}
+
+						if (window.linkerId != 0) {
+
+							foreach (var w in linkerSources) {
+
+								data.Detach(w.id, window.linkerId, oneWay: true);
+
+							}
+
+						}
+
+						window.linkerId = id;
+
+						if (window.linkerId != 0) {
+
+							foreach (var w in linkerSources) {
+
+								data.Attach(w.id, window.linkerId, oneWay: true);
+
+							}
+
+						}
+
+					};
+
 					var menu = new GenericMenu();
 					menu.AddItem(new GUIContent("None"), window.linkerId == 0, () => {
 
-						window.linkerId = 0;
+						onApply(0);
 
 					});
 
@@ -391,13 +429,15 @@ namespace UnityEditor.UI.Windows.Plugins.Linker {
 						
 						if (win.CanDirectCall() == true) {
 
+							var caption = new GUIContent(string.Format("{0} ({1})", win.title, win.directory));
+
 							var count = alreadyConnectedFunctionIds.Count((e) => e == win.id);
 							if ((window.GetLinkerId() == win.id && count == 1) || count == 0) {
 
 								var id = win.id;
-								menu.AddItem(new GUIContent(win.title), win.id == window.GetLinkerId(), () => {
+								menu.AddItem(caption, win.id == window.GetLinkerId(), () => {
 
-									window.linkerId = id;
+									onApply(id);
 
 								});
 
@@ -406,7 +446,7 @@ namespace UnityEditor.UI.Windows.Plugins.Linker {
 								if (win.id == window.GetLinkerId()) window.linkerId = 0;
 
 								alreadyConnectedFunctionIds.Remove(win.id);
-								menu.AddDisabledItem(new GUIContent(win.title));
+								menu.AddDisabledItem(caption);
 
 							}
 

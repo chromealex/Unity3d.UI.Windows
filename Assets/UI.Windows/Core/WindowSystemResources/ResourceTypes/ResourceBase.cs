@@ -29,7 +29,7 @@ namespace UnityEngine.UI.Windows {
 			
 		};
 
-		public enum Platform {
+		public enum Platform : byte {
 
 			Standalone,
 			iOS,
@@ -103,6 +103,50 @@ namespace UnityEngine.UI.Windows {
 		public long GetId() {
 
 			return this.id;
+
+		}
+
+		public void Unload(Object item) {
+
+			Resources.UnloadAsset(item);
+
+		}
+
+		public void Unload() {
+
+			var obj = this.loadedObject;
+			this.loadedObject = null;
+			this.loadedObjectId = 0;
+			this.loaded = false;
+			if (obj != null) Resources.UnloadAsset(obj);
+
+		}
+
+		public T Load<T>() where T : Object {
+
+			if (this.loadedObject != null) {
+
+				return this.loadedObject as T;
+
+			}
+
+			#region Load Resource
+			if (this.loadableResource == true) {
+
+				this.loadedObject = Resources.Load<T>(this.resourcesPath);
+				if (this.loadedObject != null) {
+					
+					this.loadedObjectId = this.loadedObject.GetInstanceID();
+					this.loaded = true;
+
+					return this.loadedObject as T;
+
+				}
+
+			}
+			#endregion
+
+			return null;
 
 		}
 
@@ -251,12 +295,6 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-		}
-		
-		public void Unload(Object item) {
-			
-			Resources.UnloadAsset(item);
-			
 		}
 
 		public string GetStreamPath() {

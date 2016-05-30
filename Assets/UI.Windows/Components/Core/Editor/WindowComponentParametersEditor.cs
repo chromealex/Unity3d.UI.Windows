@@ -56,7 +56,9 @@ namespace UnityEditor.UI.Windows.Components {
 
 		public override void OnInspectorGUI() {
 
-			if (this.targets.Length != 1) {
+			EditorGUILayout.HelpBox("Do not destroy this object", MessageType.Info);
+
+			/*if (this.targets.Length != 1) {
 
 				EditorGUILayout.HelpBox("Can't edit multiply objects.", MessageType.Warning);
 				return;
@@ -66,7 +68,7 @@ namespace UnityEditor.UI.Windows.Components {
 			var oldState = GUI.enabled;
 			GUI.enabled = false;
 			this.DrawDefaultInspector();
-			GUI.enabled = oldState;
+			GUI.enabled = oldState;*/
 
 		}
 

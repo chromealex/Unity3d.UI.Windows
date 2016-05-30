@@ -27,7 +27,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 			this.onResult = onResult;
 			client = new TcpClientDebug(name);
 //			client.NoDelay = true;
-			Debug.Log(name + " C: Connect(" + endConnected + ")");
+			//Debug.Log(name + " C: Connect(" + endConnected + ")");
 			endConnected = false;
 			client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
             isHead = true;
@@ -52,8 +52,8 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 				endConnected = true;
 
 				Log();
-				Debug.Log(string.Format("R/W stream.Timeout: {0}/{1} client.Timeout: {2}/{3} client.Buffer: {4}/{5} ",
-						this.stream.ReadTimeout, this.stream.WriteTimeout, this.client.ReceiveTimeout, this.client.SendTimeout, this.client.ReceiveBufferSize, this.client.SendBufferSize));
+				//Debug.Log(string.Format("R/W stream.Timeout: {0}/{1} client.Timeout: {2}/{3} client.Buffer: {4}/{5} ",
+				//		this.stream.ReadTimeout, this.stream.WriteTimeout, this.client.ReceiveTimeout, this.client.SendTimeout, this.client.ReceiveBufferSize, this.client.SendBufferSize));
 				if (this.onResult != null) this.onResult.Invoke(true);
             } catch(Exception e) {
 				if (this.onResult != null) this.onResult.Invoke(false);
@@ -134,7 +134,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
         public void Close() {
-			Debug.Log(name + " C: close(" + endConnected + ")");
+			//Debug.Log(name + " C: close(" + endConnected + ")");
 			this.endConnected = false;
 			if (this.client != null) {
 				Log();
@@ -150,10 +150,10 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		 * Temporarily, debug purposes
 		 */
 		public void Log() {
-			var client = this.client;
-            Debug.Log(name + " C: " + client.GetHashCode() + "(" + client.Connected + ")"
-                + " S: " + stream.GetHashCode() + "(" + stream.CanRead + "/" + stream.CanWrite + ")"
-                + " So: " + client.Client.GetHashCode() + "(" + client.Client.Connected + ")");
+			//var client = this.client;
+            //Debug.Log(name + " C: " + client.GetHashCode() + "(" + client.Connected + ")"
+            //    + " S: " + stream.GetHashCode() + "(" + stream.CanRead + "/" + stream.CanWrite + ")"
+            //    + " So: " + client.Client.GetHashCode() + "(" + client.Client.Connected + ")");
 		}
 
         public delegate void OnRevMsg(short type, byte[] msg);

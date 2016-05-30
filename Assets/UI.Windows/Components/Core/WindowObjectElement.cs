@@ -472,7 +472,9 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private void Update_EDITOR() {
-			
+
+			if (Application.isPlaying == true) return;
+
 			this.SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
 
 			if (this.autoRegisterSubComponents == true) {

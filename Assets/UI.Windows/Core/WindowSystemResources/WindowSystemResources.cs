@@ -60,7 +60,7 @@ namespace UnityEngine.UI.Windows {
 		public WindowSystemResourcesMap resourcesMap;
 
 		public List<Item> loaded = new List<Item>();
-		private Dictionary<int, Coroutine> loading = new Dictionary<int, Coroutine>();
+		//private Dictionary<int, Coroutine> loading = new Dictionary<int, Coroutine>();
 
 		private static WindowSystemResources instance;
 
@@ -183,9 +183,9 @@ namespace UnityEngine.UI.Windows {
 
 		private void LoadAndSetup_INTERNAL<T>(IImageComponent image, Graphic graphic, System.Action<T> callbackOnLoad, string customResourcePath = null) where T : Object {
 
-			var key = (image as WindowComponent).GetInstanceID();
+			//var key = (image as WindowComponent).GetInstanceID();
 
-			Coroutine coroutine;
+			//Coroutine coroutine;
 			/*if (this.loading.TryGetValue(key, out coroutine) == true) {
 
 				this.StopCoroutine(coroutine);
@@ -210,7 +210,7 @@ namespace UnityEngine.UI.Windows {
 			Item item;
 			if (this.IsLoaded<T>(image as WindowComponent, image.GetResource(), out item, callbackOnLoad) == false) {
 				
-				coroutine = this.StartCoroutine(image.GetResource().Load<T>(image, graphic, customResourcePath, (data) => {
+				/*coroutine = */this.StartCoroutine(image.GetResource().Load<T>(image, graphic, customResourcePath, (data) => {
 
 					if (data == null) {
 
@@ -228,11 +228,11 @@ namespace UnityEngine.UI.Windows {
 					if (item.onObjectLoaded != null) item.onObjectLoaded.Invoke();
 					callbackOnLoad(data);
 
-					this.loading.Remove(key);
+					//this.loading.Remove(key);
 
 				}));
 
-				this.loading.Add(key, coroutine);
+				//this.loading.Add(key, coroutine);
 				
 			}
 
@@ -249,27 +249,27 @@ namespace UnityEngine.UI.Windows {
 
 					itemInner.references.Add(reference);
 
-					if (itemInner.loaded == false) {
+				} else {
 
-						System.Action callbackInner = null;
-						callbackInner = () => {
+					//Debug.LogError("IsLoaded returns `true` but reference already in list.", reference);
 
-							itemInner.onObjectLoaded -= callbackInner;
-							callback.Invoke(itemInner.@object as T);
+				}
 
-						};
+				if (itemInner.loaded == false) {
 
-						itemInner.onObjectLoaded += callbackInner;
+					System.Action callbackInner = null;
+					callbackInner = () => {
 
-					} else {
-						
-						callback(itemInner.@object as T);
+						itemInner.onObjectLoaded -= callbackInner;
+						callback.Invoke(itemInner.@object as T);
 
-					}
+					};
+
+					itemInner.onObjectLoaded += callbackInner;
 
 				} else {
 
-					Debug.LogError("IsLoaded returns `true` but reference already in list.", reference);
+					callback(itemInner.@object as T);
 
 				}
 

@@ -76,7 +76,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected void OnInit() {
+		protected virtual void OnInit() {
 		}
 
 		public ResourceAsyncOperation LoadTexture(IImageComponent component) {
@@ -389,114 +389,6 @@ namespace UnityEngine.UI.Windows.Movies {
 
 	}
 
-	#if UNITY_STANDALONE || UNITY_EDITOR
-	[System.Serializable]
-	public class MovieStandaloneModule : MovieModuleBase {
-		
-		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
-			
-			var filePath = resource.GetStreamPath();
-			if (filePath.Contains("://") == false) {
-				
-				filePath = "file:///" + filePath;
-				
-			}
-
-			var task = new WWW(filePath);
-			while (task.isDone == false) {
-
-				asyncOperation.SetValues(isDone: false, progress: task.progress, asset: null);
-				yield return false;
-				
-			}
-
-			var movie = task.movie;
-
-			asyncOperation.SetValues(isDone: false, progress: 1f, asset: movie);
-
-			task.Dispose();
-			task = null;
-			System.GC.Collect();
-
-			//Debug.LogWarning("GetTexture_YIELD: " + filePath + " :: " + movie.isReadyToPlay);
-
-			while (movie.isReadyToPlay == false) {
-				
-				yield return false;
-				
-			}
-
-			asyncOperation.SetValues(isDone: true, progress: 1f, asset: movie);
-
-		}
-
-		public override bool IsMovie(Texture texture) {
-
-			return texture is MovieTexture;
-
-		}
-		
-		protected override void OnPlay(ResourceBase resource, Texture movie) {
-			
-			var m = movie as MovieTexture;
-			if (m != null) {
-
-				m.Play();
-				
-			}
-
-		}
-
-		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop) {
-
-			var m = movie as MovieTexture;
-			if (m != null) {
-
-				m.loop = loop;
-				m.Play();
-				
-			}
-
-		}
-
-		protected override void OnPause(ResourceBase resource, Texture movie) {
-
-			var m = movie as MovieTexture;
-			if (m != null) {
-
-				m.Pause();
-
-			}
-
-		}
-		
-		protected override void OnStop(ResourceBase resource, Texture movie) {
-			
-			var m = movie as MovieTexture;
-			if (m != null) {
-				
-				m.Stop();
-				
-			}
-
-		}
-
-		protected override bool IsPlaying(ResourceBase resource, Texture movie) {
-			
-			var m = movie as MovieTexture;
-			if (m != null) {
-				
-				return m.isPlaying;
-				
-			}
-
-			return false;
-
-		}
-
-	}
-	#endif
-	
 	#if UNITY_IPHONE
 	[System.Serializable]
 	public class MovieIOSModule : MovieModuleBase {

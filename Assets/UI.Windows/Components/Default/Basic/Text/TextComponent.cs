@@ -82,8 +82,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		[SerializeField]
 		private bool valueAnimate = false;
-		[EndGroup]
-		[SerializeField][ReadOnly("valueAnimate", state: false)]
+		[SerializeField][EndGroupReadOnly("valueAnimate", state: false)]
 		private float valueAnimateDuration = 2f;
 		private long valueAnimateLastValue;
 		private long tempLastValue = long.MinValue;

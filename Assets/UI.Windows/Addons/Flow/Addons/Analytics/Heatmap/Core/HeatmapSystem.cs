@@ -117,6 +117,8 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 		private static Vector3 GetScreenPoint(WindowComponent component, Vector3 worldPoint) {
 
 		    var window = component.GetWindow();
+			if (window == null) return Vector3.zero;
+
 		    var cam = window.workCamera;
             return cam.WorldToScreenPoint(worldPoint);
 			

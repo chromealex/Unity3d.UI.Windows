@@ -505,7 +505,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public IImageComponent SetAlpha(float value) {
+		public IAlphaComponent SetAlpha(float value) {
 
 			var color = this.GetColor();
 			color.a = value;

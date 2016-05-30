@@ -18,6 +18,7 @@ namespace UnityEngine.UI.Windows.Animations {
 				AnchorMax = 0x4,
 				Scale = 0x8,
 				Rotation = 0x10,
+				Size = 0x20,
 				
 			};
 
@@ -36,6 +37,8 @@ namespace UnityEngine.UI.Windows.Animations {
 				public Vector2 scale;
 				[ReadOnly("<stateApply", state: (byte)ApplyTo.Rotation, bitMask: true)]
 				public Vector3 rotation;
+				[ReadOnly("<stateApply", state: (byte)ApplyTo.Size, bitMask: true)]
+				public Vector2 size;
 
 				public State() {
 				}
@@ -47,6 +50,7 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.to = rect.anchoredPosition;
 					this.scale = rect.localScale;
 					this.rotation = rect.localRotation.eulerAngles;
+					this.size = rect.sizeDelta;
 
 				}
 
@@ -57,6 +61,7 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.to = source.to;
 					this.scale = source.scale;
 					this.rotation = source.rotation;
+					this.size = source.size;
 
 				}
 
@@ -116,9 +121,15 @@ namespace UnityEngine.UI.Windows.Animations {
 				}
 
 				if ((this.stateApply & ApplyTo.Position) != 0) {
-					
+
 					rect.anchoredPosition = Vector2.Lerp(startState.to, resultState.to, value);
-					
+
+				}
+
+				if ((this.stateApply & ApplyTo.Size) != 0) {
+
+					rect.sizeDelta = Vector2.Lerp(startState.size, resultState.size, value);
+
 				}
 
 			}
@@ -150,9 +161,15 @@ namespace UnityEngine.UI.Windows.Animations {
 				}
 
 				if ((this.stateApply & ApplyTo.Position) != 0) {
-					
+
 					rect.anchoredPosition = state.to;
-					
+
+				}
+
+				if ((this.stateApply & ApplyTo.Size) != 0) {
+
+					rect.sizeDelta = state.size;
+
 				}
 
 			}

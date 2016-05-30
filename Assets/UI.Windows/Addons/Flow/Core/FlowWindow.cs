@@ -1008,7 +1008,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		public override string ToString() {
 
-			return this.id.ToString() + "_" + this.title;
+			return this.id.ToString() + "_" + this.title + (this.CanCompiled() == true ? string.Empty : "*");
 
 		}
 

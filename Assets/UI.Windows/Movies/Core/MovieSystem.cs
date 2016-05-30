@@ -210,7 +210,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void InitializeModule_INTERNAL() {
+		protected virtual void InitializeModule_INTERNAL() {
 
 			#if UNITY_STANDALONE || UNITY_EDITOR
 			this.movieModule = new MovieStandaloneModule();

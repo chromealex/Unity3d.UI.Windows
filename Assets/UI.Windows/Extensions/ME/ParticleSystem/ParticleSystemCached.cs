@@ -154,7 +154,7 @@ namespace ME {
 
 				}
 
-			} else {
+			} else if(this.mainParticleSystemItem != null) {
 
 				this.mainParticleSystemItem.SetStartAlpha(alpha);
 
@@ -178,9 +178,9 @@ namespace ME {
 
 				}
 
-			} else {
+			} else if (this.mainParticleSystemItem != null) {
 
-				this.mainParticleSystemItem.SetStartColor(color);
+                this.mainParticleSystemItem.SetStartColor(color);
 
 			}
 
@@ -196,9 +196,9 @@ namespace ME {
 
 				}
 
-			} else {
-				
-				this.mainParticleSystemItem.SetTime(time);
+			} else if (this.mainParticleSystemItem != null) {
+
+                this.mainParticleSystemItem.SetTime(time);
 				
 			}
 
@@ -214,9 +214,9 @@ namespace ME {
 
 				}
 
-			} else {
+			} else if (this.mainParticleSystemItem != null) {
 
-				this.mainParticleSystemItem.Rewind(time, noRestart);
+                this.mainParticleSystemItem.Rewind(time, noRestart);
 
 			}
 
@@ -238,9 +238,9 @@ namespace ME {
 
 				}
 
-			} else {
+			} else if (this.mainParticleSystemItem != null) {
 
-				this.mainParticleSystemItem.Play();
+                this.mainParticleSystemItem.Play();
 
 			}
 
@@ -285,9 +285,9 @@ namespace ME {
 
 	            }
 
-	        } else {
+	        } else if (this.mainParticleSystemItem != null) {
 
-				this.mainParticleSystemItem.Stop(reset: resetOnStop);
+                this.mainParticleSystemItem.Stop(reset: resetOnStop);
 
 	        }
 	        
@@ -303,9 +303,9 @@ namespace ME {
 
 				}
 			
-			} else {
+			} else if (this.mainParticleSystemItem != null) {
 
-				this.mainParticleSystemItem.Stop(time);
+                this.mainParticleSystemItem.Stop(time);
 
 			}
 

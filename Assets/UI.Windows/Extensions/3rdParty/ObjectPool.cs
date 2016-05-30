@@ -359,8 +359,54 @@ namespace UnityEngine.Extensions {
 
 	}
 
+	public enum TransformEntity : uint {
+		PositionX = 0x1,
+		PositionY = 0x2,
+		PositionZ = 0x4,
+		Position = PositionX | PositionY | PositionZ,
+		RotationX = 0x8,
+		RotationY = 0x10,
+		RotationZ = 0x20,
+		Rotation = RotationX | RotationY | RotationZ,
+		ScaleX = 0x40,
+		ScaleY = 0x80,
+		ScaleZ = 0x100,
+		Scale = ScaleX | ScaleY | ScaleZ,
+		All = Position | Rotation | Scale,
+	};
+
 	public static class TransformExtensions {
-		
+
+		public static void ResetTransform<T>(this T source, TransformEntity entities = TransformEntity.All) where T : Component {
+
+			source.transform.ResetTransform(entities);
+
+		}
+
+		public static void ResetTransform(this Transform source, TransformEntity entities = TransformEntity.All) {
+
+			var position = source.localPosition;
+			var rotation = source.localRotation.eulerAngles;
+			var scale = source.localScale;
+
+			if ((entities & TransformEntity.PositionX) != 0) position.Scale(new Vector3(0f, 1f, 1f));
+			if ((entities & TransformEntity.PositionY) != 0) position.Scale(new Vector3(1f, 0f, 1f));
+			if ((entities & TransformEntity.PositionZ) != 0) position.Scale(new Vector3(1f, 1f, 0f));
+
+			if ((entities & TransformEntity.RotationX) != 0) rotation.Scale(new Vector3(0f, 1f, 1f));
+			if ((entities & TransformEntity.RotationY) != 0) rotation.Scale(new Vector3(1f, 0f, 1f));
+			if ((entities & TransformEntity.RotationZ) != 0) rotation.Scale(new Vector3(1f, 1f, 0f));
+
+			if ((entities & TransformEntity.ScaleX) != 0) scale.x = 1f;
+			if ((entities & TransformEntity.ScaleY) != 0) scale.y = 1f;
+			if ((entities & TransformEntity.ScaleZ) != 0) scale.z = 1f;
+
+			source.localPosition = position;
+			source.localRotation = Quaternion.Euler(rotation);
+			source.localScale = scale;
+
+		}
+
 		public static void SetParent<T1, T2>(this T1 instance,
 		                                     T2 source,
 		                                     bool setTransformAsSource = true,

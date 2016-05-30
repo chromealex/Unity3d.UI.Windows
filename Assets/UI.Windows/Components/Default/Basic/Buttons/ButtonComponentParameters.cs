@@ -145,7 +145,7 @@ namespace UnityEngine.UI.Windows.Components {
 			[ParamFlag(ParameterFlag.BP7)] public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
 			[ParamFlag(ParameterFlag.BP3)] public Texture rawImage;
 			[ParamFlag(ParameterFlag.BP4)] public Color imageColor = Color.white;
-			[ParamFlag(ParameterFlag.BP5)] public bool playOnStart = false;
+			[ParamFlag(ParameterFlag.BP5)] public bool playOnShow = false;
 			[ParamFlag(ParameterFlag.BP6)] public bool loop = false;
 	
 			public void Setup(IImageComponent component) {
@@ -155,7 +155,7 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.IsChanged(ParameterFlag.BP3) == true) component.SetImage(this.rawImage);
 				if (this.IsChanged(ParameterFlag.BP7) == true) component.SetImage(this.imageLocalizationKey);
 				if (this.IsChanged(ParameterFlag.BP4) == true) component.SetColor(this.imageColor);
-				if (this.IsChanged(ParameterFlag.BP5) == true) component.SetPlayOnShow(this.playOnStart);
+				if (this.IsChanged(ParameterFlag.BP5) == true) component.SetPlayOnShow(this.playOnShow);
 				if (this.IsChanged(ParameterFlag.BP6) == true) component.SetLoop(this.loop);
 	
 			}

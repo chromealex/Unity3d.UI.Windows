@@ -157,12 +157,15 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="onInstance">On instance.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T DoFlow<T>(IFunctionIteration screen, AttachItem item, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null) where T : WindowBase {
-
+			
 			var newWindow = WindowSystem.Show<T>(
-				transitionItem: item,
-				afterGetInstance: (w) => { if (onInstance != null) onInstance(w); w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex()); },
-				onParametersPassCall: onParametersPassCall
-			);
+                transitionItem: item,
+                afterGetInstance: (w) => {
+					
+					if (onInstance != null) onInstance(w);
+					w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex());
+
+				}, onParametersPassCall: onParametersPassCall);
 
 			WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);
 

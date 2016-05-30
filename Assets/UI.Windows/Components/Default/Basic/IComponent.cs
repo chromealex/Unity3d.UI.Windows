@@ -126,8 +126,14 @@ namespace UnityEngine.UI.Windows.Components {
 		ITextComponent SetBestFitMaxSize(int value);
 
 	}
-	
-	public interface IImageComponent : IComponent, ILoadableResource {
+
+	public interface IAlphaComponent {
+
+		IAlphaComponent SetAlpha(float value);
+
+	}
+
+	public interface IImageComponent : IComponent, IAlphaComponent, ILoadableResource {
 		
 		Texture GetTexture();
 
@@ -146,7 +152,6 @@ namespace UnityEngine.UI.Windows.Components {
 		IImageComponent SetMaterial(Material material);
 		Color GetColor();
 		void SetColor(Color color);
-		IImageComponent SetAlpha(float value);
 		IImageComponent SetPreserveAspectState(bool state);
 
 		bool IsMovie();

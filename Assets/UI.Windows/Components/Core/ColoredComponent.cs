@@ -13,7 +13,12 @@ namespace UnityEngine.UI.Windows.Components {
 		public void SetColors(Color color) {
 			
 			this.color = color;
-			for (int i = 0; i < this.images.Length; ++i) this.images[i].color = color;
+			for (int i = 0; i < this.images.Length; ++i) {
+
+				var image = this.images[i];
+				if (image != null && image.IsDestroyed() == false) image.color = color;
+
+			}
 			
 		}
 

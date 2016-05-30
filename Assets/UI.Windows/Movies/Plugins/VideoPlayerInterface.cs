@@ -145,13 +145,17 @@ public class VideoPlayerInterface {
 					var w = 0;
 					var h = 0;
 					this.GetSize(out w, out h);
+					#if UNITY_IPHONE
 					this._videoTexture = Texture2D.CreateExternalTexture(w, h, TextureFormat.BGRA32, false, false, (System.IntPtr)nativeTex);
 					this._videoTexture.filterMode = FilterMode.Bilinear;
 					this._videoTexture.wrapMode = TextureWrapMode.Repeat;
+					#endif
 
 				}
 
+				#if UNITY_IPHONE
 				this._videoTexture.UpdateExternalTexture((System.IntPtr)nativeTex);
+				#endif
 
 			} else {
 

@@ -363,7 +363,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			}
 
 			var filepath = projectFolder + "/" + projectNamespace;
-			var data = ME.EditorUtilities.CreateAsset<FlowData>(filepath);
+			var data = ME.EditorUtilities.CreateAssetFromFilepath<FlowData>(filepath);
 			data.flowView = FlowView.Layout | FlowView.Transitions;
 			data.namespaceName = projectNamespace;
 			data.version = VersionInfo.BUNDLE_VERSION;

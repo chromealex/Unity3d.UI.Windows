@@ -59,7 +59,7 @@ namespace UnityEngine.UI.Windows {
 				
 				var imp = UnityEditor.TextureImporter.GetAtPath(this.assetPath) as UnityEditor.TextureImporter;
 				this.multiObjects = false;
-				if (imp.spriteImportMode == UnityEditor.SpriteImportMode.Multiple) {
+				if (imp != null && imp.spriteImportMode == UnityEditor.SpriteImportMode.Multiple) {
 
 					var allObjects = Resources.LoadAll(this.resourcesPath);
 					this.multiObjects = true;

@@ -87,7 +87,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 
 		private void Disconnect(System.Action<bool> onResult = null) {
-			Debug.Log("Closing stat");
+			//Debug.Log("Closing stat");
 
 			this.authTO = null;
 			this.net.Close();

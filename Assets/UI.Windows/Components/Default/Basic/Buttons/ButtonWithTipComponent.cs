@@ -89,7 +89,13 @@ namespace UnityEngine.UI.Windows.Components {
 		public TipWindowType.ShowPriority tipShowPriority = TipWindowType.ShowPriority.Up;
 
 		private TipWindowType infoWindow;
-		
+
+		public void OnDisable() {
+
+			this.SetState(state: false);
+
+		}
+
 		public override void OnInit() {
 			
 			base.OnInit();

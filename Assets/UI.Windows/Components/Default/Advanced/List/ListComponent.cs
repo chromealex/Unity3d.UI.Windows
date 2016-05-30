@@ -240,8 +240,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.Refresh();
 
+			this.OnNewItem(instance);
+
 			return (T)(instance as IComponent);
 
+		}
+
+		public virtual void OnNewItem(WindowComponent instance) {
 		}
 
 		public int GetIndexOf<T>(T item) where T : IComponent {
@@ -311,15 +316,30 @@ namespace UnityEngine.UI.Windows.Components {
 			});
 
 		}
-		
+
 		public void ForEach(UnityAction<IComponent, int> onItem = null) {
 
 			for (int i = 0, capacity = this.Count(); i < capacity; ++i) {
-				
+
 				var instance = this.GetItem(i);
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
-				
+
 			}
+
+		}
+
+		public IEnumerator ForEachAsync<T>(UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
+
+			for (int i = 0, capacity = this.Count(); i < capacity; ++i) {
+
+				var instance = this.GetItem<T>(i);
+				if (instance != null && onItem != null) onItem.Invoke(instance, i);
+
+				yield return false;
+
+			}
+
+			if (onComplete != null) onComplete.Invoke();
 
 		}
 
@@ -356,10 +376,18 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public virtual void SetItemsAsync<T>(int capacity, UnityAction onComplete, UnityAction<T, int> onItem = null) where T : IComponent {
-			
-			this.Clear();
 
 			this.StopAllCoroutines();
+
+			if (capacity == this.Count() && capacity > 0) {
+
+				this.StartCoroutine(this.ForEachAsync<T>(onComplete, onItem));
+				return;
+
+			}
+
+			this.Clear();
+
 			this.StartCoroutine(this.SetItemsAsync_INTERNAL(capacity, onComplete, onItem));
 
 		}

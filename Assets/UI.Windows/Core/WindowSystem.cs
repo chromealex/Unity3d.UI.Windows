@@ -358,6 +358,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void SendManualEvent<T>(T data) where T : IManualEvent {
+
+			WindowSystem.ForEachWindow(w => w.OnManualEvent<T>(data));
+
+		}
+
 		public static void ForEachWindow(System.Action<WindowBase> onEach) {
 
 			foreach (var window in WindowSystem.instance.currentWindows) {

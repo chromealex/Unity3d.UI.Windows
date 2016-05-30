@@ -103,13 +103,10 @@ namespace ME {
 
 		}
 
-		private Color ApplyColor(Color baseColor, Color color) {
+		private Color ApplyColor(ref Color baseColor, Color color) {
 
-			return new Color(
-				Mathf.Lerp(0f, baseColor.r, baseColor.r + color.r),
-				Mathf.Lerp(0f, baseColor.g, baseColor.g + color.g),
-				Mathf.Lerp(0f, baseColor.b, baseColor.b + color.b),
-				Mathf.Lerp(0f, baseColor.a, color.a));
+            baseColor = new Color(color.r, color.g, color.b, baseColor.a);
+            return new Color(color.r, color.g, color.b, color.a * baseColor.a);
 
 		}
 
@@ -141,8 +138,8 @@ namespace ME {
 
 			if (this.startColor.minMaxState == MinMaxState.MaxColor) {
 
-				var _color = this.ApplyColor(this.startColor.maxColor, color);
-				this.particleSystem.startColor = _color;
+				var _color = this.ApplyColor(ref this.startColor.maxColor, color);
+                this.particleSystem.startColor = _color;
 				this.SetColor_PARTICLES(_color);
 
 			}
@@ -155,8 +152,8 @@ namespace ME {
 
 			if (this.startColor.minMaxState == MinMaxState.MinMaxColor) {
 
-				var _minColor = this.ApplyColor(this.startColor.minColor, minColor);
-				var _maxColor = this.ApplyColor(this.startColor.maxColor, maxColor);
+				var _minColor = this.ApplyColor(ref this.startColor.minColor, minColor);
+				var _maxColor = this.ApplyColor(ref this.startColor.maxColor, maxColor);
 
 				this.SetColor_REFLECTION(this.particleSystem, "minColor", _minColor);
 				this.particleSystem.startColor = _maxColor;
