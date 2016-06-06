@@ -96,6 +96,8 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 			//var data = FlowSystem.GetData();
 
+			if (settings == null) return;
+
 			GUILayout.Label("URL:");
 			var newKey = GUILayout.TextArea(settings.url);
 			if (newKey != settings.url) {

@@ -94,6 +94,8 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 		#if UNITY_EDITOR
 		protected override void OnInspectorGUI(GameDataSettings settings, GameDataServiceItem item, System.Action onReset, GUISkin skin) {
 
+			if (settings == null) return;
+
 			var data = FlowSystem.GetData();
 			if (data == null) return;
 
