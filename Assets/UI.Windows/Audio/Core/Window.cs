@@ -98,6 +98,8 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 
 		// Events
+		public void DoWindowActive() { }
+		public void DoWindowInactive() { }
 		public void DoInit() { }
 		public void DoDeinit() { }
 		public void DoShowEnd(AppearanceParameters parameters) { }

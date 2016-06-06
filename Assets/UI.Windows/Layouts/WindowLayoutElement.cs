@@ -120,9 +120,17 @@ namespace UnityEngine.UI.Windows {
 
 		private void OnDrawGUI_EDITOR(bool selected, bool selectedHierarchy) {
 
+			ME.EditorUtilities.BeginDraw();
+
 			var scale = 1f;
 			var canvas = this.GetComponentsInParent<Canvas>().FirstOrDefault((c) => c.isRootCanvas);
 			if (canvas != null) scale = canvas.transform.localScale.x;
+
+			var arrowsSize = 80f * scale;
+			if (this.navigation.left != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.left.transform.position, arrowsSize);
+			if (this.navigation.right != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.right.transform.position, arrowsSize);
+			if (this.navigation.up != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.up.transform.position, arrowsSize);
+			if (this.navigation.down != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.down.transform.position, arrowsSize);
 
 			var textStyle = new GUIStyle(GUI.skin.label);
 			textStyle.fontStyle = FontStyle.Normal;
@@ -212,6 +220,8 @@ namespace UnityEngine.UI.Windows {
 			color = Color.white;
 			color.a = 0.5f;
 			UnityEditor.Handles.color = color;
+
+			ME.EditorUtilities.EndDraw();
 
 		}
 

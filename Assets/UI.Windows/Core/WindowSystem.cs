@@ -440,6 +440,60 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public static void SetInactiveByWindow(WindowBase newWindow) {
+
+			var layer = newWindow.preferences.layer;
+			var depth = newWindow.GetDepth();
+
+			var allWindows = WindowSystem.instance.currentWindows;
+			for (int i = 0; i < allWindows.Count; ++i) {
+
+				var window = allWindows[i];
+				if (window.preferences.layer < layer) {
+
+					window.SetInactive();
+
+				} else if (window.preferences.layer == layer) {
+
+					if (window.GetDepth() < depth) {
+
+						window.SetInactive();
+
+					}
+
+				}
+
+			}
+
+		}
+
+		public static void SetActiveByWindow(WindowBase closingWindow) {
+
+			var layer = closingWindow.preferences.layer;
+			var depth = closingWindow.GetDepth();
+
+			var allWindows = WindowSystem.instance.currentWindows;
+			for (int i = 0; i < allWindows.Count; ++i) {
+
+				var window = allWindows[i];
+				if (window.preferences.layer < layer) {
+
+					window.SetActive();
+
+				} else if (window.preferences.layer == layer) {
+
+					if (window.GetDepth() < depth) {
+
+						window.SetActive();
+
+					}
+
+				}
+
+			}
+
+		}
+
 		public static void UpdateLastInstance() {
 
 			if (WindowSystem.instance == null) return;
@@ -448,21 +502,21 @@ namespace UnityEngine.UI.Windows {
 			if (lastInstance != WindowSystem.instance.lastInstance) {
 
 				WindowSystem.instance.previousInstance = WindowSystem.instance.lastInstance;
-				if (WindowSystem.instance.previousInstance != null) {
+				/*if (WindowSystem.instance.previousInstance != null) {
 
 					WindowSystem.instance.previousInstance.SetInactive();
 
-				}
+				}*/
 
 			}
 
 			WindowSystem.instance.lastInstance = lastInstance;
 
-			if (WindowSystem.instance.lastInstance != null) {
+			/*if (WindowSystem.instance.lastInstance != null) {
 				
 				WindowSystem.instance.lastInstance.SetActive();
 				
-			}
+			}*/
 
 		}
 

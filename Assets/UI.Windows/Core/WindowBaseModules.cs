@@ -79,7 +79,9 @@ namespace UnityEngine.UI.Windows {
 					return this.instance as T;
 					
 				}
-				
+
+				public void DoWindowActive() { if (this.instance != null) this.instance.DoWindowActive(); }
+				public void DoWindowInactive() { if (this.instance != null) this.instance.DoWindowInactive(); }
 				public void DoInit() { if (this.instance != null) this.instance.DoInit(); }
 				public void DoDeinit() { if (this.instance != null) this.instance.DoDeinit(); }
 				public void DoShowBegin(AppearanceParameters parameters) {
@@ -151,9 +153,14 @@ namespace UnityEngine.UI.Windows {
 				foreach (var element in this.elements) {
 					
 					element.Create(window, modulesRoot);
-					
+					if (window.GetActiveState() == ActiveState.Active) {
+
+						element.DoWindowActive();
+
+					}
+
 				}
-				
+
 			}
 			
 			public float GetAnimationDuration(bool forward) {
@@ -188,6 +195,8 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			// Events
+			public void DoWindowActive() { foreach (var element in this.elements) element.DoWindowActive(); }
+			public void DoWindowInactive() { foreach (var element in this.elements) element.DoWindowInactive(); }
 			public void DoInit() { foreach (var element in this.elements) element.DoInit(); }
 			public void DoDeinit() { foreach (var element in this.elements) element.DoDeinit(); }
 			public void DoShowBegin(AppearanceParameters parameters) {
@@ -417,10 +426,18 @@ namespace UnityEngine.UI.Windows {
 			[System.Serializable]
 			public class OnHideEnd : UnityEvent {}
 			public OnHideEnd onHideEnd = new OnHideEnd();
-			
+
 			[System.Serializable]
 			public class OnWindowOpen : UnityEvent {}
 			public OnWindowOpen onWindowOpen = new OnWindowOpen();
+
+			[System.Serializable]
+			public class OnWindowActive : UnityEvent {}
+			public OnWindowActive onWindowActive = new OnWindowActive();
+
+			[System.Serializable]
+			public class OnWindowInactive : UnityEvent {}
+			public OnWindowInactive onWindowInactive = new OnWindowInactive();
 
 			public void Clear() {
 
@@ -429,6 +446,8 @@ namespace UnityEngine.UI.Windows {
 				this.onHideBegin.RemoveAllListeners();
 				this.onHideEnd.RemoveAllListeners();
 				this.onWindowOpen.RemoveAllListeners();
+				this.onWindowActive.RemoveAllListeners();
+				this.onWindowInactive.RemoveAllListeners();
 
 			}
 			
@@ -454,6 +473,14 @@ namespace UnityEngine.UI.Windows {
 						
 					case WindowEventType.OnWindowOpen:
 						this.onWindowOpen.AddListener(callback);
+						break;
+
+					case WindowEventType.OnWindowActive:
+						this.onWindowActive.AddListener(callback);
+						break;
+
+					case WindowEventType.OnWindowInactive:
+						this.onWindowInactive.AddListener(callback);
 						break;
 
 				}
@@ -484,6 +511,14 @@ namespace UnityEngine.UI.Windows {
 						this.onWindowOpen.RemoveListener(callback);
 						break;
 
+					case WindowEventType.OnWindowActive:
+						this.onWindowActive.RemoveListener(callback);
+						break;
+
+					case WindowEventType.OnWindowInactive:
+						this.onWindowInactive.RemoveListener(callback);
+						break;
+
 				}
 				
 			}
@@ -507,9 +542,17 @@ namespace UnityEngine.UI.Windows {
 					case WindowEventType.OnHideEnd:
 						this.onHideEnd.Invoke();
 						break;
-						
+
 					case WindowEventType.OnWindowOpen:
 						this.onWindowOpen.Invoke();
+						break;
+
+					case WindowEventType.OnWindowActive:
+						this.onWindowActive.Invoke();
+						break;
+
+					case WindowEventType.OnWindowInactive:
+						this.onWindowInactive.Invoke();
 						break;
 
 				}
@@ -539,6 +582,18 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		// Events
+		public void DoWindowActive() {
+
+			this.ReleaseEvents(WindowEventType.OnWindowActive);
+
+		}
+
+		public void DoWindowInactive() {
+
+			this.ReleaseEvents(WindowEventType.OnWindowInactive);
+
+		}
+
 		public void DoInit() {
 
 			this.ReleaseEvents(WindowEventType.OnInit);
@@ -626,7 +681,10 @@ namespace UnityEngine.UI.Windows {
 		public DontDestroy dontDestroy = DontDestroy.OnSceneChange;
 		[BitMask(typeof(History))]
 		public History history = History.Auto;
-		
+
+		[Tooltip("Send Active/Inactive states on Show/Hide")]
+		public bool sendActiveState = true;
+
 		[Tooltip("Forces one instance only on scene")]
 		public bool forceSingleInstance = false;
 		[ReadOnly("forceSingleInstance", state: false)][Tooltip("Ignores `new` instance initialize and layout events")]
@@ -711,6 +769,8 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		// Events
+		public void DoWindowActive() { }
+		public void DoWindowInactive() { }
 		public void DoInit() {
 
 			if (this.transition != null) this.transition.OnInit();

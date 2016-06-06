@@ -18,6 +18,8 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public bool showOnStart = true;
 
+		[SerializeField][ReadOnly]
+		protected WindowObjectElement rootComponent;
         [SerializeField][ReadOnly]
 		protected List<WindowObjectElement> subComponents = new List<WindowObjectElement>();
 
@@ -92,6 +94,31 @@ namespace UnityEngine.UI.Windows {
             for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].Setup(window);
 
         }
+
+		/// <summary>
+		/// Raises the window open/close event.
+		/// Fires before OnShowBegin/OnHideBegin, but after OnInit/OnParametersPass/OnEmptyPass
+		/// </summary>
+		#region OnWindowOpen/Close
+		public virtual void DoWindowActive() {
+
+			this.OnWindowActive();
+
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowActive();
+
+		}
+
+		public virtual void DoWindowInactive() {
+
+			this.OnWindowInactive();
+
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowInactive();
+
+		}
+
+		public virtual void OnWindowActive() {}
+		public virtual void OnWindowInactive() {}
+		#endregion
 
 		/// <summary>
 		/// Raises the window open/close event.
@@ -285,7 +312,8 @@ namespace UnityEngine.UI.Windows {
 			
 			//Debug.Log("TRY REGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState(), this);
 			if (this.subComponents.Contains(subComponent) == false) {
-				
+
+				subComponent.rootComponent = this;
 				this.subComponents.Add(subComponent);
 				
 			} else {
@@ -302,6 +330,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						subComponent.DoInit();
+						subComponent.OnWindowActive();
 						
 					}
 
@@ -314,6 +343,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						subComponent.DoInit();
+						subComponent.OnWindowActive();
 						
 					}
 
@@ -327,6 +357,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						subComponent.DoInit();
+						subComponent.OnWindowActive();
 						
 					}
 
@@ -339,6 +370,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						subComponent.DoInit();
+						subComponent.OnWindowActive();
 						
 					}
 
@@ -357,6 +389,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						subComponent.DoInit();
+						subComponent.OnWindowActive();
 						
 					}
 
@@ -396,7 +429,8 @@ namespace UnityEngine.UI.Windows {
 			var sendCallback = true;
 
 			//Debug.Log("UNREGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState());
-			
+
+			subComponent.rootComponent = null;
 			this.subComponents.Remove(subComponent);
 
 			switch (this.GetComponentState()) {
@@ -404,6 +438,7 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Shown:
 
                     // after OnShowEnd
+					subComponent.OnWindowInactive();
 					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
 
 						subComponent.DoHideEnd(AppearanceParameters.Default());
@@ -420,6 +455,7 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Hiding:
 
                     // after OnHideBegin
+					subComponent.OnWindowInactive();
 					subComponent.DoHideBegin(AppearanceParameters.Default());
 
 					sendCallback = false;
@@ -430,6 +466,7 @@ namespace UnityEngine.UI.Windows {
                 case WindowObjectState.Hidden:
 
                     // after OnHideEnd
+					subComponent.OnWindowInactive();
 					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
 
 						subComponent.DoHideEnd(AppearanceParameters.Default());
@@ -474,6 +511,8 @@ namespace UnityEngine.UI.Windows {
 		private void Update_EDITOR() {
 
 			if (Application.isPlaying == true) return;
+
+			this.rootComponent = ME.Utilities.FindReferenceParent<WindowObjectElement>(this.transform.parent);
 
 			this.SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
 

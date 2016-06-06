@@ -12,6 +12,7 @@ namespace UnityEngine.UI.Windows {
 
 		#if UNITY_EDITOR
 		[Header("Module Editor")]
+		[TextArea]
 		public string comment;
 		#endif
 

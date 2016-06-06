@@ -88,6 +88,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		IButtonComponent SetSFX(PointerEventState state, Audio.Component data);
 
+		bool IsInteractable();
+
 	}
 	
 	public interface ITextComponent : IComponent {

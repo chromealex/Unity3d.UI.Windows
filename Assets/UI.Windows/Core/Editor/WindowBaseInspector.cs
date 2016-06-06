@@ -137,17 +137,13 @@ namespace UnityEditor.UI.Windows {
 
 				GUILayout.BeginHorizontal(backStyle);
 				{
-
-					if (win.preferences.IsHistoryActive() == true) {
-
-						GUILayout.BeginVertical();
-						{
-							GUILayout.Label("Active State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-							GUILayout.Label(activeState.enumNames[activeState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
-						}
-						GUILayout.EndVertical();
-						
+					
+					GUILayout.BeginVertical();
+					{
+						GUILayout.Label("Active State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
+						GUILayout.Label(activeState.enumNames[activeState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
 					}
+					GUILayout.EndVertical();
 
 					GUILayout.BeginVertical();
 					{

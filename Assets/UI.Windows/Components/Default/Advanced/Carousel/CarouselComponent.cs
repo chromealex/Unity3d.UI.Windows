@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public interface ICarouselItem {
+	public interface ICarouselItem : IComponent {
 
 		void OnSelect(int index, System.Action<int> callback);
 		void OnElementSelected(int index);
@@ -12,7 +12,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	};
 
-	public class CarouselComponent : ListComponent, ILayoutSelfController, IDragHandler, IBeginDragHandler, IEndDragHandler, IScrollHandler {
+	public class CarouselComponent : ListComponent, ILayoutSelfController, ILayoutGroup, IDragHandler, IBeginDragHandler, IEndDragHandler, IScrollHandler {
 
 		public enum Axis : byte {
 			Horizontal,
@@ -343,6 +343,16 @@ namespace UnityEngine.UI.Windows.Components {
 				this.targetValue = index;
 
 			}
+
+			/*if (this.value == this.targetValue) {
+
+				this.ArrangeItems();
+				var carouselItem = this.GetItem<ICarouselItem>(index);
+				if (carouselItem != null) carouselItem.OnElementSelected(index);
+
+				this.lastValue = this.value - 1f;
+
+			}*/
 
 		}
 

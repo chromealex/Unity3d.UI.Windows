@@ -23,6 +23,9 @@ namespace UnityEngine.UI.Windows {
 		WindowOpen,
 		WindowClose,
 
+		WindowActive,
+		WindowInactive,
+
 	};
 
 	[System.Serializable]

@@ -199,6 +199,7 @@ MonoBehaviour:
     layer: 0
     dontDestroy: 1
     history: 0
+    sendActiveState: 1
     forceSingleInstance: 0
     singleInstanceIgnoreActions: 0
     restoreSelectedElement: 1
@@ -272,10 +273,21 @@ MonoBehaviour:
           m_Calls: []
         m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowOpen, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowActive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowActive, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowInactive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowInactive,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   transition:
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
   activeState: 0
+  activeIteration: 0
   currentState: 0
   dragState: 0
   paused: 0
@@ -303,8 +315,15 @@ MonoBehaviour:
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 0}
   subComponents: []
   currentState: 0
+  navigation:
+    childIndex: 0
+    left: {fileID: 0}
+    right: {fileID: 0}
+    up: {fileID: 0}
+    down: {fileID: 0}
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0

@@ -267,6 +267,8 @@ namespace UnityEngine.UI.Windows {
 		OnHideBegin,
 		OnHideEnd,
 		OnWindowOpen,
+		OnWindowActive,
+		OnWindowInactive,
 
 	};
 

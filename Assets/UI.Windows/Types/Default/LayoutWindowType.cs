@@ -134,6 +134,18 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
+		protected override void DoLayoutActive() {
+
+			this.layout.DoWindowActive();
+
+		}
+
+		protected override void DoLayoutInactive() {
+
+			this.layout.DoWindowInactive();
+
+		}
+
 		protected override void DoLayoutShowBegin(AppearanceParameters parameters) {
 
 			this.layout.DoWindowOpen();
@@ -486,17 +498,29 @@ namespace UnityEngine.UI.Windows.Types {
 			this.instance.OnManualEvent<T>(data);
 			
 		}
-		
+
 		public void DoWindowOpen() {
-			
+
 			this.instance.DoWindowOpen();
-			
+
 		}
-		
+
 		public void DoWindowClose() {
-			
+
 			this.instance.DoWindowClose();
-			
+
+		}
+
+		public void DoWindowActive() {
+
+			this.instance.DoWindowActive();
+
+		}
+
+		public void DoWindowInactive() {
+
+			this.instance.DoWindowInactive();
+
 		}
 
 		#region Base Events

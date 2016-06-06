@@ -461,6 +461,35 @@ namespace ME {
 
 		}
 
+		private static int _controlId;
+		public static void BeginDraw() {
+
+			EditorUtilities._controlId = 0;
+
+		}
+
+		public static void EndDraw() {
+
+			EditorUtilities._controlId = 0;
+
+		}
+
+		public static void DrawArrow(Color color, Vector3 point, Vector3 target, float size) {
+
+			var offset = 0f;
+
+			++EditorUtilities._controlId;
+
+			var oldColor = UnityEditor.Handles.color;
+			UnityEditor.Handles.color = color;
+
+			UnityEditor.Handles.DrawLine(point, target);
+			UnityEditor.Handles.ArrowCap(EditorUtilities._controlId, target - (target - point).normalized * (size + offset), Quaternion.LookRotation(target - point), size);
+
+			UnityEditor.Handles.color = oldColor;
+
+		}
+
 		public static void DrawRectangle(Vector3[] points, Color fill, Color border, Color borderLines, float borderWidthPercent = 0.01f, bool horizontalDraw = true, bool verticalDraw = true) {
 			
 			var margin = Vector3.Distance(points[0], points[2]) * borderWidthPercent;

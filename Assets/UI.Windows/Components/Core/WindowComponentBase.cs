@@ -6,7 +6,7 @@ using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEngine.UI.Windows {
 
-    public class WindowComponentBase : WindowObjectElement, IWindowAnimation {
+	public class WindowComponentBase : WindowComponentNavigation, IWindowAnimation {
 
 		[Header("Animation Info")]
 		[SceneEditOnly]
@@ -46,7 +46,7 @@ namespace UnityEngine.UI.Windows {
 		public override void DoWindowOpen() {
 
 			base.DoWindowOpen();
-			
+
 			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowOpen);
 
 			this.manualShowHideControl = false;
@@ -56,13 +56,29 @@ namespace UnityEngine.UI.Windows {
 		public override void DoWindowClose() {
 
 			base.DoWindowClose();
-			
+
 			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowClose);
 
 			this.manualShowHideControl = false;
 
 		}
-		
+
+		public override void DoWindowActive() {
+
+			base.DoWindowActive();
+
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowActive);
+
+		}
+
+		public override void DoWindowInactive() {
+
+			base.DoWindowInactive();
+
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowInactive);
+
+		}
+
 		public string GetTag() {
 			
 			if (this.animationTag == null) this.animationTag = this.GetCustomTag("WindowComponentBase");

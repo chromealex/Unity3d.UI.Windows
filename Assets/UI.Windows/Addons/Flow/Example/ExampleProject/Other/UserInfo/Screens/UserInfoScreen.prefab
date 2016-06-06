@@ -118,6 +118,7 @@ MonoBehaviour:
     layer: 0
     dontDestroy: 3
     history: 0
+    sendActiveState: 1
     forceSingleInstance: 1
     singleInstanceIgnoreActions: 0
     restoreSelectedElement: 1
@@ -191,10 +192,21 @@ MonoBehaviour:
           m_Calls: []
         m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowOpen, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowActive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowActive, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowInactive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowInactive,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   transition:
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}
   activeState: 0
+  activeIteration: 0
   currentState: 0
   dragState: 0
   paused: 0

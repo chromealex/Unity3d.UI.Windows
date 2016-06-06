@@ -290,6 +290,18 @@ namespace UnityEngine.UI.Windows.Types {
 			
 		}
 
+		protected override void DoLayoutActive() {
+
+			this.animationRoot.DoWindowActive();
+
+		}
+
+		protected override void DoLayoutInactive() {
+
+			this.animationRoot.DoWindowInactive();
+
+		}
+
 		protected override void DoLayoutHideEnd(AppearanceParameters parameters) {
 
 			if (this.animationRoot != null) this.animationRoot.DoHideEnd(parameters);

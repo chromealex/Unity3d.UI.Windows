@@ -98,8 +98,12 @@ namespace ME {
 
 		public static T FindReferenceParent<T>(GameObject root) {
 
-			var items = root.GetComponentsInParent<T>(true);
-			if (items.Length > 0) return (T)items[0];
+			if (root != null) {
+
+				var items = root.GetComponentsInParent<T>(true);
+				if (items.Length > 0) return (T)items[0];
+
+			}
 
 			return default(T);
 
@@ -107,8 +111,12 @@ namespace ME {
 
 		public static T FindReferenceParent<T>(Component root) {
 
-            var items = root.GetComponentsInParent<T>(true);
-            if (items.Length > 0) return (T)items[0];
+			if (root != null) {
+				
+				var items = root.GetComponentsInParent<T>(true);
+				if (items.Length > 0) return (T)items[0];
+
+			}
 
             return default(T);
 

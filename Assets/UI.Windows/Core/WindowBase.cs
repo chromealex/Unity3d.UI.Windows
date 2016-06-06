@@ -48,6 +48,8 @@ namespace UnityEngine.UI.Windows {
 		[SerializeField][HideInInspector]
 		private ActiveState activeState = ActiveState.None;
 		[SerializeField][HideInInspector]
+		private int activeIteration = 0;
+		[SerializeField][HideInInspector]
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 		[SerializeField][HideInInspector]
 		private DragState dragState = DragState.None;
@@ -104,7 +106,13 @@ namespace UnityEngine.UI.Windows {
 
 		public virtual void OnCameraReset() {
 		}
-		
+
+		public float GetDepth() {
+
+			return this.workCamera.depth;
+
+		}
+
 		public void SetDepth(float depth, float zDepth) {
 			
 			var pos = this.transform.position;
@@ -195,6 +203,15 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				this.setup = true;
+
+			}
+
+			this.activeIteration = -1;
+			this.SetActive();
+
+			if (this.preferences.sendActiveState == true) {
+
+				WindowSystem.SetInactiveByWindow(this);
 
 			}
 
@@ -311,29 +328,61 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public ActiveState GetActiveState() {
+
+			return this.activeState;
+
+		}
+
 		public void SetActive() {
 
-			if (this.activeState != ActiveState.Active) {
+			++this.activeIteration;
 
-				this.activeState = ActiveState.Active;
-				this.OnActive();
+			if (this.activeIteration == 0) {
+
+				if (this.activeState != ActiveState.Active) {
+
+					this.activeState = ActiveState.Active;
+
+					this.DoLayoutActive();
+					this.modules.DoWindowActive();
+					this.audio.DoWindowActive();
+					this.events.DoWindowActive();
+					this.transition.DoWindowActive();
+					this.DoActive();
+
+				}
 
 			}
 
 		}
 
 		public void SetInactive() {
-			
-			if (this.activeState != ActiveState.Inactive) {
+
+			--this.activeIteration;
+
+			if (this.activeIteration == -1) {
 				
-				this.activeState = ActiveState.Inactive;
-				this.OnInactive();
-				
+				if (this.activeState != ActiveState.Inactive) {
+
+					this.activeState = ActiveState.Inactive;
+
+					this.DoLayoutInactive();
+					this.modules.DoWindowInactive();
+					this.audio.DoWindowInactive();
+					this.events.DoWindowInactive();
+					this.transition.DoWindowInactive();
+					this.DoInactive();
+
+				}
+
 			}
 
 		}
 
-		public virtual void OnActive() {
+		public void DoActive() {
+
+			this.OnActive();
 
 			if (this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
 
@@ -344,8 +393,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public virtual void OnInactive() {
-			
+		public virtual void OnActive() {
+		}
+
+		public void DoInactive() {
+
+			this.OnInactive();
+
 			if (this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
 
 				this.firstSelectedGameObject = EventSystem.current.firstSelectedGameObject;
@@ -353,6 +407,9 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+		}
+
+		public virtual void OnInactive() {
 		}
 
 		public virtual void OnVersionChanged() {
@@ -748,6 +805,15 @@ namespace UnityEngine.UI.Windows {
 			
 			while (this.paused == true) yield return false;
 
+			this.activeIteration = 0;
+			this.SetInactive();
+
+			if (this.preferences.sendActiveState == true) {
+
+				WindowSystem.SetActiveByWindow(this);
+
+			}
+
 			var parameters = AppearanceParameters.Default();
 
 			var counter = 0;
@@ -757,7 +823,7 @@ namespace UnityEngine.UI.Windows {
 
 				++counter;
 				if (counter < 6) return;
-				
+
 				WindowSystem.AddToHistory(this);
 
 				this.Recycle();
@@ -841,6 +907,9 @@ namespace UnityEngine.UI.Windows {
 		
 		public virtual Transform GetLayoutRoot() { return null; }
 		protected virtual void MoveLayout(Vector2 delta) {}
+
+		protected virtual void DoLayoutActive() {}
+		protected virtual void DoLayoutInactive() {}
 
 		/// <summary>
 		/// Gets the duration of the layout animation.
