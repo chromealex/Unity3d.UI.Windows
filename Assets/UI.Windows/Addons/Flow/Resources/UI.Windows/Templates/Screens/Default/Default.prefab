@@ -185,7 +185,7 @@ MonoBehaviour:
     layoutPreferences: {fileID: 0}
     layout: {fileID: 0}
     components: []
-  comment: 4c61796f757420547970652053637265656e
+  comment: Default Screen
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
