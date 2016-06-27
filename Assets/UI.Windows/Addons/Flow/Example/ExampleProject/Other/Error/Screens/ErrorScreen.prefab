@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
+  flags: 1048576
   interactableByDefault: 1
   selectByDefault: 0
   callback:
@@ -114,7 +114,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: 3532363537333734363137323734
+  text: Restart
   localizationKey:
     key: 
     parameters: 0
@@ -305,7 +305,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8390
+        id: 8154
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -330,7 +330,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8386
+        id: 8150
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -353,8 +353,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3161d3dee0a4c36bc04c14270ac6c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
-  text: 3438363536633663366632633230373936663735323036313732363532303638363537323635323036323635363336313735373336353230373236313665363436663664323036333638366636663733363532303733366632653230343136653634323037343638363536653230343134323230353436353733373432303633366636653634363937343639366636653230373736663732366237333265306135393666373532303633363136653230373437323739323037343666323037323635373337343631373237343230363137303730366336393633363137343639366636653230373436663230363336383631366536373635323037323631366536343666366432303666373036393665363936663665323033623239306135373431343935343230343634663532323035353733363537323439343432303365336432303332333033303230353434663230353034313533353332303534343834393533323035343435353335343265
+  flags: 257
+  text: 'Hello, you are here because random choose so. And then AB Test condition
+    works.
+
+    You can try to restart application to change random opinion ;)
+
+    WAIT FOR UserID >= 200 TO PASS THIS TEST.'
   localizationKey:
     key: 
     parameters: 0

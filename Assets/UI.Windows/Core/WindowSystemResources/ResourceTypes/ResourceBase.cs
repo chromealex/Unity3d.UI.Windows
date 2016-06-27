@@ -135,7 +135,7 @@ namespace UnityEngine.UI.Windows {
 
 				this.loadedObject = Resources.Load<T>(this.resourcesPath);
 				if (this.loadedObject != null) {
-					
+
 					this.loadedObjectId = this.loadedObject.GetInstanceID();
 					this.loaded = true;
 
@@ -147,6 +147,26 @@ namespace UnityEngine.UI.Windows {
 			#endregion
 
 			return null;
+
+		}
+
+		public IEnumerator LoadAudioClip(System.Action<AudioClip> callback) {
+
+			#region Load Stream
+			if (this.loadableStream == true) {
+
+				var path = this.GetStreamPath();
+				var www = new WWW(path);
+				while (www.isDone == false) {
+
+					yield return false;
+
+				}
+
+				callback.Invoke(www.GetAudioClipCompressed());
+
+			}
+			#endregion
 
 		}
 

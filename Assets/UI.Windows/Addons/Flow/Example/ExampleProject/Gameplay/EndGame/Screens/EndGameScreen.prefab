@@ -249,7 +249,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8386
+        id: 8150
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -298,7 +298,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8390
+        id: 8154
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -323,7 +323,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8394
+        id: 8134
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -346,8 +346,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3161d3dee0a4c36bc04c14270ac6c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
-  text: 343736313664363532303466373636353732
+  flags: 273
+  text: Game Over
   localizationKey:
     key: 
     parameters: 0
@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c0f28d4aa17e4024a917840ee07d452, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
+  flags: 8
   preserveAspect: 0
   image: {fileID: 0}
   imageLocalizationKey:
@@ -403,7 +403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
+  flags: 1048576
   interactableByDefault: 1
   selectByDefault: 1
   callback:
@@ -440,7 +440,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: 3437366632303734366632303464363536653735
+  text: Go to Menu
   localizationKey:
     key: 
     parameters: 0

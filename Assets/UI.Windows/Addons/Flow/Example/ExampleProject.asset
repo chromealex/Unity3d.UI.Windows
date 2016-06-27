@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99839ddb8ee5849c1be9ef77fbe191fa, type: 3}
   m_Name: ExampleProject
   m_EditorClassIdentifier: 
-  lastModified: 06.06.2016 10:54
-  lastModifiedUnix: 1465210461
+  lastModified: 27.06.2016 02:56
+  lastModifiedUnix: 1467039360
   version:
     major: 1
     minor: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   forceRecompile: 1
   minimalScriptsSize: 0
   zoom: 1
-  scrollPos: {x: -4148.9624, y: -4432.413}
+  scrollPos: {x: -2902.9624, y: -4282.413}
   rootWindow: 18
   defaultWindows: 2b000000
   windows: []
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 34_Loading
   m_EditorClassIdentifier: 
   id: 34
   flags: 17
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 25_Gameplay View
   m_EditorClassIdentifier: 
   id: 25
   flags: 0
@@ -162,7 +162,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 1, g: 0, b: 0.5595865, a: 1}
-  isVisibleState: 1
+  isVisibleState: 0
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -171,7 +171,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayView/
   compiledNamespace: ExampleProject.UI.Gameplay.GameplayView
   compiledScreenName: GameplayView
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 39_Function Link*
   m_EditorClassIdentifier: 
   id: 39
   flags: 22
@@ -218,7 +218,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0.073954105, g: 0, b: 1, a: 1}
-  isVisibleState: 1
+  isVisibleState: 0
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 38_Default Link*
   m_EditorClassIdentifier: 
   id: 38
   flags: 14
@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 40_Function Link*
   m_EditorClassIdentifier: 
   id: 40
   flags: 22
@@ -322,7 +322,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0, g: 0.42838073, b: 1, a: 1}
-  isVisibleState: 1
+  isVisibleState: 0
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 28_Victory/Defeat Screen
   m_EditorClassIdentifier: 
   id: 28
   flags: 0
@@ -384,7 +384,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0, g: 0.14287472, b: 1, a: 1}
-  isVisibleState: 1
+  isVisibleState: 0
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -393,7 +393,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/EndGame/
   compiledNamespace: ExampleProject.UI.Gameplay.EndGame
   compiledScreenName: EndGame
@@ -418,7 +418,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 32_Error
   m_EditorClassIdentifier: 
   id: 32
   flags: 0
@@ -433,7 +433,7 @@ MonoBehaviour:
   attachedComponents: []
   attachItems: []
   randomColor: {r: 0, g: 1, b: 0.12479544, a: 1}
-  isVisibleState: 0
+  isVisibleState: 1
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -442,7 +442,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/Error/
   compiledNamespace: ExampleProject.UI.Other.Error
   compiledScreenName: Error
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 26_Gameplay
   m_EditorClassIdentifier: 
   id: 26
   flags: 1
@@ -534,7 +534,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 35_Gameplay/Menu Loader
   m_EditorClassIdentifier: 
   id: 35
   flags: 0
@@ -555,7 +555,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0.7203381, g: 1, b: 0, a: 1}
-  isVisibleState: 1
+  isVisibleState: 0
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -564,7 +564,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Loader/Loading/
   compiledNamespace: ExampleProject.UI.Loader.Loading
   compiledScreenName: Loading
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 44_A/B Test Condition*
   m_EditorClassIdentifier: 
   id: 44
   flags: 38
@@ -673,7 +673,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0.5369787, g: 0, b: 1, a: 1}
-  isVisibleState: 0
+  isVisibleState: 1
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 45_User Info
   m_EditorClassIdentifier: 
   id: 45
   flags: 0
@@ -745,7 +745,7 @@ MonoBehaviour:
   attachedComponents: []
   attachItems: []
   randomColor: {r: 0.021530747, g: 1, b: 0, a: 1}
-  isVisibleState: 0
+  isVisibleState: 1
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -754,7 +754,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/UserInfo/
   compiledNamespace: ExampleProject.UI.Other.UserInfo
   compiledScreenName: UserInfo
@@ -806,7 +806,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0.4880091, g: 1, b: 0, a: 1}
-  isVisibleState: 0
+  isVisibleState: 1
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -815,7 +815,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Other/MainLoader/
   compiledNamespace: ExampleProject.UI.Other.MainLoader
   compiledScreenName: MainLoader
@@ -840,7 +840,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 43_Main Menu
   m_EditorClassIdentifier: 
   id: 43
   flags: 0
@@ -877,7 +877,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Menu/MainMenu/
   compiledNamespace: ExampleProject.UI.Menu.MainMenu
   compiledScreenName: MainMenu
@@ -902,7 +902,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: ExampleProject
+  m_Name: 29_Gameplay HUD
   m_EditorClassIdentifier: 
   id: 29
   flags: 0
@@ -923,7 +923,7 @@ MonoBehaviour:
     audioTransition: {fileID: 0}
     audioTransitionParameters: {fileID: 0}
   randomColor: {r: 0, g: 0.22097635, b: 1, a: 1}
-  isVisibleState: 1
+  isVisibleState: 0
   isMovingState: 0
   functionRootId: 0
   functionExitId: 0
@@ -932,7 +932,7 @@ MonoBehaviour:
   storeType: 0
   tags: 
   comments: []
-  compiled: 1
+  compiled: 0
   compiledDirectory: Assets/UI.Windows/Addons/Flow/Example/ExampleProject/Gameplay/GameplayHUD/
   compiledNamespace: ExampleProject.UI.Gameplay.GameplayHUD
   compiledScreenName: GameplayHUD

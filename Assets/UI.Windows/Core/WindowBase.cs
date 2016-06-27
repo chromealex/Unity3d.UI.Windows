@@ -27,6 +27,8 @@ namespace UnityEngine.UI.Windows {
 	[RequireComponent(typeof(Camera))]
 	public abstract class WindowBase : WindowObject, IWindowEventsAsync, IWindowEventsController, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
+		[Header("Window Preferences")]
+
 		#if UNITY_EDITOR
 		[HideInInspector]
 		public bool editorInfoFold = false;

@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
+  flags: 1048576
   interactableByDefault: 1
   selectByDefault: 1
   callback:
@@ -115,7 +115,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: 34323463343134333462
+  text: BLACK
   localizationKey:
     key: 
     parameters: 0
@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
+  flags: 3145728
   interactableByDefault: 1
   selectByDefault: 1
   callback:
@@ -196,7 +196,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: 3531373536393734
+  text: Quit
   localizationKey:
     key: 
     parameters: 0
@@ -285,18 +285,7 @@ MonoBehaviour:
       window: {fileID: 0}
       onBackAction:
         m_PersistentCalls:
-          m_Calls:
-          - m_Target: {fileID: 11412524}
-            m_MethodName: 346636653531373536393734
-            m_Mode: 1
-            m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: 3535366536393734373934353665363736393665363532653466363236613635363337343263323035353665363937343739343536653637363936653635
-              m_IntArgument: 0
-              m_FloatArgument: 0
-              m_StringArgument: 
-              m_BoolArgument: 0
-            m_CallState: 2
+          m_Calls: []
         m_TypeName: UnityEngine.UI.Windows.Events+BackButtonBehaviour+OnBackAction,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     once:
@@ -398,7 +387,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8390
+        id: 8154
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -423,7 +412,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8390
+        id: 8154
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -448,7 +437,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8390
+        id: 8154
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -471,7 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 0
+  flags: 1048576
   interactableByDefault: 1
   selectByDefault: 1
   callback:
@@ -508,7 +497,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: 35373438343935343435
+  text: WHITE
   localizationKey:
     key: 
     parameters: 0

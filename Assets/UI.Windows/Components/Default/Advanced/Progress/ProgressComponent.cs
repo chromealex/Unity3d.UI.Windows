@@ -126,13 +126,13 @@ namespace UnityEngine.UI.Windows.Components {
 	 */
 	[Header("Audio")]
 			[SerializeField]
-			private Audio.Component sfxOnClick = new Audio.Component();
+			private UnityEngine.UI.Windows.Audio.Component sfxOnClick = new UnityEngine.UI.Windows.Audio.Component();
 			[SerializeField]
-			private Audio.Component sfxOnEnter = new Audio.Component();
+			private UnityEngine.UI.Windows.Audio.Component sfxOnEnter = new UnityEngine.UI.Windows.Audio.Component();
 			[SerializeField]
-			private Audio.Component sfxOnLeave = new Audio.Component();
+			private UnityEngine.UI.Windows.Audio.Component sfxOnLeave = new UnityEngine.UI.Windows.Audio.Component();
 	
-			public IInteractableComponent SetSFX(PointerEventState state, Audio.Component data) {
+			public IInteractableComponent SetSFX(PointerEventState state, UnityEngine.UI.Windows.Audio.Component data) {
 	
 				if (state == PointerEventState.Click) {
 	

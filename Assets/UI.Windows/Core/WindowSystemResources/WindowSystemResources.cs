@@ -77,6 +77,12 @@ namespace UnityEngine.UI.Windows {
 			return WindowSystemResources.instance.resourceAsyncLoadFadeTime;
 
 		}
+
+		public static void LoadCustom(IEnumerator routine) {
+
+			WindowSystemResources.instance.StartCoroutine(routine);
+
+		}
 		
 		public static void LoadCustom<T>(ResourceBase resource, System.Action<T> callback) where T : MonoBehaviour {
 			
