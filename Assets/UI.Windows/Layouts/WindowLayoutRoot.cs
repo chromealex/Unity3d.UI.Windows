@@ -62,9 +62,9 @@ namespace UnityEngine.UI.Windows {
 		//[HideInInspector]
 		public Rect editorRect;
 
-		public void OnValidate() {
+		public override void OnValidateEditor() {
 
-			if (Application.isPlaying == true) return;
+			base.OnValidateEditor();
 
 			this._rectTransform = this.transform as RectTransform;
 

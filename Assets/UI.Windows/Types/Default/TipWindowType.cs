@@ -365,9 +365,9 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 			
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			this.Update_EDITOR();
 			

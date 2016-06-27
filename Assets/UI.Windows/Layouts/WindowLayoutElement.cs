@@ -53,8 +53,10 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector]
 		public bool editorHovered;
 
-		public void OnDrawGizmos() {
-			
+		public override void OnDrawGizmos() {
+
+			base.OnDrawGizmos();
+
 			// Hack to draw handles always
 
 			if (this.randomColorSetup == false) {
@@ -68,7 +70,9 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public void OnDrawGizmosSelected() {
+		public override void OnDrawGizmosSelected() {
+
+			base.OnDrawGizmosSelected();
 
 			var selected = (UnityEditor.Selection.activeGameObject == this.gameObject);
 			this.OnDrawGUI_EDITOR(selected, true);
@@ -126,11 +130,11 @@ namespace UnityEngine.UI.Windows {
 			var canvas = this.GetComponentsInParent<Canvas>().FirstOrDefault((c) => c.isRootCanvas);
 			if (canvas != null) scale = canvas.transform.localScale.x;
 
-			var arrowsSize = 80f * scale;
+			/*var arrowsSize = 80f * scale;
 			if (this.navigation.left != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.left.transform.position, arrowsSize);
 			if (this.navigation.right != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.right.transform.position, arrowsSize);
 			if (this.navigation.up != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.up.transform.position, arrowsSize);
-			if (this.navigation.down != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.down.transform.position, arrowsSize);
+			if (this.navigation.down != null) ME.EditorUtilities.DrawArrow(Color.white, this.transform.position, this.navigation.down.transform.position, arrowsSize);*/
 
 			var textStyle = new GUIStyle(GUI.skin.label);
 			textStyle.fontStyle = FontStyle.Normal;

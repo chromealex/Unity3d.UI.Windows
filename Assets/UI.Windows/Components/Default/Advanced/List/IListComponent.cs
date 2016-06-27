@@ -9,24 +9,21 @@ namespace UnityEngine.UI.Windows.Components {
 		/// Gets the rows count.
 		/// </summary>
 		/// <returns>The rows count.</returns>
-		/// <param name="view">View.</param>
-		int GetRowsCount(ListViewComponent view);
+		int GetRowsCount();
         
 		/// <summary>
 		/// Gets the height of the row.
 		/// </summary>
 		/// <returns>The row height.</returns>
-		/// <param name="view">View.</param>
 		/// <param name="row">Row.</param>
-		float GetRowHeight(ListViewComponent view, int row);
+		float GetRowHeight(int row);
 
 		/// <summary>
 		/// Gets the cell instance.
 		/// </summary>
 		/// <returns>The cell instance.</returns>
-		/// <param name="view">View.</param>
 		/// <param name="row">Row.</param>
-		WindowComponent GetRowInstance(ListViewComponent view, int row);
+		WindowComponent GetRowInstance(int row);
 
 	}
 

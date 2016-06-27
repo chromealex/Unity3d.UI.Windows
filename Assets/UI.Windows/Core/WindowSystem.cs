@@ -245,7 +245,8 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public List<WindowBase> windows = new List<WindowBase>();
 
-		[System.NonSerialized][HideInInspector]
+		//[System.NonSerialized]
+		//[HideInInspector]
 		public List<WindowBase> currentWindows = new List<WindowBase>();
 		
 		//[HideInInspector]
@@ -440,7 +441,7 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		public static void SetInactiveByWindow(WindowBase newWindow) {
+		public static void SendInactiveStateByWindow(WindowBase newWindow) {
 
 			var layer = newWindow.preferences.layer;
 			var depth = newWindow.GetDepth();
@@ -449,17 +450,9 @@ namespace UnityEngine.UI.Windows {
 			for (int i = 0; i < allWindows.Count; ++i) {
 
 				var window = allWindows[i];
-				if (window.preferences.layer < layer) {
+				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
 
 					window.SetInactive();
-
-				} else if (window.preferences.layer == layer) {
-
-					if (window.GetDepth() < depth) {
-
-						window.SetInactive();
-
-					}
 
 				}
 
@@ -467,7 +460,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void SetActiveByWindow(WindowBase closingWindow) {
+		public static void SendActiveStateByWindow(WindowBase closingWindow) {
 
 			var layer = closingWindow.preferences.layer;
 			var depth = closingWindow.GetDepth();
@@ -476,17 +469,9 @@ namespace UnityEngine.UI.Windows {
 			for (int i = 0; i < allWindows.Count; ++i) {
 
 				var window = allWindows[i];
-				if (window.preferences.layer < layer) {
-
+				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
+					
 					window.SetActive();
-
-				} else if (window.preferences.layer == layer) {
-
-					if (window.GetDepth() < depth) {
-
-						window.SetActive();
-
-					}
 
 				}
 
@@ -511,6 +496,7 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			WindowSystem.instance.lastInstance = lastInstance;
+			//WindowSystem.instance.LateUpdate();
 
 			/*if (WindowSystem.instance.lastInstance != null) {
 				

@@ -73,7 +73,13 @@ namespace UnityEngine.UI.Windows {
 					return this.instance.GetAnimationDuration(forward);
 					
 				}
-				
+
+				public bool IsSupported() {
+
+					return this.moduleSource != null && this.moduleSource.IsSupported();
+
+				}
+
 				public T Get<T>() where T : WindowModule {
 					
 					return this.instance as T;
@@ -151,11 +157,15 @@ namespace UnityEngine.UI.Windows {
 			public void Create(WindowBase window, Transform modulesRoot) {
 				
 				foreach (var element in this.elements) {
-					
-					element.Create(window, modulesRoot);
-					if (window.GetActiveState() == ActiveState.Active) {
 
-						element.DoWindowActive();
+					if (element.IsSupported() == true) {
+
+						element.Create(window, modulesRoot);
+						if (window.GetActiveState() == ActiveState.Active) {
+
+							element.DoWindowActive();
+
+						}
 
 					}
 
@@ -232,7 +242,9 @@ namespace UnityEngine.UI.Windows {
 				ShowSpecificWindow = 0x4,
 
 			};
-			
+
+			private WindowBase currentWindow;
+
 			[BitMask(typeof(BackAction))]
 			public BackAction backAction = BackAction.None;
 			
@@ -269,22 +281,30 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+			public void Call() {
+
+				if (this.callback != null) {
+
+					this.callback();
+
+				} else {
+
+					this.OnClick(this.currentWindow);
+
+				}
+
+			}
+
 			public void LateUpdate(WindowBase window) {
+
+				this.currentWindow = window;
 
 				if (WindowSystem.GetCurrentWindow() == window) {
 
 					if (UnityEngine.Input.GetKeyDown(KeyCode.Escape) == true) {
 
-						if (this.callback != null) {
-							
-							this.callback();
-							
-						} else {
-							
-							this.OnClick(window);
-							
-						}
-						
+						this.Call();
+
 					}
 
 				}

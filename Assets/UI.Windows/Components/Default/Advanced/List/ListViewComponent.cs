@@ -61,10 +61,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private const string DEFAULT_CELL_ID = "default_cell";
 
-		[Header("List View Component")]
-		[SerializeField]
-		private LayoutGroup layoutGroup;
-		
 		[Header("Offsets")]
 		public float offsetStartY = 0f;
 		public float offsetEndY = 0f;
@@ -105,19 +101,90 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public int GetRowsCount(ListViewComponent view) {
+		public int GetRowsCount() {
 
 			return this.capacity;
 
 		}
 
-		public virtual float GetRowHeight(ListViewComponent view, int row) {
+		public override IListComponent ListMoveUp(int count = 1) {
 
-			return (this.specialSize != null) ? this.specialSize.rect.height : (this.source.transform as RectTransform).rect.height;
+			var newValue = this.scrollY;
+			newValue -= (this.GetRowHeight(0) + this.GetRowSpacing()) * count;
+			if (newValue < 0f) newValue = 0f;
+
+			this.scrollY = newValue;
+
+			return this;
 
 		}
 
-		public WindowComponent GetRowInstance(ListViewComponent view, int row) {
+		public override IListComponent ListMoveDown(int count = 1) {
+
+			var newValue = this.scrollY;
+			newValue += (this.GetRowHeight(0) + this.GetRowSpacing()) * count;
+			var maxHeight = this.scrollableHeight;
+			if (newValue >= maxHeight) newValue = maxHeight;
+
+			this.scrollY = newValue;
+
+			return this;
+
+		}
+
+		public override IListComponent ListMoveRight(int count = 1) {
+
+			var newValue = this.scrollX;
+			newValue -= (this.GetRowWidth(0) + this.GetRowSpacing()) * count;
+			//var maxWidth = this.scrollableWidth;
+			if (newValue < 0f) newValue = 0f;
+
+			this.scrollX = newValue;
+
+			return this;
+
+		}
+
+		public override IListComponent ListMoveLeft(int count = 1) {
+
+			var newValue = this.scrollX;
+			newValue += (this.GetRowWidth(0) + this.GetRowSpacing()) * count;
+			var maxWidth = this.scrollableWidth;
+			if (newValue >= maxWidth) newValue = maxWidth;
+
+			this.scrollX = newValue;
+
+			return this;
+
+		}
+
+		public override float GetRowWidth(int row) {
+
+			var index = row;
+			if (index >= 0) {
+
+				return (this.specialSize != null) ? this.specialSize.rect.width : (this.source.transform as RectTransform).rect.width;
+
+			}
+
+			return (this.source.transform as RectTransform).rect.width;
+
+		}
+
+		public override float GetRowHeight(int row) {
+
+			var index = row;
+			if (index >= 0) {
+
+				return (this.specialSize != null) ? this.specialSize.rect.height : (this.source.transform as RectTransform).rect.height;
+
+			}
+
+			return (this.source.transform as RectTransform).rect.height;
+
+		}
+
+		public WindowComponent GetRowInstance(int row) {
 
 			return this.GetInstance(row);
 
@@ -257,7 +324,7 @@ namespace UnityEngine.UI.Windows.Components {
 		/// </summary>
 		public void ReloadData() {
 
-			this.rowHeights = new float[this.dataSource.GetRowsCount(this)];
+			this.rowHeights = new float[this.dataSource.GetRowsCount()];
 
 			this.isEmpty = (this.rowHeights.Length == 0);
 
@@ -274,10 +341,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 			for (int i = 0; i < this.rowHeights.Length; ++i) {
 
-				this.rowHeights[i] = this.dataSource.GetRowHeight(this, i);
-				if (this.layoutGroup != null && i > 0) {
+				this.rowHeights[i] = this.dataSource.GetRowHeight(i);
+				if (i > 0) {
 
-					this.rowHeights[i] += this.GetLayoutGroupSpacing();
+					this.rowHeights[i] += this.GetRowSpacing();
 
 				}
 
@@ -289,23 +356,6 @@ namespace UnityEngine.UI.Windows.Components {
 			this.requiresReload = false;
 			
 			this.Refresh(withNoElements: true);
-
-		}
-
-		private float GetLayoutGroupSpacing() {
-
-			var spacing = 0f;
-			if (this.layoutGroup != null) {
-
-				if (this.layoutGroup is HorizontalOrVerticalLayoutGroup) {
-
-					spacing = (this.layoutGroup as HorizontalOrVerticalLayoutGroup).spacing;
-
-				}
-
-			}
-
-			return spacing;
 
 		}
 
@@ -326,15 +376,15 @@ namespace UnityEngine.UI.Windows.Components {
 		public void NotifyCellDimensionsChanged(int row) {
 
 			var oldHeight = this.rowHeights[row];
-			this.rowHeights[row] = this.dataSource.GetRowHeight(this, row);
+			this.rowHeights[row] = this.dataSource.GetRowHeight(row);
 			this.cleanCumulativeIndex = Mathf.Min(this.cleanCumulativeIndex, row - 1);
 			if (this.visibleRowRange.Contains(row) == true) {
 
 				WindowComponent cell = this.GetCellAtRow(row);
 				cell.GetComponent<LayoutElement>().preferredHeight = this.rowHeights[row];
-				if (this.layoutGroup != null && row > 0) {
+				if (row > 0) {
 
-					cell.GetComponent<LayoutElement>().preferredHeight -= this.GetLayoutGroupSpacing();
+					cell.GetComponent<LayoutElement>().preferredHeight -= this.GetRowSpacing();
 
 				}
 
@@ -346,6 +396,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public float scrollableWidth {
+
+			get {
+
+				return this.scrollRect.content.rect.width - (this.scrollRect.transform as RectTransform).rect.width;
+
+			}
+
+		}
+
 		/// <summary>
 		/// Get the maximum scrollable height of the table. scrollY property will never be more than this.
 		/// </summary>
@@ -354,6 +414,39 @@ namespace UnityEngine.UI.Windows.Components {
 			get {
 
 				return this.scrollRect.content.rect.height - (this.scrollRect.transform as RectTransform).rect.height;
+
+			}
+
+		}
+
+		/// <summary>
+		/// Get or set the current scrolling position of the table
+		/// </summary>
+		public float scrollX {
+
+			get {
+
+				return this._scrollX;
+
+			}
+
+			set {
+
+				if (this.isEmpty == true) {
+
+					return;
+
+				}
+
+				value = Mathf.Clamp(value, 0f, this.GetScrollXForRow(this.rowHeights.Length - 1, true));
+				if (this._scrollX != value) {
+
+					this._scrollX = value;
+					this.requiresRefresh = true;
+					var relativeScroll = value / this.scrollableWidth;
+					this.scrollRect.horizontalNormalizedPosition = 1f - relativeScroll;
+
+				}
 
 			}
 
@@ -378,17 +471,30 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 
-				value = Mathf.Clamp(value, 0, this.GetScrollYForRow(this.rowHeights.Length - 1, true));
+				value = Mathf.Round(Mathf.Clamp(value, 0f, this.GetScrollYForRow(this.rowHeights.Length - 1, true)) * 100f) / 100f;
 				if (this._scrollY != value) {
-
+					
 					this._scrollY = value;
 					this.requiresRefresh = true;
 					var relativeScroll = value / this.scrollableHeight;
-					this.scrollRect.verticalNormalizedPosition = 1 - relativeScroll;
+					this.scrollRect.verticalNormalizedPosition = 1f - relativeScroll;
 
 				}
 
 			}
+
+		}
+
+		public float GetScrollXForRow(int row, bool above) {
+
+			var retVal = this.GetCumulativeRowHeight(row);
+			if (above == true) {
+
+				retVal -= this.rowHeights[row];
+
+			}
+
+			return retVal;
 
 		}
 
@@ -416,6 +522,7 @@ namespace UnityEngine.UI.Windows.Components {
         #region Private implementation
 
 		private IListViewDataSource _dataSource;
+		private float _scrollX;
 		private float _scrollY;
 
 		private bool requiresReload;
@@ -566,7 +673,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private void AddRow(int row, bool atEnd) {
 
-			var newCell = this.dataSource.GetRowInstance(this, row);
+			var newCell = this.dataSource.GetRowInstance(row);
 			newCell.transform.SetParent(scrollRect.content, false);
 
 			var layoutElement = newCell.GetComponent<LayoutElement>();
@@ -577,9 +684,9 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			layoutElement.preferredHeight = this.rowHeights[row];
-			if (this.layoutGroup != null && row > 0) {
+			if (row > 0) {
 
-				layoutElement.preferredHeight -= this.GetLayoutGroupSpacing();
+				layoutElement.preferredHeight -= this.GetRowSpacing();
 
 			}
             
@@ -677,7 +784,7 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			var bottomPaddingHeight = this.scrollRect.content.rect.height - hiddenElementsHeightSum;
-			this.bottomPadding.preferredHeight = bottomPaddingHeight - (this.layoutGroup != null ? this.GetLayoutGroupSpacing() : 0f);
+			this.bottomPadding.preferredHeight = bottomPaddingHeight - this.GetRowSpacing();
 			var bottomEnabled = this.bottomPadding.preferredHeight > 0f;
 			this.bottomPadding.gameObject.SetActive(bottomEnabled);
 			if (this.bottom != null) this.bottom.ShowHide(bottomEnabled);
@@ -787,22 +894,10 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			this.reusableCells[reuseIdentifier].AddLast(cell);
 
-			cell.transform.SetParent(this.reusableCellContainer, false);
+			if (cell != null) cell.transform.SetParent(this.reusableCellContainer, false);
 
 		}
         #endregion
-
-		#if UNITY_EDITOR
-		public override void OnValidateEditor() {
-
-			base.OnValidateEditor();
-
-			if (Application.isPlaying == true) return;
-
-			ME.Utilities.FindReference(this, ref this.layoutGroup);
-
-		}
-		#endif
 
 	}
 

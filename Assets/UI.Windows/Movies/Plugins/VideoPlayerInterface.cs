@@ -137,7 +137,7 @@ public class VideoPlayerInterface {
 
 		get {
 
-			int nativeTex = videoReady ? VideoPlayer_CurFrameTexture() : 0;
+			int nativeTex = this.videoReady ? VideoPlayer_CurFrameTexture() : 0;
 			if (nativeTex != 0) {
 
 				if (this._videoTexture == null) {
@@ -178,17 +178,19 @@ public class VideoPlayerInterface {
 			return;
 
 		}
-		
-		Debug.Log("LOAD VideoPlayerInterface: " + this.filepath);
+
 		this.filepath = filepath;
+
+		Debug.Log("LOAD VideoPlayerInterface: " + this.filepath);
 		this.waitingForLoad += () => {
 
+			Debug.Log("VideoPlayerInterface: waitingForLoad" + this.filepath);
 			asyncOperation.SetValues(isDone: true, progress: 1f, asset: this.videoTexture);
 			//if (callback != null) callback.Invoke();
 
 		};
 
-		if (VideoPlayer_Load(this.filepath) == true) {
+		if (VideoPlayer_Load(this.filepath) == false) {
 
 			asyncOperation.SetValues(isDone: true, progress: 1f, asset: null);
 			Debug.Log("Failed to load: " + this.filepath);

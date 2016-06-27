@@ -137,6 +137,14 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
+		public override void OnWindowInactive() {
+
+			base.OnWindowInactive();
+
+			this.SetState(state: false);
+
+		}
+
 		public void UpdateTip() {
 
 			if (this.infoWindow != null) {

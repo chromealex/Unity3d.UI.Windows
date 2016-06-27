@@ -39,7 +39,7 @@ namespace UnityEngine.UI.Windows {
 
 		public WindowComponent Load(WindowComponent component) {
 
-			this.activatorInstance.component = component;
+			this.activatorInstance.SetComponent(component);
 			component.SetComponentState(WindowObjectState.NotInitialized);
 			return this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement) as WindowComponent;
 

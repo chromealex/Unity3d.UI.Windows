@@ -173,9 +173,9 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 			
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			if (this.layout == null) return;
 
@@ -233,7 +233,11 @@ namespace UnityEngine.UI.Windows.Types {
 
 			[ReadOnly]
 			public LayoutTag tag;
+			#if UNITY_EDITOR
 			public WindowComponent component;
+			#endif
+			public MonoResource componentResource;
+			public WindowComponent componentNoResource;
 			public int sortingOrder = 0;
 			public WindowComponentParametersBase componentParameters;
 
@@ -257,7 +261,6 @@ namespace UnityEngine.UI.Windows.Types {
 				WindowComponentParametersBase instance = null;
 				if (hasChanged == true) {
 					
-					#if UNITY_EDITOR
 					if (this.componentParameters != null) {
 						
 						var link = this.componentParameters;
@@ -268,10 +271,11 @@ namespace UnityEngine.UI.Windows.Types {
 						//};
 						
 					}
-					#endif
 
 					instance = Layout.AddParametersFor(window, this.component);
 					this.componentParameters = instance;
+
+					this.OnValidate();
 
 				} else {
 
@@ -298,6 +302,22 @@ namespace UnityEngine.UI.Windows.Types {
 				}
 				
 			}
+
+			public void OnValidate() {
+
+				this.componentResource.Validate(this.component);
+
+				if (this.componentResource.loadableResource == false) {
+
+					this.componentNoResource = this.component;
+
+				} else {
+
+					this.componentNoResource = null;
+
+				}
+
+			}
 			#endif
 
 			[HideInInspector][System.NonSerialized]
@@ -306,24 +326,46 @@ namespace UnityEngine.UI.Windows.Types {
 			[HideInInspector][System.NonSerialized]
 			private IWindowComponentLayout root;
 
+			public void SetComponent(WindowComponent component) {
+
+				this.componentNoResource = component;
+
+			}
+
 			public IWindowEventsAsync Create(WindowBase window, WindowLayoutElement root) {
 				
 				this.root = root;
 
-				if (this.component == null && this.root == null) {
+				WindowComponent component = null;
+				if (this.componentResource.loadableResource == true) {
+
+					component = this.componentResource.Load<WindowComponent>();
+					if (component == null) {
+
+						Debug.LogError("[ Layout ] Be sure your UI project placed in Resources folder (ex: Assets/Resources/MyProject/UIProject.asset).");
+
+					}
+
+				} else {
+
+					component = this.componentNoResource;
+
+				}
+
+				if (component == null && this.root == null) {
 
 					return null;
 
 				}
 
-				if (this.component == null) {
+				if (component == null) {
 
 					this.root.Setup(null, this);
 					return null;
 
 				}
 
-				var instance = this.component.Spawn();
+				var instance = component.Spawn();
 				//instance.SetComponentState(WindowObjectState.NotInitialized);
 				instance.SetParent(root, setTransformAsSource: false, worldPositionStays: false);
 				instance.SetTransformAs();
@@ -337,8 +379,8 @@ namespace UnityEngine.UI.Windows.Types {
 				var rect = instance.transform as RectTransform;
 				if (rect != null) {
 
-					rect.sizeDelta = (this.component.transform as RectTransform).sizeDelta;
-					rect.anchoredPosition = (this.component.transform as RectTransform).anchoredPosition;
+					rect.sizeDelta = (component.transform as RectTransform).sizeDelta;
+					rect.anchoredPosition = (component.transform as RectTransform).anchoredPosition;
 					
 				}
 
@@ -385,8 +427,6 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			public float GetDuration(bool forward) {
 				
-				if (this.component == null) return 0f;
-
 				var root = this.root as IWindowAnimation;
 				if (root == null) return 0f;
 
@@ -595,7 +635,9 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			// Used
 			for (int i = 0; i < this.components.Length; ++i) {
-				
+
+				this.components[i].OnValidate();
+
 				this.components[i].description = this.components[i].GetDescription(layoutWindow);
 
 				var index = this.tags.IndexOf(this.components[i].tag);

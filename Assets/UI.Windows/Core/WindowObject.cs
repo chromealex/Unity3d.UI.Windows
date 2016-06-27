@@ -23,6 +23,9 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly]
 		public int windowId;
 
+		[Header("Navigation")]
+		public NavigationGroup navigationGroup;
+
 		internal virtual void Setup(WindowBase window) {
 			
 			this.window = window;
@@ -34,13 +37,21 @@ namespace UnityEngine.UI.Windows {
 
 		public WindowBase GetWindow() {
 
+			#if UNITY_EDITOR
+			if (this.window == null && Application.isPlaying == false) {
+
+				this.window = this.GetComponentInParent<WindowBase>();
+
+			}
+			#endif
+
 			return this.window;
 
 		}
 
 		public T GetWindow<T>() where T : WindowBase {
 
-			return this.window as T;
+			return this.GetWindow() as T;
 
 		}
 
@@ -49,6 +60,29 @@ namespace UnityEngine.UI.Windows {
 			this.GetWindow().Hide();
 			
 		}
+
+		#if UNITY_EDITOR
+		/// <summary>
+		/// Raises the validate event. Editor Only.
+		/// </summary>
+		public void OnValidate() {
+
+			if (Application.isPlaying == true) return;
+
+			this.OnValidateEditor();
+
+		}
+
+		/// <summary>
+		/// Raises the validate editor event.
+		/// You can override this method but call it's base.
+		/// </summary>
+		public virtual void OnValidateEditor() {
+
+			this.navigationGroup.OnValidate();
+
+		}
+		#endif
 
 	}
 

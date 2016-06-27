@@ -20,7 +20,32 @@ namespace UnityEngine.UI.Windows.Components {
 
 	};
 
-	public class ButtonComponent : ColoredComponent, IButtonComponent, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler {
+	public static class ButtonComponentUtils {
+		
+		public static bool IsInteractableAndActive(this IComponent item) {
+
+			if (item == null) return false;
+
+			IInteractableComponent button = null;
+			if (item is LinkerComponent) {
+
+				button = (item as LinkerComponent).Get<IInteractableComponent>();
+
+			} else {
+
+				button = item as IInteractableComponent;
+
+			}
+
+			if (button != null && button.IsVisible() == true && button.IsInteractable() == true) return true;
+
+			return false;
+
+		}
+
+	};
+
+	public class ButtonComponent : WindowComponentNavigation, IButtonComponent, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler {
 		
 		public override void Setup(IComponentParameters parameters) {
 			
@@ -201,8 +226,8 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 	#endregion
 
-			this.onState = null;
-			this.onStateActive = false;
+			//this.onState = null;
+			//this.onStateActive = false;
 			
 			if (this.button != null) this.button.onClick.RemoveListener(this.OnClick);
 			this.callback.RemoveAllListeners();
@@ -215,7 +240,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			base.OnShowBegin();
 			
-			this.onStateActive = true;
+			//this.onStateActive = true;
 
 			if (this.selectByDefault == true) {
 
@@ -279,7 +304,7 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 	#endregion
 
-			this.onStateActive = false;
+			//this.onStateActive = false;
 			
 		}
 
@@ -300,9 +325,9 @@ namespace UnityEngine.UI.Windows.Components {
 		public ComponentEvent callback = new ComponentEvent();
 		private ComponentEvent<ButtonComponent> callbackButton = new ComponentEvent<ButtonComponent>();
 
-		private System.Func<bool> onState;
-		private bool oldState = false;
-		private bool onStateActive = false;
+		//private System.Func<bool> onState;
+		//private bool oldState = false;
+		//private bool onStateActive = false;
 		
 		[SerializeField]
 		protected bool selectByDefault;
@@ -432,18 +457,95 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void Select() {
-			
-			this.GetSelectable().Select();
-			
-		}
-
 		public virtual Selectable GetSelectable() {
 
 			return this.button;
 			
 		}
 
+		#region source macros UI.Windows.ButtonComponent.States
+		public void Select() {
+
+			this.GetSelectable().Select();
+
+		}
+
+		public virtual IInteractableComponent SetEnabledState(bool state) {
+
+			if (state == true) {
+
+				this.SetEnabled();
+
+			} else {
+
+				this.SetDisabled();
+
+			}
+
+			return this;
+
+		}
+
+		public virtual IInteractableComponent SetDisabled() {
+
+			var sel = this.GetSelectable();
+			if (sel != null) {
+
+				if (sel.interactable != false) {
+
+					sel.interactable = false;
+					this.OnInteractableChanged();
+
+				}
+
+			}
+
+			return this;
+
+		}
+
+		public virtual IInteractableComponent SetEnabled() {
+
+			var sel = this.GetSelectable();
+			if (sel != null) {
+
+				if (sel.interactable != true) {
+
+					sel.interactable = true;
+					this.OnInteractableChanged();
+
+				}
+
+			}
+
+			return this;
+
+		}
+
+		public bool IsInteractable() {
+
+			var sel = this.GetSelectable();
+			return (sel != null ? sel.IsInteractable() : false);
+
+		}
+
+		public virtual void OnInteractableChanged() {
+
+		}
+		#endregion
+
+		public bool IsInteractableAndHasEvents() {
+
+			return this.IsInteractable() == true /*&&
+				(
+					this.callback.GetPersistentEventCount() > 0 ||
+					this.callbackButton.GetPersistentEventCount() > 0 ||
+					this.button.onClick.GetPersistentEventCount() > 0
+				)*/;
+
+		}
+
+		/*
 		public IButtonComponent SetEnabledState(System.Func<bool> onState) {
 
 			this.onState = onState;
@@ -464,67 +566,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-		}
-
-		public virtual IButtonComponent SetEnabledState(bool state) {
-
-			if (state == true) {
-
-				this.SetEnabled();
-
-			} else {
-
-				this.SetDisabled();
-
-			}
-
-			return this;
-
-		}
-
-		public virtual IButtonComponent SetDisabled() {
-			
-			if (this.button != null) {
-				
-				if (this.button.interactable != false) {
-					
-					this.button.interactable = false;
-					this.OnInteractableChanged();
-					
-				}
-				
-			}
-
-			return this;
-
-		}
-
-		public virtual IButtonComponent SetEnabled() {
-			
-			if (this.button != null) {
-
-				if (this.button.interactable != true) {
-
-					this.button.interactable = true;
-					this.OnInteractableChanged();
-
-				}
-
-			}
-
-			return this;
-
-		}
-
-		public bool IsInteractable() {
-
-			return (this.button != null ? this.button.IsInteractable() : false);
-
-		}
-
-		public virtual void OnInteractableChanged() {
-
-		}
+		}*/
 
 		public virtual IButtonComponent SetButtonColor(Color color) {
 
@@ -542,7 +584,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			this.callback.RemoveAllListeners();
 			this.callbackButton.RemoveAllListeners();
-			
+
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
 			
@@ -554,7 +596,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			this.callback.RemoveListener(callback);
 			this.callbackButton.RemoveAllListeners();
-			
+
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
 			
@@ -621,6 +663,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public IInteractableControllerComponent Click() {
+
+			var sel = this.GetSelectable();
+			if (sel != null) {
+
+				var pointer = new PointerEventData(EventSystem.current);
+				ExecuteEvents.Execute(sel.gameObject, pointer, ExecuteEvents.submitHandler);
+
+			}
+
+			return this;
+
+		}
+
 		public virtual void OnClick() {
 
 			if (this.GetWindow() != null &&
@@ -642,16 +698,16 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 		#endregion
 
-		#region Audio
+		#region source macros UI.Windows.ButtonComponent.Audio
 		[Header("Audio")]
 		[SerializeField]
-		private Audio.Component sfxOnClick = new Audio.Component();
+		private UnityEngine.UI.Windows.Audio.Component sfxOnClick = new UnityEngine.UI.Windows.Audio.Component();
 		[SerializeField]
-		private Audio.Component sfxOnEnter = new Audio.Component();
+		private UnityEngine.UI.Windows.Audio.Component sfxOnEnter = new UnityEngine.UI.Windows.Audio.Component();
 		[SerializeField]
-		private Audio.Component sfxOnLeave = new Audio.Component();
+		private UnityEngine.UI.Windows.Audio.Component sfxOnLeave = new UnityEngine.UI.Windows.Audio.Component();
 
-		public IButtonComponent SetSFX(PointerEventState state, Audio.Component data) {
+		public IInteractableComponent SetSFX(PointerEventState state, UnityEngine.UI.Windows.Audio.Component data) {
 
 			if (state == PointerEventState.Click) {
 
@@ -672,7 +728,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 		#endregion
 
-		#region Hover
+		#region source macros UI.Windows.ButtonComponent.Hover
 		[Header("Hover Actions")]
 		[SerializeField]
 		private bool hoverIsActive = true;
@@ -685,7 +741,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[HideInInspector]
 		private bool tempHoverState = false;
 
-		public IButtonComponent SetHoverState(bool state) {
+		public IInteractableComponent SetHoverState(bool state) {
 			
 			this.hoverIsActive = state;
 
@@ -693,7 +749,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public IButtonComponent SetHoverOnAnyPointerState(bool state) {
+		public IInteractableComponent SetHoverOnAnyPointerState(bool state) {
 			
 			this.hoverOnAnyPointerState = state;
 
@@ -701,7 +757,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public IButtonComponent SetHoverOnAnyButtonState(bool state) {
+		public IInteractableComponent SetHoverOnAnyButtonState(bool state) {
 			
 			this.hoverOnAnyButtonState = state;
 
@@ -709,7 +765,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public virtual IButtonComponent SetCallbackHover(UnityAction<bool> onHover) {
+		public virtual IInteractableComponent SetCallbackHover(UnityAction<bool> onHover) {
 			
 			this.onHover.AddListenerDistinct(onHover);
 
@@ -717,10 +773,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		private bool ValidateHoverPointer(PointerEventData eventData) {
+		private bool ValidateHoverPointer_INTERNAL() {
 
 			if (this.hoverIsActive == false) return false;
-			if (this.button != null && this.hoverOnAnyButtonState == false && this.button.interactable == false) return false;
+			if (this.hoverOnAnyButtonState == false && this.IsInteractable() == false) return false;
 			if (this.hoverOnAnyPointerState == false && WindowSystemInput.GetPointerState() != PointerState.Default) return false;
 
 			return true;
@@ -728,27 +784,48 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void OnPointerEnter(PointerEventData eventData) {
-			
-			this.tempHoverState = false;
 
-			if (this.ValidateHoverPointer(eventData) == false) return;
-			
-			this.sfxOnEnter.Play();
-			this.tempHoverState = true;
-			this.onHover.Invoke(true);
-			
+			this.SetHoverEnter();
+
 		}
 		
 		public void OnPointerExit(PointerEventData eventData) {
 
-			if (this.tempHoverState == false) return;
-			
+			this.SetHoverExit();
+
+		}
+
+		public IInteractableComponent SetHoverEnter() {
+
+			if (this.tempHoverState == true) {
+
+				this.SetHoverExit();
+
+			}
+
+			this.tempHoverState = false;
+
+			if (this.ValidateHoverPointer_INTERNAL() == false) return this;
+
+			this.sfxOnEnter.Play();
+			this.tempHoverState = true;
+			this.onHover.Invoke(true);
+
+			return this;
+
+		}
+
+		public IInteractableComponent SetHoverExit() {
+
+			if (this.tempHoverState == false) return this;
+
 			this.sfxOnLeave.Play();
 			this.onHover.Invoke(false);
 			this.tempHoverState = false;
 
-		}
+			return this;
 
+		}
 		#endregion
 
 		#region macros UI.Windows.ImageComponent (overrideColor:override)

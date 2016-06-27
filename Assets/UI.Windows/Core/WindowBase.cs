@@ -9,6 +9,7 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Animations;
 using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
@@ -211,7 +212,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.preferences.sendActiveState == true) {
 
-				WindowSystem.SetInactiveByWindow(this);
+				WindowSystem.SendInactiveStateByWindow(this);
 
 			}
 
@@ -810,7 +811,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.preferences.sendActiveState == true) {
 
-				WindowSystem.SetActiveByWindow(this);
+				WindowSystem.SendActiveStateByWindow(this);
 
 			}
 
@@ -1072,12 +1073,9 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {}
 
 		#if UNITY_EDITOR
-		/// <summary>
-		/// Raises the validate event. Editor only.
-		/// </summary>
-		public virtual void OnValidate() {
+		public override void OnValidateEditor() {
 
-			if (Application.isPlaying == true) return;
+			base.OnValidateEditor();
 
 			this.preferences.OnValidate();
 

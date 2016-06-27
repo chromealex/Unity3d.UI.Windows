@@ -20,7 +20,7 @@ namespace UnityEditor.UI.Windows.Components {
 		private WindowComponentParametersBase parameters;
 		private FieldInfo[] fields;
 		private SerializedProperty[] properties;
-		private ulong[] values;
+		private long[] values;
 		private float referenceHeight;
 
 		public void OnEnable() {
@@ -28,7 +28,7 @@ namespace UnityEditor.UI.Windows.Components {
 			this.parameters = this.target as WindowComponentParametersBase;
 			this.fields = this.parameters.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
 
-			this.values = new ulong[this.fields.Length];
+			this.values = new long[this.fields.Length];
 			this.properties = new SerializedProperty[this.fields.Length];
 			for (int i = 0; i < this.properties.Length; ++i) {
 

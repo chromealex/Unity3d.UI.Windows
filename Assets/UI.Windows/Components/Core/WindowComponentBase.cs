@@ -6,7 +6,7 @@ using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEngine.UI.Windows {
 
-	public class WindowComponentBase : WindowComponentNavigation, IWindowAnimation {
+	public class WindowComponentBase : WindowObjectElement, IWindowAnimation {
 
 		[Header("Animation Info")]
 		[SceneEditOnly]

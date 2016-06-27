@@ -60,38 +60,73 @@ namespace UnityEngine.UI.Windows.Components {
 
 		WindowObjectState GetComponentState();
 		void SetComponentState(WindowObjectState state, bool dontInactivate = false);
+		bool IsVisible();
+		bool IsVisibleSelf();
+		RectTransform GetRectTransform();
 
 	}
 
 	public interface IComponent : IComponentElement {
 
+
 	}
 
-	public interface IButtonComponent : ITextComponent, IImageComponent, IComponent {
+	public interface IInteractableStateComponent : IWindowNavigation {
+
+		bool IsInteractable();
+
+	}
+
+	public interface IInteractableComponent : IInteractableStateComponent {
+
+		IInteractableComponent SetHoverEnter();
+		IInteractableComponent SetHoverExit();
+
+		IInteractableComponent SetEnabledState(bool state);
+		IInteractableComponent SetEnabled();
+		IInteractableComponent SetDisabled();
+
+		IInteractableComponent SetSFX(PointerEventState state, Audio.Component data);
+
+		IInteractableComponent SetHoverState(bool state);
+		IInteractableComponent SetHoverOnAnyPointerState(bool state);
+		IInteractableComponent SetHoverOnAnyButtonState(bool state);
+		IInteractableComponent SetCallbackHover(UnityAction<bool> callback);
+
+		void Select();
+		Selectable GetSelectable();
+
+		bool IsInteractableAndHasEvents();
+
+	}
+
+	public interface IInteractableControllerComponent : IComponent {
+
+		IInteractableControllerComponent Click();
+
+	}
+
+	public interface IButtonComponent : ITextComponent, IImageComponent, IWindowNavigation, IInteractableControllerComponent, IInteractableComponent {
 		
 		IButtonComponent RemoveAllCallbacks();
 		IButtonComponent RemoveCallback(UnityAction callback);
 		IButtonComponent RemoveCallback(UnityAction<ButtonComponent> callback);
 		IButtonComponent SetCallback(UnityAction callback);
 		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
-		Selectable GetSelectable();
 		IButtonComponent SetSelectByDefault(bool state);
 		IButtonComponent SetNavigationMode(Navigation.Mode mode);
 
-		IButtonComponent SetEnabledState(bool state);
-		IButtonComponent SetEnabled();
-		IButtonComponent SetDisabled();
-		IButtonComponent SetHoverState(bool state);
-		IButtonComponent SetHoverOnAnyPointerState(bool state);
-		IButtonComponent SetHoverOnAnyButtonState(bool state);
-		IButtonComponent SetCallbackHover(UnityAction<bool> callback);
+	}
 
-		IButtonComponent SetSFX(PointerEventState state, Audio.Component data);
+	public interface IListComponent : IWindowNavigation {
 
-		bool IsInteractable();
+		IListComponent ListMoveUp(int count = 1);
+		IListComponent ListMoveDown(int count = 1);
+		IListComponent ListMoveLeft(int count = 1);
+		IListComponent ListMoveRight(int count = 1);
 
 	}
-	
+
 	public interface ITextComponent : IComponent {
 		
 		ITextComponent SetValue(int value);
@@ -173,7 +208,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	}
 	
-	public interface IProgressComponent {
+	public interface IProgressComponent : IComponent, IWindowNavigation, IInteractableComponent {
 		
 		void SetDuration(float value);
 		void SetMinNormalizedValue(float value);

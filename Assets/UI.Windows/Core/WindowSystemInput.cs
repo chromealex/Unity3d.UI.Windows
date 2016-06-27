@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI.Windows.Components.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
@@ -65,6 +66,28 @@ namespace UnityEngine.UI.Windows {
 
 				}
 				
+			}
+
+		}
+
+		public static void Select(IInteractableComponent button) {
+
+			if (button != null) {
+
+				var sel = button.GetSelectable();
+				if (sel != null) sel.Select();
+
+			}
+
+		}
+
+		public static void Deselect(IInteractableComponent button) {
+
+			if (button != null) {
+
+				var sel = button.GetSelectable();
+				if (sel != null) sel.OnDeselect(null);
+
 			}
 
 		}

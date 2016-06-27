@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace UnityEngine.UI.Windows.Components {
 	
-	public class ListComponent : WindowComponent {
+	public class ListComponent : WindowComponentNavigation, IListComponent {
 		
 		[Header("List")]
 		public List<WindowComponent> list = new List<WindowComponent>();
@@ -26,6 +26,9 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public WindowComponent top;
 		public WindowComponent bottom;
+
+		[SerializeField]
+		private HorizontalOrVerticalLayoutGroup layoutGroup;
 
 		[Header("Navigation")]
 		public Navigation.Mode navigationMode = Navigation.Mode.None;
@@ -66,6 +69,172 @@ namespace UnityEngine.UI.Windows.Components {
 			this.scrollRect.SetupAsDropdown(maxHeight);
 
 		}*/
+
+		public override bool IsNavigationControlledSide(NavigationSide side) {
+
+			if (this.scrollRect != null) {
+
+				if (this.scrollRect.vertical == true) {
+
+					if (side == NavigationSide.Down ||
+					    side == NavigationSide.Up) {
+
+						return true;
+
+					}
+
+				}
+
+				if (this.scrollRect.horizontal == true) {
+
+					if (side == NavigationSide.Left ||
+						side == NavigationSide.Right) {
+
+						return true;
+
+					}
+
+				}
+
+			}
+
+			return false;
+
+		}
+
+		public override void OnNavigate(WindowComponentNavigation source, NavigationSide side) {
+			
+			switch (side) {
+
+				case NavigationSide.Up:
+					this.ListMoveUp();
+					break;
+
+				case NavigationSide.Down:
+					this.ListMoveDown();
+					break;
+
+				case NavigationSide.Right:
+					this.ListMoveRight();
+					break;
+
+				case NavigationSide.Left:
+					this.ListMoveLeft();
+					break;
+
+			}
+
+		}
+
+		public virtual IListComponent ListMoveUp(int count = 1) {
+
+			if (this.scrollRect == null) return this;
+
+			count = Mathf.Clamp(count, 1, count);
+			var size = this.GetRowHeight(0) * count;
+			var allSize = this.GetContentHeight();
+
+			var pos = this.scrollRect.verticalNormalizedPosition * allSize;
+			pos += size;
+			this.scrollRect.verticalNormalizedPosition = pos / allSize;
+
+			return this;
+
+		}
+
+		public virtual IListComponent ListMoveDown(int count = 1) {
+
+			if (this.scrollRect == null) return this;
+
+			count = Mathf.Clamp(count, 1, count);
+			var size = this.GetRowHeight(0) * count;
+			var allSize = this.GetContentHeight();
+
+			var pos = this.scrollRect.verticalNormalizedPosition * allSize;
+			pos -= size;
+			this.scrollRect.verticalNormalizedPosition = pos / allSize;
+
+			return this;
+
+		}
+
+		public virtual IListComponent ListMoveRight(int count = 1) {
+
+			if (this.scrollRect == null) return this;
+
+			count = Mathf.Clamp(count, 1, count);
+			var size = this.GetRowWidth(0) * count;
+			var allSize = this.GetContentWidth();
+
+			var pos = this.scrollRect.horizontalNormalizedPosition * allSize;
+			pos += size;
+			this.scrollRect.horizontalNormalizedPosition = pos / allSize;
+
+			return this;
+
+		}
+
+		public virtual IListComponent ListMoveLeft(int count = 1) {
+
+			if (this.scrollRect == null) return this;
+
+			count = Mathf.Clamp(count, 1, count);
+			var size = this.GetRowWidth(0) * count;
+			var allSize = this.GetContentWidth();
+
+			var pos = this.scrollRect.horizontalNormalizedPosition * allSize;
+			pos -= size;
+			this.scrollRect.horizontalNormalizedPosition = pos / allSize;
+
+			return this;
+
+		}
+
+		public virtual float GetContentWidth() {
+
+			return this.scrollRect.content.rect.width;
+
+		}
+
+		public virtual float GetContentHeight() {
+
+			return this.scrollRect.content.rect.height;
+
+		}
+
+		public virtual float GetRowSpacing() {
+
+			if (this.layoutGroup == null) return 0f;
+
+			return this.layoutGroup.spacing;
+
+		}
+
+		public virtual float GetRowWidth(int row) {
+
+			var index = row;
+			if (index >= 0) {
+
+				return (this.GetItem(index).transform as RectTransform).rect.width;
+
+			}
+
+			return (this.source.transform as RectTransform).rect.width;
+
+		}
+
+		public virtual float GetRowHeight(int row) {
+
+			var index = row;
+			if (index >= 0) {
+
+				return (this.GetItem(index).transform as RectTransform).rect.height;
+
+			}
+
+			return (this.source.transform as RectTransform).rect.height;
+
+		}
 
 		public virtual WindowComponent GetInstance(int index) {
 
@@ -249,17 +418,18 @@ namespace UnityEngine.UI.Windows.Components {
 		public virtual void OnNewItem(WindowComponent instance) {
 		}
 
-		public int GetIndexOf<T>(T item) where T : IComponent {
-			
+		public virtual int GetIndexOf<T>(T item) where T : IComponent {
+
+			var winComp = (item as WindowComponent);
 			return this.GetItems().FindIndex((c) => {
 
 				if (c is LinkerComponent) {
 
-					return (c as LinkerComponent).Get<WindowComponent>() == (item as WindowComponent);
+					return (c as LinkerComponent).Get<WindowComponent>() == winComp;
 
 				}
 
-				return (item as WindowComponent) == c;
+				return winComp == c;
 
 			});
 
@@ -446,7 +616,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void Refresh(bool withNoElements = false) {
-
+			
 		}
 
 		#if UNITY_EDITOR
@@ -459,6 +629,8 @@ namespace UnityEngine.UI.Windows.Components {
 				this.UnregisterSubComponent(this.source);
 
 			}
+
+			ME.Utilities.FindReference(this, ref this.layoutGroup);
 
 			//this.scrollRect = this.GetComponentInChildren<ScrollRect>();
 

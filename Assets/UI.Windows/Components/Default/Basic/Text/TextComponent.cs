@@ -273,7 +273,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private ITextComponent SetValue_INTERNAL(long value, TextValueFormat format, bool animate, bool fromTweener) {
 
-			if (this.tempLastValue == value && this.tempLastFormat == format) return this;
+			if (fromTweener == true && this.tempLastValue == value && this.tempLastFormat == format) return this;
 			this.tempLastValue = value;
 			this.tempLastFormat = format;
 
@@ -281,6 +281,8 @@ namespace UnityEngine.UI.Windows.Components {
 			if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			if (animate == true && TweenerGlobal.instance != null) {
+
+				this.tempLastValue = value - 1L;
 
 				var duration = this.valueAnimateDuration;
 				if (Mathf.Abs(this.valueAnimateLastValue - value) < 2) duration = 0.2f;

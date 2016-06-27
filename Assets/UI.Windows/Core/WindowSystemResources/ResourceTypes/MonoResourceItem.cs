@@ -19,7 +19,13 @@ namespace UnityEngine.UI.Windows {
 			this.tempResource = null;
 			
 		}
-		
+
+		public override void Validate() {
+
+			this.Validate(this.tempResource);
+
+		}
+
 		public override void Validate(Object item) {
 			
 			if (item == null) {
