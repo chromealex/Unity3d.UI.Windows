@@ -443,6 +443,8 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SendInactiveStateByWindow(WindowBase newWindow) {
 
+			if (WindowSystem.instance == null) return;
+
 			var layer = newWindow.preferences.layer;
 			var depth = newWindow.GetDepth();
 
@@ -450,6 +452,7 @@ namespace UnityEngine.UI.Windows {
 			for (int i = 0; i < allWindows.Count; ++i) {
 
 				var window = allWindows[i];
+				if (window == null) continue;
 				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
 
 					window.SetInactive();
@@ -462,6 +465,8 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SendActiveStateByWindow(WindowBase closingWindow) {
 
+			if (WindowSystem.instance == null) return;
+
 			var layer = closingWindow.preferences.layer;
 			var depth = closingWindow.GetDepth();
 
@@ -469,6 +474,7 @@ namespace UnityEngine.UI.Windows {
 			for (int i = 0; i < allWindows.Count; ++i) {
 
 				var window = allWindows[i];
+				if (window == null) continue;
 				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
 					
 					window.SetActive();

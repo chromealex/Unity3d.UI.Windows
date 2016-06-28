@@ -145,7 +145,7 @@ namespace UnityEditor.UI.Windows.Animations {
 
 			}
 
-			if (this.sceneTestContainer == null) {
+			if (this.sceneTestContainer == null || this.windowA == null) {
 
 				this.sceneTestContainer = new GameObject("Transition-Temp");
 				this.sceneTestContainer.hideFlags = HideFlags.DontSave;//HideFlags.HideAndDontSave;
