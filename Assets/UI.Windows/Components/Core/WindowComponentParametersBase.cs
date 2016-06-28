@@ -107,11 +107,14 @@ namespace UnityEngine.UI.Windows.Components {
 	public interface IComponentParameters {
 	};
 
-	public class WindowComponentParametersBase : MonoBehaviour, IComponentParameters {
+	public class WindowComponentParametersBase : MonoBehaviour, IComponentParameters, ISerializationCallbackReceiver {
 
-		[HideInInspector]//[SerializeField]
-		//private ParameterFlag flags;
-		public long flags;
+		[HideInInspector][SerializeField]//[System.NonSerialized]
+		private long flags;
+		[HideInInspector][SerializeField]
+		private int flags1;
+		[HideInInspector][SerializeField]
+		private int flags2;
 
 		public void Setup(WindowComponent component) {
 
@@ -143,6 +146,27 @@ namespace UnityEngine.UI.Windows.Components {
 				this.flags ^= flag;
 
 			}
+
+		}
+
+		public void OnAfterDeserialize() {
+
+			if (this.flags1 == 0 && this.flags2 == 0) {
+
+				this.OnBeforeSerialize();
+
+			}
+
+			this.flags = this.flags2;
+			this.flags = this.flags << 32;
+			this.flags = this.flags | (uint)this.flags1;
+
+		}
+
+		public void OnBeforeSerialize() {
+			
+			this.flags1 = (int)(this.flags & uint.MaxValue);
+			this.flags2 = (int)(this.flags >> 32);
 
 		}
 

@@ -77,6 +77,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 272
+  flags1: 272
+  flags2: 0
   text: 
   localizationKey:
     key: 
@@ -257,7 +259,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8150
+        id: 44588
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 

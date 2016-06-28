@@ -13,11 +13,6 @@ namespace UnityEngine.UI.Windows.Movies {
 		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
 
 			var filePath = resource.GetStreamPath();
-			if (filePath.Contains("://") == false) {
-
-				filePath = "file:///" + filePath;
-
-			}
 
 			var task = new WWW(filePath);
 			while (task.isDone == false) {

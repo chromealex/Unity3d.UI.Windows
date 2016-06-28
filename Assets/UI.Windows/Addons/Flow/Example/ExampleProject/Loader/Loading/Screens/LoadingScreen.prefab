@@ -77,6 +77,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 0
+  flags1: 0
+  flags2: 0
   duration: 1
   minNormalizedValue: 0
   continious: 0
@@ -222,7 +224,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8574
+        id: 44656
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -247,7 +249,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8138
+        id: 44658
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 

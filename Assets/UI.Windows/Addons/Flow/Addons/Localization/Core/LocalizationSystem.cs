@@ -179,7 +179,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		}
 
 		public static void SetLanguageIndex(int index) {
-
+			
 			LocalizationSystem.currentLanguage = LocalizationSystem.GetLanguagesList()[index];
 
 			WindowSystem.ForEachWindow((w) => {

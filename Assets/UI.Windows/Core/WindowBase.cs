@@ -27,8 +27,6 @@ namespace UnityEngine.UI.Windows {
 	[RequireComponent(typeof(Camera))]
 	public abstract class WindowBase : WindowObject, IWindowEventsAsync, IWindowEventsController, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
-		[Header("Window Preferences")]
-
 		#if UNITY_EDITOR
 		[HideInInspector]
 		public bool editorInfoFold = false;
@@ -38,6 +36,8 @@ namespace UnityEngine.UI.Windows {
 		public Camera workCamera;
 		[HideInInspector]
 		public bool initialized = false;
+
+		[Header("Window Preferences")]
 
 		public Preferences preferences = new Preferences();
 		new public Audio.Window audio = new Audio.Window();

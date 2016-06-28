@@ -163,10 +163,15 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				callback.Invoke(www.GetAudioClipCompressed());
+				var clip = www.audioClip;
+
+				callback.Invoke(clip);
+				yield break;
 
 			}
 			#endregion
+
+			callback.Invoke(null);
 
 		}
 
@@ -321,8 +326,14 @@ namespace UnityEngine.UI.Windows {
 
 			var combine = true;
 			var path = string.Empty;
+			var prefix = string.Empty;
 			#if UNITY_STANDALONE || UNITY_EDITOR
 			path = this.streamingAssetsPathStandalone;
+			if (path.Contains("://") == false) {
+
+				prefix = "file:///";
+
+			}
 			#elif UNITY_IPHONE
 			path = "Data/Raw/" + this.streamingAssetsPathIOS;
 			combine = false;
@@ -334,15 +345,20 @@ namespace UnityEngine.UI.Windows {
 			path = this.streamingAssetsPathXBOXONE;
 			#else
 			path = this.streamingAssetsPathStandalone;
+			if (path.Contains("://") == false) {
+
+				prefix = "file:///";
+
+			}
 			#endif
 
 			if (combine == true) {
 				
-				return System.IO.Path.Combine(Application.streamingAssetsPath, path);
+				return prefix + System.IO.Path.Combine(Application.streamingAssetsPath, path);
 				
 			} else {
 				
-				return path;
+				return prefix + path;
 				
 			}
 

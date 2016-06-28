@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 34_Loading
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 34
   flags: 17
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 25_Gameplay View
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 25
   flags: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 39_Function Link*
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 39
   flags: 22
@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 38_Default Link*
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 38
   flags: 14
@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 40_Function Link*
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 40
   flags: 22
@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 28_Victory/Defeat Screen
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 28
   flags: 0
@@ -418,7 +418,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 32_Error
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 32
   flags: 0
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 26_Gameplay
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 26
   flags: 1
@@ -534,7 +534,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 35_Gameplay/Menu Loader
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 35
   flags: 0
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 44_A/B Test Condition*
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 44
   flags: 38
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 45_User Info
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 45
   flags: 0
@@ -840,7 +840,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 43_Main Menu
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 43
   flags: 0
@@ -902,7 +902,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a2a1d4ea8c77454cb08688192e27d15, type: 3}
-  m_Name: 29_Gameplay HUD
+  m_Name: ExampleProject
   m_EditorClassIdentifier: 
   id: 29
   flags: 0

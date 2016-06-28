@@ -249,7 +249,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8150
+        id: 44588
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -298,7 +298,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8154
+        id: 44586
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -323,7 +323,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8134
+        id: 44610
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -347,6 +347,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 273
+  flags1: 273
+  flags2: 0
   text: Game Over
   localizationKey:
     key: 
@@ -381,6 +383,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 8
+  flags1: 8
+  flags2: 0
   preserveAspect: 0
   image: {fileID: 0}
   imageLocalizationKey:
@@ -404,6 +408,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 1048576
+  flags1: 1048576
+  flags2: 0
   interactableByDefault: 1
   selectByDefault: 1
   callback:

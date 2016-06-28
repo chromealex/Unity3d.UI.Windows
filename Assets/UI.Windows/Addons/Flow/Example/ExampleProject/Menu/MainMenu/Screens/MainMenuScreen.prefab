@@ -79,6 +79,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 1048576
+  flags1: 1048576
+  flags2: 0
   interactableByDefault: 1
   selectByDefault: 1
   callback:
@@ -160,6 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 257
+  flags1: 257
+  flags2: 0
   text: Choose start color
   localizationKey:
     key: 
@@ -340,7 +344,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8604
+        id: 44626
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -365,7 +369,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8150
+        id: 44588
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -414,7 +418,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8154
+        id: 44586
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -439,7 +443,7 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 8154
+        id: 44586
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
@@ -463,6 +467,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: 1048576
+  flags1: 1048576
+  flags2: 0
   interactableByDefault: 1
   selectByDefault: 0
   callback:

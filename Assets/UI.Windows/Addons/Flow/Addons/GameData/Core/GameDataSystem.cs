@@ -74,6 +74,22 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 		}
 
+		public static void SetVersion(Version version) {
+
+			var list = GameDataSystem.GetVersionsList();
+			for (int i = 0; i < list.Length; ++i) {
+
+				if (list[i] == version) {
+
+					GameDataSystem.SetVersionIndex(i);
+					break;
+
+				}
+
+			}
+
+		}
+
 		public static void SetVersionIndex(int index) {
 
 			GameDataSystem.currentVersion = GameDataSystem.GetVersionsList()[index];
@@ -251,8 +267,14 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 				var parsed = CSVParser.ReadCSV(data);
 
-				var defaultVersion = parsed[0][0];
-				GameDataSystem.defaultVersion = new Version(defaultVersion);
+				if (GameDataSystem.currentVersion == default(Version)) {
+
+					var defaultVersion = parsed[0][0];
+					GameDataSystem.currentVersion = new Version(defaultVersion);
+					Debug.LogWarning(string.Format("[ GameData ] Default version is used: {0}", GameDataSystem.currentVersion));
+
+				}
+				GameDataSystem.defaultVersion = GameDataSystem.currentVersion;
 
 				var keysCount = 0;
 
@@ -348,7 +370,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				if (GameDataSystem.instance.logEnabled == true) {
 				#endif
 					
-					Debug.LogFormat("[ GameData ] Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId());
+					Debug.LogFormat("[ GameData ] Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}, Version: {4}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId(), GameDataSystem.currentVersion);
 
 				#if !UNITY_EDITOR
 				}
