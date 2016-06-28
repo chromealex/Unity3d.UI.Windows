@@ -40,10 +40,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 434628}
-  - 114: {fileID: 11411030}
-  - 114: {fileID: 11496382}
+  - 114: {fileID: 11423936}
   m_Layer: 0
-  m_Name: Localization
+  m_Name: Console
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -202,6 +201,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &173058
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 489322}
+  - 114: {fileID: 11411030}
+  - 114: {fileID: 11496382}
+  m_Layer: 0
+  m_Name: Localization
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &176836
 GameObject:
   m_ObjectHideFlags: 1
@@ -324,7 +340,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 456360}
-  m_RootOrder: 2
+  m_RootOrder: 4
 --- !u!4 &443580
 Transform:
   m_ObjectHideFlags: 1
@@ -395,8 +411,9 @@ Transform:
   m_Children:
   - {fileID: 447722}
   - {fileID: 493156}
-  - {fileID: 434628}
+  - {fileID: 489322}
   - {fileID: 481472}
+  - {fileID: 434628}
   m_Father: {fileID: 443580}
   m_RootOrder: 2
 --- !u!4 &456438
@@ -523,6 +540,19 @@ Transform:
   - {fileID: 483558}
   m_Father: {fileID: 443580}
   m_RootOrder: 0
+--- !u!4 &489322
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 173058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 456360}
+  m_RootOrder: 2
 --- !u!4 &493156
 Transform:
   m_ObjectHideFlags: 1
@@ -751,7 +781,7 @@ MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 128380}
+  m_GameObject: {fileID: 173058}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 86cbc1d385b654bf2bbdd960d51b7904, type: 3}
@@ -785,6 +815,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e20a9407a4074f83835ad2fd27e20af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11423936
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 128380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8ee6a8ebe0ee4814a2f0efbfd0e528c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: 9e98c7954d55541ac94a5e9c13e415d7, type: 2}
+  logEnabled: 0
+  initializeOnStart: 1
 --- !u!114 &11426036
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -856,6 +900,7 @@ MonoBehaviour:
   rootScreen: {fileID: 0}
   defaults: []
   windows: []
+  currentWindows: []
   history: []
   audio:
     source: {fileID: 8218868}
@@ -994,7 +1039,7 @@ MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 128380}
+  m_GameObject: {fileID: 173058}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 249e26908786140c9adad99ff8944355, type: 3}

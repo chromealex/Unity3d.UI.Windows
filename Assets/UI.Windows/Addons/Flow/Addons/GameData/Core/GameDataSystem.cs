@@ -9,11 +9,17 @@ using UnityEngine.UI.Windows.Utilities;
 namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 	public class GameDataSystem : ServiceManager<GameDataSystem> {
-		
+
 		public override string GetServiceName() {
-			
+
+			return GameDataSystem.GetName();
+
+		}
+
+		public static string GetName() {
+
 			return "GameData";
-			
+
 		}
 
 		public static Version DEFAULT_EDITOR_VERSION {
@@ -271,7 +277,12 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 					var defaultVersion = parsed[0][0];
 					GameDataSystem.currentVersion = new Version(defaultVersion);
-					Debug.LogWarning(string.Format("[ GameData ] Default version is used: {0}", GameDataSystem.currentVersion));
+
+					if (GameDataSystem.instance.logEnabled == true) {
+						
+						WindowSystemLogger.Warning(GameDataSystem.GetName(), string.Format("[ GameData ] Default version is used: {0}", GameDataSystem.currentVersion));
+
+					}
 
 				}
 				GameDataSystem.defaultVersion = GameDataSystem.currentVersion;
@@ -366,22 +377,22 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 				GameDataSystem.currentVersion = GameDataSystem.defaultVersion;
 
-				#if !UNITY_EDITOR
 				if (GameDataSystem.instance.logEnabled == true) {
-				#endif
 					
-					Debug.LogFormat("[ GameData ] Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}, Version: {4}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId(), GameDataSystem.currentVersion);
+					WindowSystemLogger.Log(GameDataSystem.GetName(), string.Format("Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}, Version: {4}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId(), GameDataSystem.currentVersion));
 
-				#if !UNITY_EDITOR
 				}
-				#endif
 
 				GameDataSystem.isReady = true;
 
 			} catch(System.Exception ex) {
+				
+				if (GameDataSystem.instance.logEnabled == true) {
+					
+					// Nothing to do: failed to parse
+					WindowSystemLogger.Error(GameDataSystem.GetName(), string.Format("[ GameData ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
 
-				// Nothing to do: failed to parse
-				Debug.LogError(string.Format("[ GameData ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+				}
 
 				if (loadCacheOnFail == true) {
 

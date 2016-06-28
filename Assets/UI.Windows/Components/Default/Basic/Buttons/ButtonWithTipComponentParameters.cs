@@ -10,7 +10,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Button: Tip")]
 		[ParamFlag(ParameterFlag.P13)] public LocalizationKey keyTooltipNormal;
 		[ParamFlag(ParameterFlag.P14)] public LocalizationKey keyTooltipDisabled;
-		[ParamFlag(ParameterFlag.P15)] public UnityEngine.UI.Windows.Types.TipWindowType.ShowPriority tipShowPriority;
+		[ParamFlag(ParameterFlag.P15)] public UnityEngine.UI.Windows.Types.TipWindowType.ShowPriority tipShowPriority = UnityEngine.UI.Windows.Types.TipWindowType.ShowPriority.Up;
 
 		public void Setup(IButtonComponent component) {
 

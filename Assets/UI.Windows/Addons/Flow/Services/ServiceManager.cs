@@ -8,8 +8,9 @@ using System.Linq;
 namespace UnityEngine.UI.Windows.Plugins.Services {
 
 	public interface IServiceManagerBase : IServiceBase {
-		
+
 		IEnumerator Init(System.Action onComplete);
+		IEnumerator InitLate(System.Action onComplete);
 		
 	};
 
@@ -32,6 +33,12 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 		public abstract string GetServiceName();
 		public abstract AuthKeyPermissions GetAuthPermission();
 
+		public T GetSettings<T>() where T : ServiceSettings {
+
+			return (T)this.settings;
+
+		}
+
 		public void Register(IService service) {
 
 			if (this.services == null) this.services = new List<IService>();
@@ -47,7 +54,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 			}
 
-			if (FlowSystem.GetData().IsValidAuthKey(AuthKeyPermissions.Analytics) == false) {
+			if (FlowSystem.GetData().IsValidAuthKey(this.GetAuthPermission()) == false) {
 				
 				if (this.logEnabled == true) {
 
@@ -63,29 +70,33 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 			this.OnInitialized();
 
-			var items = settings.GetItems();
-			
-			foreach (var service in this.services) {
-				
-				for (int i = 0; i < items.Count; ++i) {
-					
-					var item = items[i];
-					if (item.serviceName == service.GetServiceName()) {
-						
-						service.isActive = item.enabled;
-						if (service.isActive == true) {
+			if (this.services != null) {
 
-							yield return this.StartCoroutine(service.Auth(service.GetAuthKey(item)));
-							yield return this.StartCoroutine(this.OnAfterAuth(service));
+				var items = settings.GetItems();
+
+				foreach (var service in this.services) {
+					
+					for (int i = 0; i < items.Count; ++i) {
+						
+						var item = items [i];
+						if (item.serviceName == service.GetServiceName()) {
+							
+							service.isActive = item.enabled;
+							if (service.isActive == true) {
+
+								yield return this.StartCoroutine(service.Auth(service.GetAuthKey(item)));
+								yield return this.StartCoroutine(this.OnAfterAuth(service));
+
+							}
 
 						}
-
+						
 					}
 					
 				}
-				
+
 			}
-			
+
 			if (this.logEnabled == true) {
 
 				WindowSystemLogger.Log(this, "Initialized");
@@ -95,11 +106,25 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			if (onComplete != null) onComplete.Invoke();
 
 		}
-		
-		public virtual void OnInitialized() {
-			
+
+		public IEnumerator InitLate(System.Action onComplete = null) {
+
+			this.OnInitializedLate();
+
+			yield return false;
+
+			if (onComplete != null) onComplete.Invoke();
+
 		}
-		
+
+		public virtual void OnInitialized() {
+
+		}
+
+		public virtual void OnInitializedLate() {
+
+		}
+
 		public virtual IEnumerator OnAfterAuth(IService service) {
 
 			yield return false;
@@ -141,19 +166,39 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			if (this.initializeOnStart == true) ServiceManager<T>.InitializeAsync();
 
 		}
-		
+
+		public void OnEnable() {
+
+			if (this.initializeOnStart == true) ServiceManager<T>.InitializeLateAsync();
+
+		}
+
 		public static void InitializeAsync(System.Action onComplete = null) {
 			
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
 			(instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
-			
+
 		}
-		
+
 		public static IEnumerator Initialize(System.Action onComplete = null) {
-			
+
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
 			yield return (instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
-			
+
+		}
+
+		public static void InitializeLateAsync(System.Action onComplete = null) {
+
+			var instance = ServiceManager<T>.instance as IServiceManagerBase;
+			(instance as MonoBehaviour).StartCoroutine(instance.InitLate(onComplete));
+
+		}
+
+		public static IEnumerator InitializeLate(System.Action onComplete = null) {
+
+			var instance = ServiceManager<T>.instance as IServiceManagerBase;
+			yield return (instance as MonoBehaviour).StartCoroutine(instance.InitLate(onComplete));
+
 		}
 
 		public static void ForEachService<TService>(System.Action<TService> onService) where TService : IService {

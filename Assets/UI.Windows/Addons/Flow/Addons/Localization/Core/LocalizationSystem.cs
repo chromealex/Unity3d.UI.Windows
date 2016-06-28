@@ -301,8 +301,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				return string.Format(value, parameters);
 
 			} else {
+				
+				if (LocalizationSystem.instance.logEnabled == true) {
+					
+					WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Wrong parameters length in key `{0}`", key.key));
 
-				WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Wrong parameters length in key `{0}`", key.key));
+				}
 
 			}
 
@@ -453,22 +457,22 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
 
-				#if !UNITY_EDITOR
 				if (LocalizationSystem.instance.logEnabled == true) {
-				#endif
 					
 					WindowSystemLogger.Log(LocalizationSystem.GetName(), string.Format("Loaded version {3}. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount, LocalizationSystem.GetCurrentVersionId()));
 
-				#if !UNITY_EDITOR
 				}
-				#endif
 
 				LocalizationSystem.isReady = true;
 
 			} catch(System.Exception ex) {
 
-				// Nothing to do: failed to parse
-				WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+				if (LocalizationSystem.instance.logEnabled == true) {
+					
+					// Nothing to do: failed to parse
+					WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+
+				}
 
 				if (loadCacheOnFail == true) {
 

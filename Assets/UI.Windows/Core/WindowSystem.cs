@@ -345,6 +345,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void RegisterWindow(WindowBase window) {
+
+			WindowSystem.instance.windows.Add(window);
+
+		}
+
 		public static void OnDoTransition(int index, int fromScreenId, int toScreenId, bool hide = true) {
 			
 			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId, hide);
