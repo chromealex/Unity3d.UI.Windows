@@ -457,7 +457,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
 
-				if (LocalizationSystem.instance.logEnabled == true) {
+				if (LocalizationSystem.instance == null || LocalizationSystem.instance.logEnabled == true) {
 					
 					WindowSystemLogger.Log(LocalizationSystem.GetName(), string.Format("Loaded version {3}. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount, LocalizationSystem.GetCurrentVersionId()));
 
@@ -467,10 +467,10 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 			} catch(System.Exception ex) {
 
-				if (LocalizationSystem.instance.logEnabled == true) {
+				if (LocalizationSystem.instance == null || LocalizationSystem.instance.logEnabled == true) {
 					
 					// Nothing to do: failed to parse
-					WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+					WindowSystemLogger.Error(LocalizationSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
 
 				}
 
