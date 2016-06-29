@@ -11,4 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b2dce9975bc143bf9585639e0058698, type: 3}
   m_Name: ConsoleSettings
   m_EditorClassIdentifier: 
-  screen: {fileID: 11483758, guid: 14445a9611fa54c1d9493edcd33ba430, type: 2}
+  screen: {fileID: 0}
