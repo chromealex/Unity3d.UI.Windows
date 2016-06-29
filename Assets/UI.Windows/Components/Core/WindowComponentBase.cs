@@ -92,7 +92,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		#region OBSOLETE
+		#region Manual Events
 		public void HideExcludeChilds(System.Action callback = null, bool immediately = false) {
 			
 			this.Hide(AppearanceParameters.Default()
@@ -140,9 +140,7 @@ namespace UnityEngine.UI.Windows {
 			          .ReplaceResetAnimation(resetAnimation: resetAnimation));
 
 		}
-		#endregion
 
-		#region Manual Events
 		public void ShowHide(bool state) {
 
 			this.ShowHide(state, AppearanceParameters.Default());
