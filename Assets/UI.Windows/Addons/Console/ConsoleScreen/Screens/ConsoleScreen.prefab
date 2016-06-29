@@ -192,22 +192,21 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/Decorator.asset
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/Decorator.asset
+        resourcesPath: MW2/EditorTools/Console/Components/Decorator
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 19266
+        id: 199178
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
         tempResource: {fileID: 11440684, guid: 436ff01a7e1f94f4fbc7f2ae7ccdb57f, type: 2}
-      componentNoResource: {fileID: 11440684, guid: 436ff01a7e1f94f4fbc7f2ae7ccdb57f,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
@@ -217,22 +216,21 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/InputField.asset
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/InputField.asset
+        resourcesPath: MW2/EditorTools/Console/Components/InputField
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 19268
+        id: 199180
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
         tempResource: {fileID: 11471902, guid: 5ce968b34564c41cc9b8a13cf1fe6c22, type: 2}
-      componentNoResource: {fileID: 11471902, guid: 5ce968b34564c41cc9b8a13cf1fe6c22,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
@@ -242,22 +240,21 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/Queue/TableView.prefab
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/Queue/TableView.prefab
+        resourcesPath: MW2/EditorTools/Console/Components/Queue/TableView
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 19270
+        id: 199182
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
         tempResource: {fileID: 11411412, guid: c75af2eaab0884e53a291d25f38825ad, type: 2}
-      componentNoResource: {fileID: 11411412, guid: c75af2eaab0884e53a291d25f38825ad,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
@@ -267,22 +264,21 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/AlwaysText.asset
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/AlwaysText.asset
+        resourcesPath: MW2/EditorTools/Console/Components/AlwaysText
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 19272
+        id: 199184
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
         tempResource: {fileID: 11450942, guid: 5c0e33c98f2234079b6bd82f5beb35d1, type: 2}
-      componentNoResource: {fileID: 11450942, guid: 5c0e33c98f2234079b6bd82f5beb35d1,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 11491470}
       editorParametersFoldout: 0
@@ -292,22 +288,45 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/ExceptionBorder.asset
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/ExceptionBorder.asset
+        resourcesPath: MW2/EditorTools/Console/Components/ExceptionBorder
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 19276
+        id: 199192
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
         tempResource: {fileID: 11440684, guid: 3c23ad0ad93b24799b6f4e08549eb593, type: 2}
-      componentNoResource: {fileID: 11440684, guid: 3c23ad0ad93b24799b6f4e08549eb593,
-        type: 2}
+      componentNoResource: {fileID: 0}
+      sortingOrder: 0
+      componentParameters: {fileID: 0}
+      editorParametersFoldout: 0
+    - description: Version
+      tag: 5
+      component: {fileID: 0}
+      componentResource:
+        async: 1
+        controlType: 0
+        assetPath: 
+        resourcesPath: 
+        loadableResource: 0
+        loadableStream: 0
+        multiObjects: 0
+        objectIndex: 0
+        customResourcePath: 
+        id: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        tempResource: {fileID: 0}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0

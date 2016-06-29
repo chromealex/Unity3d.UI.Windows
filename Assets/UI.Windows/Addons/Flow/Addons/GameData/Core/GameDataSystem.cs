@@ -377,7 +377,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 				GameDataSystem.currentVersion = GameDataSystem.defaultVersion;
 
-				if (GameDataSystem.instance.logEnabled == true) {
+				if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
 					
 					WindowSystemLogger.Log(GameDataSystem.GetName(), string.Format("Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}, Version: {4}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId(), GameDataSystem.currentVersion));
 
@@ -387,7 +387,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 			} catch(System.Exception ex) {
 				
-				if (GameDataSystem.instance.logEnabled == true) {
+				if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
 					
 					// Nothing to do: failed to parse
 					WindowSystemLogger.Error(GameDataSystem.GetName(), string.Format("[ GameData ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
