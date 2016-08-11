@@ -5,14 +5,14 @@ using UnityEngine.UI.Windows.Plugins.Localization;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ButtonWithTipComponentParameters : WindowComponentParametersBase {
+	public class ButtonWithTipComponentParameters : ButtonComponentParameters {
 
 		[Header("Button: Tip")]
 		[ParamFlag(ParameterFlag.P13)] public LocalizationKey keyTooltipNormal;
 		[ParamFlag(ParameterFlag.P14)] public LocalizationKey keyTooltipDisabled;
 		[ParamFlag(ParameterFlag.P15)] public UnityEngine.UI.Windows.Types.TipWindowType.ShowPriority tipShowPriority = UnityEngine.UI.Windows.Types.TipWindowType.ShowPriority.Up;
 
-		public void Setup(IButtonComponent component) {
+		public override void Setup(IButtonComponent component) {
 
 			var tipButton = component as ButtonWithTipComponent;
 			if (tipButton == null) return;

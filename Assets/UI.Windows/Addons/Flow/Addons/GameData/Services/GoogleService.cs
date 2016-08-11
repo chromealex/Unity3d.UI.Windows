@@ -46,7 +46,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 		#region Client API Events
 		public override IEnumerator GetData(string url, System.Action<GameDataResult> onResult) {
 			
-			if (this.serviceManager.logEnabled == true) {
+			if (Application.isPlaying == false || this.serviceManager.logEnabled == true) {
 				
 				Debug.LogFormat("[ GameData ] Loading: {0}", url);
 				

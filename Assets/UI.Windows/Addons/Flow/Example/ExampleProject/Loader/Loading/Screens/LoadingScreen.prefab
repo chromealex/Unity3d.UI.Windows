@@ -10,7 +10,6 @@ GameObject:
   - 4: {fileID: 458946}
   - 20: {fileID: 2058946}
   - 114: {fileID: 11462388}
-  - 114: {fileID: 11427668}
   m_Layer: 5
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -65,31 +64,6 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
---- !u!114 &11427668
-MonoBehaviour:
-  m_ObjectHideFlags: 2
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 158946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62ccaa00834c041e09877ce0a20d5b42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flags: 0
-  flags1: 0
-  flags2: 0
-  duration: 1
-  minNormalizedValue: 0
-  continious: 0
-  continiousWidth: 0.4
-  continiousAngleStep: 0
-  onChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  currentValueNormalized: 0
 --- !u!114 &11462388
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -106,8 +80,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2058946}
-  initialized: 1
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -209,6 +187,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11417546, guid: 43471c08672684197b79a669c64ea4f6, type: 2}
     components:
     - description: CONTENT BORDER
@@ -224,12 +203,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10934
+        id: 202563464
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11440684, guid: 6b0d4b9b340964ac6bf02fc6512720fa, type: 2}
       componentNoResource: {fileID: 11440684, guid: 6b0d4b9b340964ac6bf02fc6512720fa,
         type: 2}
@@ -249,17 +229,18 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10628
+        id: -1912213121
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11435158, guid: 99d0d25ac20704092be5d4c540f9cd3c, type: 2}
       componentNoResource: {fileID: 11435158, guid: 99d0d25ac20704092be5d4c540f9cd3c,
         type: 2}
       sortingOrder: 0
-      componentParameters: {fileID: 11427668}
+      componentParameters: {fileID: 0}
       editorParametersFoldout: 0
 --- !u!1001 &100100000
 Prefab:

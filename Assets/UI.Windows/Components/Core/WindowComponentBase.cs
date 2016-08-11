@@ -85,8 +85,14 @@ namespace UnityEngine.UI.Windows {
 			return this.animationTag;
 			
 		}
-		
+
 		public string GetCustomTag(string custom) {
+
+			return string.Format("{0}_{1}", this.GetInstanceID(), custom);
+
+		}
+
+		public string GetCustomTag(int custom) {
 			
 			return string.Format("{0}_{1}", this.GetInstanceID(), custom);
 
@@ -186,7 +192,9 @@ namespace UnityEngine.UI.Windows {
 			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.ShowManual);
 
 			this.manualShowHideControl = true;
-			
+
+			//parameters = parameters.ReplaceManual(manual: true);
+
 			var callback = parameters.callback;
 			parameters.callback = () => {
 				
@@ -219,6 +227,8 @@ namespace UnityEngine.UI.Windows {
 			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.HideManual);
 
 			this.manualShowHideControl = true;
+
+			//parameters = parameters.ReplaceManual(manual: true);
 
 			var callback = parameters.callback;
 			parameters.callback = () => {
@@ -257,6 +267,13 @@ namespace UnityEngine.UI.Windows {
 
 		public override void DoShowBegin(AppearanceParameters parameters) {
 
+			if (parameters.GetManual(false) == true) {
+
+				this.Show(parameters);
+				return;
+
+			}
+
 			if (this.manualShowHideControl == true || this.showOnStart == false) {
 
 				parameters.Call();
@@ -285,6 +302,13 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public override void DoHideBegin(AppearanceParameters parameters) {
+
+			if (parameters.GetManual(false) == true) {
+
+				this.Hide(parameters);
+				return;
+
+			}
 
 			if (this.manualShowHideControl == true) {
 				
@@ -519,7 +543,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (TweenerGlobal.instance != null) {
 
-				var tag = this.GetTag();
+				var tag = (this.animation != null ? this.GetCustomTag(this.animation.GetInstanceID()) : this.GetTag());
 				TweenerGlobal.instance.removeTweens(tag);
 				if (immediately == false && delay > 0f) {
 
@@ -581,8 +605,8 @@ namespace UnityEngine.UI.Windows {
 			};
 
 			if (TweenerGlobal.instance != null) {
-				
-				var tag = this.GetTag();
+
+				var tag = (this.animation != null ? this.GetCustomTag(this.animation.GetInstanceID()) : this.GetTag());
 				TweenerGlobal.instance.removeTweens(tag);
 				if (immediately == false && delay > 0f) {
 
@@ -686,40 +710,56 @@ namespace UnityEngine.UI.Windows {
 
 			if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) return;
 
-			this.componentsToDestroy.Clear();
-
-			if (this.animation == null || this.lastAnimation != this.animation || this.animationRefresh == false) {
+			var changed = (this.lastAnimation != this.animation);
+			if (changed == true) {
 				
-				var ps = this.GetComponents<TransitionInputParameters>();
-				foreach (var p in ps) {
+				this.componentsToDestroy.Clear();
+
+				if (this.animation == null || this.lastAnimation != this.animation) {
 					
-					this.componentsToDestroy.Add(p);
-					
+					var ps = this.GetComponents<TransitionInputParameters>();
+					foreach (var p in ps) {
+						
+						this.componentsToDestroy.Add(p);
+						
+					}
+
 				}
 				
-				this.animationRefresh = false;
-				
+				if (this.animation != null) {
+					
+					this.animation.ApplyInputParameters(this);
+					
+				}
+
+				this.lastAnimation = this.animation;
+
+				this.DelayDestroy_EDITOR();
+
 			}
-			
-			if (this.animationRefresh == false && this.animation != null) {
-				
-				this.animation.ApplyInputParameters(this);
-				this.animationRefresh = true;
-				
-			}
-			
-			this.lastAnimation = this.animation;
-			
-			UnityEditor.EditorApplication.delayCall = () => {
-				
-				foreach (var c in this.componentsToDestroy) {
+
+		}
+
+		private void DelayDestroy_EDITOR() {
+
+			var toDestroy = this.componentsToDestroy.ToArray();
+
+			UnityEditor.EditorApplication.CallbackFunction delayCall = null;
+			delayCall = () => {
+
+				foreach (var c in toDestroy) {
 
 					Component.DestroyImmediate(c);
-					this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
-					
+
 				}
-				
+
+				this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
+
+				UnityEditor.EditorApplication.delayCall -= delayCall;
+
 			};
+
+			UnityEditor.EditorApplication.delayCall += delayCall;
 
 		}
 		#endif

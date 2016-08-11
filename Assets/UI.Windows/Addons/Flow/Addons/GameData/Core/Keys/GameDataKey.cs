@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-
+﻿
 namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 	[System.Serializable]
 	public class GDFloat {
 		
 		public string key;
+	    private float? cache;
 		
 		public GDFloat(string key) {
 			
@@ -21,7 +21,18 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 		public float Get() {
 
-			return GameDataSystem.Get(this);
+            #if UNITY_EDITOR
+		    if (Application.isPlaying == false) {
+
+                return GameDataSystem.Get(this);
+
+		    }
+            #endif
+
+            if (this.cache.HasValue == true) return this.cache.Value;
+
+            this.cache = GameDataSystem.Get(this);
+		    return this.cache.Value;
 
 		}
 		
@@ -31,8 +42,9 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 	public class GDInt {
 		
 		public string key;
-		
-		public GDInt(string key) {
+        private int? cache;
+
+        public GDInt(string key) {
 			
 			this.key = key;
 			
@@ -43,19 +55,31 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 			return this.key == null || string.IsNullOrEmpty(this.key.Trim());
 			
 		}
-		
-		public int Get() {
-			
-			return GameDataSystem.Get(this);
-			
-		}
-		
-	}
-	
-	[System.Serializable]
+
+        public int Get() {
+
+        #if UNITY_EDITOR
+            if (Application.isPlaying == false) {
+
+                return GameDataSystem.Get(this);
+
+            }
+        #endif
+
+            if (this.cache.HasValue == true) return this.cache.Value;
+
+            this.cache = GameDataSystem.Get(this);
+            return this.cache.Value;
+
+        }
+
+    }
+
+    [System.Serializable]
 	public class GDBool {
 		
 		public string key;
+        private bool? cache;
 		
 		public GDBool(string key) {
 			
@@ -68,19 +92,31 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 			return this.key == null || string.IsNullOrEmpty(this.key.Trim());
 			
 		}
-		
-		public bool Get() {
-			
-			return GameDataSystem.Get(this);
-			
-		}
-		
-	}
+
+        public bool Get() {
+
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) {
+
+                return GameDataSystem.Get(this);
+
+            }
+#endif
+
+            if (this.cache.HasValue == true) return this.cache.Value;
+
+            this.cache = GameDataSystem.Get(this);
+            return this.cache.Value;
+
+        }
+
+    }
 
     [System.Serializable]
     public class GDEnum {
 
         public string key;
+        private int? cache;
 
         public GDEnum(string key) {
 
@@ -96,7 +132,19 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
         public int Get() {
 
-            return GameDataSystem.Get(this);
+#if UNITY_EDITOR
+            if (Application.isPlaying == false) {
+
+                return GameDataSystem.Get(this);
+
+            }
+#endif
+
+            if (this.cache.HasValue == true)
+                return this.cache.Value;
+
+            this.cache = GameDataSystem.Get(this);
+            return this.cache.Value;
 
         }
 

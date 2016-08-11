@@ -61,12 +61,21 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 					WindowSystemLogger.Warning(this, "Permission denied");
 
 				}
+
+				if (onComplete != null) onComplete.Invoke();
+
 				yield break;
 				
 			}
 			
 			var settings = this.settings;
-			if (settings == null) yield break;
+			if (settings == null) {
+
+				if (onComplete != null) onComplete.Invoke();
+
+				yield break;
+
+			}
 
 			this.OnInitialized();
 
@@ -78,12 +87,12 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 					
 					for (int i = 0; i < items.Count; ++i) {
 						
-						var item = items [i];
+						var item = items[i];
 						if (item.serviceName == service.GetServiceName()) {
-							
+
 							service.isActive = item.enabled;
 							if (service.isActive == true) {
-
+								
 								yield return this.StartCoroutine(service.Auth(service.GetAuthKey(item)));
 								yield return this.StartCoroutine(this.OnAfterAuth(service));
 
@@ -174,14 +183,14 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 		}
 
 		public static void InitializeAsync(System.Action onComplete = null) {
-			
+
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
 			(instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
 
 		}
 
 		public static IEnumerator Initialize(System.Action onComplete = null) {
-
+			
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
 			yield return (instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
 
@@ -201,6 +210,12 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
+		public static List<TService> GetServices<TService>() where TService : IService {
+
+			return ServiceManager<T>.instance.services.Cast<TService>().ToList();
+
+		}
+
 		public static void ForEachService<TService>(System.Action<TService> onService) where TService : IService {
 			
 			#if UNITY_EDITOR
@@ -214,8 +229,8 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			foreach (var serviceBase in list) {
 
 				if (serviceBase.isActive == true && serviceBase is TService) {
-					
-					onService((TService)serviceBase);
+
+					onService.Invoke((TService)serviceBase);
 					
 				}
 				

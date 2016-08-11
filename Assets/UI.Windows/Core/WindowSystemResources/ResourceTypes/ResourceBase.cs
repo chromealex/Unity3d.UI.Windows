@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI.Windows.Components;
 using System.Collections.Generic;
+using ME;
 
 namespace UnityEngine.UI.Windows {
 
@@ -31,6 +32,7 @@ namespace UnityEngine.UI.Windows {
 
 		public enum Platform : byte {
 
+			Common,
 			Standalone,
 			iOS,
 			Android,
@@ -63,6 +65,7 @@ namespace UnityEngine.UI.Windows {
 			this.streamingAssetsPathAndroid = source.streamingAssetsPathAndroid;
 			this.streamingAssetsPathPS4 = source.streamingAssetsPathPS4;
 			this.streamingAssetsPathXBOXONE = source.streamingAssetsPathXBOXONE;
+			this.streamingAssetsPathCommon = source.streamingAssetsPathCommon;
 
 		}
 
@@ -82,7 +85,7 @@ namespace UnityEngine.UI.Windows {
 		
 		[ReadOnly] public string customResourcePath;
 
-		[ReadOnly] public long id;
+		[ReadOnly] public int id;
 
 		[System.NonSerialized]
 		public Object loadedObject;
@@ -96,11 +99,14 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly] public string streamingAssetsPathAndroid;
 		[ReadOnly] public string streamingAssetsPathPS4;
 		[ReadOnly] public string streamingAssetsPathXBOXONE;
+		[ReadOnly] public string streamingAssetsPathCommon;
 
-		private static Dictionary<Graphic, int> iterations = null;
-		private static Dictionary<Graphic, Color> colorCache = null;
+		//private static Dictionary<Graphic, int> iterations = null;
+		//private static Dictionary<Graphic, Color> colorCache = null;
 
-		public long GetId() {
+		//private ResourceAsyncOperation task;
+
+		public int GetId() {
 
 			return this.id;
 
@@ -118,7 +124,7 @@ namespace UnityEngine.UI.Windows {
 			this.loadedObject = null;
 			this.loadedObjectId = 0;
 			this.loaded = false;
-			if (obj != null) Resources.UnloadAsset(obj);
+			if (obj != null && obj.GetID() < 0) Resources.UnloadAsset(obj);
 
 		}
 
@@ -136,7 +142,7 @@ namespace UnityEngine.UI.Windows {
 				this.loadedObject = Resources.Load<T>(this.resourcesPath);
 				if (this.loadedObject != null) {
 
-					this.loadedObjectId = this.loadedObject.GetInstanceID();
+					this.loadedObjectId = this.loadedObject.GetID();
 					this.loaded = true;
 
 					return this.loadedObject as T;
@@ -152,10 +158,36 @@ namespace UnityEngine.UI.Windows {
 
 		public IEnumerator LoadAudioClip(System.Action<AudioClip> callback) {
 
+			#region Load Resource
+			if (this.loadableResource == true) {
+
+				if (this.async == true) {
+
+					var request = Resources.LoadAsync<AudioClip>(this.resourcesPath);
+					while (request.isDone == false) {
+
+						yield return false;
+
+					}
+
+					callback.Invoke(request.asset as AudioClip);
+
+				} else {
+
+					callback.Invoke(Resources.Load<AudioClip>(this.resourcesPath));
+
+				}
+
+				yield break;
+
+			}
+			#endregion
+
 			#region Load Stream
 			if (this.loadableStream == true) {
 
-				var path = this.GetStreamPath();
+				var path = this.GetStreamPath(withFile: true);
+				//Debug.Log("Loading: " + path);
 				var www = new WWW(path);
 				while (www.isDone == false) {
 
@@ -163,9 +195,19 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				var clip = www.audioClip;
+				if (string.IsNullOrEmpty(www.error) == true) {
+					
+					var clip = www.audioClip;
+					//Debug.Log("Callback!");
+					callback.Invoke(clip);
 
-				callback.Invoke(clip);
+				} else {
+
+					//Debug.Log("Callback!");
+					callback.Invoke(null);
+
+				}
+
 				yield break;
 
 			}
@@ -175,172 +217,51 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public IEnumerator Load<T>(IImageComponent component, Graphic graphic, string customResourcePath, System.Action<T> callback) where T : Object {
+		public bool IsMaterialLoadingType() {
 
-			if (ResourceBase.iterations == null) ResourceBase.iterations = new Dictionary<Graphic, int>();
-			if (ResourceBase.colorCache == null) ResourceBase.colorCache = new Dictionary<Graphic, Color>();
+			if (this.loadableStream == true) {
 
-			customResourcePath = customResourcePath ?? (string.IsNullOrEmpty(this.customResourcePath) == true ? null : this.customResourcePath);
-			this.customResourcePath = customResourcePath;
-
-			var isFade = (WindowSystemResources.GetAsyncLoadFadeTime() > 0f);
-
-			var iterationFailed = false;
-			var iteration = 0;
-			var oldColor = Color.white;
-			if (graphic != null) {
-
-				var isEmpty = true;
-				if (graphic is Image) {
-
-					isEmpty = ((graphic as Image).sprite == null);
-
-				}
-
-				if (isEmpty == true && graphic is RawImage) {
-
-					isEmpty = ((graphic as RawImage).texture == null);
-
-				}
-
-				if (isFade == true) {
-
-					TweenerGlobal.instance.removeTweens(graphic);
-
-				}
-
-				if (ResourceBase.iterations.TryGetValue(graphic, out iteration) == false) {
-
-					ResourceBase.iterations.Add(graphic, iteration);
-
-				}
-
-				if (ResourceBase.colorCache.TryGetValue(graphic, out oldColor) == true) {
-
-					// restoring color
-					graphic.color = oldColor;
-
-				} else {
-
-					ResourceBase.colorCache.Add(graphic, graphic.color);
-
-				}
-
-				oldColor = graphic.color;
-				if (isEmpty == true) graphic.color = new Color(oldColor.r, oldColor.g, oldColor.b, 0f);
-
-				++ResourceBase.iterations[graphic];
-				iteration = ResourceBase.iterations[graphic];
-
-				//Debug.Log("Loading: " + customResourcePath + ", iter: " + iteration, graphic);
+				return MovieSystem.IsMaterialLoadingType();
 
 			}
 
-			#region Load Resource
-			if (this.loadableResource == true || string.IsNullOrEmpty(customResourcePath) == false) {
-				
-				var resourcePath = customResourcePath ?? this.resourcesPath;
-				
-				if (this.async == true) {
-					
-					var task = Resources.LoadAsync<T>(resourcePath);
-					while (task.isDone == false) {
-						
-						yield return false;
-						
-					}
-
-					iterationFailed = !(graphic == null || iteration == ResourceBase.iterations[graphic]);
-					if (iterationFailed == false) {
-						
-						if (this.multiObjects == true && this.objectIndex >= 0) {
-
-							callback.Invoke(Resources.LoadAll(resourcePath)[this.objectIndex] as T);
-							
-						} else {
-							
-							callback.Invoke(task.asset as T);
-							
-						}
-
-					}
-
-					task = null;
-					
-				} else {
-					
-					if (this.multiObjects == true && this.objectIndex >= 0) {
-						
-						callback.Invoke(Resources.LoadAll(resourcePath)[this.objectIndex] as T);
-						
-					} else {
-						
-						var asset = Resources.Load<T>(resourcePath);
-						callback.Invoke(asset);
-						
-					}
-					
-				}
-				
-			} else if (this.loadableStream == true) {
-
-				var task = MovieSystem.LoadTexture(component);
-				while (task.isDone == false) {
-						
-					yield return false;
-
-				}
-
-				iterationFailed = !(graphic == null || iteration == ResourceBase.iterations[graphic]);
-				if (iterationFailed == false) {
-
-					//Debug.Log("Loaded: " + customResourcePath + ", iter: " + iteration, graphic);
-
-					callback.Invoke(task.asset as T);
-
-				}
-
-				task.Dispose();
-				task = null;
-
-			}
-			#endregion
-
-			if (iterationFailed == false && graphic != null) {
-
-				if (isFade == true) {
-
-					TweenerGlobal.instance.addTweenAlpha(graphic, WindowSystemResources.GetAsyncLoadFadeTime(), oldColor.a).tag(graphic).onCancel((g) => { g.color = oldColor; });
-
-				} else {
-
-					graphic.color = oldColor;
-
-				}
-
-			}
+			return false;
 
 		}
 
-		public string GetStreamPath() {
+		public IEnumerator Load<T>(IImageComponent component, Graphic graphic, string customResourcePath, System.Action<T> callback) where T : Object {
+
+			yield return WindowSystemResources.LoadResource<T>(this, component, graphic, customResourcePath, callback);
+
+		}
+
+		public string GetStreamPath(bool withFile = false) {
 
 			var combine = true;
 			var path = string.Empty;
 			var prefix = string.Empty;
+			var result = string.Empty;
 			#if UNITY_STANDALONE || UNITY_EDITOR
 			path = this.streamingAssetsPathStandalone;
-			if (path.Contains("://") == false) {
+			/*if (path.Contains("://") == false) {
 
 				prefix = "file:///";
 
+			}*/
+			#elif UNITY_IPHONE || UNITY_TVOS
+			path = this.streamingAssetsPathIOS;
+			combine = true;
+			if (withFile == true) {
+				
+				path = "Data/Raw/" + path;
+
 			}
-			#elif UNITY_IPHONE
-			path = "Data/Raw/" + this.streamingAssetsPathIOS;
-			combine = false;
 			#elif UNITY_ANDROID
 			path = this.streamingAssetsPathAndroid;
 			#elif UNITY_PS4
 			path = this.streamingAssetsPathPS4;
+			combine = false;
+			prefix = "streamingAssets/";
 			#elif UNITY_XBOXONE
 			path = this.streamingAssetsPathXBOXONE;
 			#else
@@ -352,15 +273,39 @@ namespace UnityEngine.UI.Windows {
 			}
 			#endif
 
-			if (combine == true) {
+			if (string.IsNullOrEmpty(path) == true) {
 				
-				return prefix + System.IO.Path.Combine(Application.streamingAssetsPath, path);
+				path = this.streamingAssetsPathCommon;
+
+			}
+
+			if (string.IsNullOrEmpty(path) == false) {
+
+				path = path.Replace("\\", "/");
 				
-			} else {
-				
-				return prefix + path;
+				if (combine == true) {
+					
+					result = prefix + System.IO.Path.Combine(Application.streamingAssetsPath, path);
+					
+				} else {
+					
+					result = prefix + path;
+					
+				}
 				
 			}
+
+			if (withFile == true) {
+				
+				if (result.Contains("://") == false) {
+					
+					result = "file:///" + result;
+					
+				}
+
+			}
+
+			return result;
 
 		}
 
@@ -417,6 +362,7 @@ namespace UnityEngine.UI.Windows {
 					this.streamingAssetsPathStandalone	= this.GetPlatformDirectory(Platform.Standalone, localDir, filenameWithoutExt);
 					this.streamingAssetsPathPS4			= this.GetPlatformDirectory(Platform.PS4, localDir, filenameWithoutExt);
 					this.streamingAssetsPathXBOXONE		= this.GetPlatformDirectory(Platform.XBOXONE, localDir, filenameWithoutExt);
+					this.streamingAssetsPathCommon		= this.GetPlatformDirectory(Platform.Common, localDir, filenameWithoutExt);
 
 				}
 				
@@ -425,9 +371,22 @@ namespace UnityEngine.UI.Windows {
 			}
 			#endregion
 
-			this.id = item.GetInstanceID();
+			string uniquePath = (this.multiObjects == true) ? (string.Format("{0}#{1}", this.assetPath, this.objectIndex)) : this.assetPath;
+			this.id = ResourceBase.GetJavaHash(uniquePath);
 
 		}
+
+        private static int GetJavaHash(string s) {
+
+            int hash = 0;
+            foreach (char c in s) {
+
+                hash = 31 * hash + c;
+
+            }
+            return hash;
+
+        }
 
 		private string GetPlatformDirectory(Platform platform, string localDir, string filenameWithoutExt) {
 
@@ -446,7 +405,9 @@ namespace UnityEngine.UI.Windows {
 					if (filenameWithoutExt == curFilename) {
 
 						ext = System.IO.Path.GetExtension(file);
-						return System.IO.Path.Combine(platformDir + localDir, filenameWithoutExt + ext);
+						var combinedPath = System.IO.Path.Combine(platformDir + localDir, filenameWithoutExt + ext);
+						combinedPath = combinedPath.Replace('\\', '/');
+						return combinedPath;
 
 					}
 

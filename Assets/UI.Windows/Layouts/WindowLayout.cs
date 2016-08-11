@@ -89,7 +89,7 @@ namespace UnityEngine.UI.Windows {
 		}
 		#endif
 
-		public void Init(float depth, int raycastPriority, int orderInLayer, WindowLayout.ScaleMode scaleMode, Vector2 fixedScaleResolution, WindowLayoutPreferences layoutPreferences) {
+		public void Init(float depth, int raycastPriority, int orderInLayer) {
 			
 			if (this.initialized == false) {
 				
@@ -105,6 +105,19 @@ namespace UnityEngine.UI.Windows {
 			this.canvas.worldCamera = this.GetWindow().workCamera;
 			
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
+
+			for (int i = 0; i < this.elements.Count; ++i) {
+
+				this.elements[i].Setup(this.GetWindow());
+				this.elements[i].SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
+
+			}
+
+			this.root.Setup(this.GetWindow());
+
+		}
+
+		public void SetLayoutPreferences(WindowLayout.ScaleMode scaleMode, Vector2 fixedScaleResolution, WindowLayoutPreferences layoutPreferences) {
 
 			var matchWidthOrHeight = 0f;
 
@@ -127,15 +140,6 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.SetScale(scaleMode, fixedScaleResolution, matchWidthOrHeight);
-
-			for (int i = 0; i < this.elements.Count; ++i) {
-
-				this.elements[i].Setup(this.GetWindow());
-				this.elements[i].SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
-
-			}
-
-			this.root.Setup(this.GetWindow());
 
 		}
 
@@ -213,17 +217,17 @@ namespace UnityEngine.UI.Windows {
 			switch (this.canvasScaler.screenMatchMode) {
 				case CanvasScaler.ScreenMatchMode.MatchWidthOrHeight:
 					{
-						float num = Mathf.Log (vector.x / this.canvasScaler.referenceResolution.x, 2f);
-						float num2 = Mathf.Log (vector.y / this.canvasScaler.referenceResolution.y, 2f);
-						float num3 = Mathf.Lerp (num, num2, this.canvasScaler.matchWidthOrHeight);
-						scaleFactor = Mathf.Pow (2f, num3);
+						float num = Mathf.Log(vector.x / this.canvasScaler.referenceResolution.x, 2f);
+						float num2 = Mathf.Log(vector.y / this.canvasScaler.referenceResolution.y, 2f);
+						float num3 = Mathf.Lerp(num, num2, this.canvasScaler.matchWidthOrHeight);
+						scaleFactor = Mathf.Pow(2f, num3);
 						break;
 					}
 				case CanvasScaler.ScreenMatchMode.Expand:
-					scaleFactor = Mathf.Min (vector.x / this.canvasScaler.referenceResolution.x, vector.y / this.canvasScaler.referenceResolution.y);
+					scaleFactor = Mathf.Min(vector.x / this.canvasScaler.referenceResolution.x, vector.y / this.canvasScaler.referenceResolution.y);
 					break;
 				case CanvasScaler.ScreenMatchMode.Shrink:
-					scaleFactor = Mathf.Max (vector.x / this.canvasScaler.referenceResolution.x, vector.y / this.canvasScaler.referenceResolution.y);
+					scaleFactor = Mathf.Max(vector.x / this.canvasScaler.referenceResolution.x, vector.y / this.canvasScaler.referenceResolution.y);
 					break;
 			}
 

@@ -8,6 +8,7 @@ using System.Text;
 using UnityEngine.Events;
 using UnityEngine.UI.Windows.Animations;
 using UnityEngine.UI.Windows.Audio;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEngine.UI.Windows {
 
@@ -225,7 +226,11 @@ namespace UnityEngine.UI.Windows {
 		
 		[Header("Settings")]
 		public Settings settings = new Settings();
-		
+
+		public bool emulateRuntimePlatform = false;
+		[ReadOnly("emulateRuntimePlatform", state: false)]
+		public RuntimePlatform currentRuntimePlatform;
+
 		[Header("Window System")]
 		/// <summary>
 		/// The root screen.
@@ -273,6 +278,8 @@ namespace UnityEngine.UI.Windows {
 
 		private bool disabledCallEvents = false;
 
+		private WindowLayoutPreferences customLayoutPreferences;
+
 		private static WindowSystem _instance;
 		private static WindowSystem instance {
 
@@ -300,6 +307,18 @@ namespace UnityEngine.UI.Windows {
 				WindowSystem._instance = value;
 
 			}
+
+		}
+
+		public static RuntimePlatform GetCurrentRuntimePlatform() {
+
+			if (WindowSystem.instance.emulateRuntimePlatform == true) {
+
+				return WindowSystem.instance.currentRuntimePlatform;
+
+			}
+
+			return Application.platform;
 
 		}
 
@@ -403,7 +422,30 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 		}
-		
+
+		public static void SetCustomLayoutPreferences(WindowLayoutPreferences preferences) {
+
+			WindowSystem.instance.customLayoutPreferences = preferences;
+
+			WindowSystem.ForEachWindow(w => {
+
+				var window = w as LayoutWindowType;
+				if (window != null) {
+
+					window.layout.SetCustomLayoutPreferences(WindowSystem.instance.customLayoutPreferences);
+
+				}
+
+			});
+
+		}
+
+		public static WindowLayoutPreferences GetCustomLayoutPreferences() {
+
+			return WindowSystem.instance.customLayoutPreferences;
+
+		}
+
 		public static float GetVolume(ClipType clipType) {
 			
 			if (WindowSystem.instance == null) return 0f;
@@ -909,11 +951,11 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
 		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null, bool forceAll = false, bool immediately = false) {
-			
+
 			WindowSystem.HideAll(except, () => {
 				
 				WindowSystem.Clean(except, forceAll);
-				
+
 				if (callback != null) callback();
 				
 			}, forceAll, immediately);
@@ -1031,11 +1073,7 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
-			ME.Utilities.CallInSequence(() => {
-
-				if (callback != null) callback();
-				
-			}, WindowSystem.instance.currentWindows.Where((w) => {
+			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => {
 
 				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
 
@@ -1065,11 +1103,7 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
-			ME.Utilities.CallInSequence(() => {
-				
-				if (callback != null) callback();
-
-			}, WindowSystem.instance.currentWindows.Where((w) => {
+			ME.Utilities.CallInSequence(callback, WindowSystem.instance.currentWindows.Where((w) => {
 
 				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, except, null, forceAll);
 

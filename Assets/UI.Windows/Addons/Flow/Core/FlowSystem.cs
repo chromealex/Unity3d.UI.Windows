@@ -217,11 +217,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
-		public static Data.FlowWindow GetWindow(WindowBase window) {
+		public static Data.FlowWindow GetWindow(WindowBase window, bool runtime) {
 			
 			if (FlowSystem.HasData() == false) return null;
 			
-			return FlowSystem.instance.data.GetWindow(window);
+			return FlowSystem.instance.data.GetWindow(window, runtime);
 
 		}
 

@@ -19,50 +19,159 @@ namespace UnityEngine.UI {
 
 		public override void OnDeselect(BaseEventData eventData) {
 			
-			if (this.referenceButton != null) this.referenceButton.OnDeselect(eventData);
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this)
+					this.rootButton.OnDeselect(eventData);
+
+			} else {
+
+				if (this.referenceButton != null)
+					this.referenceButton.OnDeselect(eventData);
+
+			}
+
 			base.OnDeselect(eventData);
+
+			this.OnStateChanged();
 
 		}
 
 		public override void OnMove(AxisEventData eventData) {
 
-			if (this.referenceButton != null) this.referenceButton.OnMove(eventData);
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this)
+					this.rootButton.OnMove(eventData);
+
+			} else {
+
+				if (this.referenceButton != null)
+					this.referenceButton.OnMove(eventData);
+
+			}
+
 			base.OnMove(eventData);
+
+			this.OnStateChanged();
+
+		}
+
+		public override void OnPointerClick(PointerEventData eventData) {
+
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this) this.rootButton.OnPointerClick(eventData);
+
+			} else {
+
+				if (this.referenceButton != null) this.referenceButton.OnPointerClick(eventData);
+
+			}
+
+			base.OnPointerClick(eventData);
+
+			this.OnStateChanged();
 
 		}
 
 		public override void OnPointerDown(PointerEventData eventData) {
 
-			if (this.referenceButton != null) this.referenceButton.OnPointerDown(eventData);
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this)
+					this.rootButton.OnPointerDown(eventData);
+
+			} else {
+
+				if (this.referenceButton != null)
+					this.referenceButton.OnPointerDown(eventData);
+
+			}
+
 			base.OnPointerDown(eventData);
+
+			this.OnStateChanged();
 
 		}
 
 		public override void OnPointerEnter(PointerEventData eventData) {
 
-			if (this.referenceButton != null) this.referenceButton.OnPointerEnter(eventData);
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this)
+					this.rootButton.OnPointerEnter(eventData);
+
+			} else {
+
+				if (this.referenceButton != null)
+					this.referenceButton.OnPointerEnter(eventData);
+
+			}
+
 			base.OnPointerEnter(eventData);
+
+			this.OnStateChanged();
 
 		}
 
 		public override void OnPointerExit(PointerEventData eventData) {
 
-			if (this.referenceButton != null) this.referenceButton.OnPointerExit(eventData);
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this)
+					this.rootButton.OnPointerExit(eventData);
+
+			} else {
+
+				if (this.referenceButton != null)
+					this.referenceButton.OnPointerExit(eventData);
+
+			}
+
 			base.OnPointerExit(eventData);
+
+			this.OnStateChanged();
 
 		}
 
 		public override void OnPointerUp(PointerEventData eventData) {
 
-			if (this.referenceButton != null) this.referenceButton.OnPointerUp(eventData);
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this)
+					this.rootButton.OnPointerUp(eventData);
+
+			} else {
+
+				if (this.referenceButton != null)
+					this.referenceButton.OnPointerUp(eventData);
+
+			}
+
 			base.OnPointerUp(eventData);
+
+			this.OnStateChanged();
 
 		}
 
 		public override void OnSelect(BaseEventData eventData) {
 
-			if (this.referenceButton != null) this.referenceButton.OnSelect(eventData);
+			if (this.rootButton != null) {
+
+				if (this.rootButton != this)
+					this.rootButton.OnSelect(eventData);
+
+			} else {
+
+				if (this.referenceButton != null)
+					this.referenceButton.OnSelect(eventData);
+
+			}
+
 			base.OnSelect(eventData);
+
+			this.OnStateChanged();
 
 		}
 
@@ -72,7 +181,7 @@ namespace UnityEngine.UI {
 				
 				base.interactable = value;
 
-				if (this.rootButton != null) {
+				if (this.rootButton != null && this.rootButton != this) {
 
 					this.rootButton.interactable = value;
 
@@ -90,7 +199,7 @@ namespace UnityEngine.UI {
 
 			get {
 	
-				if (this.rootButton != null) return this.rootButton.interactable;
+				if (this.rootButton != null && this.rootButton != this) return this.rootButton.interactable;
 
 				return base.interactable;
 
@@ -100,11 +209,13 @@ namespace UnityEngine.UI {
 
 		public override bool IsInteractable() {
 
-			if (this.rootButton != null) return this.rootButton.IsInteractable();
+			if (this.rootButton != null && this.rootButton != this) return this.rootButton.IsInteractable();
 
 			return base.IsInteractable();
 
 		}
+
+		protected virtual void OnStateChanged() {}
 
 	}
 

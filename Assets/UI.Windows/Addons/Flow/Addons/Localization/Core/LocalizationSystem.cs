@@ -1,3 +1,6 @@
+#if UNITY_TVOS && !UNITY_EDITOR
+#define STORAGE_NOT_SUPPORTED
+#endif
 using UnityEngine;
 using System.Collections;
 using System.Linq;
@@ -256,6 +259,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		}
 
+		public static int GetCurrentLanguageIndex() {
+
+			return System.Array.IndexOf(LocalizationSystem.languages, LocalizationSystem.currentLanguage);
+
+		}
+
 		public static int GetDefaultLanguageIndex() {
 
 			return System.Array.IndexOf(LocalizationSystem.languages, LocalizationSystem.defaultLanguage);
@@ -337,8 +346,9 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		}
 
 		public static string GetCachePath() {
-			
-			return string.Format("{0}/Localization.dat", Application.persistentDataPath);
+
+			var path = Application.persistentDataPath;
+			return string.Format("{0}/Localization.dat", path);
 
 		}
 
@@ -346,7 +356,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		private static bool cacheLoaded = false;
 		#endif
 		public static void TryToLoadCache() {
-
+			
 			#if UNITY_EDITOR
 			if (LocalizationSystem.cacheLoaded == true) return;
 			if (Application.isPlaying == false) {
@@ -354,18 +364,30 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				LocalizationSystem.cacheLoaded = true;
 
 				var path = LocalizationSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				var text = string.Empty;
+				//if (PlayerPrefs.HasKey(path) == false) return;
+				//var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+				
 				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
 
 				var path = LocalizationSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				var text = string.Empty;
+				//if (PlayerPrefs.HasKey(path) == false) return;
+				//var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+
 				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			#if UNITY_EDITOR
@@ -453,7 +475,11 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				#endregion
 
 				var path = LocalizationSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				//PlayerPrefs.SetString(path, data);
+				#else
 				System.IO.File.WriteAllText(path, data);
+				#endif
 
 				LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
 

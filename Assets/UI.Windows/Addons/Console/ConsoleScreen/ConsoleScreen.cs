@@ -5,8 +5,7 @@
 //     See more: https://github.com/chromealex/Unity3d.UI.Windows
 // </auto-generated>
 //------------------------------------------------------------------------------
-using UnityEngine;
-using UnityEngine.UI.Windows;
+
 using UnityEngine.UI.Windows.Components;
 using UnityEngine.Events;
 using System.Collections.Generic;

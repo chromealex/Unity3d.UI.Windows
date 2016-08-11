@@ -10,6 +10,12 @@ namespace UnityEngine.UI.Windows {
 		public int defaultSortingOrder;
 		public bool defaultBackgroundLayer;
 
+		public virtual bool IsInstantiate() {
+
+			return true;
+
+		}
+
 		public virtual bool IsSupported() {
 
 			return true;

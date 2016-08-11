@@ -6,7 +6,7 @@ using ME;
 
 namespace UnityEngine.UI.Windows {
 
-	public interface IWindowNavigation : IComponent {
+	public interface IWindowNavigation : IHoverableComponent {
 
 		/*T NavigationFindLeft<T>(bool interactableOnly = false, bool lookupRootOnFail = true) where T : IComponent;
 		T NavigationFindRight<T>(bool interactableOnly = false, bool lookupRootOnFail = true) where T : IComponent;
@@ -253,9 +253,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-        public override void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null) {
+		public override void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null, bool immediately = true) {
 
-            base.UnregisterSubComponent(subComponent, callback);
+			base.UnregisterSubComponent(subComponent, callback, immediately);
 
 			var nav = subComponent as IWindowNavigation;
 			if (nav != null) {

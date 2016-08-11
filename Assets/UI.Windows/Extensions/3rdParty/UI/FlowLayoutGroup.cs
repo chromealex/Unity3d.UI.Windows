@@ -94,10 +94,17 @@ namespace UnityEngine.UI.Extensions {
 				var index = IsLowerAlign ? rectChildren.Count - 1 - i : i;
 				
 				var child = rectChildren[index];
-				
+
 				var childWidth = LayoutUtility.GetPreferredSize(child, 0);
 				var childHeight = LayoutUtility.GetPreferredSize(child, 1);
-				
+
+				var childFlexibleWidth = LayoutUtility.GetFlexibleSize(child, 0);
+				if (childFlexibleWidth > 0f) {
+
+					childWidth = workingWidth;
+
+				}
+
 				// Max child width is layout group with - padding
 				childWidth = Mathf.Min(childWidth, workingWidth);
 				
@@ -196,7 +203,14 @@ namespace UnityEngine.UI.Extensions {
 				
 				var rowChildWidth = LayoutUtility.GetPreferredSize(rowChild, 0) + extraWidth;
 				var rowChildHeight = LayoutUtility.GetPreferredSize(rowChild, 1);
-				
+
+				var childFlexibleWidth = LayoutUtility.GetFlexibleSize(rowChild, 0);
+				if (childFlexibleWidth > 0f) {
+
+					rowChildWidth = rowWidth;
+
+				}
+
 				if (ChildForceExpandHeight)
 					rowChildHeight = rowHeight;
 				

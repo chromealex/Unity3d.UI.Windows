@@ -83,8 +83,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2058946}
-  initialized: 1
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -186,6 +190,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11487960, guid: 1b4d2ebc8f57947c68a8269ba1ffc2b6, type: 2}
     components:
     - description: BORDER
@@ -207,6 +212,7 @@ MonoBehaviour:
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 0}
       componentNoResource: {fileID: 0}
       sortingOrder: 0
@@ -231,6 +237,7 @@ MonoBehaviour:
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 0}
       componentNoResource: {fileID: 0}
       sortingOrder: 0
@@ -249,12 +256,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10598
+        id: -146389056
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11450942, guid: a493e1b7fca90429aa46f68cfd682136, type: 2}
       componentNoResource: {fileID: 11450942, guid: a493e1b7fca90429aa46f68cfd682136,
         type: 2}
@@ -280,6 +288,7 @@ MonoBehaviour:
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 0}
       componentNoResource: {fileID: 0}
       sortingOrder: 0
@@ -298,12 +307,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10600
+        id: 1894874965
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
       componentNoResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75,
         type: 2}
@@ -323,12 +333,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10626
+        id: -577107224
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11434048, guid: 4a516d85509574b799df59b34c2e378c, type: 2}
       componentNoResource: {fileID: 11434048, guid: 4a516d85509574b799df59b34c2e378c,
         type: 2}
@@ -346,10 +357,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3161d3dee0a4c36bc04c14270ac6c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 273
   flags1: 273
   flags2: 0
-  text: Game Over
+  text: 47616d65204f766572
   localizationKey:
     key: 
     parameters: 0
@@ -382,7 +392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c0f28d4aa17e4024a917840ee07d452, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 8
   flags1: 8
   flags2: 0
   preserveAspect: 0
@@ -407,7 +416,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 1048576
   flags1: 1048576
   flags2: 0
   interactableByDefault: 1
@@ -446,7 +454,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: Go to Menu
+  text: 476f20746f204d656e75
   localizationKey:
     key: 
     parameters: 0

@@ -467,10 +467,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -486,18 +486,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11405714
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -511,10 +514,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -539,10 +542,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -697,9 +704,9 @@ MonoBehaviour:
   m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
-  m_Elasticity: .100000001
+  m_Elasticity: 0.1
   m_Inertia: 1
-  m_DecelerationRate: .135000005
+  m_DecelerationRate: 0.135
   m_ScrollSensitivity: 1
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
@@ -726,7 +733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: .0196078438}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.019607844}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -753,7 +760,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: .38981384, b: .757352948, a: .701960802}
+  m_Color: {r: 0, g: 0.38981384, b: 0.75735295, a: 0.7019608}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -780,7 +787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: .38981384, b: .757352948, a: .309803933}
+  m_Color: {r: 0, g: 0.38981384, b: 0.75735295, a: 0.30980393}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -815,11 +822,11 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: .960784316, g: .960784316, b: .960784316, a: 1}
-    m_PressedColor: {r: .784313738, g: .784313738, b: .784313738, a: 1}
-    m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .101960786}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.101960786}
     m_ColorMultiplier: 1
-    m_FadeDuration: .100000001
+    m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
@@ -855,10 +862,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -874,18 +881,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11405866
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -899,10 +909,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -927,10 +937,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 0}
   subComponents:
   - {fileID: 11481008}
   - {fileID: 11405896}
@@ -974,7 +988,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .383001715, g: .555035174, b: .676470578, a: 1}
+  m_Color: {r: 0.38300171, g: 0.5550352, b: 0.6764706, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1001,10 +1015,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -1092,10 +1110,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1111,18 +1129,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11438482
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1136,10 +1157,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1164,10 +1185,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -1219,10 +1244,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1238,18 +1263,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11475994
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1263,10 +1291,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1309,10 +1337,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -1344,10 +1376,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1363,18 +1395,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11476002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1388,10 +1423,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1434,10 +1469,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -1504,10 +1543,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -1539,10 +1582,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1568,10 +1611,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1587,18 +1630,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11480984
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1667,10 +1713,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -1702,10 +1752,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1731,10 +1781,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1750,18 +1800,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11480996
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1775,10 +1828,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1794,18 +1847,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11480998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1819,10 +1875,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1847,10 +1903,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -1900,10 +1960,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1919,18 +1979,21 @@ MonoBehaviour:
       to: {x: 0, y: 30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
 --- !u!114 &11481006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1944,10 +2007,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useDefault: 0
   parameters:
-    inDelay: .100000001
+    inDelay: 0.1
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
+    inDuration: 0.1
+    outDuration: 0.1
     inEase: 0
     outEase: 0
     material: {fileID: 0}
@@ -1972,10 +2035,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -2114,10 +2181,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 0}
@@ -2146,10 +2217,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 0}
@@ -2178,10 +2253,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 0}
@@ -2210,10 +2289,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 0}
@@ -2242,10 +2325,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 0}
@@ -2274,10 +2361,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
+  rootComponent: {fileID: 11405892}
   subComponents: []
   currentState: 0
   animation: {fileID: 0}
@@ -2345,6 +2436,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405714}
   m_RootOrder: 0
@@ -2352,7 +2444,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405714
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2362,6 +2454,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22405712}
   - {fileID: 22438476}
@@ -2371,7 +2464,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405734
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2381,6 +2474,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405760}
   m_RootOrder: 5
@@ -2388,7 +2482,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405742
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2398,6 +2492,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22481028}
   - {fileID: 22475994}
@@ -2410,7 +2505,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405744
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2420,6 +2515,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22405742}
   m_Father: {fileID: 22405762}
@@ -2428,7 +2524,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: -10}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405746
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2438,6 +2534,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405748}
   m_RootOrder: 0
@@ -2445,7 +2542,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405748
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2455,6 +2552,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22405746}
   m_Father: {fileID: 22405762}
@@ -2463,7 +2561,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: 5, y: -10}
-  m_Pivot: {x: 1, y: .5}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &22405760
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2473,6 +2571,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22481018}
   - {fileID: 22481030}
@@ -2486,7 +2585,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405762
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2496,6 +2595,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22405744}
   - {fileID: 22405748}
@@ -2505,7 +2605,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22405764
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2515,6 +2615,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22481028}
   m_RootOrder: 1
@@ -2522,7 +2623,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22438476
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2532,6 +2633,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405714}
   m_RootOrder: 1
@@ -2539,7 +2641,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22475990
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2549,6 +2651,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22475994}
   m_RootOrder: 1
@@ -2556,7 +2659,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22475992
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2566,6 +2669,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22475994}
   m_RootOrder: 0
@@ -2573,7 +2677,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22475994
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2583,6 +2687,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22475992}
   - {fileID: 22475990}
@@ -2593,7 +2698,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481016
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2603,6 +2708,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22481020}
   m_RootOrder: 1
@@ -2610,7 +2716,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481018
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2620,6 +2726,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405760}
   m_RootOrder: 0
@@ -2627,7 +2734,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481020
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2637,6 +2744,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22481022}
   - {fileID: 22481016}
@@ -2646,7 +2754,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481022
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2656,6 +2764,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22481020}
   m_RootOrder: 0
@@ -2663,7 +2772,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481024
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2673,6 +2782,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22475994}
   m_RootOrder: 2
@@ -2680,7 +2790,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481026
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2690,6 +2800,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22481028}
   m_RootOrder: 0
@@ -2697,7 +2808,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481028
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2707,6 +2818,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22481026}
   - {fileID: 22405764}
@@ -2716,7 +2828,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481030
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2726,6 +2838,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405760}
   m_RootOrder: 1
@@ -2733,7 +2846,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481032
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2743,6 +2856,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405760}
   m_RootOrder: 2
@@ -2750,7 +2864,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481034
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2760,6 +2874,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405760}
   m_RootOrder: 3
@@ -2767,7 +2882,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22481036
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2777,6 +2892,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22405760}
   m_RootOrder: 4
@@ -2784,7 +2900,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: .5, y: .5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &22505712
 CanvasGroup:
   m_ObjectHideFlags: 1

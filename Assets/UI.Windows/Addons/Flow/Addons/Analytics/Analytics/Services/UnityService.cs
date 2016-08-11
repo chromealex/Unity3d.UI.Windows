@@ -20,6 +20,13 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			
 		}
 
+		public override bool IsConnected() {
+
+			// ignore UnityAnalytics
+			return true;
+
+		}
+
 		public override IEnumerator Auth(string key) {
 
 			var rootScreenId = FlowSystem.GetRootWindow();

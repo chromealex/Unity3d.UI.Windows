@@ -583,9 +583,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.StopAllCoroutines();
 
-			foreach (var element in this.list) {
-
-				this.UnregisterSubComponent(element);
+			for (int i = 0; i < this.list.Count; ++i) {
+				
+				var element = this.list[i];
+				this.UnregisterSubComponent(element, immediately: true);
 				element.Recycle();
 
 			}
@@ -601,14 +602,14 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.content != null) this.content.SetActive(false);
 
 			if (this.loading != null) this.loading.SetActive(true);
-			if (this.loader != null) this.loader.Show();
+			if (this.loader != null) this.loader.Show(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
 
 		}
 
 		public void EndLoad() {
 			
 			if (this.loading != null) this.loading.SetActive(false);
-			if (this.loader != null) this.loader.Hide();
+			if (this.loader != null) this.loader.Hide(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
 
 			if (this.noElements != null) this.noElements.SetActive(this.IsEmpty() == true);
 			if (this.content != null) this.content.SetActive(this.IsEmpty() == false);

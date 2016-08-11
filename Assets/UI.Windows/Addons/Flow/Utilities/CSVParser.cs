@@ -103,8 +103,8 @@ namespace UnityEngine.UI.Windows.Utilities {
 			var text = line.Substring(iWordStart, iEnd - iWordStart);
 			iWordStart = iEnd + 1;
 
-			text = text.Replace("\"\"", "\"");
-			if (text.Length > 1 && text[0] == '\"' && text[text.Length - 1] == '\"') {
+			text = text.Replace(@"""""", @"""").Trim();
+			if (text.Length > 1 && text[0] == '"' && text[text.Length - 1] == '"') {
 
 				text = text.Substring(1, text.Length - 2);
 

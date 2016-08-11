@@ -1,3 +1,6 @@
+#if UNITY_TVOS
+#define STORAGE_NOT_SUPPORTED
+#endif
 using UnityEngine;
 using System.Collections;
 using System.Linq;
@@ -230,8 +233,9 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 		}
 
 		public static string GetCachePath() {
-			
-			return Application.persistentDataPath + "/GameData.dat";
+
+			var path = Application.persistentDataPath;
+			return string.Format("{0}/GameData.dat", path);
 
 		}
 
@@ -247,18 +251,28 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				GameDataSystem.cacheLoaded = true;
 
 				var path = GameDataSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				if (PlayerPrefs.HasKey(path) == false) return;
+				var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+				
 				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
-
+				
 				var path = GameDataSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				if (PlayerPrefs.HasKey(path) == false) return;
+				var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+
 				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			#if UNITY_EDITOR
@@ -278,9 +292,9 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 					var defaultVersion = parsed[0][0];
 					GameDataSystem.currentVersion = new Version(defaultVersion);
 
-					if (GameDataSystem.instance.logEnabled == true) {
+					if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
 						
-						WindowSystemLogger.Warning(GameDataSystem.GetName(), string.Format("[ GameData ] Default version is used: {0}", GameDataSystem.currentVersion));
+						WindowSystemLogger.Warning(GameDataSystem.GetName(), string.Format("Default version is used: {0}", GameDataSystem.currentVersion));
 
 					}
 
@@ -373,7 +387,11 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				#endregion
 
 				var path = GameDataSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				PlayerPrefs.SetString(path, data);
+				#else
 				System.IO.File.WriteAllText(path, data);
+				#endif
 
 				GameDataSystem.currentVersion = GameDataSystem.defaultVersion;
 

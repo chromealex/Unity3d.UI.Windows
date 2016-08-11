@@ -5,6 +5,7 @@
 #define UNITY_CONSOLE
 #endif
 
+using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
@@ -12,7 +13,7 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 namespace UnityEngine.UI.Windows {
 	
 	public class WindowSystemFlow : WindowSystem {
-
+		
 		public enum LoadType : int {
 
 			None = 0x0,
@@ -75,8 +76,7 @@ namespace UnityEngine.UI.Windows {
 				if (this.flowMobileOnly != null) flow = this.flowMobileOnly;
 				#endif
 				#if UNITY_STANDALONE
-				if (this.flowStandaloneOnly != null)
-				flow = this.flowStandaloneOnly;
+				if (this.flowStandaloneOnly != null) flow = this.flowStandaloneOnly;
 				#endif
 				#if UNITY_CONSOLE
 				if (this.flowConsoleOnly != null) flow = this.flowConsoleOnly;
@@ -85,10 +85,10 @@ namespace UnityEngine.UI.Windows {
 				FlowSystem.SetData(flow);
 				Audio.Manager.InitAndAdd(flow.audio);
 
-				this.defaults.AddRange(flow.GetDefaultScreens());
-				this.windows.AddRange(flow.GetAllScreens());
+				this.defaults.AddRange(flow.GetDefaultScreens(runtime: true));
+				this.windows.AddRange(flow.GetAllScreens(runtime: true));
 
-				this.rootScreen = this.flow.GetRootScreen();
+				this.rootScreen = this.flow.GetRootScreen(runtime: true);
 
 			}
 			#endregion
@@ -98,18 +98,19 @@ namespace UnityEngine.UI.Windows {
 
 				var additionalFlow = this.additionalFlow;
 				#if UNITY_MOBILE
-				if (this.additionalFlowMobileOnly != null) flow = this.additionalFlowMobileOnly;
+				if (this.additionalFlowMobileOnly != null) additionalFlow = this.additionalFlowMobileOnly;
 				#endif
 				#if UNITY_STANDALONE
-				if (this.additionalFlowStandaloneOnly != null) flow = this.additionalFlowStandaloneOnly;
+				if (this.additionalFlowStandaloneOnly != null) additionalFlow = this.additionalFlowStandaloneOnly;
 				#endif
 				#if UNITY_CONSOLE
-				if (this.additionalFlowConsoleOnly != null) flow = this.additionalFlowConsoleOnly;
+				if (this.additionalFlowConsoleOnly != null) additionalFlow = this.additionalFlowConsoleOnly;
 				#endif
 
 				if (additionalFlow != null) {
 
-					var screens = additionalFlow.GetAllScreens((w) => ((this.additionalLoadType & LoadType.Function) != 0 && (w.IsFunction() == true || w.GetFunctionContainer() != null)) || ((this.additionalLoadType & LoadType.Window) != 0 && w.IsFunction() == false));
+					var screens = additionalFlow.GetAllScreens((w) => ((this.additionalLoadType & LoadType.Function) != 0 && (w.IsFunction() == true || w.GetFunctionContainer() != null)) || ((this.additionalLoadType & LoadType.Window) != 0 && w.IsFunction() == false), runtime: true);
+					this.windows.RemoveAll(x => screens.Select(w => w.windowId).Contains(x.windowId));
 					this.windows.AddRange(screens);
 					if ((this.additionalLoadType & LoadType.Audio) != 0) Audio.Manager.InitAndAdd(flow.audio);
 
@@ -132,7 +133,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.showRootOnStart == true) {
 
-				var root = this.flow.GetRootScreen();
+				var root = this.flow.GetRootScreen(runtime: true);
 				if (root != null) WindowSystem.Show(root);
 
 			}

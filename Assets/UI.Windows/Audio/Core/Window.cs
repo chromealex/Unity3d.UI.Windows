@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows.Audio {
 
 					WindowSystem.AudioPlay(this.window, this.clipType, this.id, this.playType == PlayType.Replace);
 					transition.SetResetState(transitionParameters, this.window, null);
-					transition.Play(this.window, transitionParameters, null, forward: true, callback: () => {
+					transition.Play(null, this.window, transitionParameters, forward: true, callback: () => {
 						
 						parameters.Call();
 						

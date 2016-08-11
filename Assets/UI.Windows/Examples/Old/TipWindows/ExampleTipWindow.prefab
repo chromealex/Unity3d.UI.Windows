@@ -196,8 +196,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2056496}
-  initialized: 1
+  _workCamera: {fileID: 2056496}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1

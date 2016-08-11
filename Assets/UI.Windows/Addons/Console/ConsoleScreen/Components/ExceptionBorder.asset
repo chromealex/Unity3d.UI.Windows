@@ -96,6 +96,7 @@ MonoBehaviour:
     streamingAssetsPathAndroid: 
     streamingAssetsPathPS4: 
     streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
     tempObject: {fileID: 0}
   imageCrossFadeModule:
     enabled: 0
@@ -105,6 +106,7 @@ MonoBehaviour:
     copyRawImage: {fileID: 0}
     duration: 0.5
     fadeIfWasNull: 0
+    easeType: 0
 --- !u!114 &11486252
 MonoBehaviour:
   m_ObjectHideFlags: 1

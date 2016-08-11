@@ -804,6 +804,7 @@ MonoBehaviour:
   resourceAsyncLoadFadeTime: 0.5
   resourcesMap: {fileID: 11400000, guid: a866f51b2a5a9446294f19b328bbd22f, type: 2}
   loaded: []
+  tasks: []
 --- !u!114 &11420508
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1074,6 +1075,8 @@ MonoBehaviour:
   defaultPlayingState: 1
   quality: []
   movieModule:
+    counter: 0
+    system: {fileID: 0}
     current: []
 --- !u!124 &12427498
 Behaviour:

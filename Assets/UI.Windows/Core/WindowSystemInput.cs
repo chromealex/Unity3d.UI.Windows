@@ -13,7 +13,7 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
-	public class WindowSystemInput : MonoBehaviour {
+	public class WindowSystemInput : BaseInputModule {
 
 		public const string SCROLL_AXIS = "Mouse ScrollWheel";
 		
@@ -39,15 +39,49 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void LateUpdate() {
+		public override bool IsModuleSupported() {
+
+			return false;
+
+		}
+
+		public override void Process() {
 			
-			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
+		}
+
+		public override void UpdateModule() {
+			
+			#if UNITY_STANDALONE || UNITY_TVOS || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_EDITOR
 			if (Input.GetMouseButtonDown(0) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(0) == true) WindowSystemInput.onPointerUp.Invoke();
 			if (Input.GetMouseButtonDown(1) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(1) == true) WindowSystemInput.onPointerUp.Invoke();
 			if (Input.GetMouseButtonDown(2) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(2) == true) WindowSystemInput.onPointerUp.Invoke();
+			#endif
+
+			#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8
+			if (Input.touchCount > 0) {
+
+				for (int i = 0; i < Input.touchCount; ++i) {
+
+					var touch = Input.GetTouch(i);
+					if (touch.phase == TouchPhase.Began) {
+
+						WindowSystemInput.onPointerDown.Invoke();
+
+					}
+
+					if (touch.phase == TouchPhase.Ended ||
+						touch.phase == TouchPhase.Canceled) {
+
+						WindowSystemInput.onPointerUp.Invoke();
+
+					}
+
+				}
+
+			}
 			#endif
 
 			if (Input.GetKeyDown(KeyCode.Tab) == true) {

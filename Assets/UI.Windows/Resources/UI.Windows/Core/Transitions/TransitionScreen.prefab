@@ -50,7 +50,7 @@ Camera:
   far clip plane: 100
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 130
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -80,8 +80,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2020200}
-  initialized: 1
+  _workCamera: {fileID: 2020200}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 3
@@ -126,7 +130,7 @@ MonoBehaviour:
             m_Mode: 1
             m_Arguments:
               m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: 556e697479456e67696e652e4f626a6563742c20556e697479456e67696e65
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
               m_IntArgument: 0
               m_FloatArgument: 0
               m_StringArgument: 
@@ -194,6 +198,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11450648, guid: ac1895e43ebf4428b961faae98f5dc17, type: 2}
     components:
     - description: BACKGROUND
@@ -209,12 +214,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 12184
+        id: -55984218
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11476878, guid: 5b08b3d5db8c1455f86b23370ad389d4, type: 2}
       componentNoResource: {fileID: 0}
       sortingOrder: 0

@@ -64,7 +64,7 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		public override Rect GetRect() {
 
-			var bounds = new Rect();
+			var bounds = base.GetRect();
 			//var root = this.layout.GetLayoutInstance().root;
 			var baseSubElements = this.layout.GetLayoutInstance().GetSubComponents();
 			if (baseSubElements.Count == 1) {
@@ -260,7 +260,13 @@ namespace UnityEngine.UI.Windows.Types {
 
 				WindowComponentParametersBase instance = null;
 				if (hasChanged == true) {
-					
+
+					if (newComponent == null) {
+
+						this.componentResource.Reset();
+
+					}
+
 					if (this.componentParameters != null) {
 						
 						var link = this.componentParameters;
@@ -304,6 +310,22 @@ namespace UnityEngine.UI.Windows.Types {
 			}
 
 			public void OnValidate() {
+				/*
+				if (this.componentParameters != null) {
+
+					if (this.componentParameters.GetFlags() == 0x0) {
+
+						// no flags = no parameters
+						var link = this.componentParameters;
+						UnityEditor.EditorApplication.delayCall += () => {
+
+							Object.DestroyImmediate(link, allowDestroyingAssets: true);
+
+						};
+
+					}
+
+				}*/
 
 				this.componentResource.Validate(this.component);
 
@@ -440,6 +462,7 @@ namespace UnityEngine.UI.Windows.Types {
 		public Vector2 fixedScaleResolution = new Vector2(1024f, 768f);
 		public float matchWidthOrHeight = 0f;
 		public WindowLayoutPreferences layoutPreferences;
+		public bool allowCustomLayoutPreferences = true;
 
 		public WindowLayout layout;
 		public Component[] components;
@@ -458,13 +481,31 @@ namespace UnityEngine.UI.Windows.Types {
 			var rect = instance.transform as RectTransform;
 			rect.sizeDelta = (this.layout.transform as RectTransform).sizeDelta;
 			rect.anchoredPosition = (this.layout.transform as RectTransform).anchoredPosition;
-			
+
+			var layoutPreferences = this.layoutPreferences;
+			if (this.allowCustomLayoutPreferences == true) {
+
+				layoutPreferences = WindowSystem.GetCustomLayoutPreferences() ?? this.layoutPreferences;
+
+			}
+
 			instance.Setup(window);
-			instance.Init(depth, raycastPriority, orderInLayer, this.scaleMode, this.fixedScaleResolution, this.layoutPreferences);
-			
+			instance.Init(depth, raycastPriority, orderInLayer);
+			instance.SetLayoutPreferences(this.scaleMode, this.fixedScaleResolution, layoutPreferences);
+
 			this.instance = instance;
 			
 			foreach (var component in this.components) component.Create(window, instance.GetRootByTag(component.tag));
+
+		}
+
+		public void SetCustomLayoutPreferences(WindowLayoutPreferences layoutPreferences) {
+
+			if (this.allowCustomLayoutPreferences == true) {
+
+				this.instance.SetLayoutPreferences(this.scaleMode, this.fixedScaleResolution, layoutPreferences);
+
+			}
 
 		}
 

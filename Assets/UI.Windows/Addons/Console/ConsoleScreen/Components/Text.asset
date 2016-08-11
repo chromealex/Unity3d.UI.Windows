@@ -67,6 +67,23 @@ MonoBehaviour:
   animationRefresh: 0
   lastAnimation: {fileID: 0}
   heatmapActive: 1
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
   images: []
   text: {fileID: 11450946}
   valueFormat: 0

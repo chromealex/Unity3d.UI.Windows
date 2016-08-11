@@ -10,6 +10,7 @@ using UnityEngine.UI.Windows.Animations;
 using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
 using UnityEngine.UI.Windows.Components;
+using UnityEngine.Serialization;
 
 namespace UnityEngine.UI.Windows {
 
@@ -32,13 +33,16 @@ namespace UnityEngine.UI.Windows {
 		public bool editorInfoFold = false;
 		#endif
 
+		[SerializeField][HideInInspector]
+		private Camera _workCamera;
 		[HideInInspector]
-		public Camera workCamera;
-		[HideInInspector]
-		public bool initialized = false;
+		public Camera workCamera { get { return this._workCamera; } protected set { this._workCamera = value; } }
+		[HideInInspector][FormerlySerializedAs("initialized")]
+		public bool isReady = false;
 
 		[Header("Window Preferences")]
 
+		public TargetPreferences targetPreferences = new TargetPreferences();
 		public Preferences preferences = new Preferences();
 		new public Audio.Window audio = new Audio.Window();
 		public Modules.Modules modules = new Modules.Modules();
@@ -116,6 +120,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public float GetZDepth() {
+
+			return this.transform.position.z;
+
+		}
+
 		public void SetDepth(float depth, float zDepth) {
 			
 			var pos = this.transform.position;
@@ -137,7 +147,7 @@ namespace UnityEngine.UI.Windows {
 
 			this.currentState = WindowObjectState.Initializing;
 
-			if (this.initialized == false) {
+			if (this.isReady == false) {
 				
 				this.currentState = WindowObjectState.NotInitialized;
 
@@ -1110,7 +1120,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			
-			this.initialized = (this.workCamera != null);
+			this.isReady = (this.workCamera != null);
 			
 		}
 

@@ -71,6 +71,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 	}
 
+	public interface IHoverableComponent : IComponent {
+
+		IHoverableComponent SetSFX(PointerEventState state, Audio.Component data);
+
+		IHoverableComponent SetHoverState(bool state);
+		IHoverableComponent SetHoverOnAnyPointerState(bool state);
+		IHoverableComponent SetCallbackHover(UnityAction<bool> callback);
+
+		bool IsHovered();
+		IHoverableComponent SetHoverEnter();
+		IHoverableComponent SetHoverExit();
+
+	}
+
 	public interface IInteractableStateComponent : IWindowNavigation {
 
 		bool IsInteractable();
@@ -79,19 +93,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public interface IInteractableComponent : IInteractableStateComponent {
 
-		IInteractableComponent SetHoverEnter();
-		IInteractableComponent SetHoverExit();
+		bool IsCursorDefault();
 
 		IInteractableComponent SetEnabledState(bool state);
 		IInteractableComponent SetEnabled();
 		IInteractableComponent SetDisabled();
 
-		IInteractableComponent SetSFX(PointerEventState state, Audio.Component data);
-
-		IInteractableComponent SetHoverState(bool state);
-		IInteractableComponent SetHoverOnAnyPointerState(bool state);
 		IInteractableComponent SetHoverOnAnyButtonState(bool state);
-		IInteractableComponent SetCallbackHover(UnityAction<bool> callback);
 
 		void Select();
 		Selectable GetSelectable();
@@ -178,15 +186,23 @@ namespace UnityEngine.UI.Windows.Components {
 
 		IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null);
 
-		IImageComponent SetImage(Sprite sprite, System.Action onComplete = null);
-		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete = null);
+		IImageComponent SetImage(Sprite sprite);
+		IImageComponent SetImage(Sprite sprite, bool immediately);
+		IImageComponent SetImage(Sprite sprite, System.Action onComplete);
+		IImageComponent SetImage(Sprite sprite, System.Action onComplete, bool immediately);
+		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete);
+		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete, bool immediately);
 
-		IImageComponent SetImage(Texture texture, System.Action onComplete = null);
-		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete = null);
+		IImageComponent SetImage(Texture texture);
+		IImageComponent SetImage(Texture texture, bool immediately);
+		IImageComponent SetImage(Texture texture, System.Action onComplete);
+		IImageComponent SetImage(Texture texture, System.Action onComplete, bool immediately);
+		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete);
+		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete, bool immediately);
 
 		IImageComponent SetImage(LocalizationKey key, params object[] parameters);
 
-		IImageComponent SetMaterial(Material material);
+		IImageComponent SetMaterial(Material material, bool setMainTexture = false, System.Action callback = null);
 		Color GetColor();
 		void SetColor(Color color);
 		IImageComponent SetPreserveAspectState(bool state);
@@ -196,11 +212,13 @@ namespace UnityEngine.UI.Windows.Components {
 		IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null);
 		IImageComponent SetPlayOnShow(bool state);
 		IImageComponent SetLoop(bool state);
+		bool GetLoop();
 		bool IsPlaying();
 		IImageComponent Play();
 		IImageComponent Play(bool loop);
 		IImageComponent Stop();
 		IImageComponent Pause();
+		IImageComponent Rewind(bool pause = true);
 
 		Graphic GetGraphicSource();
 		Image GetImageSource();

@@ -50,7 +50,7 @@ Camera:
   far clip plane: 100
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 130
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -80,8 +80,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2058946}
-  initialized: 1
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -183,6 +187,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 0}
     components: []
   comment: Default Screen

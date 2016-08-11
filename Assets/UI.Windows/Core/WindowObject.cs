@@ -30,7 +30,7 @@ namespace UnityEngine.UI.Windows {
 			
 			this.window = window;
 
-			var flowWindow = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow(this.window);
+			var flowWindow = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow(this.window, runtime: true);
 			this.windowId = (flowWindow != null ? flowWindow.id : -1);
 
 		}

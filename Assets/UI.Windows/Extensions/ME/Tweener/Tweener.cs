@@ -51,7 +51,7 @@ namespace ME {
 				public bool inverse = false;
 			}
 			
-			private List<Target> _targets = new List<Target>();
+			private readonly List<Target> _targets = new List<Target>();
 			int _currentTarget = 0;
 			private bool _started = false;
 			private float _elapsed = 0f;
@@ -302,7 +302,7 @@ namespace ME {
 		public TimerType timerType = TimerType.Game;
 		public bool repeatByDefault = false;
 		public bool debug = false;
-		private LinkedList<ITween> _tweens = new LinkedList<ITween>();
+		private readonly LinkedList<ITween> _tweens = new LinkedList<ITween>();
 		
 		public Tween<T> addTween<T>(T obj, float duration, float start, float end) {
 			
@@ -412,11 +412,20 @@ namespace ME {
 
 		void Mark(System.Func<ITween, bool> predicate, bool immediately = false) {
 
-			foreach (var each in _tweens.Where( predicate )) {
+		    for (var node = _tweens.First; node != null; node = node.Next) {
+		        
+                if (predicate != null && predicate(node.Value) == false) continue;
+		        node.Value.isDirty = true;
+
+		    }
+
+            /*
+            foreach (var each in _tweens.Where( predicate )) {
 
 				each.isDirty = true;
 
 			}
+            */
 
 			if (immediately == true) {
 

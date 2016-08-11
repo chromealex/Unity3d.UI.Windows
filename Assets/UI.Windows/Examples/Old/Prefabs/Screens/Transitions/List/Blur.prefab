@@ -80,8 +80,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2037640}
-  initialized: 1
+  _workCamera: {fileID: 2037640}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -186,6 +190,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11487310, guid: 15c0fcfaf57654794a89ca91313cf511, type: 2}
     components:
     - description: 434f4e54454e5420424f52444552204558414d504c45
@@ -201,12 +206,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 11710
+        id: 1510106256
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11496998, guid: 1b505308e6b884c2690764cfd5472993, type: 2}
       componentNoResource: {fileID: 11496998, guid: 1b505308e6b884c2690764cfd5472993,
         type: 2}
@@ -226,12 +232,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 11712
+        id: 1746857679
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11402024, guid: 47c8da40cafcc4e148f9cface0213628, type: 2}
       componentNoResource: {fileID: 11402024, guid: 47c8da40cafcc4e148f9cface0213628,
         type: 2}
@@ -251,12 +258,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 11714
+        id: 1216716226
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11495312, guid: aac15318dfd654c9fa9e15af4fd7ad98, type: 2}
       componentNoResource: {fileID: 11495312, guid: aac15318dfd654c9fa9e15af4fd7ad98,
         type: 2}

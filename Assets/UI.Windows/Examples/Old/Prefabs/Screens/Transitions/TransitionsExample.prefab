@@ -80,8 +80,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2077160}
-  initialized: 1
+  _workCamera: {fileID: 2077160}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -186,6 +190,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11499836, guid: 963a1fcc0ff7e47058f07eee5eb27adc, type: 2}
     components:
     - description: 434f4e54454e5420424f52444552204558414d504c45
@@ -201,12 +206,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 11710
+        id: 1510106256
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11496998, guid: 1b505308e6b884c2690764cfd5472993, type: 2}
       componentNoResource: {fileID: 11496998, guid: 1b505308e6b884c2690764cfd5472993,
         type: 2}
@@ -226,12 +232,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 11872
+        id: 800132789
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11411396, guid: cb728d586b16d4a8f88e4a5a1a4e55a5, type: 2}
       componentNoResource: {fileID: 11411396, guid: cb728d586b16d4a8f88e4a5a1a4e55a5,
         type: 2}

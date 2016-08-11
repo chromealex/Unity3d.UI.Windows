@@ -23,8 +23,28 @@ namespace ME {
 
 	}
 
-	public partial class Utilities {
+	public static class ObjectExt {
 
+		public static int GetID(this Object obj) {
+
+			if (obj == null) return 0;
+
+			return obj.GetInstanceID();
+
+		}
+
+		/*public static int GetID(this Texture obj) {
+
+			if (obj == null) return 0;
+
+			return obj.GetInstanceID();
+
+		}*/
+
+	}
+
+	public partial class Utilities {
+		
 		public static uint GetHash(string s) {
 			
 			uint hash = 0;
@@ -142,14 +162,27 @@ namespace ME {
 			return uiCamera.ViewportToWorldPoint(gameCamera.WorldToViewportPoint(position));
 
 		}
-		
+
 		public static void CallInSequence<T>(System.Action callback, System.Action<T, System.Action> each, params T[] collection) {
 
 			Utilities.CallInSequence(callback, (IEnumerable<T>)collection, each);
 
 		}
 
+		public static void CallInSequence<T>(System.Action callback, bool waitPrevious, System.Action<T, System.Action> each, params T[] collection) {
+
+			Utilities.CallInSequence(callback, (IEnumerable<T>)collection, each, waitPrevious);
+
+		}
+
 		public static void CallInSequence<T>(System.Action callback, IEnumerable<T> collection, System.Action<T, System.Action> each, bool waitPrevious = false) {
+
+			if (collection == null) {
+
+				if (callback != null) callback.Invoke();
+				return;
+
+			}
 
 			var count = collection.Count();
 

@@ -55,6 +55,8 @@ namespace UnityEngine.UI.Windows {
 
 		}*/
 
+		private bool reseted = false;
+
 		#if UNITY_EDITOR
 		//[HideInInspector]
 		public Rect editorRectLocal;
@@ -100,15 +102,20 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void Reset() {
-			
-			this.rectTransform.anchoredPosition3D = Vector3.zero;
-			this.rectTransform.anchorMin = Vector2.zero;
-			this.rectTransform.anchorMax = Vector2.one;
-			this.rectTransform.pivot = Vector2.one * 0.5f;
-			this.rectTransform.sizeDelta = Vector2.zero;
-			this.rectTransform.localRotation = Quaternion.identity;
-			this.rectTransform.localScale = Vector3.one;
+		public void Reset(bool forced = false) {
+
+			if (this.reseted == false || forced == true) {
+
+				this.rectTransform.anchoredPosition3D = Vector3.zero;
+				this.rectTransform.anchorMin = Vector2.zero;
+				this.rectTransform.anchorMax = Vector2.one;
+				this.rectTransform.pivot = Vector2.one * 0.5f;
+				this.rectTransform.sizeDelta = Vector2.zero;
+				this.rectTransform.localRotation = Quaternion.identity;
+				this.rectTransform.localScale = Vector3.one;
+				this.reseted = true;
+
+			}
 
 		}
 

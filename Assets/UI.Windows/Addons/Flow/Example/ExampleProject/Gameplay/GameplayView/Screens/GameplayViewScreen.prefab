@@ -80,8 +80,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2058946}
-  initialized: 1
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -183,6 +187,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11406734, guid: 1de62d07c6a654293bb461abcb2f2c25, type: 2}
     components:
     - description: CONTENT BORDER
@@ -198,12 +203,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10948
+        id: 1918043386
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11488986, guid: a82f86f636e9340078de946da591a423, type: 2}
       componentNoResource: {fileID: 11488986, guid: a82f86f636e9340078de946da591a423,
         type: 2}

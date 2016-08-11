@@ -83,6 +83,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
@@ -115,6 +118,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
@@ -122,12 +128,6 @@ MonoBehaviour:
   rootComponent: {fileID: 11450648}
   subComponents: []
   currentState: 0
-  navigation:
-    childIndex: 0
-    left: {fileID: 0}
-    right: {fileID: 0}
-    up: {fileID: 0}
-    down: {fileID: 0}
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -188,6 +188,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   canvasGroup: {fileID: 22547304}
   _rectTransform: {fileID: 22424574}
   mode: 0

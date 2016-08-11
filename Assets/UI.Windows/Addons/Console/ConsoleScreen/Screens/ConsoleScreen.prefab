@@ -10,7 +10,6 @@ GameObject:
   - 4: {fileID: 458946}
   - 20: {fileID: 2058946}
   - 114: {fileID: 11483758}
-  - 114: {fileID: 11491470}
   m_Layer: 5
   m_Name: ConsoleScreen
   m_TagString: Untagged
@@ -81,8 +80,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2058946}
-  initialized: 1
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 4
     dontDestroy: 7
@@ -184,6 +187,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 3840, y: 2160}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11479802, guid: 4bea9136944334a3092e3a15a983f40f, type: 2}
     components:
     - description: CONTENT BORDER
@@ -192,22 +196,22 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/Decorator.asset
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/Decorator.asset
+        resourcesPath: MW2/EditorTools/Console/Components/Decorator
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 13300
+        id: 340873591
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11440684, guid: 436ff01a7e1f94f4fbc7f2ae7ccdb57f, type: 2}
-      componentNoResource: {fileID: 11440684, guid: 436ff01a7e1f94f4fbc7f2ae7ccdb57f,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
@@ -217,22 +221,22 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/InputField.asset
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/InputField.asset
+        resourcesPath: MW2/EditorTools/Console/Components/InputField
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 13334
+        id: -2005702632
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11471902, guid: 5ce968b34564c41cc9b8a13cf1fe6c22, type: 2}
-      componentNoResource: {fileID: 11471902, guid: 5ce968b34564c41cc9b8a13cf1fe6c22,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
@@ -242,22 +246,22 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/Queue/TableView.prefab
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/Queue/TableView.prefab
+        resourcesPath: MW2/EditorTools/Console/Components/Queue/TableView
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 13408
+        id: 1756205667
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11411412, guid: c75af2eaab0884e53a291d25f38825ad, type: 2}
-      componentNoResource: {fileID: 11411412, guid: c75af2eaab0884e53a291d25f38825ad,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
@@ -267,24 +271,24 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/AlwaysText.asset
-        resourcesPath: 
-        loadableResource: 0
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/AlwaysText.asset
+        resourcesPath: MW2/EditorTools/Console/Components/AlwaysText
+        loadableResource: 1
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 13280
+        id: -929508444
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11450942, guid: 5c0e33c98f2234079b6bd82f5beb35d1, type: 2}
-      componentNoResource: {fileID: 11450942, guid: 5c0e33c98f2234079b6bd82f5beb35d1,
-        type: 2}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
-      componentParameters: {fileID: 11491470}
+      componentParameters: {fileID: 0}
       editorParametersFoldout: 0
     - description: Exception Border
       tag: 6
@@ -292,63 +296,52 @@ MonoBehaviour:
       componentResource:
         async: 1
         controlType: 0
-        assetPath: Assets/UI.Windows.Module/Addons/Console/ConsoleScreen/Components/ExceptionBorder.asset
+        assetPath: Assets/MW2Data/Resources/MW2/EditorTools/Console/Components/ExceptionBorder.asset
+        resourcesPath: MW2/EditorTools/Console/Components/ExceptionBorder
+        loadableResource: 1
+        loadableStream: 0
+        multiObjects: 0
+        objectIndex: 0
+        customResourcePath: 
+        id: 1570461463
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        tempResource: {fileID: 11440684, guid: 3c23ad0ad93b24799b6f4e08549eb593, type: 2}
+      componentNoResource: {fileID: 0}
+      sortingOrder: 0
+      componentParameters: {fileID: 0}
+      editorParametersFoldout: 0
+    - description: Version
+      tag: 5
+      component: {fileID: 0}
+      componentResource:
+        async: 1
+        controlType: 0
+        assetPath: 
         resourcesPath: 
         loadableResource: 0
         loadableStream: 0
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 13318
+        id: 0
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
-        tempResource: {fileID: 11440684, guid: 3c23ad0ad93b24799b6f4e08549eb593, type: 2}
-      componentNoResource: {fileID: 11440684, guid: 3c23ad0ad93b24799b6f4e08549eb593,
-        type: 2}
+        streamingAssetsPathCommon: 
+        tempResource: {fileID: 0}
+      componentNoResource: {fileID: 0}
       sortingOrder: 0
       componentParameters: {fileID: 0}
       editorParametersFoldout: 0
   clearTime: 0
   heightPadding: 8
---- !u!114 &11491470
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 158946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f3161d3dee0a4c36bc04c14270ac6c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flags: 0
-  flags1: 0
-  flags2: 0
-  text: 
-  localizationKey:
-    key: 
-    parameters: 0
-    formatWithDeclension: 0
-    outputDeclensionWithoutNumber: 0
-  color: {r: 1, g: 1, b: 1, a: 1}
-  format: 0
-  fullTextFormat: 0
-  font: {fileID: 0}
-  fontSize: 16
-  fontStyle: 0
-  lineSpacing: 1
-  richText: 0
-  alignment: 0
-  verticalWrap: 0
-  horizontalWrap: 0
-  bestFit: 0
-  bestMinSize: 10
-  bestMaxSize: 40
-  valueAnimate: 0
-  valueAnimateDuration: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

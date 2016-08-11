@@ -58,6 +58,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
   autoRegisterInRoot: 1
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
@@ -65,12 +68,6 @@ MonoBehaviour:
   rootComponent: {fileID: 0}
   subComponents: []
   currentState: 0
-  navigation:
-    childIndex: 0
-    left: {fileID: 0}
-    right: {fileID: 0}
-    up: {fileID: 0}
-    down: {fileID: 0}
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -108,6 +105,7 @@ MonoBehaviour:
     streamingAssetsPathAndroid: 
     streamingAssetsPathPS4: 
     streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
     tempObject: {fileID: 0}
   imageCrossFadeModule:
     enabled: 0
@@ -117,6 +115,7 @@ MonoBehaviour:
     copyRawImage: {fileID: 0}
     duration: 0.5
     fadeIfWasNull: 0
+    easeType: 0
 --- !u!114 &11498896
 MonoBehaviour:
   m_ObjectHideFlags: 1

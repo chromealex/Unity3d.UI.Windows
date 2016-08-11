@@ -54,7 +54,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 		public override IEnumerator Auth(string key) {
 
 			var request = "{\"key\": \"" + key + "\"}";
-			Debug.Log(host);
+			Debug.Log(this.GetServiceName() + " :: " + host);
 			return net.JsonPost(host, "/v/auth", request, response => {
 				var to = DeserializeT<ResponseData<string>>(response);
 

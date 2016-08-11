@@ -185,7 +185,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				window.randomColor = oldWindow.randomColor;
 
 				window.screenWindowId = oldWindow.screenWindowId;
-				window.SetScreen(oldWindow.screen);
+				window.SetScreens(new List<WindowBase>() { oldWindow.screen });
 
 				window.smallStyleDefault = oldWindow.smallStyleDefault;
 				window.smallStyleSelected = oldWindow.smallStyleSelected;
@@ -282,6 +282,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
+		[ContextMenu("Refresh All Screens")]
+		public void RefreshAllScreens() {
+
+			foreach (var window in this.windowAssets) {
+
+				window.RefreshScreen();
+
+			}
+
+		}
+
 		public void ValidateAuthKey(System.Action<bool> onResult) {
 
 			var splitted = this.authKey.Split('-');
@@ -370,12 +381,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}*/
 
-		public WindowBase GetRootScreen() {
+		public WindowBase GetRootScreen(bool runtime = false) {
 
 			var flowWindow = this.windowAssets.FirstOrDefault((w) => w.id == this.rootWindow);
 			if (flowWindow != null) {
 
-				return flowWindow.GetScreen();
+				return flowWindow.GetScreen(runtime);
 
 			}
 
@@ -383,7 +394,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		}
 
-		public List<WindowBase> GetAllScreens(System.Func<Data.FlowWindow, bool> predicate = null) {
+		public List<WindowBase> GetAllScreens(System.Func<Data.FlowWindow, bool> predicate = null, bool runtime = false) {
 			
 			var list = new List<WindowBase>();
 			foreach (var window in this.windowAssets) {
@@ -392,7 +403,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 				if (predicate != null && predicate(window) == false) continue;
 
-				var screen = window.GetScreen();
+				var screen = window.GetScreen(runtime);
 				if (screen == null) continue;
 
 				list.Add(screen);
@@ -403,9 +414,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public List<WindowBase> GetDefaultScreens() {
+		public List<WindowBase> GetDefaultScreens(bool runtime = false) {
 
-			return this.GetAllScreens((w) => this.defaultWindows.Contains(w.id));
+			return this.GetAllScreens((w) => this.defaultWindows.Contains(w.id), runtime);
 			
 		}
 
@@ -806,19 +817,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 		
-		public Data.FlowWindow GetWindow(WindowBase window) {
+		public Data.FlowWindow GetWindow(WindowBase window, bool runtime) {
 
 			if (window == null) return null;
 
 			return this.windowAssets.FirstOrDefault((w) => {
 
-				if (w.GetScreen() != null) {
+				if (w.GetScreen(runtime) != null) {
 
-					return w.GetScreen().SourceEquals(window);
+					return w.GetScreen(runtime).SourceEquals(window);
 
 				}
 
-				return window.SourceEquals(w.GetScreen());
+				return window.SourceEquals(w.GetScreen(runtime));
 
 			});
 

@@ -91,6 +91,7 @@ namespace UnityEngine.UI {
 			SpriteSwapAndColorTint = 0x8,
 			CanvasGroupAlpha = 0x10,
 			Scale = 0x20,
+			TargetGraphics = 0x40,
 
 		};
 		
@@ -122,7 +123,33 @@ namespace UnityEngine.UI {
 		public Transition transitionExtended;
 
 		public Graphic[] m_TargetGraphics;
-		
+
+		[System.Serializable]
+		public class GraphicItem {
+
+			public Graphic targetGraphic;
+			[FormerlySerializedAs("colors")]
+			[SerializeField]
+			private ColorBlock m_Colors = ColorBlock.defaultColorBlock;
+			public ColorBlock colors {
+				get {
+					return this.m_Colors;
+				}
+				set {
+					this.m_Colors = value;
+				}
+			}
+
+		}
+
+		public GraphicItem[] graphicItems;
+
+		public void UpdateState() {
+			
+			this.OnDidApplyAnimationProperties();
+
+		}
+
 		private void StartScaleTween(float targetScale, bool instant) {
 			
 			if (this.scale.transform == null) return;
@@ -141,7 +168,7 @@ namespace UnityEngine.UI {
 		}
 
 		private void StartAlphaTween(float targetAlpha, bool instant) {
-			
+
 			if (this.alpha.canvasGroup == null) return;
 
 			if (instant == true) {
@@ -156,7 +183,43 @@ namespace UnityEngine.UI {
 			}
 
 		}
-		
+
+		private void StartColorTweenGraphics(SelectionState state, bool instant) {
+
+			if (this.graphicItems == null) return;
+
+			var targetColor = Color.white;
+			for (int i = 0; i < this.graphicItems.Length; ++i) {
+
+				var item = this.graphicItems[i];
+				if (item == null || item.targetGraphic == null) continue;
+
+				switch (state) {
+
+					case SelectionState.Normal:
+						targetColor = item.colors.normalColor;
+						break;
+
+					case SelectionState.Disabled:
+						targetColor = item.colors.disabledColor;
+						break;
+
+					case SelectionState.Highlighted:
+						targetColor = item.colors.highlightedColor;
+						break;
+
+					case SelectionState.Pressed:
+						targetColor = item.colors.pressedColor;
+						break;
+
+				}
+
+				item.targetGraphic.CrossFadeColor(targetColor * item.colors.colorMultiplier, instant ? 0f : item.colors.fadeDuration, true, true);
+
+			}
+
+		}
+
 		private void StartColorTween(Color targetColor, bool instant) {
 			
 			if (this.m_TargetGraphics != null) {
@@ -219,7 +282,7 @@ namespace UnityEngine.UI {
 			
 			if ((this.transitionExtended & Transition.ColorTint) != 0) {
 				
-				this.StartColorTween(Color.white, true);
+				this.StartColorTween(this.colors.normalColor, true);
 				
 			}
 			
@@ -233,6 +296,12 @@ namespace UnityEngine.UI {
 				
 				string triggerName = this.animationTriggers.normalTrigger;
 				this.TriggerAnimation(triggerName);
+
+			}
+
+			if ((this.transitionExtended & Transition.TargetGraphics) != 0) {
+
+				this.StartColorTweenGraphics(Selectable.SelectionState.Normal, true);
 
 			}
 
@@ -316,6 +385,12 @@ namespace UnityEngine.UI {
 					
 					this.TriggerAnimation(triggername);
 					
+				}
+
+				if ((this.transitionExtended & Transition.TargetGraphics) != 0) {
+
+					this.StartColorTweenGraphics(state, instant);
+
 				}
 
 			}

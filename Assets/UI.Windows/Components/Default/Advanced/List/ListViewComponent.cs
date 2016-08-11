@@ -599,7 +599,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.reusableCellContainer = new GameObject("ReusableCells", typeof(RectTransform)).GetComponent<RectTransform>();
 			this.reusableCellContainer.SetParent(this.scrollRect.transform, false);
-			this.reusableCellContainer.gameObject.SetActive(false);
+			this.reusableCellContainer.gameObject.SetActive(true);
+			this.reusableCellContainer.localScale = Vector3.zero;
 			this.reusableCells = new Dictionary<string, LinkedList<WindowComponent>>();
 
 			if (this.top != null) this.top.Hide(immediately: true);

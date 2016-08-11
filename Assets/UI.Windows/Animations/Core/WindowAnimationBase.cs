@@ -25,9 +25,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
-			public void Play(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
+			public void Play(string tag, WindowAnimationBase transitionBase, WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
-				this.transition.Play(window, parameters, root, forward, callback);
+				this.transition.Play(tag, transitionBase, window, parameters, root, forward, callback);
 				
 			}
 			
@@ -91,6 +91,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 			}
 
+			var tag = root.GetCustomTag(this.GetInstanceID());
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
+
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
@@ -108,6 +111,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 			}
 
+			var tag = root.GetCustomTag(this.GetInstanceID());
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
+
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
@@ -124,6 +130,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				return;
 				
 			}
+
+			var tag = root.GetCustomTag(this.GetInstanceID());
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			var i = 0;
 			foreach (var transition in this.transitions) {
@@ -158,10 +167,13 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
+			var tag = root.GetCustomTag(this.GetInstanceID());
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
+
 			i = 0;
 			foreach (var transition in this.transitions) {
 
-				transition.Play(window, parameters[i++], root, forward, callbacker == transition ? callback : null);
+				transition.Play(tag, this, window, parameters[i++], root, forward, callbacker == transition ? callback : null);
 
 			}
 

@@ -36,7 +36,12 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 				
-				if (item == null) return;
+				if (item == null) {
+
+					this.Reset();
+					return;
+
+				}
 				
 			}
 			

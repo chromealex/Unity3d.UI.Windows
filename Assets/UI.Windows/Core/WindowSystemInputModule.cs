@@ -12,9 +12,11 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 		
-		public RaycastResult GetCurrentRaycast() {
+		public RaycastResult GetCurrentRaycast(int id = PointerInputModule.kMouseLeftId) {
 			
-			var data = this.GetLastPointerEventData(PointerInputModule.kMouseLeftId);
+			var data = this.GetLastPointerEventData(id);
+			if (data == null) return new RaycastResult();
+			
 			return data.pointerCurrentRaycast;
 			
 		}

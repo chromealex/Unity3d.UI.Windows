@@ -25,6 +25,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -45,19 +46,21 @@ MonoBehaviour:
   parameters:
     inDelay: 0
     outDelay: 0
-    inDuration: .5
-    outDuration: .5
+    inDuration: 0.5
+    outDuration: 0.5
     inEase: 0
     outEase: 0
     material: {fileID: 0}
     materialStrengthName: _Strength
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       alpha: 0
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 1, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       localRotation: {x: 0, y: 0, z: 0, w: 1}
       localScale: {x: 1.5, y: 1.5, z: 1.5}
       materialStrength: 0
@@ -67,7 +70,7 @@ MonoBehaviour:
       anchorMax: {x: 1, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       localRotation: {x: 0, y: 0, z: 0, w: 1}
       localScale: {x: 1, y: 1, z: 1}
       materialStrength: 0
@@ -77,7 +80,7 @@ MonoBehaviour:
       anchorMax: {x: 1, y: 1}
       anchoredPosition: {x: 0, y: 0}
       sizeDelta: {x: 0, y: 0}
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       localRotation: {x: 0, y: 0, z: 0, w: 1}
       localScale: {x: 2, y: 2, z: 2}
       materialStrength: 0

@@ -82,7 +82,7 @@ namespace UnityEngine.UI.Windows {
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) {
 
-				return this.gameObject.activeInHierarchy;
+				return this.gameObject.activeSelf;
 
 			}
 			#endif
@@ -311,7 +311,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void DoShowBegin(AppearanceParameters parameters) {
-
+			
 			this.SetComponentState(WindowObjectState.Showing);
 			this.OnShowBegin();
 			this.OnShowBegin(parameters);
@@ -496,7 +496,7 @@ namespace UnityEngine.UI.Windows {
         /// Unregisters the sub component.
         /// </summary>
         /// <param name="subComponent">Sub component.</param>
-		public virtual void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null) {
+		public virtual void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null, bool immediately = true) {
 
 #if UNITY_EDITOR
 			if (Application.isPlaying == false) return;
@@ -509,30 +509,30 @@ namespace UnityEngine.UI.Windows {
 			subComponent.rootComponent = null;
 			this.subComponents.Remove(subComponent);
 
-			switch (this.GetComponentState()) {
+			switch (subComponent.GetComponentState()) {
 
+				case WindowObjectState.Showing:
                 case WindowObjectState.Shown:
 
                     // after OnShowEnd
+					subComponent.DoWindowClose();
 					subComponent.DoWindowInactive();
-					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
-
-						subComponent.DoHideEnd(AppearanceParameters.Default());
-                        subComponent.DoDeinit();
-
-						if (callback != null) callback();
-
-                    }));
+					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					subComponent.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					subComponent.DoDeinit();
 
 					sendCallback = false;
+					if (callback != null) callback();
 
                     break;
 
                 case WindowObjectState.Hiding:
 
-                    // after OnHideBegin
+					// after OnHideBegin
+					subComponent.DoWindowClose();
 					subComponent.DoWindowInactive();
-					subComponent.DoHideBegin(AppearanceParameters.Default());
+					subComponent.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					subComponent.DoDeinit();
 
 					sendCallback = false;
 					if (callback != null) callback();
@@ -541,18 +541,13 @@ namespace UnityEngine.UI.Windows {
 
                 case WindowObjectState.Hidden:
 
-                    // after OnHideEnd
+					// after OnHideEnd
+					subComponent.DoWindowClose();
 					subComponent.DoWindowInactive();
-					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
-
-						subComponent.DoHideEnd(AppearanceParameters.Default());
-						subComponent.DoDeinit();
-						
-						if (callback != null) callback();
-
-					}));
+					subComponent.DoDeinit();
 
 					sendCallback = false;
+					if (callback != null) callback();
 
                     break;
 

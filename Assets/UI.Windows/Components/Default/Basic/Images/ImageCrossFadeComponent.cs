@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI.Windows.Components;
 using System.Linq;
 using UnityEngine.Extensions;
+using ME;
 
 namespace UnityEngine.UI.Windows.Components.Modules {
 	
@@ -13,23 +14,47 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 			Sprite,
 			Texture,
+			Material,
 
 		};
 
 		[HideInInspector][SerializeField] private IImageComponent image;
-		[HideInInspector][SerializeField] private Image sourceImage;
-		[HideInInspector][SerializeField] private Image copyImage;
-		[HideInInspector][SerializeField] private RawImage sourceRawImage;
-		[HideInInspector][SerializeField] private RawImage copyRawImage;
+		[HideInInspector]
+		[SerializeField] private Image sourceImage;
+		[HideInInspector]
+		[SerializeField] private Image copyImage;
+		[HideInInspector]
+		[SerializeField] private RawImage sourceRawImage;
+		[HideInInspector]
+		[SerializeField] private RawImage copyRawImage;
 
 		[ReadOnly("enabled", state: false)]
 		public float duration = 0.5f;
 		[ReadOnly("enabled", state: false)]
 		public bool fadeIfWasNull = false;
+		[ReadOnly("enabled", state: false)]
+		public ME.Ease.Type easeType;
 
 		public void Init(IImageComponent image) {
 
 			this.image = image;
+
+		}
+
+		public override void ValidateTexture(Texture texture) {
+
+			base.ValidateTexture(texture);
+
+			if (this.copyRawImage != null && this.copyRawImage.enabled == false && this.sourceRawImage != null) this.sourceRawImage.texture = texture;
+			if (this.copyRawImage != null && this.copyRawImage.enabled == true) this.copyRawImage.texture = texture;
+
+		}
+
+		public override void ValidateMaterial(Material material) {
+
+			base.ValidateMaterial(material);
+
+			if (this.copyRawImage != null && this.copyRawImage.material != null) this.copyRawImage.texture = this.copyRawImage.material.mainTexture;
 
 		}
 
@@ -57,10 +82,17 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
+		public void FadeTo<T>(Object to, System.Action callback, DataType dataType) where T : Graphic {
+
+			this.FadeTo<T>(to, this.duration, this.fadeIfWasNull, callback, dataType);
+
+		}
+
 		public void FadeTo<T>(Object to, float duration, bool fadeIfWasNull, System.Action callback, DataType dataType) where T : Graphic {
 
 			var isSprite = (dataType == DataType.Sprite);
 			var isTexture = (dataType == DataType.Texture);
+			var isMaterial = (dataType == DataType.Material);
 
 			Graphic copy = null;
 			Graphic source = null;
@@ -68,7 +100,22 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 			//Debug.Log("FadeTO: " + to + " :: " + dataType, this.image as MonoBehaviour);
 
-			if (isSprite == true) {
+			if (isMaterial == true) {
+
+				Graphic image = (Graphic)this.copyImage ?? (Graphic)this.copyRawImage;
+				Graphic sourceImage = (Graphic)this.sourceImage ?? (Graphic)this.sourceRawImage;
+				image.material = to as Material;
+
+				hasSourceTexture = (sourceImage.material != null && sourceImage.material != sourceImage.defaultMaterial);
+
+				this.CopyRect(sourceImage.rectTransform, image.rectTransform);
+
+				//Debug.Log(sourceImage.color + " :: " + hasSourceTexture, sourceImage);
+
+				copy = image;
+				source = sourceImage;
+
+			} else if (isSprite == true) {
 
 				var image = this.copyImage;
 				var sourceImage = this.sourceImage;
@@ -81,6 +128,8 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 				copy = image;
 				source = sourceImage;
+
+				//copy.material = (source.material == sourceImage.defaultMaterial ? null : source.material);
 
 			} else if (isTexture == true) {
 
@@ -95,18 +144,22 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				copy = image;
 				source = sourceImage;
 
+				//copy.material = (source.material == sourceImage.defaultMaterial ? null : source.material);
+
 			}
 
 			if (copy == null) return;
 
+			TweenerGlobal.instance.removeTweens(source, immediately: true);
+			TweenerGlobal.instance.removeTweens(copy, immediately: true);
+
 			var sourceColor = source.color;
-			copy.material = source.material;
 			copy.enabled = true;
 
 			copy.rectTransform.SetAsFirstSibling();
 
 			if (hasSourceTexture == true || fadeIfWasNull == true) {
-
+				
 				copy.color = new Color(sourceColor.r, sourceColor.g, sourceColor.b, 0f);
 
 				if (hasSourceTexture == false) {
@@ -115,11 +168,10 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 				}
 
-				TweenerGlobal.instance.removeTweens(copy);
-				TweenerGlobal.instance.addTweenAlpha(copy, duration, 0f, 1f).tag(copy).onComplete(() => {
+				TweenerGlobal.instance.addTweenAlpha(copy, duration, 0f, 1f).tag(copy).ease(ME.Ease.GetByType(this.easeType)).onComplete(() => {
 
-					this.Finalize(isSprite, isTexture, copy);
 					source.color = sourceColor;
+					this.Finalize(isSprite, isTexture, isMaterial, copy);
 
 					if (callback != null) callback.Invoke();
 
@@ -128,7 +180,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 			} else {
 
 				copy.color = sourceColor;
-				this.Finalize(isSprite, isTexture, copy);
+				this.Finalize(isSprite, isTexture, isMaterial, copy);
 
 				if (callback != null) callback.Invoke();
 
@@ -136,21 +188,56 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
-		private void Finalize(bool isSprite, bool isTexture, Graphic copy) {
+		private void Finalize(bool isSprite, bool isTexture, bool isMaterial, Graphic copy) {
+			
+			if (isMaterial == true) {
 
-			if (isSprite == true) {
+				if (this.sourceImage != null) {
 
-				this.sourceImage.sprite = (copy as Image).sprite;
+					this.sourceImage.material = (copy.material == this.sourceImage.defaultMaterial ? null : copy.material);
+					this.sourceImage.SetMaterialDirty();
+
+				}
+
+				if (this.sourceRawImage != null) {
+
+					this.sourceRawImage.material = (copy.material == this.sourceRawImage.defaultMaterial ? null : copy.material);
+					this.sourceRawImage.SetMaterialDirty();
+
+				}
+
+			} else if (isSprite == true) {
+
+				if (this.sourceImage != null) {
+				
+					this.sourceImage.sprite = (copy as Image).sprite;
+
+				}
 
 			} else if (isTexture == true) {
 
-				this.sourceRawImage.texture = (copy as RawImage).texture;
+				if (this.sourceRawImage != null) {
+
+					var texture = (copy as RawImage).texture;
+					if (texture.GetID() != this.sourceRawImage.texture.GetID()) {
+						
+						MovieSystem.Stop(this.image, this.sourceRawImage.texture.GetID());
+
+					}
+
+					this.sourceRawImage.texture = texture;
+
+				}
 
 			}
 
 			copy.enabled = false;
 
-			if (isSprite == true) {
+			if (isMaterial == true) {
+
+				copy.material = null;
+
+			} else if (isSprite == true) {
 
 				(copy as Image).sprite = null;
 				copy.material = null;
@@ -161,6 +248,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				copy.material = null;
 
 			}
+			copy.SetMaterialDirty();
 
 		}
 

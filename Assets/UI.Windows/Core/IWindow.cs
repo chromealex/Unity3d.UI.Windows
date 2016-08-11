@@ -23,9 +23,12 @@ namespace UnityEngine.UI.Windows {
 
 		public bool replaceChildsBehaviourMode; 
 		public ChildsBehaviourMode childsBehaviourMode;
-		
+
 		public bool replaceForced;
 		public bool forced;
+
+		public bool replaceManual;
+		public bool manual;
 
 		public AppearanceParameters(AppearanceParameters other) {
 
@@ -49,6 +52,9 @@ namespace UnityEngine.UI.Windows {
 			
 			this.replaceForced = other.replaceForced;
 			this.forced = other.forced;
+
+			this.replaceManual = other.replaceManual;
+			this.manual = other.manual;
 
 		}
 
@@ -76,6 +82,9 @@ namespace UnityEngine.UI.Windows {
 
 				replaceForced = false,
 				forced = false,
+
+				replaceManual = false,
+				manual = false,
 
 			};
 
@@ -120,13 +129,21 @@ namespace UnityEngine.UI.Windows {
 			return defaultValue;
 			
 		}
-		
+
 		public bool GetIncludeChilds(bool defaultValue) {
-			
+
 			if (this.replaceIncludeChilds == true) return this.includeChilds;
-			
+
 			return defaultValue;
-			
+
+		}
+
+		public bool GetManual(bool defaultValue) {
+
+			if (this.replaceManual == true) return this.manual;
+
+			return defaultValue;
+
 		}
 
 		public ChildsBehaviourMode GetChildsBehaviourMode(ChildsBehaviourMode defaultValue) {
@@ -172,11 +189,17 @@ namespace UnityEngine.UI.Windows {
 			return new AppearanceParameters(this) { replaceChildsBehaviourMode = true, childsBehaviourMode = childsBehaviourMode };
 
 		}
-		
+
 		public AppearanceParameters ReplaceForced(bool forced) {
-			
+
 			return new AppearanceParameters(this) { replaceForced = true, forced = forced };
-			
+
+		}
+
+		public AppearanceParameters ReplaceManual(bool manual) {
+
+			return new AppearanceParameters(this) { replaceManual = true, manual = manual };
+
 		}
 
 		public void Call() {

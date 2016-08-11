@@ -45,7 +45,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	};
 
-	public class ButtonComponent : WindowComponentNavigation, IButtonComponent, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler {
+	public class ButtonComponent : WindowComponentNavigation, IButtonComponent, IEventSystemHandler {
 		
 		public override void Setup(IComponentParameters parameters) {
 			
@@ -175,7 +175,11 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					if (this.imageLocalizationKey.IsNone() == false) {
 	
-						this.SetImage(this.imageLocalizationKey);
+						if ((this.imageResource.controlType & ResourceBase.ControlType.Init) != 0) {
+	
+							this.SetImage(this.imageLocalizationKey);
+	
+						}
 	
 					} else {
 						
@@ -232,7 +236,6 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.button != null) this.button.onClick.RemoveListener(this.OnClick);
 			this.callback.RemoveAllListeners();
 			this.callbackButton.RemoveAllListeners();
-			this.onHover.RemoveAllListeners();
 
 		}
 		
@@ -257,16 +260,28 @@ namespace UnityEngine.UI.Windows.Components {
 	 * Do not change anything
 	 */
 	{
-					
-					WindowSystemResources.LoadAuto(this, onDataLoaded: () => {
 	
-						if (this.playOnShow == true) {
+					if (this.imageLocalizationKey.IsNone() == false) {
 	
-							this.Play();
+						if ((this.imageResource.controlType & ResourceBase.ControlType.Show) != 0) {
+	
+							this.SetImage(this.imageLocalizationKey);
 	
 						}
 	
-					}, onComplete: null, onShowHide: true);
+					} else {
+						
+						WindowSystemResources.LoadAuto(this, onDataLoaded: () => {
+	
+							if (this.playOnShow == true) {
+	
+								this.Play();
+	
+							}
+	
+						}, onComplete: null, onShowHide: true);
+	
+					}
 	
 					if (this.tempImagePlayOnShow == true) {
 	
@@ -297,7 +312,7 @@ namespace UnityEngine.UI.Windows.Components {
 	 */
 	{
 					
-					this.Stop();
+					//this.Stop();
 	
 					WindowSystemResources.UnloadAuto(this, onShowHide: true);
 	
@@ -336,7 +351,7 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool setDefaultNavigationModeOnStart = true;
 		[SerializeField][ReadOnly("setDefaultNavigationModeOnStart", state: false)]
 		private Navigation.Mode defaultNavigationMode = Navigation.Mode.None;
-		
+
 		public virtual IButtonComponent SetSelectByDefault(bool state) {
 			
 			this.selectByDefault = state;
@@ -464,6 +479,19 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		#region source macros UI.Windows.ButtonComponent.States
+
+		[SerializeField]
+		private bool hoverOnAnyButtonState = false;
+
+		[SerializeField]
+		private bool hoverCursorDefaultOnInactive = false;
+
+		public bool IsCursorDefault() {
+
+			return this.IsInteractable() == false && this.hoverCursorDefaultOnInactive == true;
+
+		}
+
 		public void Select() {
 
 			this.GetSelectable().Select();
@@ -519,6 +547,21 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			return this;
+
+		}
+
+		public IInteractableComponent SetHoverOnAnyButtonState(bool state) {
+
+			this.hoverOnAnyButtonState = state;
+
+			return this;
+
+		}
+
+		protected override bool ValidateHoverPointer() {
+
+			if (this.hoverOnAnyButtonState == false && this.IsInteractable() == false) return false;
+			return base.ValidateHoverPointer();
 
 		}
 
@@ -698,136 +741,6 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 		#endregion
 
-		#region source macros UI.Windows.ButtonComponent.Audio
-		[Header("Audio")]
-		[SerializeField]
-		private UnityEngine.UI.Windows.Audio.Component sfxOnClick = new UnityEngine.UI.Windows.Audio.Component();
-		[SerializeField]
-		private UnityEngine.UI.Windows.Audio.Component sfxOnEnter = new UnityEngine.UI.Windows.Audio.Component();
-		[SerializeField]
-		private UnityEngine.UI.Windows.Audio.Component sfxOnLeave = new UnityEngine.UI.Windows.Audio.Component();
-
-		public IInteractableComponent SetSFX(PointerEventState state, UnityEngine.UI.Windows.Audio.Component data) {
-
-			if (state == PointerEventState.Click) {
-
-				this.sfxOnClick = data;
-
-			} else if (state == PointerEventState.Enter) {
-
-				this.sfxOnEnter = data;
-
-			} else if (state == PointerEventState.Leave) {
-
-				this.sfxOnLeave = data;
-
-			}
-
-			return this;
-
-		}
-		#endregion
-
-		#region source macros UI.Windows.ButtonComponent.Hover
-		[Header("Hover Actions")]
-		[SerializeField]
-		private bool hoverIsActive = true;
-		[SerializeField]
-		private bool hoverOnAnyPointerState = false;
-		[SerializeField]
-		private bool hoverOnAnyButtonState = false;
-		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
-
-		[HideInInspector]
-		private bool tempHoverState = false;
-
-		public IInteractableComponent SetHoverState(bool state) {
-			
-			this.hoverIsActive = state;
-
-			return this;
-
-		}
-		
-		public IInteractableComponent SetHoverOnAnyPointerState(bool state) {
-			
-			this.hoverOnAnyPointerState = state;
-
-			return this;
-
-		}
-		
-		public IInteractableComponent SetHoverOnAnyButtonState(bool state) {
-			
-			this.hoverOnAnyButtonState = state;
-
-			return this;
-
-		}
-
-		public virtual IInteractableComponent SetCallbackHover(UnityAction<bool> onHover) {
-			
-			this.onHover.AddListenerDistinct(onHover);
-
-			return this;
-
-		}
-
-		private bool ValidateHoverPointer_INTERNAL() {
-
-			if (this.hoverIsActive == false) return false;
-			if (this.hoverOnAnyButtonState == false && this.IsInteractable() == false) return false;
-			if (this.hoverOnAnyPointerState == false && WindowSystemInput.GetPointerState() != PointerState.Default) return false;
-
-			return true;
-
-		}
-
-		public void OnPointerEnter(PointerEventData eventData) {
-
-			this.SetHoverEnter();
-
-		}
-		
-		public void OnPointerExit(PointerEventData eventData) {
-
-			this.SetHoverExit();
-
-		}
-
-		public IInteractableComponent SetHoverEnter() {
-
-			if (this.tempHoverState == true) {
-
-				this.SetHoverExit();
-
-			}
-
-			this.tempHoverState = false;
-
-			if (this.ValidateHoverPointer_INTERNAL() == false) return this;
-
-			this.sfxOnEnter.Play();
-			this.tempHoverState = true;
-			this.onHover.Invoke(true);
-
-			return this;
-
-		}
-
-		public IInteractableComponent SetHoverExit() {
-
-			if (this.tempHoverState == false) return this;
-
-			this.sfxOnLeave.Play();
-			this.onHover.Invoke(false);
-			this.tempHoverState = false;
-
-			return this;
-
-		}
-		#endregion
-
 		#region macros UI.Windows.ImageComponent (overrideColor:override)
 
 	/*
@@ -873,12 +786,18 @@ namespace UnityEngine.UI.Windows.Components {
 				return this;
 	
 			}
-			
+	
 			public IImageComponent SetLoop(bool state) {
-				
+	
 				this.loop = state;
-				
+	
 				return this;
+	
+			}
+	
+			public bool GetLoop() {
+				
+				return this.loop;
 	
 			}
 			
@@ -900,12 +819,46 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 	
 			public IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null) {
-				
+	
 				this.Stop();
-				this.SetImage(resource, onDataLoaded, onComplete);
+				this.SetImage(resource, () => {
+					
+					if (onDataLoaded != null) onDataLoaded.Invoke();
+	
+				}, () => {
+	
+					//Debug.Log("SetMovieTexture: " + this.name);
+					MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
+					MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
+					if (onComplete != null) onComplete.Invoke();
+	
+				});
 	
 				return this;
 				
+			}
+	
+			private void ValidateTexture(IImageComponent component, Texture texture) {
+	
+				//Debug.Log("ValidateTexture: " + (component as MonoBehaviour) + ", tex: " + texture, component as MonoBehaviour);
+				if (this == component) {
+					
+					if (this.rawImage != null) {
+	
+						if (this.imageCrossFadeModule.IsValid() == true) {
+	
+							this.imageCrossFadeModule.ValidateTexture(texture);
+	
+						} else {
+	
+							this.rawImage.texture = texture;
+	
+						}
+	
+					}
+	
+				}
+	
 			}
 	
 			public bool GetPlayOnShow() {
@@ -922,26 +875,35 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 			
-			public bool IsPlaying() {
+			public virtual bool IsPlaying() {
 	
 				return MovieSystem.IsPlaying(this);
 	
 			}
 			
-			public IImageComponent PlayAndPause() {
+			public virtual IImageComponent PlayAndPause() {
 	
 				MovieSystem.PlayAndPause(this, this.loop);
+	
 				return this;
 				
 			}
 	
-			public IImageComponent Play() {
+			public virtual IImageComponent Rewind(bool pause = true) {
+	
+				MovieSystem.Rewind(this, pause);
+	
+				return this;
+	
+			}
+	
+			public virtual IImageComponent Play() {
 	
 				return this.Play(this.loop);
 	
 			}
 	
-			public IImageComponent Play(bool loop) {
+			public virtual IImageComponent Play(bool loop) {
 	
 				MovieSystem.Play(this, loop);
 	
@@ -949,15 +911,16 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public IImageComponent Stop() {
+			public virtual IImageComponent Stop() {
 	
+				MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
 				MovieSystem.Stop(this);
 	
 				return this;
 	
 			}
 	
-			public IImageComponent Pause() {
+			public virtual IImageComponent Pause() {
 	
 				MovieSystem.Pause(this);
 	
@@ -1032,23 +995,36 @@ namespace UnityEngine.UI.Windows.Components {
 			public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null) {
 	
 				var oldResource = this.imageResource;
-				var newResource = resource;
 				this.imageResource = resource;
 	
-				//Debug.Log("Loading resource: " + newResource.GetId());
-				WindowSystemResources.Load(this, onDataLoaded: onDataLoaded, onComplete: () => {
+				//Debug.Log("Loading resource: " + this.imageResource.GetId());
+				WindowSystemResources.Load(this,
+					onDataLoaded: onDataLoaded,
+					onComplete: () => {
 	
-					//Debug.Log("Resource loaded: " + newResource.GetId());
-					if (newResource.GetId() != oldResource.GetId()) {
+						//Debug.Log("Resource loaded: " + newResource.GetId() + " :: " + this.name, this);
+						if (this.imageResource.GetId() != oldResource.GetId()) {
 	
-						//Debug.Log("Unloading: " + newResource.GetId() + " != " + oldResource.GetId());
-						WindowSystemResources.Unload(this, oldResource, resetController: false);
+							//Debug.Log("Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
+							WindowSystemResources.Unload(this, oldResource, resetController: false);
+	
+						}
+	
+						if (onComplete != null) onComplete.Invoke();
+	
+					},
+					onFailed: () => {
+	
+						//Debug.Log("Resource loding failed: " + newResource.GetId() + " :: " + this.name, this);
+						if (this.imageResource.GetId() != oldResource.GetId()) {
+	
+							//Debug.Log("Failed, Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
+							WindowSystemResources.Unload(this, oldResource, resetController: false);
+	
+						}
 	
 					}
-	
-					if (onComplete != null) onComplete.Invoke();
-	
-				});
+				);
 	
 				return this;
 				
@@ -1071,15 +1047,37 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public IImageComponent SetImage(Sprite sprite, System.Action onComplete = null) {
+			public IImageComponent SetImage(Sprite sprite) {
 	
-				this.SetImage(sprite, this.preserveAspect, withPivotsAndSize: false, onComplete: onComplete);
-	
-				return this;
+				return this.SetImage(sprite, this.preserveAspect, false, null, false);
 	
 			}
 	
-			public IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete = null) {
+			public IImageComponent SetImage(Sprite sprite, bool immediately) {
+	
+				return this.SetImage(sprite, this.preserveAspect, false, null, immediately);
+	
+			}
+	
+			public IImageComponent SetImage(Sprite sprite, System.Action onComplete) {
+	
+				return this.SetImage(sprite, this.preserveAspect, false, onComplete, false);
+	
+			}
+	
+			public IImageComponent SetImage(Sprite sprite, System.Action onComplete, bool immediately) {
+	
+				return this.SetImage(sprite, this.preserveAspect, false, onComplete, immediately);
+	
+			}
+	
+			public IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete) {
+	
+				return this.SetImage(sprite, preserveAspect, withPivotsAndSize, onComplete, false);
+	
+			}
+	
+			public IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete = null, bool immediately = false) {
 				
 				if (this.image != null) {
 					
@@ -1094,7 +1092,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					}
 	
-					if (this.imageCrossFadeModule.IsValid() == true) {
+					if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 	
 						this.imageCrossFadeModule.FadeTo(sprite, onComplete);
 	
@@ -1116,26 +1114,51 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public IImageComponent SetImage(Texture texture, System.Action onComplete = null) {
+			public IImageComponent SetImage(Texture texture) {
 	
-				this.SetImage(texture, this.preserveAspect, onComplete);
-				
-				return this;
+				return this.SetImage(texture, this.preserveAspect, null, false);
 	
 			}
 	
-			public IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete = null) {
-				
+			public IImageComponent SetImage(Texture texture, bool immediately) {
+	
+				return this.SetImage(texture, this.preserveAspect, null, immediately);
+	
+			}
+	
+			public IImageComponent SetImage(Texture texture, System.Action onComplete) {
+	
+				return this.SetImage(texture, this.preserveAspect, onComplete, false);
+	
+			}
+	
+			public IImageComponent SetImage(Texture texture, System.Action onComplete, bool immediately) {
+	
+				return this.SetImage(texture, this.preserveAspect, onComplete, immediately);
+	
+			}
+	
+			public IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete) {
+	
+				return this.SetImage(texture, preserveAspect, onComplete, false);
+	
+			}
+	
+			public IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete, bool immediately) {
+	
+				//MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
+				//MovieSystem.Stop(this, this.rawImage.texture.GetInstanceID());
+	
 				if (this.rawImage != null) {
 					
 					if (this.preserveAspect == true) ME.Utilities.PreserveAspect(this.rawImage);
 	
-					if (this.imageCrossFadeModule.IsValid() == true) {
+					if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 	
 						this.imageCrossFadeModule.FadeTo(texture, onComplete);
 	
 					} else {
-	
+						
 						this.rawImage.texture = texture;
 	
 						if (onComplete != null) onComplete.Invoke();
@@ -1195,21 +1218,124 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public IImageComponent SetMaterial(Material material) {
-	
+		public IImageComponent SetMaterial(Material material, bool setMainTexture = false, System.Action onComplete = null) {
+
+			MovieSystem.UnregisterOnUpdateMaterial(this.ValidateMaterial);
+
+			if (material == null) {
+
 				if (this.image != null) {
-	
+
+					this.image.material = null;
+					this.image.SetMaterialDirty();
+
+				} else if (this.rawImage != null) {
+
+					this.rawImage.material = null;
+					this.rawImage.SetMaterialDirty();
+
+				}
+
+
+				if (onComplete != null) onComplete.Invoke();
+				return this;
+
+			}
+
+			MovieSystem.RegisterOnUpdateMaterial(this.ValidateMaterial);
+
+			if (this.image != null) {
+
+				if (this.image.enabled == false) this.image.enabled = true;
+
+				var tex = material.mainTexture;
+				if (this.imageCrossFadeModule.IsValid() == true) {
+
+					this.imageCrossFadeModule.FadeTo<Image>(material, () => {
+
+						if (setMainTexture == true) {
+
+							var sprite = Sprite.Create(tex as Texture2D, new Rect(0f, 0f, tex.width, tex.height), Vector2.one * 0.5f);
+							this.image.sprite = sprite;
+
+						}
+
+						this.image.SetMaterialDirty();
+
+						if (onComplete != null) onComplete.Invoke();
+
+					}, ImageCrossFadeModule.DataType.Material);
+
+				} else {
+
+					if (setMainTexture == true) {
+
+						var sprite = Sprite.Create(tex as Texture2D, new Rect(0f, 0f, tex.width, tex.height), Vector2.one * 0.5f);
+						this.image.sprite = sprite;
+
+					}
+
 					this.image.material = material;
 					this.image.SetMaterialDirty();
-	
-				} else if (this.rawImage != null) {
-	
+
+					if (onComplete != null) onComplete.Invoke();
+
+				}
+
+			} else if (this.rawImage != null) {
+
+				if (this.rawImage.enabled == false) this.rawImage.enabled = true;
+
+				var tex = material.mainTexture;
+				if (this.imageCrossFadeModule.IsValid() == true) {
+
+					this.imageCrossFadeModule.FadeTo<RawImage>(material, () => {
+
+						if (setMainTexture == true) {
+
+							this.rawImage.texture = tex;
+
+						}
+						this.rawImage.SetMaterialDirty();
+
+						if (onComplete != null) onComplete.Invoke();
+
+					}, ImageCrossFadeModule.DataType.Material);
+
+				} else {
+
+					if (setMainTexture == true) {
+
+						this.rawImage.texture = tex;
+
+					}
+
 					this.rawImage.material = material;
 					this.rawImage.SetMaterialDirty();
+
+					if (onComplete != null) onComplete.Invoke();
+
+				}
+
+			}
+
+			return this;
+
+		}
+	
+			public void ValidateMaterial(Material material) {
+				
+				if (this.rawImage != null) {
+	
+					this.rawImage.texture = this.rawImage.material.mainTexture;
+					if (this.imageCrossFadeModule.IsValid() == true) {
+	
+						this.imageCrossFadeModule.ValidateMaterial(material);
+	
+					}
+					//Debug.Log("MATERIAL DIRTY: " + this.rawImage.texture, this);
 	
 				}
-				
-				return this;
 	
 			}
 	#endregion

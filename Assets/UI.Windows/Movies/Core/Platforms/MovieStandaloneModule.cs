@@ -10,7 +10,7 @@ namespace UnityEngine.UI.Windows.Movies {
 	[System.Serializable]
 	public class MovieStandaloneModule : MovieModuleBase {
 
-		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
+		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
 
 			var filePath = resource.GetStreamPath();
 

@@ -78,7 +78,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 1048576
   flags1: 1048576
   flags2: 0
   interactableByDefault: 1
@@ -117,7 +116,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: BLACK
+  text: 424c41434b
   localizationKey:
     key: 
     parameters: 0
@@ -161,7 +160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 3145728
   flags1: 3145728
   flags2: 0
   interactableByDefault: 1
@@ -200,7 +198,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: Quit
+  text: 51756974
   localizationKey:
     key: 
     parameters: 0
@@ -249,8 +247,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2058946}
-  initialized: 1
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -352,6 +354,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11499994, guid: 5edbe9d77b2294595b4ed8f05bdd09c3, type: 2}
     components:
     - description: CONTENT BORDER
@@ -373,6 +376,7 @@ MonoBehaviour:
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 0}
       componentNoResource: {fileID: 0}
       sortingOrder: 0
@@ -391,12 +395,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10600
+        id: 1894874965
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
       componentNoResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75,
         type: 2}
@@ -416,12 +421,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10600
+        id: 1894874965
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
       componentNoResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75,
         type: 2}
@@ -441,12 +447,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10600
+        id: 1894874965
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
       componentNoResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75,
         type: 2}
@@ -464,7 +471,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 1048576
   flags1: 1048576
   flags2: 0
   interactableByDefault: 1
@@ -503,7 +509,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: WHITE
+  text: 5748495445
   localizationKey:
     key: 
     parameters: 0

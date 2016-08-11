@@ -11,13 +11,30 @@ namespace UnityEngine.UI.Windows.Components {
 
 		[ComponentChooser]
 		public WindowComponent prefab;
-		[HideInInspector][SerializeField]
+		[HideInInspector]
+		[SerializeField]
 		public WindowComponentParametersBase prefabParameters;
 
 		public bool fitToRoot = true;
 
 		//[HideInInspector]
 		private WindowComponent instance;
+
+		public bool Unload() {
+
+			if (this.instance != null) {
+
+				this.UnregisterSubComponent(this.instance);
+				this.instance.Recycle();
+				this.instance = null;
+
+				return true;
+
+			}
+
+			return false;
+
+		}
 
 		public T Get<T>(ref T instance) where T : IComponent {
 			

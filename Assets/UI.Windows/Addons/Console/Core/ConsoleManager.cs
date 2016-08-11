@@ -1,8 +1,4 @@
-using UnityEngine;
-using System.Collections;
-using UnityEngine.UI.Windows;
 using System.Collections.Generic;
-using ME;
 using System.Reflection;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -45,7 +41,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 			WindowSystem.RegisterWindow(this.GetSettings<ConsoleSettings>().screen);
 
 			this.screen = WindowSystem.Show<ConsoleScreen>();
-			this.screen.Register(this.OnCommand, this.OnCommandCheck);
+			this.screen.Register(ConsoleManager.OnCommand, this.OnCommandCheck);
 
 			this.Hide();
 			this.StartAll();
@@ -79,6 +75,30 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 		public void Update() {
 
 			if (this.screen != null) {
+
+				#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8
+				if (UnityEngine.Input.touchCount == 4) {
+
+					if (this.state == false) {
+
+						this.state = true;
+						this.Show();
+
+					}
+
+				}
+
+				if (UnityEngine.Input.touchCount == 3) {
+
+					if (this.state == true) {
+
+						this.state = false;
+						this.Hide();
+
+					}
+
+				}
+				#endif
 
 				if (UnityEngine.Input.GetKeyDown(KeyCode.BackQuote) == true) {
 					

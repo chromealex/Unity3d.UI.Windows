@@ -231,29 +231,49 @@ namespace ME {
 
 		}
 
-		public void Stop(float time) {
-			
-			var particles = new ParticleSystem.Particle[this.particleSystem.particleCount];
-			var count = this.particleSystem.GetParticles(particles);
+	    public void Pause() {
+	        
+            this.particleSystem.Pause(withChildren: true);
+
+	    }
+
+        private ParticleSystem.Particle[] particles;
+
+	    private void InitParticles() {
+
+	        if (this.particleSystem == null || this.particles != null) return;
+
+	        this.particles = new ParticleSystem.Particle[this.particleSystem.maxParticles];
+
+	    }
+
+        public void Stop(float time) {
+
+            this.InitParticles();
+            
+            var count = this.particleSystem.GetParticles(this.particles);
 			for (int p = 0; p < count; ++p) {
 
 				particles[p].lifetime = Random.Range(0f, time);
 
 			}
-			this.particleSystem.SetParticles(particles, count);
+
+            this.particleSystem.SetParticles(particles, count);
 			this.particleSystem.Stop();
 
 		}
 
 		private void SetColor_PARTICLES(Color color) {
 
-			var particles = new ParticleSystem.Particle[this.particleSystem.particleCount];
-			var count = this.particleSystem.GetParticles(particles);
+            this.InitParticles();
+            
+            var count = this.particleSystem.GetParticles(this.particles);
 			for (int p = 0; p < count; ++p) {
 
 				particles[p].startColor = color;
 
 			}
+
 			this.particleSystem.SetParticles(particles, count);
 
 		}

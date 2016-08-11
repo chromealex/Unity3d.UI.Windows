@@ -208,7 +208,7 @@ namespace ME {
 				
 				for (int i = 0; i < this.count; ++i) {
 
-					this.particleSystemItems[i].Rewind(time, noRestart);
+                    this.particleSystemItems[i].Rewind(time, noRestart);
 
 				}
 
@@ -225,6 +225,24 @@ namespace ME {
 			if (this.mainParticleSystem != null) this.mainParticleSystem.Play();
 
 		}
+
+	    public void Pause(bool withChildren) {
+
+            if (withChildren == true) {
+
+                for (int i = 0; i < this.count; ++i) {
+
+                    this.particleSystemItems[i].Pause();
+
+                }
+
+            } else if (this.mainParticleSystemItem != null) {
+
+                this.mainParticleSystemItem.Pause();
+
+            }
+
+        }
 
 		public void Play(bool withChildren) {
 			

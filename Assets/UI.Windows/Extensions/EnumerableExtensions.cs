@@ -20,7 +20,7 @@ public static class EnumerableExtensions {
 		
 	}
 	
-	public static void Shuffle<T>(this T[] source) {
+	public static T[] Shuffle<T>(this T[] source) {
 		
 		Random rng = new Random(UnityEngine.Random.Range(0, 9999999));
 		var sourceArray = source.ToList();
@@ -32,6 +32,8 @@ public static class EnumerableExtensions {
 			sourceArray.RemoveAt(k);
 			
 		}
+
+		return source;
 		
 	}
 	

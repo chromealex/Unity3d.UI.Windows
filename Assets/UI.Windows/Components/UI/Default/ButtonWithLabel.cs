@@ -8,6 +8,14 @@ namespace UnityEngine.UI {
 		public Text label;
 		public ColorBlock labelColor = ColorBlock.defaultColorBlock;
 
+		/*protected override void OnStateChanged() {
+
+			base.OnStateChanged();
+
+			this.ApplyState(this.currentSelectionState, false);
+
+		}*/
+
 		protected override void DoStateTransition(Selectable.SelectionState state, bool instant) {
 
 			base.DoStateTransition(state, instant);
@@ -16,13 +24,13 @@ namespace UnityEngine.UI {
 
 		}
 
-		protected override void OnDidApplyAnimationProperties() {
+		/*protected override void OnDidApplyAnimationProperties() {
 
 			base.OnDidApplyAnimationProperties();
 			
 			this.ApplyState(this.currentSelectionState, false);
 
-		}
+		}*/
 
 		private void ApplyState(Selectable.SelectionState state, bool instant) {
 

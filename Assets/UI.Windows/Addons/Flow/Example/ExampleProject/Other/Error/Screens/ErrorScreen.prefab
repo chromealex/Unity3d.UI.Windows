@@ -77,7 +77,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd69d81d687b47588401ca1ff862c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 1048576
   flags1: 1048576
   flags2: 0
   interactableByDefault: 1
@@ -116,7 +115,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  text: Restart
+  text: 52657374617274
   localizationKey:
     key: 
     parameters: 0
@@ -165,8 +164,12 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   editorInfoFold: 0
-  workCamera: {fileID: 2058946}
-  initialized: 1
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
   preferences:
     layer: 0
     dontDestroy: 1
@@ -268,6 +271,7 @@ MonoBehaviour:
     fixedScaleResolution: {x: 1024, y: 768}
     matchWidthOrHeight: 0
     layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
     layout: {fileID: 11445118, guid: 3089039c00f034d988a9445040315e19, type: 2}
     components:
     - description: CONTENT BORDER
@@ -289,6 +293,7 @@ MonoBehaviour:
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 0}
       componentNoResource: {fileID: 0}
       sortingOrder: 0
@@ -307,12 +312,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10600
+        id: 1894874965
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
       componentNoResource: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75,
         type: 2}
@@ -332,12 +338,13 @@ MonoBehaviour:
         multiObjects: 0
         objectIndex: 0
         customResourcePath: 
-        id: 10598
+        id: -146389056
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
         tempResource: {fileID: 11450942, guid: a493e1b7fca90429aa46f68cfd682136, type: 2}
       componentNoResource: {fileID: 11450942, guid: a493e1b7fca90429aa46f68cfd682136,
         type: 2}
@@ -355,15 +362,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f3161d3dee0a4c36bc04c14270ac6c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flags: 257
   flags1: 257
   flags2: 0
-  text: 'Hello, you are here because random choose so. And then AB Test condition
-    works.
-
-    You can try to restart application to change random opinion ;)
-
-    WAIT FOR UserID >= 200 TO PASS THIS TEST.'
+  text: 48656c6c6f2c20796f7520617265206865726520626563617573652072616e646f6d2063686f6f736520736f2e20416e64207468656e204142205465737420636f6e646974696f6e20776f726b732e0a596f752063616e2074727920746f2072657374617274206170706c69636174696f6e20746f206368616e67652072616e646f6d206f70696e696f6e203b290a5741495420464f5220557365724944203e3d2032303020544f2050415353205448495320544553542e
   localizationKey:
     key: 
     parameters: 0

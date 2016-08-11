@@ -40,6 +40,9 @@ namespace UnityEngine.UI.Windows {
 				[HideInInspector][System.NonSerialized]
 				private WindowModule instance;
 
+				[HideInInspector][System.NonSerialized]
+				private WindowBase windowContext;
+
 				public ModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
 
 					this.moduleSource = moduleSource;
@@ -49,23 +52,33 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				public void Create(WindowBase window, Transform modulesRoot) {
-					
-					var instance = this.moduleSource.Spawn();
-					instance.transform.SetParent(modulesRoot);
-					instance.transform.localPosition = Vector3.zero;
-					instance.transform.localRotation = Quaternion.identity;
-					instance.transform.localScale = Vector3.one;
-					
-					var rect = instance.transform as RectTransform;
-					rect.sizeDelta = (this.moduleSource.transform as RectTransform).sizeDelta;
-					rect.anchoredPosition = (this.moduleSource.transform as RectTransform).anchoredPosition;
-					
-					instance.transform.SetSiblingIndex(this.backgroundLayer == true ? -this.sortingOrder : this.sortingOrder + 1);
-					
-					instance.Setup(window);
-					
-					this.instance = instance;
-					
+
+					this.windowContext = window;
+
+					if (this.moduleSource.IsInstantiate() == true) {
+
+						var instance = this.moduleSource.Spawn();
+						instance.transform.SetParent(modulesRoot);
+						instance.transform.localPosition = Vector3.zero;
+						instance.transform.localRotation = Quaternion.identity;
+						instance.transform.localScale = Vector3.one;
+						
+						var rect = instance.transform as RectTransform;
+						rect.sizeDelta = (this.moduleSource.transform as RectTransform).sizeDelta;
+						rect.anchoredPosition = (this.moduleSource.transform as RectTransform).anchoredPosition;
+						
+						instance.transform.SetSiblingIndex(this.backgroundLayer == true ? -this.sortingOrder : this.sortingOrder + 1);
+
+						instance.Setup(window);
+
+						this.instance = instance;
+
+					} else {
+
+						this.instance = this.moduleSource;
+
+					}
+
 				}
 				
 				public float GetDuration(bool forward) {
@@ -86,14 +99,55 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 
-				public void DoWindowActive() { if (this.instance != null) this.instance.DoWindowActive(); }
-				public void DoWindowInactive() { if (this.instance != null) this.instance.DoWindowInactive(); }
-				public void DoInit() { if (this.instance != null) this.instance.DoInit(); }
-				public void DoDeinit() { if (this.instance != null) this.instance.DoDeinit(); }
+				public void DoWindowActive() {
+
+					if (this.instance != null) {
+						
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
+						this.instance.DoWindowActive();
+
+					}
+
+				}
+
+				public void DoWindowInactive() {
+
+					if (this.instance != null) {
+						
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
+						this.instance.DoWindowInactive();
+
+					}
+
+				}
+
+				public void DoInit() {
+
+					if (this.instance != null) {
+
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
+						this.instance.DoInit();
+
+					}
+					
+				}
+
+				public void DoDeinit() {
+
+					if (this.instance != null) {
+						
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
+						this.instance.DoDeinit();
+
+					}
+
+				}
+
 				public void DoShowBegin(AppearanceParameters parameters) {
 
 					if (this.instance != null) {
 
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
 						this.instance.DoShowBegin(parameters);
 
 					} else {
@@ -104,11 +158,22 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				public void DoShowEnd(AppearanceParameters parameters) { if (this.instance != null) this.instance.DoShowEnd(parameters); }
+				public void DoShowEnd(AppearanceParameters parameters) {
+
+					if (this.instance != null) {
+						
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
+						this.instance.DoShowEnd(parameters);
+
+					}
+
+				}
+
 				public void DoHideBegin(AppearanceParameters parameters) {
 					
 					if (this.instance != null) {
 						
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
 						this.instance.DoHideBegin(parameters);
 						
 					} else {
@@ -119,7 +184,16 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				public void DoHideEnd(AppearanceParameters parameters) { if (this.instance != null) this.instance.DoHideEnd(parameters); }
+				public void DoHideEnd(AppearanceParameters parameters) {
+
+					if (this.instance != null) {
+						
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
+						this.instance.DoHideEnd(parameters);
+
+					}
+
+				}
 				
 			}
 
@@ -693,6 +767,131 @@ namespace UnityEngine.UI.Windows {
 	};
 
 	[System.Serializable]
+	public class TargetPreferences {
+
+		[System.Serializable]
+		public class TargetInfo {
+
+			[Header("Platform Filter")]
+			public bool platform;
+			[ReadOnly("platform", state: false)]
+			public RuntimePlatform[] anyOfPlatform;
+
+			[Header("Aspect Ratio Filter")]
+			public bool aspect;
+			[ReadOnly("aspect", state: false)]
+			public Vector2 aspectFrom;
+			[ReadOnly("aspect", state: false)]
+			public Vector2 aspectTo;
+
+			public bool IsValid() {
+
+				var result = true;
+				if (result == true && this.platform == true) {
+
+					var platform = WindowSystem.GetCurrentRuntimePlatform();
+					for (int i = 0; i < this.anyOfPlatform.Length; ++i) {
+
+						if (this.anyOfPlatform[i] == platform) {
+
+							result = true;
+							break;
+
+						}
+
+					}
+
+				}
+
+				if (result == true && this.aspect == true) {
+
+					var delta = 0.001f;
+					var aspectSize = Screen.width / (float)Screen.height;
+					var checkTo = this.aspectFrom.x / this.aspectFrom.y;
+					var checkFrom = this.aspectTo.x / this.aspectTo.y;
+
+					//Debug.LogError("---------- CHECK: " + aspectSize + " :: " + Screen.width + " :: " + Screen.height + " // " + checkFrom + " // " + checkTo);
+					result = ((aspectSize >= checkFrom - delta) && (aspectSize <= checkTo + delta));
+
+				}
+
+				return result;
+
+			}
+
+		}
+
+		[Header("Preferences File")]
+		public WindowTargetPreferences preferencesFile;
+
+		[Header("-- Or --")]
+		public bool runOnAnyTarget = true;
+		[ReadOnly("runOnAnyTarget", state: true)]
+		public TargetInfo[] targets;
+
+		//[System.NonSerialized]
+		private bool isDirty = true;
+		//[System.NonSerialized]
+		private bool lastResult = false;
+
+		public bool GetRunOnAnyTarget() {
+
+			if (this.preferencesFile != null) {
+
+				return this.preferencesFile.preferences.runOnAnyTarget;
+
+			}
+
+			return this.runOnAnyTarget;
+
+		}
+
+		public bool IsValid() {
+
+			if (this.preferencesFile != null) {
+
+				return this.preferencesFile.preferences.IsValid();
+
+			}
+
+			if (this.isDirty == true) {
+				
+				this.isDirty = false;
+				this.lastResult = false;
+
+				for (int i = 0; i < this.targets.Length; ++i) {
+
+					if (targets[i].IsValid() == true) {
+
+						this.lastResult = true;
+						break;
+
+					}
+
+				}
+
+			}
+
+			return this.lastResult;
+
+		}
+
+		public void SetDirty() {
+			
+			if (this.preferencesFile != null) {
+
+				this.preferencesFile.preferences.SetDirty();
+				return;
+
+			}
+
+			this.isDirty = true;
+
+		}
+
+	}
+
+	[System.Serializable]
 	public class Preferences {
 
 		[Header("Base")]
@@ -812,7 +1011,7 @@ namespace UnityEngine.UI.Windows {
 			if (transition != null) {
 				
 				transition.SetResetState(transitionParameters, this.window, null);
-				transition.Play(this.window, transitionParameters, null, forward: true, callback: parameters.callback);
+				transition.Play(null, this.window, transitionParameters, forward: true, callback: parameters.callback);
 				
 			} else {
 
@@ -840,7 +1039,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (transition != null) {
 
-				transition.Play(this.window, transitionParameters, null, forward: false, callback: parameters.callback);
+				transition.Play(null, this.window, transitionParameters, forward: false, callback: parameters.callback);
 				
 			} else {
 				

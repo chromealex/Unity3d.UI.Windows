@@ -24,7 +24,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[ParamFlag(ParameterFlag.P5)] public ComponentEvent hoverInCallback = new ComponentEvent();
 		[ParamFlag(ParameterFlag.P6)] public ComponentEvent hoverOutCallback = new ComponentEvent();
 
-		public void Setup(IButtonComponent component) {
+		public virtual void Setup(IButtonComponent component) {
 			
 			if (this.IsChanged(ParameterFlag.P1) == true) component.SetEnabledState(this.interactableByDefault);
 			if (this.IsChanged(ParameterFlag.P2) == true) {
