@@ -3,6 +3,8 @@ using UnityEngine.UI.Windows.Components;
 using System.Linq;
 using System.Collections.Generic;
 using ME;
+using UnityEngine.UI.Windows.Components.Events;
+using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows {
 
@@ -136,6 +138,9 @@ namespace UnityEngine.UI.Windows {
 
 		public IListComponent listContainer;
 
+		private ComponentEvent onNavigationEnter = new ComponentEvent();
+		private ComponentEvent onNavigationLeave = new ComponentEvent();
+
 		public override void OnShowBegin() {
 
 			base.OnShowBegin();
@@ -151,6 +156,39 @@ namespace UnityEngine.UI.Windows {
 
 			var navGroup = this.GetNavigationGroup();
 			if (navGroup != null) navGroup.UnregisterNavigationComponent(this);
+
+		}
+
+		public override void OnDeinit() {
+
+			base.OnDeinit();
+
+			this.onNavigationEnter.RemoveAllListeners();
+			this.onNavigationLeave.RemoveAllListeners();
+
+		}
+
+		public void NavigationAddCallbackEnter(UnityAction callback) {
+
+			this.onNavigationEnter.AddListener(callback);
+
+		}
+
+		public void NavigationAddCallbackExit(UnityAction callback) {
+
+			this.onNavigationLeave.AddListener(callback);
+
+		}
+
+		public void NavigationRemoveCallbackEnter(UnityAction callback) {
+
+			this.onNavigationEnter.RemoveListener(callback);
+
+		}
+
+		public void NavigationRemoveCallbackLeave(UnityAction callback) {
+
+			this.onNavigationLeave.RemoveListener(callback);
 
 		}
 
@@ -552,8 +590,17 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnNavigateUp() {}
 		public virtual void OnNavigateDown() {}
 
-		public virtual void OnNavigationEnter() {}
-		public virtual void OnNavigationLeave() {}
+		public virtual void OnNavigationEnter() {
+
+			this.onNavigationEnter.Invoke();
+
+		}
+
+		public virtual void OnNavigationLeave() {
+
+			this.onNavigationLeave.Invoke();
+
+		}
 
 		#region Utils
 		public WindowComponentNavigation FindSelectable(Vector3 dir, NavigationSideInfo sideInfo) {

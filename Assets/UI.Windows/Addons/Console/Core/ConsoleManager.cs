@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows.Plugins.Services;
+using ME;
 
 namespace UnityEngine.UI.Windows.Plugins.Console {
 	
@@ -177,7 +178,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 		}
 
 		public void ImportModules(string @namespace) {
-
+			
 			var query = from t in Assembly.GetExecutingAssembly().GetTypes()
 						where t.IsClass && t.IsNested == false && t.Namespace == @namespace
 						select t.Name.ToLower();
@@ -322,13 +323,16 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 				// method auto-complete
 				var moduleName = args[0].Trim().ToLower();
 				if (this.modules.ContainsKey(moduleName) == true) {
-					
-					var output = new List<string>();
-					var outputConcat = new List<string>();
+
+					var output = ListPool<string>.Get();
+					var outputConcat = ListPool<string>.Get();
 					var module = this.modules[moduleName];
-					module.HasAutoComplete(cmd, subModuleArgs, out output, out outputConcat);
+					module.HasAutoComplete(cmd, subModuleArgs, output, outputConcat);
 					variants.AddRange(output);
 					variantsConcat.AddRange(outputConcat);
+
+					ListPool<string>.Release(output);
+					ListPool<string>.Release(outputConcat);
 
 				}
 
@@ -338,12 +342,15 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 				var moduleName = args[0].Trim().ToLower();
 				if (this.modules.ContainsKey(moduleName) == true) {
 					
-					var output = new List<string>();
-					var outputConcat = new List<string>();
+					var output = ListPool<string>.Get();
+					var outputConcat = ListPool<string>.Get();
 					var module = this.modules[moduleName];
-					module.GetParamAutoComplete(cmd, subModuleArgs, args.Length, out output, out outputConcat);
+					module.GetParamAutoComplete(cmd, subModuleArgs, args.Length, output, outputConcat);
 					variants.AddRange(output);
 					//variantsConcat.AddRange(outputConcat);
+
+					ListPool<string>.Release(output);
+					ListPool<string>.Release(outputConcat);
 					
 				}
 
@@ -678,9 +685,10 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 		public string[] ShowHelp_INTERNAL(SubModuleBase module, string methodNameStart, bool distinct = false, bool commandsOnly = false) {
 			
 			//var moduleName = module.GetType().Name;
-			var help = new List<string>();
-			var helpMethods = new List<string>();
-			var methods = ConsoleManager.GetModuleMethods(module);
+			var help = ListPool<string>.Get();
+			var helpMethods = ListPool<string>.Get();
+			var methods = ListPool<MethodInfo>.Get();
+			ConsoleManager.GetModuleMethods(module, methods);
 			foreach (var method in methods) {
 
 				var methodName = method.Name.ToLower();
@@ -750,7 +758,11 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 			}
 
-			return help.ToArray();
+			var result = help.ToArray();
+			ListPool<string>.Release(help);
+			ListPool<string>.Release(helpMethods);
+			ListPool<MethodInfo>.Release(methods);
+			return result;
 
 		}
 
@@ -779,10 +791,8 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
-		public static List<MethodInfo> GetModuleMethods(SubModuleBase module) {
-
-			var list = new List<MethodInfo>();
-
+		public static void GetModuleMethods(SubModuleBase module, List<MethodInfo> list) {
+			
 			var methods = module.GetType().GetMethods();
 			foreach (var method in methods) {
 				
@@ -792,8 +802,6 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 				list.Add(method);
 
 			}
-
-			return list;
 
 		}
 
@@ -819,7 +827,8 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 			}
 
 			var i = 0;
-			var methods = ConsoleManager.GetModuleMethods(module);
+			var methods = ListPool<MethodInfo>.Get();
+			ConsoleManager.GetModuleMethods(module, methods);
 			foreach (var method in methods) {
 
 				if (method.Name.ToLower() == first.ToLower().Trim() && method.GetParameters().Length == args.Length - 1) {
@@ -879,6 +888,8 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 				}
 
 			}
+
+			ListPool<MethodInfo>.Release(methods);
 
 			this.AddCommandNotFound(cmd);
 

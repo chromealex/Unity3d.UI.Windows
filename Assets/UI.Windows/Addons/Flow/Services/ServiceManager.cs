@@ -216,7 +216,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
-		public static void ForEachService<TService>(System.Action<TService> onService) where TService : IService {
+		public static void ForEachService<TService>(System.Action<TService> onService, bool activeOnly = true) where TService : IService {
 			
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) return;
@@ -228,7 +228,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 			foreach (var serviceBase in list) {
 
-				if (serviceBase.isActive == true && serviceBase is TService) {
+				if ((activeOnly == false || serviceBase.isActive == true) && serviceBase is TService) {
 
 					onService.Invoke((TService)serviceBase);
 					

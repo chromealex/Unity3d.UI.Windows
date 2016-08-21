@@ -222,7 +222,7 @@ namespace UnityEngine.Extensions {
 
 		}
 
-		public static void Recycle<T>(T obj) where T : Component {
+		public static void Recycle<T>(T obj, bool setInactive = true) where T : Component {
 
 			if (obj == null) return;
 			if (instance == null) return;
@@ -231,7 +231,7 @@ namespace UnityEngine.Extensions {
 
 		        instance.objectLookup[instance.prefabLookup[obj]].Add(obj);
 		        instance.sceneLookup.Remove(obj);
-		        obj.gameObject.SetActive(false);
+				if (setInactive == true) obj.gameObject.SetActive(false);
 
 		    } else if (instance.prefabLookup.ContainsKey(obj) == false) {
 
@@ -348,6 +348,12 @@ namespace UnityEngine.Extensions {
 		public static void Recycle<T>(this T obj) where T : Component {
 
 			ObjectPool.Recycle(obj);
+
+		}
+
+		public static void Recycle<T>(this T obj, bool setInactive) where T : Component {
+
+			ObjectPool.Recycle(obj, setInactive);
 
 		}
 

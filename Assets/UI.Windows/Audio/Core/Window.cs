@@ -152,6 +152,12 @@ namespace UnityEngine.UI.Windows.Audio {
 
 		}
 
+		public void DoWindowUnload() {
+
+
+
+		}
+
 		public void Apply(TransitionBase transition, TransitionInputParameters parameters, bool forward, float value, bool reset) {
 			
 			if (reset == true) transition.SetResetState(parameters, this.window, null);

@@ -25,7 +25,7 @@ namespace UnityEngine.UI.Windows {
 	 */
 
 	[ExecuteInEditMode()]
-	[RequireComponent(typeof(Camera))]
+	//[RequireComponent(typeof(Camera))]
 	public abstract class WindowBase : WindowObject, IWindowEventsAsync, IWindowEventsController, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
 		#if UNITY_EDITOR
@@ -33,7 +33,7 @@ namespace UnityEngine.UI.Windows {
 		public bool editorInfoFold = false;
 		#endif
 
-		[SerializeField][HideInInspector]
+		[SerializeField][Hidden("_workCamera", state: null, inverseCondition: true)]
 		private Camera _workCamera;
 		[HideInInspector]
 		public Camera workCamera { get { return this._workCamera; } protected set { this._workCamera = value; } }
@@ -50,7 +50,7 @@ namespace UnityEngine.UI.Windows {
 		#if !TRANSITION_ENABLED
 		[ReadOnly]
 		#endif
-		public Transition transition;
+		public Transition transition = new Transition();
 
 		[SerializeField][HideInInspector]
 		private ActiveState activeState = ActiveState.None;
@@ -198,8 +198,20 @@ namespace UnityEngine.UI.Windows {
 			if (this.setup == false) {
 
 				this.Setup(this);
-				
+
+				#if UNITY_EDITOR
+				Profiler.BeginSample("WindowBase::OnPreInit()");
+				#endif
+
 				this.OnPreInit();
+
+				#if UNITY_EDITOR
+				Profiler.EndSample();
+				#endif
+
+				#if UNITY_EDITOR
+				Profiler.BeginSample("WindowBase::OnInit()");
+				#endif
 
 				this.DoLayoutInit(depth, raycastPriority, orderInLayer);
 				WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
@@ -215,6 +227,10 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 
+				#if UNITY_EDITOR
+				Profiler.EndSample();
+				#endif
+
 				this.setup = true;
 
 			}
@@ -229,6 +245,18 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.currentState = WindowObjectState.Initialized;
+
+		}
+
+		internal void DoWindowUnload() {
+			
+			this.DoLayoutUnload();
+			this.modules.DoWindowUnload();
+			this.audio.DoWindowUnload();
+			this.events.DoWindowUnload();
+			this.transition.DoWindowUnload();
+
+			this.OnWindowUnload();
 
 		}
 
@@ -559,6 +587,59 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public bool TurnOff() {
+
+			if (this == null) return false;
+
+			#if UNITY_EDITOR
+			Profiler.BeginSample("WindowBase::TurnOff()");
+			#endif
+
+			var result = false;
+			if (WindowSystem.IsCameraRenderDisableOnWindowTurnOff() == true) {
+
+				if (this.workCamera != null) this.workCamera.enabled = false;
+				result = false;
+
+			} else {
+				
+				if (this.gameObject != null) this.gameObject.SetActive(false);
+				result = true;
+
+			}
+
+			#if UNITY_EDITOR
+			Profiler.EndSample();
+			#endif
+
+			return result;
+
+		}
+
+		public void TurnOn() {
+
+			if (this == null) return;
+
+			#if UNITY_EDITOR
+			Profiler.BeginSample("WindowBase::TurnOn()");
+			#endif
+
+			if (WindowSystem.IsCameraRenderDisableOnWindowTurnOff() == true) {
+				
+				if (this.workCamera != null) this.workCamera.enabled = true;
+
+			} else {
+
+				if (this.gameObject != null) this.gameObject.SetActive(true);
+
+			}
+
+			#if UNITY_EDITOR
+			Profiler.EndSample();
+			#endif
+
+		}
+
 		/// <summary>
 		/// Gets the name of the sorting layer.
 		/// </summary>
@@ -687,7 +768,7 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.AddToHistory(this);
 
-			if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
+			//if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
 			this.StartCoroutine(this.Show_INTERNAL_YIELD(onShowEnd, transitionItem));
 
 		}
@@ -696,7 +777,7 @@ namespace UnityEngine.UI.Windows {
 
 			while (this.paused == true) yield return false;
 			
-			this.gameObject.SetActive(true);
+			this.TurnOn();
 
 			var parameters = AppearanceParameters.Default();
 
@@ -708,6 +789,10 @@ namespace UnityEngine.UI.Windows {
 				++counter;
 				if (counter < 6) return;
 
+				#if UNITY_EDITOR
+				Profiler.BeginSample("WindowBase::OnShowEnd()");
+				#endif
+
 				this.DoLayoutShowEnd(parameters);
 				this.modules.DoShowEnd(parameters);
 				this.audio.DoShowEnd(parameters);
@@ -716,11 +801,19 @@ namespace UnityEngine.UI.Windows {
 				this.DoShowEnd(parameters);
 				if (onShowEnd != null) onShowEnd();
 
+				#if UNITY_EDITOR
+				Profiler.EndSample();
+				#endif
+
 			    this.currentState = WindowObjectState.Shown;
 
 			};
 			
 			parameters = parameters.ReplaceCallback(callback);
+
+			#if UNITY_EDITOR
+			Profiler.BeginSample("WindowBase::OnShowBegin()");
+			#endif
 
 			this.DoLayoutShowBegin(parameters);
 			
@@ -749,6 +842,10 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			this.DoShowBegin(parameters);
+
+			#if UNITY_EDITOR
+			Profiler.EndSample();
+			#endif
 
 		}
 
@@ -807,7 +904,7 @@ namespace UnityEngine.UI.Windows {
 			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
 			this.currentState = WindowObjectState.Hiding;
 			
-			if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
+			//if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
 			this.StartCoroutine(this.Hide_INTERNAL_YIELD(onHideEnd, transitionItem));
 
 			return true;
@@ -839,7 +936,9 @@ namespace UnityEngine.UI.Windows {
 
 				WindowSystem.AddToHistory(this);
 
-				this.Recycle();
+				#if UNITY_EDITOR
+				Profiler.BeginSample("WindowBase::OnHideEnd()");
+				#endif
 
 				this.DoLayoutHideEnd(parameters);
 				this.modules.DoHideEnd(parameters);
@@ -849,17 +948,21 @@ namespace UnityEngine.UI.Windows {
 				this.DoHideEnd(parameters);
 				if (onHideEnd != null) onHideEnd();
 
+				#if UNITY_EDITOR
+				Profiler.EndSample();
+				#endif
+
 				this.currentState = WindowObjectState.Hidden;
 
-				if (this != null && this.gameObject != null) {
-
-					this.gameObject.SetActive(false);
-
-				}
+				this.Recycle(setInactive: this.TurnOff());
 
 			};
 
 			parameters = parameters.ReplaceCallback(callback);
+
+			#if UNITY_EDITOR
+			Profiler.BeginSample("WindowBase::OnHideBegin()");
+			#endif
 
 			this.DoLayoutHideBegin(parameters);
 			
@@ -889,7 +992,9 @@ namespace UnityEngine.UI.Windows {
 			
 			this.DoHideBegin(parameters);
 
-			yield return true;
+			#if UNITY_EDITOR
+			Profiler.EndSample();
+			#endif
 
 		}
 		
@@ -909,12 +1014,20 @@ namespace UnityEngine.UI.Windows {
 
 			if (Application.isPlaying == false) return;
 
+			#if UNITY_EDITOR
+			Profiler.BeginSample("WindowBase::OnDeinit()");
+			#endif
+
 			this.DoLayoutDeinit();
 			this.modules.DoDeinit();
 			this.audio.DoDeinit();
 			this.events.DoDeinit();
 			this.transition.DoDeinit();
 			this.OnDeinit();
+
+			#if UNITY_EDITOR
+			Profiler.EndSample();
+			#endif
 
 		}
 		
@@ -934,6 +1047,8 @@ namespace UnityEngine.UI.Windows {
 			return 0f;
 			
 		}
+
+		protected virtual void DoLayoutUnload() {}
 
 		/// <summary>
 		/// Raises the layout init event.
@@ -1079,6 +1194,8 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideBegin() {}
 		public virtual void OnHideBegin(AppearanceParameters parameters) {}
 
+		public virtual void OnWindowUnload() {}
+
 		[System.Obsolete("Use OnShowBegin with AppearanceParameters or OnShowBegin without parameters")]
 		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
 		[System.Obsolete("Use OnHideBegin with AppearanceParameters or OnHideBegin without parameters")]
@@ -1097,7 +1214,7 @@ namespace UnityEngine.UI.Windows {
 
 		private void SetupCamera() {
 			
-			this.workCamera = this.GetComponent<Camera>();
+			this.workCamera = ME.Utilities.FindReferenceChildren<Camera>(this);
 			if (this.workCamera == null) {
 				
 				this.workCamera = this.gameObject.AddComponent<Camera>();

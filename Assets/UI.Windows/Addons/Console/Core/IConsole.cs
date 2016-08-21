@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using ME;
 
 namespace UnityEngine.UI.Windows.Plugins.Console {
 
@@ -60,7 +61,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		public string[] GetAliases() {
 
-			var output = new List<string>();
+			var output = ListPool<string>.Get();
 
 			var aliases = this.GetType().GetCustomAttributes(typeof(AliasAttribute), inherit: false);
 			foreach (var alias in aliases) {
@@ -70,16 +71,23 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 			}
 
-			return output.ToArray();
+			var result = output.ToArray();
+			ListPool<string>.Release(output);
+
+			return result;
 
 		}
 
 		public string[] GetNames() {
 
-			var output = new List<string>();
+			var output = ListPool<string>.Get();
 			output.Add(this.GetName());
 			output.AddRange(this.GetAliases());
-			return output.ToArray();
+
+			var result = output.ToArray();
+			ListPool<string>.Release(output);
+
+			return result;
 
 		}
 
@@ -115,10 +123,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
-		public virtual void GetParamAutoComplete(string text, string[] args, int paramIndex, out List<string> output, out List<string> outputConcat) {
-
-			output = new List<string>();
-			outputConcat = new List<string>();
+		public virtual void GetParamAutoComplete(string text, string[] args, int paramIndex, List<string> output, List<string> outputConcat) {
 
 			var first = string.Empty;
 			if (args.Length > 0) first = args[0];
@@ -128,11 +133,8 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
-		public virtual void HasAutoComplete(string text, string[] args, out List<string> output, out List<string> outputConcat) {
-
-			output = new List<string>();
-			outputConcat = new List<string>();
-
+		public virtual void HasAutoComplete(string text, string[] args, List<string> output, List<string> outputConcat) {
+			
 			var first = string.Empty;
 			if (args.Length > 0) first = args[0];
 

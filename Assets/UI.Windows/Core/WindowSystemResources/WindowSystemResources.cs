@@ -660,10 +660,11 @@ namespace UnityEngine.UI.Windows {
 			} else if (task.resource.loadableStream == true) {
 				
 				task.task = MovieSystem.LoadTexture(task.component);
+				var startTime = Time.realtimeSinceStartup;
 				var timer = 0f;
 				while (task.task.isDone == false) {
 
-					timer += Time.unscaledDeltaTime;
+					timer = Time.realtimeSinceStartup - startTime;
 
 					if (timer >= 3f) {
 

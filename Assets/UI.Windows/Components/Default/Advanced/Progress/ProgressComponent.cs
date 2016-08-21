@@ -20,6 +20,10 @@ namespace UnityEngine.UI.Windows.Components {
 		public float continiousWidth = 0.4f;
 		[ReadOnly("continious", state: false)]
 		public float continiousAngleStep = 0f;
+		[ReadOnly("continious", state: false)]
+		public ME.Ease.Type continiousEaseType = ME.Ease.Type.Linear;
+		[ReadOnly("continious", state: false)]
+		public bool continiousReflect = true;
 
 		private ComponentEvent<float> callback = new ComponentEvent<float>();
 		private ComponentEvent<ProgressComponent, float> callbackButton = new ComponentEvent<ProgressComponent, float>();
@@ -40,16 +44,16 @@ namespace UnityEngine.UI.Windows.Components {
 	 */
 	[SerializeField]
 			private bool hoverOnAnyButtonState = false;
-
-		[SerializeField]
-		private bool hoverCursorDefaultOnInactive = false;
-
-		public bool IsCursorDefault() {
-
-			return this.IsInteractable() == true && this.hoverCursorDefaultOnInactive == true;
-
-		}
-
+	
+			[SerializeField]
+			private bool hoverCursorDefaultOnInactive = false;
+	
+		public bool IsHoverCursorDefaultOnInactive() {
+	
+				return this.IsInteractable() == false && this.hoverCursorDefaultOnInactive == true;
+	
+			}
+	
 			public void Select() {
 	
 				this.GetSelectable().Select();
@@ -164,16 +168,6 @@ namespace UnityEngine.UI.Windows.Components {
 			this.currentValue = (this.bar != null) ? this.bar.value : 0f;
 			this.bar.continuousAngleStep = this.continiousAngleStep;
 
-			if (this.continious == false) {
-
-				this.SetAsDefault();
-
-			} else {
-
-				this.SetAsContinuous(this.continiousWidth);
-
-			}
-			
 			this.bar.onValueChanged.RemoveListener(this.OnValueChanged_INTERNAL);
 			this.bar.onValueChanged.AddListener(this.OnValueChanged_INTERNAL);
 
@@ -185,6 +179,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnShowBegin();
 
+			if (this.continious == false) {
+
+				this.SetAsDefault();
+
+			} else {
+
+				this.SetAsContinuous(this.continiousWidth);
+
+			}
+
 			this.getValueActive = true;
 
 		}
@@ -192,6 +196,8 @@ namespace UnityEngine.UI.Windows.Components {
 		public override void OnHideEnd() {
 
 			base.OnHideEnd();
+
+			this.BreakAnimation();
 
 			this.getValueActive = false;
 
@@ -352,6 +358,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		private float continiousDirection = 0f;
+		public float GetContiniousDirection() {
+
+			return this.continiousDirection;
+
+		}
+
 		public void BreakAnimation() {
 
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this);
@@ -364,33 +377,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.continious == true && this.bar.canReceiveEvents == false) {
 
+				var lastValue = 0f;
 				TweenerGlobal.instance.removeTweens(this);
-
-				if (this.bar.IsFilled() == true) {
+				var tween = TweenerGlobal.instance.addTween(this, this.duration, 0f, 1f).tag(this).ease(ME.Ease.GetByType(this.continiousEaseType)).repeat().onUpdate((obj, value) => {
 					
-					TweenerGlobal.instance.addTween(this, this.duration, 0f, 1f).tag(this).ease(ME.Ease.Linear).repeat().onUpdate((obj, value) => {
+					if (obj != null) {
 						
-						if (obj != null) {
-							
-							obj.SetValue(value, immediately: true);
-							
-						}
+						this.continiousDirection = Mathf.Sign(value - lastValue);
+						obj.SetValue(value, immediately: true);
+						lastValue = value;
 						
-					});
-
-				} else {
-
-					TweenerGlobal.instance.addTween(this, this.duration, 0f, 1f).tag(this).ease(ME.Ease.InOutElastic).reflect().repeat().onUpdate((obj, value) => {
-
-						if (obj != null) {
-
-							obj.SetValue(value, immediately: true);
-
-						}
-
-					});
-
-				}
+					}
+					
+				});
+				if (this.continiousReflect == true) tween.reflect();
 
 			}
 

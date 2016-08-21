@@ -22,20 +22,30 @@ namespace UnityEngine.UI.Windows {
 
 		public static ComponentEvent onPointerUp = new ComponentEvent();
 		public static ComponentEvent onPointerDown = new ComponentEvent();
+		public static ComponentEvent onAnyKeyDown = new ComponentEvent();
 
 		private static PointerEventData scrollEvent;
 
 		private static WindowSystemInput instance;
 
-		public void Awake() {
+		protected override void Awake() {
+
+			base.Awake();
 
 			WindowSystemInput.instance = this;
 
 		}
 
-		public void Start() {
+		protected override void Start() {
+
+			base.Start();
 
 			WindowSystemInput.scrollEvent = new PointerEventData(EventSystem.current);
+
+			#if UNITY_TVOS
+			UnityEngine.Apple.TV.Remote.allowExitToHome = false;
+			UnityEngine.Apple.TV.Remote.touchesEnabled = true;
+			#endif
 
 		}
 
@@ -83,6 +93,16 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			#endif
+
+			if (Input.anyKeyDown == true ||
+				Input.touchCount > 0 ||
+				Input.GetMouseButtonDown(0) == true ||
+				Input.GetMouseButtonDown(1) == true ||
+				Input.GetMouseButtonDown(2) == true) {
+
+				WindowSystemInput.onAnyKeyDown.Invoke();
+
+			}
 
 			if (Input.GetKeyDown(KeyCode.Tab) == true) {
 

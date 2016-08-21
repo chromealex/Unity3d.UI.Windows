@@ -12,6 +12,51 @@ namespace ME {
 			float interpolate(float start, float distance, float elapsedTime, float duration);
 
 		}
+
+        public struct MultiTag {
+
+            public object tag1;
+            public object tag2;
+            public object tag3;
+
+            public static bool operator ==(MultiTag mt1, MultiTag mt2) {
+
+                if (mt1.tag1 != mt2.tag1) return false;
+                if (mt1.tag2 != mt2.tag2) return false;
+                if (mt1.tag3 != mt2.tag3) return false;
+
+                return false;
+
+            }
+
+            public static bool operator !=(MultiTag mt1, MultiTag mt2) {
+
+                return (mt1 == mt2) == false;
+
+            }
+
+			public override bool Equals(object obj) {
+
+				if (obj == null) return false;
+
+				var tag = (MultiTag)obj;
+				return tag == this;
+
+			}
+
+			public override int GetHashCode() {
+				
+				return (this.tag1 != null ? this.tag1.GetHashCode() : 0) ^ (this.tag2 != null ? this.tag2.GetHashCode() : 0) ^ (this.tag3 != null ? this.tag3.GetHashCode() : 0);
+
+			}
+
+            public bool HasValue() {
+
+				return this.tag1 != null || this.tag2 != null || this.tag3 != null;
+
+            }
+
+        }
 	
 		public interface ITween {
 
@@ -19,6 +64,8 @@ namespace ME {
 			void RaiseCancel();
 			void RaiseComplete();
 			object getTag();
+		    MultiTag getMultiTag();
+		    bool hasMultiTag();
 		    object getGroup();
             void update(float dt, bool debug);
 			bool isDirty { get; set; }
@@ -51,13 +98,15 @@ namespace ME {
 				public bool inverse = false;
 			}
 			
-			private readonly List<Target> _targets = new List<Target>();
+			private readonly List<Target> _targets = new List<Target>(1);
 			int _currentTarget = 0;
 			private bool _started = false;
 			private float _elapsed = 0f;
 			private bool _completed = false;
-			private object _tag = new object();
-			private object _group = new object();
+			private object _tag;
+		    private MultiTag _multiTag = default(MultiTag);
+			private bool _multiTagFlag = false;
+			private object _group;
 			private int _loops = 1;
 			private System.Action<T> _begin = null;
 			private System.Action<T, float> _update = null;
@@ -110,6 +159,14 @@ namespace ME {
 			public object getTag() {
 				return _tag;
 			}
+
+		    public MultiTag getMultiTag() {
+		        return _multiTag;
+		    }
+
+		    public bool hasMultiTag() {
+		        return _multiTagFlag;
+		    }
 
             public object getGroup() {
                 return _group;
@@ -171,7 +228,7 @@ namespace ME {
 	
 				return;
 			}
-	
+
 			public Tween<T> ease(ITransition value) {
 
                 _targets[_targets.Count - 1].transition = value;
@@ -216,12 +273,22 @@ namespace ME {
 			}
 
 			public Tween<T> tag(object value, object group = null) {
+				_multiTag = default(MultiTag);
+				_multiTagFlag = false;
 			    _group = group;
 				_tag = value;
 				return this;
 			}
-	
-			public Tween<T> delay(float delay) {
+
+		    public Tween<T> multiTag(MultiTag value, object group = null) {
+                _multiTag = value;
+				_multiTagFlag = true;
+                _group = group;
+                _tag = null;
+                return this;
+            }
+
+		    public Tween<T> delay(float delay) {
 
 				_targets[_targets.Count - 1].delay = delay;
 				_targets[_targets.Count - 1].currentDelay = 0f;
@@ -280,7 +347,8 @@ namespace ME {
 				
 				var reflectedTargets = new List<Target>(capacity: _targets.Count);
 
-				foreach (var target in _targets) {
+                for(var i = 0; i < _targets.Count; ++i) {
+                    var target = _targets[i];
 
 					var reflected = new Target();
 					reflected.start = target.start;
@@ -302,32 +370,65 @@ namespace ME {
 		public TimerType timerType = TimerType.Game;
 		public bool repeatByDefault = false;
 		public bool debug = false;
-		private readonly LinkedList<ITween> _tweens = new LinkedList<ITween>();
-		
+		private readonly List<ITween> _tweens = new List<ITween>(100);
+
 		public Tween<T> addTween<T>(T obj, float duration, float start, float end) {
 			
 			var tween = new Tween<T>(obj, duration, start, end);
 			if (repeatByDefault)
 				tween.repeat();
 			
-			_tweens.AddLast(tween);
+			_tweens.Add(tween);
 			return tween;
 			
 		}
 		
 		public bool hasTag(string tag) {
-			
-			return _tweens.FirstOrDefault((tween) => tween.getTag() != null && tween.getTag().ToString() == tag) != null;
+
+			for (var i = 0; i < this._tweens.Count; ++i) {
+
+				var tween = this._tweens[i];
+		        if (tween.getTag() != null && tween.getTag().ToString() == tag) return true;
+
+		    }
+
+		    return false;
 			
 		}
 
-		public bool hasTag(object tag) {
-			
-			return _tweens.FirstOrDefault((tween) => tween.getTag() == tag) != null;
-			
+        public bool hasTag(MultiTag multiTag) {
+
+			for (var i = 0; i < this._tweens.Count; ++i) {
+
+				var tween = this._tweens[i];
+                if (tween.hasMultiTag() == true && tween.getMultiTag() == multiTag) return true;
+
+            }
+
+            return false;
+
+        }
+
+        public bool hasTag(object tag) {
+
+			for (var i = 0; i < this._tweens.Count; ++i) {
+
+				var tween = this._tweens[i];
+                if (tween.getTag() == tag) return true;
+
+            }
+
+            return false;
+
 		}
-		
-		public void removeTweens(string tweenerTag) {
+
+        public void removeTweens(MultiTag multiTag) {
+
+            this.removeTweens(multiTag, immediately: false);
+
+        }
+
+        public void removeTweens(string tweenerTag) {
 			
 			this.removeTweens(tweenerTag, immediately: false);
 			
@@ -345,7 +446,13 @@ namespace ME {
 			
 		}
 
-		public void removeTweens(string tweenerTag, bool immediately) {
+        public void removeTweens(MultiTag multiTag, bool immediately) {
+
+            Mark(tween => tween.hasMultiTag() == true && tween.getMultiTag() == multiTag, immediately);
+
+        }
+
+        public void removeTweens(string tweenerTag, bool immediately) {
 
 			Mark(tween => tween.getTag() != null && tween.getTag().ToString() == tweenerTag, immediately);
 			
@@ -386,8 +493,26 @@ namespace ME {
 		}
 		
 		void _update(float dt, bool debug = false) {
-			
-			for (var node = _tweens.First; node != null;) {
+
+			for (var i = 0; i < this._tweens.Count; ++i) {
+
+				var each = this._tweens[i];
+				if (each.isCompleted() || each.isDirty == true) {
+
+					if (each.isDirty == true && each.isCompleted() == false) each.RaiseCancel();
+
+					_tweens.RemoveAt(i);
+					--i;
+
+				} else {
+
+					each.update(dt, debug);
+
+				}
+
+			}
+
+			/*for (var node = _tweens.First; node != null;) {
 
 				var next = node.Next;
 				var each = node.Value;
@@ -406,16 +531,17 @@ namespace ME {
 
 				node = next;
 				
-			}
+			}*/
 
 		}
 
 		void Mark(System.Func<ITween, bool> predicate, bool immediately = false) {
 
-		    for (var node = _tweens.First; node != null; node = node.Next) {
-		        
-                if (predicate != null && predicate(node.Value) == false) continue;
-		        node.Value.isDirty = true;
+			for (var i = 0; i < this._tweens.Count; ++i) {
+
+				var tween = this._tweens[i];
+                if (predicate != null && predicate(tween) == false) continue;
+				tween.isDirty = true;
 
 		    }
 
@@ -429,21 +555,18 @@ namespace ME {
 
 			if (immediately == true) {
 
-				for (var node = _tweens.First; node != null;) {
-					
-					var next = node.Next;
-					var each = node.Value;
-					
+				for (var i = 0; i < this._tweens.Count; ++i) {
+
+					var each = this._tweens[i];
 					if (each.isCompleted() || each.isDirty == true) {
-						
+
 						if (each.isDirty == true && each.isCompleted() == false) each.RaiseCancel();
-						
-						_tweens.Remove(node);
-						
+
+						_tweens.RemoveAt(i);
+						--i;
+
 					}
-					
-					node = next;
-					
+
 				}
 
 			}

@@ -156,14 +156,14 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 
-		public void Play(WindowAnimationBase transitionBase, WindowBase window, bool forward, System.Action callback) {
+		/*public void Play(WindowAnimationBase transitionBase, WindowBase window, bool forward, System.Action callback) {
 
-			var tag = ((window != null) ? window.GetInstanceID() : 0).ToString();
+			var tag = new ME.Tweener.MultiTag() { tag1 = window };//((window != null) ? window.GetInstanceID() : 0).ToString();
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			this.Play(tag, transitionBase, window, null, null, forward, callback);
 
-		}
+		}*/
 
 		public void Play(WindowAnimationBase transitionBase, WindowBase window, TransitionInputParameters parameters, bool forward, System.Action callback) {
 
@@ -180,7 +180,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 
-		public void Play(string tag, WindowAnimationBase transitionBase, WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
+		public void Play(ME.Tweener.MultiTag tag, WindowAnimationBase transitionBase, WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var delay = this.GetDelay(parameters, forward);
 
@@ -204,9 +204,11 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 
-		private string GetTag(WindowBase window, TransitionInputParameters parameters) {
+		private ME.Tweener.MultiTag GetTag(WindowBase window, TransitionInputParameters parameters) {
 
-			return string.Format("{0}_{1}", (window != null) ? window.GetInstanceID() : 0, (parameters != null) ? parameters.GetInstanceID() : 0);
+			//return string.Format("{0}_{1}", (window != null) ? window.GetInstanceID() : 0, (parameters != null) ? parameters.GetInstanceID() : 0);
+
+			return new ME.Tweener.MultiTag() { tag1 = window, tag2 = parameters };
 
 		}
 

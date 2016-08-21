@@ -18,11 +18,14 @@ namespace UnityEngine.UI.Windows.Movies {
 		void PauseAll();
 		void StopAll();
 		void PlayAll();
-		void Play(IImageComponent component, bool loop, bool pause);
+		void Play(IImageComponent component, bool loop, bool pause, System.Action onComplete);
 		void Stop(IImageComponent component, int instanceId = 0);
 		void Pause(IImageComponent component);
 		bool IsPlaying(IImageComponent component);
 		ResourceAsyncOperation LoadTexture(IImageComponent component);
+
+		bool IsMaterialLoadingType();
+		bool IsVerticalFlipped();
 
 	}
 
@@ -106,7 +109,13 @@ namespace UnityEngine.UI.Windows.Movies {
 			}
 
 		}
-		
+
+		~MovieModuleBase() {
+
+			this.OnDeinit();
+
+		}
+
 		public void Init(MovieSystem system) {
 
 			this.system = system;
@@ -151,12 +160,19 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected virtual void OnInit() {
-		}
+		protected virtual void OnDeinit() {}
+
+		protected virtual void OnInit() {}
 
 		public virtual void Update() {}
 
 		public virtual bool IsMaterialLoadingType() {
+
+			return false;
+
+		}
+
+		public virtual bool IsVerticalFlipped() {
 
 			return false;
 
@@ -215,7 +231,7 @@ namespace UnityEngine.UI.Windows.Movies {
 					
 					foreach (var component in task.components) {
 
-						this.OnPlay((component as ILoadableResource).GetResource(), texture);
+						this.OnPlay((component as ILoadableResource).GetResource(), texture, null);
 						
 					}
 
@@ -271,7 +287,7 @@ namespace UnityEngine.UI.Windows.Movies {
 				var texture = task.texture;
 				foreach (var component in task.components) {
 					
-					this.OnPlay((component as ILoadableResource).GetResource(), texture);
+					this.OnPlay((component as ILoadableResource).GetResource(), texture, null);
 					
 				}
 
@@ -281,6 +297,8 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		public void Unload(IImageComponent component, ResourceBase resource) {
 
+			if (resource.loaded == false) return;
+
 			/*if (resource.loaded == false) {
 
 				Debug.LogWarning("Resource was not loaded yet. Unload interrupted.", component as MonoBehaviour);
@@ -288,7 +306,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			}*/
 
-			this.current.RemoveAll(x => (x.id == 0 || x.id == resource.GetId()) && x.components != null && x.components.Count == 0);
+			this.current.RemoveAll(x => (x.id == 0 || x.id == resource.GetId()) && (x.components == null || x.components.Count == 0));
 
 			this.OnUnload(resource);
 
@@ -343,7 +361,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		public void Play(IImageComponent component, bool loop, bool pause) {
+		public void Play(IImageComponent component, bool loop, bool pause, System.Action onComplete) {
 			
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
@@ -359,7 +377,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			if (item.state != MovieItem.State.Playing) {
 
 				item.state = MovieItem.State.Playing;
-				this.OnPlay(resource, movie, loop);
+				this.OnPlay(resource, movie, loop, onComplete);
 
 			}
 			
@@ -490,13 +508,13 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected virtual void OnPlay(ResourceBase resource, Texture movie) {
+		protected virtual void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
 			
 			WindowSystemLogger.Log(this.system, "`Play` method not supported on current platform");
 			
 		}
 
-		protected virtual void OnPlay(ResourceBase resource, Texture movie, bool loop) {
+		protected virtual void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
 			
 			WindowSystemLogger.Log(this.system, "`Play` method not supported on current platform");
 			

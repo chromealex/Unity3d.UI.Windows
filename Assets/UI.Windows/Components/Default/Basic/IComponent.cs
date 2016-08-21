@@ -78,6 +78,7 @@ namespace UnityEngine.UI.Windows.Components {
 		IHoverableComponent SetHoverState(bool state);
 		IHoverableComponent SetHoverOnAnyPointerState(bool state);
 		IHoverableComponent SetCallbackHover(UnityAction<bool> callback);
+		IHoverableComponent RemoveCallbackHover(UnityAction<bool> onHover);
 
 		bool IsHovered();
 		IHoverableComponent SetHoverEnter();
@@ -93,7 +94,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public interface IInteractableComponent : IInteractableStateComponent {
 
-		bool IsCursorDefault();
+		bool IsHoverCursorDefaultOnInactive();
 
 		IInteractableComponent SetEnabledState(bool state);
 		IInteractableComponent SetEnabled();
@@ -121,6 +122,10 @@ namespace UnityEngine.UI.Windows.Components {
 		IButtonComponent RemoveCallback(UnityAction<ButtonComponent> callback);
 		IButtonComponent SetCallback(UnityAction callback);
 		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
+		IButtonComponent AddCallback(UnityAction callback);
+		IButtonComponent AddCallback(UnityAction<ButtonComponent> callback);
+		void OnClick();
+		IButtonComponent SetButtonColor(Color color);
 		IButtonComponent SetSelectByDefault(bool state);
 		IButtonComponent SetNavigationMode(Navigation.Mode mode);
 
@@ -178,13 +183,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 	}
 
-	public interface IImageComponent : IComponent, IAlphaComponent, ILoadableResource {
+	public interface IImageComponent : IComponent, IAlphaComponent, ILoadableResource, IMeshModifier {
 		
-		Texture GetTexture();
-
 		IImageComponent ResetImage();
 
-		IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null);
+		IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null);
 
 		IImageComponent SetImage(Sprite sprite);
 		IImageComponent SetImage(Sprite sprite, bool immediately);
@@ -207,15 +210,21 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetColor(Color color);
 		IImageComponent SetPreserveAspectState(bool state);
 
+		Texture GetTexture();
+
+		bool IsHorizontalFlip();
+		bool IsVerticalFlip();
+
 		bool IsMovie();
 		bool GetPlayOnShow();
-		IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null);
+		IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null);
 		IImageComponent SetPlayOnShow(bool state);
 		IImageComponent SetLoop(bool state);
 		bool GetLoop();
 		bool IsPlaying();
 		IImageComponent Play();
 		IImageComponent Play(bool loop);
+		IImageComponent Play(bool loop, System.Action onComplete);
 		IImageComponent Stop();
 		IImageComponent Pause();
 		IImageComponent Rewind(bool pause = true);

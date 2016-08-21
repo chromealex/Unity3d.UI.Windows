@@ -30,7 +30,7 @@ namespace UnityEngine.UI.Windows {
 		public float delayToPause = 0.1f;
 		public bool defaultPlayingState = true;
 		public QualityItem[] quality;
-		private int lastQualityIndex = -1;
+		//private int lastQualityIndex = -1;
 
 		public MovieModuleBase movieModule;
 		
@@ -64,7 +64,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void RegisterOnUpdateTexture(System.Action<IImageComponent, Texture> onUpdate) {
 
-			MovieSystem.instance.movieModule.RegisterOnUpdateTexture(onUpdate);
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.RegisterOnUpdateTexture(onUpdate);
 
 		}
 
@@ -76,19 +76,25 @@ namespace UnityEngine.UI.Windows {
 
 		public static void RegisterOnUpdateMaterial(System.Action<Material> onUpdate) {
 
-			MovieSystem.instance.movieModule.RegisterOnUpdateMaterial(onUpdate);
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.RegisterOnUpdateMaterial(onUpdate);
 
 		}
 
 		public static void UnregisterOnUpdateMaterial(System.Action<Material> onUpdate) {
 
-			MovieSystem.instance.movieModule.UnregisterOnUpdateMaterial(onUpdate);
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.UnregisterOnUpdateMaterial(onUpdate);
 
 		}
 
 		public static bool IsMaterialLoadingType() {
 
 			return MovieSystem.instance.movieModule.IsMaterialLoadingType();
+
+		}
+
+		public static bool IsVerticalFlipped() {
+
+			return MovieSystem.instance.movieModule.IsVerticalFlipped();
 
 		}
 
@@ -205,7 +211,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void PlayAndPause(IImageComponent component, bool loop) {
 
-			MovieSystem.instance.Play_INTERNAL(component, loop, pause: true);
+			MovieSystem.instance.Play_INTERNAL(component, loop, pause: true, onComplete: null);
 
 		}
 
@@ -215,9 +221,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void Play_INTERNAL(IImageComponent component, bool loop, bool pause) {
+		private void Play_INTERNAL(IImageComponent component, bool loop, bool pause, System.Action onComplete) {
 
-			this.movieModule.Play(component, loop, pause);
+			this.movieModule.Play(component, loop, pause, onComplete);
 
 		}
 
@@ -239,9 +245,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void Play(IImageComponent component, bool loop) {
+		public static void Play(IImageComponent component, bool loop, System.Action onComplete = null) {
 
-			if (MovieSystem.instance != null) MovieSystem.instance.Play_INTERNAL(component, loop, pause: false);
+			if (MovieSystem.instance != null) MovieSystem.instance.Play_INTERNAL(component, loop, pause: false, onComplete: onComplete);
 
 		}
 

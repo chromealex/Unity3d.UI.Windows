@@ -194,6 +194,17 @@ namespace UnityEngine.UI.Windows {
 					}
 
 				}
+
+				public void DoWindowUnload() {
+
+					if (this.instance != null) {
+
+						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
+						this.instance.DoWindowUnload();
+
+					}
+
+				}
 				
 			}
 
@@ -279,25 +290,27 @@ namespace UnityEngine.UI.Windows {
 			}
 			
 			// Events
-			public void DoWindowActive() { foreach (var element in this.elements) element.DoWindowActive(); }
-			public void DoWindowInactive() { foreach (var element in this.elements) element.DoWindowInactive(); }
-			public void DoInit() { foreach (var element in this.elements) element.DoInit(); }
-			public void DoDeinit() { foreach (var element in this.elements) element.DoDeinit(); }
+			public void DoWindowActive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowActive(); }
+			public void DoWindowInactive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowInactive(); }
+			public void DoInit() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoInit(); }
+			public void DoDeinit() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoDeinit(); }
 			public void DoShowBegin(AppearanceParameters parameters) {
 
 				var callback = parameters.callback;
 				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoShowBegin(parameters.ReplaceCallback(c)); });
 
 			}
-			public void DoShowEnd(AppearanceParameters parameters) { foreach (var element in this.elements) element.DoShowEnd(parameters); }
+			public void DoShowEnd(AppearanceParameters parameters) { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoShowEnd(parameters); }
 			public void DoHideBegin(AppearanceParameters parameters) {
 				
 				var callback = parameters.callback;
 				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoHideBegin(parameters.ReplaceCallback(c)); });
 
 			}
-			public void DoHideEnd(AppearanceParameters parameters) { foreach (var element in this.elements) element.DoHideEnd(parameters); }
-			
+			public void DoHideEnd(AppearanceParameters parameters) { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoHideEnd(parameters); }
+
+			public void DoWindowUnload() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowUnload(); }
+
 		}
 
 	}
@@ -731,7 +744,13 @@ namespace UnityEngine.UI.Windows {
 			this.ReleaseEvents(WindowEventType.OnWindowOpen);
 
 		}
-		
+
+		public void DoWindowUnload() {
+
+
+
+		}
+
 	}
 	
 	public enum DepthLayer : int {
@@ -789,6 +808,7 @@ namespace UnityEngine.UI.Windows {
 				var result = true;
 				if (result == true && this.platform == true) {
 
+					result = false;
 					var platform = WindowSystem.GetCurrentRuntimePlatform();
 					for (int i = 0; i < this.anyOfPlatform.Length; ++i) {
 
@@ -829,9 +849,9 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly("runOnAnyTarget", state: true)]
 		public TargetInfo[] targets;
 
-		//[System.NonSerialized]
+		[System.NonSerialized]
 		private bool isDirty = true;
-		//[System.NonSerialized]
+		[System.NonSerialized]
 		private bool lastResult = false;
 
 		public bool GetRunOnAnyTarget() {
@@ -1047,6 +1067,12 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			
+		}
+
+		public void DoWindowUnload() {
+
+
+
 		}
 
 		public void Apply(TransitionBase transition, TransitionInputParameters parameters, bool forward, float value, bool reset) {

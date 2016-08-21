@@ -24,9 +24,13 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 		[HideInInspector]
 		[SerializeField] private Image copyImage;
 		[HideInInspector]
+		[SerializeField] private UIFlippable copyFlippableImage;
+		[HideInInspector]
 		[SerializeField] private RawImage sourceRawImage;
 		[HideInInspector]
 		[SerializeField] private RawImage copyRawImage;
+		[HideInInspector]
+		[SerializeField] private UIFlippable copyFlippableRawImage;
 
 		[ReadOnly("enabled", state: false)]
 		public float duration = 0.5f;
@@ -58,37 +62,37 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
-		public void FadeTo(Sprite to, System.Action callback = null) {
+		public void FadeTo(IImageComponent source, Sprite to, System.Action callback = null) {
 
-			this.FadeTo<Image>(to, this.duration, this.fadeIfWasNull, callback, DataType.Sprite);
-
-		}
-
-		public void FadeTo(Texture to, System.Action callback = null) {
-
-			this.FadeTo<RawImage>(to, this.duration, this.fadeIfWasNull, callback, DataType.Texture);
+			this.FadeTo<Image>(source, to, this.duration, this.fadeIfWasNull, callback, DataType.Sprite);
 
 		}
 
-		public void FadeTo(Sprite to, float duration, System.Action callback = null) {
+		public void FadeTo(IImageComponent source, Texture to, System.Action callback = null) {
 
-			this.FadeTo<Image>(to, duration, this.fadeIfWasNull, callback, DataType.Sprite);
-
-		}
-
-		public void FadeTo(Texture to, float duration, System.Action callback = null) {
-
-			this.FadeTo<RawImage>(to, duration, this.fadeIfWasNull, callback, DataType.Texture);
+			this.FadeTo<RawImage>(source, to, this.duration, this.fadeIfWasNull, callback, DataType.Texture);
 
 		}
 
-		public void FadeTo<T>(Object to, System.Action callback, DataType dataType) where T : Graphic {
+		public void FadeTo(IImageComponent source, Sprite to, float duration, System.Action callback = null) {
 
-			this.FadeTo<T>(to, this.duration, this.fadeIfWasNull, callback, dataType);
+			this.FadeTo<Image>(source, to, duration, this.fadeIfWasNull, callback, DataType.Sprite);
 
 		}
 
-		public void FadeTo<T>(Object to, float duration, bool fadeIfWasNull, System.Action callback, DataType dataType) where T : Graphic {
+		public void FadeTo(IImageComponent source, Texture to, float duration, System.Action callback = null) {
+
+			this.FadeTo<RawImage>(source, to, duration, this.fadeIfWasNull, callback, DataType.Texture);
+
+		}
+
+		public void FadeTo<T>(IImageComponent source, Object to, System.Action callback, DataType dataType) where T : Graphic {
+
+			this.FadeTo<T>(source, to, this.duration, this.fadeIfWasNull, callback, dataType);
+
+		}
+
+		public void FadeTo<T>(IImageComponent imageSource, Object to, float duration, bool fadeIfWasNull, System.Action callback, DataType dataType) where T : Graphic {
 
 			var isSprite = (dataType == DataType.Sprite);
 			var isTexture = (dataType == DataType.Texture);
@@ -109,6 +113,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				hasSourceTexture = (sourceImage.material != null && sourceImage.material != sourceImage.defaultMaterial);
 
 				this.CopyRect(sourceImage.rectTransform, image.rectTransform);
+				this.CopyFlip(imageSource, this.copyFlippableImage ?? this.copyFlippableRawImage);
 
 				//Debug.Log(sourceImage.color + " :: " + hasSourceTexture, sourceImage);
 
@@ -125,6 +130,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				hasSourceTexture = (sourceImage.sprite != null);
 
 				this.CopyRect(sourceImage.rectTransform, image.rectTransform);
+				this.CopyFlip(imageSource, this.copyFlippableImage);
 
 				copy = image;
 				source = sourceImage;
@@ -140,6 +146,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				hasSourceTexture = (sourceImage.texture != null);
 
 				this.CopyRect(sourceImage.rectTransform, image.rectTransform);
+				this.CopyFlip(imageSource, this.copyFlippableRawImage);
 
 				copy = image;
 				source = sourceImage;
@@ -252,6 +259,22 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
+		private void CopyFlip(IImageComponent imageSource, UIFlippable flippable) {
+
+			if (imageSource.IsHorizontalFlip() == true) {
+
+				flippable.horizontal = true;
+
+			}
+
+			if (imageSource.IsVerticalFlip() == true) {
+
+				flippable.vertical = true;
+
+			}
+
+		}
+
 		private void CopyRect(RectTransform source, RectTransform copy) {
 
 			var rect = copy;
@@ -278,8 +301,8 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 			if (this.image != null && this.IsValid() == true) {
 
-				this.CreateCopy(ref this.copyImage, ref this.sourceImage, this.image.GetImageSource());
-				this.CreateCopy(ref this.copyRawImage, ref this.sourceRawImage, this.image.GetRawImageSource());
+				this.copyFlippableImage = this.CreateCopy(ref this.copyImage, ref this.sourceImage, this.image.GetImageSource());
+				this.copyFlippableRawImage = this.CreateCopy(ref this.copyRawImage, ref this.sourceRawImage, this.image.GetRawImageSource());
 
 			} else {
 
@@ -302,14 +325,14 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
-		private void CreateCopy<T>(ref T copy, ref T source, T containerSource) where T : Graphic {
+		private UIFlippable CreateCopy<T>(ref T copy, ref T source, T containerSource) where T : Graphic {
 
 			if (copy == null && source == null && containerSource != null) {
 				
 				source = containerSource;
 
 				var sourceType = source.GetType();
-				var graphicCopy = new GameObject(string.Format("{0}_copy", source.name), typeof(RectTransform), sourceType);
+				var graphicCopy = new GameObject(string.Format("{0}_copy", source.name), typeof(RectTransform), typeof(UIFlippable), sourceType);
 				graphicCopy.layer = source.gameObject.layer;
 				graphicCopy.transform.SetParent(source.transform);
 				graphicCopy.transform.SetTransformAs();
@@ -317,7 +340,11 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				copy = graphicCopy.GetComponent(sourceType) as T;
 				copy.enabled = false;
 
+				return graphicCopy.GetComponent<UIFlippable>();
+
 			}
+
+			return null;
 
 		}
 		#endif

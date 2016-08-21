@@ -83,12 +83,14 @@ namespace UnityEngine.UI.Windows.Components {
 		#region ILayoutController
 		public void SetLayoutHorizontal() {
 
+			// TODO: ?
 			this.requiresReload = true;
 
 		}
 		
 		public void SetLayoutVertical() {
-			
+
+			// TODO: ?
 			this.requiresReload = true;
 
 		}
@@ -324,9 +326,8 @@ namespace UnityEngine.UI.Windows.Components {
 		/// </summary>
 		public void ReloadData() {
 
-			this.rowHeights = new float[this.dataSource.GetRowsCount()];
-
-			this.isEmpty = (this.rowHeights.Length == 0);
+			var count = this.dataSource.GetRowsCount();
+			this.isEmpty = (count == 0);
 
 			if (this.isEmpty == true) {
 
@@ -336,10 +337,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			this.cumulativeRowHeights = new float[this.rowHeights.Length];
+			if (this.rowHeights == null || count != this.rowHeights.Length) {
+
+				this.rowHeights = new float[count];
+				this.cumulativeRowHeights = new float[count];
+
+			}
+
 			this.cleanCumulativeIndex = -1;
 
-			for (int i = 0; i < this.rowHeights.Length; ++i) {
+			for (int i = 0; i < count; ++i) {
 
 				this.rowHeights[i] = this.dataSource.GetRowHeight(i);
 				if (i > 0) {
@@ -350,7 +357,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			this.scrollRect.content.sizeDelta = new Vector2(this.scrollRect.content.sizeDelta[0], this.GetCumulativeRowHeight(this.rowHeights.Length - 1));
+			this.scrollRect.content.sizeDelta = new Vector2(this.scrollRect.content.sizeDelta[0], this.GetCumulativeRowHeight(count - 1));
 
 			this.RecalculateVisibleRowsFromScratch();
 			this.requiresReload = false;

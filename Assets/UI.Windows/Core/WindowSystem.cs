@@ -446,6 +446,18 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void AudioMute() {
+
+			WindowSystem.instance.audio.Mute();
+
+		}
+
+		public static void AudioUnmute() {
+
+			WindowSystem.instance.audio.Unmute();
+
+		}
+
 		public static float GetVolume(ClipType clipType) {
 			
 			if (WindowSystem.instance == null) return 0f;
@@ -661,7 +673,23 @@ namespace UnityEngine.UI.Windows {
 			return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 
 		}
-		
+
+		public static bool IsCameraRenderDisableOnWindowTurnOff() {
+
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+
+				// no settings file
+
+			} else {
+
+				return WindowSystem.instance.settings.file.baseInfo.turnOffCameraRenderOnly;
+
+			}
+
+			return false;
+
+		}
+
 		public static string GetSortingLayerName() {
 			
 			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
@@ -852,6 +880,12 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		public static List<WindowBase> GetActiveWindows() {
+
+			return WindowSystem.instance.currentWindows.Where((item) => item.GetState() == WindowObjectState.Showing || item.GetState() == WindowObjectState.Shown).ToList();
+
+		}
+
 		/// <summary>
 		/// Finds the opened window.
 		/// </summary>
@@ -928,17 +962,65 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void HideAllAndClean() {
+
+			WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: null, forceAll: false, immediately: false);
+
+		}
+
+		public static void HideAllAndClean(WindowBase except) {
+
+			WindowSystem.HideAllAndClean(except, callback: null, forceAll: false, immediately: false);
+
+		}
+
+		public static void HideAllAndClean(List<WindowBase> exceptList) {
+
+			WindowSystem.HideAllAndClean(exceptList, callback: null, forceAll: false, immediately: false);
+
+		}
+
+		public static void HideAllAndClean(WindowBase except, System.Action callback) {
+
+			WindowSystem.HideAllAndClean(except, callback, forceAll: false, immediately: false);
+
+		}
+
+		public static void HideAllAndClean(WindowBase except, System.Action callback, bool forceAll) {
+
+			WindowSystem.HideAllAndClean(except, callback, forceAll, immediately: false);
+
+		}
+
+		public static void HideAllAndClean(System.Action callback, bool immediately) {
+
+			WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: callback, forceAll: false, immediately: immediately);
+
+		}
+
+		public static void HideAllAndClean(List<WindowBase> exceptList, System.Action callback) {
+
+			WindowSystem.HideAllAndClean(exceptList, callback, forceAll: false, immediately: false);
+
+		}
+
+		public static void HideAllAndClean(List<WindowBase> exceptList, System.Action callback, bool forceAll) {
+
+			WindowSystem.HideAllAndClean(exceptList, callback, forceAll, immediately: false);
+
+		}
+
 		/// <summary>
 		/// Hides all and clean.
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAllAndClean(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) {
+		public static void HideAllAndClean(WindowBase except, System.Action callback, bool forceAll, bool immediately) {
 			
 			WindowSystem.HideAll(except, () => {
 				
 				WindowSystem.Clean(except, forceAll);
-				
+
 				if (callback != null) callback();
 				
 			}, forceAll, immediately);
@@ -950,38 +1032,83 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAllAndClean(List<WindowBase> except, System.Action callback = null, bool forceAll = false, bool immediately = false) {
+		public static void HideAllAndClean(List<WindowBase> exceptList, System.Action callback, bool forceAll, bool immediately) {
 
-			WindowSystem.HideAll(except, () => {
+			WindowSystem.HideAll(exceptList, () => {
 				
-				WindowSystem.Clean(except, forceAll);
+				WindowSystem.Clean(exceptList, forceAll);
 
 				if (callback != null) callback();
 				
 			}, forceAll, immediately);
 			
+		}
+
+		/// <summary>
+		/// Clean all windows.
+		/// </summary>
+		public static void Clean() {
+
+			WindowSystem.Clean(except: (WindowBase)null, forceAll: false);
+
+		}
+
+		/// <summary>
+		/// Clean the specified forceAll.
+		/// </summary>
+		/// <param name="forceAll">If set to <c>true</c> force all.</param>
+		public static void Clean(bool forceAll) {
+
+			WindowSystem.Clean(except: (WindowBase)null, forceAll: forceAll);
+
 		}
 
 		/// <summary>
 		/// Clean the specified except.
 		/// </summary>
 		/// <param name="except">Except.</param>
-		public static void Clean(WindowBase except = null, bool forceAll = false) {
+		public static void Clean(WindowBase except) {
+
+			WindowSystem.Clean(except: except, forceAll: false);
+
+		}
+
+		/// <summary>
+		/// Clean the specified exceptList.
+		/// </summary>
+		/// <param name="exceptList">Except list.</param>
+		public static void Clean(List<WindowBase> exceptList) {
+
+			WindowSystem.Clean(exceptList: exceptList, forceAll: false);
+
+		}
+
+		/// <summary>
+		/// Clean the specified except and forceAll.
+		/// </summary>
+		/// <param name="except">Except.</param>
+		/// <param name="forceAll">If set to <c>true</c> force all.</param>
+		public static void Clean(WindowBase except, bool forceAll) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
 				
 				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, except, forceAll);
 				if (result == true) {
 					
-					if (window != null) WindowBase.DestroyImmediate(window.gameObject);
+					if (window != null) {
+
+						window.DoWindowUnload();
+						WindowBase.DestroyImmediate(window.gameObject);
+
+					}
 					
 				}
-				
+
 				return result;
 
 			});
-			
-			WindowSystem.ResetDepth();
+
+            WindowSystem.ResetDepth();
 
 			if (except != null) {
 
@@ -991,36 +1118,44 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			WindowSystem.RefreshHistory();
-			
-		}
 
-		/// <summary>
-		/// Clean the specified except.
-		/// </summary>
-		/// <param name="except">Except.</param>
-		public static void Clean(List<WindowBase> except, bool forceAll = false) {
+            //Resources.UnloadUnusedAssets();
+            //System.GC.Collect();
+
+        }
+
+        /// <summary>
+        /// Clean the specified except.
+        /// </summary>
+        /// <param name="except">Except.</param>
+        public static void Clean(List<WindowBase> exceptList, bool forceAll) {
 			
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
 
-				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, except, null, forceAll);
+				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, exceptList, null, forceAll);
 				if (result == true) {
 
-					if (window != null) WindowBase.DestroyImmediate(window.gameObject);
+					if (window != null) {
+
+						window.DoWindowUnload();
+						WindowBase.DestroyImmediate(window.gameObject);
+
+					}
 
 				}
-
+                
 				return result;
 
 
 			});
-			
-			WindowSystem.ResetDepth();
 
-			if (except != null) {
+            WindowSystem.ResetDepth();
 
-				for (int i = 0; i < except.Count; ++i) {
+			if (exceptList != null) {
 
-					var instance = except[i];
+				for (int i = 0; i < exceptList.Count; ++i) {
+
+					var instance = exceptList[i];
 					if (instance == null) continue;
 					instance.SetDepth(WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth), WindowSystem.instance.GetNextZDepth(instance.preferences));
 					instance.OnCameraReset();
@@ -1030,10 +1165,13 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			WindowSystem.RefreshHistory();
-			
-		}
 
-		private bool DestroyWindowCheckOnClean_INTERNAL(WindowBase window, List<WindowBase> exceptList, WindowBase exceptItem, bool forceAll = false) {
+            //Resources.UnloadUnusedAssets();
+            //System.GC.Collect();
+
+        }
+
+        private bool DestroyWindowCheckOnClean_INTERNAL(WindowBase window, List<WindowBase> exceptList, WindowBase exceptItem, bool forceAll = false) {
 			
 			if (window != null) {
 

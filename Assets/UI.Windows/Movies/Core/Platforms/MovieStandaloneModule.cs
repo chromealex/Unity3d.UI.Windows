@@ -48,7 +48,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected override void OnPlay(ResourceBase resource, Texture movie) {
+		protected override void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
 
 			var m = movie as MovieTexture;
 			if (m != null) {
@@ -59,7 +59,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop) {
+		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
 
 			var m = movie as MovieTexture;
 			if (m != null) {

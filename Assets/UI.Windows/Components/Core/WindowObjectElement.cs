@@ -361,7 +361,15 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-		
+
+		public virtual void DoWindowUnload() {
+
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowUnload();
+
+			this.OnWindowUnload();
+
+		}
+
 		public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
@@ -372,7 +380,8 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideBegin() {}
 		public virtual void OnShowBegin(AppearanceParameters parameters) {}
 		public virtual void OnHideBegin(AppearanceParameters parameters) {}
-		
+		public virtual void OnWindowUnload() {}
+
 		[System.Obsolete("Use OnShowBegin with AppearanceParameters or OnShowBegin without parameters")]
 		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
 		[System.Obsolete("Use OnHideBegin with AppearanceParameters or OnHideBegin without parameters")]

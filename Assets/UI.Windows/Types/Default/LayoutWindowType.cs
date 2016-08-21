@@ -172,6 +172,12 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
+		protected override void DoLayoutUnload() {
+
+			this.layout.DoWindowUnload();
+
+		}
+
 		#if UNITY_EDITOR
 		public override void OnValidateEditor() {
 			
@@ -354,6 +360,12 @@ namespace UnityEngine.UI.Windows.Types {
 
 			}
 
+			public void SetComponent(MonoResource resource) {
+
+				this.componentResource = resource;
+
+			}
+
 			public IWindowEventsAsync Create(WindowBase window, WindowLayoutElement root) {
 				
 				this.root = root;
@@ -371,6 +383,9 @@ namespace UnityEngine.UI.Windows.Types {
 				} else {
 
 					component = this.componentNoResource;
+					#if UNITY_EDITOR
+					if (component != null) Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", component.name, UnityEditor.AssetDatabase.GetAssetPath(component.GetInstanceID()), window.name);
+					#endif
 
 				}
 
@@ -420,6 +435,20 @@ namespace UnityEngine.UI.Windows.Types {
 				this.instance = instance;
 
 				return instance;
+
+			}
+
+			public void Unload() {
+
+				if (this.componentResource.loadableResource == true) {
+
+					this.componentResource.Unload();
+
+				} else {
+
+					// Resource was not load via Resources.Load(), so it can't be unload properly
+
+				}
 
 			}
 
@@ -496,6 +525,16 @@ namespace UnityEngine.UI.Windows.Types {
 			this.instance = instance;
 			
 			foreach (var component in this.components) component.Create(window, instance.GetRootByTag(component.tag));
+
+		}
+
+		public void Unload() {
+
+			for (int i = 0; i < this.components.Length; ++i) {
+
+				this.components[i].Unload();
+
+			}
 
 		}
 
@@ -641,6 +680,13 @@ namespace UnityEngine.UI.Windows.Types {
 		public void DoHideEnd(AppearanceParameters parameters) {
 
 			this.instance.DoHideEnd(parameters);
+
+		}
+
+		public void DoWindowUnload() {
+
+			this.instance.DoWindowUnload();
+			this.Unload();
 
 		}
 		#endregion

@@ -100,9 +100,9 @@ namespace UnityEngine.UI.Windows {
 			
 			this.transform.localScale = Vector3.zero;
 
+			this.canvas.worldCamera = this.GetWindow().workCamera;
 			this.canvas.sortingOrder = orderInLayer;
 			this.canvas.planeDistance = 10f;// * orderInLayer;
-			this.canvas.worldCamera = this.GetWindow().workCamera;
 			
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 

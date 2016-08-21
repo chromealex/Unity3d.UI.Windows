@@ -83,6 +83,9 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 			onResult.Invoke(new GameDataResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.text });
 
+			www.Dispose();
+			www = null;
+
 		}
 		#endregion
 

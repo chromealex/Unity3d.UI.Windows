@@ -6,6 +6,12 @@ using ME;
 
 namespace UnityEngine.UI.Windows {
 
+	public interface IUnloadableItem {
+
+		void Unload();
+
+	};
+
 	public class ResourceParametersAttribute : PropertyAttribute {
 
 		public ResourceBase.ControlType drawOnly;
@@ -101,10 +107,35 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly] public string streamingAssetsPathXBOXONE;
 		[ReadOnly] public string streamingAssetsPathCommon;
 
+		[ReadOnly] public string streamingAssetsPathStandaloneMovieAudio;
+		[ReadOnly] public string streamingAssetsPathIOSMovieAudio;
+		[ReadOnly] public string streamingAssetsPathAndroidMovieAudio;
+		[ReadOnly] public string streamingAssetsPathPS4MovieAudio;
+		[ReadOnly] public string streamingAssetsPathXBOXONEMovieAudio;
+		[ReadOnly] public string streamingAssetsPathCommonMovieAudio;
+
+		protected virtual bool canBeUnloaded {
+
+			get {
+
+				return true;
+
+			}
+
+		}
+
 		//private static Dictionary<Graphic, int> iterations = null;
 		//private static Dictionary<Graphic, Color> colorCache = null;
 
 		//private ResourceAsyncOperation task;
+
+		public bool IsValid() {
+
+			return 
+				this.loadableResource == true ||
+				this.loadableStream == true;
+
+		}
 
 		public int GetId() {
 
@@ -114,7 +145,19 @@ namespace UnityEngine.UI.Windows {
 
 		public void Unload(Object item) {
 
-			Resources.UnloadAsset(item);
+			if (item != null) {
+
+				if (this.canBeUnloaded == true) {
+
+					Resources.UnloadAsset(item);
+
+				} else {
+
+					//Resources.UnloadUnusedAssets();
+
+				}
+
+			}
 
 		}
 
@@ -124,7 +167,12 @@ namespace UnityEngine.UI.Windows {
 			this.loadedObject = null;
 			this.loadedObjectId = 0;
 			this.loaded = false;
-			if (obj != null && obj.GetID() < 0) Resources.UnloadAsset(obj);
+
+			if (this.loadableResource == true) {
+
+				this.Unload(obj);
+
+			}
 
 		}
 
@@ -208,6 +256,9 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
+				www.Dispose();
+				www = null;
+
 				yield break;
 
 			}
@@ -235,11 +286,87 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public bool HasMovieAudio() {
+			
+			return string.IsNullOrEmpty(this.GetMovieAudioStreamPath());
+
+		}
+		
+		public string GetMovieAudioStreamPath(bool withFile = false) {
+
+			var combine = true;
+			var result = string.Empty;
+			var prefix = string.Empty;
+			var prefixPath = string.Empty;
+			var path = string.Empty;
+			#if UNITY_STANDALONE || UNITY_EDITOR
+			path = this.streamingAssetsPathStandaloneMovieAudio;
+			#elif UNITY_IPHONE || UNITY_TVOS
+			path = this.streamingAssetsPathIOSMovieAudio;
+			combine = true;
+			if (withFile == true) {
+
+				prefixPath = "Data/Raw/";
+
+			}
+			#elif UNITY_ANDROID
+			path = this.streamingAssetsPathAndroidMovieAudio;
+			#elif UNITY_PS4
+			path = this.streamingAssetsPathPS4MovieAudio;
+			prefix = "streamingAssets/";
+			#elif UNITY_XBOXONE
+			path = this.streamingAssetsPathXBOXONEMovieAudio;
+			#else
+			path = this.streamingAssetsPathStandalone;
+			if (path.Contains("://") == false) {
+				
+				prefix = "file:///";
+				
+			}
+			#endif
+
+			if (string.IsNullOrEmpty(path) == true) {
+
+				path = this.streamingAssetsPathCommonMovieAudio;
+
+			}
+
+			if (string.IsNullOrEmpty(path) == false) {
+
+				path = path.Replace("\\", "/");
+
+				if (combine == true) {
+
+					result = prefix + System.IO.Path.Combine(Application.streamingAssetsPath, prefixPath + path);
+
+				} else {
+
+					result = prefix + prefixPath + path;
+
+				}
+
+			}
+
+			if (withFile == true && string.IsNullOrEmpty(result) == false) {
+
+				if (result.Contains("://") == false) {
+
+					result = "file:///" + result;
+
+				}
+
+			}
+
+			return result;
+
+		}
+
 		public string GetStreamPath(bool withFile = false) {
 
 			var combine = true;
 			var path = string.Empty;
 			var prefix = string.Empty;
+			var prefixPath = string.Empty;
 			var result = string.Empty;
 			#if UNITY_STANDALONE || UNITY_EDITOR
 			path = this.streamingAssetsPathStandalone;
@@ -253,7 +380,7 @@ namespace UnityEngine.UI.Windows {
 			combine = true;
 			if (withFile == true) {
 				
-				path = "Data/Raw/" + path;
+				prefixPath = "Data/Raw/";
 
 			}
 			#elif UNITY_ANDROID
@@ -285,17 +412,17 @@ namespace UnityEngine.UI.Windows {
 				
 				if (combine == true) {
 					
-					result = prefix + System.IO.Path.Combine(Application.streamingAssetsPath, path);
+					result = prefix + System.IO.Path.Combine(Application.streamingAssetsPath, prefixPath + path);
 					
 				} else {
 					
-					result = prefix + path;
+					result = prefix + prefixPath + path;
 					
 				}
 				
 			}
 
-			if (withFile == true) {
+			if (withFile == true && string.IsNullOrEmpty(result) == false) {
 				
 				if (result.Contains("://") == false) {
 					
@@ -356,7 +483,7 @@ namespace UnityEngine.UI.Windows {
 					var localPath = string.Join("/", platformSplit, 1, platformSplit.Length - 1);
 					var localDir = System.IO.Path.GetDirectoryName(localPath);
 					var filenameWithoutExt = System.IO.Path.GetFileNameWithoutExtension(streamingAssetsPath);
-					
+
 					this.streamingAssetsPathIOS			= this.GetPlatformDirectory(Platform.iOS, localDir, filenameWithoutExt);
 					this.streamingAssetsPathAndroid		= this.GetPlatformDirectory(Platform.Android, localDir, filenameWithoutExt);
 					this.streamingAssetsPathStandalone	= this.GetPlatformDirectory(Platform.Standalone, localDir, filenameWithoutExt);
@@ -364,6 +491,19 @@ namespace UnityEngine.UI.Windows {
 					this.streamingAssetsPathXBOXONE		= this.GetPlatformDirectory(Platform.XBOXONE, localDir, filenameWithoutExt);
 					this.streamingAssetsPathCommon		= this.GetPlatformDirectory(Platform.Common, localDir, filenameWithoutExt);
 
+					this.streamingAssetsPathIOSMovieAudio			= this.GetMovieAudio(this.streamingAssetsPathIOS);
+					this.streamingAssetsPathAndroidMovieAudio		= this.GetMovieAudio(this.streamingAssetsPathAndroid);
+					this.streamingAssetsPathStandaloneMovieAudio	= this.GetMovieAudio(this.streamingAssetsPathStandalone);
+					this.streamingAssetsPathPS4MovieAudio			= this.GetMovieAudio(this.streamingAssetsPathPS4);
+					this.streamingAssetsPathXBOXONEMovieAudio		= this.GetMovieAudio(this.streamingAssetsPathXBOXONE);
+					this.streamingAssetsPathCommonMovieAudio		= this.GetMovieAudio(this.streamingAssetsPathCommon);
+					/*
+					if (string.IsNullOrEmpty(this.streamingAssetsPathIOSMovieAudio) == true) this.streamingAssetsPathIOSMovieAudio = this.streamingAssetsPathCommonMovieAudio;
+					if (string.IsNullOrEmpty(this.streamingAssetsPathAndroidMovieAudio) == true) this.streamingAssetsPathAndroidMovieAudio = this.streamingAssetsPathCommonMovieAudio;
+					if (string.IsNullOrEmpty(this.streamingAssetsPathStandaloneMovieAudio) == true) this.streamingAssetsPathStandaloneMovieAudio = this.streamingAssetsPathCommonMovieAudio;
+					if (string.IsNullOrEmpty(this.streamingAssetsPathPS4MovieAudio) == true) this.streamingAssetsPathPS4MovieAudio = this.streamingAssetsPathCommonMovieAudio;
+					if (string.IsNullOrEmpty(this.streamingAssetsPathXBOXONEMovieAudio) == true) this.streamingAssetsPathXBOXONEMovieAudio = this.streamingAssetsPathCommonMovieAudio;
+			*/
 				}
 				
 				this.loadableStream = (string.IsNullOrEmpty(streamingAssetsPath) == false);
@@ -387,6 +527,47 @@ namespace UnityEngine.UI.Windows {
             return hash;
 
         }
+
+		private string GetMovieAudio(string streamingPath) {
+
+			if (string.IsNullOrEmpty(streamingPath) == true) {
+				
+				return string.Empty;
+				
+			}
+
+			var path = System.IO.Path.Combine(Application.streamingAssetsPath, System.IO.Path.GetDirectoryName(streamingPath));
+			if (System.IO.Directory.Exists(path) == true) {
+
+				var filename = System.IO.Path.GetFileNameWithoutExtension(streamingPath);
+				var filenameWithExt = System.IO.Path.GetFileName(streamingPath);
+				var files = System.IO.Directory.GetFiles(path);
+				var found = string.Empty;
+				foreach (var file in files) {
+					
+					if (filenameWithExt == System.IO.Path.GetFileName(file)) continue;
+
+					var curFilename = System.IO.Path.GetFileNameWithoutExtension(file);
+					if (curFilename == filename) {
+
+						found = System.IO.Path.GetFileName(file);
+						break;
+
+					}
+
+				}
+
+				if (string.IsNullOrEmpty(found) == false) {
+					
+					return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(streamingPath), found);
+
+				}
+
+			}
+
+			return string.Empty;
+
+		}
 
 		private string GetPlatformDirectory(Platform platform, string localDir, string filenameWithoutExt) {
 

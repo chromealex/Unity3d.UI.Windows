@@ -7,7 +7,17 @@ namespace UnityEngine.UI.Windows {
 
 	[System.Serializable]
 	public class MonoResource : ResourceBase {
-		
+
+		protected override bool canBeUnloaded {
+
+			get {
+
+				return false;
+
+			}
+
+		}
+
 		#if UNITY_EDITOR
 		//[HideInInspector]
 		public MonoBehaviour tempResource;

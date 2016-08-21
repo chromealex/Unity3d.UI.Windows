@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using UnityEngine.Events;
 
 namespace ME {
 
@@ -42,6 +43,142 @@ namespace ME {
 		}*/
 
 	}
+
+	#region POOL
+	public static class ListPool<T> {
+
+		private static ObjectPoolInternal<List<T>> listPool = new ObjectPoolInternal<List<T>>(null, l => l.Clear());
+
+		public static void Allocate(int capacity) {
+
+			ListPool<T>.listPool = new ObjectPoolInternal<List<T>>(null, l => l.Clear(), capacity);
+
+		}
+
+		public static List<T> Get() {
+
+			return ListPool<T>.listPool.Get();
+
+		}
+
+		public static void Release(List<T> toRelease) {
+
+			ListPool<T>.listPool.Release(toRelease);
+
+		}
+
+	}
+
+	public static class ObjectPool<T> where T : new() {
+
+		private static ObjectPoolInternal<T> pool = new ObjectPoolInternal<T>(null, null);
+
+		public static void Allocate(int capacity) {
+
+			ObjectPool<T>.pool = new ObjectPoolInternal<T>(null, null, capacity);
+
+		}
+
+		public static T Get() {
+
+			return ObjectPool<T>.pool.Get();
+
+		}
+
+		public static void Release(T toRelease) {
+
+			ObjectPool<T>.pool.Release(toRelease);
+
+		}
+
+	}
+
+	public interface IObjectPoolItem {
+
+		void OnPoolGet();
+		void OnPoolRelease();
+
+	}
+
+	public static class ObjectPoolEventable<T> where T : IObjectPoolItem, new() {
+
+		private static ObjectPoolInternal<T> pool = new ObjectPoolInternal<T>(x => x.OnPoolGet(), x => x.OnPoolRelease());
+
+		public static void Allocate(int capacity) {
+
+			ObjectPoolEventable<T>.pool = new ObjectPoolInternal<T>(x => x.OnPoolGet(), x => x.OnPoolRelease(), capacity);
+
+		}
+
+		public static T Get() {
+
+			return ObjectPoolEventable<T>.pool.Get();
+
+		}
+
+		public static void Release(T toRelease) {
+
+			ObjectPoolEventable<T>.pool.Release(toRelease);
+
+		}
+
+	}
+
+	internal class ObjectPoolInternal<T> where T : new() {
+		
+		private readonly Stack<T> stack = new Stack<T>();
+		private readonly UnityAction<T> actionOnGet;
+		private readonly UnityAction<T> actionOnRelease;
+
+		public int countAll { get; private set; }
+		public int countActive { get { return this.countAll - this.countInactive; } }
+		public int countInactive { get { return this.stack.Count; } }
+
+		public ObjectPoolInternal(UnityAction<T> actionOnGet, UnityAction<T> actionOnRelease, int capacity = 1) {
+			
+			this.actionOnGet = actionOnGet;
+			this.actionOnRelease = actionOnRelease;
+
+			if (capacity > 0) {
+
+				this.stack = new Stack<T>(capacity);
+
+			}
+
+		}
+
+		public T Get() {
+			
+			T element;
+			if (this.stack.Count == 0) {
+				
+				element = new T();
+				++this.countAll;
+
+			} else {
+
+				element = this.stack.Pop();
+				if (element == null) element = new T();
+
+			}
+
+			if (this.actionOnGet != null) this.actionOnGet.Invoke(element);
+
+			return element;
+
+		}
+
+		public void Release(T element) {
+			
+			if (this.stack.Count > 0 && ObjectPool<T>.ReferenceEquals(this.stack.Peek(), element) == true) Debug.LogError("Internal error. Trying to destroy object that is already released to pool.");
+
+			if (this.actionOnRelease != null) this.actionOnRelease.Invoke(element);
+			this.stack.Push(element);
+
+		}
+
+	}
+	#endregion
 
 	public partial class Utilities {
 		
@@ -118,42 +255,72 @@ namespace ME {
 
 		public static T FindReferenceParent<T>(GameObject root) {
 
+			var result = default(T);
+
 			if (root != null) {
 
-				var items = root.GetComponentsInParent<T>(true);
-				if (items.Length > 0) return (T)items[0];
+				var list = ListPool<T>.Get();
+				root.GetComponentsInParent<T>(true, list);
+				if (list.Count > 0) {
+					
+					result = list[0];
+
+				}
+				ListPool<T>.Release(list);
 
 			}
 
-			return default(T);
+			return result;
+
+		}
+
+		public static T FindReferenceChildren<T>(GameObject root) {
+
+			var result = default(T);
+
+			if (root != null) {
+
+				var list = ListPool<T>.Get();
+				root.GetComponentsInChildren<T>(true, list);
+				if (list.Count > 0) {
+
+					result = list[0];
+
+				}
+				ListPool<T>.Release(list);
+
+			}
+
+			return result;
 
 		}
 
 		public static T FindReferenceParent<T>(Component root) {
 
-			if (root != null) {
-				
-				var items = root.GetComponentsInParent<T>(true);
-				if (items.Length > 0) return (T)items[0];
+			if (root == null) return default(T);
 
-			}
+			return Utilities.FindReferenceParent<T>(root.gameObject);
 
-            return default(T);
+		}
 
-        }
+		public static T FindReferenceChildren<T>(Component root) {
+
+			if (root == null) return default(T);
+
+			return Utilities.FindReferenceChildren<T>(root.gameObject);
+
+		}
 
         public static void FindReferenceParent<T>(Component root, ref T link) where T : Component {
-			
-			var items = root.GetComponentsInParent<T>(true);
-			if (items.Length > 0) link = items[0] as T;
-			
+
+			link = Utilities.FindReferenceParent<T>(root);
+
 		}
 
 		public static void FindReference<T>(Component root, ref T link) where T : Component {
-			
-			var items = root.GetComponentsInChildren<T>(true);
-			if (items.Length == 1) link = items[0] as T;
-			
+
+			link = Utilities.FindReferenceChildren<T>(root);
+
 		}
 
 		public static Vector3 GetUIPosition(Transform transform, Vector3 alignToPoint, Camera uiCamera, Camera gameCamera, Vector3 offset = default(Vector3)) {

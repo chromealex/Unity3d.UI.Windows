@@ -486,7 +486,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		private bool hoverCursorDefaultOnInactive = false;
 
-		public bool IsCursorDefault() {
+		public bool IsHoverCursorDefaultOnInactive() {
 
 			return this.IsInteractable() == false && this.hoverCursorDefaultOnInactive == true;
 
@@ -613,7 +613,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public virtual IButtonComponent SetButtonColor(Color color) {
 
-			if (this.button != null) {
+			if (this.button != null && this.button.targetGraphic != null) {
 
 				this.button.targetGraphic.color = color;
 
@@ -638,7 +638,6 @@ namespace UnityEngine.UI.Windows.Components {
 		public virtual IButtonComponent RemoveCallback(UnityAction callback) {
 			
 			this.callback.RemoveListener(callback);
-			this.callbackButton.RemoveAllListeners();
 
 			this.button.onClick.RemoveListener(this.OnClick);
 			this.button.onClick.AddListener(this.OnClick);
@@ -649,7 +648,6 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public virtual IButtonComponent RemoveCallback(UnityAction<ButtonComponent> callback) {
 
-			this.callback.RemoveAllListeners();
 			this.callbackButton.RemoveListener(callback);
 			
 			this.button.onClick.RemoveListener(this.OnClick);
@@ -754,6 +752,14 @@ namespace UnityEngine.UI.Windows.Components {
 			private RawImage rawImage;
 	
 			[SerializeField]
+			private bool flipHorizontal;
+			[SerializeField]
+			private bool flipVertical;
+	
+			private bool flipHorizontalInternal;
+			private bool flipVerticalInternal;
+	
+			[SerializeField]
 			private bool preserveAspect;
 	
 			public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
@@ -818,21 +824,26 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null) {
+			public IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null) {
+	
+				this.flipVerticalInternal = MovieSystem.IsVerticalFlipped();
 	
 				this.Stop();
-				this.SetImage(resource, () => {
-					
-					if (onDataLoaded != null) onDataLoaded.Invoke();
+				this.SetImage(resource,
+					onDataLoaded: () => {
+						
+						if (onDataLoaded != null) onDataLoaded.Invoke();
 	
-				}, () => {
+					},
+					onComplete: () => {
 	
-					//Debug.Log("SetMovieTexture: " + this.name);
-					MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
-					MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
-					if (onComplete != null) onComplete.Invoke();
+						//Debug.Log("SetMovieTexture: " + this.name);
+						MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
+						MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
+						if (onComplete != null) onComplete.Invoke();
 	
-				});
+					},
+					onFailed: onFailed);
 	
 				return this;
 				
@@ -911,8 +922,17 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
+			public virtual IImageComponent Play(bool loop, System.Action onComplete) {
+	
+				MovieSystem.Play(this, loop, onComplete);
+	
+				return this;
+	
+			}
+	
 			public virtual IImageComponent Stop() {
 	
+				MovieSystem.UnregisterOnUpdateMaterial(this.ValidateMaterial);
 				MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
 				MovieSystem.Stop(this);
 	
@@ -960,7 +980,10 @@ namespace UnityEngine.UI.Windows.Components {
 					this.rawImage.texture = null;
 					
 				}
-				
+	
+				this.flipHorizontalInternal = false;
+				this.flipVerticalInternal = false;
+	
 				return this;
 	
 			}
@@ -982,7 +1005,19 @@ namespace UnityEngine.UI.Windows.Components {
 				return this.rawImage;
 				
 			}
-			
+	
+			public bool IsHorizontalFlip() {
+	
+				return this.flipHorizontal == true || this.flipHorizontalInternal == true;
+	
+			}
+	
+			public bool IsVerticalFlip() {
+	
+				return this.flipVertical == true || this.flipVerticalInternal == true;
+	
+			}
+	
 			public IImageComponent SetImage(ImageComponent source) {
 				
 				if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
@@ -992,7 +1027,7 @@ namespace UnityEngine.UI.Windows.Components {
 				
 			}
 	
-			public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null) {
+			public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null) {
 	
 				var oldResource = this.imageResource;
 				this.imageResource = resource;
@@ -1015,13 +1050,15 @@ namespace UnityEngine.UI.Windows.Components {
 					},
 					onFailed: () => {
 	
-						//Debug.Log("Resource loding failed: " + newResource.GetId() + " :: " + this.name, this);
+						//Debug.Log("Resource loading failed: " + newResource.GetId() + " :: " + this.name, this);
 						if (this.imageResource.GetId() != oldResource.GetId()) {
 	
 							//Debug.Log("Failed, Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
 							WindowSystemResources.Unload(this, oldResource, resetController: false);
 	
 						}
+	
+						if (onFailed != null) onFailed.Invoke();
 	
 					}
 				);
@@ -1094,7 +1131,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 	
-						this.imageCrossFadeModule.FadeTo(sprite, onComplete);
+						this.imageCrossFadeModule.FadeTo(this, sprite, onComplete);
 	
 					} else {
 	
@@ -1155,7 +1192,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 	
-						this.imageCrossFadeModule.FadeTo(texture, onComplete);
+						this.imageCrossFadeModule.FadeTo(this, texture, onComplete);
 	
 					} else {
 						
@@ -1218,110 +1255,110 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-		public IImageComponent SetMaterial(Material material, bool setMainTexture = false, System.Action onComplete = null) {
-
-			MovieSystem.UnregisterOnUpdateMaterial(this.ValidateMaterial);
-
-			if (material == null) {
-
-				if (this.image != null) {
-
-					this.image.material = null;
-					this.image.SetMaterialDirty();
-
-				} else if (this.rawImage != null) {
-
-					this.rawImage.material = null;
-					this.rawImage.SetMaterialDirty();
-
+			public IImageComponent SetMaterial(Material material, bool setMainTexture = false, System.Action onComplete = null) {
+	
+				MovieSystem.UnregisterOnUpdateMaterial(this.ValidateMaterial);
+	
+				if (material == null) {
+	
+					if (this.image != null) {
+	
+						this.image.material = null;
+						this.image.SetMaterialDirty();
+	
+					} else if (this.rawImage != null) {
+	
+						this.rawImage.material = null;
+						this.rawImage.SetMaterialDirty();
+	
+					}
+	
+	
+					if (onComplete != null) onComplete.Invoke();
+					return this;
+	
 				}
-
-
-				if (onComplete != null) onComplete.Invoke();
-				return this;
-
-			}
-
-			MovieSystem.RegisterOnUpdateMaterial(this.ValidateMaterial);
-
-			if (this.image != null) {
-
-				if (this.image.enabled == false) this.image.enabled = true;
-
-				var tex = material.mainTexture;
-				if (this.imageCrossFadeModule.IsValid() == true) {
-
-					this.imageCrossFadeModule.FadeTo<Image>(material, () => {
-
+	
+				MovieSystem.RegisterOnUpdateMaterial(this.ValidateMaterial);
+	
+				if (this.image != null) {
+	
+					if (this.image.enabled == false) this.image.enabled = true;
+	
+					var tex = material.mainTexture;
+					if (this.imageCrossFadeModule.IsValid() == true) {
+	
+						this.imageCrossFadeModule.FadeTo<Image>(this, material, () => {
+	
+							if (setMainTexture == true) {
+	
+								var sprite = Sprite.Create(tex as Texture2D, new Rect(0f, 0f, tex.width, tex.height), Vector2.one * 0.5f);
+								this.image.sprite = sprite;
+	
+							}
+	
+							this.image.SetMaterialDirty();
+	
+							if (onComplete != null) onComplete.Invoke();
+	
+						}, ImageCrossFadeModule.DataType.Material);
+	
+					} else {
+	
 						if (setMainTexture == true) {
-
+	
 							var sprite = Sprite.Create(tex as Texture2D, new Rect(0f, 0f, tex.width, tex.height), Vector2.one * 0.5f);
 							this.image.sprite = sprite;
-
+	
 						}
-
+	
+						this.image.material = material;
 						this.image.SetMaterialDirty();
-
+	
 						if (onComplete != null) onComplete.Invoke();
-
-					}, ImageCrossFadeModule.DataType.Material);
-
-				} else {
-
-					if (setMainTexture == true) {
-
-						var sprite = Sprite.Create(tex as Texture2D, new Rect(0f, 0f, tex.width, tex.height), Vector2.one * 0.5f);
-						this.image.sprite = sprite;
-
+	
 					}
-
-					this.image.material = material;
-					this.image.SetMaterialDirty();
-
-					if (onComplete != null) onComplete.Invoke();
-
-				}
-
-			} else if (this.rawImage != null) {
-
-				if (this.rawImage.enabled == false) this.rawImage.enabled = true;
-
-				var tex = material.mainTexture;
-				if (this.imageCrossFadeModule.IsValid() == true) {
-
-					this.imageCrossFadeModule.FadeTo<RawImage>(material, () => {
-
+	
+				} else if (this.rawImage != null) {
+	
+					if (this.rawImage.enabled == false) this.rawImage.enabled = true;
+	
+					var tex = material.mainTexture;
+					if (this.imageCrossFadeModule.IsValid() == true) {
+	
+						this.imageCrossFadeModule.FadeTo<RawImage>(this, material, () => {
+	
+							if (setMainTexture == true) {
+								
+								this.rawImage.texture = tex;
+	
+							}
+							this.rawImage.SetMaterialDirty();
+	
+							if (onComplete != null) onComplete.Invoke();
+	
+						}, ImageCrossFadeModule.DataType.Material);
+	
+					} else {
+	
 						if (setMainTexture == true) {
-
+						
 							this.rawImage.texture = tex;
-
+	
 						}
+	
+						this.rawImage.material = material;
 						this.rawImage.SetMaterialDirty();
-
+	
 						if (onComplete != null) onComplete.Invoke();
-
-					}, ImageCrossFadeModule.DataType.Material);
-
-				} else {
-
-					if (setMainTexture == true) {
-
-						this.rawImage.texture = tex;
-
+	
 					}
-
-					this.rawImage.material = material;
-					this.rawImage.SetMaterialDirty();
-
-					if (onComplete != null) onComplete.Invoke();
-
+	
 				}
-
+	
+				return this;
+	
 			}
-
-			return this;
-
-		}
 	
 			public void ValidateMaterial(Material material) {
 				
@@ -1334,6 +1371,47 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					}
 					//Debug.Log("MATERIAL DIRTY: " + this.rawImage.texture, this);
+	
+				}
+	
+			}
+	
+			public void ModifyMesh(Mesh mesh) {}
+	
+			private System.Collections.Generic.List<UIVertex> modifyVertsTemp = new System.Collections.Generic.List<UIVertex>();
+			public void ModifyMesh(VertexHelper helper) {
+	
+				if (this.flipHorizontal == false &&
+				    this.flipVertical == false &&
+				    this.flipHorizontalInternal == false &&
+				    this.flipVerticalInternal == false) {
+	
+					return;
+	
+				}
+	
+				this.modifyVertsTemp.Clear();
+				helper.GetUIVertexStream(this.modifyVertsTemp);
+	
+				this.ModifyVertices(this.modifyVertsTemp);
+	
+				helper.AddUIVertexTriangleStream(this.modifyVertsTemp);
+	
+			}
+	
+			public void ModifyVertices(System.Collections.Generic.List<UIVertex> verts) {
+	
+				var rt = this.GetRectTransform();
+				var rectCenter = rt.rect.center;
+				for (var i = 0; i < verts.Count; ++i) {
+					
+					var v = verts[i];
+					v.position = new Vector3(
+						((this.flipHorizontal == true || this.flipHorizontalInternal == true) ? (v.position.x + (rectCenter.x - v.position.x) * 2f) : v.position.x),
+						((this.flipVertical == true || this.flipVerticalInternal == true) ? (v.position.y + (rectCenter.y - v.position.y) * 2f) : v.position.y),
+						v.position.z
+					);
+					verts[i] = v;
 	
 				}
 	
@@ -1472,6 +1550,12 @@ namespace UnityEngine.UI.Windows.Components {
 	
 				if (this.text == null) return 0f;
 	
+				if (text.Length > TextComponent.MAX_CHARACTERS_COUNT) {
+	
+					text = text.Substring(0, TextComponent.MAX_CHARACTERS_COUNT);
+	
+				}
+	
 				var settings = this.text.GetGenerationSettings(containerSize);
 				return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
 	
@@ -1555,7 +1639,7 @@ namespace UnityEngine.UI.Windows.Components {
 				this.tempLastValue = value;
 				this.tempLastFormat = format;
 	
-				var tag = this.GetCustomTag("TextComponent");
+				var tag = this.GetCustomTag(this.text);
 				if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 	
 				if (animate == true && TweenerGlobal.instance != null) {

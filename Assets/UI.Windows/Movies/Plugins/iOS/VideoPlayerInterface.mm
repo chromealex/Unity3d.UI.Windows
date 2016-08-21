@@ -1,7 +1,7 @@
 #include "Unity/VideoPlayer.h"
 
 #if UNITY_VERSION < 450
-    #include "iPhone_View.h"
+#include "iPhone_View.h"
 #endif
 
 #import <UIKit/UIKit.h>
@@ -12,147 +12,215 @@
 
 @interface VideoPlayerScripting : NSObject <VideoPlayerDelegate>
 {
-    @public VideoPlayer* player;
-    @public BOOL         playerReady;
-    @public BOOL         playerLoop;
+@public VideoPlayer* player;
+@public BOOL         playerReady;
+@public BOOL         loop;
 }
-- (bool)load:(NSURL*)url;
-- (bool)play;
-- (void)loop:(BOOL)value;
+- (void)loadVideo:(NSURL*)url;
 
 - (void)onPlayerReady;
 - (void)onPlayerDidFinishPlayingVideo;
 @end
 
 @implementation VideoPlayerScripting
-- (bool)load:(NSURL*)url {
-    
-    if(!player) {
-        
+- (void)loadVideo:(NSURL*)url
+{
+    if(!player)
+    {
         player = [[VideoPlayer alloc] init];
         player.delegate = self;
-        
     }
-    
-    return [player loadVideo:url];
-    
+    [player loadVideo:url];
+    loop = NO;
 }
 
-- (bool)play {
+- (void)onPlayerReady
+{
+    playerReady = YES;
     
-    if (playerReady == true) {
-        
-        [player playToTexture];
-        [player setAudioVolume:1.0f];
-        return true;
-        
-    }
-    
-    return false;
-    
+    [player playToTexture];
+    [player setAudioVolume:1.0f];
+    [player pause];
 }
 
-- (void)onPlayerReady {
-    
-    playerReady = true;
-    
-}
-
-- (void)loop:(BOOL)value {
-    
-    playerLoop = value;
-    
-}
-
-- (void)onPlayerDidFinishPlayingVideo {
-    
-    if (playerLoop == true) {
-        
+- (void)onPlayerDidFinishPlayingVideo
+{
+    if (loop == YES)
+    {
         [player rewind];
-        
-    } else {
-        
-        playerReady = NO;
-        
+        [player playToTexture];
     }
-    
+    else
+        playerReady = NO;
 }
 @end
 
-static VideoPlayerScripting* _GetPlayer()
-{
-    static VideoPlayerScripting* _Player = nil;
-    if(!_Player)
-        _Player = [[VideoPlayerScripting alloc] init];
-
-    return _Player;
-}
 static NSURL* _GetUrl(const char* filename)
 {
-    NSURL* url = nil;
-    if(::strstr(filename, "://"))
-        url = [NSURL URLWithString: [NSString stringWithUTF8String:filename]];
-    else
-        url = [NSURL fileURLWithPath: [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent: [NSString stringWithUTF8String:filename]]];
-
-    return url;
+    NSMutableString *s = [[NSMutableString alloc] initWithString:@"file://"];
+    [s appendString:[NSString stringWithUTF8String:filename]];
+    
+    return [NSURL URLWithString: s];
 }
 
+static NSMutableArray* players = nil;
+
+extern "C" unsigned VideoPlayer_AddPlayer()
+{
+    NSInteger index = [players indexOfObject:[NSNull null]];
+    
+    if (NSNotFound == index)
+    {
+        [players addObject: [[VideoPlayerScripting alloc] init]];
+        index = unsigned([players count] - 1);
+    }
+    else
+        players[index] = [[VideoPlayerScripting alloc] init];
+    
+    return index;
+}
+
+extern "C" void VideoPlayer_RemovePlayer(unsigned idx)
+{
+    if (idx >= [players count])
+        return;
+    
+    [((VideoPlayerScripting *)[players objectAtIndex:idx])->player unloadPlayer];
+    ((VideoPlayerScripting *)[players objectAtIndex:idx])->player = nil;
+    
+    
+    [players replaceObjectAtIndex:idx withObject:[NSNull null]];
+}
+
+
+extern "C" bool VideoPlayer_Initialize(unsigned capacity)
+{
+    if (players != nil)
+        return false;
+    
+    players = [[NSMutableArray alloc] initWithCapacity: capacity];
+    
+    return true;
+}
+
+extern "C" void VideoPlayer_Finalize()
+{
+    if (players == nil)
+        return;
+    
+    [players removeAllObjects];
+    
+    players = nil;
+}
 
 extern "C" bool VideoPlayer_CanOutputToTexture(const char* filename)
 {
     return [VideoPlayer CanPlayToTexture:_GetUrl(filename)];
 }
 
-extern "C" bool VideoPlayer_PlayerReady()
+extern "C" bool VideoPlayer_PlayerIsPlaying(unsigned idx)
 {
-    return [_GetPlayer()->player readyToPlay];
+    if (idx >= [players count])
+        return false;
+    
+    return [((VideoPlayerScripting *)[players objectAtIndex:idx])->player isPlaying];
 }
 
-extern "C" float VideoPlayer_DurationSeconds()
+extern "C" bool VideoPlayer_PlayerReady(unsigned idx)
 {
-    return [_GetPlayer()->player durationSeconds];
+    if (idx >= [players count])
+        return false;
+    
+    return [((VideoPlayerScripting *)[players objectAtIndex:idx])->player readyToPlay];
 }
 
-extern "C" void VideoPlayer_VideoExtents(int* w, int* h)
+extern "C" void VideoPlayer_SetLoop(unsigned idx, bool loop)
 {
-    CGSize sz = [_GetPlayer()->player videoSize];
+    if (idx >= [players count])
+        return;
+    
+    ((VideoPlayerScripting *)[players objectAtIndex:idx])->loop = loop;
+}
+
+extern "C" void VideoPlayer_Play(unsigned idx)
+{
+    if (idx >= [players count])
+        return;
+    
+    [((VideoPlayerScripting *)[players objectAtIndex:idx])->player resume];
+}
+
+extern "C" void VideoPlayer_Stop(unsigned idx)
+{
+    if (idx >= [players count])
+        return;
+    
+    VideoPlayer* p = ((VideoPlayerScripting *)[players objectAtIndex:idx])->player;
+    
+    [p rewind];
+    [p pause];
+}
+
+extern "C" void VideoPlayer_Pause(unsigned idx)
+{
+    if (idx >= [players count])
+        return;
+    
+    VideoPlayer* p = ((VideoPlayerScripting *)[players objectAtIndex:idx])->player;
+    
+    if ([p isPlaying] == YES)
+        [p pause];
+    else
+        [p resume];
+}
+
+extern "C" void VideoPlayer_Rewind(unsigned idx, bool pause)
+{
+    if (idx >= [players count])
+        return;
+    
+    VideoPlayer* p = ((VideoPlayerScripting *)[players objectAtIndex:idx])->player;
+    
+    [p rewind];
+    
+    if (pause)
+        [p pause];
+    else
+        [p resume];
+}
+
+extern "C" float VideoPlayer_DurationSeconds(unsigned idx)
+{
+    if (idx >= [players count])
+        return 0.0;
+    
+    return [((VideoPlayerScripting *)[players objectAtIndex:idx])->player durationSeconds];
+}
+
+extern "C" void VideoPlayer_VideoExtents(unsigned idx, int* w, int* h)
+{
+    if (idx >= [players count])
+        return;
+    
+    CGSize sz = [((VideoPlayerScripting *)[players objectAtIndex:idx])->player videoSize];
     *w = (int)sz.width;
     *h = (int)sz.height;
 }
 
-extern "C" int VideoPlayer_CurFrameTexture()
+extern "C" int VideoPlayer_CurFrameTexture(unsigned idx)
 {
-    return (int)[_GetPlayer()->player curFrameTexture];
+    if (idx >= [players count])
+        return 0;
+    
+    return [((VideoPlayerScripting *)[players objectAtIndex:idx])->player curFrameTexture];
 }
 
-extern "C" bool VideoPlayer_Load(const char* filename)
+extern "C" bool VideoPlayer_LoadVideo(unsigned idx, const char* filename)
 {
-    return [_GetPlayer() load:_GetUrl(filename)];
-}
-
-extern "C" bool VideoPlayer_Play()
-{
-    return [_GetPlayer() play];
-}
-
-extern "C" void VideoPlayer_SetLoop(bool loop)
-{
-    [_GetPlayer() loop:loop];
-}
-
-extern "C" bool VideoPlayer_IsPlaying()
-{
-    return [_GetPlayer()->player isPlaying];
-}
-
-extern "C" void VideoPlayer_Pause()
-{
-    [_GetPlayer()->player pause];
-}
-
-extern "C" void VideoPlayer_Stop()
-{
-    [_GetPlayer()->player pause];
-    [_GetPlayer()->player rewind];
+    if (idx >= [players count])
+        return false;
+    
+    [((VideoPlayerScripting *)[players objectAtIndex:idx]) loadVideo:_GetUrl(filename)];
+    
+    return true;
 }

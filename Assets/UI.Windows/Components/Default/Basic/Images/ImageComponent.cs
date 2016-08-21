@@ -177,6 +177,14 @@ namespace UnityEngine.UI.Windows.Components {
 		private RawImage rawImage;
 
 		[SerializeField]
+		private bool flipHorizontal;
+		[SerializeField]
+		private bool flipVertical;
+
+		private bool flipHorizontalInternal;
+		private bool flipVerticalInternal;
+
+		[SerializeField]
 		private bool preserveAspect;
 
 		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
@@ -241,21 +249,26 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null) {
+		public IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null) {
+
+			this.flipVerticalInternal = MovieSystem.IsVerticalFlipped();
 
 			this.Stop();
-			this.SetImage(resource, () => {
-				
-				if (onDataLoaded != null) onDataLoaded.Invoke();
+			this.SetImage(resource,
+				onDataLoaded: () => {
+					
+					if (onDataLoaded != null) onDataLoaded.Invoke();
 
-			}, () => {
+				},
+				onComplete: () => {
 
-				//Debug.Log("SetMovieTexture: " + this.name);
-				MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
-				MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
-				if (onComplete != null) onComplete.Invoke();
+					//Debug.Log("SetMovieTexture: " + this.name);
+					MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
+					MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
+					if (onComplete != null) onComplete.Invoke();
 
-			});
+				},
+				onFailed: onFailed);
 
 			return this;
 			
@@ -334,8 +347,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public virtual IImageComponent Play(bool loop, System.Action onComplete) {
+
+			MovieSystem.Play(this, loop, onComplete);
+
+			return this;
+
+		}
+
 		public virtual IImageComponent Stop() {
 
+			MovieSystem.UnregisterOnUpdateMaterial(this.ValidateMaterial);
 			MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
 			MovieSystem.Stop(this);
 
@@ -383,7 +405,10 @@ namespace UnityEngine.UI.Windows.Components {
 				this.rawImage.texture = null;
 				
 			}
-			
+
+			this.flipHorizontalInternal = false;
+			this.flipVerticalInternal = false;
+
 			return this;
 
 		}
@@ -405,7 +430,19 @@ namespace UnityEngine.UI.Windows.Components {
 			return this.rawImage;
 			
 		}
-		
+
+		public bool IsHorizontalFlip() {
+
+			return this.flipHorizontal == true || this.flipHorizontalInternal == true;
+
+		}
+
+		public bool IsVerticalFlip() {
+
+			return this.flipVertical == true || this.flipVerticalInternal == true;
+
+		}
+
 		public IImageComponent SetImage(ImageComponent source) {
 			
 			if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
@@ -415,7 +452,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null) {
+		public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null) {
 
 			var oldResource = this.imageResource;
 			this.imageResource = resource;
@@ -438,13 +475,15 @@ namespace UnityEngine.UI.Windows.Components {
 				},
 				onFailed: () => {
 
-					//Debug.Log("Resource loding failed: " + newResource.GetId() + " :: " + this.name, this);
+					//Debug.Log("Resource loading failed: " + newResource.GetId() + " :: " + this.name, this);
 					if (this.imageResource.GetId() != oldResource.GetId()) {
 
 						//Debug.Log("Failed, Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
 						WindowSystemResources.Unload(this, oldResource, resetController: false);
 
 					}
+
+					if (onFailed != null) onFailed.Invoke();
 
 				}
 			);
@@ -517,7 +556,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 
-					this.imageCrossFadeModule.FadeTo(sprite, onComplete);
+					this.imageCrossFadeModule.FadeTo(this, sprite, onComplete);
 
 				} else {
 
@@ -578,7 +617,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 
-					this.imageCrossFadeModule.FadeTo(texture, onComplete);
+					this.imageCrossFadeModule.FadeTo(this, texture, onComplete);
 
 				} else {
 					
@@ -674,7 +713,7 @@ namespace UnityEngine.UI.Windows.Components {
 				var tex = material.mainTexture;
 				if (this.imageCrossFadeModule.IsValid() == true) {
 
-					this.imageCrossFadeModule.FadeTo<Image>(material, () => {
+					this.imageCrossFadeModule.FadeTo<Image>(this, material, () => {
 
 						if (setMainTexture == true) {
 
@@ -712,7 +751,7 @@ namespace UnityEngine.UI.Windows.Components {
 				var tex = material.mainTexture;
 				if (this.imageCrossFadeModule.IsValid() == true) {
 
-					this.imageCrossFadeModule.FadeTo<RawImage>(material, () => {
+					this.imageCrossFadeModule.FadeTo<RawImage>(this, material, () => {
 
 						if (setMainTexture == true) {
 							
@@ -757,6 +796,47 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 				//Debug.Log("MATERIAL DIRTY: " + this.rawImage.texture, this);
+
+			}
+
+		}
+
+		public void ModifyMesh(Mesh mesh) {}
+
+		private System.Collections.Generic.List<UIVertex> modifyVertsTemp = new System.Collections.Generic.List<UIVertex>();
+		public void ModifyMesh(VertexHelper helper) {
+
+			if (this.flipHorizontal == false &&
+			    this.flipVertical == false &&
+			    this.flipHorizontalInternal == false &&
+			    this.flipVerticalInternal == false) {
+
+				return;
+
+			}
+
+			this.modifyVertsTemp.Clear();
+			helper.GetUIVertexStream(this.modifyVertsTemp);
+
+			this.ModifyVertices(this.modifyVertsTemp);
+
+			helper.AddUIVertexTriangleStream(this.modifyVertsTemp);
+
+		}
+
+		public void ModifyVertices(System.Collections.Generic.List<UIVertex> verts) {
+
+			var rt = this.GetRectTransform();
+			var rectCenter = rt.rect.center;
+			for (var i = 0; i < verts.Count; ++i) {
+				
+				var v = verts[i];
+				v.position = new Vector3(
+					((this.flipHorizontal == true || this.flipHorizontalInternal == true) ? (v.position.x + (rectCenter.x - v.position.x) * 2f) : v.position.x),
+					((this.flipVertical == true || this.flipVerticalInternal == true) ? (v.position.y + (rectCenter.y - v.position.y) * 2f) : v.position.y),
+					v.position.z
+				);
+				verts[i] = v;
 
 			}
 
