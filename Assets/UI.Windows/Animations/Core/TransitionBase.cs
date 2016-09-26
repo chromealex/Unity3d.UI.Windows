@@ -136,29 +136,41 @@ namespace UnityEngine.UI.Windows.Animations {
 		}
 
 		public virtual void SetInState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
-			
-			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+
+			var tag = this.GetTag(window, parameters);
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
 		public virtual void SetOutState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 
-			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+			var tag = this.GetTag(window, parameters);
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 		
 		public virtual void SetResetState(TransitionInputParameters parameters, WindowBase window, WindowComponentBase root) {
 
-			var tag = this.GetInstanceID().ToString() + (root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
+			var tag = this.GetTag(window, parameters);
 			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 		}
 
-		public void Play(WindowBase window, bool forward, System.Action callback) {
+		/*public void Play(WindowAnimationBase transitionBase, WindowBase window, bool forward, System.Action callback) {
 
-			this.Play(window, null, null, forward, callback);
+			var tag = new ME.Tweener.MultiTag() { tag1 = window };//((window != null) ? window.GetInstanceID() : 0).ToString();
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
+
+			this.Play(tag, transitionBase, window, null, null, forward, callback);
+
+		}*/
+
+		public void Play(WindowAnimationBase transitionBase, WindowBase window, TransitionInputParameters parameters, bool forward, System.Action callback) {
+
+			var tag = this.GetTag(window, parameters);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
+
+			this.Play(tag, transitionBase, window, parameters, null, forward, callback);
 
 		}
 
@@ -168,14 +180,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 
-		public void Play(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
+		public void Play(ME.Tweener.MultiTag tag, WindowAnimationBase transitionBase, WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var delay = this.GetDelay(parameters, forward);
-			var tag = (window != null ? "_" + window.GetInstanceID().ToString() : string.Empty) +
-					(parameters != null ? ("_" + parameters.GetInstanceID().ToString()) : string.Empty) +
-					(root != null ? ("_" + root.GetInstanceID().ToString()) : string.Empty);
-
-			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			if (delay > 0f && TweenerGlobal.instance != null) {
 
@@ -194,6 +201,14 @@ namespace UnityEngine.UI.Windows.Animations {
 				this.OnPlay(window, tag, parameters, root, forward, callback);
 
 			}
+
+		}
+
+		private ME.Tweener.MultiTag GetTag(WindowBase window, TransitionInputParameters parameters) {
+
+			//return string.Format("{0}_{1}", (window != null) ? window.GetInstanceID() : 0, (parameters != null) ? parameters.GetInstanceID() : 0);
+
+			return new ME.Tweener.MultiTag() { tag1 = window, tag2 = parameters };
 
 		}
 

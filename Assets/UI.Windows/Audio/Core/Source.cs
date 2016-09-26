@@ -25,6 +25,26 @@ namespace UnityEngine.UI.Windows.Audio {
 
 		}
 
+		public void Mute() {
+
+			foreach (var item in this.instances) {
+
+				item.Value.mute = true;
+
+			}
+
+		}
+
+		public void Unmute() {
+
+			foreach (var item in this.instances) {
+
+				item.Value.mute = false;
+
+			}
+
+		}
+
 		public float GetVolume(ClipType clipType) {
 
 			var volume = 0f;

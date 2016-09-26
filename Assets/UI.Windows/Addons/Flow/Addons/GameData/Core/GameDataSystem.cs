@@ -1,3 +1,6 @@
+#if UNITY_TVOS
+#define STORAGE_NOT_SUPPORTED
+#endif
 using UnityEngine;
 using System.Collections;
 using System.Linq;
@@ -9,11 +12,17 @@ using UnityEngine.UI.Windows.Utilities;
 namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 	public class GameDataSystem : ServiceManager<GameDataSystem> {
-		
+
 		public override string GetServiceName() {
-			
+
+			return GameDataSystem.GetName();
+
+		}
+
+		public static string GetName() {
+
 			return "GameData";
-			
+
 		}
 
 		public static Version DEFAULT_EDITOR_VERSION {
@@ -71,6 +80,22 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 			}
 
 			return output;
+
+		}
+
+		public static void SetVersion(Version version) {
+
+			var list = GameDataSystem.GetVersionsList();
+			for (int i = 0; i < list.Length; ++i) {
+
+				if (list[i] == version) {
+
+					GameDataSystem.SetVersionIndex(i);
+					break;
+
+				}
+
+			}
 
 		}
 
@@ -208,8 +233,9 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 		}
 
 		public static string GetCachePath() {
-			
-			return Application.persistentDataPath + "/GameData.dat";
+
+			var path = Application.persistentDataPath;
+			return string.Format("{0}/GameData.dat", path);
 
 		}
 
@@ -225,18 +251,28 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				GameDataSystem.cacheLoaded = true;
 
 				var path = GameDataSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				if (PlayerPrefs.HasKey(path) == false) return;
+				var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+				
 				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
-
+				
 				var path = GameDataSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				if (PlayerPrefs.HasKey(path) == false) return;
+				var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+
 				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			#if UNITY_EDITOR
@@ -251,8 +287,19 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 				var parsed = CSVParser.ReadCSV(data);
 
-				var defaultVersion = parsed[0][0];
-				GameDataSystem.defaultVersion = new Version(defaultVersion);
+				if (GameDataSystem.currentVersion == default(Version)) {
+
+					var defaultVersion = parsed[0][0];
+					GameDataSystem.currentVersion = new Version(defaultVersion);
+
+					if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
+						
+						WindowSystemLogger.Warning(GameDataSystem.GetName(), string.Format("Default version is used: {0}", GameDataSystem.currentVersion));
+
+					}
+
+				}
+				GameDataSystem.defaultVersion = GameDataSystem.currentVersion;
 
 				var keysCount = 0;
 
@@ -340,26 +387,30 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				#endregion
 
 				var path = GameDataSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				PlayerPrefs.SetString(path, data);
+				#else
 				System.IO.File.WriteAllText(path, data);
+				#endif
 
 				GameDataSystem.currentVersion = GameDataSystem.defaultVersion;
 
-				#if !UNITY_EDITOR
-				if (GameDataSystem.instance.logEnabled == true) {
-				#endif
+				if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
 					
-					Debug.LogFormat("[ GameData ] Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId());
+					WindowSystemLogger.Log(GameDataSystem.GetName(), string.Format("Loaded version {3}. Cache saved to: {0}, Keys: {1}, Versions: {2}, Version: {4}", path, keysCount, verCount, GameDataSystem.GetCurrentVersionId(), GameDataSystem.currentVersion));
 
-				#if !UNITY_EDITOR
 				}
-				#endif
 
 				GameDataSystem.isReady = true;
 
 			} catch(System.Exception ex) {
+				
+				if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
+					
+					// Nothing to do: failed to parse
+					WindowSystemLogger.Error(GameDataSystem.GetName(), string.Format("[ GameData ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
 
-				// Nothing to do: failed to parse
-				Debug.LogError(string.Format("[ GameData ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+				}
 
 				if (loadCacheOnFail == true) {
 

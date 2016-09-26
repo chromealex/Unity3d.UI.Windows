@@ -49,7 +49,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net {
 
 			// check for errors
 			if (www.error != null) {
-				Debug.LogError("WWW Error: " + www.error);
+				//Debug.LogError("WWW Error: " + www.error);
 				callbackFail(www.error);
 
 			} else {

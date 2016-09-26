@@ -60,38 +60,86 @@ namespace UnityEngine.UI.Windows.Components {
 
 		WindowObjectState GetComponentState();
 		void SetComponentState(WindowObjectState state, bool dontInactivate = false);
+		bool IsVisible();
+		bool IsVisibleSelf();
+		RectTransform GetRectTransform();
 
 	}
 
 	public interface IComponent : IComponentElement {
 
+
 	}
 
-	public interface IButtonComponent : ITextComponent, IImageComponent, IComponent {
+	public interface IHoverableComponent : IComponent {
+
+		IHoverableComponent SetSFX(PointerEventState state, Audio.Component data);
+
+		IHoverableComponent SetHoverState(bool state);
+		IHoverableComponent SetHoverOnAnyPointerState(bool state);
+		IHoverableComponent SetCallbackHover(UnityAction<bool> callback);
+		IHoverableComponent RemoveCallbackHover(UnityAction<bool> onHover);
+
+		bool IsHovered();
+		IHoverableComponent SetHoverEnter();
+		IHoverableComponent SetHoverExit();
+
+	}
+
+	public interface IInteractableStateComponent : IWindowNavigation {
+
+		bool IsInteractable();
+
+	}
+
+	public interface IInteractableComponent : IInteractableStateComponent {
+
+		bool IsHoverCursorDefaultOnInactive();
+
+		IInteractableComponent SetEnabledState(bool state);
+		IInteractableComponent SetEnabled();
+		IInteractableComponent SetDisabled();
+
+		IInteractableComponent SetHoverOnAnyButtonState(bool state);
+
+		void Select();
+		Selectable GetSelectable();
+
+		bool IsInteractableAndHasEvents();
+
+	}
+
+	public interface IInteractableControllerComponent : IComponent {
+
+		IInteractableControllerComponent Click();
+
+	}
+
+	public interface IButtonComponent : ITextComponent, IImageComponent, IWindowNavigation, IInteractableControllerComponent, IInteractableComponent {
 		
 		IButtonComponent RemoveAllCallbacks();
 		IButtonComponent RemoveCallback(UnityAction callback);
 		IButtonComponent RemoveCallback(UnityAction<ButtonComponent> callback);
 		IButtonComponent SetCallback(UnityAction callback);
 		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
-		Selectable GetSelectable();
+		IButtonComponent AddCallback(UnityAction callback);
+		IButtonComponent AddCallback(UnityAction<ButtonComponent> callback);
+		void OnClick();
+		IButtonComponent SetButtonColor(Color color);
 		IButtonComponent SetSelectByDefault(bool state);
 		IButtonComponent SetNavigationMode(Navigation.Mode mode);
 
-		IButtonComponent SetEnabledState(bool state);
-		IButtonComponent SetEnabled();
-		IButtonComponent SetDisabled();
-		IButtonComponent SetHoverState(bool state);
-		IButtonComponent SetHoverOnAnyPointerState(bool state);
-		IButtonComponent SetHoverOnAnyButtonState(bool state);
-		IButtonComponent SetCallbackHover(UnityAction<bool> callback);
+	}
 
-		IButtonComponent SetSFX(PointerEventState state, Audio.Component data);
+	public interface IListComponent : IWindowNavigation {
 
-		bool IsInteractable();
+		IListComponent ListMoveUp(int count = 1);
+		IListComponent ListMoveDown(int count = 1);
+		IListComponent ListMoveLeft(int count = 1);
+		IListComponent ListMoveRight(int count = 1);
 
 	}
-	
+
 	public interface ITextComponent : IComponent {
 		
 		ITextComponent SetValue(int value);
@@ -135,37 +183,51 @@ namespace UnityEngine.UI.Windows.Components {
 
 	}
 
-	public interface IImageComponent : IComponent, IAlphaComponent, ILoadableResource {
+	public interface IImageComponent : IComponent, IAlphaComponent, ILoadableResource, IMeshModifier {
 		
-		Texture GetTexture();
-
 		IImageComponent ResetImage();
 
-		IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null);
+		IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null);
 
-		IImageComponent SetImage(Sprite sprite, System.Action onComplete = null);
-		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete = null);
+		IImageComponent SetImage(Sprite sprite);
+		IImageComponent SetImage(Sprite sprite, bool immediately);
+		IImageComponent SetImage(Sprite sprite, System.Action onComplete);
+		IImageComponent SetImage(Sprite sprite, System.Action onComplete, bool immediately);
+		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete);
+		IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete, bool immediately);
 
-		IImageComponent SetImage(Texture texture, System.Action onComplete = null);
-		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete = null);
+		IImageComponent SetImage(Texture texture);
+		IImageComponent SetImage(Texture texture, bool immediately);
+		IImageComponent SetImage(Texture texture, System.Action onComplete);
+		IImageComponent SetImage(Texture texture, System.Action onComplete, bool immediately);
+		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete);
+		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete, bool immediately);
 
 		IImageComponent SetImage(LocalizationKey key, params object[] parameters);
 
-		IImageComponent SetMaterial(Material material);
+		IImageComponent SetMaterial(Material material, bool setMainTexture = false, System.Action callback = null);
 		Color GetColor();
 		void SetColor(Color color);
 		IImageComponent SetPreserveAspectState(bool state);
 
+		Texture GetTexture();
+
+		bool IsHorizontalFlip();
+		bool IsVerticalFlip();
+
 		bool IsMovie();
 		bool GetPlayOnShow();
-		IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null);
+		IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null);
 		IImageComponent SetPlayOnShow(bool state);
 		IImageComponent SetLoop(bool state);
+		bool GetLoop();
 		bool IsPlaying();
 		IImageComponent Play();
 		IImageComponent Play(bool loop);
+		IImageComponent Play(bool loop, System.Action onComplete);
 		IImageComponent Stop();
 		IImageComponent Pause();
+		IImageComponent Rewind(bool pause = true);
 
 		Graphic GetGraphicSource();
 		Image GetImageSource();
@@ -173,7 +235,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	}
 	
-	public interface IProgressComponent {
+	public interface IProgressComponent : IComponent, IWindowNavigation, IInteractableComponent {
 		
 		void SetDuration(float value);
 		void SetMinNormalizedValue(float value);

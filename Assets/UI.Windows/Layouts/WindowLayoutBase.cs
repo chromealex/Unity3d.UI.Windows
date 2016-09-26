@@ -37,9 +37,22 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public T Load<T>(MonoResource resource) where T : WindowComponent {
+
+			return this.Load(resource) as T;
+
+		}
+
+		public WindowComponent Load(MonoResource resource) {
+
+			this.activatorInstance.SetComponent(resource);
+			return this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement) as WindowComponent;
+
+		}
+
 		public WindowComponent Load(WindowComponent component) {
 
-			this.activatorInstance.component = component;
+			this.activatorInstance.SetComponent(component);
 			component.SetComponentState(WindowObjectState.NotInitialized);
 			return this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement) as WindowComponent;
 

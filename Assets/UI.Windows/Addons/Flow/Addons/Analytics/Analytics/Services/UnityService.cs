@@ -20,6 +20,13 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			
 		}
 
+		public override bool IsConnected() {
+
+			// ignore UnityAnalytics
+			return true;
+
+		}
+
 		public override IEnumerator Auth(string key) {
 
 			var rootScreenId = FlowSystem.GetRootWindow();
@@ -86,16 +93,20 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		public override IEnumerator OnEvent(int screenId, string group1, string group2, string group3, int weight) {
 
-			var eventName = string.Format("{0}({1})", FlowSystem.GetWindow(screenId).title, screenId);
+			if (screenId >= 0) {
 
-			UnityEngine.Analytics.Analytics.CustomEvent(eventName, new Dictionary<string, object>() {
+				var eventName = string.Format("{0}({1})", FlowSystem.GetWindow(screenId).title, screenId);
 
-				{ "Group1", group1 },
-				{ "Group2", group2 },
-				{ "Group3", group3 },
-				{ "Weight", weight }
+				UnityEngine.Analytics.Analytics.CustomEvent(eventName, new Dictionary<string, object>() {
 
-			});
+					{ "Group1", group1 },
+					{ "Group2", group2 },
+					{ "Group3", group3 },
+					{ "Weight", weight }
+
+				});
+
+			}
 
 			yield return false;
 
@@ -103,14 +114,18 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		public override IEnumerator OnScreenTransition(int index, int screenId, int toScreenId, bool popup) {
 
-			UnityEngine.Analytics.Analytics.CustomEvent("Screen Transition", new Dictionary<string, object>() {
-				
-				{ "From", string.Format("{0} (ID: {1})", FlowSystem.GetWindow(screenId).title, screenId) },
-				{ "To", string.Format("{0} (ID: {1})", FlowSystem.GetWindow(toScreenId).title, toScreenId) },
-				{ "Path", string.Format("Path Index: {0}", index) },
-				{ "Popup", string.Format("Popup: {0}", popup) }
-				
-			});
+			if (screenId >= 0 && toScreenId >= 0) {
+					
+				UnityEngine.Analytics.Analytics.CustomEvent("Screen Transition", new Dictionary<string, object>() {
+					
+					{ "From", string.Format("{0} (ID: {1})", FlowSystem.GetWindow(screenId).title, screenId) },
+					{ "To", string.Format("{0} (ID: {1})", FlowSystem.GetWindow(toScreenId).title, toScreenId) },
+					{ "Path", string.Format("Path Index: {0}", index) },
+					{ "Popup", string.Format("Popup: {0}", popup) }
+					
+				});
+
+			}
 
 			yield return false;
 

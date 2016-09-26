@@ -1,3 +1,6 @@
+#if UNITY_TVOS && !UNITY_EDITOR
+#define STORAGE_NOT_SUPPORTED
+#endif
 using UnityEngine;
 using System.Collections;
 using System.Linq;
@@ -179,7 +182,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		}
 
 		public static void SetLanguageIndex(int index) {
-
+			
 			LocalizationSystem.currentLanguage = LocalizationSystem.GetLanguagesList()[index];
 
 			WindowSystem.ForEachWindow((w) => {
@@ -256,6 +259,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		}
 
+		public static int GetCurrentLanguageIndex() {
+
+			return System.Array.IndexOf(LocalizationSystem.languages, LocalizationSystem.currentLanguage);
+
+		}
+
 		public static int GetDefaultLanguageIndex() {
 
 			return System.Array.IndexOf(LocalizationSystem.languages, LocalizationSystem.defaultLanguage);
@@ -301,8 +310,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				return string.Format(value, parameters);
 
 			} else {
+				
+				if (LocalizationSystem.instance.logEnabled == true) {
+					
+					WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Wrong parameters length in key `{0}`", key.key));
 
-				WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Wrong parameters length in key `{0}`", key.key));
+				}
 
 			}
 
@@ -333,8 +346,9 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		}
 
 		public static string GetCachePath() {
-			
-			return string.Format("{0}/Localization.dat", Application.persistentDataPath);
+
+			var path = Application.persistentDataPath;
+			return string.Format("{0}/Localization.dat", path);
 
 		}
 
@@ -342,7 +356,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		private static bool cacheLoaded = false;
 		#endif
 		public static void TryToLoadCache() {
-
+			
 			#if UNITY_EDITOR
 			if (LocalizationSystem.cacheLoaded == true) return;
 			if (Application.isPlaying == false) {
@@ -350,18 +364,30 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				LocalizationSystem.cacheLoaded = true;
 
 				var path = LocalizationSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				var text = string.Empty;
+				//if (PlayerPrefs.HasKey(path) == false) return;
+				//var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+				
 				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
 
 				var path = LocalizationSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				var text = string.Empty;
+				//if (PlayerPrefs.HasKey(path) == false) return;
+				//var text = PlayerPrefs.GetString(path);
+				#else
 				if (System.IO.File.Exists(path) == false) return;
-
 				var text = System.IO.File.ReadAllText(path);
+				#endif
+
 				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			#if UNITY_EDITOR
@@ -449,26 +475,30 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				#endregion
 
 				var path = LocalizationSystem.GetCachePath();
+				#if STORAGE_NOT_SUPPORTED
+				//PlayerPrefs.SetString(path, data);
+				#else
 				System.IO.File.WriteAllText(path, data);
+				#endif
 
 				LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
 
-				#if !UNITY_EDITOR
-				if (LocalizationSystem.instance.logEnabled == true) {
-				#endif
+				if (LocalizationSystem.instance == null || LocalizationSystem.instance.logEnabled == true) {
 					
 					WindowSystemLogger.Log(LocalizationSystem.GetName(), string.Format("Loaded version {3}. Cache saved to: {0}, Keys: {1}, Languages: {2}", path, keysCount, langCount, LocalizationSystem.GetCurrentVersionId()));
 
-				#if !UNITY_EDITOR
 				}
-				#endif
 
 				LocalizationSystem.isReady = true;
 
 			} catch(System.Exception ex) {
 
-				// Nothing to do: failed to parse
-				WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+				if (LocalizationSystem.instance == null || LocalizationSystem.instance.logEnabled == true) {
+					
+					// Nothing to do: failed to parse
+					WindowSystemLogger.Error(LocalizationSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+
+				}
 
 				if (loadCacheOnFail == true) {
 

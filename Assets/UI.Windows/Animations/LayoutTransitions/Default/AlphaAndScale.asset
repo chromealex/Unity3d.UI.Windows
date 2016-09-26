@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b68f0fe583ec4c8ba04935d9de58689, type: 3}
+  m_Name: AlphaAndScale
+  m_EditorClassIdentifier: 
+  transitions:
+  - transition: {fileID: 11400000, guid: f72d1ca2ace8c4936b8efe05c22c25c9, type: 2}
+  - transition: {fileID: 11400000, guid: 546d187eb51404dbc91b6627bef9a531, type: 2}

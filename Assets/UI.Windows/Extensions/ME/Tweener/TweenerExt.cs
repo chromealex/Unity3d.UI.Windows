@@ -123,8 +123,9 @@ public static class TweenerExt {
 	public static ME.Tweener.Tween<Transform> addTweenScale(this ME.Tweener tweener, Transform transform, float duration, Vector3 end) {
 		return tweener.addTweenScale(transform, duration, transform.localScale, end);
 	}
-	
+
 	public static ME.Tweener.Tween<Transform> addTweenScaleXY(this ME.Tweener tweener, Transform transform, float duration, Vector3 start, Vector3 end) {
+		
 		return tweener.addTween(transform, duration, 0.0f, 1.0f)
 			.onUpdate((tr, t) => {
 				

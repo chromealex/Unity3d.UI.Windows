@@ -25,7 +25,30 @@ namespace UnityEngine.UI.Windows {
 
 		[SerializeField][HideInInspector]
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
-		
+
+		private RectTransform _rectTransform;
+
+		public RectTransform GetRectTransform() {
+
+			if (this._rectTransform == null) this._rectTransform = this.transform as RectTransform;
+			return this._rectTransform;
+
+		}
+
+		public WindowObjectElement GetRootComponent() {
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+
+				if (this.rootComponent == null && this.transform.parent != null) this.rootComponent = ME.Utilities.FindReferenceParent<WindowObjectElement>(this.transform.parent.gameObject);
+
+			}
+			#endif
+
+			return this.rootComponent;
+
+		}
+
 		/// <summary>
 		/// Gets the state of the component.
 		/// </summary>
@@ -36,9 +59,35 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		/// <summary>
+		/// Determines whether this instance is in Showing/Shown state.
+		/// </summary>
+		/// <returns><c>true</c> if this instance is visible; otherwise, <c>false</c>.</returns>
 		public bool IsVisible() {
 
-			return this.currentState == WindowObjectState.Shown || this.currentState == WindowObjectState.Showing;
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+
+				return this.gameObject.activeInHierarchy;
+
+			}
+			#endif
+
+			return this.IsVisibleSelf() == true && (this.rootComponent != null ? this.rootComponent.IsVisible() : true);
+
+		}
+
+		public bool IsVisibleSelf() {
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+
+				return this.gameObject.activeSelf;
+
+			}
+			#endif
+
+			return (this.currentState == WindowObjectState.Shown || this.currentState == WindowObjectState.Showing);
 
 		}
 
@@ -68,6 +117,33 @@ namespace UnityEngine.UI.Windows {
 		public virtual bool NeedToInactive() {
 
 			return this.setInactiveOnHiddenState;
+
+		}
+
+		public T GetSubComponentInChildren<T>(System.Predicate<T> predicate = null) where T : IComponent {
+			
+			for (int i = 0; i < this.subComponents.Count; ++i) {
+
+				var component = this.subComponents[i];
+				if (component is T) {
+
+					var result = (T)(component as IComponent);
+					if (predicate == null || predicate(result) == true) return result;
+
+				}
+
+				var comp = component.GetSubComponentInChildren<T>(predicate);
+				if (comp != null) return comp;
+
+			}
+
+			return default(T);
+
+		}
+
+		public T GetSubComponent<T>(System.Predicate<T> predicate = null) where T : WindowObjectElement {
+
+			return this.subComponents.FirstOrDefault(x => x is T && (predicate == null || predicate(x as T))) as T;
 
 		}
 
@@ -235,7 +311,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void DoShowBegin(AppearanceParameters parameters) {
-
+			
 			this.SetComponentState(WindowObjectState.Showing);
 			this.OnShowBegin();
 			this.OnShowBegin(parameters);
@@ -285,7 +361,15 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-		
+
+		public virtual void DoWindowUnload() {
+
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowUnload();
+
+			this.OnWindowUnload();
+
+		}
+
 		public virtual void OnInit() {}
 		public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
@@ -296,7 +380,8 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideBegin() {}
 		public virtual void OnShowBegin(AppearanceParameters parameters) {}
 		public virtual void OnHideBegin(AppearanceParameters parameters) {}
-		
+		public virtual void OnWindowUnload() {}
+
 		[System.Obsolete("Use OnShowBegin with AppearanceParameters or OnShowBegin without parameters")]
 		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
 		[System.Obsolete("Use OnHideBegin with AppearanceParameters or OnHideBegin without parameters")]
@@ -420,7 +505,7 @@ namespace UnityEngine.UI.Windows {
         /// Unregisters the sub component.
         /// </summary>
         /// <param name="subComponent">Sub component.</param>
-		public void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null) {
+		public virtual void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null, bool immediately = true) {
 
 #if UNITY_EDITOR
 			if (Application.isPlaying == false) return;
@@ -433,30 +518,30 @@ namespace UnityEngine.UI.Windows {
 			subComponent.rootComponent = null;
 			this.subComponents.Remove(subComponent);
 
-			switch (this.GetComponentState()) {
+			switch (subComponent.GetComponentState()) {
 
+				case WindowObjectState.Showing:
                 case WindowObjectState.Shown:
 
                     // after OnShowEnd
-					subComponent.OnWindowInactive();
-					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
-
-						subComponent.DoHideEnd(AppearanceParameters.Default());
-                        subComponent.DoDeinit();
-
-						if (callback != null) callback();
-
-                    }));
+					subComponent.DoWindowClose();
+					subComponent.DoWindowInactive();
+					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					subComponent.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					subComponent.DoDeinit();
 
 					sendCallback = false;
+					if (callback != null) callback();
 
                     break;
 
                 case WindowObjectState.Hiding:
 
-                    // after OnHideBegin
-					subComponent.OnWindowInactive();
-					subComponent.DoHideBegin(AppearanceParameters.Default());
+					// after OnHideBegin
+					subComponent.DoWindowClose();
+					subComponent.DoWindowInactive();
+					subComponent.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					subComponent.DoDeinit();
 
 					sendCallback = false;
 					if (callback != null) callback();
@@ -465,18 +550,13 @@ namespace UnityEngine.UI.Windows {
 
                 case WindowObjectState.Hidden:
 
-                    // after OnHideEnd
-					subComponent.OnWindowInactive();
-					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(() => {
-
-						subComponent.DoHideEnd(AppearanceParameters.Default());
-						subComponent.DoDeinit();
-						
-						if (callback != null) callback();
-
-					}));
+					// after OnHideEnd
+					subComponent.DoWindowClose();
+					subComponent.DoWindowInactive();
+					subComponent.DoDeinit();
 
 					sendCallback = false;
+					if (callback != null) callback();
 
                     break;
 
@@ -486,24 +566,17 @@ namespace UnityEngine.UI.Windows {
 
         }
 
+		/*public virtual void OnDestroy() {
+
+			if (this.rootComponent != null) this.rootComponent.UnregisterSubComponent(this);
+
+		}*/
+
 		#if UNITY_EDITOR
-		/// <summary>
-		/// Raises the validate event. Editor Only.
-		/// </summary>
-		public void OnValidate() {
+		public override void OnValidateEditor() {
 
-			if (Application.isPlaying == true) return;
+			base.OnValidateEditor();
 
-			this.OnValidateEditor();
-			
-		}
-
-		/// <summary>
-		/// Raises the validate editor event.
-		/// You can override this method but call it's base.
-		/// </summary>
-		public virtual void OnValidateEditor() {
-			
 			this.Update_EDITOR();
 			
 		}
@@ -543,6 +616,19 @@ namespace UnityEngine.UI.Windows {
 			
 			this.subComponents = this.subComponents.Where((c) => c != null).ToList();
 			
+		}
+
+		public virtual void OnDrawGizmos() {
+
+			//this.OnDrawGUI_EDITOR(false, false);
+
+		}
+
+		public virtual void OnDrawGizmosSelected() {
+
+			/*var selected = (UnityEditor.Selection.activeGameObject == this.gameObject);
+			this.OnDrawGUI_EDITOR(selected, true);*/
+
 		}
 		#endif
 

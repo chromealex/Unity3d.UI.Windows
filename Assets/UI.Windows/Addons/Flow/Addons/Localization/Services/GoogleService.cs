@@ -87,6 +87,9 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 			onResult.Invoke(new LocalizationResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.text });
 
+			www.Dispose();
+			www = null;
+
 		}
 		#endregion
 

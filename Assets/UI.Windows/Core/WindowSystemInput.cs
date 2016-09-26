@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI.Windows.Components.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI.Windows {
 
@@ -12,7 +13,7 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
-	public class WindowSystemInput : MonoBehaviour {
+	public class WindowSystemInput : BaseInputModule {
 
 		public const string SCROLL_AXIS = "Mouse ScrollWheel";
 		
@@ -21,26 +22,46 @@ namespace UnityEngine.UI.Windows {
 
 		public static ComponentEvent onPointerUp = new ComponentEvent();
 		public static ComponentEvent onPointerDown = new ComponentEvent();
+		public static ComponentEvent onAnyKeyDown = new ComponentEvent();
 
 		private static PointerEventData scrollEvent;
 
 		private static WindowSystemInput instance;
 
-		public void Awake() {
+		protected override void Awake() {
+
+			base.Awake();
 
 			WindowSystemInput.instance = this;
 
 		}
 
-		public void Start() {
+		protected override void Start() {
+
+			base.Start();
 
 			WindowSystemInput.scrollEvent = new PointerEventData(EventSystem.current);
 
+			#if UNITY_TVOS
+			UnityEngine.Apple.TV.Remote.allowExitToHome = false;
+			UnityEngine.Apple.TV.Remote.touchesEnabled = true;
+			#endif
+
 		}
 
-		public void LateUpdate() {
+		public override bool IsModuleSupported() {
+
+			return false;
+
+		}
+
+		public override void Process() {
 			
-			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
+		}
+
+		public override void UpdateModule() {
+			
+			#if UNITY_STANDALONE || UNITY_TVOS || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_EDITOR
 			if (Input.GetMouseButtonDown(0) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(0) == true) WindowSystemInput.onPointerUp.Invoke();
 			if (Input.GetMouseButtonDown(1) == true) WindowSystemInput.onPointerDown.Invoke();
@@ -48,6 +69,40 @@ namespace UnityEngine.UI.Windows {
 			if (Input.GetMouseButtonDown(2) == true) WindowSystemInput.onPointerDown.Invoke();
 			if (Input.GetMouseButtonUp(2) == true) WindowSystemInput.onPointerUp.Invoke();
 			#endif
+
+			#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8
+			if (Input.touchCount > 0) {
+
+				for (int i = 0; i < Input.touchCount; ++i) {
+
+					var touch = Input.GetTouch(i);
+					if (touch.phase == TouchPhase.Began) {
+
+						WindowSystemInput.onPointerDown.Invoke();
+
+					}
+
+					if (touch.phase == TouchPhase.Ended ||
+						touch.phase == TouchPhase.Canceled) {
+
+						WindowSystemInput.onPointerUp.Invoke();
+
+					}
+
+				}
+
+			}
+			#endif
+
+			if (Input.anyKeyDown == true ||
+				Input.touchCount > 0 ||
+				Input.GetMouseButtonDown(0) == true ||
+				Input.GetMouseButtonDown(1) == true ||
+				Input.GetMouseButtonDown(2) == true) {
+
+				WindowSystemInput.onAnyKeyDown.Invoke();
+
+			}
 
 			if (Input.GetKeyDown(KeyCode.Tab) == true) {
 
@@ -65,6 +120,28 @@ namespace UnityEngine.UI.Windows {
 
 				}
 				
+			}
+
+		}
+
+		public static void Select(IInteractableComponent button) {
+
+			if (button != null) {
+
+				var sel = button.GetSelectable();
+				if (sel != null) sel.Select();
+
+			}
+
+		}
+
+		public static void Deselect(IInteractableComponent button) {
+
+			if (button != null) {
+
+				var sel = button.GetSelectable();
+				if (sel != null) sel.OnDeselect(null);
+
 			}
 
 		}

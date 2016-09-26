@@ -42,7 +42,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public void OnHover(Transform worldElement, Vector3 worldPoint, Camera gameCamera, Vector3 offset = default(Vector3)) {
 			
-			if (this.animationRoot != null) this.animationRoot.SetInState();
+			//if (this.animationRoot != null) this.animationRoot.SetInState();
 
 			if (this.tempHud == null) this.tempHud = this.root.GetComponent<HUDItem>();
 			if (this.tempHud == null) this.tempHud = this.root.gameObject.AddComponent<HUDItem>();
@@ -50,7 +50,7 @@ namespace UnityEngine.UI.Windows.Types {
 			this.tempHud.InitHUD(worldElement, this.workCamera, gameCamera, offset);
 			this.tempHud.enabled = true;
 
-			if (this.animationRoot != null) this.animationRoot.SetResetState();
+			//if (this.animationRoot != null) this.animationRoot.SetResetState();
 			
 		}
 
@@ -60,7 +60,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 			if (this.tempHud != null) this.tempHud.enabled = false;
 
-			if (this.animationRoot != null) this.animationRoot.SetInState();
+			//if (this.animationRoot != null) this.animationRoot.SetInState();
 
 			var canvas = uiElement.root.GetComponentsInChildren<Canvas>()[0];
 			uiElement.root.GetComponentInChildren<Canvas>();
@@ -68,7 +68,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 			this.ApplyPosition();
 
-			if (this.animationRoot != null) this.animationRoot.SetResetState();
+			//if (this.animationRoot != null) this.animationRoot.SetResetState();
 
 			if (this.layoutRoot != null) {
 
@@ -292,13 +292,13 @@ namespace UnityEngine.UI.Windows.Types {
 
 		protected override void DoLayoutActive() {
 
-			this.animationRoot.DoWindowActive();
+			if (this.animationRoot != null) this.animationRoot.DoWindowActive();
 
 		}
 
 		protected override void DoLayoutInactive() {
 
-			this.animationRoot.DoWindowInactive();
+			if (this.animationRoot != null) this.animationRoot.DoWindowInactive();
 
 		}
 
@@ -365,9 +365,9 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 			
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			this.Update_EDITOR();
 			

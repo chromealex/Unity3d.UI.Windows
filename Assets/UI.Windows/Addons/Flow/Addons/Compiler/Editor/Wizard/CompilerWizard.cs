@@ -14,12 +14,20 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 
 		public static CompilerWizard ShowEditor(System.Action onClose, System.Action onComplete) {
 
+			var rootX = 0f;
+			var rootY = 0f;
+			var rootWidth = 1000f;
+			var rootHeight = 1000f;
+
 			var rootWindow = EditorWindow.focusedWindow;
-			
-			var rootX = rootWindow.position.x;
-			var rootY = rootWindow.position.y;
-			var rootWidth = rootWindow.position.width;
-			var rootHeight = rootWindow.position.height;
+			if (rootWindow != null) {
+
+				rootX = rootWindow.position.x;
+				rootY = rootWindow.position.y;
+				rootWidth = rootWindow.position.width;
+				rootHeight = rootWindow.position.height;
+
+			}
 
 			var width = 600f;
 			var height = 389f;

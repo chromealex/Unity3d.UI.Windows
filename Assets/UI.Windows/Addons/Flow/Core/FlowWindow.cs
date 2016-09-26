@@ -148,8 +148,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		public UnityEditor.Editor audioEditor;
 		#endif
 
+		//[SerializeField]
+		//private WindowBase screen;
 		[SerializeField]
-		private WindowBase screen;
+		private WindowBase[] screens;
+		public int selectedScreenIndex = 0;
 
 		public bool isDirty = false;
 
@@ -290,6 +293,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		}
 
 		#if UNITY_EDITOR
+		private WindowBase editorCacheScreen;
 		private IPreviewEditor editorCache;
 		public bool OnPreviewGUI(Rect rect, GUIStyle buttonStyle, GUIStyle background, bool drawInfo, bool selectable, System.Action onCreateScreen, System.Action onCreateLayout) {
 
@@ -307,10 +311,11 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					var layout = screen.layout.layout;
 					if (layout != null) {
 
-						if (this.editorCache == null)
-							this.editorCache = UnityEditor.Editor.CreateEditor(layout) as IPreviewEditor;
-						if (this.editorCache != null)
-							this.editorCache.OnPreviewGUI(Color.white, rect, background, drawInfo, selectable);
+						if (this.editorCacheScreen != screen) this.editorCache = null;
+						this.editorCacheScreen = screen;
+
+						if (this.editorCache == null) this.editorCache = UnityEditor.Editor.CreateEditor(layout) as IPreviewEditor;
+						if (this.editorCache != null) this.editorCache.OnPreviewGUI(Color.white, rect, background, drawInfo, selectable);
 
 						if (WindowLayoutElement.waitForComponentConnectionTemp == true) {
 
@@ -381,20 +386,30 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		}
 		#endif
 
-		public void SetScreen(WindowBase screen) {
+		public void SetScreens(List<WindowBase> screens) {
 
-			this.screen = screen;
+			this.screens = screens.ToArray();
+
+			#if UNITY_EDITOR
+			UnityEditor.EditorUtility.SetDirty(this);
+			#endif
 
 		}
 
-		public WindowBase GetScreen() {
+		public WindowBase[] GetScreens() {
 
+			return this.screens;
+
+		}
+
+		public WindowBase GetScreen(bool runtime = false) {
+			
 			if (this.storeType == StoreType.ReUseScreen) {
 
 				var win = FlowSystem.GetWindow(this.screenWindowId);
 				if (win == null) return null;
 
-				return win.GetScreen();
+				return win.GetScreen(runtime);
 
 			}
 
@@ -406,14 +421,61 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					var win = FlowSystem.GetWindow(func.functionExitId);
 					if (win == null) return null;
 
-					return win.GetScreen();
+					return win.GetScreen(runtime);
 
 				}
 
 			}
 
-			return this.screen;
-			
+			if (this.screens == null || this.screens.Length == 0) {
+
+				#if UNITY_EDITOR
+				if (Application.isPlaying == false) {
+
+					this.RefreshScreen();
+
+				}
+				#endif
+
+				if (this.screens == null) return null;
+
+				return this.screens.FirstOrDefault();
+
+			}
+
+			if (runtime == true) {
+
+				WindowBase target = null;
+				for (int i = 0; i < this.screens.Length; ++i) {
+
+					var screen = this.screens[i];
+					if (screen.targetPreferences.GetRunOnAnyTarget() == false) {
+
+						if (screen.targetPreferences.IsValid() == true) {
+
+							target = screen;
+							break;
+
+						}
+
+					} else {
+
+						target = screen;
+
+					}
+
+				}
+
+				return target;
+
+				//var screen = this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == false && x.targetPreferences.IsValid() == true);
+				//if (screen == null) return this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == true);
+
+			}
+
+			this.selectedScreenIndex = Mathf.Clamp(this.selectedScreenIndex, 0, this.screens.Length - 1);
+			return this.screens[this.selectedScreenIndex];
+
 		}
 
 		public WindowLayoutElement GetLayoutComponent(LayoutTag tag) {
@@ -901,30 +963,27 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 			if (window.compiled == true) {
 
-				UnityEditor.Selection.activeObject = UnityEditor.AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
-				UnityEditor.EditorGUIUtility.PingObject(UnityEditor.Selection.activeObject);
-				
-				window.SetCompletedState(0, CompletedState.NotReady);
-				
+				var list = new List<WindowBase>();
+
 				var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
 				foreach (var file in files) {
 					
 					var path = UnityEditor.AssetDatabase.GUIDToAssetPath(file);
-					
 					var go = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
 					if (go != null) {
 						
 						var screen = go.GetComponent<WindowBase>();
 						if (screen != null) {
-							
-							window.SetScreen(screen);
-							window.SetCompletedState(0, CompletedState.Ready);
+
+							list.Add(screen);
 
 						}
 
 					}
 
 				}
+
+				window.SetScreens(list);
 
 			}
 
@@ -947,12 +1006,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 					window.compiledDirectory = Path.GetDirectoryName(UnityEditor.AssetDatabase.GetAssetPath(FlowSystem.GetData())) + "/" + window.compiledNamespace.Replace(FlowSystem.GetData().namespaceName, string.Empty) + "/" + window.compiledNamespace.Replace(".", "/");
 					
 				}
-				
+
+				this.RefreshScreen();
+
 				UnityEditor.Selection.activeObject = UnityEditor.AssetDatabase.LoadAssetAtPath(window.compiledDirectory.Trim('/'), typeof(Object));
 				UnityEditor.EditorGUIUtility.PingObject(UnityEditor.Selection.activeObject);
 
 				window.SetCompletedState(0, CompletedState.NotReady);
-				
+
 				var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
 				foreach (var file in files) {
 					
@@ -964,7 +1025,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 						var screen = go.GetComponent<WindowBase>();
 						if (screen != null) {
 							
-							window.SetScreen(screen);
 							window.SetCompletedState(0, CompletedState.Ready);
 							
 							var lWin = screen as LayoutWindowType;

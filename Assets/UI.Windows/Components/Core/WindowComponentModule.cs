@@ -12,6 +12,10 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
+		public virtual void ValidateTexture(Texture texture) {}
+
+		public virtual void ValidateMaterial(Material material) {}
+
 		#if UNITY_EDITOR
 		public virtual void OnValidateEditor() {
 

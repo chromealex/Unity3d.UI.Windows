@@ -7,7 +7,17 @@ namespace UnityEngine.UI.Windows {
 
 	[System.Serializable]
 	public class MonoResource : ResourceBase {
-		
+
+		protected override bool canBeUnloaded {
+
+			get {
+
+				return false;
+
+			}
+
+		}
+
 		#if UNITY_EDITOR
 		//[HideInInspector]
 		public MonoBehaviour tempResource;
@@ -19,7 +29,13 @@ namespace UnityEngine.UI.Windows {
 			this.tempResource = null;
 			
 		}
-		
+
+		public override void Validate() {
+
+			this.Validate(this.tempResource);
+
+		}
+
 		public override void Validate(Object item) {
 			
 			if (item == null) {
@@ -30,7 +46,12 @@ namespace UnityEngine.UI.Windows {
 					
 				}
 				
-				if (item == null) return;
+				if (item == null) {
+
+					this.Reset();
+					return;
+
+				}
 				
 			}
 			

@@ -15,6 +15,12 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		}
 
+		public override bool IsConnected() {
+
+			return true;
+
+		}
+
 		public void OnApplicationQuit() {
 
 			//if (this.googleAnalytics == null) return;

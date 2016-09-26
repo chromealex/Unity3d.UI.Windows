@@ -39,12 +39,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.editor = editor;
 
 			if (this.skin == null) this.skin = Resources.Load<GUISkin>(string.Format("UI.Windows/Flow/Styles/{0}", (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight")));
-			if (this.splash == null) this.splash = Resources.Load<Texture>("UI.Windows/Flow/Splash");
+			if (this.splash == null) this.splash = Resources.Load<Texture>(EditorGUIUtility.isProSkin == true ? "UI.Windows/Flow/Splash_Pro" : "UI.Windows/Flow/Splash");
 
 		}
 
 		public bool Draw() {
-
+			
 			var result = true;
 			var hasData = FlowSystem.HasData();
 
@@ -148,8 +148,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			this.editor.BeginWindows();
 
 			this.editor.DrawBackground();
-			
-			if (this.splash == null) this.splash = Resources.Load<Texture>("UI.Windows/Flow/Splash");
+
+			if (this.splash == null) return;
 
 			var rect = FlowSystemEditor.GetCenterRect(this.editor.position, this.splash.width, this.splash.height);
 			
@@ -213,6 +213,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			});
 			
 			GUILayout.Label("1. Select the project folder:", darkLabel);
+			EditorGUILayout.HelpBox("It is strongly recommended to create new project in Resources folder!", MessageType.Warning);
 			GUILayout.BeginHorizontal(GUILayout.Height(30f));
 			{
 

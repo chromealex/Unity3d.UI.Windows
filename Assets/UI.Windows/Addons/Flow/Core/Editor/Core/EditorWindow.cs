@@ -2828,6 +2828,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							});
 
+							var k = 0;
+							for (int i = 0; i < window.GetScreens().Length; ++i) {
+
+								var index = i;
+								menu.AddItem(new GUIContent(string.Format("Targets/Target {0}", ++k)), on: (window.selectedScreenIndex == index), func: () => {
+
+									window.selectedScreenIndex = index;
+									EditorUtility.SetDirty(window);
+
+								});
+
+							}
+
 						}
 
 						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScene(window); });

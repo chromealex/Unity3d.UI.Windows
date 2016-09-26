@@ -15,6 +15,25 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 		}
 
+		public static bool IsConnected() {
+
+			var services = Analytics.GetServices<IAnalyticsService>();
+			var result = true;
+			for (int i = 0; i < services.Count; ++i) {
+
+				if (services[i].IsConnected() == false) {
+					
+					result = false;
+					break;
+
+				}
+
+			}
+
+			return result;
+
+		}
+
 		public override AuthKeyPermissions GetAuthPermission() {
 
 			return AuthKeyPermissions.Analytics;

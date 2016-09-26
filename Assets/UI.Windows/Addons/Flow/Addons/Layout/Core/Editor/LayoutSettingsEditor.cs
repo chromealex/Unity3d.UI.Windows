@@ -293,6 +293,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			var fixedScaleSize = property.FindPropertyRelative("fixedScaleResolution");
 			var matchWidthOrHeight = property.FindPropertyRelative("matchWidthOrHeight");
 			var layoutPreferences = property.FindPropertyRelative("layoutPreferences");
+			var allowCustomLayoutPreferences = property.FindPropertyRelative("allowCustomLayoutPreferences");
 			var layout = property.FindPropertyRelative("layout");
 			
 			if (EditorGUI.PropertyField(position, property, label, false) == true) {
@@ -378,7 +379,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 								}
 
 							}
-							
+
+							EditorGUILayout.PropertyField(allowCustomLayoutPreferences, new GUIContent("Allow Custom Layout Preferences"));
+
 							layoutSource.SetScale(mode, fixedScaleSize.vector2Value, matchWidthOrHeight.floatValue);
 							
 						}

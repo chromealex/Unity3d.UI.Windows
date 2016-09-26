@@ -47,6 +47,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		[System.NonSerialized]
 		private int reconnectDelay = 5;
 
+		public override bool IsConnected() {
+
+			return this.net.Connected();
+
+		}
 
 		#if UNITY_EDITOR
 		public void Update() {

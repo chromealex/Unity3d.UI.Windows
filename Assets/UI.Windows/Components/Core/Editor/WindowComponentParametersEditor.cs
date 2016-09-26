@@ -20,15 +20,21 @@ namespace UnityEditor.UI.Windows.Components {
 		private WindowComponentParametersBase parameters;
 		private FieldInfo[] fields;
 		private SerializedProperty[] properties;
-		private ulong[] values;
+		private long[] values;
 		private float referenceHeight;
 
 		public void OnEnable() {
 
+			this.VerifyParameters();
+
+		}
+
+		private void VerifyParameters() {
+
 			this.parameters = this.target as WindowComponentParametersBase;
 			this.fields = this.parameters.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
 
-			this.values = new ulong[this.fields.Length];
+			this.values = new long[this.fields.Length];
 			this.properties = new SerializedProperty[this.fields.Length];
 			for (int i = 0; i < this.properties.Length; ++i) {
 
@@ -56,7 +62,7 @@ namespace UnityEditor.UI.Windows.Components {
 
 		public override void OnInspectorGUI() {
 
-			EditorGUILayout.HelpBox("Do not destroy this object", MessageType.Info);
+			EditorGUILayout.HelpBox("Do not destroy this object", MessageType.Warning);
 
 			/*if (this.targets.Length != 1) {
 
@@ -73,6 +79,8 @@ namespace UnityEditor.UI.Windows.Components {
 		}
 
 		public override void OnParametersGUI(Rect rect) {
+
+			this.VerifyParameters();
 
 			if (this == null || this.serializedObject == null) return;
 
@@ -98,6 +106,20 @@ namespace UnityEditor.UI.Windows.Components {
 				var offset = height - this.referenceHeight;
 
 				GUI.enabled = state;
+
+				if (state == true) {
+
+					var bRect = new Rect(rect);
+					bRect.height = height;
+
+					var style = new GUIStyle(EditorStyles.label);
+					style.normal.background = Texture2D.whiteTexture;
+					var oldColor = GUI.backgroundColor;
+					GUI.backgroundColor = new Color(1f, 1f, 1f, 0.2f);
+					GUI.Box(bRect, string.Empty, style);
+					GUI.backgroundColor = oldColor;
+
+				}
 
 				var cRect = new Rect(rect);
 				cRect.x += toggleWidth;

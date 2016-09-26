@@ -17,6 +17,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 		IEnumerator SetUserGender(User.Gender gender);
 		IEnumerator SetUserBirthYear(int birthYear);
 
+		bool IsConnected();
+
 		#if UNITY_EDITOR
 		void GetScreen(int screenId, UserFilter filter, System.Action<ScreenResult> onResult);
 		void GetScreenTransition(int index, int screenId, int toScreenId, UserFilter filter, System.Action<ScreenResult> onResult);
@@ -76,6 +78,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 			yield return false;
 
 		}
+
+		public abstract bool IsConnected();
 
 		#if UNITY_EDITOR
 		public virtual void GetScreen(int screenId, UserFilter filter, System.Action<ScreenResult> onResult) {

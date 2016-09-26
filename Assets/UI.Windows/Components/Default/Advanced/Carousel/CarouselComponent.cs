@@ -9,6 +9,7 @@ namespace UnityEngine.UI.Windows.Components {
 		void OnSelect(int index, System.Action<int> callback);
 		void OnElementSelected(int index);
 		void OnElementDeselected(int index);
+		void SetCarouselAlpha(float value);
 
 	};
 
@@ -19,7 +20,8 @@ namespace UnityEngine.UI.Windows.Components {
 			Vertical
 		};
 
-		GridLayoutGroup f;
+		public bool interactable = true;
+
 		public RectTransform contentRect;
 		public float value = 0f;
 
@@ -48,6 +50,18 @@ namespace UnityEngine.UI.Windows.Components {
 		private float visualCount;
 		private float lastValue = -1f;
 
+		public void SetDisabled() {
+
+			this.interactable = false;
+
+		}
+
+		public void SetEnabled() {
+
+			this.interactable = true;
+
+		}
+
 		public override void OnNewItem(WindowComponent instance) {
 
 			base.OnNewItem(instance);
@@ -61,6 +75,90 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			this.ArrangeItems();
+
+		}
+
+		public override bool IsNavigationPreventChildEvents(NavigationSide side) {
+			/*
+			if (this.axis == Axis.Horizontal) {
+
+				if (side == NavigationSide.Left ||
+					side == NavigationSide.Right) return true;
+
+			} else  if (this.axis == Axis.Vertical) {
+
+				if (side == NavigationSide.Up ||
+					side == NavigationSide.Down) return true;
+				
+			}*/
+
+			return false;
+
+		}
+
+		public override bool IsNavigationControlledSide(NavigationSide side) {
+
+			if (this.axis == Axis.Horizontal) {
+
+				if (side == NavigationSide.Left ||
+					side == NavigationSide.Right) return true;
+				
+			} else  if (this.axis == Axis.Vertical) {
+
+				if (side == NavigationSide.Up ||
+					side == NavigationSide.Down) return true;
+				
+			}
+
+			return false;
+
+		}
+
+		public override void OnNavigateUp() {
+
+			base.OnNavigateUp();
+
+			if (this.axis == Axis.Vertical) {
+
+				this.MovePrev();
+
+			}
+
+		}
+
+		public override void OnNavigateDown() {
+
+			base.OnNavigateDown();
+
+			if (this.axis == Axis.Vertical) {
+
+				this.MoveNext();
+
+			}
+
+		}
+
+		public override void OnNavigateLeft() {
+
+			base.OnNavigateLeft();
+
+			if (this.axis == Axis.Horizontal) {
+
+				this.MovePrev();
+
+			}
+
+		}
+
+		public override void OnNavigateRight() {
+
+			base.OnNavigateRight();
+
+			if (this.axis == Axis.Horizontal) {
+
+				this.MoveNext();
+
+			}
 
 		}
 
@@ -194,15 +292,10 @@ namespace UnityEngine.UI.Windows.Components {
 			elementRect.anchoredPosition3D = this.GetAxisVector3(pos);
 			elementRect.localRotation = Quaternion.AngleAxis(rotation * this.maxAngle, this.rotationAxis);
 
-			var item = (component as IAlphaComponent);
-			if (item != null) {
-
-				item.SetAlpha(alpha);
-
-			}
-
 			var carouselItem = (component as ICarouselItem);
 			if (carouselItem != null) {
+
+				carouselItem.SetCarouselAlpha(alpha);
 
 				if (index == currentIndex && this.lastCurrentIndex != currentIndex) {
 
@@ -240,11 +333,15 @@ namespace UnityEngine.UI.Windows.Components {
 		#region Drag Handlers
 		public void OnBeginDrag(PointerEventData eventData) {
 
+			if (this.interactable == false) return;
+
 			this.isDragging = true;
 
 		}
 
 		public void OnDrag(PointerEventData eventData) {
+
+			if (this.interactable == false) return;
 
 			if (this.isDragging == true) {
 				
@@ -256,7 +353,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void OnEndDrag(PointerEventData eventData) {
-			
+
+			if (this.interactable == false) return;
+
 			var windowDelta = this.GetAxisValue(WindowSystem.ConvertPointScreenToWindow(eventData.delta, this));
 			this.Move(-windowDelta / this.GetSize() * this.dragSpeed, immediately: false);
 			this.targetValue = Mathf.RoundToInt(this.targetValue);
@@ -265,6 +364,8 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void OnScroll(PointerEventData eventData) {
+
+			if (this.interactable == false) return;
 
 			this.Move(eventData.scrollDelta.y * this.scrollSpeed, minValue: 1f);
 
@@ -381,6 +482,8 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 
 			}
+
+			if (this.interactable == false) return;
 
 			#if UNITY_STANDALONE
 			if (this.axis == Axis.Horizontal) {

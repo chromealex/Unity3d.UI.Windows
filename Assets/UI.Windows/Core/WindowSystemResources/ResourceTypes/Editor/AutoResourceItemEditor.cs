@@ -27,7 +27,51 @@ namespace UnityEditor.UI.Windows {
 			const float asyncSizeY = 16f;
 			const float asyncToggleSizeX = 18f;
 
-			const float controlTypeSizeX = 140f;
+			var controlTypeSizeXMax = 140f;
+			var controlTypeSizeX = 0f;
+
+			var attr = PropertyExtensions.GetAttribute<ResourceParametersAttribute>(this);
+
+			var controlType = property.FindPropertyRelative("controlType");
+			var values = System.Enum.GetValues(typeof(UnityEngine.UI.Windows.ResourceBase.ControlType));
+			var names = System.Enum.GetNames(typeof(UnityEngine.UI.Windows.ResourceBase.ControlType));
+
+			var items = new List<byte>();
+			var itemNames = new List<string>();
+
+			if (attr != null) {
+
+				for (int i = 0; i < values.Length; ++i) {
+
+					var value = (byte)values.GetValue(i);
+					if (value == 0) continue;
+
+					if (((byte)attr.drawOnly & value) != 0) {
+
+						controlTypeSizeX += controlTypeSizeXMax / values.Length;
+
+						items.Add(value);
+						itemNames.Add(names[i]);
+
+					}
+
+				}
+
+			} else {
+
+				for (int i = 0; i < values.Length; ++i) {
+
+					var value = (byte)values.GetValue(i);
+					if (value == 0) continue;
+
+					controlTypeSizeX += controlTypeSizeXMax / values.Length;
+
+					items.Add(value);
+					itemNames.Add(names[i]);
+
+				}
+
+			}
 
 			var propertyPosition = new Rect(position.x, position.y, position.width - iconSizeX - asyncSizeX - controlTypeSizeX + 30f, position.height);
 			var labelPosition = new Rect(position.x + propertyPosition.width - iconSizeX - 18f, propertyPosition.y, iconSizeX, iconSizeY);
@@ -55,45 +99,6 @@ namespace UnityEditor.UI.Windows {
 			GUI.color = oldColor;
 
 			EditorGUI.EndDisabledGroup();
-
-			var attr = PropertyExtensions.GetAttribute<ResourceParametersAttribute>(this);
-
-			var controlType = property.FindPropertyRelative("controlType");
-			var values = System.Enum.GetValues(typeof(UnityEngine.UI.Windows.ResourceBase.ControlType));
-			var names = System.Enum.GetNames(typeof(UnityEngine.UI.Windows.ResourceBase.ControlType));
-
-			var items = new List<byte>();
-			var itemNames = new List<string>();
-
-			if (attr != null) {
-
-				for (int i = 0; i < values.Length; ++i) {
-
-					var value = (byte)values.GetValue(i);
-					if (value == 0) continue;
-					
-					if (((byte)attr.drawOnly & value) != 0) {
-						
-						items.Add(value);
-						itemNames.Add(names[i]);
-
-					}
-
-				}
-
-			} else {
-
-				for (int i = 0; i < values.Length; ++i) {
-
-					var value = (byte)values.GetValue(i);
-					if (value == 0) continue;
-
-					items.Add(value);
-					itemNames.Add(names[i]);
-
-				}
-
-			}
 
 			for (int i = 0; i < items.Count; ++i) {
 

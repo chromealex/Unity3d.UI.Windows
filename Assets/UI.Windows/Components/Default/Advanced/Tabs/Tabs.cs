@@ -10,7 +10,8 @@ namespace UnityEngine.UI.Windows.Components {
 		private List<WindowComponent> components = new List<WindowComponent>();
 
 		private WindowLayoutElement layoutContent;
-		
+
+		private ComponentEvent<ButtonComponent, int> onSelect = new ComponentEvent<ButtonComponent, int>();
 		private ComponentEvent<WindowComponent, int> onChangeBefore = new ComponentEvent<WindowComponent, int>();
 		private ComponentEvent<WindowComponent, int> onChangeAfter = new ComponentEvent<WindowComponent, int>();
 		
@@ -22,10 +23,27 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.lastIndex = -1;
 
+			for (int i = 0; i < this.Count(); ++i) {
+
+				var element = this.GetItem<ButtonComponent>(i);
+				if (element != null) {
+
+					element.SetCallback((button) => {
+
+						var index = this.GetIndexOf(button);
+						this.Select(index);
+
+					});
+
+				}
+
+			}
+
 		}
 
-		public void SetCallback(UnityAction<WindowComponent, int> onChangeBefore = null, UnityAction<WindowComponent, int> onChangeAfter = null) {
-			
+		public void SetCallback(UnityAction<ButtonComponent, int> onSelect = null, UnityAction<WindowComponent, int> onChangeBefore = null, UnityAction<WindowComponent, int> onChangeAfter = null) {
+
+			if (onSelect != null) this.onSelect.AddListenerDistinct(onSelect);
 			if (onChangeBefore != null) this.onChangeBefore.AddListenerDistinct(onChangeBefore);
 			if (onChangeAfter != null) this.onChangeAfter.AddListenerDistinct(onChangeAfter);
 			
@@ -120,7 +138,8 @@ namespace UnityEngine.UI.Windows.Components {
 					lastItem.SetDisabled();
 					if (forced == true || prevLastIndex != index) {
 
-						lastItem.OnClick();
+						this.onSelect.Invoke(lastItem, this.lastIndex);
+						lastItem.Click();
 
 					}
 					

@@ -45,16 +45,12 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 		#region Client API Events
 		public override IEnumerator GetData(string url, System.Action<GameDataResult> onResult) {
-
-			#if !UNITY_EDITOR
-			if (this.serviceManager.logEnabled == true) {
-			#endif
+			
+			if (Application.isPlaying == false || this.serviceManager.logEnabled == true) {
 				
 				Debug.LogFormat("[ GameData ] Loading: {0}", url);
 				
-			#if !UNITY_EDITOR
 			}
-			#endif
 
 			var www = new WWW(url + "&www_cache=" + Random.Range(0, 100000).ToString());
 			#if UNITY_EDITOR
@@ -86,6 +82,9 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 			#endif
 
 			onResult.Invoke(new GameDataResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.text });
+
+			www.Dispose();
+			www = null;
 
 		}
 		#endregion

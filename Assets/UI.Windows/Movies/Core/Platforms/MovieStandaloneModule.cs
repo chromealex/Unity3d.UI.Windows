@@ -10,14 +10,9 @@ namespace UnityEngine.UI.Windows.Movies {
 	[System.Serializable]
 	public class MovieStandaloneModule : MovieModuleBase {
 
-		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
+		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
 
 			var filePath = resource.GetStreamPath();
-			if (filePath.Contains("://") == false) {
-
-				filePath = "file:///" + filePath;
-
-			}
 
 			var task = new WWW(filePath);
 			while (task.isDone == false) {
@@ -53,7 +48,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected override void OnPlay(ResourceBase resource, Texture movie) {
+		protected override void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
 
 			var m = movie as MovieTexture;
 			if (m != null) {
@@ -64,7 +59,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop) {
+		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
 
 			var m = movie as MovieTexture;
 			if (m != null) {

@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine.UI.Windows.Components;
 using System.Linq;
 
+#if UNITY_PS4
+using UnityEngine.PS4;
+#endif
+
 namespace UnityEngine.UI.Windows.Movies {
 
 	public interface IMovieModule {
@@ -14,11 +18,14 @@ namespace UnityEngine.UI.Windows.Movies {
 		void PauseAll();
 		void StopAll();
 		void PlayAll();
-		void Play(IImageComponent component, bool loop, bool pause);
-		void Stop(IImageComponent component);
+		void Play(IImageComponent component, bool loop, bool pause, System.Action onComplete);
+		void Stop(IImageComponent component, int instanceId = 0);
 		void Pause(IImageComponent component);
 		bool IsPlaying(IImageComponent component);
 		ResourceAsyncOperation LoadTexture(IImageComponent component);
+
+		bool IsMaterialLoadingType();
+		bool IsVerticalFlipped();
 
 	}
 
@@ -26,7 +33,7 @@ namespace UnityEngine.UI.Windows.Movies {
 	public class MovieModuleBase : IMovieModule {
 		
 		[System.Serializable]
-		public class Item {
+		public class MovieItem {
 
 			public enum State : byte {
 				Playing,
@@ -34,11 +41,10 @@ namespace UnityEngine.UI.Windows.Movies {
 				Paused,
 			};
 
-			public long id;
+			//public long id;
 			public State state = State.Stopped;
 
-			public List<WindowComponent> components;
-
+			/*public List<WindowComponent> components;
 			public Object loadedObject;
 			public int loadedObjectId;
 			
@@ -50,13 +56,49 @@ namespace UnityEngine.UI.Windows.Movies {
 					
 				}
 				
+			}*/
+
+			public WindowSystemResources.Item resource;
+
+			public int id {
+
+				get {
+
+					return this.resource.id;
+
+				}
+
+			}
+
+			public Texture texture {
+
+				get {
+
+					return this.resource.loadedObject as Texture;
+
+				}
+
+			}
+
+			public List<WindowComponent> components {
+
+				get {
+
+					return this.resource.references;
+
+				}
+
 			}
 
 		};
 
-		protected MovieSystem system;
+		public int counter;
 
-		public List<Item> current = new List<Item>();
+		public MovieSystem system;
+		private System.Action<Material> onUpdateMaterial;
+		private System.Action<IImageComponent, Texture> onUpdateTexture;
+
+		public List<MovieItem> current = new List<MovieItem>();
 
 		protected float delayToPause {
 
@@ -67,7 +109,13 @@ namespace UnityEngine.UI.Windows.Movies {
 			}
 
 		}
-		
+
+		~MovieModuleBase() {
+
+			this.OnDeinit();
+
+		}
+
 		public void Init(MovieSystem system) {
 
 			this.system = system;
@@ -76,25 +124,103 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected virtual void OnInit() {
+		public void RegisterOnUpdateMaterial(System.Action<Material> onUpdate) {
+
+			this.onUpdateMaterial += onUpdate;
+
+		}
+
+		public void UnregisterOnUpdateMaterial(System.Action<Material> onUpdate) {
+
+			this.onUpdateMaterial -= onUpdate;
+
+		}
+
+		public void SetUpdateMaterial(Material material) {
+
+			if (this.onUpdateMaterial != null) this.onUpdateMaterial.Invoke(material);
+
+		}
+
+		public void RegisterOnUpdateTexture(System.Action<IImageComponent, Texture> onUpdate) {
+
+			this.onUpdateTexture += onUpdate;
+
+		}
+
+		public void UnregisterOnUpdateTexture(System.Action<IImageComponent, Texture> onUpdate) {
+
+			this.onUpdateTexture -= onUpdate;
+
+		}
+
+		public void SetUpdateTexture(IImageComponent component, Texture material) {
+
+			if (this.onUpdateTexture != null) this.onUpdateTexture.Invoke(component, material);
+
+		}
+
+		protected virtual void OnDeinit() {}
+
+		protected virtual void OnInit() {}
+
+		public virtual void Update() {}
+
+		public virtual bool IsMaterialLoadingType() {
+
+			return false;
+
+		}
+
+		public virtual bool IsVerticalFlipped() {
+
+			return false;
+
 		}
 
 		public ResourceAsyncOperation LoadTexture(IImageComponent component) {
 
+			/*if (this.IsMaterialLoadingType() == true) {
+
+			} else {
+
+				MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
+				MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
+
+			}*/
+
 			var request = new ResourceAsyncOperation();
-			this.StartCoroutine(this.LoadTexture_YIELD(request, component, component.GetResource()));
+			var resource = component.GetResource();
+			var movieItem = this.GetMovieItem(component, resource);
+			this.StartCoroutine(this.LoadTexture_YIELD(request, component, movieItem, resource));
 
 			return request;
 
 		}
 
-		protected virtual IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
+		/*private void ValidateTexture(IImageComponent component, Texture texture) {
+
+			var comp = component as WindowComponent;
+			foreach (var item in this.current) {
+
+				if (item.components.Contains(comp) == true) {
+
+					item.loadedObject = texture;
+					item.loadedObjectId = texture.GetInstanceID();
+
+				}
+
+			}
+
+		}*/
+
+		protected virtual IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
 
 			yield return false;
 
 		}
 
-		#region ACTIONS
+#region ACTIONS
 		public void PlayPauseAll() {
 
 			this.StopAllCoroutines();
@@ -105,7 +231,7 @@ namespace UnityEngine.UI.Windows.Movies {
 					
 					foreach (var component in task.components) {
 
-						this.OnPlay((component as ILoadableResource).GetResource(), texture);
+						this.OnPlay((component as ILoadableResource).GetResource(), texture, null);
 						
 					}
 
@@ -161,7 +287,7 @@ namespace UnityEngine.UI.Windows.Movies {
 				var texture = task.texture;
 				foreach (var component in task.components) {
 					
-					this.OnPlay((component as ILoadableResource).GetResource(), texture);
+					this.OnPlay((component as ILoadableResource).GetResource(), texture, null);
 					
 				}
 
@@ -169,24 +295,29 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		public void Play(IImageComponent component, bool loop, bool pause) {
-			
-			var image = component.GetRawImageSource();
-			if (image == null) return;
+		public void Unload(IImageComponent component, ResourceBase resource) {
 
-			var resource = component.GetResource();
-			if (resource.loaded == false) {
+			if (resource.loaded == false) return;
 
-				Debug.LogWarning("Resource was not loaded yet. Play interrupted.", component as MonoBehaviour);
+			/*if (resource.loaded == false) {
+
+				Debug.LogWarning("Resource was not loaded yet. Unload interrupted.", component as MonoBehaviour);
 				return;
 
-			}
+			}*/
 
-			var movie = resource.loadedObject as Texture;
+			this.current.RemoveAll(x => (x.id == 0 || x.id == resource.GetId()) && (x.components == null || x.components.Count == 0));
+
+			this.OnUnload(resource);
+
+		}
+
+		private MovieItem GetMovieItem(IImageComponent component, ResourceBase resource) {
 
 			var item = this.current.FirstOrDefault(x => x.id == resource.GetId());
+			//Debug.Log("GetMovieItem: " + (item != null) + " :: " + resource.GetId() + " :: " + component, component as MonoBehaviour);
 			if (item != null) {
-				
+
 				var c = component as WindowComponent;
 				if (item.components.Contains(c) == false) {
 
@@ -196,23 +327,57 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			} else {
 
-				item = new Item() {
+				//Debug.Log("new MOVIE ITEM: " + resource.GetId());
+				item = new MovieItem() {
 
-					id = resource.GetId(),
-					components = new List<WindowComponent>() { component as WindowComponent },
-					loadedObject = resource.loadedObject,
-					loadedObjectId = resource.loadedObjectId,
+					resource = WindowSystemResources.GetItem(resource),
+					state = MovieItem.State.Stopped,
 
 				};
 
 				this.current.Add(item);
-				
+
 			}
 
-			if (item.state != Item.State.Playing) {
+			return item;
 
-				item.state = Item.State.Playing;
-				this.OnPlay(resource, movie, loop);
+		}
+
+		public void Rewind(IImageComponent component, bool pause) {
+
+			var resource = component.GetResource();
+			if (resource.loaded == false) {
+
+				Debug.LogWarning("Resource was not loaded yet. Rewind interrupted.", component as MonoBehaviour);
+				return;
+
+			}
+
+			var item = this.GetMovieItem(component, resource);
+			item.state = (pause == true) ? MovieItem.State.Paused : MovieItem.State.Playing;
+
+			var movie = resource.loadedObject as Texture;
+			this.OnRewind(resource, movie, pause);
+
+		}
+
+		public void Play(IImageComponent component, bool loop, bool pause, System.Action onComplete) {
+			
+			var resource = component.GetResource();
+			if (resource.loaded == false) {
+
+				Debug.LogWarning("Resource was not loaded yet. Play interrupted.", component as MonoBehaviour);
+				return;
+
+			}
+
+			var item = this.GetMovieItem(component, resource);
+			var movie = resource.loadedObject as Texture;
+
+			if (item.state != MovieItem.State.Playing) {
+
+				item.state = MovieItem.State.Playing;
+				this.OnPlay(resource, movie, loop, onComplete);
 
 			}
 			
@@ -224,10 +389,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		public void Stop(IImageComponent component) {
-			
-			var image = component.GetRawImageSource();
-			if (image == null) return;
+		public void Stop(IImageComponent component, int instanceId = 0) {
 			
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
@@ -237,25 +399,41 @@ namespace UnityEngine.UI.Windows.Movies {
 				
 			}
 
-			var movie = resource.loadedObject as Texture;
+			var item = this.current.FirstOrDefault(x => {
 
-			var item = this.current.FirstOrDefault(x => x.id == resource.GetId());
+				if (instanceId != 0) {
+
+					return x.resource.loadedObjectId == instanceId;
+
+				} else {
+
+					return x.id == resource.GetId();
+
+				}
+
+			});
+
 			if (item != null) {
-				
-				item.components.Remove(component as WindowComponent);
 
-				if (item.components.Count == 0) {
-					
-					if (item.state != Item.State.Stopped) {
-						
-						item.state = Item.State.Stopped;
+				//Debug.Log("Stop: " + item.id + " :: " + instanceId + " :: " + item.components.Count + " :: " + (component as MonoBehaviour), component as MonoBehaviour);
+				//if (WindowSystemResources.Remove(item.resource, component as WindowComponent) == true) {
+
+				if (item.components != null && item.components.Count == 0) {
+
+					if (item.state != MovieItem.State.Stopped) {
+
+						item.state = MovieItem.State.Stopped;
+
+						var movie = resource.loadedObject as Texture;
 						this.OnStop(resource, movie);
 
-						this.current.RemoveAll(x => x.id == item.id);
+						//this.current.RemoveAll(x => x.id == item.id);
 
 					}
 
 				}
+
+				//}
 
 			}
 
@@ -263,8 +441,8 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		public void Pause(IImageComponent component) {
 			
-			var image = component.GetRawImageSource();
-			if (image == null) return;
+			//var image = component.GetRawImageSource();
+			//if (image == null) return;
 			
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
@@ -283,9 +461,9 @@ namespace UnityEngine.UI.Windows.Movies {
 
 				//if (item.components.Count == 0) {
 
-					if (item.state != Item.State.Paused) {
+					if (item.state != MovieItem.State.Paused) {
 						
-						item.state = Item.State.Paused;
+						item.state = MovieItem.State.Paused;
 						this.OnPause(resource, movie);
 						
 					}
@@ -298,10 +476,20 @@ namespace UnityEngine.UI.Windows.Movies {
 		
 		public bool IsPlaying(IImageComponent component) {
 			
-			var image = component.GetRawImageSource();
-			if (image == null) return false;
-			
-			return this.IsPlaying(component.GetResource(), image.mainTexture);
+			//var image = component.GetRawImageSource();
+			//if (image == null) return false;
+
+			var resource = component.GetResource();
+			if (resource.loaded == false) {
+
+				Debug.LogWarning("Resource was not loaded yet. IsPlaying returns false.", component as MonoBehaviour);
+				return false;
+
+			}
+
+			var movie = resource.loadedObject as Texture;
+
+			return this.IsPlaying(component.GetResource(), movie);
 			
 		}
 		
@@ -311,13 +499,22 @@ namespace UnityEngine.UI.Windows.Movies {
 			
 		}
 
-		protected virtual void OnPlay(ResourceBase resource, Texture movie) {
+		protected virtual void OnUnload(ResourceBase resource) {
+		}
+
+		protected virtual void OnRewind(ResourceBase resource, Texture movie, bool pause) {
+
+			WindowSystemLogger.Log(this.system, "`Rewind` method not supported on current platform");
+
+		}
+
+		protected virtual void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
 			
 			WindowSystemLogger.Log(this.system, "`Play` method not supported on current platform");
 			
 		}
 
-		protected virtual void OnPlay(ResourceBase resource, Texture movie, bool loop) {
+		protected virtual void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
 			
 			WindowSystemLogger.Log(this.system, "`Play` method not supported on current platform");
 			
@@ -341,15 +538,15 @@ namespace UnityEngine.UI.Windows.Movies {
 			return false;
 
 		}
-		#endregion
+#endregion
 
-		protected void StopAllCoroutines() {
+		public void StopAllCoroutines() {
 
 			this.system.StopAllCoroutines();
 
 		}
 
-		protected Coroutine StartCoroutine(IEnumerator routine) {
+		public Coroutine StartCoroutine(IEnumerator routine) {
 
 			return this.system.StartCoroutine(routine);
 
@@ -386,140 +583,6 @@ namespace UnityEngine.UI.Windows.Movies {
 			this.Pause(component);
 			
 		}
-
-	}
-
-	#if UNITY_IPHONE
-	[System.Serializable]
-	public class MovieIOSModule : MovieModuleBase {
-
-		private Dictionary<string, VideoPlayerInterface> playingInstances = new Dictionary<string, VideoPlayerInterface>();
-		
-		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
-			
-			var filePath = resource.GetStreamPath();
-			
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
-
-				instance.Load(asyncOperation, filePath);
-
-			} else {
-
-				var item = new VideoPlayerInterface(this.system);
-				this.playingInstances.Add(filePath, item);
-				item.Load(asyncOperation, filePath);
-
-			}
-
-			yield return false;
-
-		}
-
-		public override bool IsMovie(Texture texture) {
-
-			return true;//string.IsNullOrEmpty(resource.streamingAssetsPath);
-			
-		}
-		
-		protected override void OnPlay(ResourceBase resource, Texture movie) {
-
-			var path = resource.GetStreamPath();
-			var instance = this.FindInstance(resource);
-			if (instance == null) {
-
-				Debug.Log("CREATE NEW VideoPlayerInterface");
-				var video = new VideoPlayerInterface(this.system);
-				if (video.Play(path) == true) {
-
-					this.playingInstances.Add(path, video);
-					
-				}
-
-			}
-
-		}
-		
-		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop) {
-			
-			var path = resource.GetStreamPath();
-			var instance = this.FindInstance(resource);
-			if (instance == null) {
-
-				Debug.Log("CREATE NEW VideoPlayerInterface");
-				var video = new VideoPlayerInterface(this.system);
-				if (video.Play(path, loop) == true) {
-					
-					this.playingInstances.Add(path, video);
-					
-				}
-				
-			}
-
-		}
-		
-		protected override void OnPause(ResourceBase resource, Texture movie) {
-			
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
-
-				instance.Pause();
-
-			}
-
-		}
-		
-		protected override void OnStop(ResourceBase resource, Texture movie) {
-			
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
-				
-				instance.Stop();
-				this.playingInstances.Remove(resource.GetStreamPath());
-				
-			}
-
-			
-		}
-		
-		protected override bool IsPlaying(ResourceBase resource, Texture movie) {
-
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
-				
-				return instance.IsPlaying();
-				
-			}
-
-			return false;
-			
-		}
-
-		private VideoPlayerInterface FindInstance(ResourceBase resource) {
-
-			VideoPlayerInterface value;
-			if (this.playingInstances.TryGetValue(resource.GetStreamPath(), out value) == true) {
-
-				return value;
-
-			}
-
-			return null;
-
-		}
-
-	}
-	#endif
-	
-	#if UNITY_ANDROID
-	[System.Serializable]
-	public class MovieAndroidModule : MovieModuleBase {
-
-	}
-	#endif
-
-	[System.Serializable]
-	public class MovieNoSupportModule : MovieModuleBase {
 
 	}
 

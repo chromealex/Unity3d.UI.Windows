@@ -11,14 +11,30 @@ namespace UnityEngine.UI.Windows.Components {
 
 		[ComponentChooser]
 		public WindowComponent prefab;
-		[HideInInspector][SerializeField]
+		[HideInInspector]
+		[SerializeField]
 		public WindowComponentParametersBase prefabParameters;
 
 		public bool fitToRoot = true;
-		public bool copyNavigation = true;
 
 		//[HideInInspector]
 		private WindowComponent instance;
+
+		public bool Unload() {
+
+			if (this.instance != null) {
+
+				this.UnregisterSubComponent(this.instance);
+				this.instance.Recycle();
+				this.instance = null;
+
+				return true;
+
+			}
+
+			return false;
+
+		}
 
 		public T Get<T>(ref T instance) where T : IComponent {
 			
@@ -95,12 +111,6 @@ namespace UnityEngine.UI.Windows.Components {
 				this.instance.Setup(this.GetWindow());
 
 				this.RegisterSubComponent(this.instance);
-
-				if (this.copyNavigation == true) {
-
-					this.NavigationConnectToLinker(this);
-
-				}
 
 			}
 

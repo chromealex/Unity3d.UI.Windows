@@ -18,12 +18,14 @@ namespace UnityEditor.UI {
 		SerializedProperty extAnimTriggerProperty;
 		SerializedProperty extTargetGraphicProperty;
 		SerializedProperty extTargetGraphicsProperty;
+		SerializedProperty extTargetGraphicsItemsProperty;
 
 		AnimBool extShowScale = new AnimBool();
 		AnimBool extShowAlpha = new AnimBool();
 		AnimBool extShowColorTint = new AnimBool();
 		AnimBool extShowSpriteTrasition = new AnimBool();
 		AnimBool extShowAnimTransition = new AnimBool();
+		AnimBool extShowTargetGraphicsItems = new AnimBool();
 		private bool lastInteractive;
 
 		protected override void OnEnable() {
@@ -40,6 +42,7 @@ namespace UnityEditor.UI {
 			extAnimTriggerProperty = serializedObject.FindProperty("m_AnimationTriggers");
 			extTargetGraphicProperty = serializedObject.FindProperty("m_TargetGraphic");
 			extTargetGraphicsProperty = serializedObject.FindProperty("m_TargetGraphics");
+			extTargetGraphicsItemsProperty = serializedObject.FindProperty("graphicItems");
 
 			var trans = GetTransition(this.transitionExtended);
 			extShowScale.value = (trans & ButtonExtended.Transition.Scale) != 0;
@@ -47,6 +50,7 @@ namespace UnityEditor.UI {
 			extShowColorTint.value = (trans & ButtonExtended.Transition.ColorTint) != 0;
 			extShowSpriteTrasition.value = (trans & ButtonExtended.Transition.SpriteSwap) != 0;
 			extShowAnimTransition.value = (trans & ButtonExtended.Transition.Animation) != 0;
+			extShowTargetGraphicsItems.value = (trans & ButtonExtended.Transition.TargetGraphics) != 0;
 			
 			extShowScale.valueChanged.AddListener(Repaint);
 			extShowAlpha.valueChanged.AddListener(Repaint);
@@ -87,6 +91,7 @@ namespace UnityEditor.UI {
 			extShowColorTint.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.ColorTint) != 0);
 			extShowSpriteTrasition.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.SpriteSwap) != 0);
 			extShowAnimTransition.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.Animation) != 0);
+			extShowTargetGraphicsItems.target = (!transitionExtended.hasMultipleDifferentValues && (trans & ButtonExtended.Transition.TargetGraphics) != 0);
 
 			EditorGUILayout.PropertyField(this.transitionExtended);
 
@@ -120,14 +125,19 @@ namespace UnityEditor.UI {
 				EditorGUILayout.Space();
 			}
 			EditorGUILayout.EndFadeGroup();
-			
+
 			if (EditorGUILayout.BeginFadeGroup(extShowAnimTransition.faded)) {
 				EditorGUILayout.PropertyField(extAnimTriggerProperty);
-				
+
 				if (animator == null || animator.runtimeAnimatorController == null) {
 					Rect buttonRect = EditorGUILayout.GetControlRect();
 					buttonRect.xMin += EditorGUIUtility.labelWidth;
 				}
+			}
+
+			if (EditorGUILayout.BeginFadeGroup(extShowTargetGraphicsItems.faded)) {
+				if (extTargetGraphicsItemsProperty != null) EditorGUILayout.PropertyField(extTargetGraphicsItemsProperty, includeChildren: true);
+				EditorGUILayout.Space();
 			}
 
 			serializedObject.ApplyModifiedProperties();

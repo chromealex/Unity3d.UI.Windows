@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ColoredComponent : WindowComponent {
+	public class ColoredComponent : HoveredComponent {
 
 		[Header("Colored Sprites")]
 		public Image[] images;

@@ -6,7 +6,9 @@ using ME;
 namespace UnityEngine.UI.Windows.Components {
 
 	public class TextComponent : ColoredComponent, ITextComponent {
-		
+
+		public const int MAX_CHARACTERS_COUNT = 2000;
+
 		public override void Setup(IComponentParameters parameters) {
 			
 			base.Setup(parameters);
@@ -194,6 +196,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.text == null) return 0f;
 
+			if (text.Length > TextComponent.MAX_CHARACTERS_COUNT) {
+
+				text = text.Substring(0, TextComponent.MAX_CHARACTERS_COUNT);
+
+			}
+
 			var settings = this.text.GetGenerationSettings(containerSize);
 			return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
 
@@ -273,14 +281,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private ITextComponent SetValue_INTERNAL(long value, TextValueFormat format, bool animate, bool fromTweener) {
 
-			if (this.tempLastValue == value && this.tempLastFormat == format) return this;
+			if (fromTweener == true && this.tempLastValue == value && this.tempLastFormat == format) return this;
 			this.tempLastValue = value;
 			this.tempLastFormat = format;
 
-			var tag = this.GetCustomTag("TextComponent");
+			var tag = this.GetCustomTag(this.text);
 			if (fromTweener == false && TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			if (animate == true && TweenerGlobal.instance != null) {
+
+				this.tempLastValue = value - 1L;
 
 				var duration = this.valueAnimateDuration;
 				if (Mathf.Abs(this.valueAnimateLastValue - value) < 2) duration = 0.2f;
@@ -292,6 +302,14 @@ namespace UnityEngine.UI.Windows.Components {
 				
 			}
 			
+			return this;
+
+		}
+
+		public ITextComponent SetTextAlignByGeometry(bool state) {
+
+			if (this.text != null) this.text.alignByGeometry = state;
+
 			return this;
 
 		}
@@ -408,14 +426,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.gameObject.activeSelf == false) return;
 			
 			#region source macros UI.Windows.Editor.TextComponent
-			var texts = this.GetComponentsInChildren<Text>(true);
-			if (texts.Length == 1) this.text = texts[0];
-
-			if (this.valueFormat != TextValueFormat.None) {
-
-				this.SetValue(999999L);
-
-			}
+			if (this.text == null) this.text = ME.Utilities.FindReferenceChildren<Text>(this);
 			#endregion
 
 		}
@@ -471,34 +482,54 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		private const string RICHTEXT_B_BEGIN = @"<b>";
+		private const string RICHTEXT_B_END = @"</b>";
+
+		private const string RICHTEXT_I_BEGIN = @"<i>";
+		private const string RICHTEXT_I_END = @"</i>";
+
+		private const string RICHTEXT_SIZE_BEGIN = @"<size=[0-9]+>";
+		private const string RICHTEXT_SIZE_END = @"</size>";
+		private const string RICHTEXT_SIZEPERCENT = @"<size=(?<Percent>[0-9]+)%>";
+		private const string RICHTEXT_SIZEPERCENT_GROUP = @"Percent";
+		private const string RICHTEXT_SIZEPERCENT_GROUPRESULT = @"<size={0}>";
+
+		private const string RICHTEXT_COLOR_BEGIN = @"<color=[^>]+>";
+		private const string RICHTEXT_COLOR_END = @"</color>";
+
+		private const string RICHTEXT_MATERIAL_BEGIN = @"<material=[^>]+>";
+		private const string RICHTEXT_MATERIAL_END = @"</material>";
+
+		private const string RICHTEXT_QUAD = @"<quad [^>]+>";
+
 		public static string ParseRichText(string text, int fontSize, RichTextFlags flags) {
 
 			if (text == null) return text;
 
 			if ((flags & RichTextFlags.Bold) == 0) {
 				
-				text = Regex.Replace(text, @"<b>", String.Empty);
-				text = Regex.Replace(text, @"</b>", String.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_B_BEGIN, string.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_B_END, string.Empty);
 				
 			}
 			
 			if ((flags & RichTextFlags.Italic) == 0) {
 				
-				text = Regex.Replace(text, @"<i>", String.Empty);
-				text = Regex.Replace(text, @"</i>", String.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_I_BEGIN, string.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_I_END, string.Empty);
 				
 			}
 			
 			if ((flags & RichTextFlags.Size) == 0) {
 
-				text = Regex.Replace(text, @"<size=[0-9]+>", String.Empty);
-				text = Regex.Replace(text, @"</size>", String.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_SIZE_BEGIN, string.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_SIZE_END, string.Empty);
 				
 			} else {
 
-				text = Regex.Replace(text, @"<size=(?<Percent>[0-9]+)%>", new MatchEvaluator((Match match) => {
+				text = Regex.Replace(text, TextComponent.RICHTEXT_SIZEPERCENT, new MatchEvaluator((Match match) => {
 
-					var value = match.Groups["Percent"].Value;
+					var value = match.Groups[TextComponent.RICHTEXT_SIZEPERCENT_GROUP].Value;
 					var newValue = value;
 
 					float fValue;
@@ -508,7 +539,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 					}
 
-					return string.Format("<size={0}>", newValue);
+					return string.Format(TextComponent.RICHTEXT_SIZEPERCENT_GROUPRESULT, newValue);
 
 				}));
 
@@ -516,21 +547,21 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			if ((flags & RichTextFlags.Color) == 0) {
 				
-				text = Regex.Replace(text, @"<color=[^>]+>", String.Empty);
-				text = Regex.Replace(text, @"</color>", String.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_COLOR_BEGIN, string.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_COLOR_END, string.Empty);
 				
 			}
 			
 			if ((flags & RichTextFlags.Material) == 0) {
 				
-				text = Regex.Replace(text, @"<material=[^>]+>", String.Empty);
-				text = Regex.Replace(text, @"</material>", String.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_MATERIAL_BEGIN, string.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_MATERIAL_END, string.Empty);
 				
 			}
 			
 			if ((flags & RichTextFlags.Quad) == 0) {
 				
-				text = Regex.Replace(text, @"<quad [^>]+>", String.Empty);
+				text = Regex.Replace(text, TextComponent.RICHTEXT_QUAD, string.Empty);
 				
 			}
 
@@ -565,14 +596,21 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 				
 				case TextValueFormat.WithSpace: {
-					
+
+					var minus = false;
 					if (value < 0f) {
+
+						value = -value;
+						minus = true;
 						
-						output = string.Format("-{0}", (-value).ToString("# ### ### ##0").Trim());
+
+					}
+							
+					output = value.ToString("# ### ### ##0").Trim();
+
+					if (minus == true) {
 						
-					} else {
-						
-						output = value.ToString("# ### ### ##0").Trim();
+						output = string.Format("-{0}", value);
 						
 					}
 					
@@ -581,17 +619,24 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 				
 				case TextValueFormat.WithComma: {
-					
+
+					var minus = false;
 					if (value < 0f) {
-						
-						output = string.Format("-{0}", (-value).ToString("#,### ### ##0").Trim(','));
-						
-					} else {
-						
-						output = value.ToString("#,### ### ##0").Trim(',').Trim(' ');
-						
+
+						value = -value;
+						minus = true;
+
+
 					}
+						
+					output = value.ToString("#,### ### ##0").Trim(',').Trim();
 					
+					if (minus == true) {
+
+						output = string.Format("-{0}", value);
+
+					}
+
 					break;
 
 				}
@@ -608,7 +653,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case TextValueFormat.TimeHMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
-						output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
+					output = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
 					
 					break;
 
@@ -617,7 +662,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case TextValueFormat.TimeMSFromSeconds: {
 
 					var t = TimeSpan.FromSeconds(value);
-						output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
+					output = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
 					
 					break;
 
@@ -635,7 +680,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case TextValueFormat.TimeHMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
-						output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
+					output = string.Format("{0:D2}:{1:D2}:{2:D2}`{3:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
 					
 					break;
 
@@ -644,7 +689,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case TextValueFormat.TimeMSmsFromMilliseconds: {
 
 					var t = TimeSpan.FromMilliseconds(value);
-						output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);
+					output = string.Format("{0:D2}:{1:D2}`{2:D2}", t.Minutes, t.Seconds, t.Milliseconds);
 					
 					break;
 

@@ -21,6 +21,7 @@ namespace UnityEngine.UI.Windows {
 
 			public int qualityIndex;
 			public bool canPlay;
+			public RuntimePlatform platform;
 			[Tooltip("Any of width or height must be greater than minSize to play/pause them")]
 			public int minSize;
 
@@ -29,7 +30,7 @@ namespace UnityEngine.UI.Windows {
 		public float delayToPause = 0.1f;
 		public bool defaultPlayingState = true;
 		public QualityItem[] quality;
-		private int lastQualityIndex = -1;
+		//private int lastQualityIndex = -1;
 
 		public MovieModuleBase movieModule;
 		
@@ -43,7 +44,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void LateUpdate() {
+		public void Update() {
+
+			if (this.movieModule != null) this.movieModule.Update();
+
+		}
+
+		/*public void LateUpdate() {
 
 			if (this.lastQualityIndex != QualitySettings.GetQualityLevel()) {
 
@@ -52,6 +59,48 @@ namespace UnityEngine.UI.Windows {
 				MovieSystem.PlayPauseAll();
 
 			}
+
+		}*/
+
+		public static void RegisterOnUpdateTexture(System.Action<IImageComponent, Texture> onUpdate) {
+
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.RegisterOnUpdateTexture(onUpdate);
+
+		}
+
+		public static void UnregisterOnUpdateTexture(System.Action<IImageComponent, Texture> onUpdate) {
+
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.UnregisterOnUpdateTexture(onUpdate);
+
+		}
+
+		public static void RegisterOnUpdateMaterial(System.Action<Material> onUpdate) {
+
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.RegisterOnUpdateMaterial(onUpdate);
+
+		}
+
+		public static void UnregisterOnUpdateMaterial(System.Action<Material> onUpdate) {
+
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.UnregisterOnUpdateMaterial(onUpdate);
+
+		}
+
+		public static bool IsMaterialLoadingType() {
+
+			return MovieSystem.instance.movieModule.IsMaterialLoadingType();
+
+		}
+
+		public static bool IsVerticalFlipped() {
+
+			return MovieSystem.instance.movieModule.IsVerticalFlipped();
+
+		}
+
+		public static void Unload(IImageComponent resourceController, ResourceBase resource) {
+
+			MovieSystem.instance.movieModule.Unload(resourceController, resource);
 
 		}
 
@@ -63,7 +112,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static QualityItem GetQualityItem() {
 
-			return MovieSystem.instance.quality.FirstOrDefault(x => x.qualityIndex == QualitySettings.GetQualityLevel());
+			return MovieSystem.instance.quality.FirstOrDefault(x => x.qualityIndex == QualitySettings.GetQualityLevel() && x.platform == Application.platform);
 
 		}
 
@@ -154,24 +203,36 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public static void Rewind(IImageComponent component, bool pause) {
+
+			MovieSystem.instance.Rewind_INTERNAL(component, pause);
+
+		}
+
 		public static void PlayAndPause(IImageComponent component, bool loop) {
 
-			MovieSystem.instance.Play_INTERNAL(component, loop, pause: true);
+			MovieSystem.instance.Play_INTERNAL(component, loop, pause: true, onComplete: null);
 
 		}
 
-		private void Play_INTERNAL(IImageComponent component, bool loop, bool pause) {
+		private void Rewind_INTERNAL(IImageComponent component, bool pause) {
 
-			this.movieModule.Play(component, loop, pause);
+			this.movieModule.Rewind(component, pause);
+
+		}
+
+		private void Play_INTERNAL(IImageComponent component, bool loop, bool pause, System.Action onComplete) {
+
+			this.movieModule.Play(component, loop, pause, onComplete);
 
 		}
 
-		private void Stop_INTERNAL(IImageComponent component) {
+		private void Stop_INTERNAL(IImageComponent component, int instanceId) {
 
-			this.movieModule.Stop(component);
+			this.movieModule.Stop(component, instanceId);
 
 		}
-		
+
 		private void Pause_INTERNAL(IImageComponent component) {
 
 			this.movieModule.Pause(component);
@@ -184,15 +245,15 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void Play(IImageComponent component, bool loop) {
+		public static void Play(IImageComponent component, bool loop, System.Action onComplete = null) {
 
-			if (MovieSystem.instance != null) MovieSystem.instance.Play_INTERNAL(component, loop, pause: false);
+			if (MovieSystem.instance != null) MovieSystem.instance.Play_INTERNAL(component, loop, pause: false, onComplete: onComplete);
 
 		}
-		
-		public static void Stop(IImageComponent component) {
-			
-			if (MovieSystem.instance != null) MovieSystem.instance.Stop_INTERNAL(component);
+
+		public static void Stop(IImageComponent component, int instanceId = 0) {
+
+			if (MovieSystem.instance != null) MovieSystem.instance.Stop_INTERNAL(component, instanceId);
 
 		}
 
@@ -216,6 +277,8 @@ namespace UnityEngine.UI.Windows {
 			this.movieModule = new MovieStandaloneModule();
 			#elif UNITY_IPHONE
 			this.movieModule = new MovieIOSModule();
+			#elif UNITY_PS4
+			this.movieModule = new MoviePS4Module();
 			#else
 			this.movieModule = new MovieNoSupportModule();
 			#endif

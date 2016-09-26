@@ -25,9 +25,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
-			public void Play(WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
+			public void Play(ME.Tweener.MultiTag tag, WindowAnimationBase transitionBase, WindowBase window, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
-				this.transition.Play(window, parameters, root, forward, callback);
+				this.transition.Play(tag, transitionBase, window, parameters, root, forward, callback);
 				
 			}
 			
@@ -91,6 +91,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 			}
 
+			var tag = root.GetCustomTag(this);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
+
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
@@ -108,6 +111,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 			}
 
+			var tag = root.GetCustomTag(this);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
+
 			var i = 0;
 			foreach (var transition in this.transitions) {
 				
@@ -124,6 +130,9 @@ namespace UnityEngine.UI.Windows.Animations {
 				return;
 				
 			}
+
+			var tag = root.GetCustomTag(this);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			var i = 0;
 			foreach (var transition in this.transitions) {
@@ -145,12 +154,14 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			Transition callbacker = null;
 			var maxDuration = 0f;
-			var i = 0;
-			foreach (var transition in this.transitions) {
 
-				var d = transition.GetDuration(parameters[i++], forward);
+			for (int i = 0; i < this.transitions.Count; ++i) {
+				
+				var transition = this.transitions[i];
+				var d = transition.GetDuration(parameters[i], forward);
+
 				if (d >= maxDuration) {
-
+					
 					maxDuration = d;
 					callbacker = transition;
 
@@ -158,10 +169,13 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
-			i = 0;
-			foreach (var transition in this.transitions) {
+			var tag = root.GetCustomTag(this);
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
-				transition.Play(window, parameters[i++], root, forward, callbacker == transition ? callback : null);
+			for (int i = 0; i < this.transitions.Count; ++i) {
+				
+				var transition = this.transitions[i];
+				transition.Play(tag, this, window, parameters[i], root, forward, callbacker == transition ? callback : null);
 
 			}
 
@@ -172,10 +186,10 @@ namespace UnityEngine.UI.Windows.Animations {
 		public float GetDuration(List<TransitionInputParameters> parameters, bool forward) {
 
 			var maxDuration = 0f;
-			var i = 0;
-			foreach (var transition in this.transitions) {
-
-				var d = transition.GetDuration(parameters[i++], forward);
+			for (int i = 0; i < this.transitions.Count; ++i) {
+				
+				var transition = this.transitions[i];
+				var d = transition.GetDuration(parameters[i], forward);
 				if (d > maxDuration) maxDuration = d;
 
 			}

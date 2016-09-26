@@ -126,7 +126,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 		public static void Send(LayoutTag tag, WindowBase window, WindowComponent component, Vector2 localNormalizedPoint) {
 
-			var flowWindow = Flow.FlowSystem.GetWindow(window);
+			var flowWindow = Flow.FlowSystem.GetWindow(window, runtime: true);
 			if (flowWindow == null) {
 				
 				Debug.LogWarningFormat("[ Heatmap ] FlowWindow not found. Source {0} used ({1}).", window, tag);

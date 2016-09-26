@@ -15,7 +15,10 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 				public float minZDepth;
 
 			}
-			
+
+			[Tooltip("Turn off camera render instead of GameObject.SetActive(false)")]
+			public bool turnOffCameraRenderOnly = true;
+
 			public int poolSize = 100;
 			public int preallocatedWindowsPoolSize = 0;
 
@@ -61,7 +64,7 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 			public bool pixelPerfect;
 
 			public string sortingLayerName = "Windows";
-			
+
 			public void Apply(UnityEngine.Canvas canvas) {
 
 			}

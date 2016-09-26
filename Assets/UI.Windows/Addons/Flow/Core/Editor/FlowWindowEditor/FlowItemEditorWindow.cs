@@ -1245,7 +1245,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				this.screenInstance.transform.rotation = Quaternion.identity;
 				this.screenInstance.transform.localScale = Vector3.zero;
 
-				this.window.SetScreen(screenPrefab);
+				//this.window.SetScreen(screenPrefab);
 
 			}
 			

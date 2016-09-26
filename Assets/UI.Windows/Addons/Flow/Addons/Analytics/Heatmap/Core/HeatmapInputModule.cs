@@ -42,11 +42,17 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Events {
 
 		private PointerEventData currentData;
 
+		public void Start() {
+
+			WindowSystemInput.onPointerUp.AddListener(this.OnPointerUp);
+
+		}
+
 		public void LateUpdate() {
 
 			if (this.currentData == null) this.currentData = new PointerEventData(EventSystem.current);
 			if (this.currentData.used == true) this.currentData.Reset();
-
+			/*
 			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
 			if (Input.GetMouseButtonUp(0) == true ||
 			    Input.GetMouseButtonUp(1) == true ||
@@ -57,7 +63,16 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Events {
 				this.OnPointerClick(this.currentData);
 
 			}
-			#endif
+			#endif*/
+
+		}
+
+		private void OnPointerUp() {
+
+			var position = WindowSystemInput.GetPointerPosition();
+			this.currentData.pointerPress = EventSystem.current.currentSelectedGameObject;
+			this.currentData.position = new Vector2(position.x, position.y);
+			this.OnPointerClick(this.currentData);
 
 		}
 

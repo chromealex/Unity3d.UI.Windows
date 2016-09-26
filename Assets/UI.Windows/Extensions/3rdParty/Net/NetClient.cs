@@ -29,7 +29,12 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 //			client.NoDelay = true;
 			//Debug.Log(name + " C: Connect(" + endConnected + ")");
 			endConnected = false;
-			client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
+			try {
+				Debug.Log("Connect: " + host + ":" + port);
+				client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
+			} catch(Exception) {
+				if (this.onResult != null) this.onResult.Invoke(false);
+			}
             isHead = true;
         }
 
@@ -57,7 +62,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 				if (this.onResult != null) this.onResult.Invoke(true);
             } catch(Exception e) {
 				if (this.onResult != null) this.onResult.Invoke(false);
-                Debug.Log(e);
+                Debug.LogError(e);
             }
 			this.onResult = null;
         }
@@ -67,18 +72,27 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
 		public void SendMsgSilently(short type, byte[] msg) {
-            if (endConnected == false) return;
-
+            
 			SendMsg(type, msg);
+
         }
 
 		public void SendMsg(short type, byte[] msg) {
-            // Message structure: the message body length + message body
-            byte[] data = new byte[4 + msg.Length];
-            IntToBytes((int)type << 16 | msg.Length & 0xFFFF) .CopyTo(data, 0);
-            msg.CopyTo(data, 4);
-            /*if (stream.CanWrite == true)*/ stream.Write(data, 0, data.Length);
-//			stream.Flush();
+            
+			if (this.Connected() == false) return;
+
+			try {
+
+				// Message structure: the message body length + message body
+	            byte[] data = new byte[4 + msg.Length];
+	            IntToBytes((int)type << 16 | msg.Length & 0xFFFF) .CopyTo(data, 0);
+	            msg.CopyTo(data, 4);
+	            if (stream.CanWrite == true) stream.Write(data, 0, data.Length);
+	//			stream.Flush();
+
+			} catch (Exception) {
+			}
+
         }
 
         public void ReceiveMsg() {

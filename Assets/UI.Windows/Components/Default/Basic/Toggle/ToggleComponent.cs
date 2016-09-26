@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿
 using UnityEngine.Events;
 using UnityEngine.UI.Windows.Components.Events;
 
