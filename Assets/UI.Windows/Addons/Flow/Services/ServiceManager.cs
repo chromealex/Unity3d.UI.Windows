@@ -4,13 +4,14 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine.UI.Windows.Extensions.Net;
 
 namespace UnityEngine.UI.Windows.Plugins.Services {
 
 	public interface IServiceManagerBase : IServiceBase {
 
-		IEnumerator Init(System.Action onComplete);
-		IEnumerator InitLate(System.Action onComplete);
+		System.Collections.IEnumerator Init(System.Action onComplete);
+		System.Collections.IEnumerator InitLate(System.Action onComplete);
 		
 	};
 
@@ -46,7 +47,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
-		public IEnumerator Init(System.Action onComplete = null) {
+		public System.Collections.IEnumerator Init(System.Action onComplete = null) {
 
 			if (this.logEnabled == true) {
 
@@ -56,11 +57,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 			if (FlowSystem.GetData().IsValidAuthKey(this.GetAuthPermission()) == false) {
 				
-				if (this.logEnabled == true) {
-
-					WindowSystemLogger.Warning(this, "Permission denied");
-
-				}
+				WindowSystemLogger.Warning(this, "Permission denied");
 
 				if (onComplete != null) onComplete.Invoke();
 
@@ -90,10 +87,11 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 						var item = items[i];
 						if (item.serviceName == service.GetServiceName()) {
 
-							service.isActive = item.enabled;
-							if (service.isActive == true) {
+							var isSupported = service.IsSupported();
+							service.isActive = (item.enabled == true && isSupported == true);
+							if (service.isActive == true && isSupported == true) {
 								
-								yield return this.StartCoroutine(service.Auth(service.GetAuthKey(item)));
+								yield return this.StartCoroutine(service.Auth(service.GetAuthKey(item), item));
 								yield return this.StartCoroutine(this.OnAfterAuth(service));
 
 							}
@@ -116,11 +114,11 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
-		public IEnumerator InitLate(System.Action onComplete = null) {
+		public System.Collections.IEnumerator InitLate(System.Action onComplete = null) {
 
 			this.OnInitializedLate();
 
-			yield return false;
+			yield return 0;
 
 			if (onComplete != null) onComplete.Invoke();
 
@@ -134,9 +132,9 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
-		public virtual IEnumerator OnAfterAuth(IService service) {
+		public virtual System.Collections.IEnumerator OnAfterAuth(IService service) {
 
-			yield return false;
+			yield return 0;
 
 		}
 
@@ -164,6 +162,12 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
+	    protected virtual void OnDestory() {
+
+	        ServiceManager<T>._instance = default(T);
+
+	    }
+
 		public void Awake() {
 
 			ServiceManager<T>.instance = (T)(this as IServiceManager);
@@ -182,6 +186,12 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
+		public static T GetInstance() {
+
+			return ServiceManager<T>.instance;
+
+		}
+
 		public static void InitializeAsync(System.Action onComplete = null) {
 
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
@@ -189,7 +199,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
-		public static IEnumerator Initialize(System.Action onComplete = null) {
+		public static System.Collections.IEnumerator Initialize(System.Action onComplete = null) {
 			
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
 			yield return (instance as MonoBehaviour).StartCoroutine(instance.Init(onComplete));
@@ -203,7 +213,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 
 		}
 
-		public static IEnumerator InitializeLate(System.Action onComplete = null) {
+		public static System.Collections.IEnumerator InitializeLate(System.Action onComplete = null) {
 
 			var instance = ServiceManager<T>.instance as IServiceManagerBase;
 			yield return (instance as MonoBehaviour).StartCoroutine(instance.InitLate(onComplete));

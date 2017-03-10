@@ -237,6 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22541326}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -279,10 +280,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22541322}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -336,10 +334,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22541324}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -395,12 +390,9 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11441316}
   - {fileID: 11441314}
-  canvas: {fileID: 22541326}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}

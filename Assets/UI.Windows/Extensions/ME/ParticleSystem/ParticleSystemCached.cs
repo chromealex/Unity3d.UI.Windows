@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI.Windows;
 
 namespace ME {
 
@@ -15,6 +16,9 @@ namespace ME {
 		public int count;
 		public bool resetOnStop;
 
+		public WindowComponent windowObject;
+		public int orderDelta = 0;
+
 		[SerializeField][Range(0f, 1f)]
 		private float _alpha = 1f;
 
@@ -22,6 +26,16 @@ namespace ME {
 		public CanvasGroup canvasGroup;
 
 		private float tempLastAlpha = -1f;
+
+		protected override void Start() {
+
+			base.Start();
+
+			if (Application.isPlaying == false) return;
+
+			this.Init();
+
+		}
 
 		public void SetCanvasGroup(CanvasGroup canvasGroup) {
 
@@ -34,6 +48,39 @@ namespace ME {
 			if (this.canvasGroup == null) {
 
 				this.canvasGroup = ME.Utilities.FindReferenceParent<CanvasGroup>(this);
+
+			}
+
+		}
+
+		public void Init() {
+
+			if (this.windowObject != null) {
+
+				var window = this.windowObject.GetWindow();
+				if (window == null) return;
+
+				window.events.onEveryInstance.Unregister(WindowEventType.OnShowBegin, this.UpdateLayer);
+				window.events.onEveryInstance.Register(WindowEventType.OnShowBegin, this.UpdateLayer);
+
+				this.UpdateLayer();
+
+			}
+
+		}
+
+		public void UpdateLayer() {
+
+			if (this.windowObject != null) {
+
+				var window = this.windowObject.GetWindow();
+				if (window == null) return;
+
+				for (int i = 0; i < this.particleSystemItems.Length; ++i) {
+
+					this.particleSystemItems[i].SetLayer(window.GetSortingLayerName(), window.GetSortingOrder() + this.orderDelta);
+
+				}
 
 			}
 
@@ -70,7 +117,10 @@ namespace ME {
 		protected override void OnValidate() {
 
 			if (Application.isPlaying == true) return;
-
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			this.Setup();
 			this.LateUpdate();
 
@@ -125,6 +175,16 @@ namespace ME {
 			
 		}
 
+	    public float startLifeTime {
+
+	        get {
+
+                return (this.mainParticleSystem != null) ? this.mainParticleSystem.startLifetime : 0f;
+
+            }
+
+	    }
+
 		public float duration {
 
 			get {
@@ -141,6 +201,24 @@ namespace ME {
 			return color.a;
 
 		}
+
+	    public void SetAlpha(float alpha, bool withChildren) {
+
+            if (withChildren == true) {
+
+                for (var i = 0; i < this.count; ++i) {
+
+                    this.particleSystemItems[i].SetAlpha(alpha);
+
+                }
+
+            } else if (this.mainParticleSystemItem != null) {
+
+                this.mainParticleSystemItem.SetAlpha(alpha);
+
+            }
+
+        }
 
 		public void SetStartAlpha(float alpha, bool withChildren) {
 

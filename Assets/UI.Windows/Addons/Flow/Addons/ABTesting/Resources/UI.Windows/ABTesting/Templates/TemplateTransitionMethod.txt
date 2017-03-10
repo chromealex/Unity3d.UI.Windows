@@ -8,10 +8,10 @@
 			System.Action<int> onCondition = null,
 			System.Action onAnyOther = null) {
 			
-			this.INTERNAL_FlowABTest(false, onCondition, onAnyOther);
+			this.INTERNAL_FlowABTest(false, false, onCondition, onAnyOther);
 			
 		}
-		
+
 		/// <summary>
 		/// Call the A/B Test.
 		/// Use this method to filter users.
@@ -21,12 +21,26 @@
 			System.Action<int> onCondition = null,
 			System.Action onAnyOther = null) {
 			
-			this.INTERNAL_FlowABTest(true, onCondition, onAnyOther);
+			this.INTERNAL_FlowABTest(true, false, onCondition, onAnyOther);
+			
+		}
+
+		/// <summary>
+		/// Call the A/B Test.
+		/// Use this method to filter users.
+		/// This method hides current window.
+		/// </summary>
+		public virtual void FlowWaitHideABTest(
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
+			
+			this.INTERNAL_FlowABTest(true, true, onCondition, onAnyOther);
 			
 		}
 		
 		private void INTERNAL_FlowABTest(
 			bool hide,
+			bool waitHide,
 			System.Action<int> onCondition = null,
 			System.Action onAnyOther = null) {
 			
@@ -36,7 +50,7 @@
 				AttachItem attachItem;
 				var wayId = window.abTests.Resolve(window, out attachItem);
 				
-				System.Action<AttachItem, bool>[] ways = new System.Action<AttachItem, bool>[] {
+				System.Action<AttachItem, bool, bool>[] ways = new System.Action<AttachItem, bool, bool>[] {
 					{METHOD_NAMES}
 				};
 				
@@ -51,7 +65,7 @@
 				}
 				
 				var way = ways[wayId];
-				if (way != null) way.Invoke(attachItem, hide);
+				if (way != null) way.Invoke(attachItem, hide, waitHide);
 				
 			}
 			

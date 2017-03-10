@@ -35,6 +35,28 @@ namespace UnityEngine.UI.Windows.Types {
 			
 		}
 
+		public override CanvasScaler GetCanvasScaler() {
+
+			return this.canvasScaler;
+
+		}
+
+		public override void OnDeinit(System.Action callback) {
+
+			this.uiElement = null;
+			this.uiElementCanvas = null;
+			if (this.tempHud != null) {
+
+				this.tempHud.Reset();
+				Component.Destroy(this.tempHud);
+
+			}
+			this.tempHud = null;
+
+			base.OnDeinit(callback);
+
+		}
+
 		public void OnHover(Transform worldElement, Vector3 worldPoint, Camera gameCamera, Vector3 offset = default(Vector3)) {
 			
 			if (this.animationRoot != null) this.animationRoot.SetInState();
@@ -116,7 +138,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		public IEnumerator CheckPivot_YIELD(Vector2 size, RectTransform sourceTransform) {
+		public System.Collections.Generic.IEnumerator<byte> CheckPivot_YIELD(Vector2 size, RectTransform sourceTransform) {
 
 			// Get pivot point according on screen rect
 
@@ -140,7 +162,7 @@ namespace UnityEngine.UI.Windows.Types {
 			};
 
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
-			yield return false;
+			yield return 0;
 			
 			var scaleFactor = this.GetScaleFactor();
 			size *= scaleFactor;

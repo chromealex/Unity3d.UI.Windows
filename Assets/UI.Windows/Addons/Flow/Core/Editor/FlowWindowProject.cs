@@ -72,8 +72,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			private Texture2D projectIconLarge;
 			public void DrawFlowProjectGUI(string path, Rect rect) {
 				
-				if (this.projectIcon == null) this.projectIcon = Resources.Load<Texture2D>("UI.Windows/Icons/ProjectIcon");
-				if (this.projectIconLarge == null) this.projectIconLarge = Resources.Load<Texture2D>("UI.Windows/Icons/ProjectIconLarge");
+				if (this.projectIcon == null) this.projectIcon = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/ProjectIcon");
+				if (this.projectIconLarge == null) this.projectIconLarge = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/ProjectIconLarge");
 				
 				this.DrawIcon(rect, this.projectIcon, this.projectIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
 				
@@ -83,8 +83,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			private Texture2D windowIconLarge;
 			public void DrawFlowWindowGUI(string path, Rect rect) {
 				
-				if (this.windowIcon == null) this.windowIcon = Resources.Load<Texture2D>("UI.Windows/Icons/WindowIcon");
-				if (this.windowIconLarge == null) this.windowIconLarge = Resources.Load<Texture2D>("UI.Windows/Icons/WindowIconLarge");
+				if (this.windowIcon == null) this.windowIcon = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/WindowIcon");
+				if (this.windowIconLarge == null) this.windowIconLarge = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/WindowIconLarge");
 				
 				this.DrawIcon(rect, this.windowIcon, this.windowIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
 				

@@ -24,8 +24,16 @@ namespace UnityEngine.UI.Extensions {
 		[ReadOnly("manualSize", false)] public float radiusX = 100f;
 		[ReadOnly("manualSize", false)] public float radiusY = 100f;
 
-		public override void CalculateLayoutInputVertical() {
+		public override void CalculateLayoutInputHorizontal() {
 
+			base.CalculateLayoutInputHorizontal();
+
+			this.Arrange();
+
+		}
+
+		public override void CalculateLayoutInputVertical() {
+			
 			this.Arrange();
 
 		}
@@ -219,10 +227,12 @@ namespace UnityEngine.UI.Extensions {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
-			if (Application.isPlaying == true) return;
-
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			base.OnValidate();
-
+			
 			if (this.angle <= 0f) {
 				
 				this.angle = 0.01f;

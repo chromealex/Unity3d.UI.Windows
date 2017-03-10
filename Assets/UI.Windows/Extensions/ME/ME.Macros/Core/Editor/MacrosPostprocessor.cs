@@ -4,16 +4,37 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace ME.Macros {
 
-	public class MacrosPostprocessor : AssetPostprocessor {
+	public static class MacrosPostprocessor/* : AssetPostprocessor*/ {
 		
-		public static void OnPostprocessAllAssets(
+		/*public static void OnPostprocessAllAssets(
 			string[] importedAssets,
 			string[] deletedAssets,
 			string[] movedAssets,
-			string[] movedFromAssetPaths) {
+			string[] movedFromAssetPaths) {*/
+
+		[MenuItem("Tools/ME.Macros/Process Selected")]
+		public static void ProcessSelectedObjects() {
+
+			var objects = Selection.objects;
+			if (objects == null) return;
+
+			var paths = new List<string>();
+			foreach (var obj in objects) {
+				
+				var path = AssetDatabase.GetAssetPath(obj);
+				paths.Add(path);
+
+			}
+
+			MacrosPostprocessor.ProcessFiles(paths.ToArray());
+
+		}
+
+		public static void ProcessFiles(string[] importedAssets) {
 
 			MacrosSystem.Clear();
 

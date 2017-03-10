@@ -311,17 +311,50 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   prefab: {fileID: 11494848, guid: 9959008b987df46258fa3debc5c649b5, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupItem.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Popup/PopupItem
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -1305922735
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11494848, guid: 9959008b987df46258fa3debc5c649b5, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11473206
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -347,16 +380,12 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11491026}
   - {fileID: 11491028}
-  canvas: {fileID: 22591026}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -408,7 +437,10 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
-  layoutGroup: {fileID: 0}
+  scrollbarVisibility: 1
+  horizontalScrollbar: {fileID: 0}
+  verticalScrollbar: {fileID: 0}
+  layoutGroup: {fileID: 11497478}
   navigationMode: 0
   navigationInverse: 0
 --- !u!114 &11473208
@@ -638,6 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22591026}
   parameters:
     inDelay: 0
     outDelay: 0

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace UnityEngine.UI {
 
-	[RequireComponent(typeof(RectTransform)), RequireComponent(typeof(Graphic)), DisallowMultipleComponent, AddComponentMenu("UI/Flippable")]
+	[/*RequireComponent(typeof(RectTransform)), RequireComponent(typeof(Graphic)),*//* DisallowMultipleComponent, */AddComponentMenu("UI/Flippable")]
 	public class UIFlippable : MonoBehaviour, IMeshModifier {
 		
 		[SerializeField]
@@ -31,6 +31,12 @@ namespace UnityEngine.UI {
 		}
 		
 		protected void OnValidate() {
+
+			if (Application.isPlaying == true) return;
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+
 			this.GetComponent<Graphic>().SetVerticesDirty();
 		}
 

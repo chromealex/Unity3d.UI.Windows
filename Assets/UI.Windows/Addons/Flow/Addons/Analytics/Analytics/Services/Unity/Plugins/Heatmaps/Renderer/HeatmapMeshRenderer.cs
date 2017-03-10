@@ -326,6 +326,7 @@ public class HeatmapMeshRenderer : MonoBehaviour, IHeatmapRenderer
 
         Vector3[] combinedVertices = allVectors.SelectMany(x => x).ToArray<Vector3>();
         Mesh mesh = go.GetComponent<MeshFilter>().sharedMesh;
+        mesh.Clear(false);
         mesh.vertices = combinedVertices;
         for (int j = 0; j < allTris.Count; j++)
         {
@@ -333,7 +334,7 @@ public class HeatmapMeshRenderer : MonoBehaviour, IHeatmapRenderer
             mesh.SetTriangles(t, j);
         }
         go.GetComponent<Renderer>().materials = materials;
-        mesh.Optimize();
+        //mesh.Optimize();
 
     }
 

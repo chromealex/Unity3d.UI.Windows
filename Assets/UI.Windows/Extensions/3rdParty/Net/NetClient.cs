@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace UnityEngine.UI.Windows.Extensions.Net {
     /// <summary>
@@ -9,6 +12,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
     /// </summary>
     public class NetClient {
         private TcpClient client;
+        private System.Timers.Timer timerConnecting;
         private NetworkStream stream;
         private bool isHead;
         private int len;
@@ -17,6 +21,15 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		private string name = "net";
 
 		private System.Action<bool> onResult;
+        private bool active;
+
+        private ConcurrentQueue<System.Action> tasks = new ConcurrentQueue<System.Action>();
+        private Thread thread;
+
+
+        private void ExecOnMainThread(System.Action task) {
+            tasks.Enqueue(task);
+        }
 
         /// <summary>
         /// Initialize the network connection
@@ -25,17 +38,82 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		public void Connect(string host, int port, System.Action<bool> onResult = null) {
 			if (client != null) Close();
 			this.onResult = onResult;
-			client = new TcpClientDebug(name);
+
+			client = new TcpClient();
+//			client = new TcpClientDebug(name);
 //			client.NoDelay = true;
-			//Debug.Log(name + " C: Connect(" + endConnected + ")");
-			endConnected = false;
-			try {
-				Debug.Log("Connect: " + host + ":" + port);
-				client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
-			} catch(Exception) {
-				if (this.onResult != null) this.onResult.Invoke(false);
-			}
+			active = false;
+
+            timerConnecting = new System.Timers.Timer(5000);
+            timerConnecting.Elapsed += new System.Timers.ElapsedEventHandler(this.OnConnectTimeout);
+            timerConnecting.Start();
+
+            Debug.Log("Connecting " + name + ": " + host + ":" + port);
+			BeginConnectThread(host, port);
+//			BeginConnectNative(host, port);
+
             isHead = true;
+        }
+
+        private void BeginConnectNative(string host, int port) {
+			try {
+				client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
+
+			} catch(Exception e) {
+                Debug.LogError(e);
+                //Stop and dispose timer
+                timerConnecting.Dispose();
+                timerConnecting = null;
+
+				if (this.onResult != null) this.onResult.Invoke(false);
+                this.onResult = null;
+            }
+        }
+
+        private void CloseThread() {
+            if (thread.IsAlive == true) thread.Abort();
+            thread = null;
+        }
+
+        private void BeginConnectThread(string host, int port) {
+            if (thread != null) {
+                Debug.LogError(name + " C: connect try, active: " + active + ", thread:" + thread != null + ")");
+                CloseThread();
+            }
+
+            thread = new Thread(new ThreadStart(() => ConnectThread(host, port)));
+            thread.Start();
+        }
+
+        private void ConnectThread(string host, int port) {
+            try {
+                client.Connect(host, port);
+
+                //Stop and dispose timer
+                timerConnecting.Dispose();
+                timerConnecting = null;
+
+                stream = client.GetStream();
+                active = true;
+                Debug.Log("Connected " + name);
+
+                ExecOnMainThread(() => {
+                    if (this.onResult != null) this.onResult.Invoke(true);
+                    this.onResult = null;
+                });
+
+            } catch (Exception e) {
+                //Stop and dispose timer
+                timerConnecting.Dispose();
+                timerConnecting = null;
+
+                ExecOnMainThread(() => {
+                    Debug.LogError(e);
+                    if (this.onResult != null) this.onResult.Invoke(false);
+                    this.onResult = null;
+                });
+            }
+            thread = null;
         }
 
         public void SetName(string value) {
@@ -45,61 +123,218 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		private void DoСonnect(IAsyncResult ar) {
             try {
                 if (client != ar.AsyncState) {
-                    Debug.Log(name + " changed");
+                    Debug.LogWarning("Connecting " +  name + " changed. Double-connect call?");
 					((TcpClient)ar.AsyncState).Close();
-					if (this.onResult != null) this.onResult.Invoke(false);
                     return;
                 }
+
+                //Stop and dispose timer
+                timerConnecting.Dispose();
+                timerConnecting = null;
 
                 // Finish asynchronous connect
                 client.EndConnect(ar);
 				stream = client.GetStream();
-				endConnected = true;
+				active = true;
+                Debug.Log("Connected " + name);
 
-				Log();
-				//Debug.Log(string.Format("R/W stream.Timeout: {0}/{1} client.Timeout: {2}/{3} client.Buffer: {4}/{5} ",
-				//		this.stream.ReadTimeout, this.stream.WriteTimeout, this.client.ReceiveTimeout, this.client.SendTimeout, this.client.ReceiveBufferSize, this.client.SendBufferSize));
-				if (this.onResult != null) this.onResult.Invoke(true);
+                ExecOnMainThread(() => {
+                    if (this.onResult != null) this.onResult.Invoke(true);
+                    this.onResult = null;
+                });
+
             } catch(Exception e) {
-				if (this.onResult != null) this.onResult.Invoke(false);
-                Debug.LogError(e);
+                ExecOnMainThread(() => {
+                    Debug.LogError(e);
+                    if (this.onResult != null) this.onResult.Invoke(false);
+                    this.onResult = null;
+                });
             }
-			this.onResult = null;
+        }
+
+        private void OnConnectTimeout(object sender, System.Timers.ElapsedEventArgs e) {
+            //Stop and dispose timer
+            timerConnecting.Dispose();
+            timerConnecting = null;
+
+            //The connection timed out
+            Debug.LogWarning("Сonnection " + name + " timed out!");
+
+            //Close the socket
+            Close();
+
+            ExecOnMainThread(() => {
+                if (this.onResult != null) this.onResult.Invoke(false);
+                this.onResult = null;
+            });
         }
 
         public bool Connected() {
-            return client != null && endConnected == true && client.Connected == true;
+            //MSDN: only reflects the state of the connection as of the most recent operation, you should attempt to send or receive a message to determine the current state.
+            return client != null && active == true && client.Connected == true;
+        }
+
+        public static TcpState GetTcpConnectionState(TcpClient tcpClient)  {
+            var array = IPGlobalProperties.GetIPGlobalProperties()
+            .GetActiveTcpConnections();
+
+            if ((array != null) && (array.Length > 0)) {
+                var localEP = tcpClient.Client.LocalEndPoint;
+                var remoteEP = tcpClient.Client.RemoteEndPoint;
+
+                for (int n = 0; n < array.Length; n++) {
+                    var tcp = array[n];
+                    if (tcp.LocalEndPoint.Equals(localEP) && tcp.RemoteEndPoint.Equals(remoteEP))  {
+                        Debug.Log("Found: " + tcp.State);
+                        return tcp.State;
+                    }
+                }
+            }
+
+            return TcpState.Unknown;
+        }
+        public bool IsConnectedDeep() {
+/*
+            Debug.Log("ConnectedDeep"
+            + " 1: " + IsConnectedDeep1()
+            + " 2: " + IsConnectedDeep2()
+            + " 3: " + IsConnectedDeep3()
+//            + " 4: " + IsConnectedDeep4()
+            + " 5: " + IsConnectedDeep5()
+            );
+*/
+            return IsConnectedDeep3();
+        }
+        public bool IsConnectedDeep1() {
+            return GetTcpConnectionState(client) == TcpState.Established;
+        }
+
+        public bool IsConnectedDeep4() {
+            byte[] buffer = new byte[1];
+            stream.Read(buffer, 0, 0);
+            return client.Connected;
+        }
+
+        public bool IsConnectedDeep3() {
+            try {
+                return !(client.Client.Poll(1, SelectMode.SelectRead) && client.Client.Available == 0);
+            } catch (SocketException) { return false; }
+        }
+
+        public bool IsConnectedDeep2() {
+            // This is how you can determine whether a socket is still connected.
+            bool blockingState = client.Client.Blocking;
+            try {
+                byte [] tmp = new byte[1];
+
+                client.Client.Blocking = false;
+//                client.Client.Send(tmp, 0, 0);
+                client.Client.Receive(tmp, 0, 0);
+                return true;
+            } catch (SocketException e) {
+                // 10035 == WSAEWOULDBLOCK
+                if (e.NativeErrorCode.Equals(10035)) {
+//                    Still Connected, but the Send would block
+                    return true;
+                } else {
+                    Debug.LogError("Disconnected: error code " + e.NativeErrorCode);
+                    return false;
+                }
+            } finally {
+                client.Client.Blocking = blockingState;
+            }
+        }
+
+        public bool IsConnectedDeep5() {
+            // This is how you can determine whether a socket is still connected.
+            bool blockingState = client.Client.Blocking;
+            try {
+                byte [] tmp = new byte[1];
+
+                client.Client.Blocking = false;
+                client.Client.Send(tmp, 0, 0);
+//                client.Client.Receive(tmp, 0, 0);
+                return true;
+            } catch (SocketException e) {
+                // 10035 == WSAEWOULDBLOCK
+                if (e.NativeErrorCode.Equals(10035)) {
+//                    Still Connected, but the Send would block
+                    return true;
+                } else {
+                    Debug.LogError("Disconnected: error code " + e.NativeErrorCode);
+                    return false;
+                }
+            } finally {
+                client.Client.Blocking = blockingState;
+            }
         }
 
 		public void SendMsgSilently(short type, byte[] msg) {
-            
+
 			SendMsg(type, msg);
 
         }
 
 		public void SendMsg(short type, byte[] msg) {
-            
-			if (this.Connected() == false) return;
+
+			if (this.Connected() == false) {
+                Debug.LogError("SendMsg On Disconnected " + name);
+                return;
+            }
 
 			try {
-
 				// Message structure: the message body length + message body
 	            byte[] data = new byte[4 + msg.Length];
 	            IntToBytes((int)type << 16 | msg.Length & 0xFFFF) .CopyTo(data, 0);
 	            msg.CopyTo(data, 4);
-	            if (stream.CanWrite == true) stream.Write(data, 0, data.Length);
+	            if (stream.CanWrite == true) stream.BeginWrite(data, 0, data.Length, new AsyncCallback(SendCallback), stream);
 	//			stream.Flush();
 
-			} catch (Exception) {
+			} catch (Exception e) {
+                Debug.LogError(e);
 			}
 
         }
 
+        private static void SendCallback(IAsyncResult ar) {
+            try {
+                // Retrieve the socket from the state object.
+                NetworkStream handler = (NetworkStream) ar.AsyncState;
+
+                // Complete sending the data to the remote device.
+                handler.EndWrite(ar);
+
+            } catch (Exception e) {
+                Debug.LogError(e);
+            }
+        }
+
+        private int i = 0;
+
         public void ReceiveMsg() {
+            try {
+                ReceiveMsg2();
+            } catch (Exception e) {
+                Debug.LogException(e);
+            }
+        }
+
+        public void ReceiveMsg2() {
+
+            System.Action act;
+            while(tasks.TryDequeue(out act) == true) {
+                act.Invoke();
+            }
+
 			if (!Connected()) {
                 return;
             }
             if (!stream.CanRead) {
+                return;
+            }
+            if (((++i & 0x1F) == 0) && !IsConnectedDeep()) {
+                active = false;
+                Debug.Log(name + " Deep Detected: closed");
                 return;
             }
             // Read the length of the message body
@@ -148,14 +383,19 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
         public void Close() {
-			//Debug.Log(name + " C: close(" + endConnected + ")");
-			this.endConnected = false;
+            Debug.Log(name + " C: close, active: " + active + ", thread: " + (thread != null));
+
+            if (thread != null) CloseThread();
+
+			this.active = false;
 			if (this.client != null) {
 				Log();
 				var client = this.client;
 				this.client = null;
-				this.stream = null;
-				client.GetStream().Close();
+                if (this.stream != null) {
+                    this.stream = null;
+                    client.GetStream().Close();
+                }
                 client.Close();
             }
         }
@@ -173,8 +413,6 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         public delegate void OnRevMsg(short type, byte[] msg);
 
         public OnRevMsg onRecMsg;
-
-        private bool endConnected;
     }
 
 	/**
@@ -194,6 +432,10 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 			Debug.Log(name + " TcpDisposed2");
 		}
 		private void initialize2() {
+            if (Client != null) {
+                Client.Close();
+                Client = null;
+            }
 			this.Client = new SocketDebug(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp, name);
 		}
 	}

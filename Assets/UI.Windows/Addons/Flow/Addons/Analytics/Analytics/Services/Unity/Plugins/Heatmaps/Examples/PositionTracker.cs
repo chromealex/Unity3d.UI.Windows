@@ -23,7 +23,7 @@ public class PositionTracker : MonoBehaviour, IAnalyticsDispatcher
         StartCoroutine(TrackingTick());
     }
 
-    IEnumerator TrackingTick()
+    System.Collections.IEnumerator TrackingTick()
     {
         yield return new WaitForSeconds(trackIntervalInSeconds);
         if (analyticsEnabled)

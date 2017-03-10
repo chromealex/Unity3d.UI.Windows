@@ -38,8 +38,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			this.editor = editor;
 
-			if (this.skin == null) this.skin = Resources.Load<GUISkin>(string.Format("UI.Windows/Flow/Styles/{0}", (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight")));
-			if (this.splash == null) this.splash = Resources.Load<Texture>(EditorGUIUtility.isProSkin == true ? "UI.Windows/Flow/Splash_Pro" : "UI.Windows/Flow/Splash");
+			if (this.skin == null) this.skin = UnityEngine.Resources.Load<GUISkin>(string.Format("UI.Windows/Flow/Styles/{0}", (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight")));
+			if (this.splash == null) this.splash = UnityEngine.Resources.Load<Texture>(EditorGUIUtility.isProSkin == true ? "UI.Windows/Flow/Splash_Pro" : "UI.Windows/Flow/Splash");
 
 		}
 

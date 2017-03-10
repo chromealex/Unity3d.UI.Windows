@@ -14,6 +14,12 @@ public class CircleOutline : ModifiedShadow
 #if UNITY_EDITOR
     protected override void OnValidate()
     {
+
+		if (Application.isPlaying == true) return;
+		#if UNITY_EDITOR
+		if (UnityEditor.EditorApplication.isUpdating == true) return;
+		#endif
+		
         base.OnValidate();
         circleCount = m_circleCount;
         firstSample = m_firstSample;

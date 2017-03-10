@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Serialization;
+using UnityEngine.UI.Windows.Components;
 
 namespace UnityEngine.UI {
 
@@ -127,9 +128,11 @@ namespace UnityEngine.UI {
 		[System.Serializable]
 		public class GraphicItem {
 
+			public bool colorEnabled = true;
+			[ReadOnly("colorEnabled", state: false)]
 			public Graphic targetGraphic;
 			[FormerlySerializedAs("colors")]
-			[SerializeField]
+			[ReadOnly("colorEnabled", state: false)][SerializeField]
 			private ColorBlock m_Colors = ColorBlock.defaultColorBlock;
 			public ColorBlock colors {
 				get {
@@ -140,9 +143,64 @@ namespace UnityEngine.UI {
 				}
 			}
 
+			public bool scaleEnabled = false;
+			[FormerlySerializedAs("scale")]
+			[ReadOnly("scaleEnabled", state: false)][SerializeField]
+			private ScaleBlock m_Scale = ScaleBlock.defaultScaleBlock;
+			public ScaleBlock scale {
+				get {
+					return this.m_Scale;
+				}
+				set {
+					this.m_Scale = value;
+				}
+			}
+
+			public bool spritesEnabled = false;
+			[FormerlySerializedAs("sprite")]
+			[ReadOnly("spritesEnabled", state: false)][SerializeField]
+			private SpriteState m_Sprite;
+			public SpriteState sprite {
+				get {
+					return this.m_Sprite;
+				}
+				set {
+					this.m_Sprite = value;
+				}
+			}
+
 		}
 
 		public GraphicItem[] graphicItems;
+
+		private IHoverableComponent containerComponent;
+		public void Setup(IHoverableComponent component) {
+
+			this.containerComponent = component;
+
+		}
+
+		public override void OnPointerEnter(UnityEngine.EventSystems.PointerEventData eventData) {
+
+			base.OnPointerEnter(eventData);
+
+			if (this.containerComponent != null) this.containerComponent.SetHoverEnter();
+
+		}
+
+		public override void OnPointerExit(UnityEngine.EventSystems.PointerEventData eventData) {
+
+			base.OnPointerExit(eventData);
+
+			if (this.containerComponent != null) this.containerComponent.SetHoverExit();
+
+		}
+
+		public void Select(bool forced) {
+
+			this.DoStateTransition(this.currentSelectionState, instant: false);
+
+		}
 
 		public void UpdateState() {
 			
@@ -153,14 +211,15 @@ namespace UnityEngine.UI {
 		private void StartScaleTween(float targetScale, bool instant) {
 			
 			if (this.scale.transform == null) return;
-			
+
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this.scale.transform);
+
 			if (instant == true) {
 				
 				this.scale.transform.localScale = Vector3.one * targetScale;
 				
 			} else {
 				
-				TweenerGlobal.instance.removeTweens(this.scale.transform);
 				TweenerGlobal.instance.addTweenScale(this.scale.transform, this.scale.fadeDuration, Vector3.one * targetScale).tag(this.scale.transform);
 				
 			}
@@ -171,13 +230,14 @@ namespace UnityEngine.UI {
 
 			if (this.alpha.canvasGroup == null) return;
 
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(this.alpha.canvasGroup);
+
 			if (instant == true) {
 
 				this.alpha.canvasGroup.alpha = targetAlpha;
 
 			} else {
 
-				TweenerGlobal.instance.removeTweens(this.alpha.canvasGroup);
 				TweenerGlobal.instance.addTweenAlpha(this.alpha.canvasGroup, this.alpha.fadeDuration, targetAlpha).tag(this.alpha.canvasGroup);
 
 			}
@@ -189,6 +249,8 @@ namespace UnityEngine.UI {
 			if (this.graphicItems == null) return;
 
 			var targetColor = Color.white;
+			var targetScale = 1f;
+			Sprite newSprite = null;
 			for (int i = 0; i < this.graphicItems.Length; ++i) {
 
 				var item = this.graphicItems[i];
@@ -198,23 +260,58 @@ namespace UnityEngine.UI {
 
 					case SelectionState.Normal:
 						targetColor = item.colors.normalColor;
+						targetScale = item.scale.normalScale;
+						newSprite = null;
 						break;
 
 					case SelectionState.Disabled:
 						targetColor = item.colors.disabledColor;
+						targetScale = item.scale.disabledScale;
+						newSprite = item.sprite.disabledSprite;
 						break;
 
 					case SelectionState.Highlighted:
 						targetColor = item.colors.highlightedColor;
+						targetScale = item.scale.highlightedScale;
+						newSprite = item.sprite.highlightedSprite;
 						break;
 
 					case SelectionState.Pressed:
 						targetColor = item.colors.pressedColor;
+						targetScale = item.scale.pressedScale;
+						newSprite = item.sprite.pressedSprite;
 						break;
 
 				}
 
-				item.targetGraphic.CrossFadeColor(targetColor * item.colors.colorMultiplier, instant ? 0f : item.colors.fadeDuration, true, true);
+				if (item.colorEnabled == true) {
+
+					item.targetGraphic.CrossFadeColor(targetColor * item.colors.colorMultiplier, instant ? 0f : item.colors.fadeDuration, true, true);
+
+				}
+
+				if (item.scaleEnabled == true) {
+
+					if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(item.scale.transform);
+
+					if (instant == true) {
+
+						item.scale.transform.localScale = Vector3.one * targetScale * item.scale.scaleMultiplier;
+
+					} else {
+
+						TweenerGlobal.instance.addTweenScale(item.scale.transform, item.scale.fadeDuration, Vector3.one * targetScale * item.scale.scaleMultiplier).tag(item.scale.transform);
+
+					}
+
+				}
+
+				if (item.spritesEnabled == true) {
+
+					var image = (item.targetGraphic as Image);
+					if (image != null) image.overrideSprite = newSprite;
+
+				}
 
 			}
 
@@ -355,7 +452,7 @@ namespace UnityEngine.UI {
 
 			}
 
-			if (base.gameObject.activeInHierarchy == true) {
+			//if (base.gameObject.activeInHierarchy == true) {
 				
 				if ((this.transitionExtended & Transition.Scale) != 0) {
 					
@@ -393,9 +490,27 @@ namespace UnityEngine.UI {
 
 				}
 
-			}
+			//}
 
 		}
+
+		/*new public bool interactable {
+
+			get {
+				
+				return base.interactable;
+
+			}
+
+			set {
+
+				base.interactable = value;
+
+				//this.DoStateTransition(SelectionState.Disabled, Application.isPlaying == false);
+
+			}
+
+		}*/
 
 	}
 

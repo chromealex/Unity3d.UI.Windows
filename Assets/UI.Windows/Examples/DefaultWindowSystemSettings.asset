@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: DefaultWindowSystemSettings
   m_EditorClassIdentifier: 
   baseInfo:
+    turnOffCameraRenderOnly: 0
     poolSize: 100
     preallocatedWindowsPoolSize: 0
     zDepthStep: 200
@@ -52,6 +53,10 @@ MonoBehaviour:
       minDepth: 81
       maxDepth: 100
       minZDepth: 40000
+  canvas:
+    overridePixelPerfect: 0
+    pixelPerfect: 0
+    sortingLayerName: Windows
   camera:
     orthographic: 1
     orthographicSize: 5
@@ -59,5 +64,3 @@ MonoBehaviour:
     farClipPlane: 100
     useOcclusionCulling: 0
     hdr: 0
-  sortingLayer:
-    name: Windows

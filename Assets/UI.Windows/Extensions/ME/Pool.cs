@@ -17,11 +17,18 @@ namespace MW2.Extensions {
 		public bool inPool { get; set; }
 		public int poolIndex { get; set; }
 
-		public static T Spawn<T>(int capacity = 0) where T : IPoolItem, new() {
+	    public static void CreatePool<T>(int capacity = 0) where T : IPoolItem, new() {
 
-			var type = typeof(T);
-			type.CreatePool<T>(capacity);
-			return type.Spawn<T>();
+            var type = typeof(T);
+            type.CreatePool<T>(capacity);
+
+        }
+
+	    public static T Spawn<T>(int capacity = 0) where T : IPoolItem, new() {
+
+            PoolItem.CreatePool<T>(capacity);
+            var type = typeof(T);
+            return type.Spawn<T>();
 
 		}
 
@@ -186,7 +193,8 @@ namespace MW2.Extensions {
 				}
 				
 				obj = new T();
-				obj.inPool = true;
+                ME.WeakReferenceInfo.Register(obj);
+                obj.inPool = true;
 				if (obj.poolIndex == 0) obj.poolIndex = ++Pool.objectLookupCounters[prefab];
 				obj.OnNewPool();
 
@@ -199,7 +207,8 @@ namespace MW2.Extensions {
 				
 				T obj = default(T);
 				obj = new T();
-				obj.inPool = false;
+                ME.WeakReferenceInfo.Register(obj);
+                obj.inPool = false;
 
 				prefab.AddToAll(obj);
 				

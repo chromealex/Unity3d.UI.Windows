@@ -1,6 +1,6 @@
-#if UNITY_TVOS
-#define STORAGE_NOT_SUPPORTED
-#endif
+//#if UNITY_TVOS
+//#define STORAGE_NOT_SUPPORTED
+//#endif
 using UnityEngine;
 using System.Collections;
 using System.Linq;
@@ -107,13 +107,48 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 				w.OnVersionChanged();
 
-			});
+			}, includeInactive: false);
 
 		}
 
 		public static string[] GetKeys() {
 
 			return GameDataSystem.keys;
+
+		}
+
+		public static bool HasKey(string key) {
+
+			return GameDataSystem.HasKey(key, GameDataSystem.GetCurrentVersion());
+
+		}
+
+		public static bool HasKey(string key, Version version) {
+
+			if (GameDataSystem.IsReady() == true) {
+
+				var crc = new VersionCrc(version);
+
+				float[] values;
+				if (GameDataSystem.valuesByVersion.TryGetValue(crc, out values) == true) {
+
+					var keys = GameDataSystem.GetKeys();
+					if (keys != null && key != null) {
+
+						var index = System.Array.IndexOf(keys, key.ToLower());
+						if (index >= 0) {
+
+							return true;
+
+						}
+
+					}
+
+				}
+
+			}
+
+			return false;
 
 		}
 
@@ -145,6 +180,8 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 					}
 
 				}
+
+				Debug.LogWarningFormat("[ GameData ] Key was not found: {0}", key);
 
 			} else {
 
@@ -234,8 +271,33 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 		public static string GetCachePath() {
 
-			var path = Application.persistentDataPath;
-			return string.Format("{0}/GameData.dat", path);
+			#if UNITY_TVOS
+			return GameDataSystem.GetCachePath(Application.temporaryCachePath);
+			#else
+			return GameDataSystem.GetCachePath(Application.persistentDataPath);
+			#endif
+
+		}
+
+		public static string GetBuiltinCachePath() {
+
+			return GameDataSystem.GetCachePath(Application.streamingAssetsPath);
+
+		}
+
+		public static string GetCachePath(string storagePath) {
+
+			var dir = string.Format("{0}/UI.Windows/Cache/Services", storagePath);
+			var path = string.Format("{0}/{1}.uiws", dir, GameDataSystem.GetName());
+			#if !STORAGE_NOT_SUPPORTED
+			if (System.IO.Directory.Exists(dir) == false) {
+
+				System.IO.Directory.CreateDirectory(dir);
+
+			}
+			#endif
+
+			return path;
 
 		}
 
@@ -253,9 +315,13 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				var path = GameDataSystem.GetCachePath();
 				#if STORAGE_NOT_SUPPORTED
 				if (PlayerPrefs.HasKey(path) == false) return;
-				var text = PlayerPrefs.GetString(path);
+				var text = PlayerPrefs.GetString(path, string.Empty);
 				#else
-				if (System.IO.File.Exists(path) == false) return;
+				if (System.IO.File.Exists(path) == false) {
+					
+					path = GameDataSystem.GetBuiltinCachePath();
+					
+				}
 				var text = System.IO.File.ReadAllText(path);
 				#endif
 				
@@ -267,9 +333,13 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				var path = GameDataSystem.GetCachePath();
 				#if STORAGE_NOT_SUPPORTED
 				if (PlayerPrefs.HasKey(path) == false) return;
-				var text = PlayerPrefs.GetString(path);
+				var text = PlayerPrefs.GetString(path, string.Empty);
 				#else
-				if (System.IO.File.Exists(path) == false) return;
+				if (System.IO.File.Exists(path) == false) {
+					
+					path = GameDataSystem.GetBuiltinCachePath();
+					
+				}
 				var text = System.IO.File.ReadAllText(path);
 				#endif
 
@@ -393,6 +463,11 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				System.IO.File.WriteAllText(path, data);
 				#endif
 
+				#if UNITY_EDITOR
+				path = GameDataSystem.GetBuiltinCachePath();
+				System.IO.File.WriteAllText(path, data);
+				#endif
+
 				GameDataSystem.currentVersion = GameDataSystem.defaultVersion;
 
 				if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
@@ -408,7 +483,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				if (GameDataSystem.instance == null || GameDataSystem.instance.logEnabled == true) {
 					
 					// Nothing to do: failed to parse
-					WindowSystemLogger.Error(GameDataSystem.GetName(), string.Format("[ GameData ] Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
+					WindowSystemLogger.Error(GameDataSystem.GetName(), string.Format("Parser error: {0}\n{1}", ex.Message, ex.StackTrace));
 
 				}
 

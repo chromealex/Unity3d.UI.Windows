@@ -34,7 +34,7 @@ namespace ExampleProject.UI.Loader.Loading {
 			
 		}
 		
-		private IEnumerator Loading() {
+		private System.Collections.IEnumerator Loading() {
 			
 			var timer = 0f;
 			while (timer < 1f) {
@@ -42,7 +42,7 @@ namespace ExampleProject.UI.Loader.Loading {
 				timer += Time.deltaTime;
 				
 				this.progress.SetValue(timer);
-				yield return false;
+				yield return 0;
 				
 			}
 			

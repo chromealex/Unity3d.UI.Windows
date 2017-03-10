@@ -19,3 +19,17 @@
 			WindowSystem.CallFunction(this, reusable);
 			
 		}
+
+		/// <summary>
+		/// Call the end of current function {FUNCTION_CALL_NAME} and hides current and wait while it hidden.
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		public void FlowWaitHideFunctionReturn(bool reusable = false) {
+			
+			this.Hide(() => {
+				
+				WindowSystem.CallFunction(this, reusable);
+				
+			});
+
+		}

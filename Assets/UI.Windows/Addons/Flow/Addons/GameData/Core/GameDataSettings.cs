@@ -12,6 +12,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 	public class GameDataSettings : ServiceSettings {
 
 		public string url;
+		public string eTag;
 		public List<GameDataServiceItem> items = new List<GameDataServiceItem>();
 		
 		public override void AddService(ServiceItem item) {

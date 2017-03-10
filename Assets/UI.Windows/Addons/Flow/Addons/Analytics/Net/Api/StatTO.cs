@@ -19,6 +19,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Net.Api {
 		OnStatUserBirthYear,
 		OnStatGetHeatmapData,
 		OnStatResHeatmapData,
+		OnStatSetUserDuid,
 
     }
 
@@ -119,13 +120,23 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Net.Api {
 
 	[System.Serializable]
 	public class StatSetUserId : StatTO {
-        public StatSetUserId() : base(StatType.OnStatSetUserId) {
-        }
-        public StatSetUserId(string id) : this() {
+		public StatSetUserId() : base(StatType.OnStatSetUserId) {
+		}
+		public StatSetUserId(string id) : this() {
 			this.id = id;
-        }
+		}
 		public string id;
-    }
+	}
+
+	[System.Serializable]
+	public class StatSetUserDuid : StatTO {
+		public StatSetUserDuid() : base(StatType.OnStatSetUserDuid) {
+		}
+		public StatSetUserDuid(string id) : this() {
+			this.id = id;
+		}
+		public string id;
+	}
 
 	[System.Serializable]
 	public class StatSetUserGender : StatTO {

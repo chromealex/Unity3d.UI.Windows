@@ -31,6 +31,31 @@ namespace UnityEngine.UI.Windows.Components {
 		public float currentValueNormalized = 0f;
 		private float currentValue = 0f;
 
+		private float progressCount;
+		private float progressMaxCount;
+
+		public void ResetProgressValues() {
+
+			this.progressCount = 0;
+			this.progressMaxCount = 0;
+			this.SetValue(0f, immediately: true);
+
+		}
+
+		public void AddMaxProgress(int count) {
+
+			this.progressMaxCount += count;
+			this.SetValue(this.progressCount / this.progressMaxCount);
+
+		}
+
+		public void AddProgress() {
+
+			this.progressCount += 1;
+			this.SetValue(this.progressCount / this.progressMaxCount);
+
+		}
+
 		public virtual Selectable GetSelectable() {
 
 			return this.bar;
@@ -48,7 +73,7 @@ namespace UnityEngine.UI.Windows.Components {
 			[SerializeField]
 			private bool hoverCursorDefaultOnInactive = false;
 	
-		public bool IsHoverCursorDefaultOnInactive() {
+			public bool IsHoverCursorDefaultOnInactive() {
 	
 				return this.IsInteractable() == false && this.hoverCursorDefaultOnInactive == true;
 	
@@ -175,7 +200,20 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnShowBegin() {
+		public override void OnDeinit(System.Action callback) {
+
+	        base.OnDeinit(callback);
+
+			this.BreakAnimation();
+
+            this.bar.onValueChanged.RemoveListener(this.OnValueChanged_INTERNAL);
+            this.callback.RemoveAllListeners();
+            this.callbackButton.RemoveAllListeners();
+	        this.getValue = null;
+
+	    }
+
+        public override void OnShowBegin() {
 
 			base.OnShowBegin();
 
@@ -310,14 +348,14 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public virtual void SetCallback(UnityAction<float> callback) {
+		public virtual void SetCallback(System.Action<float> callback) {
 
 			this.callback.AddListenerDistinct(callback);
 			this.callbackButton.RemoveAllListeners();
 
 		}
 		
-		public virtual void SetCallback(UnityAction<ProgressComponent, float> callback) {
+		public virtual void SetCallback(System.Action<ProgressComponent, float> callback) {
 			
 			this.callbackButton.AddListenerDistinct(callback);
 			this.callback.RemoveAllListeners();
@@ -495,7 +533,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		public override void OnValidateEditor() {
 
 			base.OnValidateEditor();
@@ -507,7 +545,7 @@ namespace UnityEngine.UI.Windows.Components {
 			ME.Utilities.FindReference<Extensions.Slider>(this, ref this.bar);
 
 		}
-		#endif
+#endif
 
 	}
 

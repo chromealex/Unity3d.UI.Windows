@@ -173,14 +173,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   list: {fileID: 11469698}
 --- !u!114 &11433966
 MonoBehaviour:
@@ -267,15 +263,11 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11488700}
-  canvas: {fileID: 22588700}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -601,14 +593,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -660,6 +648,9 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  scrollbarVisibility: 1
+  horizontalScrollbar: {fileID: 0}
+  verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 11469686}
   navigationMode: 0
   navigationInverse: 0
@@ -720,6 +711,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22588700}
   parameters:
     inDelay: 0.2
     outDelay: 0

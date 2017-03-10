@@ -46,7 +46,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console.Components {
 
 		}
 
-		public void SetCallback(UnityAction onAction) {
+		public void SetCallback(System.Action onAction) {
 
 			this.buttonComponent.SetCallback(onAction);
 

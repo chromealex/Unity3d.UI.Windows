@@ -256,13 +256,43 @@ namespace UnityEngine.UI.Windows {
 		Begin,
 		Move,
 		End,
-		
+
 	};
 
-	public interface ILoadableResource {
+	public interface IDraggableHandler {
+
+		bool IsDraggable();
+
+	}
+
+	public interface IResourceValidationObject {
+
+		Object GetValidationObject();
+
+	}
+
+	public interface IResourceReference {
+	}
+
+	public interface ILoadableReference {
+
+		IResourceReference GetReference();
+
+	}
+
+	public interface ILoadableResource : IResourceReference {
 		
-		AutoResourceItem GetResource();
+		ResourceBase GetResource();
 		
+	}
+
+	public interface ILoadableObject {
+
+		void OnLoad(System.Action callback);
+		void OnUnload();
+
+		void Validate();
+
 	}
 
 	public interface IManualEvent {}
@@ -289,16 +319,24 @@ namespace UnityEngine.UI.Windows {
 		OnShowEnd,
 		OnHideBegin,
 		OnHideEnd,
+		OnHideEndLate,
 		OnWindowOpen,
+		OnWindowClose,
 		OnWindowActive,
 		OnWindowInactive,
 
 	};
 
 	public interface IWindowEventsAsync {
-		
+
+		void OnWindowUnload();
+		void OnWindowActive();
+		void OnWindowInactive();
+		void OnWindowOpen();
+		void OnWindowClose();
+
 		void OnInit();
-		void OnDeinit();
+		void OnDeinit(System.Action callback);
 		void OnShowBegin();
 		void OnShowBegin(AppearanceParameters appearanceParameters);
 		void OnShowEnd();
@@ -311,9 +349,15 @@ namespace UnityEngine.UI.Windows {
 	}
 	
 	public interface IWindowEventsController {
-		
+
+		void DoWindowUnload();
+		void DoWindowActive();
+		void DoWindowInactive();
+		void DoWindowOpen();
+		void DoWindowClose();
+
 		void DoInit();
-		void DoDeinit();
+		void DoDeinit(System.Action callback);
 		void DoShowBegin(AppearanceParameters appearanceParameters);
 		void DoShowEnd(AppearanceParameters appearanceParameters);
 		void DoHideBegin(AppearanceParameters appearanceParameters);

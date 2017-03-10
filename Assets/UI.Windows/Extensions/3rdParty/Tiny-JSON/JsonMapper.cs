@@ -30,8 +30,9 @@ namespace UnityEngine.UI.Windows.Extensions.Tiny {
 				while (type != null) {
 					foreach (FieldInfo field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)) {
 						if (field.GetCustomAttributes(typeof(System.NonSerializedAttribute), true).Length == 0) {
-							if (first) first = false; else builder.AppendSeperator();
-							JsonMapper.EncodeNameValue(field.Name, field.GetValue(obj), builder);
+							var val = field.GetValue(obj);
+							if (first) first = false; else if (val != null) builder.AppendSeperator();
+							JsonMapper.EncodeNameValue(field.Name, val, builder);
 						}
 					}
 					type = type.BaseType;
@@ -54,8 +55,9 @@ namespace UnityEngine.UI.Windows.Extensions.Tiny {
 			RegisterEncoder<Enum>((obj, builder) => {
 
 //TODO Alex Chrome said : Enum IS BYTE for sure
-				int value = (byte)obj;
-//				int value = (int)obj;
+//				int value = (byte)obj;
+				//int value = (int)obj;
+				var value = Convert.ChangeType(obj, typeof(int));
 				builder.AppendNumber(value);
 			});
 
@@ -204,6 +206,11 @@ namespace UnityEngine.UI.Windows.Extensions.Tiny {
 			return (T)decoder(typeof(T), jsonObj);
 		}
 
+		public static object DecodeJsonObject(object jsonObj, Type type) {
+			Decoder decoder = GetDecoder(type);
+			return decoder(type, jsonObj);
+		}
+
 		public static void EncodeValue(object value, JsonBuilder builder) {
 			if (JsonBuilder.IsSupported(value)) {
 				builder.AppendValue(value);
@@ -217,9 +224,19 @@ namespace UnityEngine.UI.Windows.Extensions.Tiny {
 			}
 		}
 
-		public static void EncodeNameValue(string name, object value, JsonBuilder builder) {
-			builder.AppendName(UnwrapName(name));
-			EncodeValue(value, builder);
+		public static bool EncodeNameValue(string name, object value, JsonBuilder builder) {
+
+			if (value != null) {
+				
+				builder.AppendName(UnwrapName(name));
+				EncodeValue(value, builder);
+
+				return true;
+
+			}
+
+			return false;
+
 		}
 
 		public static string UnwrapName(string name) {

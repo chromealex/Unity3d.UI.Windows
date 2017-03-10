@@ -11,7 +11,7 @@ namespace UnityEngine.UI.Windows.Components {
 	public class ListViewComponent : ListComponent, IListViewDataSource, ILayoutController {
 		
 		[System.Serializable]
-		public class CellVisibilityChangeEvent : UnityEvent<int, bool> {}
+		public class CellVisibilityChangeEvent : ME.Events.SimpleEvent<int, bool> {}
 
 		[System.Serializable]
 		public struct Range {
@@ -71,13 +71,13 @@ namespace UnityEngine.UI.Windows.Components {
 		private RectTransform specialSize;
 
 		private int capacity;
-		private UnityAction<IComponent, int> onItem;
+		private System.Action<IComponent, int> onItem;
 
 		/// <summary>
 		/// This event will be called when a cell's visibility changes
 		/// First param (int) is the row index, second param (bool) is whether or not it is visible
 		/// </summary>
-		public CellVisibilityChangeEvent onCellVisibilityChanged;
+		public CellVisibilityChangeEvent onCellVisibilityChanged = new CellVisibilityChangeEvent();
 
 
 		#region ILayoutController
@@ -103,7 +103,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public int GetRowsCount() {
+		public virtual int GetRowsCount() {
 
 			return this.capacity;
 
@@ -192,11 +192,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override WindowComponent GetItem(int index) {
+		public override WindowComponent GetItem(int index, bool linkerLookup = true) {
 
 			if (index >= 0 && index < this.list.Count) {
 
-				return base.GetItem(index);
+				return base.GetItem(index, linkerLookup);
 
 			}
 
@@ -223,7 +223,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void AddItem(UnityAction<IComponent, int> onItem) {
+		public void AddItem(System.Action<IComponent, int> onItem) {
 
 			++this.capacity;
 			this.onItem = onItem;
@@ -232,7 +232,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		protected override void SetItems(int capacity, UnityAction<IComponent, int> onItem) {
+		protected override void SetItems(int capacity, System.Action<IComponent, int> onItem) {
 
 			this.capacity = capacity;
 			this.onItem = onItem;
@@ -388,12 +388,14 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.visibleRowRange.Contains(row) == true) {
 
 				WindowComponent cell = this.GetCellAtRow(row);
-				cell.GetComponent<LayoutElement>().preferredHeight = this.rowHeights[row];
+				var le = cell.GetComponent<LayoutElement>();
+				le.preferredHeight = this.rowHeights[row];
 				if (row > 0) {
 
-					cell.GetComponent<LayoutElement>().preferredHeight -= this.GetRowSpacing();
+					le.preferredHeight -= this.GetRowSpacing();
 
 				}
+				le.minHeight = le.preferredHeight;
 
 			}
 
@@ -550,6 +552,7 @@ namespace UnityEngine.UI.Windows.Components {
 			var relativeScroll = 1f - newScrollValue.y;
 			this.scrollY = relativeScroll * scrollableHeight;
 			this.requiresRefresh = true;
+			this.RefreshVisibleRows();
 			//Debug.Log(this.scrollY.ToString(("0.00")));
 
 		}
@@ -587,9 +590,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnDeinit() {
+		public override void OnDeinit(System.Action callback) {
 
-			base.OnDeinit();
+			base.OnDeinit(callback);
 
 			this.scrollRect.onValueChanged.RemoveListener(this.ScrollViewValueChanged);
 
@@ -604,10 +607,10 @@ namespace UnityEngine.UI.Windows.Components {
 			this.bottomPadding.transform.SetParent(this.scrollRect.content, false);
 			this.visibleCells = new Dictionary<int, WindowComponent>();
 
-			this.reusableCellContainer = new GameObject("ReusableCells", typeof(RectTransform)).GetComponent<RectTransform>();
+			/*this.reusableCellContainer = new GameObject("ReusableCells", typeof(RectTransform)).GetComponent<RectTransform>();
 			this.reusableCellContainer.SetParent(this.scrollRect.transform, false);
 			this.reusableCellContainer.gameObject.SetActive(true);
-			this.reusableCellContainer.localScale = Vector3.zero;
+			this.reusableCellContainer.localScale = Vector3.zero;*/
 			this.reusableCells = new Dictionary<string, LinkedList<WindowComponent>>();
 
 			if (this.top != null) this.top.Hide(immediately: true);
@@ -683,6 +686,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			var newCell = this.dataSource.GetRowInstance(row);
 			newCell.transform.SetParent(scrollRect.content, false);
+			newCell.transform.localScale = Vector3.one;
 
 			var layoutElement = newCell.GetComponent<LayoutElement>();
 			if (layoutElement == null) {
@@ -697,6 +701,7 @@ namespace UnityEngine.UI.Windows.Components {
 				layoutElement.preferredHeight -= this.GetRowSpacing();
 
 			}
+			layoutElement.minHeight = layoutElement.preferredHeight;
             
 			this.visibleCells[row] = newCell;
 
@@ -713,6 +718,12 @@ namespace UnityEngine.UI.Windows.Components {
 			//this.bottomPadding.transform.SetSiblingIndex(this.Count());
 
 			this.onCellVisibilityChanged.Invoke(row, true);
+
+			if (newCell is IListViewHandler) {
+
+				(newCell as IListViewHandler).OnItemBecomeVisible();
+
+			}
 
 		}
 
@@ -802,18 +813,28 @@ namespace UnityEngine.UI.Windows.Components {
 		private void HideRow(bool last) {
 
 			var row = last ? this.visibleRowRange.Last() : this.visibleRowRange.from;
-			var removedCell = this.visibleCells[row];
-			this.StoreCellForReuse(removedCell);
-			this.visibleCells.Remove(row);
-			this.visibleRowRange.count -= 1;
+			if (this.visibleCells.ContainsKey(row) == true) {
+				
+				var removedCell = this.visibleCells[row];
+				this.StoreCellForReuse(removedCell);
+				this.visibleCells.Remove(row);
+				this.visibleRowRange.count -= 1;
 
-			if (last == false) {
+				if (last == false) {
 
-				this.visibleRowRange.from += 1;
+					this.visibleRowRange.from += 1;
 
-			} 
+				} 
 
-			this.onCellVisibilityChanged.Invoke(row, false);
+				this.onCellVisibilityChanged.Invoke(row, false);
+
+				if (removedCell is IListViewHandler) {
+
+					(removedCell as IListViewHandler).OnItemBecomeInvisible();
+
+				}
+
+			}
 
 		}
 
@@ -892,7 +913,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		private void StoreCellForReuse(WindowComponent cell) {
-
+			
 			var reuseIdentifier = (cell is IListViewItem) ? (cell as IListViewItem).reuseIdentifier : ListViewComponent.DEFAULT_CELL_ID;
 
 			if (this.reusableCells.ContainsKey(reuseIdentifier) == false) {
@@ -902,7 +923,9 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			this.reusableCells[reuseIdentifier].AddLast(cell);
 
-			if (cell != null) cell.transform.SetParent(this.reusableCellContainer, false);
+			//if (cell != null) cell.transform.SetParent(this.reusableCellContainer, false);
+			//this.reusableCellContainer.localScale = Vector3.zero;
+			if (cell != null) cell.transform.localScale = Vector3.zero;
 
 		}
         #endregion

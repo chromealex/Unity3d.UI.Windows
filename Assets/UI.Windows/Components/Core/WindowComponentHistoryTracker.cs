@@ -56,7 +56,7 @@ namespace UnityEngine.UI.Windows {
 
 		public List<Item> items = new List<Item>();
 		
-		public void Add(WindowComponentBase component, HistoryTrackerEventType eventType) {
+		public void Add(WindowObject component, HistoryTrackerEventType eventType) {
 
 			if (WindowSystemLogger.IsActiveComponents() == true) {
 
@@ -67,7 +67,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void Add(WindowComponentBase component, AppearanceParameters parameters, HistoryTrackerEventType eventType) {
+		public void Add(WindowObject component, AppearanceParameters parameters, HistoryTrackerEventType eventType) {
 			
 			if (WindowSystemLogger.IsActiveComponents() == true) {
 

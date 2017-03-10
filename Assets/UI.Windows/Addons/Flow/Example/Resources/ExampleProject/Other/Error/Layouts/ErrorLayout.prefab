@@ -117,10 +117,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22509236}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -143,10 +140,10 @@ MonoBehaviour:
   editorMinHeight: 30
   tempEditorRect:
     serializedVersion: 2
-    x: 54.63523
-    y: 874.42395
-    width: 225.72954
-    height: 47.076027
+    x: 100.33699
+    y: 53.35382
+    width: 360.32602
+    height: 75.1462
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11419884
@@ -179,6 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22540488}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -239,11 +237,8 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11431626}
-  canvas: {fileID: 22540488}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
@@ -266,10 +261,10 @@ MonoBehaviour:
   editorMinHeight: 0
   tempEditorRect:
     serializedVersion: 2
-    x: 54.63523
-    y: 841
-    width: 225.72954
-    height: 161
+    x: 100.33699
+    y: 0
+    width: 360.32602
+    height: 257
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11440508
@@ -351,10 +346,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22567234}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -377,10 +369,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 149.8465
-    y: 926.7961
-    width: 35.30702
-    height: 12.945907
+    x: 252.32018
+    y: 136.95398
+    width: 56.35965
+    height: 20.665205
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11444498

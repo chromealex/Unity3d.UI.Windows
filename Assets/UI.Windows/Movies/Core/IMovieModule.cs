@@ -80,7 +80,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			}
 
-			public List<WindowComponent> components {
+			public List<IResourceReference> components {
 
 				get {
 
@@ -214,9 +214,9 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}*/
 
-		protected virtual IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
+		protected virtual System.Collections.IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
 
-			yield return false;
+			yield return 0;
 
 		}
 
@@ -296,8 +296,8 @@ namespace UnityEngine.UI.Windows.Movies {
 		}
 
 		public void Unload(IImageComponent component, ResourceBase resource) {
-
-			if (resource.loaded == false) return;
+			
+			//if (resource.loaded == false) return;
 
 			/*if (resource.loaded == false) {
 
@@ -318,7 +318,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			//Debug.Log("GetMovieItem: " + (item != null) + " :: " + resource.GetId() + " :: " + component, component as MonoBehaviour);
 			if (item != null) {
 
-				var c = component as WindowComponent;
+				var c = component as IResourceReference;
 				if (item.components.Contains(c) == false) {
 
 					item.components.Add(c);
@@ -546,39 +546,39 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		public Coroutine StartCoroutine(IEnumerator routine) {
+		public Coroutine StartCoroutine(System.Collections.IEnumerator routine) {
 
 			return this.system.StartCoroutine(routine);
 
 		}
 
-		protected IEnumerator PauseWithDelay_YIELD(IImageComponent component, Texture movie, float delay, System.Action<ResourceBase, Texture> callback) {
+		protected System.Collections.Generic.IEnumerator<byte> PauseWithDelay_YIELD(IImageComponent component, Texture movie, float delay, System.Action<ResourceBase, Texture> callback) {
 			
 			var timer = 0f;
 			while (timer < delay) {
 				
 				timer += Time.unscaledDeltaTime;
-				yield return false;
+				yield return 0;
 				
 			}
 			
-			yield return false;
+			yield return 0;
 
 			callback.Invoke(component.GetResource(), movie);
 			
 		}
 		
-		protected IEnumerator PauseWithDelay_YIELD(IImageComponent component, float delay) {
+		protected System.Collections.Generic.IEnumerator<byte> PauseWithDelay_YIELD(IImageComponent component, float delay) {
 			
 			var timer = 0f;
 			while (timer < delay) {
 				
 				timer += Time.unscaledDeltaTime;
-				yield return false;
+				yield return 0;
 				
 			}
 			
-			yield return false;
+			yield return 0;
 
 			this.Pause(component);
 			

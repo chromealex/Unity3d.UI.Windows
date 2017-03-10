@@ -870,19 +870,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11401006}
   - {fileID: 11401008}
-  canvas: {fileID: 22500972}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: b4a297c41113e4c24ac1b9853c0a2a74, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Blue/ProgressAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Blue/ProgressAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 796682086
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: b4a297c41113e4c24ac1b9853c0a2a74, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11400966
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -926,19 +959,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11401002}
   - {fileID: 11401004}
-  canvas: {fileID: 22500970}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 7316bb163107c4c4daa818336140eaf9, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Blue/ProgressWithParticles.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Blue/ProgressWithParticles
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1673778164
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 7316bb163107c4c4daa818336140eaf9, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11400970
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -982,19 +1048,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11400998}
   - {fileID: 11401000}
-  canvas: {fileID: 22500968}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 99d0d25ac20704092be5d4c540f9cd3c, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Blue/Progress.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Blue/Progress
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 749251977
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: 99d0d25ac20704092be5d4c540f9cd3c, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11400974
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1038,19 +1137,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11400994}
   - {fileID: 11400996}
-  canvas: {fileID: 22500966}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 575196589d64b4605987cf840bb8204f, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Green/ProgressAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Green/ProgressAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -281943491
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 575196589d64b4605987cf840bb8204f, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11400978
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1094,19 +1226,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11400990}
   - {fileID: 11400992}
-  canvas: {fileID: 22500964}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 776b0dfbfca3c4a0884ccdad5d94db95, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Green/ProgressWithParticles.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Green/ProgressWithParticles
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -884177027
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 776b0dfbfca3c4a0884ccdad5d94db95, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11400982
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1150,19 +1315,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11400986}
   - {fileID: 11400988}
-  canvas: {fileID: 22500962}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: a987507f63e0d45f0af4fa0efb832a65, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Circle-Blue/Loader.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Circle-Blue/Loader
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1762617806
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: a987507f63e0d45f0af4fa0efb832a65, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11400986
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1175,6 +1373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22500962}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -1251,6 +1450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22500964}
   parameters:
     inDelay: 0.3
     outDelay: 0
@@ -1327,6 +1527,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22500966}
   parameters:
     inDelay: 0.4
     outDelay: 0
@@ -1403,6 +1604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22500968}
   parameters:
     inDelay: 0.5
     outDelay: 0
@@ -1479,6 +1681,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22500970}
   parameters:
     inDelay: 0.6
     outDelay: 0
@@ -1555,6 +1758,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22500972}
   parameters:
     inDelay: 0.7
     outDelay: 0
@@ -1662,19 +1866,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11440546}
   - {fileID: 11440548}
-  canvas: {fileID: 22540538}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: e1d1a5f9770de48b9aaa75f98f860132, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Blue/LoaderWithParticles.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Blue/LoaderWithParticles
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1362931226
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: e1d1a5f9770de48b9aaa75f98f860132, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11416214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1734,6 +1971,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22516214}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -1794,19 +2032,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11416216}
   - {fileID: 11416214}
-  canvas: {fileID: 22516214}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 54804da85b06a4e2ead3124fc735a3b6, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Circle-Green/Loader.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Circle-Green/Loader
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1543254767
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: 54804da85b06a4e2ead3124fc735a3b6, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11416222
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1866,6 +2137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22516216}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -1926,19 +2198,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11416224}
   - {fileID: 11416222}
-  canvas: {fileID: 22516216}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 28bdfe4f01b714e95acef2f4b2efcbe6, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Circle-Green/LoaderAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Circle-Green/LoaderAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -54581556
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 28bdfe4f01b714e95acef2f4b2efcbe6, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11416230
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1998,6 +2303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22516218}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -2058,19 +2364,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11416232}
   - {fileID: 11416230}
-  canvas: {fileID: 22516218}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: fddc73fcb2cc44b8da2745fd75078eff, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Circle-Green/Progress.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Circle-Green/Progress
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1278619605
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: fddc73fcb2cc44b8da2745fd75078eff, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11416238
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2130,6 +2469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22516220}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -2190,19 +2530,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11416240}
   - {fileID: 11416238}
-  canvas: {fileID: 22516220}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: ea581de2fff394d4a9ecd9ef33ac8a30, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Circle-Green/ProgressAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Circle-Green/ProgressAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 918085042
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: ea581de2fff394d4a9ecd9ef33ac8a30, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11418018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2218,11 +2591,6 @@ MonoBehaviour:
   flags2: 0
   interactableByDefault: 1
   selectByDefault: 0
-  callback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   navigationMode: 3
   sfxOnClick:
     flowData: {fileID: 0}
@@ -2242,16 +2610,6 @@ MonoBehaviour:
   hoverIsActive: 1
   hoverOnAnyPointerState: 0
   hoverOnAnyButtonState: 0
-  hoverInCallback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  hoverOutCallback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   text: 
   localizationKey:
     key: 
@@ -2300,11 +2658,6 @@ MonoBehaviour:
   flags2: 0
   interactableByDefault: 1
   selectByDefault: 0
-  callback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   navigationMode: 3
   sfxOnClick:
     flowData: {fileID: 0}
@@ -2324,16 +2677,6 @@ MonoBehaviour:
   hoverIsActive: 1
   hoverOnAnyPointerState: 0
   hoverOnAnyButtonState: 0
-  hoverInCallback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  hoverOutCallback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   text: 
   localizationKey:
     key: 
@@ -2426,6 +2769,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22521820}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -2486,19 +2830,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11421822}
   - {fileID: 11421820}
-  canvas: {fileID: 22521820}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: a1182dbff09da4ba6a7db9658e9ac74f, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/Default/Slider3.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/Default/Slider3
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -470973410
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: a1182dbff09da4ba6a7db9658e9ac74f, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11421828
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2558,6 +2935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22521822}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -2618,19 +2996,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11421830}
   - {fileID: 11421828}
-  canvas: {fileID: 22521822}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 64ccabc2c4d944d5bbcaf6b623e6da31, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/Default/Slider2.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/Default/Slider2
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 2081183551
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 64ccabc2c4d944d5bbcaf6b623e6da31, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11421836
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2656,19 +3067,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11421840}
   - {fileID: 11421842}
-  canvas: {fileID: 22521824}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 762fb24dccff649e781c49bddf45c45d, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/Default/Slider1.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/Default/Slider1
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 338373216
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 762fb24dccff649e781c49bddf45c45d, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11421838
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2699,6 +3143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22521824}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -2846,19 +3291,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11440530}
   - {fileID: 11440532}
-  canvas: {fileID: 22540530}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: e0f5863d92e7340feb18a9396e63c35b, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Green/Loader.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Green/Loader
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 420334010
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: e0f5863d92e7340feb18a9396e63c35b, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11426792
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2884,19 +3362,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11440534}
   - {fileID: 11440536}
-  canvas: {fileID: 22540532}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 9b1ef483de30748adb5f980d0dbdc4a6, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Green/LoaderWithParticles.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Green/LoaderWithParticles
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 16764771
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 9b1ef483de30748adb5f980d0dbdc4a6, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11426794
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2958,19 +3469,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11440538}
   - {fileID: 11440540}
-  canvas: {fileID: 22540534}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 8ad52f362cd7f421fa921f19fe31e8e0, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Green/LoaderAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Green/LoaderAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -1004617065
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 8ad52f362cd7f421fa921f19fe31e8e0, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11433280
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3030,6 +3574,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22533280}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -3090,19 +3635,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11433282}
   - {fileID: 11433280}
-  canvas: {fileID: 22533280}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 9b09212025887412184ba183439ec12e, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/MinMax/Slider2.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/MinMax/Slider2
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -1676262450
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 9b09212025887412184ba183439ec12e, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11433288
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3128,19 +3706,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11433292}
   - {fileID: 11433294}
-  canvas: {fileID: 22533282}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 195d8f03e6d9044c79c3493b59803d7d, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/MinMax/Slider1.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/MinMax/Slider1
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 875894511
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 195d8f03e6d9044c79c3493b59803d7d, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11433290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3171,6 +3782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22533282}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -3314,6 +3926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22533284}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -3374,19 +3987,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11433300}
   - {fileID: 11433298}
-  canvas: {fileID: 22533284}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 3f9c0ada5fd28440da5ca2dd1289f27d, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Green/Progress.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Green/Progress
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1672867680
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: 3f9c0ada5fd28440da5ca2dd1289f27d, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11434386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3405,11 +4051,6 @@ MonoBehaviour:
   continious: 0
   continiousWidth: 0.4
   continiousAngleStep: 0
-  onChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   currentValueNormalized: 0
 --- !u!114 &11434552
 MonoBehaviour:
@@ -3447,11 +4088,6 @@ MonoBehaviour:
   continious: 0
   continiousWidth: 0.4
   continiousAngleStep: 0
-  onChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   currentValueNormalized: 0
 --- !u!114 &11440530
 MonoBehaviour:
@@ -3465,6 +4101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22540530}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -3541,6 +4178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22540532}
   parameters:
     inDelay: 0.3
     outDelay: 0
@@ -3617,6 +4255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22540534}
   parameters:
     inDelay: 0.4
     outDelay: 0
@@ -3693,6 +4332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22540536}
   parameters:
     inDelay: 0.5
     outDelay: 0
@@ -3769,6 +4409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22540538}
   parameters:
     inDelay: 0.6
     outDelay: 0
@@ -3845,6 +4486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22540540}
   parameters:
     inDelay: 0.7
     outDelay: 0
@@ -3921,6 +4563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22540542}
   parameters:
     inDelay: 0.1
     outDelay: 0
@@ -4028,19 +4671,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11440542}
   - {fileID: 11440544}
-  canvas: {fileID: 22540536}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: 88f8156b107b340018a652541137ff51, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Blue/Loader.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Blue/Loader
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 895110563
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: 88f8156b107b340018a652541137ff51, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11444404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4124,14 +4800,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   buttonValueLinker: {fileID: 11455510}
   buttonColorLinker: {fileID: 11448628}
   bars:
@@ -4207,19 +4879,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11440554}
   - {fileID: 11440556}
-  canvas: {fileID: 22540542}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Buttons/Button.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Buttons/Button
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -1277221793
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
   prefabParameters: {fileID: 11419462}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11455504
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4301,19 +5006,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11455512}
   - {fileID: 11455514}
-  canvas: {fileID: 22555504}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Buttons/Button.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Buttons/Button
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -1277221793
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11406580, guid: 9bf90bc083aa34747a0502152e8c7f75, type: 2}
   prefabParameters: {fileID: 11418018}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11455512
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4326,6 +5064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22555504}
   parameters:
     inDelay: 0.1
     outDelay: 0
@@ -4674,6 +5413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22561430}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -4716,19 +5456,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11461450}
   - {fileID: 11461448}
-  canvas: {fileID: 22561430}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 0c57f31cad67148cbab4bd2883f88cf4, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Circle-Blue/LoaderAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Circle-Blue/LoaderAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -572977493
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 0c57f31cad67148cbab4bd2883f88cf4, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11461454
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4790,19 +5563,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11461460}
   - {fileID: 11461462}
-  canvas: {fileID: 22561432}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: dd1f6ba6dceb24c66bb2f5b3e90b0363, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Circle-Blue/ProgressAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Circle-Blue/ProgressAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 2082318673
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: dd1f6ba6dceb24c66bb2f5b3e90b0363, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11461460
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4815,6 +5621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22561432}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -4938,6 +5745,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22561434}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -4980,19 +5788,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11461466}
   - {fileID: 11461464}
-  canvas: {fileID: 22561434}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11435158, guid: a3e16fc2476e044b1926d4025c5ea26a, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Progress/Progress-Circle-Blue/Progress.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Progress/Progress-Circle-Blue/Progress
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -510391692
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11435158, guid: a3e16fc2476e044b1926d4025c5ea26a, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11461470
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5112,19 +5953,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11461482}
   - {fileID: 11461484}
-  canvas: {fileID: 22561436}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 596168c5e516247f3b2c337612e5bcd7, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/MinMax/Slider3.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/MinMax/Slider3
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 66547885
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 596168c5e516247f3b2c337612e5bcd7, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11461482
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5137,6 +6011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22561436}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -5260,6 +6135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22595870}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -5320,19 +6196,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11495872}
   - {fileID: 11495870}
-  canvas: {fileID: 22595870}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 3bbfcb117d1984bfb8bb22546c54feb3, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/NoFill/Slider1.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/NoFill/Slider1
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -261837955
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 3bbfcb117d1984bfb8bb22546c54feb3, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11495878
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5358,19 +6267,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11495882}
   - {fileID: 11495884}
-  canvas: {fileID: 22595872}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 5f57c3a067a7a4347804ae67926b59de, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/NoFill/Slider2.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/NoFill/Slider2
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1480972380
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 5f57c3a067a7a4347804ae67926b59de, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11495880
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5401,6 +6343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22595872}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -5490,19 +6433,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11495890}
   - {fileID: 11495892}
-  canvas: {fileID: 22595874}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11498842, guid: 765409e6defea4a16addd0428f9bdf25, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/Sliders/NoFill/Slider3.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/Sliders/NoFill/Slider3
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -1071184581
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11498842, guid: 765409e6defea4a16addd0428f9bdf25, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11495888
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5533,6 +6509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22595874}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -5622,19 +6599,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11440550}
   - {fileID: 11440552}
-  canvas: {fileID: 22540540}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11469228, guid: 9ffb7034cdb3a4de2ad0f2e3e68b60d3, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Loader/Loader-Blue/LoaderAnimated.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Loader/Loader-Blue/LoaderAnimated
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -880718464
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11469228, guid: 9ffb7034cdb3a4de2ad0f2e3e68b60d3, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!222 &22244406
 CanvasRenderer:
   m_ObjectHideFlags: 1

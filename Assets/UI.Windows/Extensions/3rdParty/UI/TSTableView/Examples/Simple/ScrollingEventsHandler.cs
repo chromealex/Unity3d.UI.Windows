@@ -23,7 +23,7 @@ namespace Tacticsoft.Examples
 
         //In practice, it is better to use libraries such as iTween to animate TableView's scrollY
         //This example uses a hard coded animator to keep dependencies down
-        private IEnumerator AnimateToScrollY(float scrollY, float time) {
+        private System.Collections.IEnumerator AnimateToScrollY(float scrollY, float time) {
             float startTime = Time.time;
             float startScrollY = m_tableView.scrollY;
             float endTime = startTime + time;

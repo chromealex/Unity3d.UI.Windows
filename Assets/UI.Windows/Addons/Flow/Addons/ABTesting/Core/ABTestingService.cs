@@ -8,8 +8,8 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting {
 
 	public interface IABTestingService : IService {
 
-		IEnumerator GetData(int testId, System.Action<ABTestResult> onResult);
-		IEnumerator GetDataAll(System.Action<ABTestsResult> onResult);
+		System.Collections.Generic.IEnumerator<byte> GetData(int testId, System.Action<ABTestResult> onResult);
+		System.Collections.Generic.IEnumerator<byte> GetDataAll(System.Action<ABTestsResult> onResult);
 
 		#if UNITY_EDITOR
 		void Save(int testId, ABTestingItemsTO data, System.Action<bool> onResult);
@@ -50,8 +50,8 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting {
 
 	public abstract class ABTestingService : ServiceBase, IABTestingService {
 
-		public abstract IEnumerator GetData(int testId, System.Action<ABTestResult> onResult);
-		public abstract IEnumerator GetDataAll(System.Action<ABTestsResult> onResult);
+		public abstract System.Collections.Generic.IEnumerator<byte> GetData(int testId, System.Action<ABTestResult> onResult);
+		public abstract System.Collections.Generic.IEnumerator<byte> GetDataAll(System.Action<ABTestsResult> onResult);
 
 		#if UNITY_EDITOR
 		public abstract void Save(int testId, ABTestingItemsTO data, System.Action<bool> onResult);

@@ -19,7 +19,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			var platformName = settings.GetPlatformName();
 			var className = settings.GetPlatformClassName();
 
-			var file = Resources.Load("UI.Windows/Social/Templates/TemplateTransitionMethod") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Social/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("Social Template Loading Error: Could not load template 'TemplateTransitionMethod'");

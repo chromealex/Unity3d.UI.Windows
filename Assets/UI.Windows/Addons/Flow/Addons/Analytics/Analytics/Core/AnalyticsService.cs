@@ -7,15 +7,17 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 	public interface IAnalyticsService : IService {
 
-		IEnumerator OnEvent(int screenId, string group1, string group2 = null, string group3 = null, int weight = 1);
-		IEnumerator OnScreenTransition(int index, int screenId, int toScreenId, bool popup);
-		IEnumerator OnTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature);
-		IEnumerator OnScreenPoint(int screenId, int screenWidth, int screenHeight, byte tag, float x, float y);
+		System.Collections.Generic.IEnumerator<byte> OnEvent(int screenId, string group1, string group2 = null, string group3 = null, int weight = 1);
+		System.Collections.Generic.IEnumerator<byte> OnEvent(string eventName, string group1, string group2 = null, string group3 = null, int weight = 1);
+		System.Collections.Generic.IEnumerator<byte> OnScreenTransition(int index, int screenId, int toScreenId, bool popup);
+		System.Collections.Generic.IEnumerator<byte> OnTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature);
+		System.Collections.Generic.IEnumerator<byte> OnTransaction(string eventName, string productId, decimal price, string currency, string receipt, string signature);
+		System.Collections.Generic.IEnumerator<byte> OnScreenPoint(int screenId, int screenWidth, int screenHeight, byte tag, float x, float y);
 		
-		IEnumerator SetUserId(long id);
-		IEnumerator SetUserId(string id);
-		IEnumerator SetUserGender(User.Gender gender);
-		IEnumerator SetUserBirthYear(int birthYear);
+		System.Collections.Generic.IEnumerator<byte> SetUserId(long id);
+		System.Collections.Generic.IEnumerator<byte> SetUserId(string id);
+		System.Collections.Generic.IEnumerator<byte> SetUserGender(User.Gender gender);
+		System.Collections.Generic.IEnumerator<byte> SetUserBirthYear(int birthYear);
 
 		bool IsConnected();
 
@@ -62,20 +64,22 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 	public abstract class AnalyticsService : ServiceBase, IAnalyticsService {
 
-		public virtual IEnumerator SetUserId(long id) { yield return false; }
-		public virtual IEnumerator SetUserId(string id) { yield return false; }
-		public virtual IEnumerator SetUserGender(User.Gender gender) { yield return false; }
-		public virtual IEnumerator SetUserBirthYear(int birthYear) { yield return false; }
+		public virtual System.Collections.Generic.IEnumerator<byte> SetUserId(long id) { yield return 0; }
+		public virtual System.Collections.Generic.IEnumerator<byte> SetUserId(string id) { yield return 0; }
+		public virtual System.Collections.Generic.IEnumerator<byte> SetUserGender(User.Gender gender) { yield return 0; }
+		public virtual System.Collections.Generic.IEnumerator<byte> SetUserBirthYear(int birthYear) { yield return 0; }
 
-		public abstract IEnumerator OnEvent(int screenId, string group1, string group2 = null, string group3 = null, int weight = 1);
+		public abstract System.Collections.Generic.IEnumerator<byte> OnEvent(int screenId, string group1, string group2 = null, string group3 = null, int weight = 1);
+		public abstract System.Collections.Generic.IEnumerator<byte> OnEvent(string eventName, string group1, string group2 = null, string group3 = null, int weight = 1);
 
-		public abstract IEnumerator OnScreenTransition(int index, int screenId, int toScreenId, bool popup);
+		public abstract System.Collections.Generic.IEnumerator<byte> OnScreenTransition(int index, int screenId, int toScreenId, bool popup);
 
-		public abstract IEnumerator OnTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature);
+		public abstract System.Collections.Generic.IEnumerator<byte> OnTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature);
+		public abstract System.Collections.Generic.IEnumerator<byte> OnTransaction(string eventName, string productId, decimal price, string currency, string receipt, string signature);
 		
-		public virtual IEnumerator OnScreenPoint(int screenId, int screenWidth, int screenHeight, byte tag, float x, float y) {
+		public virtual System.Collections.Generic.IEnumerator<byte> OnScreenPoint(int screenId, int screenWidth, int screenHeight, byte tag, float x, float y) {
 			
-			yield return false;
+			yield return 0;
 
 		}
 

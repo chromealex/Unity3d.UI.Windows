@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 5c2ca5675950a465eb3ecd79a31ca909
+timeCreated: 1477405198
+licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: ButtonLeft_Hover
@@ -24,11 +26,14 @@ TextureImporter:
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: .25
+    heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
   textureFormat: -3
   maxTextureSize: 1024
@@ -39,20 +44,34 @@ TextureImporter:
     wrapMode: 1
   nPOTScale: 0
   lightmap: 0
+  rGBM: 0
   compressionQuality: 50
+  allowsAlphaSplitting: 0
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: .5, y: .5}
+  spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
-  buildTargetSettings: []
+  buildTargetSettings:
+  - buildTarget: tvOS
+    maxTextureSize: 1024
+    textureFormat: -3
+    compressionQuality: 50
+    allowsAlphaSplitting: 0
+  - buildTarget: Android
+    maxTextureSize: 1024
+    textureFormat: 47
+    compressionQuality: 50
+    allowsAlphaSplitting: 0
   spriteSheet:
+    serializedVersion: 2
     sprites:
-    - name: ButtonLeft_Hover
+    - serializedVersion: 2
+      name: ButtonLeft_Hover
       rect:
         serializedVersion: 2
         x: 0
@@ -60,9 +79,11 @@ TextureImporter:
         width: 82
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 19, y: 18, z: 3, w: 16}
-    - name: ButtonCenter_Hover
+      outline: []
+    - serializedVersion: 2
+      name: ButtonCenter_Hover
       rect:
         serializedVersion: 2
         x: 91
@@ -70,9 +91,11 @@ TextureImporter:
         width: 73
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 3, y: 4, z: 3, w: 3}
-    - name: ButtonRight_Hover
+      outline: []
+    - serializedVersion: 2
+      name: ButtonRight_Hover
       rect:
         serializedVersion: 2
         x: 173
@@ -80,9 +103,11 @@ TextureImporter:
         width: 82
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 3, y: 18, z: 18, w: 16}
-    - name: ButtonLeft_Normal
+      outline: []
+    - serializedVersion: 2
+      name: ButtonLeft_Normal
       rect:
         serializedVersion: 2
         x: 0
@@ -90,9 +115,11 @@ TextureImporter:
         width: 82
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 19, y: 18, z: 3, w: 16}
-    - name: ButtonCenter_Normal
+      outline: []
+    - serializedVersion: 2
+      name: ButtonCenter_Normal
       rect:
         serializedVersion: 2
         x: 91
@@ -100,9 +127,11 @@ TextureImporter:
         width: 73
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 3, y: 4, z: 3, w: 3}
-    - name: ButtonRight_Normal
+      outline: []
+    - serializedVersion: 2
+      name: ButtonRight_Normal
       rect:
         serializedVersion: 2
         x: 173
@@ -110,9 +139,11 @@ TextureImporter:
         width: 82
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 3, y: 18, z: 18, w: 16}
-    - name: ButtonLeft_Pressed
+      outline: []
+    - serializedVersion: 2
+      name: ButtonLeft_Pressed
       rect:
         serializedVersion: 2
         x: 0
@@ -120,9 +151,11 @@ TextureImporter:
         width: 82
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 19, y: 18, z: 3, w: 16}
-    - name: ButtonCenter_Pressed
+      outline: []
+    - serializedVersion: 2
+      name: ButtonCenter_Pressed
       rect:
         serializedVersion: 2
         x: 91
@@ -130,9 +163,11 @@ TextureImporter:
         width: 73
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 3, y: 4, z: 3, w: 3}
-    - name: ButtonRight_Pressed
+      outline: []
+    - serializedVersion: 2
+      name: ButtonRight_Pressed
       rect:
         serializedVersion: 2
         x: 173
@@ -140,7 +175,11 @@ TextureImporter:
         width: 82
         height: 34
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 3, y: 18, z: 18, w: 16}
+      outline: []
+    outline: []
   spritePackingTag: UI.Windows.Default
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 

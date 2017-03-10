@@ -33,11 +33,33 @@ namespace UnityEngine.UI.Windows.Types {
 		private float scaleFactorOut = 1f;
 
 		private HUDItem tempHud;
-		
+
+		public override void OnDeinit(System.Action callback) {
+
+			this.uiElement = null;
+			this.uiElementCanvas = null;
+			if (this.tempHud != null) {
+				
+				this.tempHud.Reset();
+				Component.Destroy(this.tempHud);
+
+			}
+			this.tempHud = null;
+
+			base.OnDeinit(callback);
+
+		}
+
 		public override Canvas GetCanvas() {
 			
 			return this.canvas;
 			
+		}
+
+		public override CanvasScaler GetCanvasScaler() {
+
+			return this.canvasScaler;
+
 		}
 
 		public void OnHover(Transform worldElement, Vector3 worldPoint, Camera gameCamera, Vector3 offset = default(Vector3)) {
@@ -121,7 +143,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		public IEnumerator CheckPivot_YIELD(Vector2 size, RectTransform sourceTransform, ShowPriority showPriority) {
+		public System.Collections.Generic.IEnumerator<byte> CheckPivot_YIELD(Vector2 size, RectTransform sourceTransform, ShowPriority showPriority) {
 
 			// Get pivot point according on screen rect
 
@@ -172,7 +194,7 @@ namespace UnityEngine.UI.Windows.Types {
 			}
 
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
-			yield return false;
+			yield return 0;
 			
 			var scaleFactor = this.GetScaleFactor();
 			size *= scaleFactor;
@@ -278,39 +300,53 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 		
-		protected override void DoLayoutInit(float depth, int raycastPriority, int orderInLayer) {
+		protected override void DoLayoutInit(float depth, int raycastPriority, int orderInLayer, System.Action callback, bool async) {
 
-			if (this.animationRoot != null) this.animationRoot.DoInit();
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoInit();
+
+			if (callback != null) callback.Invoke();
 
 		}
 
-		protected override void DoLayoutDeinit() {
+		protected override void DoLayoutDeinit(System.Action callback) {
 
-			if (this.animationRoot != null) this.animationRoot.DoDeinit();
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoDeinit(callback);
 			
 		}
 
-		protected override void DoLayoutActive() {
+		protected override void DoLayoutWindowOpen() {
 
-			if (this.animationRoot != null) this.animationRoot.DoWindowActive();
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoWindowOpen();
 
 		}
 
-		protected override void DoLayoutInactive() {
+		protected override void DoLayoutWindowClose() {
 
-			if (this.animationRoot != null) this.animationRoot.DoWindowInactive();
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoWindowClose();
+
+		}
+
+		protected override void DoLayoutWindowActive() {
+
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoWindowActive();
+
+		}
+
+		protected override void DoLayoutWindowInactive() {
+
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoWindowInactive();
 
 		}
 
 		protected override void DoLayoutHideEnd(AppearanceParameters parameters) {
 
-			if (this.animationRoot != null) this.animationRoot.DoHideEnd(parameters);
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoHideEnd(parameters);
 
 		}
 
 		protected override void DoLayoutShowEnd(AppearanceParameters parameters) {
 
-			if (this.animationRoot != null) this.animationRoot.DoShowEnd(parameters);
+			if (this.animationRoot != null) (this.animationRoot as IWindowEventsController).DoShowEnd(parameters);
 
 		}
 
@@ -318,8 +354,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 			if (this.animationRoot != null) {
 
-				this.animationRoot.DoWindowOpen();
-				this.animationRoot.DoShowBegin(parameters);
+				(this.animationRoot as IWindowEventsController).DoShowBegin(parameters);
 				
 			} else {
 				
@@ -333,8 +368,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 			if (this.animationRoot != null) {
 				
-				this.animationRoot.DoWindowClose();
-				this.animationRoot.DoHideBegin(parameters);
+				(this.animationRoot as IWindowEventsController).DoHideBegin(parameters);
 
 			} else {
 

@@ -7,10 +7,10 @@ using UnityEngine.EventSystems;
 namespace UnityEngine.UI.Windows.Components {
 
 	public class HoveredComponent : WindowComponent, IHoverableComponent, IPointerEnterHandler, IPointerExitHandler {
+		
+		public override void OnDeinit(System.Action callback) {
 
-		public override void OnDeinit() {
-
-			base.OnDeinit();
+			base.OnDeinit(callback);
 
 			this.onHover.RemoveAllListeners();
 
@@ -73,7 +73,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public virtual IHoverableComponent RemoveCallbackHover(UnityAction<bool> onHover) {
+		public virtual IHoverableComponent RemoveCallbackHover(System.Action<bool> onHover) {
 
 			this.onHover.RemoveListener(onHover);
 
@@ -81,7 +81,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public virtual IHoverableComponent SetCallbackHover(UnityAction<bool> onHover) {
+		public virtual IHoverableComponent SetCallbackHover(System.Action<bool> onHover) {
 
 			this.onHover.AddListenerDistinct(onHover);
 

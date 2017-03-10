@@ -187,6 +187,12 @@ using System.Text.RegularExpressions;namespace UnityEngine.UI.Windows {
 
 		}
 
+		public int ToInt() {
+
+			return this.major + this.minor + this.release + Type.GetIndex(this.type);
+
+		}
+
 		public override string ToString() {
 
 			return string.Format("{0}.{1}.{2}{3}", this.major, this.minor, this.release, this.type);

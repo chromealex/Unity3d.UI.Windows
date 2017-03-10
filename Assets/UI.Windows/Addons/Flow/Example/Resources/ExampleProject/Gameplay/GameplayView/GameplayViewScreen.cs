@@ -65,12 +65,15 @@ namespace ExampleProject.UI.Gameplay.GameplayView {
 		public void Quit() {
 
 			var endGame = this.FlowEndGame();
-			endGame.events.onEveryInstance.onShowEnd.AddListener(() => {
-				
+			UnityEngine.Events.UnityAction action = null;
+			action = () => {
+
+				endGame.events.onEveryInstance.Unregister(WindowEventType.OnShowEnd, action);
 				this.hud.Hide();
 				this.Hide();
 
-			});
+			};
+			endGame.events.onEveryInstance.Register(WindowEventType.OnShowEnd, action);
 
 		}
 

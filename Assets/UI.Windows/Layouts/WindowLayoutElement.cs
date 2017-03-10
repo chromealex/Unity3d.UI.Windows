@@ -1,6 +1,4 @@
-﻿using System;
-using UnityEngine;
-using System.Collections.Generic;
+﻿
 using System.Linq;
 
 namespace UnityEngine.UI.Windows {
@@ -52,6 +50,12 @@ namespace UnityEngine.UI.Windows {
 
 		[HideInInspector]
 		public bool editorHovered;
+
+	    protected virtual void OnDestroy() {
+
+            WindowLayoutElement.waitForComponentConnectionElementTemp = null;
+
+	    }
 
 		public override void OnDrawGizmos() {
 

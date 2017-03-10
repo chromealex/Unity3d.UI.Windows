@@ -57,7 +57,7 @@ namespace UnityEditor.UI.Windows.Plugins.Compiler {
 			editor.minimalScriptsSize = FlowSystem.GetData().minimalScriptsSize;
 			editor.partIndex = 0;
 
-			editor.image = Resources.Load("UI.Windows/FlowCompiler/WizardImage") as Texture;
+			editor.image = UnityEngine.Resources.Load("UI.Windows/FlowCompiler/WizardImage") as Texture;
 
 			editor.maxSize = new Vector2(width, height);
 			editor.minSize = editor.maxSize;

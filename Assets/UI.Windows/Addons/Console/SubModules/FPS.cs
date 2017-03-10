@@ -53,7 +53,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console.SubModules {
 			/*
 			 * EVENT: FPS
 			 */
-			private IEnumerator FPS() {
+			private System.Collections.IEnumerator FPS() {
 
 				for (;;) {
 

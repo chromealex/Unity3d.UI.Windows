@@ -4,7 +4,7 @@ using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Modules {
 
-	public class BackgroundCloseable : WindowModule {
+	public class BackgroundCloseable : BackgroundBase {
 
 		private System.Action callback;
 		private bool overrideAutoHide = false;
@@ -24,7 +24,9 @@ namespace UnityEngine.UI.Windows.Modules {
 
 		}
 
-		public override void OnDeinit() {
+		public override void OnDeinit(System.Action callback) {
+
+			base.OnDeinit(callback);
 
 			this.callback = null;
 

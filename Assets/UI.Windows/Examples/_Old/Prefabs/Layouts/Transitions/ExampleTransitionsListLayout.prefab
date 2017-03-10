@@ -197,10 +197,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22599816}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -255,11 +252,8 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 730d9c6e7d6b442569da096113e3741f, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11484808}
-  canvas: {fileID: 22599820}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 730d9c6e7d6b442569da096113e3741f, type: 2}

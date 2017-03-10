@@ -15,7 +15,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 		
 		public static string GenerateReturnMethod(FlowSystemEditorWindow flowEditor, FD.FlowWindow exitWindow) {
 			
-			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateReturnMethod") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Functions/Templates/TemplateReturnMethod") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateReturnMethod'");
@@ -55,7 +55,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 		
 		public static string GenerateTransitionMethod(FlowSystemEditorWindow flowEditor, FD.FlowWindow windowFrom, FD.FlowWindow windowTo) {
 			
-			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionMethod") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateTransitionMethod'");
@@ -107,7 +107,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 		
 		public static string GenerateTransitionTypedMethod(FlowSystemEditorWindow flowEditor, FD.FlowWindow windowFrom, FD.FlowWindow windowTo, System.Type[] parameters, string[] parameterNames) {
 			
-			var file = Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionTypedMethod") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionTypedMethod") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateTransitionTypedMethod'");

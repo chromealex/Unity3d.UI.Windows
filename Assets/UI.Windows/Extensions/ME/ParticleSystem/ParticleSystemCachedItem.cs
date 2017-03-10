@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 namespace ME {
 
@@ -28,8 +27,18 @@ namespace ME {
 
 		new public ParticleSystem particleSystem;
 		public StartColor startColor;
+		public Renderer particleSystemRenderer;
 
 		//private float lastAlpha = -1f;
+
+		public void SetLayer(string layerName, int order) {
+
+			if (this.particleSystemRenderer == null) return;
+
+			this.particleSystemRenderer.sortingLayerName = layerName;
+			this.particleSystemRenderer.sortingOrder = order;
+
+		}
 
 		#if UNITY_EDITOR
 		/*public void OnDisabled() {
@@ -65,6 +74,8 @@ namespace ME {
 				this.startColor.maxGradient = maxGradient.GetGradient();
 				this.startColor.minMaxState = (MinMaxState)minMaxState.intValue;
 
+				this.particleSystemRenderer = this.particleSystem.GetComponent<Renderer>();
+
 				//if (alpha >= 0f) this.SetStartAlpha(alpha);
 
 			}
@@ -74,7 +85,10 @@ namespace ME {
 		public void OnValidate() {
 
 			if (Application.isPlaying == true) return;
-
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			this.Setup();
 
 		}
@@ -246,6 +260,24 @@ namespace ME {
 	        this.particles = new ParticleSystem.Particle[this.particleSystem.maxParticles];
 
 	    }
+
+	    public void SetAlpha(float alpha) {
+
+	        var a = (byte)(alpha * 255);
+
+            var count = this.particleSystem.GetParticles(this.particles);
+            for (var p = 0; p < count; ++p) {
+
+                var particle = particles[p];
+                var color = particle.GetCurrentColor(this.particleSystem);
+                color.a = a;
+                particle.startColor = color;
+
+            }
+
+            this.particleSystem.SetParticles(particles, count);
+
+        }
 
         public void Stop(float time) {
 

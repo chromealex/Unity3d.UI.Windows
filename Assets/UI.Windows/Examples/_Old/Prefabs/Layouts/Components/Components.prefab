@@ -88,6 +88,7 @@ GameObject:
   - 114: {fileID: 11485858}
   - 114: {fileID: 11485856}
   - 114: {fileID: 11476556}
+  - 114: {fileID: 11494650}
   m_Layer: 5
   m_Name: Components
   m_TagString: Untagged
@@ -174,6 +175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22585858}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -216,10 +218,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22519800}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -325,6 +324,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22585856}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -414,12 +414,9 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11435324}
   - {fileID: 11435322}
-  canvas: {fileID: 22585856}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -475,12 +472,9 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11419804}
   - {fileID: 11419802}
-  canvas: {fileID: 22585858}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -595,11 +589,32 @@ MonoBehaviour:
   showGrid: 0
   gridSize: {x: 5, y: 5}
   canvas: {fileID: 22385858}
-  raycaster: {fileID: 11485846}
+  raycaster: {fileID: 0}
   canvasUpdater: {fileID: 11476556}
   initialized: 1
   isAlive: 0
   editorScale: 1
+--- !u!114 &11494650
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 185858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
 --- !u!223 &22385858
 Canvas:
   m_ObjectHideFlags: 1

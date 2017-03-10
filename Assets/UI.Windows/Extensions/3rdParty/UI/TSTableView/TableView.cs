@@ -69,7 +69,7 @@ namespace Tacticsoft
         }
         
         [System.Serializable]
-        public class CellVisibilityChangeEvent : UnityEvent<int, bool> { }
+		public class CellVisibilityChangeEvent : ME.Events.SimpleEvent<int, bool> { }
         /// <summary>
         /// This event will be called when a cell's visibility changes
         /// First param (int) is the row index, second param (bool) is whether or not it is visible

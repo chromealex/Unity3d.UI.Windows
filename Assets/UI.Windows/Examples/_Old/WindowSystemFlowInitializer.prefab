@@ -78,7 +78,6 @@ GameObject:
   - 114: {fileID: 11437356}
   - 114: {fileID: 11436910}
   - 114: {fileID: 11476692}
-  - 114: {fileID: 11464388}
   m_Layer: 0
   m_Name: Analytics
   m_TagString: Untagged
@@ -507,18 +506,6 @@ MonoBehaviour:
   timerType: 1
   repeatByDefault: 0
   debug: 0
---- !u!114 &11464388
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 135430}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f536b3d800a3f4dfd8313c4c7e67b58f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  serviceManager: {fileID: 11437356}
 --- !u!114 &11467404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -563,23 +550,27 @@ MonoBehaviour:
   objectPool: {fileID: 11481316}
   settings:
     file: {fileID: 11400000, guid: e892a1e1cddb74a2990bce11f8dfdbae, type: 2}
+  emulateRuntimePlatform: 0
+  emulateRuntimePlatformEditorOnly: 0
+  currentRuntimePlatform: 0
   rootScreen: {fileID: 0}
+  asyncLoadingWindow: {fileID: 0}
   defaults: []
-  windows:
-  - {fileID: 0}
+  windows: []
   currentWindows: []
   history: []
+  historyEnabled: 0
   audio:
     source: {fileID: 8259916}
-  flow: {fileID: 11400000, guid: a1bd805bdc8434764bd048f65a277867, type: 2}
-  flowMobileOnly: {fileID: 0}
-  flowStandaloneOnly: {fileID: 0}
-  flowConsoleOnly: {fileID: 0}
-  additionalLoadType: 0
-  additionalFlow: {fileID: 0}
-  additionalFlowMobileOnly: {fileID: 0}
-  additionalFlowStandaloneOnly: {fileID: 0}
-  additionalFlowConsoleOnly: {fileID: 0}
+  historyTracker:
+    trackers: []
+  debugWeakReferences: 0
+  flow:
+  - oneOfPlatforms: 
+    flow: {fileID: 0}
+    customDefaultsOverride: 0
+    customDefaults: []
+  flowAdditive: []
   showRootOnStart: 1
 --- !u!114 &11481316
 MonoBehaviour:

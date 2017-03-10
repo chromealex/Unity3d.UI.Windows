@@ -59,7 +59,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
+		protected override System.Collections.Generic.IEnumerator<byte> LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, ResourceBase resource) {
 
 			var filePath = resource.GetStreamPath();
 
@@ -81,7 +81,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			//Debug.Log ("DONE: " + item.material);
 			asyncOperation.SetValues(isDone: true, progress: 1f, asset: item.material);
 
-			yield return false;
+			yield return 0;
 
 		}
 

@@ -69,7 +69,7 @@ namespace UnityEngine.UI.Windows.Audio {
 
 		public State GetState(ClipType clipType, int key) {
 
-#if UNITY_EDITOR
+			#if UNITY_EDITOR
 			if (Application.isPlaying == false) {
 				
 				if (clipType == ClipType.Music) {
@@ -83,7 +83,8 @@ namespace UnityEngine.UI.Windows.Audio {
 				}
 
 			}
-#endif
+			#endif
+
 			if (clipType == ClipType.Music) {
 				
 				return this.musicCache.GetValue(key);

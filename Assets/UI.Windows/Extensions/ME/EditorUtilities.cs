@@ -10,6 +10,102 @@ namespace ME {
 
 	public partial class EditorUtilities {
 
+		public static void Destroy(Object component, System.Action callback = null) {
+
+			if (component != null) {
+
+				UnityEditor.EditorApplication.CallbackFunction action = null;
+				action = () => {
+
+					EditorApplication.delayCall -= action;
+					if (component != null) Object.DestroyImmediate(component, allowDestroyingAssets: true);
+					if (callback != null) callback.Invoke();
+
+				};
+				EditorApplication.delayCall += action;
+
+			}
+
+		}
+
+		private static bool changeCheckValue = false;
+
+		public static void BeginChangeCheck() {
+
+			EditorUtilities.changeCheckValue = false;
+
+		}
+
+		public static void SetChangeDirty() {
+
+			EditorUtilities.changeCheckValue = true;
+
+		}
+
+		public static bool EndChangeCheck() {
+
+			var oldValue = EditorUtilities.changeCheckValue;
+			EditorUtilities.changeCheckValue = false;
+			return oldValue;
+
+		}
+
+		public static bool SetValueIfDirty<T>(ref T structRef, T result) where T : struct {
+
+			if (structRef.Equals(result) == false) {
+
+				structRef = result;
+				EditorUtilities.SetChangeDirty();
+				return true;
+
+			}
+
+			return false;
+
+		}
+
+		public static bool SetObjectIfDirty(ref object structRef, object result) {
+
+			if (structRef.Equals(result) == false) {
+
+				structRef = result;
+				EditorUtilities.SetChangeDirty();
+				return true;
+
+			}
+
+			return false;
+
+		}
+
+		public static bool SetObjectIfDirty(ref Object structRef, Object result) {
+
+			if (structRef != result) {
+
+				structRef = result;
+				EditorUtilities.SetChangeDirty();
+				return true;
+
+			}
+
+			return false;
+
+		}
+
+		public static bool SetValueIfDirty(ref string structRef, string result) {
+
+			if (structRef != result) {
+
+				structRef = result;
+				EditorUtilities.SetChangeDirty();
+				return true;
+
+			}
+
+			return false;
+
+		}
+
 		/*public static void ClearLayoutElement(UnityEngine.UI.Windows.WindowLayoutElement layoutElement) {
 			
 			if (layoutElement.editorLabel == null) return;
@@ -88,7 +184,7 @@ namespace ME {
 			PrefabUtility.CreatePrefab(assetPathAndName, go, ReplacePrefabOptions.ConnectToPrefab);
 
 			AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
-			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
 			EditorUtility.FocusProjectWindow();
 			Selection.activeObject = asset;
@@ -99,26 +195,68 @@ namespace ME {
 			
 		}
 
-		public static T CreateAsset<T>(string name = null) where T : ScriptableObject {
+		public static T CreateAsset<T>(string name = null, Object pathWithObject = null) where T : ScriptableObject {
 
 			var asset = ScriptableObject.CreateInstance<T>();
 
-			string path = AssetDatabase.GetAssetPath( Selection.activeObject );
+			var selectedObject = pathWithObject ?? Selection.activeObject;
+
+			string path = AssetDatabase.GetAssetPath( selectedObject );
 			if ( path == "" ) {
 				path = "Assets";
 			} else if ( Path.GetExtension( path ) != "" ) {
-				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( Selection.activeObject ) ), "" );
+				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( selectedObject ) ), "" );
 			}
 
 			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(string.Format("{0}/{1}", path, (name != null ? name : "New " + typeof(T).ToString() + ".asset")));
 
 			AssetDatabase.CreateAsset(asset, assetPathAndName);
 			AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
-			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
 			//AssetDatabase.SaveAssets();
 			EditorUtility.FocusProjectWindow();
-			Selection.activeObject = asset;
+			//Selection.activeObject = asset;
+
+			return asset;
+
+		}
+
+		public static T CreateAsset<T>(string name, string filepath, bool reimport = true) where T : ScriptableObject {
+
+			var asset = ScriptableObject.CreateInstance<T>();
+
+			if (string.IsNullOrEmpty(filepath) == true) {
+
+				filepath = AssetDatabase.GetAssetPath(Selection.activeObject);
+				if (filepath == "") {
+
+					filepath = "Assets";
+
+				} else if (Path.GetExtension(filepath) != "") {
+
+					filepath = filepath.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+
+				}
+
+			}
+
+			string path = filepath;
+			if ( path == "" ) {
+				path = "Assets";
+			} else if ( Path.GetExtension( path ) != "" ) {
+				path = path.Replace( Path.GetFileName( filepath ), "" );
+			}
+
+			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(string.Format("{0}/{1}", path, (name != null ? name : "New " + typeof(T).ToString() + ".asset")));
+
+			AssetDatabase.CreateAsset(asset, assetPathAndName);
+			if (reimport == true) AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
+			//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+			//AssetDatabase.SaveAssets();
+			//EditorUtility.FocusProjectWindow();
+			//Selection.activeObject = asset;
 
 			return asset;
 
@@ -153,7 +291,7 @@ namespace ME {
 			var asset = ScriptableObject.CreateInstance<T>();
 			AssetDatabase.CreateAsset(asset, assetPathAndName);
 			AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
-			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
 			if (string.IsNullOrEmpty(filepath) == true) {
 				
@@ -174,7 +312,7 @@ namespace ME {
 
 			AssetDatabase.CreateAsset(asset, assetPathAndName);
 			AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
-			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
 			return AssetDatabase.LoadAssetAtPath(assetPathAndName, typeof(T)) as T;
 			
@@ -195,7 +333,7 @@ namespace ME {
 
 			AssetDatabase.CreateAsset(asset, assetPathAndName);
 			AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
-			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
 			EditorUtility.FocusProjectWindow();
 			Selection.activeObject = asset;
@@ -218,7 +356,7 @@ namespace ME {
 
 			AssetDatabase.CreateAsset(asset, assetPathAndName);
 			AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
-			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+			//AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
 			return asset;
 			

@@ -7,7 +7,7 @@ using UnityEngine.UI.Windows.Animations;
 namespace UnityEngine.UI.Windows {
 
 	public class WindowComponentBase : WindowObjectElement, IWindowAnimation {
-
+		
 		[Header("Animation Info")]
 		[SceneEditOnly]
 		new public WindowAnimationBase animation;
@@ -15,12 +15,10 @@ namespace UnityEngine.UI.Windows {
 		public ChildsBehaviourMode childsShowMode = ChildsBehaviourMode.Simultaneously;
 		public ChildsBehaviourMode childsHideMode = ChildsBehaviourMode.Simultaneously;
 
-		public WindowComponentHistoryTracker eventsHistoryTracker = new WindowComponentHistoryTracker();
-
 		[HideInInspector]
 		public List<TransitionInputParameters> animationInputParams = new List<TransitionInputParameters>();
-		[HideInInspector]
-		public CanvasGroup canvas;
+		//[HideInInspector]
+		//public CanvasGroup canvas;
 		
 		[SerializeField][HideInInspector]
 		private bool manualShowHideControl = false;
@@ -29,53 +27,68 @@ namespace UnityEngine.UI.Windows {
 
 		public override void OnInit() {
 			
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.Init);
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.Init);
 
 			base.OnInit();
 
 		}
 
-		public override void OnDeinit() {
+		public override void OnDeinit(System.Action callback) {
 			
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.Deinit);
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.Deinit);
 
-			base.OnDeinit();
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnDeinit);
+
+			WindowSystem.GetEvents().Clear(this);
+			this.animation = null;
+			WindowSystem.GetHistoryTracker().Clear(this);
+			this.animationInputParams.Clear();
+
+			base.OnDeinit(callback);
 
 		}
 
-		public override void DoWindowOpen() {
+		public override void OnWindowOpen() {
 
-			base.DoWindowOpen();
+			base.OnWindowOpen();
 
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowOpen);
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.WindowOpen);
+
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnWindowOpen);
 
 			this.manualShowHideControl = false;
 
 		}
 
-		public override void DoWindowClose() {
+		public override void OnWindowClose() {
 
-			base.DoWindowClose();
+			base.OnWindowClose();
 
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowClose);
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.WindowClose);
+
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnWindowClose);
 
 			this.manualShowHideControl = false;
 
 		}
 
-		public override void DoWindowActive() {
+		public override void OnWindowActive() {
 
-			base.DoWindowActive();
+			base.OnWindowActive();
 
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowActive);
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnWindowActive);
+
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.WindowActive);
 
 		}
 
-		public override void DoWindowInactive() {
+		public override void OnWindowInactive() {
 
-			base.DoWindowInactive();
+			base.OnWindowInactive();
 
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowInactive);
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnWindowInactive);
+
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.WindowInactive);
 
 		}
 
@@ -194,14 +207,14 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.ShowManual);
+			WindowSystem.GetHistoryTracker().Add(this, parameters, HistoryTrackerEventType.ShowManual);
 
 			this.manualShowHideControl = true;
 
 			//parameters = parameters.ReplaceManual(manual: true);
 
-			var callback = parameters.callback;
-			parameters.callback = () => {
+			var callback = parameters.GetCallback(null);
+			var parametersResult = parameters.ReplaceCallback(() => {
 				
 				if (this.GetComponentState() != WindowObjectState.Showing) {
 					
@@ -213,9 +226,9 @@ namespace UnityEngine.UI.Windows {
 				this.DoShowEnd_INTERNAL(parameters);
 				if (callback != null) callback.Invoke();
 				
-			};
+			});
 			
-			this.DoShowBegin_INTERNAL(parameters);
+			this.DoShowBegin_INTERNAL(parametersResult);
 			
 		}
 
@@ -230,14 +243,14 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 
-			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.HideManual);
+			WindowSystem.GetHistoryTracker().Add(this, parameters, HistoryTrackerEventType.HideManual);
 
 			this.manualShowHideControl = true;
 
 			//parameters = parameters.ReplaceManual(manual: true);
 
-			var callback = parameters.callback;
-			parameters.callback = () => {
+			var callback = parameters.GetCallback(null);
+			var parametersResult = parameters.ReplaceCallback(() => {
 				
 				if (this.GetComponentState() != WindowObjectState.Hiding) {
 					
@@ -249,9 +262,9 @@ namespace UnityEngine.UI.Windows {
 				this.DoHideEnd_INTERNAL(parameters);
 				if (callback != null) callback.Invoke();
 
-			};
+			});
 
-			this.DoHideBegin_INTERNAL(parameters);
+			this.DoHideBegin_INTERNAL(parametersResult);
 
 		}
 		#endregion
@@ -265,7 +278,7 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.ShowEnd);
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.ShowEnd);
 
 			this.DoShowEnd_INTERNAL(parameters);
 
@@ -287,7 +300,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			
-			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.ShowBegin);
+			WindowSystem.GetHistoryTracker().Add(this, parameters, HistoryTrackerEventType.ShowBegin);
 
 			this.DoShowBegin_INTERNAL(parameters);
 
@@ -301,7 +314,9 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
-			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.HideEnd);
+			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.HideEnd);
+
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnHideEnd);
 
 			this.DoHideEnd_INTERNAL(parameters);
 			
@@ -323,13 +338,13 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
-			this.eventsHistoryTracker.Add(this, parameters, HistoryTrackerEventType.HideBegin);
+			WindowSystem.GetHistoryTracker().Add(this, parameters, HistoryTrackerEventType.HideBegin);
 
 			this.DoHideBegin_INTERNAL(parameters);
 
 		}
 		#endregion
-		
+
 		private void DoShowBegin_INTERNAL(AppearanceParameters parameters) {
 
 			if ((this.GetComponentState() == WindowObjectState.Showing ||
@@ -343,44 +358,47 @@ namespace UnityEngine.UI.Windows {
 
 			this.SetComponentState(WindowObjectState.Showing);
 
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnShowBegin);
+
 			var parametersCallback = parameters.callback;
 			System.Action onResult = () => {
 
-				parameters = parameters.ReplaceCallback(parametersCallback);
-				parameters.Call();
+				if (parametersCallback != null) parametersCallback.Invoke();
 
 			};
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.BeginSample("WindowComponentBase::OnShowBegin()");
 			#endif
 
 			this.OnShowBegin();
 			this.OnShowBegin(parameters);
-			#pragma warning disable
-			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
-			#pragma warning restore
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.EndSample();
 			#endif
 
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
-			
-			/*var resetAnimation = parameters.GetResetAnimation(defaultValue: true);
-			if (resetAnimation == true) {
+			var childsBehaviour = parameters.GetChildsBehaviourMode(this.childsShowMode);
 
-				if (includeChilds == true) {
+			if (childsBehaviour == ChildsBehaviourMode.Consequentially) {
 
-					this.DoResetState();
+				var resetAnimation = parameters.GetResetAnimation(defaultValue: true);
+				if (resetAnimation == true) {
 
-				} else {
-					
-					this.SetResetState();
+					if (includeChilds == true) {
+
+						this.DoResetState();
+
+					} else {
+						
+						this.SetResetState();
+
+					}
 
 				}
 
-			}*/
+			}
 
 			#region Include Childs
 			if (includeChilds == false) {
@@ -392,7 +410,6 @@ namespace UnityEngine.UI.Windows {
 			}
 			#endregion
 
-			var childsBehaviour = parameters.GetChildsBehaviourMode(this.childsShowMode);
 			if (childsBehaviour == ChildsBehaviourMode.Simultaneously) {
 
 				#region Childs Simultaneously
@@ -434,7 +451,9 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		private void DoShowEnd_INTERNAL(AppearanceParameters parameters) {
-			
+
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnShowEnd);
+
 			base.DoShowEnd(parameters);
 			
 		}
@@ -451,26 +470,24 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.SetComponentState(WindowObjectState.Hiding);
-			
+
+			WindowSystem.GetEvents().Raise(this, WindowEventType.OnHideBegin);
+
 			var parametersCallback = parameters.callback;
 			System.Action onResult = () => {
 
-				parameters = parameters.ReplaceCallback(parametersCallback);
-				parameters.Call();
+				if (parametersCallback != null) parametersCallback.Invoke();
 
 			};
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.BeginSample("WindowComponentBase::OnHideBegin()");
 			#endif
 
 			this.OnHideBegin();
 			this.OnHideBegin(parameters);
-			#pragma warning disable
-			this.OnHideBegin(parameters.callback, parameters.resetAnimation);
-			#pragma warning restore
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.EndSample();
 			#endif
 
@@ -732,7 +749,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 		
-		[HideInInspector]
+		[UnityEngine.UI.Windows.Plugins.Resources.BundleIgnore][HideInInspector]
 		public bool animationRefresh = false;
 		[HideInInspector]
 		private List<TransitionInputParameters> componentsToDestroy = new List<TransitionInputParameters>();
@@ -743,7 +760,7 @@ namespace UnityEngine.UI.Windows {
 
 			this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
 			
-			this.canvas = this.GetComponent<CanvasGroup>();
+			//this.canvas = this.GetComponent<CanvasGroup>();
 
 			if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) return;
 

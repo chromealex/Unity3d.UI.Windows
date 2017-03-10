@@ -653,7 +653,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 			}
 			if(printWatch.Elapsed.TotalSeconds > maxFrameTime) {
 				printWatch.Reset();
-				yield return null;
+				yield return 0;
 				printWatch.Start();
 			}
 			switch(type) {

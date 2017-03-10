@@ -35,7 +35,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 
 			public Styles() {
 
-				this.skin = Resources.Load(string.Format("UI.Windows/Flow/Styles/Skin{0}", (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"))) as GUISkin;
+				this.skin = UnityEngine.Resources.Load(string.Format("UI.Windows/Flow/Styles/Skin{0}", (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"))) as GUISkin;
 				if (this.skin != null) {
 
 					this.backLock = this.skin.FindStyle("LayoutBackLock");
@@ -301,13 +301,13 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 			menu.AddItem(new GUIContent("Components Editor..."), on: false, func: (object win) => {
 
 				var window = win as FD.FlowWindow;
-				var screen = window.GetScreen() as LayoutWindowType;
+				var screen = window.GetScreen().Load<LayoutWindowType>();
 				if (screen != null) {
 
 					this.flowEditor.SetDisabled();
 					//this.window = window;
 					this.screen = screen;
-					this.editor = Editor.CreateEditor(window.GetScreen()) as IPreviewEditor;
+					this.editor = Editor.CreateEditor(window.GetScreen().Load<WindowBase>()) as IPreviewEditor;
 					
 					this.component = null;
 					this.hovered = null;

@@ -244,6 +244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22563444}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -304,10 +305,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22564934}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -330,10 +328,10 @@ MonoBehaviour:
   editorMinHeight: 30
   tempEditorRect:
     serializedVersion: 2
-    x: 18.155172
-    y: 30.568966
-    width: 26.689655
-    height: 1.862069
+    x: 393.10837
+    y: 272.63547
+    width: 67.78325
+    height: 4.729064
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11464938
@@ -382,12 +380,9 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11456068}
   - {fileID: 11431078}
-  canvas: {fileID: 22563444}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -410,10 +405,10 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 0
-    y: 10.241379
-    width: 63
-    height: 42.517242
+    x: 347
+    y: 221.00986
+    width: 160
+    height: 107.98029
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11493854
@@ -497,10 +492,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22593882}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -523,10 +515,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 26.844828
-    y: 33.36207
-    width: 9.310345
-    height: 3.1034482
+    x: 415.17734
+    y: 279.72906
+    width: 23.645319
+    height: 7.8817735
   editorDrawDepth: 3
   editorHovered: 0
 --- !u!114 &11493862
@@ -555,10 +547,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22593884}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -581,10 +570,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 18.155172
-    y: 33.051723
-    width: 26.689655
-    height: 3.724138
+    x: 393.10837
+    y: 278.9409
+    width: 67.78325
+    height: 9.458128
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11493864
@@ -679,10 +668,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22593886}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -705,10 +691,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 18.155172
-    y: 26.224138
-    width: 26.689655
-    height: 3.724138
+    x: 393.10837
+    y: 261.60098
+    width: 67.78325
+    height: 9.458128
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11493880
@@ -739,10 +725,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22593888}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -765,10 +748,10 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 17.534483
-    y: 25.603449
-    width: 27.931034
-    height: 11.793103
+    x: 391.532
+    y: 260.02463
+    width: 70.93596
+    height: 29.950739
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11493882
@@ -839,7 +822,7 @@ MonoBehaviour:
   showGrid: 0
   gridSize: {x: 5, y: 5}
   canvas: {fileID: 22393888}
-  raycaster: {fileID: 11493872}
+  raycaster: {fileID: 0}
   canvasUpdater: {fileID: 11411862}
   initialized: 1
   isAlive: 0

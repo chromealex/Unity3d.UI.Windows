@@ -114,9 +114,9 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.IsChanged(ParameterFlag.AP3) == true) component.SetValueFormat(this.format);
 				if (this.IsChanged(ParameterFlag.AP16) == true) component.SetFullTextFormat(this.fullTextFormat);
 	
-				if (this.IsChanged(ParameterFlag.AP4) == true) component.SetFont(this.font);
+				//if (this.IsChanged(ParameterFlag.AP4) == true) component.SetFont(this.font);
 				if (this.IsChanged(ParameterFlag.AP5) == true) component.SetFontSize(this.fontSize);
-				if (this.IsChanged(ParameterFlag.AP6) == true) component.SetFontStyle(this.fontStyle);
+				//if (this.IsChanged(ParameterFlag.AP6) == true) component.SetFontStyle(this.fontStyle);
 				if (this.IsChanged(ParameterFlag.AP7) == true) component.SetLineSpacing(this.lineSpacing);
 				if (this.IsChanged(ParameterFlag.AP8) == true) component.SetRichText(this.richText);
 	

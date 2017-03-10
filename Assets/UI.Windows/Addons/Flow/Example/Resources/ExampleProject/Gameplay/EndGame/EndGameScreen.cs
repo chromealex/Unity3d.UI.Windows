@@ -20,12 +20,16 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 			this.GetLayoutComponent<ButtonComponent>().SetCallback(() => {
 
 				this.FlowHideFunctionLoader((routes) => {
-
+					
+					#if !NO_WS_CLEANUP
 					WindowSystem.HideAllAndClean(except: this, callback: () => {
-
+					#else
+					WindowSystem.HideAll(except: this, callback: () => {
+					#endif
+						
 						routes.FlowDefault();
 
-					});
+					}, forceAll: false, immediately: true);
 
 				});
 

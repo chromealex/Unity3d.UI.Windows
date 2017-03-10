@@ -129,7 +129,7 @@ namespace UnityEditor.UI.Windows {
 			EditorGUILayout.EndFadeGroup();
 
 			var activeState = so.FindProperty("activeState");
-			var currentState = so.FindProperty("currentState");
+			var currentState = so.targetObject.GetType().GetMethod("GetState");//.FindProperty("currentState");
 			var dragState = so.FindProperty("dragState");
 			var pausedState = so.FindProperty("paused");
 
@@ -148,7 +148,7 @@ namespace UnityEditor.UI.Windows {
 					GUILayout.BeginVertical();
 					{
 						GUILayout.Label("Window State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-						GUILayout.Label(currentState.enumNames[currentState.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+						GUILayout.Label(currentState.Invoke(so.targetObject, null).ToString()/*currentState.enumNames[currentState.enumValueIndex]*/, isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
 					}
 					GUILayout.EndVertical();
 					

@@ -211,7 +211,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (windowWithScreen.GetScreen() == null) return;
 
-			var screenPath = AssetDatabase.GetAssetPath(windowWithScreen.GetScreen());
+			var screenPath = AssetDatabase.GetAssetPath(windowWithScreen.GetScreen().Load<WindowBase>());
 			screenPath = System.IO.Path.GetDirectoryName(screenPath);
 			var splitted = screenPath.Split(new string[] {"/"}, System.StringSplitOptions.RemoveEmptyEntries);
 			var packagePath = string.Join("/", splitted, 0, splitted.Length - 1);

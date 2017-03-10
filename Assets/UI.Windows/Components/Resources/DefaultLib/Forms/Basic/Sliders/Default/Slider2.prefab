@@ -121,14 +121,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22598842}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -178,6 +174,8 @@ MonoBehaviour:
   continious: 0
   continiousWidth: 0.4
   continiousAngleStep: 0
+  continiousEaseType: 0
+  continiousReflect: 1
   currentValueNormalized: 0
   hoverOnAnyButtonState: 0
   hoverCursorDefaultOnInactive: 0

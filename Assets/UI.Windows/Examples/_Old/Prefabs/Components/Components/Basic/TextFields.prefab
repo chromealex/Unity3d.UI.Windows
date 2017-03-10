@@ -84,19 +84,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11471310}
   - {fileID: 11471312}
-  canvas: {fileID: 22571310}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11438718, guid: fd2f485077cf8490394662d4006747cc, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/InputField/InputFieldWithIndicator.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/InputField/InputFieldWithIndicator
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 671899557
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11438718, guid: fd2f485077cf8490394662d4006747cc, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11437912
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -158,19 +191,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11471322}
   - {fileID: 11471324}
-  canvas: {fileID: 22571316}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11471902, guid: 8afbd17274a09430e962e078de2934f9, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Basic/InputField/InputField.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Basic/InputField/InputField
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -96802474
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11471902, guid: 8afbd17274a09430e962e078de2934f9, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11471310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -183,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22571310}
   parameters:
     inDelay: 0.2
     outDelay: 0
@@ -259,6 +326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22571316}
   parameters:
     inDelay: 0.1
     outDelay: 0
@@ -350,14 +418,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   textLinker: {fileID: 11437916}
   indicatorLinker: {fileID: 11437910}
 --- !u!114 &11481212

@@ -177,19 +177,24 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			
 		}
 
+		#if UNITY_EDITOR
 		public static WindowLayout GetLayout(int windowId, out LayoutWindowType screen) {
 
 			screen = null;
 
 			var window = FlowSystem.GetWindow(windowId);
 			if (window == null) return null;
-			
-			screen = window.GetScreen() as LayoutWindowType;
+
+			var screenInfo = window.GetScreen();
+			if (screenInfo == null) return null;
+
+			screen = screenInfo.Load<LayoutWindowType>();
 			if (screen == null || screen.layout.layout == null) return null;
 			
 			return screen.layout.layout;
 			
 		}
+		#endif
 
 	}
 

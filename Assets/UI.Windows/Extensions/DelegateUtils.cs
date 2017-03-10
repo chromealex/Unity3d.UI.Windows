@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows {
 
-	public static class DelegateUtils {
+	/*public static class DelegateUtils {
 
 		private class Item {
 
@@ -37,8 +37,8 @@ namespace UnityEngine.UI.Windows {
 		};
 
 		private static Dictionary<object, List<Item>> items = new Dictionary<object, List<Item>>();
-
-		public static void Register(object handler, UnityEvent @event, System.Action action, bool callAction = true) {
+*/
+		/*public static void Register(object handler, UnityEvent @event, System.Action action, bool callAction = true) {
 
 			var item = new Item();
 			item.action = action;
@@ -46,7 +46,7 @@ namespace UnityEngine.UI.Windows {
 
 			DelegateUtils.Register_INTERNAL(handler, item, callAction);
 
-		}
+		}*/
 		/*
 		public static void Register(object handler, UnityEventBase @event, UnityAction action, bool callAction = true) {
 
@@ -58,7 +58,7 @@ namespace UnityEngine.UI.Windows {
 
 		}*/
 
-		public static void Register(object handler, System.Action @event, System.Action action, bool callAction = true) {
+		/*public static void Register(object handler, System.Action @event, System.Action action, bool callAction = true) {
 
 			var item = new Item();
 			item.action = action;
@@ -66,8 +66,8 @@ namespace UnityEngine.UI.Windows {
 
 			DelegateUtils.Register_INTERNAL(handler, item, callAction);
 
-		}
-
+		}*/
+/*
 		private static void Register_INTERNAL(object handler, Item item, bool callAction) {
 
 			List<Item> list;
@@ -108,6 +108,6 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-	}
+	}*/
 
 }

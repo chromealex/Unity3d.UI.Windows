@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using UnityEngine.Events;
+using UnityEngine.UI.Windows;
 
 namespace ME {
 
-	public class Math {
+    public class Math {
 		
 		public static long Lerp(long a, long b, float t) {
 			
@@ -26,7 +26,7 @@ namespace ME {
 
 	public static class ObjectExt {
 
-		public static int GetID(this Object obj) {
+        public static int GetID(this Object obj) {
 
 			if (obj == null) return 0;
 
@@ -45,27 +45,86 @@ namespace ME {
 	}
 
 	#region POOL
-	public static class ListPool<T> {
 
-		private static ObjectPoolInternal<List<T>> listPool = new ObjectPoolInternal<List<T>>(null, l => l.Clear());
+    public abstract class ListPoolBase {
 
-		public static void Allocate(int capacity) {
+        protected static List<ListPoolBase> allocatedPools = new List<ListPoolBase>();
+
+        public static void Destroy() {
+
+            for (var i = 0; i < ListPoolBase.allocatedPools.Count; ++i) {
+
+                ListPoolBase.allocatedPools[i].Reset();
+
+            }
+
+            ListPoolBase.allocatedPools.Clear();
+
+        }
+
+        protected abstract void Reset();
+
+    }
+
+	public class ListPool<T> : ListPoolBase {
+
+		private readonly ObjectPoolInternal<List<T>> listPool = new ObjectPoolInternal<List<T>>(null, l => l.Clear());
+	    private static ListPool<T> instance;
+
+        /*
+        public static void Allocate(int capacity) {
 
 			ListPool<T>.listPool = new ObjectPoolInternal<List<T>>(null, l => l.Clear(), capacity);
 
 		}
+        */
 
-		public static List<T> Get() {
+	    private static void CreateInstance() {
 
-			return ListPool<T>.listPool.Get();
+	        if (ListPool<T>.instance != null) return;
+
+            ListPool<T>.instance = new ListPool<T>();
+            ListPoolBase.allocatedPools.Add(ListPool<T>.instance);
+
+
+        }
+
+	    private List<T> GetAllocated() {
+
+            return this.listPool.Get();
+
+        }
+
+        public static List<T> Get() {
+
+            ListPool<T>.CreateInstance();
+
+            return ListPool<T>.instance.GetAllocated();
 
 		}
 
-		public static void Release(List<T> toRelease) {
+	    public void ReleaseAllocated(List<T> toRelease) {
 
-			ListPool<T>.listPool.Release(toRelease);
+			if (toRelease == null) return;
+
+			this.listPool.Release(toRelease);
+
+        }
+
+
+	    public static void Release(List<T> toRelease) {
+
+            ListPool<T>.CreateInstance();
+
+			ListPool<T>.instance.ReleaseAllocated(toRelease);
 
 		}
+
+	    protected override void Reset() {
+
+	        ListPool<T>.instance = null;
+
+	    }
 
 	}
 
@@ -127,17 +186,19 @@ namespace ME {
 	internal class ObjectPoolInternal<T> where T : new() {
 		
 		private readonly Stack<T> stack = new Stack<T>();
-		private readonly UnityAction<T> actionOnGet;
-		private readonly UnityAction<T> actionOnRelease;
+		private readonly System.Action<T> actionOnGet;
+		private readonly System.Action<T> actionOnRelease;
 
 		public int countAll { get; private set; }
 		public int countActive { get { return this.countAll - this.countInactive; } }
 		public int countInactive { get { return this.stack.Count; } }
 
-		public ObjectPoolInternal(UnityAction<T> actionOnGet, UnityAction<T> actionOnRelease, int capacity = 1) {
+		public ObjectPoolInternal(System.Action<T> actionOnGet, System.Action<T> actionOnRelease, int capacity = 1) {
 			
 			this.actionOnGet = actionOnGet;
 			this.actionOnRelease = actionOnRelease;
+
+			ME.WeakReferenceInfo.Register(this);
 
 			if (capacity > 0) {
 
@@ -209,47 +270,30 @@ namespace ME {
 
 		}
 
-		public static void PreserveAspect(RawImage image) {
-
-			var texture = image.texture;
-			if (texture != null) {
-
-				var width = texture.width;
-				var height = texture.height;
-
-				var size = new Vector2(width, height);
-				if (size.sqrMagnitude > 0f) {
-
-					//var r = image.GetPixelAdjustedRect();
-
-					/*
-					var spriteRatio = size.x / size.y;
-					var rectRatio = r.width / r.height;
-
-					if (spriteRatio > rectRatio) {
-						
-						var oldHeight = r.height;
-						r.height = r.width * (1f / spriteRatio);
-						r.y += (oldHeight - r.height) * image.rectTransform.pivot.y;
-
-					} else {
-						
-						var oldWidth = r.width;
-						r.width = r.height * spriteRatio;
-						r.x += (oldWidth - r.width) * image.rectTransform.pivot.x;
-
-					}
-
-					r.width /= size.x;
-					r.x /= size.x;
-					r.height /= size.y;
-					r.y /= size.y;
-
-					image.uvRect = r;
-*/
+		public static Vector4 GetDrawingDimensions(Graphic graphic, bool shouldPreserveAspect, Vector2 size, Vector4 padding) {
+			
+			Vector4 vector = padding;//(!(this.overrideSprite == null)) ? DataUtility.GetPadding (this.overrideSprite) : Vector4.get_zero ();
+			Vector2 vector2 = new Vector2(size.x, size.y);
+			Rect pixelAdjustedRect = graphic.GetPixelAdjustedRect();
+			int num = Mathf.RoundToInt(vector2.x);
+			int num2 = Mathf.RoundToInt(vector2.y);
+			Vector4 result = new Vector4(vector.x / (float)num, vector.y / (float)num2, ((float)num - vector.z) / (float)num, ((float)num2 - vector.w) / (float)num2);
+			if (shouldPreserveAspect && vector2.sqrMagnitude > 0) {
+				float num3 = vector2.x / vector2.y;
+				float num4 = pixelAdjustedRect.width / pixelAdjustedRect.height;
+				if (num3 > num4) {
+					float height = pixelAdjustedRect.height;
+					pixelAdjustedRect.height = (pixelAdjustedRect.width * (1 / num3));
+					pixelAdjustedRect.y = (pixelAdjustedRect.y + (height - pixelAdjustedRect.height) * graphic.rectTransform.pivot.y);
 				}
-
+				else {
+					float width = pixelAdjustedRect.width;
+					pixelAdjustedRect.width = (pixelAdjustedRect.height * num3);
+					pixelAdjustedRect.x = (pixelAdjustedRect.x + (width - pixelAdjustedRect.width) * graphic.rectTransform.pivot.x);
+				}
 			}
+			result = new Vector4 (pixelAdjustedRect.x + pixelAdjustedRect.width * result.x, pixelAdjustedRect.y + pixelAdjustedRect.height * result.y, pixelAdjustedRect.x + pixelAdjustedRect.width * result.z, pixelAdjustedRect.y + pixelAdjustedRect.height * result.w);
+			return result;
 
 		}
 
@@ -274,7 +318,7 @@ namespace ME {
 
 		}
 
-		public static T FindReferenceChildren<T>(GameObject root) {
+		public static T FindReferenceChildren<T>(GameObject root, System.Func<T, bool> callback = null) {
 
 			var result = default(T);
 
@@ -284,7 +328,24 @@ namespace ME {
 				root.GetComponentsInChildren<T>(true, list);
 				if (list.Count > 0) {
 
-					result = list[0];
+					if (callback != null) {
+
+						for (int i = 0; i < list.Count; ++i) {
+
+							if (callback.Invoke(list[i]) == true) {
+
+								result = list[i];
+								break;
+
+							}
+
+						}
+
+					} else {
+
+						result = list[0];
+
+					}
 
 				}
 				ListPool<T>.Release(list);
@@ -311,6 +372,14 @@ namespace ME {
 
 		}
 
+		public static T FindReferenceChildren<T>(Component root, System.Func<T, bool> callback) {
+
+			if (root == null) return default(T);
+
+			return Utilities.FindReferenceChildren<T>(root.gameObject, callback);
+
+		}
+
         public static void FindReferenceParent<T>(Component root, ref T link) where T : Component {
 
 			link = Utilities.FindReferenceParent<T>(root);
@@ -327,6 +396,43 @@ namespace ME {
 
 			var position = alignToPoint + offset;
 			return uiCamera.ViewportToWorldPoint(gameCamera.WorldToViewportPoint(position));
+
+		}
+
+		public static System.Diagnostics.Stopwatch StartWatch() {
+
+			return new System.Diagnostics.Stopwatch();
+
+		}
+
+		public static void ResetWatch(System.Diagnostics.Stopwatch timer) {
+
+			if (timer != null) {
+
+				timer.Reset();
+				timer.Start();
+
+			}
+
+		}
+
+		public static bool StopWatch(System.Diagnostics.Stopwatch timer) {
+
+			if (timer != null) {
+
+				timer.Stop();
+				var milliseconds = timer.ElapsedMilliseconds;
+				if (milliseconds < 1000L - 1000L / Application.targetFrameRate) {
+
+					return true;
+
+				}
+
+				return false;
+
+			}
+
+			return true;
 
 		}
 
@@ -481,5 +587,200 @@ namespace ME {
 		}
 
 	}
+
+    public class WeakReferenceInfo {
+
+        private static readonly List<WeakReferenceInfo> weakReferences = new List<WeakReferenceInfo>();
+		private static readonly List<WeakReferenceInfo> weakReferencesBattle = new List<WeakReferenceInfo>();
+        private static List<WeakReferenceInfo> weakReferencesTemp = new List<WeakReferenceInfo>();
+
+        private static Dictionary<string, WeakReferenceInfo> dbWeakReferences = new Dictionary<string, WeakReferenceInfo>();
+
+        public readonly System.WeakReference weakReference;
+        public readonly string comment;
+        public readonly System.Type type;
+
+        public WeakReferenceInfo(System.WeakReference weakReference, System.Type type, string comment = "") {
+
+            this.weakReference = weakReference;
+            this.comment = comment;
+            this.type = type;
+
+        }
+
+        public static void Cleanup() {
+
+            Resources.UnloadUnusedAssets();
+
+            WeakReferenceInfo.weakReferences.RemoveAll(x => x.weakReference.IsAlive == false);
+			WeakReferenceInfo.weakReferencesBattle.RemoveAll(x => x.weakReference.IsAlive == false);
+            WeakReferenceInfo.weakReferencesTemp.RemoveAll(x => x.weakReference.IsAlive == false);
+
+        }
+
+        public static int GetCount() {
+
+            WeakReferenceInfo.Cleanup();
+            return WeakReferenceInfo.weakReferences.Count;
+
+        }
+
+        public static void Clear() {
+
+			WeakReferenceInfo.weakReferences.Clear();
+			WeakReferenceInfo.weakReferencesBattle.Clear();
+
+        }
+
+		public static List<string> GetAliveTypes() {
+
+			WeakReferenceInfo.Cleanup();
+
+			var list = WeakReferenceInfo.weakReferences.Select(x => {
+
+				var typeName = x.type.FullName;
+				return string.IsNullOrEmpty(x.comment) == true ? typeName : typeName + " = " + x.comment;
+
+			}).ToList();
+
+			return list;
+
+		}
+
+        public static int GetAliveTypesCount() {
+
+            WeakReferenceInfo.Cleanup();
+
+            return WeakReferenceInfo.weakReferences.Count;
+
+        }
+
+
+        public static List<string> GetAliveBattleTypes() {
+
+			WeakReferenceInfo.Cleanup();
+
+			var list = WeakReferenceInfo.weakReferencesBattle.Select(x => {
+
+				var typeName = x.type.FullName;
+				return string.IsNullOrEmpty(x.comment) == true ? typeName : typeName + " = " + x.comment;
+
+			}).ToList();
+
+			return list;
+
+		}
+
+        public static List<string> GetAlliveDBTypes() {
+
+            WeakReferenceInfo.dbWeakReferences = WeakReferenceInfo.dbWeakReferences.Where(x => x.Value.weakReference.IsAlive == false).ToDictionary(x => x.Key, x => x.Value);
+
+            var list = WeakReferenceInfo.dbWeakReferences.Select(x => {
+
+                var path = x.Key;
+                var val = x.Value;
+                var typeName = val.type.FullName;
+
+                return "[" + path + "]" + (string.IsNullOrEmpty(val.comment) == true ? typeName : typeName + " = " + val.comment);
+
+            }).ToList();
+
+            return list;
+
+        }
+
+        public static void RegisterDB<T>(T obj, string path) {
+
+            if (WindowSystem.IsDebugWeakReferences() == false) return;
+
+			var stack = new System.Diagnostics.StackTrace(fNeedFileInfo: true);
+			var info = new WeakReferenceInfo(new System.WeakReference(obj), obj.GetType(), stack.ToString());
+            WeakReferenceInfo.dbWeakReferences[path] = info;
+
+        }
+
+        public static void Register<T>(T obj) {
+
+			if (WindowSystem.IsDebugWeakReferences() == true) {
+
+				var stack = new System.Diagnostics.StackTrace(fNeedFileInfo: true);
+				var info = new WeakReferenceInfo(new System.WeakReference(obj), obj.GetType(), stack.ToString());
+				/*if (MW2.Gameplay.Battle.current != null) {
+
+					WeakReferenceInfo.weakReferencesBattle.Add(info);
+
+				} else {
+					
+					WeakReferenceInfo.weakReferences.Add(info);
+
+				}*/
+				WeakReferenceInfo.weakReferences.Add(info);
+
+			}
+
+        }
+
+        public static void Save() {
+
+            WeakReferenceInfo.Cleanup();
+
+            WeakReferenceInfo.weakReferencesTemp = new List<WeakReferenceInfo>(WeakReferenceInfo.weakReferences);
+
+        }
+
+        public static Dictionary<string, string> CompareTypenames() {
+
+            WeakReferenceInfo.Cleanup();
+
+            var dict1 = new Dictionary<System.Type, int>();
+            var dict2 = new Dictionary<System.Type, int>();
+
+            for (var i = 0; i < WeakReferenceInfo.weakReferences.Count; ++i) {
+
+                var type = WeakReferenceInfo.weakReferences[i].type;
+                if (dict1.ContainsKey(type) == true) {
+
+                    ++dict1[type];
+
+                } else {
+
+                    dict1.Add(type, 1);
+
+                }
+
+            }
+
+            for (var i = 0; i < WeakReferenceInfo.weakReferencesTemp.Count; ++i) {
+
+                var type = WeakReferenceInfo.weakReferencesTemp[i].type;
+                if (dict2.ContainsKey(type) == true) {
+
+                    ++dict2[type];
+
+                } else {
+
+                    dict2.Add(type, 1);
+
+                }
+
+            }
+
+            var compare = new Dictionary<string, string>();
+            foreach (var pair in dict2) {
+
+                int value;
+                if (dict1.TryGetValue(pair.Key, out value) == false) continue;
+                var diff = value - pair.Value;
+                if (diff == 0) continue;
+
+                compare.Add(pair.Key.FullName, string.Format("{0}-{1}={2}", value, pair.Value, diff));
+
+            }
+
+            return compare;
+
+        }
+
+    }
 
 }

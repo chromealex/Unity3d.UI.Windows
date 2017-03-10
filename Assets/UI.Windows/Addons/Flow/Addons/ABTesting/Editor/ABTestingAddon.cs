@@ -18,7 +18,7 @@ namespace UnityEditor.UI.Windows.Plugins.ABTesting {
 
 		public static string GenerateTransitionMethod(FlowSystemEditorWindow flowEditor, FD.FlowWindow windowFrom, FD.FlowWindow windowTo) {
 			
-			var file = Resources.Load("UI.Windows/ABTesting/Templates/TemplateTransitionMethod") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/ABTesting/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("ABTesting Template Loading Error: Could not load template 'TemplateTransitionMethod'");
@@ -39,7 +39,7 @@ namespace UnityEditor.UI.Windows.Plugins.ABTesting {
 			var result = string.Empty;
 			var part = file.text;
 
-			var methodPatternDefault = "(item, h) => WindowSystemFlow.DoFlow<{0}>(this, item, h, null)";
+			var methodPatternDefault = "(item, h, wh) => WindowSystemFlow.DoFlow<{0}>(this, item, h, wh, null)";
 			var methods = string.Empty;
 			var methodList = new List<string>();
 
@@ -110,7 +110,7 @@ namespace UnityEditor.UI.Windows.Plugins.ABTesting {
 			
 			public Styles() {
 				
-				this.skin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
+				this.skin = UnityEngine.Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
 				if (this.skin != null) {
 					
 					this.backLock = this.skin.FindStyle("LayoutBackLock");

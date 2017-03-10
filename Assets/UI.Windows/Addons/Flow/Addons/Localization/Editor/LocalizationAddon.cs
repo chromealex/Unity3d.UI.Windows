@@ -36,7 +36,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 			
 			public Styles() {
 				
-				this.skin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
+				this.skin = UnityEngine.Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
 				if (this.skin != null) {
 					
 					this.backLock = this.skin.FindStyle("LayoutBackLock");
@@ -153,6 +153,60 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 			var moduleName = "Localization";
 			var settingsName = "LocalizationSettings";
 			return this.InstallModule<LocalizationSettings>(moduleName, settingsName);
+
+		}
+
+		[MenuItem("Window/UI.Windows: Tools/Update Localizations", isValidateFunction: true)]
+		public static bool UpdateLocalizationsValidator() {
+
+			var initializer = GameObject.FindObjectOfType<UnityEngine.UI.Windows.WindowSystemFlow>();
+			if (initializer != null) {
+
+				var data = initializer.GetBaseFlow();
+				if (data != null) {
+
+					var modulesPath = data.GetModulesPath();
+					var settings = ME.EditorUtilities.GetAssetsOfType<LocalizationSettings>(modulesPath, useCache: true);
+
+					if (settings.Length > 0) {
+
+						return true;
+
+					}
+
+				}
+
+			}
+
+			return false;
+
+		}
+
+		[MenuItem("Window/UI.Windows: Tools/Update Localizations")]
+		public static void UpdateLocalizations() {
+
+			var initializer = GameObject.FindObjectOfType<UnityEngine.UI.Windows.WindowSystemFlow>();
+			if (initializer != null) {
+
+				var data = initializer.GetBaseFlow();
+
+				var modulesPath = data.GetModulesPath();
+				var settings = ME.EditorUtilities.GetAssetsOfType<LocalizationSettings>(modulesPath, useCache: true);
+
+				if (settings.Length > 0) {
+
+					var settingsFile = settings.First();
+					var services = GameObject.FindObjectsOfType<LocalizationService>();
+					for (int i = 0; i < services.Length; ++i) {
+						
+						var service = services[i];
+						service.EditorLoad(settingsFile, settingsFile.items[i]);
+
+					}
+
+				}
+
+			}
 
 		}
 

@@ -16,11 +16,13 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 	public interface IService : IServiceBase {
 		
 		bool isActive { set; get; }
-		
+
+		bool IsSupported();
+
 		string GetAuthKey(ServiceItem item);
 		AuthKeyPermissions GetAuthPermissions();
 		
-		IEnumerator Auth(string key);
+		System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem);
 
 		#if UNITY_EDITOR
 		void OnEditorAuth(string key, System.Action<bool> onResult);
@@ -66,13 +68,18 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			return AuthKeyPermissions.None;
 			
 		}
-		
-		public virtual IEnumerator Auth(string key) {
+
+		public abstract bool IsSupported();
+
+		public virtual System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
 			
-			yield return false;
+			yield return 0;
 			
 		}
-		
+
+		public virtual void OnApplicationPause(bool paused) {
+		}
+
 		public abstract string GetServiceName();
 		
 		#if UNITY_EDITOR
@@ -128,8 +135,11 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 		protected abstract void DoInspectorGUI(ScriptableObject settings, ServiceItem item, System.Action onReset, GUISkin skin);
 		
 		public virtual void OnValidate() {
-			
+
 			if (Application.isPlaying == true) return;
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
 			
 			if (this.serviceManager == null) this.serviceManager = this.GetComponent<ServiceManagerBase>();
 			

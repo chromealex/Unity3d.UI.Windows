@@ -1,4 +1,4 @@
-﻿#define FLOW_PLUGIN_HEATMAP
+﻿//#define FLOW_PLUGIN_HEATMAP
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,15 @@ namespace UnityEngine.UI.Windows {
 
 		private WindowLayoutBase layoutRoot;
 
-		internal override void Setup(WindowLayoutBase layoutRoot) {
+		public override void OnDeinit(System.Action callback) {
+
+			base.OnDeinit(callback);
+
+			this.layoutRoot = null;
+
+		}
+
+		public override void Setup(WindowLayoutBase layoutRoot) {
 			
             base.Setup(layoutRoot);
 

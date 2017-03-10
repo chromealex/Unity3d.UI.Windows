@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22540488}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -160,11 +161,8 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11431626}
-  canvas: {fileID: 22540488}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
@@ -187,10 +185,10 @@ MonoBehaviour:
   editorMinHeight: 0
   tempEditorRect:
     serializedVersion: 2
-    x: 46.401794
-    y: 841
-    width: 213.19641
-    height: 120
+    x: 52.202194
+    y: 0
+    width: 456.5956
+    height: 257
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11440508

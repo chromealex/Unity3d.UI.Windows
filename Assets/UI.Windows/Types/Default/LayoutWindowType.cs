@@ -6,6 +6,7 @@ using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Components;
 using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Extensions;
+using UnityEngine.UI.Windows.Plugins.Resources;
 
 namespace UnityEngine.UI.Windows.Types {
 
@@ -21,9 +22,21 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 		
 		public override Canvas GetCanvas() {
+
+			var layoutInstance = this.layout.GetLayoutInstance();
+			if (layoutInstance == null) return null;
+
+			return layoutInstance.canvas;
 			
-			return this.layout.GetLayoutInstance().canvas;
-			
+		}
+
+		public override CanvasScaler GetCanvasScaler() {
+
+			var layoutInstance = this.layout.GetLayoutInstance();
+			if (layoutInstance == null) return null;
+
+			return layoutInstance.canvasScaler;
+
 		}
 
 		public void GetLayoutComponent<T>(out T component, LayoutTag tag = LayoutTag.None) where T : WindowComponent {
@@ -40,7 +53,10 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		public override Vector2 GetSize() {
 
-			return this.layout.GetLayoutInstance().GetSize();
+			var layoutInstance = this.layout.GetLayoutInstance();
+			if (layoutInstance == null) return Vector2.zero;
+
+			return layoutInstance.GetSize();
 			
 		}
 
@@ -121,34 +137,26 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
-		protected override void DoLayoutInit(float depth, int raycastPriority, int orderInLayer) {
+		protected override void DoLayoutInit(float depth, int raycastPriority, int orderInLayer, System.Action callback, bool async) {
 
-			this.layout.Create(this, this.transform, depth, raycastPriority, orderInLayer);
-			this.layout.DoInit();
+			this.layout.Create(this, this.transform, depth, raycastPriority, orderInLayer, () => {
 
-		}
+				this.layout.DoInit();
+				if (callback != null) callback.Invoke();
 
-		protected override void DoLayoutDeinit() {
-
-			this.layout.DoDeinit();
+			}, async);
 
 		}
 
-		protected override void DoLayoutActive() {
+		protected override void DoLayoutDeinit(System.Action callback) {
 
-			this.layout.DoWindowActive();
-
-		}
-
-		protected override void DoLayoutInactive() {
-
-			this.layout.DoWindowInactive();
+			this.layout.DoDeinit(callback);
 
 		}
 
 		protected override void DoLayoutShowBegin(AppearanceParameters parameters) {
 
-			this.layout.DoWindowOpen();
+			//this.layout.DoWindowOpen();
 			this.layout.DoShowBegin(parameters);
 
 		}
@@ -161,7 +169,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		protected override void DoLayoutHideBegin(AppearanceParameters parameters) {
 			
-			this.layout.DoWindowClose();
+			//this.layout.DoWindowClose();
 			this.layout.DoHideBegin(parameters);
 
 		}
@@ -169,6 +177,30 @@ namespace UnityEngine.UI.Windows.Types {
 		protected override void DoLayoutHideEnd(AppearanceParameters parameters) {
 
 			this.layout.DoHideEnd(parameters);
+
+		}
+
+		protected override void DoLayoutWindowOpen() {
+
+			this.layout.DoWindowOpen();
+
+		}
+
+		protected override void DoLayoutWindowClose() {
+
+			this.layout.DoWindowClose();
+
+		}
+
+		protected override void DoLayoutWindowActive() {
+
+			this.layout.DoWindowActive();
+
+		}
+
+		protected override void DoLayoutWindowInactive() {
+
+			this.layout.DoWindowInactive();
 
 		}
 
@@ -193,7 +225,7 @@ namespace UnityEngine.UI.Windows.Types {
 	}
 	
 	[System.Serializable]
-	public class Layout : IWindowEventsController {
+	public class Layout : IWindowEventsController, ILoadableResource, ILoadableReference {
 		
 		private class ComponentComparer : IEqualityComparer<Component> {
 			
@@ -218,7 +250,7 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 
 		[System.Serializable]
-		public class Component {
+		public class Component : ILoadableResource, ILoadableReference {
 			
 			#if UNITY_EDITOR
 			public string description;
@@ -242,7 +274,7 @@ namespace UnityEngine.UI.Windows.Types {
 			#if UNITY_EDITOR
 			public WindowComponent component;
 			#endif
-			public MonoResource componentResource;
+			public ResourceMono componentResource;
 			public WindowComponent componentNoResource;
 			public int sortingOrder = 0;
 			public WindowComponentParametersBase componentParameters;
@@ -257,7 +289,19 @@ namespace UnityEngine.UI.Windows.Types {
 				this.tag = tag;
 				
 			}
+
+			public IResourceReference GetReference() {
+
+				return this.window;
+
+			}
 			
+			public ResourceBase GetResource() {
+
+				return this.componentResource;
+
+			}
+
 			#if UNITY_EDITOR
 			public WindowComponentParametersBase OnComponentChanged(WindowBase window, WindowComponent newComponent) {
 
@@ -269,7 +313,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 					if (newComponent == null) {
 
-						this.componentResource.Reset();
+						this.componentResource.ResetToDefault();
 
 					}
 
@@ -316,6 +360,11 @@ namespace UnityEngine.UI.Windows.Types {
 			}
 
 			public void OnValidate() {
+
+				#if UNITY_EDITOR
+				if (UnityEditor.EditorApplication.isUpdating == true) return;
+				#endif
+
 				/*
 				if (this.componentParameters != null) {
 
@@ -335,7 +384,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 				this.componentResource.Validate(this.component);
 
-				if (this.componentResource.loadableResource == false) {
+				if (this.componentResource.IsLoadable() == false) {
 
 					this.componentNoResource = this.component;
 
@@ -353,6 +402,11 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			[HideInInspector][System.NonSerialized]
 			private IWindowComponentLayout root;
+			
+			[HideInInspector][System.NonSerialized]
+			private WindowBase window;
+
+			private bool stopped = false;
 
 			public void SetComponent(WindowComponent component) {
 
@@ -360,87 +414,132 @@ namespace UnityEngine.UI.Windows.Types {
 
 			}
 
-			public void SetComponent(MonoResource resource) {
+			public void SetComponent(ResourceMono resource) {
 
 				this.componentResource = resource;
 
 			}
 
-			public IWindowEventsAsync Create(WindowBase window, WindowLayoutElement root) {
-				
+			public void Create(WindowBase window, WindowLayoutElement root, System.Action<WindowComponent> callback = null, bool async = false, System.Action<WindowObjectElement> onItem = null) {
+
+				if (this.stopped == true) return;
+
+				this.window = window;
 				this.root = root;
 
-				WindowComponent component = null;
-				if (this.componentResource.loadableResource == true) {
+				System.Action<WindowComponent> onLoaded = (component) => {
 
-					component = this.componentResource.Load<WindowComponent>();
-					if (component == null) {
+					if (this.stopped == true) return;
 
-						Debug.LogError("[ Layout ] Be sure your UI project placed in Resources folder (ex: Assets/Resources/MyProject/UIProject.asset).");
+					if (component == null && this.root == null) {
+
+						if (callback != null) callback.Invoke(null);
+						return;
 
 					}
 
+					if (component == null) {
+
+						this.root.Setup(null, this);
+						if (callback != null) callback.Invoke(null);
+						return;
+
+					}
+
+					//Debug.Log("Unpack component: " + component.name);
+					var instance = component.Spawn(activeByDefault: false);
+					//instance.SetComponentState(WindowObjectState.NotInitialized);
+					instance.SetParent(root, setTransformAsSource: false, worldPositionStays: false);
+					instance.SetTransformAs();
+
+					if (this.componentParameters != null) {
+
+						instance.Setup(this.componentParameters);
+
+					}
+
+					var rect = instance.transform as RectTransform;
+					if (rect != null) {
+
+						rect.sizeDelta = (component.transform as RectTransform).sizeDelta;
+						rect.anchoredPosition = (component.transform as RectTransform).anchoredPosition;
+						
+					}
+
+					this.root.Setup(instance, this);
+					instance.Setup(window);
+					
+					if (instance.autoRegisterInRoot == true && root.autoRegisterSubComponents == true) {
+
+						root.RegisterSubComponent(instance);
+
+					}
+
+					instance.transform.SetSiblingIndex(this.sortingOrder);
+
+					this.instance = instance;
+					instance.DoLoad(async, onItem, () => {
+
+						if (this.stopped == true) return;
+
+						if (instance != null) instance.gameObject.SetActive(true);
+						if (callback != null) callback.Invoke(this.instance as WindowComponent);
+
+					});
+
+				};
+
+				WindowComponent loadedComponent = null;
+				if (this.componentResource.IsLoadable() == true) {
+
+					WindowSystemResources.LoadRefCounter<WindowComponent>(this, (component) => {
+						
+						loadedComponent = component;
+						onLoaded.Invoke(loadedComponent);
+
+						WindowSystemResources.Unload(this, this.GetResource(), resetController: false);
+
+					}, () => {
+						
+						#if UNITY_EDITOR
+						Debug.LogWarningFormat("[ Layout ] Resource request failed {0} [{1}].", UnityEditor.AssetDatabase.GetAssetPath(this.component.GetInstanceID()), window.name);
+						#endif
+
+					}, async);
+					return;
+
 				} else {
 
-					component = this.componentNoResource;
+					loadedComponent = this.componentNoResource;
 					#if UNITY_EDITOR
-					if (component != null) Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", component.name, UnityEditor.AssetDatabase.GetAssetPath(component.GetInstanceID()), window.name);
+					if (loadedComponent != null) Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", loadedComponent.name, UnityEditor.AssetDatabase.GetAssetPath(loadedComponent.GetInstanceID()), window.name);
 					#endif
 
 				}
 
-				if (component == null && this.root == null) {
+				onLoaded.Invoke(loadedComponent);
 
-					return null;
+			}
 
-				}
+			public void StopCreate() {
 
-				if (component == null) {
-
-					this.root.Setup(null, this);
-					return null;
-
-				}
-
-				var instance = component.Spawn();
-				//instance.SetComponentState(WindowObjectState.NotInitialized);
-				instance.SetParent(root, setTransformAsSource: false, worldPositionStays: false);
-				instance.SetTransformAs();
-
-				if (this.componentParameters != null) {
-
-					instance.Setup(this.componentParameters);
-
-				}
-
-				var rect = instance.transform as RectTransform;
-				if (rect != null) {
-
-					rect.sizeDelta = (component.transform as RectTransform).sizeDelta;
-					rect.anchoredPosition = (component.transform as RectTransform).anchoredPosition;
-					
-				}
-
-				this.root.Setup(instance, this);
-				instance.Setup(window);
-				
-				if (instance.autoRegisterInRoot == true && root.autoRegisterSubComponents == true) {
-
-					root.RegisterSubComponent(instance);
-
-				}
-
-				instance.transform.SetSiblingIndex(this.sortingOrder);
-				
-				this.instance = instance;
-
-				return instance;
+				this.stopped = true;
 
 			}
 
 			public void Unload() {
 
-				if (this.componentResource.loadableResource == true) {
+				//Debug.Log("Unload: " + this.componentResource.GetId() + " :: " + this.componentResource.assetPath);
+
+				WindowSystemResources.UnloadResource_INTERNAL(this.GetReference(), this.componentResource);
+
+				if (this.root != null) this.root.OnWindowUnload();
+
+				this.instance = null;
+				this.root = null;
+				this.window = null;
+
+				/*if (this.componentResource.loadableResource == true) {
 
 					this.componentResource.Unload();
 
@@ -448,7 +547,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 					// Resource was not load via Resources.Load(), so it can't be unload properly
 
-				}
+				}*/
 
 			}
 
@@ -493,38 +592,128 @@ namespace UnityEngine.UI.Windows.Types {
 		public WindowLayoutPreferences layoutPreferences;
 		public bool allowCustomLayoutPreferences = true;
 
+		private WindowBase window;
+
+		#if UNITY_EDITOR
+		[BundleIgnore]
 		public WindowLayout layout;
+		#endif
+		[SerializeField] private WindowLayout layoutNoResource;
+		[SerializeField] private ResourceAuto layoutResource;
+
 		public Component[] components;
-		
+
 		[System.NonSerialized]
-		private WindowLayout instance;
-		
-		public void Create(WindowBase window, Transform root, float depth, int raycastPriority, int orderInLayer) {
-			
-			var instance = this.layout.Spawn();
-			instance.transform.SetParent(root);
-			instance.transform.localPosition = Vector3.zero;
-			instance.transform.localRotation = Quaternion.identity;
-			instance.transform.localScale = Vector3.one;
-			
-			var rect = instance.transform as RectTransform;
-			rect.sizeDelta = (this.layout.transform as RectTransform).sizeDelta;
-			rect.anchoredPosition = (this.layout.transform as RectTransform).anchoredPosition;
+		private IWindowEventsController instance;
 
-			var layoutPreferences = this.layoutPreferences;
-			if (this.allowCustomLayoutPreferences == true) {
+		private bool stopped = false;
 
-				layoutPreferences = WindowSystem.GetCustomLayoutPreferences() ?? this.layoutPreferences;
+		public IResourceReference GetReference() {
+
+			return this.window;
+
+		}
+
+		public ResourceBase GetResource() {
+
+			return this.layoutResource;
+
+		}
+
+		public void Create(WindowBase window, Transform root, float depth, int raycastPriority, int orderInLayer, System.Action callback, bool async) {
+
+			if (this.stopped == true) return;
+
+			this.window = window;
+
+			System.Action<WindowLayout> onLoaded = (layout) => {
+
+				if (this.stopped == true) return;
+
+				var instance = layout.Spawn(activeByDefault: false);
+				instance.transform.SetParent(root);
+				instance.transform.localPosition = Vector3.zero;
+				instance.transform.localRotation = Quaternion.identity;
+				instance.transform.localScale = Vector3.one;
+				
+				var rect = instance.transform as RectTransform;
+				rect.sizeDelta = (layout.transform as RectTransform).sizeDelta;
+				rect.anchoredPosition = (layout.transform as RectTransform).anchoredPosition;
+
+				var layoutPreferences = this.layoutPreferences;
+				if (this.allowCustomLayoutPreferences == true) {
+
+					layoutPreferences = WindowSystem.GetCustomLayoutPreferences() ?? this.layoutPreferences;
+
+				}
+
+				instance.Setup(window);
+				instance.Init(depth, raycastPriority, orderInLayer);
+				instance.SetLayoutPreferences(this.scaleMode, this.fixedScaleResolution, layoutPreferences);
+
+				this.instance = instance;
+
+				ME.Utilities.CallInSequence(() => {
+
+					if (this.stopped == true) return;
+
+					instance.gameObject.SetActive(true);
+					callback.Invoke();
+
+				}, this.components, (component, c) => {
+					
+					component.Create(window, instance.GetRootByTag(component.tag), (comp) => c.Invoke(), async);
+
+				}, waitPrevious: true);
+
+			};
+
+			WindowLayout loadedComponent = null;
+			if (this.layoutResource.IsLoadable() == true) {
+				
+				WindowSystemResources.LoadRefCounter<WindowLayout>(this, (layout) => {
+					
+					loadedComponent = layout;
+					onLoaded.Invoke(loadedComponent);
+
+					WindowSystemResources.Unload(this, this.GetResource(), resetController: false);
+
+				}, () => {
+
+					#if UNITY_EDITOR
+					Debug.LogWarningFormat("[ Layout ] Resource request failed {0} [{1}].", UnityEditor.AssetDatabase.GetAssetPath(this.layout.GetInstanceID()), window.name);
+					#endif
+
+				}, async);
+				return;
+
+			} else {
+
+				loadedComponent = this.layoutNoResource;
+				#if UNITY_EDITOR
+				if (loadedComponent != null) Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", loadedComponent.name, UnityEditor.AssetDatabase.GetAssetPath(loadedComponent.GetInstanceID()), window.name);
+				#endif
 
 			}
 
-			instance.Setup(window);
-			instance.Init(depth, raycastPriority, orderInLayer);
-			instance.SetLayoutPreferences(this.scaleMode, this.fixedScaleResolution, layoutPreferences);
+			onLoaded.Invoke(loadedComponent);
 
-			this.instance = instance;
-			
-			foreach (var component in this.components) component.Create(window, instance.GetRootByTag(component.tag));
+		}
+
+		public void StopCreate() {
+
+			//Debug.Log("StopCreate: " + this.window + " :: " + this.window.GetLastState() + " :: " + this.window.preferences.createPool);
+			if ((this.window.GetLastState() == WindowObjectState.NotInitialized || this.window.GetLastState() == WindowObjectState.Initializing) && this.window.preferences.createPool == false) {
+
+				this.stopped = true;
+
+				for (int i = 0; i < this.components.Length; ++i) {
+
+					this.components[i].StopCreate();
+
+				}
+
+			}
 
 		}
 
@@ -536,13 +725,17 @@ namespace UnityEngine.UI.Windows.Types {
 
 			}
 
+			WindowSystemResources.UnloadResource_INTERNAL(this.GetReference(), this.layoutResource);
+
+			this.window = null;
+
 		}
 
 		public void SetCustomLayoutPreferences(WindowLayoutPreferences layoutPreferences) {
 
 			if (this.allowCustomLayoutPreferences == true) {
 
-				this.instance.SetLayoutPreferences(this.scaleMode, this.fixedScaleResolution, layoutPreferences);
+				this.GetLayoutInstance().SetLayoutPreferences(this.scaleMode, this.fixedScaleResolution, layoutPreferences);
 
 			}
 
@@ -550,7 +743,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public WindowLayout GetLayoutInstance() {
 
-			return this.instance;
+			return this.instance as WindowLayout;
 
 		}
 
@@ -574,7 +767,7 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		public Transform GetRoot() {
 			
-			return this.instance.transform;
+			return this.GetLayoutInstance().transform;
 			
 		}
 
@@ -589,9 +782,9 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public T Get<T>(LayoutTag tag = LayoutTag.None) where T : WindowComponent {
 			
-			foreach (var component in this.components) {
+			for (var i = 0; i < this.components.Length; ++i) {
 				
-				var item = component.Get<T>(tag);
+				var item = this.components[i].Get<T>(tag);
 				if (item != null) return item;
 				
 			}
@@ -602,44 +795,44 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public int GetSortingOrder() {
 			
-			return this.instance.canvas.sortingOrder;
+			return this.GetLayoutInstance().canvas.sortingOrder;
 			
 		}
 		
 		// Events
 		public void OnLocalizationChanged() {
 			
-			this.instance.OnLocalizationChanged();
+			if (this.instance != null) this.GetLayoutInstance().OnLocalizationChanged();
 			
 		}
 		
 		public void OnManualEvent<T>(T data) where T : IManualEvent {
 			
-			this.instance.OnManualEvent<T>(data);
+			if (this.instance != null) this.GetLayoutInstance().OnManualEvent<T>(data);
 			
 		}
 
 		public void DoWindowOpen() {
 
-			this.instance.DoWindowOpen();
+			if (this.instance != null) this.instance.DoWindowOpen();
 
 		}
 
 		public void DoWindowClose() {
 
-			this.instance.DoWindowClose();
+			if (this.instance != null) this.instance.DoWindowClose();
 
 		}
 
 		public void DoWindowActive() {
 
-			this.instance.DoWindowActive();
+			if (this.instance != null) this.instance.DoWindowActive();
 
 		}
 
 		public void DoWindowInactive() {
 
-			this.instance.DoWindowInactive();
+			if (this.instance != null) this.instance.DoWindowInactive();
 
 		}
 
@@ -647,46 +840,57 @@ namespace UnityEngine.UI.Windows.Types {
 		// Base Events
 		public void DoInit() {
 
-			this.instance.DoInit();
+			if (this.instance != null) this.instance.DoInit();
 
 		}
 
-		public void DoDeinit() {
-			
-			if (this.instance != null) this.instance.DoDeinit();
+		public void DoDeinit(System.Action callback) {
+
+			if (this.instance != null) this.instance.DoDeinit(callback);
+
+			this.instance = null;
+			this.components = null;
 
 		}
 
 		public void DoShowBegin(AppearanceParameters parameters) {
 
-			this.instance.DoShowBegin(parameters);
+			if (this.instance != null) this.instance.DoShowBegin(parameters);
 
 		}
 
 		public void DoShowEnd(AppearanceParameters parameters) {
 
-			this.instance.DoShowEnd(parameters);
-			
-			CanvasUpdater.ForceUpdate(this.instance.canvas, this.instance.canvasScaler);
+			if (this.instance != null) {
+
+				this.instance.DoShowEnd(parameters);
+				CanvasUpdater.ForceUpdate(this.GetLayoutInstance().canvas, this.GetLayoutInstance().canvasScaler);
+
+			}
 
 		}
 
 		public void DoHideBegin(AppearanceParameters parameters) {
 
-			this.instance.DoHideBegin(parameters); 
+			this.StopCreate();
+			if (this.instance != null) this.instance.DoHideBegin(parameters); 
 
 		}
 
 		public void DoHideEnd(AppearanceParameters parameters) {
 
-			this.instance.DoHideEnd(parameters);
+			if (this.instance != null) this.instance.DoHideEnd(parameters);
 
 		}
 
 		public void DoWindowUnload() {
 
-			this.instance.DoWindowUnload();
-			this.Unload();
+			if (this.instance != null) {
+
+				this.instance.DoWindowUnload();
+				this.Unload();
+
+			}
 
 		}
 		#endregion
@@ -745,6 +949,10 @@ namespace UnityEngine.UI.Windows.Types {
 			}
 			
 			this.components = this.components.Distinct(new ComponentComparer()).ToArray();
+
+			this.layoutResource.tempObject = this.layout;
+			this.layoutResource.Validate();
+			this.layoutNoResource = (this.layoutResource.IsLoadable() == true ? null : this.layout);
 
 		}
 		

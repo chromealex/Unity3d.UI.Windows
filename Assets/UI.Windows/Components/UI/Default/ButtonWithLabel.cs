@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI {
 
-	public class ButtonWithLabel : ButtonWithReference {
+	public class ButtonWithLabel : ButtonWithReference, IPointerUpHandler, IPointerDownHandler {
 
 		public Text label;
 		public ColorBlock labelColor = ColorBlock.defaultColorBlock;
+
+		public bool pointerUpClick;
+		public bool pointerDownClick;
 
 		/*protected override void OnStateChanged() {
 
@@ -15,6 +19,30 @@ namespace UnityEngine.UI {
 			this.ApplyState(this.currentSelectionState, false);
 
 		}*/
+
+		public override void OnPointerUp(PointerEventData data) {
+
+			base.OnPointerUp(data);
+
+			if (this.pointerUpClick == true) {
+
+				this.OnPointerClick(data);
+
+			}
+
+		}
+
+		public override void OnPointerDown(PointerEventData data) {
+
+			base.OnPointerDown(data);
+
+			if (this.pointerDownClick == true) {
+
+				this.OnPointerClick(data);
+
+			}
+
+		}
 
 		protected override void DoStateTransition(Selectable.SelectionState state, bool instant) {
 

@@ -21,7 +21,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting {
 			
 		}
 
-		public override IEnumerator OnAfterAuth(IService serviceBase) {
+		public override System.Collections.IEnumerator OnAfterAuth(IService serviceBase) {
 
 			var service = serviceBase as ABTestingService;
 
@@ -44,7 +44,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting {
 
 			}));
 
-			yield return false;
+			yield return 0;
 
 		}
 

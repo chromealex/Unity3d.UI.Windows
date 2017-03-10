@@ -79,9 +79,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 224: {fileID: 22426984}
-  - 114: {fileID: 11425598}
   - 114: {fileID: 11425586}
   - 114: {fileID: 11425584}
+  - 114: {fileID: 11410234}
   m_Layer: 5
   m_Name: CheckboxButton
   m_TagString: Untagged
@@ -89,6 +89,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11410234
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 126984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24333f256cafa472a94fb733defa2087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AllowSwitchOff: 0
 --- !u!114 &11425582
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -114,14 +126,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -140,78 +148,6 @@ MonoBehaviour:
   hoverIsActive: 1
   hoverOnAnyPointerState: 0
   images: []
-  navigationType: 0
-  navigateOnDisabled: 0
-  navigationCustomSelector: 0
-  navigationCustomSelectorObject: {fileID: 0}
-  navigateLeftInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  navigateRightInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  navigateUpInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  navigateDownInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  button: {fileID: 11425590}
-  callback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  selectByDefault: 0
-  setDefaultNavigationModeOnStart: 1
-  defaultNavigationMode: 0
-  hoverOnAnyButtonState: 0
-  hoverCursorDefaultOnInactive: 0
-  image: {fileID: 0}
-  rawImage: {fileID: 0}
-  preserveAspect: 0
-  imageLocalizationKey:
-    key: 
-    parameters: 0
-    formatWithDeclension: 0
-    outputDeclensionWithoutNumber: 0
-  playOnShow: 0
-  loop: 0
-  imageResource:
-    async: 1
-    controlType: 0
-    assetPath: 
-    resourcesPath: 
-    loadableResource: 0
-    loadableStream: 0
-    multiObjects: 0
-    objectIndex: 0
-    customResourcePath: 
-    id: 0
-    streamingAssetsPathStandalone: 
-    streamingAssetsPathIOS: 
-    streamingAssetsPathAndroid: 
-    streamingAssetsPathPS4: 
-    streamingAssetsPathXBOXONE: 
-    streamingAssetsPathCommon: 
-    tempObject: {fileID: 0}
-  imageCrossFadeModule:
-    enabled: 0
-    sourceImage: {fileID: 0}
-    copyImage: {fileID: 0}
-    sourceRawImage: {fileID: 0}
-    copyRawImage: {fileID: 0}
-    duration: 0.5
-    fadeIfWasNull: 0
-    easeType: 0
   text: {fileID: 11426978}
   valueFormat: 0
   fullTextFormat: 0
@@ -249,14 +185,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -308,10 +240,13 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  scrollbarVisibility: 1
+  horizontalScrollbar: {fileID: 0}
+  verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 11425586}
   navigationMode: 0
   navigationInverse: 0
-  toggleGroup: {fileID: 11425598}
+  toggleGroup: {fileID: 11410234}
   allowSwitchOff: 1
 --- !u!114 &11425586
 MonoBehaviour:
@@ -419,6 +354,7 @@ MonoBehaviour:
     fadeDuration: 0.1
   transitionExtended: 0
   m_TargetGraphics: []
+  graphicItems: []
   rootButton: {fileID: 0}
   referenceButton: {fileID: 0}
 --- !u!114 &11425592
@@ -474,7 +410,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 125586}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 2109663825, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Script: {fileID: 11500000, guid: 379e2d48532074b8d9a9d862285e95f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -502,27 +438,70 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 11425594}
-  toggleTransition: 1
-  graphic: {fileID: 11425588}
-  m_Group: {fileID: 11425598}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
+    m_TypeName: UnityEngine.UI.ToggleExtended+ToggleEvent, Assembly-CSharp, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_IsOn: 0
---- !u!114 &11425598
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 126984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1184210157, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 0
+  m_Group: {fileID: 0}
+  graphic: {fileID: 11425588}
+  toggleTransition: 0
+  anchorsTransitionOn:
+    normal: {x: 0, y: 0, z: 0, w: 0}
+    highlihted: {x: 0, y: 0, z: 0, w: 0}
+    pressed: {x: 0, y: 0, z: 0, w: 0}
+    disabled: {x: 0, y: 0, z: 0, w: 0}
+    duration: 0
+  anchorsTransitionOff:
+    normal: {x: 0, y: 0, z: 0, w: 0}
+    highlihted: {x: 0, y: 0, z: 0, w: 0}
+    pressed: {x: 0, y: 0, z: 0, w: 0}
+    disabled: {x: 0, y: 0, z: 0, w: 0}
+    duration: 0
+  pivotTransitionOn:
+    normal: {x: 0, y: 0}
+    highlihted: {x: 0, y: 0}
+    pressed: {x: 0, y: 0}
+    disabled: {x: 0, y: 0}
+    duration: 0
+  pivotTransitionOff:
+    normal: {x: 0, y: 0}
+    highlihted: {x: 0, y: 0}
+    pressed: {x: 0, y: 0}
+    disabled: {x: 0, y: 0}
+    duration: 0
+  colorTransitionOn:
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 0}
+    m_HighlightedColor: {r: 0, g: 0, b: 0, a: 0}
+    m_PressedColor: {r: 0, g: 0, b: 0, a: 0}
+    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0}
+    m_ColorMultiplier: 0
+    m_FadeDuration: 0
+  colorTransitionOff:
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 0}
+    m_HighlightedColor: {r: 0, g: 0, b: 0, a: 0}
+    m_PressedColor: {r: 0, g: 0, b: 0, a: 0}
+    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0}
+    m_ColorMultiplier: 0
+    m_FadeDuration: 0
+  m_AlphaOn:
+    canvasGroup: {fileID: 0}
+    normalAlpha: 0.7
+    highlightedAlpha: 0.9
+    pressedAlpha: 1
+    disabledAlpha: 0.3
+    alphaMultiplier: 1
+    fadeDuration: 0.1
+  m_AlphaOff:
+    canvasGroup: {fileID: 0}
+    normalAlpha: 0.7
+    highlightedAlpha: 0.9
+    pressedAlpha: 1
+    disabledAlpha: 0.3
+    alphaMultiplier: 1
+    fadeDuration: 0.1
+  toggleTransitionExtended: 0
 --- !u!114 &11426976
 MonoBehaviour:
   m_ObjectHideFlags: 1

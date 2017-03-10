@@ -19,6 +19,17 @@ namespace UnityEngine.UI.Windows.Extensions {
 		[Header("Raycaster Source (Optional)")]
 		public BaseRaycaster raycasterSource;
 
+		public void UpdateOrderDelta() {
+
+			var window = this.windowObject.GetWindow();
+			if (window != null) {
+				
+				this.canvas.sortingOrder = window.GetSortingOrder() + this.orderDelta;
+
+			}
+
+		}
+
 		public void Start() {
 
 			this.Init();
@@ -27,6 +38,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		public void Init() {
 
+			var raycasterTemp = false;
 			if (this.canvas != null && this.windowObject != null) {
 				
 				var window = this.windowObject.GetWindow();
@@ -46,6 +58,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 				if (this.raycasterSource == null) {
 
 					this.raycasterSource = (window as LayoutWindowType).layout.GetLayoutInstance().GetComponent<BaseRaycaster>();
+					raycasterTemp = true;
 
 				}
 
@@ -60,6 +73,12 @@ namespace UnityEngine.UI.Windows.Extensions {
 					graphicRaycaster.blockingObjects = graphicRaycasterSource.blockingObjects;
 					graphicRaycaster.ignoreReversedGraphics = graphicRaycasterSource.ignoreReversedGraphics;
 					
+				}
+
+				if (raycasterTemp == true) {
+
+					this.raycasterSource = null;
+
 				}
 				
 			}

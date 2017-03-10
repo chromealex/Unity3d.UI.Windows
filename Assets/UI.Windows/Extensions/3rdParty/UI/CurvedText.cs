@@ -18,6 +18,12 @@ namespace UnityEngine.UI.Extensions
 		#if UNITY_EDITOR
 		protected override void OnValidate()
 		{
+
+			if (Application.isPlaying == true) return;
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			base.OnValidate();
 
 			if (rectTrans == null)

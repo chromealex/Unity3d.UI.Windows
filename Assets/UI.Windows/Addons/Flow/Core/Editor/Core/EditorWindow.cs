@@ -29,7 +29,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			public Styles() {
 				
-				this.skin = Resources.Load(string.Format("UI.Windows/Flow/Styles/Skin{0}", (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"))) as GUISkin;
+				this.skin = UnityEngine.Resources.Load(string.Format("UI.Windows/Flow/Styles/Skin{0}", (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"))) as GUISkin;
 				if (this.skin != null) {
 
 					this.layoutBoxStyle = this.skin.FindStyle("LayoutBox");
@@ -76,7 +76,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var title = "UIW Flow";
 			#if !UNITY_4
-			editor.titleContent = new GUIContent(title, Resources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
+			editor.titleContent = new GUIContent(title, UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
 			#else
 			editor.title = title;
 			#endif
@@ -214,6 +214,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var hasData = FlowSystem.HasData();
 			if (hasData == true) {
+
+				Handles.BeginGUI();
 
 				var oldEnabled = GUI.enabled;
 				GUI.enabled = FlowSystem.HasData() && GUI.enabled;
@@ -598,6 +600,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				if (this.scrollingMouseAnimation != null && this.scrollingMouseAnimation.isAnimating == true || this.scrollingMouse == true) this.DrawMinimap();
 
+				Handles.EndGUI();
+
 			}
 			
 		}
@@ -872,7 +876,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}, onCreateLayout: () => {
 					
 					this.SelectWindow(window);
-					Selection.activeObject = window.GetScreen();
+					Selection.activeObject = window.GetScreen().Load<WindowBase>();
 					FlowChooserFilter.CreateLayout(Selection.activeObject, Selection.activeGameObject, () => {
 						
 						this.SelectWindow(window);
@@ -904,7 +908,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			} else {
 
-				var screen = window.GetScreen();
+				var screen = window.GetScreen().Load<WindowBase>();
 				if (screen != null) {
 
 					screen.CreateOnScene(callEvents: false);
@@ -1644,7 +1648,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private AnimatedValues.AnimFloat selectionRectAnimation;
 		public void DrawBackground() {
 			
-			if (this._background == null) this._background = Resources.Load<Texture2D>("UI.Windows/Flow/Background");
+			if (this._background == null) this._background = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Flow/Background");
 			
 			FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f).PixelPerfect();
 			
@@ -2822,17 +2826,20 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							menu.AddItem(new GUIContent("Edit..."), on: false, func: () => {
 
-								var path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(window.GetScreen()));
+								var path = Path.GetDirectoryName(AssetDatabase.GetAssetPath(window.GetScreen().Load<WindowBase>()));
 								var filename = window.compiledDerivedClassName + ".cs";
 								EditorUtility.OpenWithDefaultApp(string.Format("{0}/../{1}", path, filename));
 
 							});
 
 							var k = 0;
-							for (int i = 0; i < window.GetScreens().Length; ++i) {
+							var screens = window.GetScreens();
+							for (int i = 0; i < screens.Count; ++i) {
+
+								if (screens[i] == null) continue;
 
 								var index = i;
-								menu.AddItem(new GUIContent(string.Format("Targets/Target {0}", ++k)), on: (window.selectedScreenIndex == index), func: () => {
+								menu.AddItem(new GUIContent(string.Format("Targets/Target {0} ({1})", ++k, screens[i].name)), on: (window.selectedScreenIndex == index), func: () => {
 
 									window.selectedScreenIndex = index;
 									EditorUtility.SetDirty(window);
@@ -2845,7 +2852,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScene(window); });
 
-						var screen = window.GetScreen();
+						var screen = window.GetScreen().Load<WindowBase>();
 
 						var methodsCount = 0;
 						WindowSystem.CollectCallVariations(screen, (types, names) => {

@@ -25,299 +25,379 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
-	namespace Modules {
-
+	[System.Serializable]
+	public class ModulesList : IWindowEventsController {
+		
 		[System.Serializable]
-		public class Modules : IWindowEventsController {
-			
-			[System.Serializable]
-			public class ModuleInfo : IWindowEventsController {
+		public class ModuleInfo : IWindowEventsController {
 
-				public WindowModule moduleSource;
-				public int sortingOrder;
-				public bool backgroundLayer;
+			public WindowModule moduleSource;
+			public int sortingOrder;
+			public bool backgroundLayer;
 
-				[HideInInspector][System.NonSerialized]
-				private WindowModule instance;
+			[HideInInspector][System.NonSerialized]
+			private IWindowEventsController instance;
+			private WindowModule instanceModule;
 
-				[HideInInspector][System.NonSerialized]
-				private WindowBase windowContext;
+			[HideInInspector][System.NonSerialized]
+			private WindowBase windowContext;
 
-				public ModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
+			public ModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
 
-					this.moduleSource = moduleSource;
-					this.sortingOrder = sortingOrder;
-					this.backgroundLayer = backgroundLayer;
-
-				}
-
-				public void Create(WindowBase window, Transform modulesRoot) {
-
-					this.windowContext = window;
-
-					if (this.moduleSource.IsInstantiate() == true) {
-
-						var instance = this.moduleSource.Spawn();
-						instance.transform.SetParent(modulesRoot);
-						instance.transform.localPosition = Vector3.zero;
-						instance.transform.localRotation = Quaternion.identity;
-						instance.transform.localScale = Vector3.one;
-						
-						var rect = instance.transform as RectTransform;
-						rect.sizeDelta = (this.moduleSource.transform as RectTransform).sizeDelta;
-						rect.anchoredPosition = (this.moduleSource.transform as RectTransform).anchoredPosition;
-						
-						instance.transform.SetSiblingIndex(this.backgroundLayer == true ? -this.sortingOrder : this.sortingOrder + 1);
-
-						instance.Setup(window);
-
-						this.instance = instance;
-
-					} else {
-
-						this.instance = this.moduleSource;
-
-					}
-
-				}
-				
-				public float GetDuration(bool forward) {
-					
-					return this.instance.GetAnimationDuration(forward);
-					
-				}
-
-				public bool IsSupported() {
-
-					return this.moduleSource != null && this.moduleSource.IsSupported();
-
-				}
-
-				public T Get<T>() where T : WindowModule {
-					
-					return this.instance as T;
-					
-				}
-
-				public void DoWindowActive() {
-
-					if (this.instance != null) {
-						
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoWindowActive();
-
-					}
-
-				}
-
-				public void DoWindowInactive() {
-
-					if (this.instance != null) {
-						
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoWindowInactive();
-
-					}
-
-				}
-
-				public void DoInit() {
-
-					if (this.instance != null) {
-
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoInit();
-
-					}
-					
-				}
-
-				public void DoDeinit() {
-
-					if (this.instance != null) {
-						
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoDeinit();
-
-					}
-
-				}
-
-				public void DoShowBegin(AppearanceParameters parameters) {
-
-					if (this.instance != null) {
-
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoShowBegin(parameters);
-
-					} else {
-
-						parameters.Call();
-
-					}
-
-				}
-
-				public void DoShowEnd(AppearanceParameters parameters) {
-
-					if (this.instance != null) {
-						
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoShowEnd(parameters);
-
-					}
-
-				}
-
-				public void DoHideBegin(AppearanceParameters parameters) {
-					
-					if (this.instance != null) {
-						
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoHideBegin(parameters);
-						
-					} else {
-						
-						parameters.Call();
-
-					}
-
-				}
-
-				public void DoHideEnd(AppearanceParameters parameters) {
-
-					if (this.instance != null) {
-						
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoHideEnd(parameters);
-
-					}
-
-				}
-
-				public void DoWindowUnload() {
-
-					if (this.instance != null) {
-
-						if (this.instance.IsInstantiate() == false) this.instance.Setup(this.windowContext);
-						this.instance.DoWindowUnload();
-
-					}
-
-				}
-				
-			}
-
-			[SerializeField]
-			private ModuleInfo[] elements;
-
-	#if UNITY_EDITOR
-			public void RemoveModule(ModuleInfo moduleInfo) {
-
-				var list = this.elements.ToList();
-				list.Remove(moduleInfo);
-				this.elements = list.ToArray();
+				this.moduleSource = moduleSource;
+				this.sortingOrder = sortingOrder;
+				this.backgroundLayer = backgroundLayer;
 
 			}
-
-			public ModuleInfo AddModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
-
-				var instance = new ModuleInfo(moduleSource, sortingOrder, backgroundLayer);
-
-				var list = this.elements.ToList();
-				list.Add(instance);
-				this.elements = list.ToArray();
-
-				return instance;
-
-			}
-
-			public ModuleInfo[] GetModulesInfo() {
-
-				return this.elements;
-
-			}
-	#endif
 
 			public void Create(WindowBase window, Transform modulesRoot) {
-				
-				foreach (var element in this.elements) {
 
-					if (element.IsSupported() == true) {
+				this.windowContext = window;
 
-						element.Create(window, modulesRoot);
-						if (window.GetActiveState() == ActiveState.Active) {
+				if (this.moduleSource.IsInstantiate() == true) {
 
-							element.DoWindowActive();
+					var instance = this.moduleSource.Spawn();
+					instance.transform.SetParent(modulesRoot);
+					instance.transform.localPosition = Vector3.zero;
+					instance.transform.localRotation = Quaternion.identity;
+					instance.transform.localScale = Vector3.one;
+					
+					var rect = instance.transform as RectTransform;
+					rect.sizeDelta = (this.moduleSource.transform as RectTransform).sizeDelta;
+					rect.anchoredPosition = (this.moduleSource.transform as RectTransform).anchoredPosition;
+					
+					instance.transform.SetSiblingIndex(this.backgroundLayer == true ? -this.sortingOrder : this.sortingOrder + 1);
 
-						}
+					instance.Setup(window);
 
-					}
+					this.instance = instance as IWindowEventsController;
+					this.instanceModule = instance as WindowModule;
+
+				} else {
+
+					this.instance = this.moduleSource as IWindowEventsController;
+					this.instanceModule = this.moduleSource as WindowModule;
 
 				}
 
 			}
 			
-			public float GetAnimationDuration(bool forward) {
+			public float GetDuration(bool forward) {
 				
-				var maxDuration = 0f;
-				foreach (var element in this.elements) {
-					
-					var d = element.GetDuration(forward);
-					if (d >= maxDuration) {
-						
-						maxDuration = d;
-						
-					}
-					
-				}
-				
-				return maxDuration;
+				return (this.instance as WindowModule).GetAnimationDuration(forward);
 				
 			}
-			
+
+			public bool IsSupported() {
+
+				return this.moduleSource != null && this.moduleSource.IsSupported();
+
+			}
+
 			public T Get<T>() where T : WindowModule {
 				
-				foreach (var element in this.elements) {
+				return this.instance as T;
+				
+			}
+
+			public void DoWindowActive() {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoWindowActive();
+
+				}
+
+			}
+
+			public void DoWindowInactive() {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoWindowInactive();
+
+				}
+
+			}
+
+			public void DoWindowOpen() {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoWindowOpen();
+
+				}
+
+			}
+
+			public void DoWindowClose() {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoWindowClose();
+
+				}
+
+			}
+
+			public void DoInit() {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoInit();
+
+				}
+				
+			}
+
+			public void DoDeinit(System.Action callback) {
+
+				if (this.instance != null) {
 					
-					var item = element.Get<T>();
-					if (item != null) return item;
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoDeinit(callback);
+
+				} else {
+
+					callback.Invoke();
+
+				}
+
+				this.instance = null;
+				this.instanceModule = null;
+				this.windowContext = null;
+
+			}
+
+			public void DoShowBegin(AppearanceParameters parameters) {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoShowBegin(parameters);
+
+				} else {
+
+					parameters.Call();
+
+				}
+
+			}
+
+			public void DoShowEnd(AppearanceParameters parameters) {
+
+				if (this.instance != null) {
+					
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoShowEnd(parameters);
+
+				}
+
+			}
+
+			public void DoHideBegin(AppearanceParameters parameters) {
+				
+				if (this.instance != null) {
+					
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoHideBegin(parameters);
+					
+				} else {
+					
+					parameters.Call();
+
+				}
+
+			}
+
+			public void DoHideEnd(AppearanceParameters parameters) {
+
+				if (this.instance != null) {
+					
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoHideEnd(parameters);
+
+				}
+
+			}
+
+			public void DoWindowUnload() {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoWindowUnload();
+
+				}
+
+			}
+			
+		}
+
+		[SerializeField]
+		private ModuleInfo[] elements;
+
+#if UNITY_EDITOR
+		public void RemoveModule(ModuleInfo moduleInfo) {
+
+			var list = this.elements.ToList();
+			list.Remove(moduleInfo);
+			this.elements = list.ToArray();
+
+		}
+
+		public ModuleInfo AddModuleInfo(WindowModule moduleSource, int sortingOrder, bool backgroundLayer) {
+
+			var instance = new ModuleInfo(moduleSource, sortingOrder, backgroundLayer);
+
+			var list = this.elements.ToList();
+			list.Add(instance);
+			this.elements = list.ToArray();
+
+			return instance;
+
+		}
+
+		public ModuleInfo[] GetModulesInfo() {
+
+			return this.elements;
+
+		}
+#endif
+
+		public void Create(WindowBase window, Transform modulesRoot) {
+
+			for (int i = 0; i < this.elements.Length; ++i) {
+
+				var element = this.elements[i];
+				if (element.IsSupported() == true) {
+
+					element.Create(window, modulesRoot);
+					if (window.GetActiveState() == ActiveState.Active) {
+
+						element.DoWindowActive();
+
+					}
+
+				}
+
+			}
+
+		}
+		
+		public float GetAnimationDuration(bool forward) {
+			
+			var maxDuration = 0f;
+			for (int i = 0; i < this.elements.Length; ++i) {
+
+				var element = this.elements[i];
+				var d = element.GetDuration(forward);
+				if (d >= maxDuration) {
+					
+					maxDuration = d;
 					
 				}
 				
-				return default(T);
-				
 			}
 			
-			// Events
-			public void DoWindowActive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowActive(); }
-			public void DoWindowInactive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowInactive(); }
-			public void DoInit() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoInit(); }
-			public void DoDeinit() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoDeinit(); }
-			public void DoShowBegin(AppearanceParameters parameters) {
-
-				var callback = parameters.callback;
-				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoShowBegin(parameters.ReplaceCallback(c)); });
-
-			}
-			public void DoShowEnd(AppearanceParameters parameters) { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoShowEnd(parameters); }
-			public void DoHideBegin(AppearanceParameters parameters) {
+			return maxDuration;
+			
+		}
+		
+		public T Get<T>() where T : WindowModule {
+			
+			for (int i = 0; i < this.elements.Length; ++i) {
 				
-				var callback = parameters.callback;
-				ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoHideBegin(parameters.ReplaceCallback(c)); });
+				var element = this.elements[i];
+				var item = element.Get<T>();
+				if (item != null) return item;
 
 			}
-			public void DoHideEnd(AppearanceParameters parameters) { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoHideEnd(parameters); }
+			
+			return default(T);
+			
+		}
+		
+		// Events
+		public void DoWindowActive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowActive(); }
+		public void DoWindowInactive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowInactive(); }
+		public void DoWindowOpen() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowOpen(); }
+		public void DoWindowClose() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowClose(); }
+		public void DoInit() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoInit(); }
+		public void DoDeinit(System.Action callback) {
 
-			public void DoWindowUnload() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowUnload(); }
+			ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoDeinit(c); }, waitPrevious: true);
 
 		}
+		public void DoShowBegin(AppearanceParameters parameters) {
+
+			var callback = parameters.callback;
+			ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoShowBegin(parameters.ReplaceCallback(c)); });
+
+		}
+		public void DoShowEnd(AppearanceParameters parameters) { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoShowEnd(parameters); }
+		public void DoHideBegin(AppearanceParameters parameters) {
+			
+			var callback = parameters.callback;
+			ME.Utilities.CallInSequence(callback, this.elements, (e, c) => { e.DoHideBegin(parameters.ReplaceCallback(c)); });
+
+		}
+		public void DoHideEnd(AppearanceParameters parameters) { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoHideEnd(parameters); }
+
+		public void DoWindowUnload() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowUnload(); }
 
 	}
 
 	[System.Serializable]
 	public class Events : IWindowEventsController {
-		
+
+		public static void RemoveAllListeners(UnityEvent unityEvent, ME.Events.SimpleUnityEvent simpleEvent) {
+
+			if (unityEvent != null) unityEvent.RemoveAllListeners();
+			if (simpleEvent != null) simpleEvent.RemoveAllListeners();
+
+		}
+
+		public static void Register(UnityEvent unityEvent, ME.Events.SimpleUnityEvent simpleEvent, UnityAction callback) {
+
+			if (unityEvent != null) unityEvent.AddListener(callback);
+			if (simpleEvent != null) simpleEvent.AddListener(callback);
+
+		}
+
+		public static void Unregister(UnityEvent unityEvent, ME.Events.SimpleUnityEvent simpleEvent, UnityAction callback) {
+
+			if (unityEvent != null) unityEvent.RemoveListener(callback);
+			if (simpleEvent != null) simpleEvent.RemoveListener(callback);
+
+		}
+
+		public static void Raise(UnityEvent unityEvent, ME.Events.SimpleUnityEvent simpleEvent) {
+
+			if (unityEvent != null) unityEvent.Invoke();
+			if (simpleEvent != null) simpleEvent.Invoke();
+
+		}
+
+		public static void Initialize<T>(ref T unityEvent, ref ME.Events.SimpleUnityEvent simpleEvent) where T : UnityEvent {
+
+			if (unityEvent == null && unityEvent.GetPersistentEventCount() == 0) {
+
+				unityEvent = null;
+
+			} else {
+
+				simpleEvent = null;
+
+			}
+
+		}
+
 		[System.Serializable]
 		public class BackButtonBehaviour {
 
@@ -370,9 +450,11 @@ namespace UnityEngine.UI.Windows {
 
 			public void Call() {
 
+				if (this.currentWindow != null) this.currentWindow.OnBackButtonAction();
+
 				if (this.callback != null) {
 
-					this.callback();
+					this.callback.Invoke();
 
 				} else {
 
@@ -397,6 +479,13 @@ namespace UnityEngine.UI.Windows {
 				}
 
 			}
+
+			public void Clear() {
+
+				this.onBackAction.RemoveAllListeners();
+				this.currentWindow = null;
+
+			}
 			
 			public void OnClick(WindowBase window) {
 				
@@ -412,7 +501,7 @@ namespace UnityEngine.UI.Windows {
 
 						if (showPrev == true) {
 							
-							var prev = WindowSystem.GetPreviousWindow(window);
+							var prev = WindowSystem.GetPreviousWindow();
 							if (prev != null) {
 								
 								prev.Show();
@@ -453,15 +542,24 @@ namespace UnityEngine.UI.Windows {
 			[System.Serializable]
 			public class OnInit : UnityEvent {}
 			public OnInit onInit = new OnInit();
+			public ME.Events.SimpleUnityEvent onInitEvent = new ME.Events.SimpleUnityEvent();
 			
 			[System.Serializable]
 			public class OnDeinit : UnityEvent {}
 			public OnDeinit onDeinit = new OnDeinit();
-			
+			public ME.Events.SimpleUnityEvent onDeinitEvent = new ME.Events.SimpleUnityEvent();
+
+			public void Initialize() {
+
+				Events.Initialize(ref this.onInit, ref this.onInitEvent);
+				Events.Initialize(ref this.onDeinit, ref this.onDeinitEvent);
+
+			}
+
 			public void Clear() {
-				
-				this.onInit.RemoveAllListeners();
-				this.onDeinit.RemoveAllListeners();
+
+				Events.RemoveAllListeners(this.onInit, this.onInitEvent);
+				Events.RemoveAllListeners(this.onDeinit, this.onDeinitEvent);
 				
 			}
 			
@@ -470,11 +568,11 @@ namespace UnityEngine.UI.Windows {
 				switch (eventType) {
 					
 					case WindowEventType.OnInit:
-						this.onInit.AddListener(callback);
+						Events.Register(this.onInit, this.onInitEvent, callback);
 						break;
 
 					case WindowEventType.OnDeinit:
-						this.onDeinit.AddListener(callback);
+						Events.Register(this.onDeinit, this.onDeinitEvent, callback);
 						break;
 						
 				}
@@ -486,27 +584,27 @@ namespace UnityEngine.UI.Windows {
 				switch (eventType) {
 					
 					case WindowEventType.OnInit:
-						this.onInit.RemoveListener(callback);
+						Events.Unregister(this.onInit, this.onInitEvent, callback);
 						break;
 
 					case WindowEventType.OnDeinit:
-						this.onDeinit.RemoveListener(callback);
+						Events.Unregister(this.onDeinit, this.onDeinitEvent, callback);
 						break;
 						
 				}
 				
 			}
 			
-			public void ReleaseEvents(WindowEventType eventType) {
+			public void RaiseEvents(WindowEventType eventType) {
 				
 				switch (eventType) {
-					
+
 					case WindowEventType.OnInit:
-						this.onInit.Invoke();
+						Events.Raise(this.onInit, this.onInitEvent);
 						break;
 
 					case WindowEventType.OnDeinit:
-						this.onDeinit.Invoke();
+						Events.Raise(this.onDeinit, this.onDeinitEvent);
 						break;
 						
 				}
@@ -521,73 +619,114 @@ namespace UnityEngine.UI.Windows {
 			[System.Serializable]
 			public class OnShowBegin : UnityEvent {}
 			public OnShowBegin onShowBegin = new OnShowBegin();
+			public ME.Events.SimpleUnityEvent onShowBeginEvent = new ME.Events.SimpleUnityEvent();
 			
 			[System.Serializable]
 			public class OnShowEnd : UnityEvent {}
 			public OnShowEnd onShowEnd = new OnShowEnd();
+			public ME.Events.SimpleUnityEvent onShowEndEvent = new ME.Events.SimpleUnityEvent();
 			
 			[System.Serializable]
 			public class OnHideBegin : UnityEvent {}
 			public OnHideBegin onHideBegin = new OnHideBegin();
-			
+			public ME.Events.SimpleUnityEvent onHideBeginEvent = new ME.Events.SimpleUnityEvent();
+
 			[System.Serializable]
 			public class OnHideEnd : UnityEvent {}
 			public OnHideEnd onHideEnd = new OnHideEnd();
+			public ME.Events.SimpleUnityEvent onHideEndEvent = new ME.Events.SimpleUnityEvent();
+
+			[System.Serializable]
+			public class OnHideEndLate : UnityEvent {}
+			public OnHideEndLate onHideEndLate = new OnHideEndLate();
+			public ME.Events.SimpleUnityEvent onHideEndLateEvent = new ME.Events.SimpleUnityEvent();
 
 			[System.Serializable]
 			public class OnWindowOpen : UnityEvent {}
 			public OnWindowOpen onWindowOpen = new OnWindowOpen();
+			public ME.Events.SimpleUnityEvent onWindowOpenEvent = new ME.Events.SimpleUnityEvent();
+
+			[System.Serializable]
+			public class OnWindowClose : UnityEvent {} 
+			public OnWindowClose onWindowClose = new OnWindowClose();
+			public ME.Events.SimpleUnityEvent onWindowCloseEvent = new ME.Events.SimpleUnityEvent();
 
 			[System.Serializable]
 			public class OnWindowActive : UnityEvent {}
 			public OnWindowActive onWindowActive = new OnWindowActive();
+			public ME.Events.SimpleUnityEvent onWindowActiveEvent = new ME.Events.SimpleUnityEvent();
 
 			[System.Serializable]
 			public class OnWindowInactive : UnityEvent {}
 			public OnWindowInactive onWindowInactive = new OnWindowInactive();
+			public ME.Events.SimpleUnityEvent onWindowInactiveEvent = new ME.Events.SimpleUnityEvent();
 
 			public void Clear() {
 
-				this.onShowBegin.RemoveAllListeners();
-				this.onShowEnd.RemoveAllListeners();
-				this.onHideBegin.RemoveAllListeners();
-				this.onHideEnd.RemoveAllListeners();
-				this.onWindowOpen.RemoveAllListeners();
-				this.onWindowActive.RemoveAllListeners();
-				this.onWindowInactive.RemoveAllListeners();
+				Events.RemoveAllListeners(this.onShowBegin, this.onShowBeginEvent);
+				Events.RemoveAllListeners(this.onShowEnd, this.onShowEndEvent);
+				Events.RemoveAllListeners(this.onHideBegin, this.onHideBeginEvent);
+				Events.RemoveAllListeners(this.onHideEnd, this.onHideEndEvent);
+				Events.RemoveAllListeners(this.onHideEndLate, this.onHideEndLateEvent);
+				Events.RemoveAllListeners(this.onWindowOpen, this.onWindowOpenEvent);
+				Events.RemoveAllListeners(this.onWindowClose, this.onWindowCloseEvent);
+				Events.RemoveAllListeners(this.onWindowActive, this.onWindowActiveEvent);
+				Events.RemoveAllListeners(this.onWindowInactive, this.onWindowInactiveEvent);
 
 			}
-			
+
+			public void Initialize() {
+
+				Events.Initialize(ref this.onShowBegin, ref this.onShowBeginEvent);
+				Events.Initialize(ref this.onShowEnd, ref this.onShowEndEvent);
+				Events.Initialize(ref this.onHideBegin, ref this.onHideBeginEvent);
+				Events.Initialize(ref this.onHideEnd, ref this.onHideEndEvent);
+				Events.Initialize(ref this.onHideEndLate, ref this.onHideEndLateEvent);
+				Events.Initialize(ref this.onWindowOpen, ref this.onWindowOpenEvent);
+				Events.Initialize(ref this.onWindowClose, ref this.onWindowCloseEvent);
+				Events.Initialize(ref this.onWindowActive, ref this.onWindowActiveEvent);
+				Events.Initialize(ref this.onWindowInactive, ref this.onWindowInactiveEvent);
+
+			}
+
 			public void Register(WindowEventType eventType, UnityAction callback) {
 				
 				switch (eventType) {
 
 					case WindowEventType.OnShowBegin:
-						this.onShowBegin.AddListener(callback);
+						Events.Register(this.onShowBegin, this.onShowBeginEvent, callback);
 						break;
-						
+
 					case WindowEventType.OnShowEnd:
-						this.onShowEnd.AddListener(callback);
+						Events.Register(this.onShowEnd, this.onShowEndEvent, callback);
 						break;
-						
+
 					case WindowEventType.OnHideBegin:
-						this.onHideBegin.AddListener(callback);
+						Events.Register(this.onHideBegin, this.onHideBeginEvent, callback);
 						break;
-						
+
 					case WindowEventType.OnHideEnd:
-						this.onHideEnd.AddListener(callback);
+						Events.Register(this.onHideEnd, this.onHideEndEvent, callback);
 						break;
-						
+
+					case WindowEventType.OnHideEndLate:
+						Events.Register(this.onHideEndLate, this.onHideEndLateEvent, callback);
+						break;
+
 					case WindowEventType.OnWindowOpen:
-						this.onWindowOpen.AddListener(callback);
+						Events.Register(this.onWindowOpen, this.onWindowOpenEvent, callback);
+						break;
+
+					case WindowEventType.OnWindowClose:
+						Events.Register(this.onWindowClose, this.onWindowCloseEvent, callback);
 						break;
 
 					case WindowEventType.OnWindowActive:
-						this.onWindowActive.AddListener(callback);
+						Events.Register(this.onWindowActive, this.onWindowActiveEvent, callback);
 						break;
 
 					case WindowEventType.OnWindowInactive:
-						this.onWindowInactive.AddListener(callback);
+						Events.Register(this.onWindowInactive, this.onWindowInactiveEvent, callback);
 						break;
 
 				}
@@ -599,67 +738,127 @@ namespace UnityEngine.UI.Windows {
 				switch (eventType) {
 
 					case WindowEventType.OnShowBegin:
-						this.onShowBegin.RemoveListener(callback);
+						Events.Unregister(this.onShowBegin, this.onShowBeginEvent, callback);
 						break;
-						
+
 					case WindowEventType.OnShowEnd:
-						this.onShowEnd.RemoveListener(callback);
+						Events.Unregister(this.onShowEnd, this.onShowEndEvent, callback);
 						break;
-						
+
 					case WindowEventType.OnHideBegin:
-						this.onHideBegin.RemoveListener(callback);
+						Events.Unregister(this.onHideBegin, this.onHideBeginEvent, callback);
 						break;
-						
+
 					case WindowEventType.OnHideEnd:
-						this.onHideEnd.RemoveListener(callback);
+						Events.Unregister(this.onHideEnd, this.onHideEndEvent, callback);
 						break;
-						
+
+					case WindowEventType.OnHideEndLate:
+						Events.Unregister(this.onHideEndLate, this.onHideEndLateEvent, callback);
+						break;
+
 					case WindowEventType.OnWindowOpen:
-						this.onWindowOpen.RemoveListener(callback);
+						Events.Unregister(this.onWindowOpen, this.onWindowOpenEvent, callback);
+						break;
+
+					case WindowEventType.OnWindowClose:
+						Events.Unregister(this.onWindowClose, this.onWindowCloseEvent, callback);
 						break;
 
 					case WindowEventType.OnWindowActive:
-						this.onWindowActive.RemoveListener(callback);
+						Events.Unregister(this.onWindowActive, this.onWindowActiveEvent, callback);
 						break;
 
 					case WindowEventType.OnWindowInactive:
-						this.onWindowInactive.RemoveListener(callback);
+						Events.Unregister(this.onWindowInactive, this.onWindowInactiveEvent, callback);
 						break;
 
 				}
 				
 			}
 
-			public void ReleaseEvents(WindowEventType eventType) {
+			public void Unregister(WindowEventType eventType) {
+
+				switch (eventType) {
+
+					case WindowEventType.OnShowBegin:
+						Events.RemoveAllListeners(this.onShowBegin, this.onShowBeginEvent);
+						break;
+
+					case WindowEventType.OnShowEnd:
+						Events.RemoveAllListeners(this.onShowEnd, this.onShowEndEvent);
+						break;
+
+					case WindowEventType.OnHideBegin:
+						Events.RemoveAllListeners(this.onHideBegin, this.onHideBeginEvent);
+						break;
+
+					case WindowEventType.OnHideEnd:
+						Events.RemoveAllListeners(this.onHideEnd, this.onHideEndEvent);
+						break;
+
+					case WindowEventType.OnHideEndLate:
+						Events.RemoveAllListeners(this.onHideEndLate, this.onHideEndLateEvent);
+						break;
+
+					case WindowEventType.OnWindowOpen:
+						Events.RemoveAllListeners(this.onWindowOpen, this.onWindowOpenEvent);
+						break;
+
+					case WindowEventType.OnWindowClose:
+						Events.RemoveAllListeners(this.onWindowClose, this.onWindowCloseEvent);
+						break;
+
+					case WindowEventType.OnWindowActive:
+						Events.RemoveAllListeners(this.onWindowActive, this.onWindowActiveEvent);
+						break;
+
+					case WindowEventType.OnWindowInactive:
+						Events.RemoveAllListeners(this.onWindowInactive, this.onWindowInactiveEvent);
+						break;
+
+				}
+
+			}
+
+			public void RaiseEvents(WindowEventType eventType) {
 				
 				switch (eventType) {
 
 					case WindowEventType.OnShowBegin:
-						this.onShowBegin.Invoke();
+						Events.Raise(this.onShowBegin, this.onShowBeginEvent);
 						break;
-						
+
 					case WindowEventType.OnShowEnd:
-						this.onShowEnd.Invoke();
+						Events.Raise(this.onShowEnd, this.onShowEndEvent);
 						break;
-						
+
 					case WindowEventType.OnHideBegin:
-						this.onHideBegin.Invoke();
+						Events.Raise(this.onHideBegin, this.onHideBeginEvent);
 						break;
-						
+
 					case WindowEventType.OnHideEnd:
-						this.onHideEnd.Invoke();
+						Events.Raise(this.onHideEnd, this.onHideEndEvent);
+						break;
+
+					case WindowEventType.OnHideEndLate:
+						Events.Raise(this.onHideEndLate, this.onHideEndLateEvent);
 						break;
 
 					case WindowEventType.OnWindowOpen:
-						this.onWindowOpen.Invoke();
+						Events.Raise(this.onWindowOpen, this.onWindowOpenEvent);
+						break;
+
+					case WindowEventType.OnWindowClose:
+						Events.Raise(this.onWindowClose, this.onWindowCloseEvent);
 						break;
 
 					case WindowEventType.OnWindowActive:
-						this.onWindowActive.Invoke();
+						Events.Raise(this.onWindowActive, this.onWindowActiveEvent);
 						break;
 
 					case WindowEventType.OnWindowInactive:
-						this.onWindowInactive.Invoke();
+						Events.Raise(this.onWindowInactive, this.onWindowInactiveEvent);
 						break;
 
 				}
@@ -681,73 +880,96 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void ReleaseEvents(WindowEventType eventType) {
+		private void RaiseEvents(WindowEventType eventType) {
+
+			WindowSystem.RunSafe(() => {
+
+				this.once.RaiseEvents(eventType);
+				this.onEveryInstance.RaiseEvents(eventType);
 			
-			this.once.ReleaseEvents(eventType);
-			this.onEveryInstance.ReleaseEvents(eventType);
-			
+			});
+
 		}
 
 		// Events
 		public void DoWindowActive() {
 
-			this.ReleaseEvents(WindowEventType.OnWindowActive);
+			this.RaiseEvents(WindowEventType.OnWindowActive);
 
 		}
 
 		public void DoWindowInactive() {
 
-			this.ReleaseEvents(WindowEventType.OnWindowInactive);
+			this.RaiseEvents(WindowEventType.OnWindowInactive);
 
 		}
 
 		public void DoInit() {
 
-			this.ReleaseEvents(WindowEventType.OnInit);
+			this.once.Initialize();
+			this.onEveryInstance.Initialize();
+
+			this.RaiseEvents(WindowEventType.OnInit);
 
 		}
 
-		public void DoDeinit() {
+		public void DoDeinit(System.Action callback) {
 
-			this.ReleaseEvents(WindowEventType.OnDeinit);
+			this.RaiseEvents(WindowEventType.OnDeinit);
 			this.once.Clear();
+
+			callback.Invoke();
 
 		}
 
 		public void DoShowBegin(AppearanceParameters parameters) {
 
-			this.ReleaseEvents(WindowEventType.OnShowBegin);
+			this.RaiseEvents(WindowEventType.OnShowBegin);
 			parameters.Call();
 
 		}
 
 		public void DoShowEnd(AppearanceParameters parameters) {
 
-			this.ReleaseEvents(WindowEventType.OnShowEnd);
+			this.RaiseEvents(WindowEventType.OnShowEnd);
 
 		}
 		public void DoHideBegin(AppearanceParameters parameters) {
 
-			this.ReleaseEvents(WindowEventType.OnHideBegin);
+			this.RaiseEvents(WindowEventType.OnHideBegin);
 			parameters.Call();
 
 		}
 		public void DoHideEnd(AppearanceParameters parameters) {
 
-			this.ReleaseEvents(WindowEventType.OnHideEnd);
+			this.RaiseEvents(WindowEventType.OnHideEnd);
+
+		}
+
+		public void DoHideEndLate(AppearanceParameters parameters) {
+
+			this.RaiseEvents(WindowEventType.OnHideEndLate);
 			this.onEveryInstance.Clear();
 
 		}
 
 		public void DoWindowOpen() {
 
-			this.ReleaseEvents(WindowEventType.OnWindowOpen);
+			this.RaiseEvents(WindowEventType.OnWindowOpen);
+
+		}
+
+		public void DoWindowClose() {
+
+			this.RaiseEvents(WindowEventType.OnWindowClose);
 
 		}
 
 		public void DoWindowUnload() {
 
-
+			this.backButtonBehaviour.Clear();
+			this.once.Clear();
+			this.onEveryInstance.Clear();
 
 		}
 
@@ -921,8 +1143,15 @@ namespace UnityEngine.UI.Windows {
 		[BitMask(typeof(History))]
 		public History history = History.Auto;
 
+		public bool deactivateImmediately = false;
+		[MinMaxSlider(2f, 5f, "deactivateImmediately", state: true)]
+		public Vector2 deactivateMaxTimeout = new Vector2(2f, 5f);
+
 		[Tooltip("Send Active/Inactive states on Show/Hide")]
 		public bool sendActiveState = true;
+
+		[Tooltip("This window cover all previous content. If `true` previous windows will be disabled.")]
+		public bool fullCoverage = false;
 
 		[Tooltip("Forces one instance only on scene")]
 		public bool forceSingleInstance = false;
@@ -942,6 +1171,11 @@ namespace UnityEngine.UI.Windows {
 		public LayoutTag dragTag;
 		[Hidden("draggable", false)]
 		public DragFlag dragFlags;
+
+		[Header("Other")]
+		public bool overrideCameraSettings = false;
+		[Hidden("overrideCameraSettings", false)]
+		public WindowSystemSettings.Camera cameraSettings;
 
 		public bool IsDragViewportRestricted() {
 
@@ -1010,13 +1244,17 @@ namespace UnityEngine.UI.Windows {
 		// Events
 		public void DoWindowActive() { }
 		public void DoWindowInactive() { }
+		public void DoWindowOpen() { }
+		public void DoWindowClose() { }
+		public void DoWindowUnload() { }
+
 		public void DoInit() {
 
 			if (this.transition != null) this.transition.OnInit();
 
 		}
 
-		public void DoDeinit() {}
+		public void DoDeinit(System.Action callback) { callback.Invoke(); }
 		public void DoShowEnd(AppearanceParameters parameters) {}
 		public void DoHideEnd(AppearanceParameters parameters) {}
 		
@@ -1067,12 +1305,6 @@ namespace UnityEngine.UI.Windows {
 
 			}
 			
-		}
-
-		public void DoWindowUnload() {
-
-
-
 		}
 
 		public void Apply(TransitionBase transition, TransitionInputParameters parameters, bool forward, float value, bool reset) {

@@ -273,7 +273,7 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 
 			HierarchyEditor.updateTimer = 0f;
 
-			HierarchyEditor.OnChanged();
+			//HierarchyEditor.OnChanged();
 
 		}
 

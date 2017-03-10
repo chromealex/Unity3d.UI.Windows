@@ -48,12 +48,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			var layoutElement = go.AddComponent<WindowLayoutElement>();
 			layoutElement.comment = "NEW LAYOUT ELEMENT";
 			
-			var canvas = go.AddComponent<CanvasGroup>();
+			/*var canvas = go.AddComponent<CanvasGroup>();
 			canvas.alpha = 1f;
 			canvas.blocksRaycasts = true;
 			canvas.interactable = true;
-			canvas.ignoreParentGroups = false;
-			layoutElement.canvas = canvas;
+			canvas.ignoreParentGroups = false;*/
+			//layoutElement.canvas = canvas;
 			
 			//FlowSceneView.GetItem().SetLayoutDirty();
 			FlowDatabase.SaveLayout(layoutElement.transform.root.GetComponent<WindowLayout>());
@@ -107,7 +107,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#if UNITY_EDITOR
 		private static T LoadPrefabTemplate<T>(string directory, string templateName) where T : Component {
 			
-			var go = Resources.Load("UI.Windows/Templates/" + directory + "/" + templateName) as GameObject;
+			var go = UnityEngine.Resources.Load("UI.Windows/Templates/" + directory + "/" + templateName) as GameObject;
 			if (go == null) return null;
 
 			return go.GetComponent<T>();

@@ -1,8 +1,5 @@
 ﻿using UnityEngine.UI.Windows.Plugins.Services;
-using UnityEngine;
-using System.Collections;
 using UnityEngine.UI.Windows.Components;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI.Windows.Movies;
 
@@ -43,6 +40,12 @@ namespace UnityEngine.UI.Windows {
 			this.InitializeModule_INTERNAL();
 
 		}
+
+	    protected void OnDestory() {
+
+            MovieSystem.instance = null;
+
+	    }
 
 		public void Update() {
 
@@ -275,7 +278,7 @@ namespace UnityEngine.UI.Windows {
 
 			#if UNITY_STANDALONE || UNITY_EDITOR
 			this.movieModule = new MovieStandaloneModule();
-			#elif UNITY_IPHONE
+			#elif UNITY_IOS || UNITY_TVOS
 			this.movieModule = new MovieIOSModule();
 			#elif UNITY_PS4
 			this.movieModule = new MoviePS4Module();

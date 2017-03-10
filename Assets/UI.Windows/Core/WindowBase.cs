@@ -26,7 +26,7 @@ namespace UnityEngine.UI.Windows {
 
 	[ExecuteInEditMode()]
 	//[RequireComponent(typeof(Camera))]
-	public abstract class WindowBase : WindowObject, IWindowEventsAsync, IWindowEventsController, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler {
+	public abstract class WindowBase : WindowObject, IWindowEventsAsync, IWindowEventsController, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler, IDraggableHandler, IResourceReference {
 
 		#if UNITY_EDITOR
 		[HideInInspector]
@@ -41,23 +41,43 @@ namespace UnityEngine.UI.Windows {
 		public bool isReady = false;
 
 		[Header("Window Preferences")]
-
 		public TargetPreferences targetPreferences = new TargetPreferences();
 		public Preferences preferences = new Preferences();
 		new public Audio.Window audio = new Audio.Window();
-		public Modules.Modules modules = new Modules.Modules();
+		public ModulesList modules = new ModulesList();
 		public Events events = new Events();
 		#if !TRANSITION_ENABLED
 		[ReadOnly]
 		#endif
 		public Transition transition = new Transition();
 
+		[Header("Logger")]
+		public WindowComponentHistoryTracker eventsHistoryTracker = new WindowComponentHistoryTracker();
+
 		[SerializeField][HideInInspector]
 		private ActiveState activeState = ActiveState.None;
-		[SerializeField][HideInInspector]
+		//[SerializeField][HideInInspector]
 		private int activeIteration = 0;
 		[SerializeField][HideInInspector]
-		private WindowObjectState currentState = WindowObjectState.NotInitialized;
+		private WindowObjectState _currentState = WindowObjectState.NotInitialized;
+		private WindowObjectState currentState {
+
+			set {
+
+				this.lastState = this._currentState;
+				this._currentState = value;
+
+			}
+
+			get {
+
+				return this._currentState;
+
+			}
+
+		}
+		[SerializeField][HideInInspector]
+		private WindowObjectState lastState = WindowObjectState.NotInitialized;
 		[SerializeField][HideInInspector]
 		private DragState dragState = DragState.None;
 		[SerializeField][HideInInspector]
@@ -77,6 +97,12 @@ namespace UnityEngine.UI.Windows {
 
 		private GameObject firstSelectedGameObject;
 		private GameObject currentSelectedGameObject;
+
+		public override bool IsDestroyable() {
+
+			return false;
+
+		}
 
 		public bool SourceEquals(WindowBase y) {
 
@@ -114,6 +140,12 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnCameraReset() {
 		}
 
+		public bool IsVisibile() {
+
+			return (this.GetState() == WindowObjectState.Showing || this.GetState() == WindowObjectState.Shown);
+
+		}
+
 		public float GetDepth() {
 
 			return this.workCamera.depth;
@@ -136,14 +168,14 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
-		internal void Init(WindowBase source, float depth, float zDepth, int raycastPriority, int orderInLayer) {
+		internal void Init(WindowBase source, float depth, float zDepth, int raycastPriority, int orderInLayer, System.Action onInitialized, bool async) {
 
 			this.source = source;
-			this.Init(depth, zDepth, raycastPriority, orderInLayer);
+			this.Init(depth, zDepth, raycastPriority, orderInLayer, onInitialized, async);
 
 		}
 
-		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer) {
+		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer, System.Action onInitialized, bool async) {
 
 			this.currentState = WindowObjectState.Initializing;
 
@@ -187,69 +219,96 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				if (this.onParametersPassCall != null) this.onParametersPassCall(this);
 
-			} else {
+                if (this.onParametersPassCall != null) {
+
+                    this.onParametersPassCall.Invoke(this);
+                    this.onParametersPassCall = null;
+                    this.passParams = false;
+
+                }
+
+            } else {
 				
 				this.OnEmptyPass();
 				
 			}
 
-			if (this.setup == false) {
-
-				this.Setup(this);
-
-				#if UNITY_EDITOR
-				Profiler.BeginSample("WindowBase::OnPreInit()");
-				#endif
-
-				this.OnPreInit();
-
-				#if UNITY_EDITOR
-				Profiler.EndSample();
-				#endif
-
-				#if UNITY_EDITOR
-				Profiler.BeginSample("WindowBase::OnInit()");
-				#endif
-
-				this.DoLayoutInit(depth, raycastPriority, orderInLayer);
-				WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
-
-				this.OnModulesInit();
-				this.OnAudioInit();
-				this.events.DoInit();
-				this.OnTransitionInit();
-
-				if (WindowSystem.IsCallEventsEnabled() == true) {
-					
-					this.OnInit();
-					
-				}
-
-				#if UNITY_EDITOR
-				Profiler.EndSample();
-				#endif
+			System.Action callbackInner = () => {
 
 				this.setup = true;
 
-			}
+				//Debug.Log("INIT: " + this.activeIteration + " :: " + this);
 
-			this.activeIteration = -1;
+				this.currentState = WindowObjectState.Initialized;
+
+				this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.Init);
+
+				if (onInitialized != null) onInitialized.Invoke();
+
+			};
+
+			this.activeIteration = -WindowSystem.GetWindowsInFrontCount(this) - 1;
 			this.SetActive();
-
 			if (this.preferences.sendActiveState == true) {
 
 				WindowSystem.SendInactiveStateByWindow(this);
 
 			}
 
-			this.currentState = WindowObjectState.Initialized;
+			if (this.setup == false) {
+
+				this.Setup(this);
+
+				#if DEBUGBUILD
+				Profiler.BeginSample("WindowBase::OnPreInit()");
+				#endif
+
+				this.OnPreInit();
+
+				#if DEBUGBUILD
+				Profiler.EndSample();
+				#endif
+
+				#if DEBUGBUILD
+				Profiler.BeginSample("WindowBase::OnInit()");
+				#endif
+
+				this.DoLayoutInit(depth, raycastPriority, orderInLayer, () => {
+
+					WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
+
+					this.OnModulesInit();
+					this.OnAudioInit();
+					this.events.DoInit();
+					this.OnTransitionInit();
+
+					if (WindowSystem.IsCallEventsEnabled() == true) {
+
+						this.OnInit();
+
+					}
+
+					callbackInner.Invoke();
+
+				}, async);
+
+				#if DEBUGBUILD
+				Profiler.EndSample();
+				#endif
+
+			} else {
+
+				callbackInner.Invoke();
+
+			}
 
 		}
 
-		internal void DoWindowUnload() {
-			
+		void IWindowEventsController.DoWindowUnload() {
+
+			//Debug.LogWarningFormat("Unloading window `{0}` with state `{1}`", this.name, this.GetState());
+
 			this.DoLayoutUnload();
 			this.modules.DoWindowUnload();
 			this.audio.DoWindowUnload();
@@ -295,11 +354,23 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public virtual CanvasScaler GetCanvasScaler() {
+
+			return null;
+
+		}
+
 		/// <summary>
 		/// Gets the state.
 		/// </summary>
 		/// <returns>The state.</returns>
-		public WindowObjectState GetState() {
+		public virtual WindowObjectState GetLastState() {
+
+			return this.lastState;
+
+		}
+
+		public virtual WindowObjectState GetState() {
 			
 			return this.currentState;
 			
@@ -375,7 +446,29 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public void TurnOnRender() {
+
+			this.workCamera.enabled = true;
+			//var canvas = this.GetCanvas();
+			//if (canvas != null) canvas.enabled = true;
+			var canvases = this.GetComponentsInChildren<Canvas>(includeInactive: true);
+			for (int i = 0; i < canvases.Length; ++i) canvases[i].enabled = true;
+
+		}
+
+		public void TurnOffRender() {
+
+			this.workCamera.enabled = false;
+			//var canvas = this.GetCanvas();
+			//if (canvas != null) canvas.enabled = false;
+			var canvases = this.GetComponentsInChildren<Canvas>(includeInactive: true);
+			for (int i = 0; i < canvases.Length; ++i) canvases[i].enabled = false;
+
+		}
+
 		public void SetActive() {
+
+			//Debug.Log("SetActive: " + this);
 
 			++this.activeIteration;
 
@@ -385,12 +478,24 @@ namespace UnityEngine.UI.Windows {
 
 					this.activeState = ActiveState.Active;
 
-					this.DoLayoutActive();
+					this.TurnOnRender();
+
+					this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowActive);
+
+					this.DoLayoutWindowActive();
 					this.modules.DoWindowActive();
 					this.audio.DoWindowActive();
 					this.events.DoWindowActive();
 					this.transition.DoWindowActive();
-					this.DoActive();
+					(this as IWindowEventsController).DoWindowActive();
+
+				}
+
+			} else {
+
+				if (WindowSystem.IsWindowsInFrontFullCoverage(this) == false) {
+
+					this.TurnOnRender();
 
 				}
 
@@ -398,7 +503,15 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void SetInactive() {
+		public void SetInactive(WindowBase newWindow) {
+
+			//Debug.Log("SetInactive: " + this);
+
+			if (newWindow != null && newWindow.preferences.fullCoverage == true) {
+
+				this.TurnOffRender();
+
+			}
 
 			--this.activeIteration;
 
@@ -408,12 +521,14 @@ namespace UnityEngine.UI.Windows {
 
 					this.activeState = ActiveState.Inactive;
 
-					this.DoLayoutInactive();
+					this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowInactive);
+
+					this.DoLayoutWindowInactive();
 					this.modules.DoWindowInactive();
 					this.audio.DoWindowInactive();
 					this.events.DoWindowInactive();
 					this.transition.DoWindowInactive();
-					this.DoInactive();
+					(this as IWindowEventsController).DoWindowInactive();
 
 				}
 
@@ -421,11 +536,11 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void DoActive() {
+		void IWindowEventsController.DoWindowActive() {
 
-			this.OnActive();
+			WindowSystem.RunSafe(this.OnWindowActive);
 
-			if (this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
+			if (WindowSystem.IsRestoreSelectedElement() == true && this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
 
 				EventSystem.current.firstSelectedGameObject = this.firstSelectedGameObject;
 				EventSystem.current.SetSelectedGameObject(this.currentSelectedGameObject);
@@ -434,14 +549,14 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public virtual void OnActive() {
+		public virtual void OnWindowActive() {
 		}
 
-		public void DoInactive() {
+		void IWindowEventsController.DoWindowInactive() {
 
-			this.OnInactive();
+			WindowSystem.RunSafe(this.OnWindowInactive);
 
-			if (this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
+			if (WindowSystem.IsRestoreSelectedElement() == true && this.preferences.restoreSelectedElement == true && EventSystem.current != null) {
 
 				this.firstSelectedGameObject = EventSystem.current.firstSelectedGameObject;
 				this.currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
@@ -450,7 +565,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public virtual void OnInactive() {
+		public virtual void OnWindowInactive() {
 		}
 
 		public virtual void OnVersionChanged() {
@@ -460,6 +575,9 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public virtual void OnManualEvent<T>(T data) where T : IManualEvent {
+		}
+
+		public virtual void OnBackButtonAction() {
 		}
 
 		#region DRAG'n'DROP
@@ -479,6 +597,12 @@ namespace UnityEngine.UI.Windows {
 		public void OnEndDrag(PointerEventData eventData) {
 			
 			this.SetDragEnd(eventData);
+
+		}
+
+		public bool IsDraggable() {
+
+			return this.preferences.draggable;
 
 		}
 
@@ -591,7 +715,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this == null) return false;
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.BeginSample("WindowBase::TurnOff()");
 			#endif
 
@@ -599,6 +723,10 @@ namespace UnityEngine.UI.Windows {
 			if (WindowSystem.IsCameraRenderDisableOnWindowTurnOff() == true) {
 
 				if (this.workCamera != null) this.workCamera.enabled = false;
+				var canvas = this.GetCanvas();
+				if (canvas != null) canvas.enabled = false;
+				var scaler = this.GetCanvasScaler();
+				if (scaler != null) scaler.enabled = false;
 				result = false;
 
 			} else {
@@ -608,7 +736,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.EndSample();
 			#endif
 
@@ -620,13 +748,17 @@ namespace UnityEngine.UI.Windows {
 
 			if (this == null) return;
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.BeginSample("WindowBase::TurnOn()");
 			#endif
 
 			if (WindowSystem.IsCameraRenderDisableOnWindowTurnOff() == true) {
 				
 				if (this.workCamera != null) this.workCamera.enabled = true;
+				var canvas = this.GetCanvas();
+				if (canvas != null) canvas.enabled = true;
+				var scaler = this.GetCanvasScaler();
+				if (scaler != null) scaler.enabled = true;
 
 			} else {
 
@@ -634,7 +766,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.EndSample();
 			#endif
 
@@ -711,9 +843,9 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Show this instance.
 		/// </summary>
-		public void Show() {
+		public bool Show() {
 
-			this.Show_INTERNAL(null, null);
+			return this.Show_INTERNAL(null, null);
 
 		}
 
@@ -721,9 +853,9 @@ namespace UnityEngine.UI.Windows {
 		/// Show the specified onShowEnd.
 		/// </summary>
 		/// <param name="onShowEnd">On show end.</param>
-		public void Show(System.Action onShowEnd) {
+		public bool Show(System.Action onShowEnd) {
 
-			this.Show_INTERNAL(onShowEnd, null);
+			return this.Show_INTERNAL(onShowEnd, null);
 
 		}
 		
@@ -732,16 +864,9 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="transition">Transition.</param>
 		/// <param name="transitionParameters">Transition parameters.</param>
-		public void Show(AttachItem transitionItem) {
+		public bool Show(AttachItem transitionItem) {
 			
-			this.Show_INTERNAL(null, transitionItem);
-			
-		}
-		
-		[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
-		public void Show(TransitionBase transition, TransitionInputParameters transitionParams) {
-			
-			this.Show_INTERNAL(onShowEnd: null, transitionItem: null);
+			return this.Show_INTERNAL(null, transitionItem);
 			
 		}
 
@@ -749,47 +874,56 @@ namespace UnityEngine.UI.Windows {
 		/// Show the specified onShowEnd.
 		/// </summary>
 		/// <param name="onShowEnd">On show end.</param>
-		public void Show(System.Action onShowEnd, AttachItem transitionItem) {
+		public bool Show(System.Action onShowEnd, AttachItem transitionItem) {
 
-			this.Show_INTERNAL(onShowEnd, transitionItem);
+			return this.Show_INTERNAL(onShowEnd, transitionItem);
 
 		}
 
-		private void Show_INTERNAL(System.Action onShowEnd, AttachItem transitionItem) {
+		private bool Show_INTERNAL(System.Action onShowEnd, AttachItem transitionItem) {
 
 			if (WindowSystem.IsCallEventsEnabled() == false) {
 
-				return;
+				return false;
 
 			}
 			
-			if (this.currentState == WindowObjectState.Showing || this.currentState == WindowObjectState.Shown) return;
+			if (this.currentState == WindowObjectState.Showing || this.currentState == WindowObjectState.Shown) {
+
+				return false;
+
+			}
+
 			this.currentState = WindowObjectState.Showing;
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.ShowBegin);
 			
 			WindowSystem.AddToHistory(this);
 
-			//if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
-			this.StartCoroutine(this.Show_INTERNAL_YIELD(onShowEnd, transitionItem));
+			if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
+			ME.Coroutines.Run(this.Show_INTERNAL_YIELD(onShowEnd, transitionItem));
+
+			return true;
 
 		}
 
-		private IEnumerator Show_INTERNAL_YIELD(System.Action onShowEnd, AttachItem transitionItem) {
+		private System.Collections.Generic.IEnumerator<byte> Show_INTERNAL_YIELD(System.Action onShowEnd, AttachItem transitionItem) {
 
-			while (this.paused == true) yield return false;
+			while (this.paused == true) yield return 0;
 			
 			this.TurnOn();
 
 			var parameters = AppearanceParameters.Default();
 
+			this.showWaitCounter = 0;
 			var counter = 0;
 			System.Action callback = () => {
 
 				if (this.currentState != WindowObjectState.Showing) return;
 
 				++counter;
-				if (counter < 6) return;
+				if (counter < 6 + this.showWaitCounter) return;
 
-				#if UNITY_EDITOR
+				#if DEBUGBUILD
 				Profiler.BeginSample("WindowBase::OnShowEnd()");
 				#endif
 
@@ -798,22 +932,27 @@ namespace UnityEngine.UI.Windows {
 				this.audio.DoShowEnd(parameters);
 				this.events.DoShowEnd(parameters);
 				this.transition.DoShowEnd(parameters);
-				this.DoShowEnd(parameters);
+				(this as IWindowEventsController).DoShowEnd(parameters);
 				if (onShowEnd != null) onShowEnd();
 
-				#if UNITY_EDITOR
+				#if DEBUGBUILD
 				Profiler.EndSample();
 				#endif
 
-			    this.currentState = WindowObjectState.Shown;
+				this.currentState = WindowObjectState.Shown;
+				this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.ShowEnd);
+
+				WindowSystem.RunSafe(this.OnShowEndLate);
 
 			};
 			
 			parameters = parameters.ReplaceCallback(callback);
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.BeginSample("WindowBase::OnShowBegin()");
 			#endif
+
+			(this as IWindowEventsController).DoWindowOpen();
 
 			this.DoLayoutShowBegin(parameters);
 			
@@ -841,11 +980,25 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
-			this.DoShowBegin(parameters);
+			(this as IWindowEventsController).DoShowBegin(parameters);
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.EndSample();
 			#endif
+
+		}
+
+		private int showWaitCounter = 0;
+		public void AddShowWaitCounter() {
+
+			++this.showWaitCounter;
+
+		}
+
+		private int hideWaitCounter = 0;
+		public void AddHideWaitCounter() {
+
+			++this.hideWaitCounter;
 
 		}
 
@@ -857,7 +1010,31 @@ namespace UnityEngine.UI.Windows {
 			return this.Hide_INTERNAL(onHideEnd: null, transitionItem: null);
 
 		}
-		
+
+		public bool Hide(System.Action onHideEnd, bool immediately) {
+
+			return this.Hide_INTERNAL(onHideEnd: onHideEnd, transitionItem: null, immediately: immediately);
+
+		}
+
+		public bool Hide(bool immediately) {
+
+			return this.Hide_INTERNAL(onHideEnd: null, transitionItem: null, immediately: immediately);
+
+		}
+
+		public bool Hide(bool immediately, bool forced) {
+
+			return this.Hide_INTERNAL(onHideEnd: null, transitionItem: null, immediately: immediately, forced: forced);
+
+		}
+
+		public bool Hide(System.Action onHideEnd, bool immediately, bool forced) {
+
+			return this.Hide_INTERNAL(onHideEnd: onHideEnd, transitionItem: null, immediately: immediately, forced: forced);
+
+		}
+
 		/// <summary>
 		/// Hide window with specific transition.
 		/// </summary>
@@ -879,13 +1056,6 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		[System.Obsolete("Use `Tools->Compile UI` command to fix this issue.")]
-		public bool Hide(TransitionBase transition, TransitionInputParameters transitionParams) {
-			
-			return this.Hide_INTERNAL(onHideEnd: null, transitionItem: null);
-
-		}
-
 		/// <summary>
 		/// Hide the specified onHideEnd with specific transition.
 		/// Wait while all components, animations, events and modules return the callback.
@@ -899,24 +1069,36 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private bool Hide_INTERNAL(System.Action onHideEnd, AttachItem transitionItem) {
+		private bool Hide_INTERNAL(System.Action onHideEnd, AttachItem transitionItem, bool immediately = false, bool forced = false) {
 
-			if (this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) return false;
+			if (this == null) {
+
+				return false;
+
+			}
+
+			if ((this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) && forced == false) {
+
+				return false;
+
+			}
+
 			this.currentState = WindowObjectState.Hiding;
-			
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.HideBegin);
+
 			//if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
-			this.StartCoroutine(this.Hide_INTERNAL_YIELD(onHideEnd, transitionItem));
+			ME.Coroutines.Run(this.Hide_INTERNAL_YIELD(onHideEnd, transitionItem, immediately, forced));
 
 			return true;
 
 		}
 		
-		private IEnumerator Hide_INTERNAL_YIELD(System.Action onHideEnd, AttachItem transitionItem) {
+		private System.Collections.Generic.IEnumerator<byte> Hide_INTERNAL_YIELD(System.Action onHideEnd, AttachItem transitionItem, bool immediately, bool forced) {
 			
-			while (this.paused == true) yield return false;
+			while (this.paused == true) yield return 0;
 
 			this.activeIteration = 0;
-			this.SetInactive();
+			this.SetInactive(null);
 
 			if (this.preferences.sendActiveState == true) {
 
@@ -926,17 +1108,21 @@ namespace UnityEngine.UI.Windows {
 
 			var parameters = AppearanceParameters.Default();
 
+			parameters.ReplaceImmediately(immediately);
+			parameters.ReplaceForced(forced);
+
+			this.hideWaitCounter = 0;
 			var counter = 0;
 			System.Action callback = () => {
 				
 				if (this.currentState != WindowObjectState.Hiding) return;
 
 				++counter;
-				if (counter < 6) return;
+				if (counter < 6 + this.hideWaitCounter) return;
 
 				WindowSystem.AddToHistory(this);
 
-				#if UNITY_EDITOR
+				#if DEBUGBUILD
 				Profiler.BeginSample("WindowBase::OnHideEnd()");
 				#endif
 
@@ -945,24 +1131,30 @@ namespace UnityEngine.UI.Windows {
 				this.audio.DoHideEnd(parameters);
 				this.events.DoHideEnd(parameters);
 				this.transition.DoHideEnd(parameters);
-				this.DoHideEnd(parameters);
+				(this as IWindowEventsController).DoHideEnd(parameters);
 				if (onHideEnd != null) onHideEnd();
 
-				#if UNITY_EDITOR
+				#if DEBUGBUILD
 				Profiler.EndSample();
 				#endif
 
 				this.currentState = WindowObjectState.Hidden;
+				this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.HideEnd);
 
-				this.Recycle(setInactive: this.TurnOff());
+				WindowSystem.RunSafe(this.OnHideEndLate);
+				this.events.DoHideEndLate(parameters);
+
+				WindowSystem.Recycle(this, setInactive: this.TurnOff());
 
 			};
 
 			parameters = parameters.ReplaceCallback(callback);
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.BeginSample("WindowBase::OnHideBegin()");
 			#endif
+
+			(this as IWindowEventsController).DoWindowClose();
 
 			this.DoLayoutHideBegin(parameters);
 			
@@ -977,7 +1169,7 @@ namespace UnityEngine.UI.Windows {
 				this.audio.DoHideBegin(parameters);
 				
 			}
-			
+
 			this.events.DoHideBegin(parameters);
 
 			if (transitionItem != null && transitionItem.transition != null) {
@@ -990,9 +1182,9 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
-			this.DoHideBegin(parameters);
+			(this as IWindowEventsController).DoHideBegin(parameters);
 
-			#if UNITY_EDITOR
+			#if DEBUGBUILD
 			Profiler.EndSample();
 			#endif
 
@@ -1010,22 +1202,30 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void OnDestroy() {
-
+		public void DoDestroy(System.Action callback) {
+			
 			if (Application.isPlaying == false) return;
 
-			#if UNITY_EDITOR
+			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.Deinit);
+
+			#if DEBUGBUILD
 			Profiler.BeginSample("WindowBase::OnDeinit()");
 			#endif
 
-			this.DoLayoutDeinit();
-			this.modules.DoDeinit();
-			this.audio.DoDeinit();
-			this.events.DoDeinit();
-			this.transition.DoDeinit();
-			this.OnDeinit();
+			ME.Utilities.CallInSequence<System.Action<System.Action>>(callback, /*waitPrevious:*/ true, (item, c) => {
 
-			#if UNITY_EDITOR
+				item.Invoke(c);
+
+			}, 
+				this.DoLayoutDeinit,
+				this.modules.DoDeinit,
+				this.audio.DoDeinit,
+				this.events.DoDeinit,
+				this.transition.DoDeinit,
+				(this as IWindowEventsController).DoDeinit
+			);
+
+			#if DEBUGBUILD
 			Profiler.EndSample();
 			#endif
 
@@ -1033,9 +1233,6 @@ namespace UnityEngine.UI.Windows {
 		
 		public virtual Transform GetLayoutRoot() { return null; }
 		protected virtual void MoveLayout(Vector2 delta) {}
-
-		protected virtual void DoLayoutActive() {}
-		protected virtual void DoLayoutInactive() {}
 
 		/// <summary>
 		/// Gets the duration of the layout animation.
@@ -1048,6 +1245,12 @@ namespace UnityEngine.UI.Windows {
 			
 		}
 
+		protected virtual void DoLayoutWindowActive() {}
+		protected virtual void DoLayoutWindowInactive() {}
+
+		protected virtual void DoLayoutWindowOpen() {}
+		protected virtual void DoLayoutWindowClose() {}
+
 		protected virtual void DoLayoutUnload() {}
 
 		/// <summary>
@@ -1056,12 +1259,12 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="depth">Depth.</param>
 		/// <param name="raycastPriority">Raycast priority.</param>
 		/// <param name="orderInLayer">Order in layer.</param>
-		protected virtual void DoLayoutInit(float depth, int raycastPriority, int orderInLayer) {}
+		protected virtual void DoLayoutInit(float depth, int raycastPriority, int orderInLayer, System.Action callback, bool async) {}
 
 		/// <summary>
 		/// Raises the layout deinit event.
 		/// </summary>
-		protected virtual void DoLayoutDeinit() {}
+		protected virtual void DoLayoutDeinit(System.Action callback) { callback.Invoke(); }
 
 		/// <summary>
 		/// Raises the layout show begin event.
@@ -1107,37 +1310,56 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public virtual void OnEmptyPass() {}
 
+		public virtual void OnPreInit() {}
+
+		void IWindowEventsController.DoWindowOpen() {
+
+			this.DoLayoutWindowOpen();
+			(this.modules as IWindowEventsController).DoWindowOpen();
+			(this.audio as IWindowEventsController).DoWindowOpen();
+			(this.events as IWindowEventsController).DoWindowOpen();
+			(this.transition as IWindowEventsController).DoWindowOpen();
+			WindowSystem.RunSafe(this.OnWindowOpen);
+
+		}
+
+		void IWindowEventsController.DoWindowClose() {
+
+			this.DoLayoutWindowClose();
+			(this.modules as IWindowEventsController).DoWindowClose();
+			(this.audio as IWindowEventsController).DoWindowClose();
+			(this.events as IWindowEventsController).DoWindowClose();
+			(this.transition as IWindowEventsController).DoWindowClose();
+			WindowSystem.RunSafe(this.OnWindowClose);
+
+		}
+
 		/// <summary>
 		/// Raises the init event.
 		/// </summary>
-		public virtual void DoInit() {
+		void IWindowEventsController.DoInit() {
 
-			this.OnInit();
+			WindowSystem.RunSafe(this.OnInit);
 
 		}
 
 		/// <summary>
 		/// Raises the deinit event.
 		/// </summary>
-		public virtual void DoDeinit() {
+		void IWindowEventsController.DoDeinit(System.Action callback) {
 
-			this.OnDeinit();
+			WindowSystem.RunSafe(this.OnDeinit, callback);
 
 		}
-		
-		public virtual void OnPreInit() {}
 
 		/// <summary>
 		/// Raises the show begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void DoShowBegin(AppearanceParameters parameters) {
+		void IWindowEventsController.DoShowBegin(AppearanceParameters parameters) {
 
-			this.OnShowBegin();
-			this.OnShowBegin(parameters);
-			#pragma warning disable
-			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
-			#pragma warning restore
+			WindowSystem.RunSafe(this.OnShowBegin);
+			WindowSystem.RunSafe(this.OnShowBegin, parameters);
 
 			parameters.Call();
 
@@ -1146,24 +1368,21 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the show end event.
 		/// </summary>
-		public virtual void DoShowEnd(AppearanceParameters parameters) {
+		void IWindowEventsController.DoShowEnd(AppearanceParameters parameters) {
 
-			this.OnShowEnd();
-			this.OnShowEnd(parameters);
-			
+			WindowSystem.RunSafe(this.OnShowEnd);
+			WindowSystem.RunSafe(this.OnShowEnd, parameters);
+
 		}
 
 		/// <summary>
 		/// Raises the hide begin event.
 		/// </summary>
 		/// <param name="callback">Callback.</param>
-		public virtual void DoHideBegin(AppearanceParameters parameters) {
+		void IWindowEventsController.DoHideBegin(AppearanceParameters parameters) {
 
-			this.OnHideBegin();
-			this.OnHideBegin(parameters);
-			#pragma warning disable
-			this.OnHideBegin(parameters.callback, parameters.immediately);
-			#pragma warning restore
+			WindowSystem.RunSafe(this.OnHideBegin);
+			WindowSystem.RunSafe(this.OnHideBegin, parameters);
 
 			parameters.Call();
 
@@ -1172,15 +1391,18 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the hide end event.
 		/// </summary>
-		public virtual void DoHideEnd(AppearanceParameters parameters) {
+		void IWindowEventsController.DoHideEnd(AppearanceParameters parameters) {
 			
-			this.OnHideEnd();
-			this.OnHideEnd(parameters);
+			WindowSystem.RunSafe(this.OnHideEnd);
+			WindowSystem.RunSafe(this.OnHideEnd, parameters);
 
 		}
-		
+
+		public virtual void OnWindowOpen() {}
+		public virtual void OnWindowClose() {}
+
 		public virtual void OnInit() {}
-		public virtual void OnDeinit() {}
+		//public virtual void OnDeinit() {}
 		
 		public virtual void OnShowEnd() {}
 		public virtual void OnShowEnd(AppearanceParameters parameters) {}
@@ -1196,10 +1418,15 @@ namespace UnityEngine.UI.Windows {
 
 		public virtual void OnWindowUnload() {}
 
-		[System.Obsolete("Use OnShowBegin with AppearanceParameters or OnShowBegin without parameters")]
-		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
-		[System.Obsolete("Use OnHideBegin with AppearanceParameters or OnHideBegin without parameters")]
-		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {}
+		/// <summary>
+		/// Fires after all states are Shown.
+		/// </summary>
+		public virtual void OnShowEndLate() {}
+
+		/// <summary>
+		/// Fires after all states are Hidden.
+		/// </summary>
+		public virtual void OnHideEndLate() {}
 
 		#if UNITY_EDITOR
 		public override void OnValidateEditor() {
@@ -1224,7 +1451,15 @@ namespace UnityEngine.UI.Windows {
 			if (this.workCamera != null) {
 
 				// Camera
-				WindowSystem.ApplyToSettings(this.workCamera);
+				if (this.preferences.overrideCameraSettings == true) {
+
+					this.preferences.cameraSettings.Apply(this.workCamera);
+
+				} else {
+					
+					WindowSystem.ApplyToSettings(this.workCamera);
+
+				}
 
 				if ((this.workCamera.cullingMask & (1 << this.gameObject.layer)) == 0) {
 

@@ -10,7 +10,7 @@ namespace UnityEngine.UI.Windows.Movies {
 	[System.Serializable]
 	public class MovieStandaloneModule : MovieModuleBase {
 
-		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
+		protected override System.Collections.IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
 
 			var filePath = resource.GetStreamPath();
 
@@ -18,7 +18,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			while (task.isDone == false) {
 
 				asyncOperation.SetValues(isDone: false, progress: task.progress, asset: null);
-				yield return false;
+				yield return 0;
 
 			}
 
@@ -34,7 +34,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			while (movie.isReadyToPlay == false) {
 
-				yield return false;
+				yield return 0;
 
 			}
 

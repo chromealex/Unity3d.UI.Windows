@@ -19,6 +19,8 @@ namespace UnityEngine.UI.Windows.Audio {
 
 		private int currentMusicId;
 
+		private bool mute = false;
+
 		public void Init() {
 
 			this.source.CreatePool(2);
@@ -26,6 +28,8 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 
 		public void Mute() {
+
+			this.mute = true;
 
 			foreach (var item in this.instances) {
 
@@ -36,6 +40,8 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 
 		public void Unmute() {
+
+			this.mute = false;
 
 			foreach (var item in this.instances) {
 
@@ -133,6 +139,7 @@ namespace UnityEngine.UI.Windows.Audio {
 				#if UNITY_EDITOR
 				value.gameObject.name = string.Format("[ AudioSource ] {0} {1} {2}", (window != null ? window.name : string.Empty), clipType, id);
 				#endif
+				value.mute = this.mute;
 				this.instances.Add(key, value);
 				
 			}

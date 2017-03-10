@@ -18,16 +18,22 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 		}
 
+		public override bool IsSupported() {
+
+			return true;
+
+		}
+
 		public override string GetServiceName() {
 
 			return "Google Docs Data";
 
 		}
 
-		public override IEnumerator Auth(string key) {
+		public override System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
 
 			var settings = this.serviceManager.settings as GameDataSettings;
-			return this.GetData(settings.url, (result) => {
+			return this.GetData(settings, (result) => {
 
 				if (result.hasError == false) {
 
@@ -35,6 +41,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 				} else {
 
+					Debug.LogError(string.Format("[ GameData.GoogleService ] CSV GetData error: {0}", result.errorText));
 					GameDataSystem.TryToLoadCache();
 
 				}
@@ -44,21 +51,31 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 		}
 
 		#region Client API Events
-		public override IEnumerator GetData(string url, System.Action<GameDataResult> onResult) {
+		public override System.Collections.Generic.IEnumerator<byte> GetData(GameDataSettings settings, System.Action<GameDataResult> onResult) {
 			
 			if (Application.isPlaying == false || this.serviceManager.logEnabled == true) {
 				
-				Debug.LogFormat("[ GameData ] Loading: {0}", url);
+				Debug.LogFormat("[ GameData ] Loading: {0}", settings.url);
 				
 			}
 
-			var www = new WWW(url + "&www_cache=" + Random.Range(0, 100000).ToString());
+			var eTag = settings.eTag;
+			var eTagPrefsKey = "GameDataSystem.GoogleService.ETag";
+			if (PlayerPrefs.HasKey(eTagPrefsKey) == true) {
+
+				eTag = PlayerPrefs.GetString(eTagPrefsKey);
+
+			}
+
+			var www = UnityEngine.Experimental.Networking.UnityWebRequest.Get(settings.url);
+			www.SetRequestHeader("ETag", eTag);
+			var op = www.Send();
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) {
 
 				while (www.isDone == false) {
 
-					if (UnityEditor.EditorUtility.DisplayCancelableProgressBar("Wait a while", "...", www.progress) == true) {
+					if (UnityEditor.EditorUtility.DisplayCancelableProgressBar("Wait a while", "...", www.downloadProgress) == true) {
 
 						break;
 
@@ -68,12 +85,27 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 				UnityEditor.EditorUtility.ClearProgressBar();
 
+				eTag = www.GetResponseHeader("ETag");
+				if (eTag != null) {
+
+					settings.eTag = eTag;
+					PlayerPrefs.SetString(eTagPrefsKey, eTag);
+
+				}
+
 			} else {
 			#endif
-				
+
 				while (www.isDone == false) {
 
-					yield return false;
+					yield return 0;
+
+				}
+
+				eTag = www.GetResponseHeader("ETag");
+				if (eTag != null) {
+
+					PlayerPrefs.SetString(eTagPrefsKey, eTag);
 
 				}
 
@@ -81,7 +113,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 			}
 			#endif
 
-			onResult.Invoke(new GameDataResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.text });
+			onResult.Invoke(new GameDataResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.downloadHandler.text, errorText = www.error });
 
 			www.Dispose();
 			www = null;
@@ -91,12 +123,45 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 		#region Editor API Events
 		#if UNITY_EDITOR
+		public override void EditorLoad(GameDataSettings settings, GameDataServiceItem item) {
+
+			if (item.processing == false) {
+
+				item.processing = true;
+
+				// Connecting
+				this.OnEditorAuth(item.authKey, (result) => {
+
+					//UnityEditor.EditorApplication.delayCall += () => {
+
+					this.StartCoroutine(this.GetData(settings, (res) => {
+
+						if (res.hasError == false) {
+
+							GameDataSystem.TryToSaveCSV(res.data);
+
+						}
+
+						item.processing = false;
+
+					}));
+
+					//};
+
+				});
+
+			}
+
+		}
+
 		protected override void OnInspectorGUI(GameDataSettings settings, GameDataServiceItem item, System.Action onReset, GUISkin skin) {
 
 			if (settings == null) return;
 
 			var data = FlowSystem.GetData();
 			if (data == null) return;
+
+			if (settings.url == null) settings.url = string.Empty;
 
 			GUILayout.Label("URL:");
 			var newKey = GUILayout.TextArea(settings.url);
@@ -107,35 +172,12 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 			}
 
+			GUILayout.Label(string.Format("ETag: {0}", settings.eTag));
+
 			UnityEditor.EditorGUI.BeginDisabledGroup(item.processing);
 			if (GUILayout.Button(item.processing == true ? "Loading..." : "Load", skin.button) == true) {
 
-				if (item.processing == false) {
-					
-					item.processing = true;
-					
-					// Connecting
-					this.OnEditorAuth(item.authKey, (result) => {
-
-						//UnityEditor.EditorApplication.delayCall += () => {
-
-							this.StartCoroutine(this.GetData(settings.url, (res) => {
-								
-								if (res.hasError == false) {
-
-									GameDataSystem.TryToSaveCSV(res.data);
-
-								}
-
-								item.processing = false;
-
-							}));
-
-						//};
-						
-					});
-
-				}
+				this.EditorLoad(settings, item);
 
 			}
 			UnityEditor.EditorGUI.EndDisabledGroup();

@@ -21,7 +21,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 		[System.NonSerialized]
 		public TextComponent alwaysShownText;
 
-		private UnityAction<string> onCommand;
+		private System.Action<string> onCommand;
 		private System.Func<string, bool> onCommandCheck;
 
 		private InputFieldComponent commandLine;
@@ -72,9 +72,9 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
-		public override void DoDeinit() {
+		public override void OnDeinit(System.Action callback) {
 
-			base.DoDeinit();
+			base.OnDeinit(callback);
 
 			ME.ListPool<string>.Release(this.all);
 			ME.ListPool<string>.Release(this.queue);
@@ -304,7 +304,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
-		private IEnumerator RemoveFirst() {
+		private System.Collections.IEnumerator RemoveFirst() {
 
 			if (this.clearTime <= 0f) yield break;
 
@@ -334,7 +334,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
-		public void Register(UnityAction<string> onCommand, System.Func<string, bool> onCommandCheck) {
+		public void Register(System.Action<string> onCommand, System.Func<string, bool> onCommandCheck) {
 			
 			this.onCommand = onCommand;
 			this.onCommandCheck = onCommandCheck;

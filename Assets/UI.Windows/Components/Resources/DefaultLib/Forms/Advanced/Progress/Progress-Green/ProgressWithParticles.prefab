@@ -92,6 +92,8 @@ MonoBehaviour:
   - {fileID: 11489402}
   count: 1
   resetOnStop: 0
+  windowObject: {fileID: 0}
+  orderDelta: 0
   _alpha: 1
   canvasGroup: {fileID: 22544560}
 --- !u!114 &11404224
@@ -243,14 +245,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22523694}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -300,6 +298,8 @@ MonoBehaviour:
   continious: 0
   continiousWidth: 0.4
   continiousAngleStep: 0
+  continiousEaseType: 0
+  continiousReflect: 1
   currentValueNormalized: 0
   hoverOnAnyButtonState: 0
   hoverCursorDefaultOnInactive: 0
@@ -406,6 +406,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     minMaxState: 0
+  particleSystemRenderer: {fileID: 19904224}
 --- !u!198 &19804224
 ParticleSystem:
   m_ObjectHideFlags: 1

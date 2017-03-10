@@ -71,7 +71,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 
 		}
 
-		public static void WaitFor(IEnumerator routine) {
+		public static void WaitFor(System.Collections.IEnumerator routine) {
 
 			SocialSystem.instance.StartCoroutine(routine);
 

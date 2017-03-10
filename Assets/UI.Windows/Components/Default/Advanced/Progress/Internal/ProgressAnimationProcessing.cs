@@ -80,6 +80,11 @@ namespace UnityEngine.UI.Windows.Components {
 #if UNITY_EDITOR
 		protected override void OnValidate() {
 
+			if (Application.isPlaying == true) return;
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			base.OnValidate();
 
 			this.Start();

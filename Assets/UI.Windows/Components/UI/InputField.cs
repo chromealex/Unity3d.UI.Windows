@@ -7,14 +7,34 @@ using System.Linq;
 namespace UnityEngine.UI.Windows.Extensions {
 
 	public class InputField : UnityEngine.UI.InputField {
-		/*
+		
 		public override void OnSelect(BaseEventData eventData) {
 
 			base.OnSelect(eventData);
 
 			this.CorrectCaret();
 
-		}*/
+		}
+
+		protected override void OnRectTransformDimensionsChange() {
+
+			base.OnRectTransformDimensionsChange();
+
+			this.CorrectCaret();
+
+		}
+
+		public bool HasKeyboard() {
+
+			return (this.m_Keyboard != null);
+
+		}
+
+		public override void Select() {
+
+			this.ActivateInputField();
+
+		}
 
 		public void MoveTextEndFix(bool shift) {
 
@@ -22,19 +42,19 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		}
 
-		public IEnumerator MoveTextEnd_YIELD(bool shift) {
+		public System.Collections.Generic.IEnumerator<byte> MoveTextEnd_YIELD(bool shift) {
 
 			//yield return new WaitForEndOfFrame();
-			yield return false;
+			yield return 0;
 
 			this.MoveTextEnd(shift);
 
 		}
-		/*
+
 		private RectTransform caret;
 		private void CorrectCaret() {
 
-			if (this.caret == null) this.caret = (RectTransform)this.transform.parent.FindChild(this.gameObject.name + " Input Caret"); 
+			if (this.caret == null && this.textComponent != null) this.caret = this.transform.FindChild(this.gameObject.name + " Input Caret") as RectTransform;
 
 			if (this.caret != null && this.textComponent != null) {
 
@@ -61,12 +81,13 @@ namespace UnityEngine.UI.Windows.Extensions {
 				}
 
 				var rect = this.caret;
+				rect.sizeDelta = (this.transform as RectTransform).rect.size;
 				rect.pivot = pivot;
 				rect.anchoredPosition = offset;
 
 			}
 
-		}*/
+		}
 
 	}
 

@@ -182,7 +182,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Queries {
 
 		}
 
-		private IEnumerator Wait(System.Action callback) {
+		private System.Collections.IEnumerator Wait(System.Action callback) {
 
 			yield return this.www;
 

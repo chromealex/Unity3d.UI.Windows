@@ -59,9 +59,9 @@ namespace ME {
 			SerializedProperty prop = so.GetIterator();
 			var result = prop.NextVisible(true);
 
-			EditorGUILayout.PropertyField(prop, false);
-
 			if (result == true) {
+
+				EditorGUILayout.PropertyField(prop, false);
 
 				var currentType = EditorUtilitiesEx.FindTypeByProperty(baseTypes, prop);
 				EditorGUILayout.BeginVertical();

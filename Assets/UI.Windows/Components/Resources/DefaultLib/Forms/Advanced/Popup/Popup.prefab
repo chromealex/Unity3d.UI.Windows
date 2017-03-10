@@ -79,17 +79,50 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   prefab: {fileID: 11409546, guid: ceee67989766d46b39e3e72ccc364825, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupLabel.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Popup/PopupLabel
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -1600926356
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11409546, guid: ceee67989766d46b39e3e72ccc364825, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11416516
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -115,19 +148,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11416518}
   - {fileID: 11416520}
-  canvas: {fileID: 22516518}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11473206, guid: 5451f45ea8b9e4f2d963a8f5498f5123, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupItems.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Popup/PopupItems
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -325048544
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11473206, guid: 5451f45ea8b9e4f2d963a8f5498f5123, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11416518
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -140,6 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22516518}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -251,14 +318,11 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22516520}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
+  canvasGroup: {fileID: 22516520}
   buttonWithText: {fileID: 11416514}
   list: {fileID: 11416516}
   dropState: 0

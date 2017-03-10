@@ -157,21 +157,12 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   m_rowNumberText: {fileID: 11482970}
   m_cellHeightSlider: {fileID: 11483576}
-  onCellHeightChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Tacticsoft.Examples.DynamicHeightCell+CellHeightChangedEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!114 &11474550
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -213,11 +213,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		[MenuItem("Window/UI.Windows: Flow")]
 		public static void ShowEditor() {
-			
+
 			Flow.ShowEditor(null);
-			
+
 		}
-		
+
 		[MenuItem("Assets/Open In Flow Editor", validate = true)]
 		private static bool ContextMenuValidate() {
 			
@@ -226,7 +226,6 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		[MenuItem("Assets/Open In Flow Editor")]
-		[MenuItem("Window/UI.Windows: Flow")]
 		public static void ShowEditorFromContextMenu() {
 			
 			var editor = Flow.ShowEditor(null);
@@ -337,12 +336,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				foreach (var addon in flowAddons) {
 
+					#if DEBUGBUILD
 					Profiler.BeginSample("[ GUI ] Addon " + addon.name);
+					#endif
 
 					addon.flowEditor = flowEditor;
 					Flow.DrawModuleSettingsGUI(addon, addon.GetName(), addon.GetSettingsMenu(null), () => { addon.OnFlowSettingsGUI(); });
-					
+
+					#if DEBUGBUILD
 					Profiler.EndSample();
+					#endif
 
 				}
 			

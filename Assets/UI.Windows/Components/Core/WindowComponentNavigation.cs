@@ -114,6 +114,11 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR
 		public void OnValidate() {
 
+			if (Application.isPlaying == true) return;
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			this.navigationComponents = this.navigationComponents.Where(x => x != null).ToList();
 
 		}
@@ -159,34 +164,34 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public override void OnDeinit() {
+		public override void OnDeinit(System.Action callback) {
 
-			base.OnDeinit();
+			base.OnDeinit(callback);
 
 			this.onNavigationEnter.RemoveAllListeners();
 			this.onNavigationLeave.RemoveAllListeners();
 
 		}
 
-		public void NavigationAddCallbackEnter(UnityAction callback) {
+		public void NavigationAddCallbackEnter(System.Action callback) {
 
 			this.onNavigationEnter.AddListener(callback);
 
 		}
 
-		public void NavigationAddCallbackExit(UnityAction callback) {
+		public void NavigationAddCallbackExit(System.Action callback) {
 
 			this.onNavigationLeave.AddListener(callback);
 
 		}
 
-		public void NavigationRemoveCallbackEnter(UnityAction callback) {
+		public void NavigationRemoveCallbackEnter(System.Action callback) {
 
 			this.onNavigationEnter.RemoveListener(callback);
 
 		}
 
-		public void NavigationRemoveCallbackLeave(UnityAction callback) {
+		public void NavigationRemoveCallbackLeave(System.Action callback) {
 
 			this.onNavigationLeave.RemoveListener(callback);
 
@@ -523,6 +528,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public virtual bool IsNavigationPreventEvents(NavigationSide side) {
+
+			return false;
+
+		}
+
 		public bool NavigateSendEvents(WindowComponentNavigation source, NavigationSide side) {
 			
 			if (this.listContainer != null) {
@@ -552,34 +563,40 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			if (this.IsNavigationControlledSide(side) == true) {
+			if (this.IsNavigationPreventEvents(side) == false) {
 
-				this.OnNavigate(side);
-				this.OnNavigate(source, side);
+				if (this.IsNavigationControlledSide(side) == true) {
 
-				switch (side) {
+					this.OnNavigate(side);
+					this.OnNavigate(source, side);
 
-					case NavigationSide.Down:
-						this.OnNavigateDown();
-						break;
+					switch (side) {
 
-					case NavigationSide.Up:
-						this.OnNavigateUp();
-						break;
+						case NavigationSide.Down:
+							this.OnNavigateDown();
+							break;
 
-					case NavigationSide.Left:
-						this.OnNavigateLeft();
-						break;
+						case NavigationSide.Up:
+							this.OnNavigateUp();
+							break;
 
-					case NavigationSide.Right:
-						this.OnNavigateRight();
-						break;
+						case NavigationSide.Left:
+							this.OnNavigateLeft();
+							break;
+
+						case NavigationSide.Right:
+							this.OnNavigateRight();
+							break;
+
+					}
 
 				}
 
+				return true;
+
 			}
 
-			return true;
+			return false;
 
 		}
 
@@ -627,7 +644,10 @@ namespace UnityEngine.UI.Windows {
 				if (selInteractable != null) {
 
 					if (selInteractable.GetNavigationType() == NavigationType.None ||
-						selInteractable.IsVisible() == false ||
+						(
+							selInteractable.IsNavigateOnDisabled() == false &&
+							selInteractable.IsVisible() == false
+						) ||
 					    (
 							selInteractable.IsNavigateOnDisabled() == false &&
 							selInteractable.IsInteractable() == false

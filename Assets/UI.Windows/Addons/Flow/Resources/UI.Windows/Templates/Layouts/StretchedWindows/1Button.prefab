@@ -158,12 +158,9 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11456108}
   - {fileID: 11489960}
-  canvas: {fileID: 22540638}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
@@ -186,10 +183,10 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 33.71898
-    y: 841
-    width: 238.56204
-    height: 161
+    x: 164.75182
+    y: 0
+    width: 284.49637
+    height: 192
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11442514
@@ -254,10 +251,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22549120}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -280,10 +274,10 @@ MonoBehaviour:
   editorMinHeight: 30
   tempEditorRect:
     serializedVersion: 2
-    x: 102.467155
-    y: 908.573
-    width: 101.06569
-    height: 8.226277
+    x: 246.73723
+    y: 80.583984
+    width: 120.52555
+    height: 9.810219
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11449118
@@ -313,10 +307,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22549122}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -339,10 +330,10 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 100.11679
-    y: 906.22266
-    width: 105.76642
-    height: 30.554745
+    x: 243.93431
+    y: 77.781006
+    width: 126.131386
+    height: 36.437958
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11449120
@@ -499,10 +490,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22553432}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -525,10 +513,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 135.37227
-    y: 920.3248
-    width: 35.255474
-    height: 12.927007
+    x: 285.9781
+    y: 94.59851
+    width: 42.043797
+    height: 15.416059
   editorDrawDepth: 3
   editorHovered: 0
 --- !u!114 &11453426
@@ -557,10 +545,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22553434}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -583,10 +568,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 102.467155
-    y: 919.14966
-    width: 101.06569
-    height: 15.277372
+    x: 246.73723
+    y: 93.19702
+    width: 120.52555
+    height: 18.218979
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11453428
@@ -652,6 +637,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22540638}
   parameters:
     inDelay: 0
     outDelay: 0

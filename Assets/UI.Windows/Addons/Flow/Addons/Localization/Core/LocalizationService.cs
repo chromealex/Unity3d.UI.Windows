@@ -7,13 +7,14 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 	public interface ILocalizationService : IService {
 
-		IEnumerator GetData(string key, System.Action<LocalizationResult> onResult);
+		System.Collections.Generic.IEnumerator<byte> GetData(LocalizationSettings settings, System.Action<LocalizationResult> onResult);
 
 	};
 	
 	public class Result {
 		
 		public bool hasError = true;
+		public string errorText;
 		
 	};
 	
@@ -24,14 +25,17 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 	};
 
 	public abstract class LocalizationService : ServiceBase, ILocalizationService {
+		
+		public virtual System.Collections.Generic.IEnumerator<byte> GetData(LocalizationSettings settings, System.Action<LocalizationResult> onResult) {
 
-		public virtual IEnumerator GetData(string key, System.Action<LocalizationResult> onResult) {
-
-			yield return false;
+			yield return 0;
 
 		}
 
 		#if UNITY_EDITOR
+		public virtual void EditorLoad(LocalizationSettings settings, LocalizationServiceItem item) {
+		}
+
 		protected override void DoInspectorGUI(ScriptableObject settings, ServiceItem item, System.Action onReset, GUISkin skin) {
 
 			this.OnInspectorGUI(settings as LocalizationSettings, item as LocalizationServiceItem, onReset, skin);

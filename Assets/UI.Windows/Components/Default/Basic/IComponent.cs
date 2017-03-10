@@ -38,7 +38,9 @@ namespace UnityEngine.UI.Windows.Components {
 		DateDMHMS,						// 12 Aug 00:00:00
 		DateDMHMSFromMilliseconds,
 		TimeMSFromMilliseconds,			// 00:00
-		TimeHMSFromMilliseconds,			// 00:00:00
+		TimeHMSFromMilliseconds,		// 00:00:00
+
+		DateUniversalFromMilliseconds,	// Universal
 
 	};
 
@@ -77,8 +79,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		IHoverableComponent SetHoverState(bool state);
 		IHoverableComponent SetHoverOnAnyPointerState(bool state);
-		IHoverableComponent SetCallbackHover(UnityAction<bool> callback);
-		IHoverableComponent RemoveCallbackHover(UnityAction<bool> onHover);
+		IHoverableComponent SetCallbackHover(System.Action<bool> callback);
+		IHoverableComponent RemoveCallbackHover(System.Action<bool> onHover);
 
 		bool IsHovered();
 		IHoverableComponent SetHoverEnter();
@@ -118,12 +120,12 @@ namespace UnityEngine.UI.Windows.Components {
 	public interface IButtonComponent : ITextComponent, IImageComponent, IWindowNavigation, IInteractableControllerComponent, IInteractableComponent {
 		
 		IButtonComponent RemoveAllCallbacks();
-		IButtonComponent RemoveCallback(UnityAction callback);
-		IButtonComponent RemoveCallback(UnityAction<ButtonComponent> callback);
-		IButtonComponent SetCallback(UnityAction callback);
-		IButtonComponent SetCallback(UnityAction<ButtonComponent> callback);
-		IButtonComponent AddCallback(UnityAction callback);
-		IButtonComponent AddCallback(UnityAction<ButtonComponent> callback);
+		IButtonComponent RemoveCallback(System.Action callback);
+		IButtonComponent RemoveCallback(System.Action<ButtonComponent> callback);
+		IButtonComponent SetCallback(System.Action callback);
+		IButtonComponent SetCallback(System.Action<ButtonComponent> callback);
+		IButtonComponent AddCallback(System.Action callback);
+		IButtonComponent AddCallback(System.Action<ButtonComponent> callback);
 		void OnClick();
 		IButtonComponent SetButtonColor(Color color);
 		IButtonComponent SetSelectByDefault(bool state);
@@ -159,12 +161,10 @@ namespace UnityEngine.UI.Windows.Components {
 		ITextComponent SetValueFormat(TextValueFormat format);
 		ITextComponent SetFullTextFormat(FullTextFormat format);
 
-		ITextComponent SetFont(Font font);
 		ITextComponent SetFontSize(int value);
 		int GetFontSize();
 
 		ITextComponent SetLineSpacing(float value);
-		ITextComponent SetFontStyle(FontStyle style);
 		ITextComponent SetRichText(bool state);
 
 		ITextComponent SetTextAlignment(TextAnchor anchor);
@@ -183,11 +183,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 	}
 
-	public interface IImageComponent : IComponent, IAlphaComponent, ILoadableResource, IMeshModifier {
+	public interface IImageComponent : IComponent, IAlphaComponent, ILoadableResource, IResourceReference {
 		
 		IImageComponent ResetImage();
 
-		IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null);
+		IImageComponent SetImage(ResourceAuto resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null);
 
 		IImageComponent SetImage(Sprite sprite);
 		IImageComponent SetImage(Sprite sprite, bool immediately);
@@ -214,10 +214,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 		bool IsHorizontalFlip();
 		bool IsVerticalFlip();
+		bool IsPreserveAspect();
 
 		bool IsMovie();
 		bool GetPlayOnShow();
-		IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null);
+		IImageComponent SetMovieTexture(ResourceAuto resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null);
 		IImageComponent SetPlayOnShow(bool state);
 		IImageComponent SetLoop(bool state);
 		bool GetLoop();
@@ -242,7 +243,7 @@ namespace UnityEngine.UI.Windows.Components {
 		void SetContiniousState(bool continious);
 		void SetContiniousWidth(float continiousWidth);
 		void SetContiniousAngleStep(float continiousAngleStep);
-		void SetCallback(UnityAction<float> onChanged);
+		void SetCallback(System.Action<float> onChanged);
 		IProgressComponent SetValue(float value, bool immediately = false, System.Action callback = null);
 		
 	}

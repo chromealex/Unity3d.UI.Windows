@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows {
 
-	public class WindowSystemInputModule : StandaloneInputModule {
+	public abstract class WindowSystemInputModule : PointerInputModule {
 		
 		public PointerEventData GetEventData() {
 			

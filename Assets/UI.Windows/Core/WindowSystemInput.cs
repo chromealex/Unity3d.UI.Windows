@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿
 using UnityEngine.UI.Windows.Components.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI.Windows.Components;
+using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows {
 
@@ -13,16 +13,18 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
-	public class WindowSystemInput : BaseInputModule {
-
+	public class WindowSystemInput : WindowSystemInputModule {
+		
 		public const string SCROLL_AXIS = "Mouse ScrollWheel";
 		
 		public float scrollSensitivityPC = 100f;
 		public float scrollSensitivityMac = 10f;
 
-		public static ComponentEvent onPointerUp = new ComponentEvent();
-		public static ComponentEvent onPointerDown = new ComponentEvent();
-		public static ComponentEvent onAnyKeyDown = new ComponentEvent();
+		public class PointerEventKey : ME.Events.SimpleEvent<int> {}
+		public class PointerEvent : ME.Events.SimpleEvent {}
+		public static PointerEventKey onPointerUp = new PointerEventKey();
+		public static PointerEventKey onPointerDown = new PointerEventKey();
+		public static PointerEvent onAnyKeyDown = new PointerEvent();
 
 		private static PointerEventData scrollEvent;
 
@@ -35,6 +37,15 @@ namespace UnityEngine.UI.Windows {
 			WindowSystemInput.instance = this;
 
 		}
+
+	    protected override void OnDestroy() {
+	        
+            base.OnDestroy();
+
+            WindowSystemInput.instance = null;
+            WindowSystemInput.scrollEvent = null;
+
+        }
 
 		protected override void Start() {
 
@@ -62,12 +73,12 @@ namespace UnityEngine.UI.Windows {
 		public override void UpdateModule() {
 			
 			#if UNITY_STANDALONE || UNITY_TVOS || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_EDITOR
-			if (Input.GetMouseButtonDown(0) == true) WindowSystemInput.onPointerDown.Invoke();
-			if (Input.GetMouseButtonUp(0) == true) WindowSystemInput.onPointerUp.Invoke();
-			if (Input.GetMouseButtonDown(1) == true) WindowSystemInput.onPointerDown.Invoke();
-			if (Input.GetMouseButtonUp(1) == true) WindowSystemInput.onPointerUp.Invoke();
-			if (Input.GetMouseButtonDown(2) == true) WindowSystemInput.onPointerDown.Invoke();
-			if (Input.GetMouseButtonUp(2) == true) WindowSystemInput.onPointerUp.Invoke();
+			if (Input.GetMouseButtonDown(0) == true) WindowSystemInput.onPointerDown.Invoke(0);
+			if (Input.GetMouseButtonUp(0) == true) WindowSystemInput.onPointerUp.Invoke(0);
+			if (Input.GetMouseButtonDown(1) == true) WindowSystemInput.onPointerDown.Invoke(1);
+			if (Input.GetMouseButtonUp(1) == true) WindowSystemInput.onPointerUp.Invoke(1);
+			if (Input.GetMouseButtonDown(2) == true) WindowSystemInput.onPointerDown.Invoke(2);
+			if (Input.GetMouseButtonUp(2) == true) WindowSystemInput.onPointerUp.Invoke(2);
 			#endif
 
 			#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8
@@ -78,14 +89,14 @@ namespace UnityEngine.UI.Windows {
 					var touch = Input.GetTouch(i);
 					if (touch.phase == TouchPhase.Began) {
 
-						WindowSystemInput.onPointerDown.Invoke();
+						WindowSystemInput.onPointerDown.Invoke(touch.fingerId);
 
 					}
 
 					if (touch.phase == TouchPhase.Ended ||
 						touch.phase == TouchPhase.Canceled) {
 
-						WindowSystemInput.onPointerUp.Invoke();
+						WindowSystemInput.onPointerUp.Invoke(touch.fingerId);
 
 					}
 
@@ -124,12 +135,51 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		private static void Select_INTERNAL(IInteractableComponent button) {
+
+			var sel = button.GetSelectable();
+			if (sel != null) {
+				
+				WindowSystemInput.Deselect(button);
+				sel.Select();
+				if (sel is ButtonExtended) {
+
+					(sel as ButtonExtended).Select(forced: true);
+
+				}
+
+			}
+
+		}
+
 		public static void Select(IInteractableComponent button) {
 
 			if (button != null) {
 
 				var sel = button.GetSelectable();
-				if (sel != null) sel.Select();
+				if (sel != null) {
+
+					if (button.IsVisible() == false) {
+
+						var buttonBase = (button as WindowComponentBase);
+
+						System.Action callback = null;
+						callback = () => {
+
+							WindowSystem.GetEvents().Unregister(buttonBase, WindowEventType.OnShowEnd, callback);
+							WindowSystemInput.Select_INTERNAL(button);
+
+						};
+
+						WindowSystem.GetEvents().Register(buttonBase, WindowEventType.OnShowEnd, callback);
+
+					} else {
+
+						WindowSystemInput.Select_INTERNAL(button);
+
+					}
+
+				}
 
 			}
 
@@ -140,7 +190,11 @@ namespace UnityEngine.UI.Windows {
 			if (button != null) {
 
 				var sel = button.GetSelectable();
-				if (sel != null) sel.OnDeselect(null);
+				if (sel != null) {
+
+					if (EventSystem.current.currentSelectedGameObject == sel.gameObject) EventSystem.current.SetSelectedGameObject(null);
+
+				}
 
 			}
 

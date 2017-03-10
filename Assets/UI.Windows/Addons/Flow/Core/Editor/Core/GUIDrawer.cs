@@ -19,6 +19,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		}
 
+		#if UNITY_EDITOR
 		public void DrawComponentCurve(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow from, ref UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow.ComponentLink link, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow to) {
 
 			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
@@ -178,7 +179,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		}
 		
 		public void DrawNodeCurve(UnityEngine.UI.Windows.AttachItem attachItem, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow from, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow to, bool doubleSide) {
-
+			
 			if (from.IsEnabled() == false || to.IsEnabled() == false) return;
 			
 			var fromRect = from.rect;
@@ -273,7 +274,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						var rect = component.tempEditorRect;
 						fromRect = new Rect(fromRect.x + rect.x, fromRect.y + rect.y, rect.width, rect.height);
 						
-						this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
+						this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), from, to, centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
 						
 						fromComponent = true;
 						
@@ -294,7 +295,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							var rect = component.tempEditorRect;
 							toRect = new Rect(toRect.x + rect.x, toRect.y + rect.y, rect.width, rect.height);
 							
-							this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
+							this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), from, to, centerStart, centerEnd, fromRect, toRect, doubleSide, 0f);
 							
 							toComponent = true;
 							
@@ -306,11 +307,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			if (fromComponent == false && toComponent == false) this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), centerStart, centerEnd, fromRect, toRect, doubleSide);
+			if (fromComponent == false && toComponent == false) this.DrawNodeCurve(from.GetContainer(), to.GetContainer(), from, to, centerStart, centerEnd, fromRect, toRect, doubleSide);
 			
 		}
-		
-		public void DrawNodeCurve(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow fromContainer, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow toContainer, Rect centerStart, Rect centerEnd, Rect fromRect, Rect toRect, bool doubleSide, float size = 6f) {
+
+		private void DrawNodeCurve(UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow fromContainer, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow toContainer, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow fromWindow, UnityEngine.UI.Windows.Plugins.Flow.Data.FlowWindow toWindow, Rect centerStart, Rect centerEnd, Rect fromRect, Rect toRect, bool doubleSide, float size = 6f) {
 			
 			Rect start = fromRect;
 			Rect end = toRect;
@@ -363,7 +364,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		
 		public void DrawNodeCurveDotted(Vector3 startPos, Vector3 endPos, Color color) {
 			
-			Handles.BeginGUI();
+			//Handles.BeginGUI();
 			
 			Handles.color = color;
 			//Handles.DrawAAPolyLine(3f, new Vector3[] { startPos, endPos });
@@ -387,19 +388,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			Handles.EndGUI();
+			//Handles.EndGUI();
 			
 		}
 		
 		public void DrawPolygon(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, Color color) {
 			
-			Handles.BeginGUI();
+			//Handles.BeginGUI();
 			
 			Handles.color = color;
 			
 			Handles.DrawAAConvexPolygon(new Vector3[4] { p1, p2, p3, p4 });
 			
-			Handles.EndGUI();
+			//Handles.EndGUI();
 			
 		}
 		
@@ -414,7 +415,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var width = 3f;
 			width /= FlowSystem.GetZoom();
 			
-			Handles.BeginGUI();
+			//Handles.BeginGUI();
 			
 			Handles.color = shadowColor;
 			Handles.DrawAAPolyLine(width, new Vector3[] { startPos + shadowOffset, endPos + shadowOffset });
@@ -451,16 +452,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 			}
 			
-			Handles.EndGUI();
+			//Handles.EndGUI();
 			
 		}
 		
-		private Texture2D arrow;
+		//private Texture2D arrow;
 		public void DrawCap(Vector3 pos, Vector3 startPos, Vector3 endPos, Quaternion rot, Color shadowColor, Color lineColor) {
 
 			if (FlowSystem.GetZoom() < 1f) return;
 
-			if (this.arrow == null) this.arrow = Resources.Load<Texture2D>("UI.Windows/Flow/Arrow");
+			//if (this.arrow == null) this.arrow = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Flow/Arrow");
 			
 			var size = 12f;
 			size /= FlowSystem.GetZoom();
@@ -475,7 +476,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var shadowOffset = Vector3.one * 1f;
 			shadowOffset.z = 0f;
 			
-			var v1 = startPos - endPos;
+			/*var v1 = startPos - endPos;
 			v1.x = -v1.x;
 			var v2 = Vector3.left;
 			
@@ -490,14 +491,15 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.color = lineColor;
 			GUIExt.DrawTextureRotated(new Rect(pos.x - size * 0.5f, pos.y - size * 0.5f, size, size), arrow, -angle + 180f);
 			
-			GUI.color = oldColor;
+			GUI.color = oldColor;*/
 			
-			/*Handles.color = shadowColor;
+			Handles.color = shadowColor;
 			Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
 			Handles.color = lineColor;
-			Handles.ConeCap(-1, pos, rot, 15f);*/
+			Handles.ConeCap(-1, pos, rot, 15f);
 			
 		}
+		#endif
 
 	}
 

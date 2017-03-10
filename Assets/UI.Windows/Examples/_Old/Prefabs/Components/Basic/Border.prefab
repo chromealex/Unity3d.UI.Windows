@@ -12,6 +12,7 @@ GameObject:
   - 222: {fileID: 22277154}
   - 114: {fileID: 11477156}
   - 114: {fileID: 11473426}
+  - 114: {fileID: 11489902}
   m_Layer: 5
   m_Name: Border
   m_TagString: Untagged
@@ -64,6 +65,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &11489902
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 177154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa94093bf92fb4b1ba54e65a2bd6ae80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Horizontal: 0
+  m_Veritical: 0
 --- !u!114 &11496998
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -89,17 +103,17 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   image: {fileID: 11477156}
   rawImage: {fileID: 0}
+  flipHorizontal: 0
+  flipVertical: 0
   preserveAspect: 0
+  flippableEffect: {fileID: 11489902}
+  preserveAspectEffect: {fileID: 0}
   imageLocalizationKey:
     key: 
     parameters: 0
@@ -107,33 +121,56 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   playOnShow: 0
   loop: 0
+  imageResourceWait: 0
   imageResource:
     async: 1
     controlType: 0
     assetPath: 
+    assetBundleName: 
     resourcesPath: 
+    webPath: 
+    loadableWeb: 0
     loadableResource: 0
     loadableStream: 0
+    loadableAssetBundle: 0
     multiObjects: 0
     objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
     customResourcePath: 
     id: 0
+    cacheVersion: 0
     streamingAssetsPathStandalone: 
     streamingAssetsPathIOS: 
     streamingAssetsPathAndroid: 
     streamingAssetsPathPS4: 
     streamingAssetsPathXBOXONE: 
     streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
     tempObject: {fileID: 0}
   imageCrossFadeModule:
     enabled: 0
+    image: {fileID: 11496998}
     sourceImage: {fileID: 0}
     copyImage: {fileID: 0}
+    copyFlippableImage: {fileID: 0}
     sourceRawImage: {fileID: 0}
     copyRawImage: {fileID: 0}
+    copyFlippableRawImage: {fileID: 0}
+    copyPreserveAspectRawImage: {fileID: 0}
     duration: 0.5
     fadeIfWasNull: 0
+    fadeOutSource: 0
     easeType: 0
+    startColor: {r: 1, g: 1, b: 1, a: 0}
+    targetColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!222 &22277154
 CanvasRenderer:
   m_ObjectHideFlags: 1

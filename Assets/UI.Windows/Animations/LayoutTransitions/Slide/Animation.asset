@@ -14,10 +14,10 @@ MonoBehaviour:
   defaultInputParams:
     inDelay: 0
     outDelay: 0
-    inDuration: .100000001
-    outDuration: .100000001
-    inEase: 0
-    outEase: 0
+    inDuration: 0.5
+    outDuration: 0.1
+    inEase: 23
+    outEase: 22
     material: {fileID: 0}
     materialStrengthName: 
     materialLerpA: 0
@@ -29,17 +29,20 @@ MonoBehaviour:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: -30}
-      scale: {x: 0, y: 0}
+      scale: {x: 0.7, y: 0.7}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 0}
-      scale: {x: 0, y: 0}
+      scale: {x: 1, y: 1}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
       to: {x: 0, y: 30}
-      scale: {x: 0, y: 0}
+      scale: {x: 0.7, y: 0.7}
       rotation: {x: 0, y: 0, z: 0}
+      size: {x: 0, y: 0}

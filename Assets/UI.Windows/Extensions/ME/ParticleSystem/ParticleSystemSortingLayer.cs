@@ -67,7 +67,10 @@ namespace ME {
 		public void OnValidate() {
 
 			if (Application.isPlaying == true) return;
-
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			if (this.particleSystem == null) this.particleSystem = this.GetComponent<ParticleSystem>();
 
 			this.FindRootWindowObject();

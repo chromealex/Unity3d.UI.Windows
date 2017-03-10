@@ -16,8 +16,8 @@ MonoBehaviour:
     outDelay: 0
     inDuration: 0.2
     outDuration: 0.2
-    inEase: 22
-    outEase: 23
+    inEase: 23
+    outEase: 22
     material: {fileID: 0}
     materialStrengthName: 
     materialLerpA: 0

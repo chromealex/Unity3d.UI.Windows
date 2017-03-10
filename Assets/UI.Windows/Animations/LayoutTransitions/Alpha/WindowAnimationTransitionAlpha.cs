@@ -7,13 +7,17 @@ namespace UnityEngine.UI.Windows.Animations {
 		
 		[System.Serializable]
 		public class Parameters : TransitionBase.ParametersVideoBase {
-			
+
+			public Parameters() : base() {}
 			public Parameters(TransitionBase.ParametersBase baseDefaults) : base(baseDefaults) {}
 			
 			[System.Serializable]
 			public class State {
 
 				public float to;
+
+				public State() {
+				}
 
 				public State(State state) {
 
@@ -24,9 +28,9 @@ namespace UnityEngine.UI.Windows.Animations {
 			}
 			
 			[Header("States")]
-			public State resetState;
-			public State inState;
-			public State outState;
+			public State resetState = new State();
+			public State inState = new State();
+			public State outState = new State();
 
 			public override void Setup(TransitionBase.ParametersBase defaults) {
 
@@ -90,20 +94,35 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
+			var canvasGroup = this.GetCanvasGroup(parameters);
+
 			var duration = this.GetDuration(parameters, forward);
 			var result = param.GetResult(forward);
 
 			if (TweenerGlobal.instance != null) {
 
 				//TweenerGlobal.instance.removeTweens(tag);
-				TweenerGlobal.instance.addTweenAlpha(root.canvas, duration, result).ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase)).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
+				TweenerGlobal.instance.addTweenAlpha(canvasGroup, duration, result).ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase)).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
 
 			} else {
 
-				if (root.canvas != null) root.canvas.alpha = result;
+				if (canvasGroup != null) canvasGroup.alpha = result;
 				if (callback != null) callback();
 
 			}
+
+		}
+
+		private CanvasGroup GetCanvasGroup(TransitionInputParameters parameters) {
+
+			CanvasGroup canvasGroup = null;
+			if (parameters is WindowAnimationTransitionAlphaParameters) {
+
+				canvasGroup = (parameters as WindowAnimationTransitionAlphaParameters).canvasGroup;
+
+			}
+
+			return canvasGroup;
 
 		}
 
@@ -113,8 +132,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
-			
-			if (root != null && root.canvas != null) root.canvas.alpha = param.GetIn();
+
+			var canvasGroup = this.GetCanvasGroup(parameters);
+			if (canvasGroup != null) canvasGroup.alpha = param.GetIn();
 			
 		}
 		
@@ -125,7 +145,8 @@ namespace UnityEngine.UI.Windows.Animations {
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
 
-			if (root != null && root.canvas != null) root.canvas.alpha = param.GetOut();
+			var canvasGroup = this.GetCanvasGroup(parameters);
+			if (canvasGroup != null) canvasGroup.alpha = param.GetOut();
 
 		}
 		
@@ -135,8 +156,9 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null) return;
-			
-			if (root != null && root.canvas != null) root.canvas.alpha = param.GetReset();
+
+			var canvasGroup = this.GetCanvasGroup(parameters);
+			if (canvasGroup != null) canvasGroup.alpha = param.GetReset();
 			
 		}
 

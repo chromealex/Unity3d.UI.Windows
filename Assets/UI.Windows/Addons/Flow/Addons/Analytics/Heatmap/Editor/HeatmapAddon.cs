@@ -1,9 +1,6 @@
 using UnityEngine;
-using System.Collections;
-using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using ME;
 using UnityEditor.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Heatmap.Core;
 using UnityEngine.UI.Windows.Plugins.Flow;
@@ -37,7 +34,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			
 			public Styles() {
 				
-				this.skin = Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
+				this.skin = UnityEngine.Resources.Load("UI.Windows/Flow/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light")) as GUISkin;
 				if (this.skin != null) {
 					
 					this.backLock = this.skin.FindStyle("LayoutBackLock");
@@ -283,7 +280,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			
 			if (Heatmap.settings == null) Heatmap.settings = Heatmap.GetSettingsFile();
 
-			if (this.noDataTexture == null) this.noDataTexture = Resources.Load<Texture>("UI.Windows/Heatmap/NoData");
+			if (this.noDataTexture == null) this.noDataTexture = UnityEngine.Resources.Load<Texture>("UI.Windows/Heatmap/NoData");
 
 			var settings = Heatmap.settings;
 			if (settings == null) {
@@ -336,7 +333,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 				if (layout == null) return;
 
 				var window = FlowSystem.GetWindow(this.fullScreenWindowId);
-				if (this.fullScreenEditor == null) this.fullScreenEditor = Editor.CreateEditor(window.GetScreen()) as IPreviewEditor;
+				if (this.fullScreenEditor == null) this.fullScreenEditor = Editor.CreateEditor(window.GetScreen().Load<WindowBase>()) as IPreviewEditor;
 
 				var rect = new Rect(0f, 0f, 780f, 580f);
 				var scaleFactor = HeatmapSystem.GetFactor(new Vector2(layout.root.editorRectLocal.width, layout.root.editorRectLocal.height), rect.size);

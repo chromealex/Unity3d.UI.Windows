@@ -18,16 +18,22 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 		}
 
+		public override bool IsSupported() {
+
+			return true;
+
+		}
+
 		public override string GetServiceName() {
 
 			return "Google Docs Localization";
 
 		}
 
-		public override IEnumerator Auth(string key) {
+		public override System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
 
 			var settings = this.serviceManager.settings as LocalizationSettings;
-			return this.GetData(settings.url, (result) => {
+			return this.GetData(settings, (result) => {
 
 				if (result.hasError == false) {
 
@@ -35,6 +41,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 				} else {
 
+					Debug.LogError(string.Format("[ Localization.GoogleService ] CSV GetData error: {0}", result.errorText));
 					LocalizationSystem.TryToLoadCache();
 
 				}
@@ -44,25 +51,35 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 		}
 
 		#region Client API Events
-		public override IEnumerator GetData(string url, System.Action<LocalizationResult> onResult) {
+		public override System.Collections.Generic.IEnumerator<byte> GetData(LocalizationSettings settings, System.Action<LocalizationResult> onResult) {
 
 			#if !UNITY_EDITOR
 			if (this.serviceManager.logEnabled == true) {
 			#endif
 				
-				WindowSystemLogger.Log(this, string.Format("Loading: {0}", url));
+				WindowSystemLogger.Log(this, string.Format("Loading: {0} ({1})", settings.url, settings.eTag));
 				
 			#if !UNITY_EDITOR
 			}
 			#endif
 
-			var www = new WWW(url + "&www_cache=" + Random.Range(0, 100000).ToString());
+			var eTag = settings.eTag;
+			var eTagPrefsKey = "LocalizationSystem.GoogleService.ETag";
+			if (PlayerPrefs.HasKey(eTagPrefsKey) == true) {
+
+				eTag = PlayerPrefs.GetString(eTagPrefsKey);
+
+			}
+
+			var www = UnityEngine.Experimental.Networking.UnityWebRequest.Get(settings.url);
+			www.SetRequestHeader("ETag", eTag);
+			var op = www.Send();
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) {
-
+				
 				while (www.isDone == false) {
 
-					if (UnityEditor.EditorUtility.DisplayCancelableProgressBar("Wait a while", "...", www.progress) == true) {
+					if (UnityEditor.EditorUtility.DisplayCancelableProgressBar("Wait a while", "...", www.downloadProgress) == true) {
 
 						break;
 
@@ -72,12 +89,27 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 				UnityEditor.EditorUtility.ClearProgressBar();
 
+				eTag = www.GetResponseHeader("ETag");
+				if (eTag != null) {
+
+					settings.eTag = eTag;
+					PlayerPrefs.SetString(eTagPrefsKey, eTag);
+
+				}
+
 			} else {
 			#endif
 				
 				while (www.isDone == false) {
 
-					yield return false;
+					yield return 0;
+
+				}
+
+				eTag = www.GetResponseHeader("ETag");
+				if (eTag != null) {
+
+					PlayerPrefs.SetString(eTagPrefsKey, eTag);
 
 				}
 
@@ -85,7 +117,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 			}
 			#endif
 
-			onResult.Invoke(new LocalizationResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.text });
+			onResult.Invoke(new LocalizationResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.downloadHandler.text, errorText = www.error });
 
 			www.Dispose();
 			www = null;
@@ -95,6 +127,37 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 		#region Editor API Events
 		#if UNITY_EDITOR
+		public override void EditorLoad(LocalizationSettings settings, LocalizationServiceItem item) {
+
+			if (item.processing == false) {
+
+				item.processing = true;
+
+				// Connecting
+				this.OnEditorAuth(item.authKey, (result) => {
+
+					//UnityEditor.EditorApplication.delayCall += () => {
+
+					this.StartCoroutine(this.GetData(settings, (res) => {
+
+						if (res.hasError == false) {
+
+							LocalizationSystem.TryToSaveCSV(res.data);
+
+						}
+
+						item.processing = false;
+
+					}));
+
+					//};
+
+				});
+
+			}
+
+		}
+
 		protected override void OnInspectorGUI(LocalizationSettings settings, LocalizationServiceItem item, System.Action onReset, GUISkin skin) {
 
 			//var data = FlowSystem.GetData();
@@ -110,35 +173,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 			}
 
+			GUILayout.Label(string.Format("ETag: {0}", settings.eTag));
+
 			UnityEditor.EditorGUI.BeginDisabledGroup(item.processing);
 			if (GUILayout.Button(item.processing == true ? "Loading..." : "Load", skin.button) == true) {
-
-				if (item.processing == false) {
-					
-					item.processing = true;
-					
-					// Connecting
-					this.OnEditorAuth(item.authKey, (result) => {
-
-						//UnityEditor.EditorApplication.delayCall += () => {
-
-							this.StartCoroutine(this.GetData(settings.url, (res) => {
-								
-								if (res.hasError == false) {
-
-									LocalizationSystem.TryToSaveCSV(res.data);
-
-								}
-
-								item.processing = false;
-
-							}));
-
-						//};
-						
-					});
-
-				}
+				
+				this.EditorLoad(settings, item);
 
 			}
 			UnityEditor.EditorGUI.EndDisabledGroup();

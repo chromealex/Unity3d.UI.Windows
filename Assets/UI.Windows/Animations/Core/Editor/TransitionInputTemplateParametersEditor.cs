@@ -194,7 +194,7 @@ namespace UnityEditor.UI.Windows.Animations {
 			if (this.changed == true) {
 				
 				var videoParameters = _target.GetParameters<TransitionBase.ParametersVideoBase>();
-				if (videoParameters != null) {
+				if (videoParameters != null && this.windowA != null && this.windowB != null) {
 
 					this.sceneTestContainer.SetActive(true);
 

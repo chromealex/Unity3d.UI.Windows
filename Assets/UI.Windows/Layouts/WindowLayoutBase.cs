@@ -8,6 +8,18 @@ namespace UnityEngine.UI.Windows {
 
 	public class WindowLayoutBase : WindowComponentBase, IWindowComponentLayout {
 
+		private Layout.Component activatorInstance;
+		private WindowComponent component;
+
+		public override void OnDeinit(System.Action callback) {
+
+			base.OnDeinit(callback);
+
+			this.component = null;
+			this.activatorInstance = null;
+
+		}
+
 		public void Unload(System.Action callback = null) {
 
 			if (this.component != null) {
@@ -29,35 +41,57 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private Layout.Component activatorInstance;
-		private WindowComponent component;
-		public T Load<T>(T component) where T : WindowComponent {
+		public void Load<T>(T component, System.Action<WindowObjectElement> onItem = null, bool async = false) where T : WindowComponent {
 
-			return this.Load(component as WindowComponent) as T;
+			this.Load(component as WindowComponent, callback: (WindowComponent comp) => {}, onItem: onItem, async: async);
 
 		}
 
-		public T Load<T>(MonoResource resource) where T : WindowComponent {
+		public void Load<T>(T component, System.Action<T> callback, System.Action<WindowObjectElement> onItem = null, bool async = false) where T : WindowComponent {
 
-			return this.Load(resource) as T;
+			this.Load(component as WindowComponent, (WindowComponent comp) => callback.Invoke(comp as T), onItem: onItem, async: async);
 
 		}
 
-		public WindowComponent Load(MonoResource resource) {
+		public void Load<T>(ResourceMono resource, System.Action<WindowObjectElement> onItem = null, bool async = false) where T : WindowComponent {
+
+			this.Load(resource, callback: (WindowComponent comp) => {}, onItem: onItem, async: async);
+
+		}
+
+		public void Load<T>(ResourceMono resource, System.Action<T> callback, System.Action<WindowObjectElement> onItem = null, bool async = false) where T : WindowComponent {
+
+			this.Load(resource, callback: (WindowComponent comp) => callback.Invoke(comp as T), onItem: onItem, async: async);
+
+		}
+
+		public void Load(ResourceMono resource, System.Action<WindowObjectElement> onItem = null, bool async = false) {
+
+			this.Load(resource, callback: (WindowComponent comp) => {}, onItem: onItem, async: async);
+
+		}
+
+		public void Load(WindowComponent component, System.Action<WindowObjectElement> onItem = null, bool async = false) {
+
+			this.Load(component, callback: (WindowComponent comp) => {}, onItem: onItem, async: async);
+
+		}
+
+		public void Load(ResourceMono resource, System.Action<WindowComponent> callback, System.Action<WindowObjectElement> onItem = null, bool async = false) {
 
 			this.activatorInstance.SetComponent(resource);
-			return this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement) as WindowComponent;
+			this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement, callback, async, onItem);
 
 		}
 
-		public WindowComponent Load(WindowComponent component) {
+		public void Load(WindowComponent component, System.Action<WindowComponent> callback, System.Action<WindowObjectElement> onItem = null, bool async = false) {
 
 			this.activatorInstance.SetComponent(component);
 			component.SetComponentState(WindowObjectState.NotInitialized);
-			return this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement) as WindowComponent;
+			this.activatorInstance.Create(this.GetWindow(), this as WindowLayoutElement, callback, async, onItem);
 
 		}
-		
+
 		public virtual void Setup(WindowComponent component, Layout.Component activatorInstance) {
 			
 			this.activatorInstance = activatorInstance;

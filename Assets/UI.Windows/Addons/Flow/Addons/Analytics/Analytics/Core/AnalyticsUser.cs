@@ -145,6 +145,25 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 			
 		}
 
+		private string _customParameter;
+		public string customParameter {
+
+			set {
+
+				this._customParameter = value;
+
+			}
+
+			get {
+
+				if (this._customParameter == null) return string.Empty;
+
+				return this._customParameter;
+
+			}
+
+		}
+
 		private static User _instance = new User();
 		public static User instance {
 			

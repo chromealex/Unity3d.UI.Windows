@@ -10,7 +10,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private Color color = new Color(1f, 1f, 1f, 1f);
 		
-		public void SetColors(Color color) {
+		public virtual void SetColors(Color color) {
 			
 			this.color = color;
 			for (int i = 0; i < this.images.Length; ++i) {

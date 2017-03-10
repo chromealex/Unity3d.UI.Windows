@@ -60,7 +60,8 @@ namespace ME {
 	
 		public interface ITween {
 
-			bool isCompleted();
+		    int Count { get; }
+		    bool isCompleted();
 			void RaiseCancel();
 			void RaiseComplete();
 			object getTag();
@@ -69,6 +70,12 @@ namespace ME {
 		    object getGroup();
             void update(float dt, bool debug);
 			bool isDirty { get; set; }
+		    void ClearAll();
+			int GetLoops();
+
+#if UNITY_EDITOR
+		    //string stackTrace { get; }
+#endif
 
 		}
 		
@@ -99,7 +106,10 @@ namespace ME {
 			}
 			
 			private readonly List<Target> _targets = new List<Target>(1);
-			int _currentTarget = 0;
+
+            public int Count { get { return this._targets.Count; } }
+
+            int _currentTarget = 0;
 			private bool _started = false;
 			private float _elapsed = 0f;
 			private bool _completed = false;
@@ -112,8 +122,9 @@ namespace ME {
 			private System.Action<T, float> _update = null;
 			private System.Action<T> _complete = null;
 			private System.Action<T> _cancel = null;
-	
-			public Tween(T obj, float duration, float start, float end) {
+            //public string stackTrace { get; private set; }
+
+            public Tween(T obj, float duration, float start, float end) {
 				_obj = obj;
 				Target target = new Target();
 				target.start = start;
@@ -127,8 +138,19 @@ namespace ME {
 				_targets.Add(target);
 
 				isDirty = false;
+
+#if UNITY_EDITOR
+                // this.stackTrace = (new System.Diagnostics.StackTrace()).ToString();
+#endif
+
+            }
+
+			public int GetLoops() {
+
+				return this._loops;
+
 			}
-			
+
 			public void RaiseBegin() {
 				
 				if (_begin != null)
@@ -142,8 +164,29 @@ namespace ME {
 					_complete(_obj);
 				
 			}
-			
-			public void RaiseCancel() {
+
+		    public void ClearAll() {
+		        
+                this._targets.Clear();
+
+                /*
+		        if (_complete != null) {
+                    _complete.Invoke(_obj);
+                }
+                */
+
+		        _obj = default(T);
+                _begin = null;
+                _update = null;
+                _complete = null;
+                _cancel = null;
+		        _tag = null;
+		        _multiTag = default(MultiTag);
+		        _group = null;
+
+		    }
+
+            public void RaiseCancel() {
 				
 				if (_cancel != null)
 					_cancel(_obj);
@@ -422,6 +465,30 @@ namespace ME {
 
 		}
 
+	    public int Count {
+
+	        get { return this._tweens.Sum(x => x.Count); }
+
+	    }
+
+	    public void ClearAll() {
+
+	        for (var i = 0; i < this._tweens.Count; ++i) {
+
+                this._tweens[i].ClearAll();
+
+            }
+
+            this._tweens.Clear();
+
+        }
+
+		public List<ITween> GetTweens() {
+
+			return this._tweens;
+
+		}
+
         public void removeTweens(MultiTag multiTag) {
 
             this.removeTweens(multiTag, immediately: false);
@@ -616,7 +683,7 @@ namespace ME {
 
 	}
 	
-	public class Ease {
+	public static class Ease {
 		
 		public enum Type : byte {
 			

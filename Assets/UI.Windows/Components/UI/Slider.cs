@@ -259,6 +259,11 @@ namespace UnityEngine.UI.Windows.Extensions {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
+			if (Application.isPlaying == true) return;
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			base.OnValidate();
 
 			if (this.fillRect != null) this.fillImage = this.fillRect.GetComponent<Image>();

@@ -66,7 +66,7 @@ namespace UnityEngine.UI.Windows.Plugins.DevicePreview {
 
 		private int currentIteration = 0;
 		private bool working = false;
-		public IEnumerator Render() {
+		public System.Collections.IEnumerator Render() {
 			
 			++this.currentIteration;
 
@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows.Plugins.DevicePreview {
 		}
 
 		private List<Canvas> canvasesInWork = new List<Canvas>();
-		public IEnumerator Render(int currentIteration, Camera camera, Canvas canvas) {
+		public System.Collections.IEnumerator Render(int currentIteration, Camera camera, Canvas canvas) {
 
 			if (canvas != null) {
 
@@ -152,7 +152,7 @@ namespace UnityEngine.UI.Windows.Plugins.DevicePreview {
 
 		}
 
-		public IEnumerator ResetRender(int currentIteration, Camera camera, Canvas canvas) {
+		public System.Collections.Generic.IEnumerator<byte> ResetRender(int currentIteration, Camera camera, Canvas canvas) {
 			
 			var canvasScaler = canvas.GetComponent<CanvasScaler>();
 			if (canvasScaler != null) {
@@ -171,7 +171,7 @@ namespace UnityEngine.UI.Windows.Plugins.DevicePreview {
 			var time = UnityEditor.EditorApplication.timeSinceStartup;
 			while (UnityEditor.EditorApplication.timeSinceStartup < time + timeout) {
 
-				yield return false;
+				yield return 0;
 
 			}
 

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
+﻿
 namespace UnityEngine.UI.Extensions {
 
 	public class CanvasUpdater : MonoBehaviour {
@@ -8,7 +6,7 @@ namespace UnityEngine.UI.Extensions {
 		public Canvas canvas;
 		public CanvasScaler canvasScaler;
 
-		public delegate void OnUpdateHandler();
+		/*public delegate void OnUpdateHandler();
 		public static event OnUpdateHandler onUpdate;
 		
 		public void Awake() {
@@ -27,7 +25,7 @@ namespace UnityEngine.UI.Extensions {
 
 			CanvasUpdater.ForceUpdate(this.canvas, this.canvasScaler);
 			
-		}
+		}*/
 		
 		/*public static void ForceUpdate() {
 			
@@ -37,7 +35,7 @@ namespace UnityEngine.UI.Extensions {
 		
 		public static void ForceUpdate(Canvas canvas, CanvasScaler canvasScaler = null) {
 
-			if (canvas == null) return;
+			/*if (canvas == null) return;
 			if (Application.isPlaying == false) return;
 
 			const float delta = 0.05f;
@@ -52,7 +50,7 @@ namespace UnityEngine.UI.Extensions {
 				canvasScaler.scaleFactor = _factor - delta;
 				canvasScaler.scaleFactor = _factor;
 
-			}
+			}*/
 
 		}
 		
@@ -60,7 +58,10 @@ namespace UnityEngine.UI.Extensions {
 		public void OnValidate() {
 
 			if (Application.isPlaying == true) return;
-
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
 			this.canvas = this.GetComponent<Canvas>();
 			this.canvasScaler = this.GetComponent<CanvasScaler>();
 			

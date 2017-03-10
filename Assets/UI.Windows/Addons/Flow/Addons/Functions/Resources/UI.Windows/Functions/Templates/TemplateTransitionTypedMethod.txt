@@ -1,4 +1,4 @@
-﻿		
+﻿
 		/// <summary>
 		/// Call the Function {FUNCTION_CALL_NAME}.
 		/// Use this method to play transition effect on B window only.
@@ -7,12 +7,12 @@
 		/// </summary>
 		{PARAMETERS_DESCRIPTION}
 		/// <returns>Function root window</returns>
-		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}(System.Action<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
 			
-			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(false, onFunctionEnds, (w) => w.OnParametersPass({PARAMETERS_CALL}));
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(false, false, onFunctionEnds, (w) => w.OnParametersPass({PARAMETERS_CALL}));
 			
 		}
-		
+
 		/// <summary>
 		/// Call the Function {FUNCTION_CALL_NAME}.
 		/// Hides current window.
@@ -21,9 +21,65 @@
 		/// </summary>
 		{PARAMETERS_DESCRIPTION}
 		/// <returns>Function root window</returns>
-		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHideFunction{FUNCTION_CALL_NAME}(UnityEngine.Events.UnityAction<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHideFunction{FUNCTION_CALL_NAME}(System.Action<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
 			
-			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, onFunctionEnds, (w) => w.OnParametersPass({PARAMETERS_CALL}));
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, false, onFunctionEnds, (w) => w.OnParametersPass({PARAMETERS_CALL}));
+			
+		}
+
+		/// <summary>
+		/// Call the Function {FUNCTION_CALL_NAME}.
+		/// Hides current window and wait while it hidden, then flow.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>Function root window</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowWaitHideFunction{FUNCTION_CALL_NAME}(System.Action<FlowFunction{FUNCTION_CALL_NAME}Routes> onFunctionEnds, {PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, true, onFunctionEnds, (w) => w.OnParametersPass({PARAMETERS_CALL}));
+			
+		}
+
+		/// <summary>
+		/// Call the Function {FUNCTION_CALL_NAME}.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>Function root window</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowFunction{FUNCTION_CALL_NAME}({PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(false, false, null, (w) => w.OnParametersPass({PARAMETERS_CALL}));
+			
+		}
+
+		/// <summary>
+		/// Call the Function {FUNCTION_CALL_NAME}.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>Function root window</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowHideFunction{FUNCTION_CALL_NAME}({PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, false, null, (w) => w.OnParametersPass({PARAMETERS_CALL}));
+			
+		}
+
+		/// <summary>
+		/// Call the Function {FUNCTION_CALL_NAME}.
+		/// Hides current window and wait while it hidden, then flow.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Function: {FUNCTION_NAME}
+		/// </summary>
+		{PARAMETERS_DESCRIPTION}
+		/// <returns>Function root window</returns>
+		public virtual {CLASS_NAME_WITH_NAMESPACE} FlowWaitHideFunction{FUNCTION_CALL_NAME}({PARAMETERS_DEFINITION}) {
+			
+			return this.INTERNAL_FlowFunction{FUNCTION_CALL_NAME}(true, true, null, (w) => w.OnParametersPass({PARAMETERS_CALL}));
 			
 		}
 		

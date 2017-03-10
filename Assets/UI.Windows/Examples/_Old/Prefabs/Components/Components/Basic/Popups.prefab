@@ -84,19 +84,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11425994}
   - {fileID: 11425996}
-  canvas: {fileID: 22525996}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11488866, guid: eb7fe667c013441e4bfd64c852412e1e, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/Popup.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Popup/Popup
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -2094515484
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11488866, guid: eb7fe667c013441e4bfd64c852412e1e, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11425992
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -127,6 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22525996}
   parameters:
     inDelay: 0.5
     outDelay: 0
@@ -268,6 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22538672}
   parameters:
     inDelay: 0.5
     outDelay: 0
@@ -359,14 +394,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   popupLinker: {fileID: 11425990}
 --- !u!114 &11496900
 MonoBehaviour:
@@ -393,19 +424,52 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11438672}
   - {fileID: 11438670}
-  canvas: {fileID: 22538672}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11488866, guid: eb7fe667c013441e4bfd64c852412e1e, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/Popup.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Popup/Popup
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: -2094515484
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11488866, guid: eb7fe667c013441e4bfd64c852412e1e, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!222 &22244406
 CanvasRenderer:
   m_ObjectHideFlags: 1

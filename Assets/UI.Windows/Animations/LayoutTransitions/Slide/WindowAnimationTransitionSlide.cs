@@ -22,6 +22,7 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 			};
 
+			public Parameters() : base() {}
 			public Parameters(TransitionBase.ParametersBase baseDefaults) : base(baseDefaults) {}
 
 			[System.Serializable]
@@ -110,7 +111,8 @@ namespace UnityEngine.UI.Windows.Animations {
 				
 				if ((this.stateApply & ApplyTo.Scale) != 0) {
 					
-					rect.localScale = Vector2.Lerp(startState.scale, resultState.scale, value);
+					var scale = Vector2.Lerp(startState.scale, resultState.scale, value);
+					rect.localScale = new Vector3(scale.x, scale.y, 1f);
 					
 				}
 				
@@ -233,7 +235,11 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			if (component == null && parameters == null) return null;
 			if (component != null && parameters == null) return component.transform as RectTransform;
-			if (component == null || (parameters != null && parameters.moveRoot == true)) return root.transform as RectTransform;
+			if (component == null || (parameters != null && parameters.moveRoot == true)) {
+
+				return root.transform as RectTransform;
+
+			}
 
 			return component.transform as RectTransform;
 

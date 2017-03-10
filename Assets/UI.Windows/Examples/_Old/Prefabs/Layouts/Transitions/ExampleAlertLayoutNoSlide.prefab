@@ -171,10 +171,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22587306}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -197,10 +194,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 107.601006
-    y: 780.9028
-    width: 194.79799
-    height: 30.757578
+    x: 122.645744
+    y: 110.461914
+    width: 214.70851
+    height: 33.901344
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11487290
@@ -248,10 +245,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22587308}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
@@ -274,9 +268,9 @@ MonoBehaviour:
   editorMinHeight: 0
   tempEditorRect:
     serializedVersion: 2
-    x: 107.601006
-    y: 778.33966
-    width: 194.79799
+    x: 122.645744
+    y: 107.63678
+    width: 214.70851
     height: 0
   editorDrawDepth: 1
   editorHovered: 0
@@ -358,11 +352,8 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11494764}
-  canvas: {fileID: 22587310}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
@@ -385,10 +376,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 102.47474
-    y: 773.2134
-    width: 205.05052
-    height: 43.573235
+    x: 116.99552
+    y: 101.98657
+    width: 226.00896
+    height: 48.026905
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11487306
@@ -489,6 +480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 0
+  canvasGroup: {fileID: 22587310}
   parameters:
     inDelay: 0
     outDelay: 0

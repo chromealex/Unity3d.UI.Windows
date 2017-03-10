@@ -3,323 +3,288 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Components;
 using System.Runtime.InteropServices;
+using UnityEngine.Assertions;
 
 namespace UnityEngine.UI.Windows.Movies {
 
-	[System.Serializable]
-	public class MovieIOSModule : MovieModuleBase {
+    [System.Serializable]
+    public class MovieIOSModule : MovieModuleBase {
 
-		[DllImport("__Internal")]
-		private static extern bool VideoPlayer_Initialize(uint capacity);
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_Finalize();
-		[DllImport("__Internal")]
-		private static extern uint VideoPlayer_AddPlayer();
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_RemovePlayer(uint idx);
-		[DllImport("__Internal")]
-		private static extern bool VideoPlayer_CanOutputToTexture(string filename);
-		[DllImport("__Internal")]
-		private static extern bool VideoPlayer_PlayerReady(uint idx);
-		[DllImport("__Internal")]
-		private static extern bool VideoPlayer_PlayerIsPlaying(uint idx);
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_SetLoop(uint idx, bool loop);
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_Play(uint idx);
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_Stop(uint idx);
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_Pause(uint idx);
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_Rewind(uint idx, bool pause);
-		[DllImport("__Internal")]
-		private static extern float VideoPlayer_DurationSeconds(uint idx);
-		[DllImport("__Internal")]
-		private static extern void VideoPlayer_VideoExtents(uint idx, ref int w, ref int h);
-		[DllImport("__Internal")]
-		private static extern int VideoPlayer_CurFrameTexture(uint idx);
-		[DllImport("__Internal")]
-		private static extern bool VideoPlayer_LoadVideo(uint idx, string filename);
+		#if UNITY_IOS || UNITY_TVOS
+        [DllImport("__Internal")]
+        private static extern bool VideoPlayer_Initialize(uint capacity);
+        [DllImport("__Internal")]
+        private static extern void VideoPlayer_Finalize();
+        [DllImport("__Internal")]
+        private static extern uint VideoPlayer_AddPlayer(string filename);
+        [DllImport("__Internal")]
+        private static extern void VideoPlayer_RemovePlayer(uint index);
+        [DllImport("__Internal")]
+        private static extern bool VideoPlayer_IsPlayerFailed(uint index);
+        [DllImport("__Internal")]
+        private static extern bool VideoPlayer_IsPlayerReady(uint index);
+        [DllImport("__Internal")]
+        private static extern uint VideoPlayer_GetTextureId(uint index);
+        [DllImport("__Internal")]
+        private static extern uint VideoPlayer_GetVideoSize(uint index, out uint width, out uint height);
+        [DllImport("__Internal")]
+        private static extern void VideoPlayer_Update(uint index, out bool complete);
+        [DllImport("__Internal")]
+        private static extern void VideoPlayer_Play(uint index, bool loop);
+		#else
+		private static bool VideoPlayer_Initialize(uint capacity) { return false; }
+		private static void VideoPlayer_Finalize() {}
+		private static uint VideoPlayer_AddPlayer(string filename) { return 0u; }
+		private static void VideoPlayer_RemovePlayer(uint index) {}
+		private static bool VideoPlayer_IsPlayerFailed(uint index) { return false; }
+		private static bool VideoPlayer_IsPlayerReady(uint index) { return false; }
+		private static uint VideoPlayer_GetTextureId(uint index) { return 0u; }
+		private static uint VideoPlayer_GetVideoSize(uint index, out uint width, out uint height) { width = 0u; height = 0u; return 0u; }
+		private static void VideoPlayer_Update(uint index, out bool complete) { complete = true; }
+		private static void VideoPlayer_Play(uint index, bool loop) {}
+		#endif
 
-		public class Item {
+        public class Item {
 
-			private uint idx = uint.MaxValue;
-			private Texture2D videoTexture = null;
-			private System.Action onComplete;
+            private readonly uint index;
+            private bool failed;
+            private bool ready;
+            private Texture2D texture = null;
+            private System.Action onComplete;
 
-			public void Init(MovieModuleBase module, MovieItem movieItem) {
+            public Item(string path) {
 
-				if (this.idx == uint.MaxValue) this.idx = VideoPlayer_AddPlayer();
+                this.index = MovieIOSModule.VideoPlayer_AddPlayer(path);
+                this.failed = false;
+                this.ready = false;
 
-			}
-				
-			public bool Load(string path) {
+            }
 
-				if (this.idx != uint.MaxValue && VideoPlayer_CanOutputToTexture(path) == true) {
-					
-					return VideoPlayer_LoadVideo(this.idx, path);
+            public void Dispose() {
 
-				} else {
+                MovieIOSModule.VideoPlayer_RemovePlayer(this.index);
 
-					return false;
+            }
 
-				}
+            private void OnReady() {
 
-			}
+                uint textureId = MovieIOSModule.VideoPlayer_GetTextureId(this.index);
+                uint width, height;
+                MovieIOSModule.VideoPlayer_GetVideoSize(this.index, out width, out height);
+                this.texture = Texture2D.CreateExternalTexture((int)width, (int)height, TextureFormat.BGRA32, false, false, (System.IntPtr) textureId);
 
-			public bool IsReady() {
-				
-				if (this.idx == uint.MaxValue) {
+            }
 
-					return false;
+            public void Update() {
 
-				} else {
+                if (this.failed == true) {
 
-					return VideoPlayer_PlayerReady(this.idx);
+                    return;
 
-				}
-				
-			}
+                }
 
-			public void Dispose() {
-				
-				if (this.idx != uint.MaxValue) {
-					
-					VideoPlayer_RemovePlayer(this.idx);
-					this.idx = uint.MaxValue;
+                if (this.ready == false) {
 
-				}
+                    this.failed = MovieIOSModule.VideoPlayer_IsPlayerFailed(this.index);
+                    if (this.failed == true) {
 
-				this.videoTexture = null;
+                        return;
 
-			}
+                    }
 
-			public void Update() {
+                    this.ready = MovieIOSModule.VideoPlayer_IsPlayerReady(this.index);
+                    if (this.ready == true) {
 
-				if (this.IsReady() == true && this.IsPlaying() == true) {
+                        this.OnReady();
 
-					var texture = VideoPlayer_CurFrameTexture(this.idx);
-					if (texture != 0 && this.videoTexture != null) {
+                    }
 
-						this.videoTexture.UpdateExternalTexture((System.IntPtr)texture);
+                } else {
 
-					} else if (texture == 0) {
+                    bool complete;
+                    MovieIOSModule.VideoPlayer_Update(this.index, out complete);
 
-						if (this.onComplete != null) this.onComplete.Invoke();
+                    if (complete == true) {
 
-					}
+                        if (this.onComplete != null) {
 
-				}
+							this.onComplete.Invoke();
+							this.onComplete = null;
 
-			}
+                        }
 
-			public void Rewind(bool pause) {
+                    }
 
-				if (this.idx == uint.MaxValue) return;
-				
-				VideoPlayer_Rewind(this.idx, pause);
+                }
 
-			}
+            }
+
+            public bool IsFailed() {
+
+                return this.failed;
+
+            }
+
+            public bool IsReady() {
+
+                return this.ready;
+
+            }
+
+            public Texture2D GetTexture() {
+
+                Assert.IsTrue(this.ready);
+                return this.texture;
+
+            }
 
 			public void Stop() {
-
-				if (this.idx == uint.MaxValue) return;
-
-				VideoPlayer_Stop(this.idx);
-
-			}
-
-			public void Play(bool loop, System.Action onComplete) {
-
-				if (this.idx == uint.MaxValue) return;
-
-				this.onComplete = onComplete;
-				VideoPlayer_SetLoop(this.idx, loop);
-				VideoPlayer_Play(this.idx);
-
-			}
-
-			public void Pause() {
-
-				if (this.idx == uint.MaxValue) return;
 				
-				VideoPlayer_Pause(this.idx);
+				this.onComplete = null;
 
 			}
 
-			public bool IsPlaying() {
+            public void Play(bool loop, System.Action onComplete) {
 
-				if (this.idx == uint.MaxValue) return false;
+                this.onComplete = onComplete;
+                MovieIOSModule.VideoPlayer_Play(this.index, loop);
 
-				return VideoPlayer_PlayerIsPlaying(this.idx);
+            }
 
-			}
+        }
 
-			public Texture2D GetTexture() {
-				
-				if (this.IsReady() == true) {
-					
-					int nativeTex = VideoPlayer_CurFrameTexture(this.idx);
+        private readonly ME.SimpleDictionary<string, Item> playingInstances = new ME.SimpleDictionary<string, Item>();
 
-					int w = 0, h = 0;
-					VideoPlayer_VideoExtents(this.idx, ref w, ref h);
+        protected override void OnInit() {
 
-					if (videoTexture == null) {
-						
-						videoTexture = Texture2D.CreateExternalTexture(w, h, TextureFormat.BGRA32, false, false, (System.IntPtr)nativeTex);
-						videoTexture.filterMode = FilterMode.Bilinear;
-						videoTexture.wrapMode = TextureWrapMode.Repeat;
+			base.OnInit();
 
-					}
+            MovieIOSModule.VideoPlayer_Initialize(2);
 
-					videoTexture.UpdateExternalTexture((System.IntPtr)nativeTex);
+        }
 
-				} else {
+        protected override void OnDeinit() {
 
-					videoTexture = null;
+			base.OnDeinit();
 
-				}
+            MovieIOSModule.VideoPlayer_Finalize();
 
-				return videoTexture;
+        }
 
-			}
+        private Item FindInstance(ResourceBase resource) {
 
-		}
+            Item value;
+            if (this.playingInstances.TryGetValue(resource.GetStreamPath(), out value) == true) {
 
-		private ME.SimpleDictionary<string, Item> playingInstances = new ME.SimpleDictionary<string, Item>();
+                return value;
 
-		protected override void OnDeinit() {
+            }
 
-			VideoPlayer_Finalize();
+            return null;
 
-		}
+        }
 
-		protected override void OnInit() {
+        public override void Update() {
 
-			VideoPlayer_Initialize(2);
+            base.Update();
 
-		}
+            for (int i = 0; i < this.playingInstances.Count; ++i) {
 
-		protected override void OnUnload(ResourceBase resource) {
+                this.playingInstances.GetValueAt(i).Update();
 
-			var key = resource.GetStreamPath();
+            }
 
-			Item value;
-			if (this.playingInstances.TryGetValue(key, out value) == true) {
+        }
 
-				value.Dispose();
-				this.playingInstances.Remove(key);
-				this.counter = this.playingInstances.Count;
+        protected override System.Collections.IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
+			
+            var streamPath = resource.GetStreamPath(withFile: false);
 
-			}
+            var instance = this.FindInstance(resource);
+            if (instance != null) {
 
-		}
+                Debug.LogError("[MediaMovieModule] Already playing " + streamPath);
 
-		public override void Update() {
+            } else {
 
-			base.Update();
+                instance = new Item(streamPath);
+                this.playingInstances.Add(streamPath, instance);
+                this.counter = this.playingInstances.Count;
 
-			for (int i = 0; i < this.playingInstances.Count; ++i) {
+            }
 
-				this.playingInstances.GetValueAt(i).Update();
+            yield return 0;
 
-			}
+            while (true) {
 
-		}
+                if (instance.IsFailed() == true) {
 
-		protected override IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
+                    asyncOperation.SetValues(isDone: true, progress: 1f, asset: null);
+                    break;
 
-			var streamPath = resource.GetStreamPath(withFile: false);
+                } else if (instance.IsReady() == true) {
 
-			var item = this.FindInstance(resource);
-			if (item != null) {
+                    asyncOperation.SetValues(isDone: true, progress: 1f, asset: instance.GetTexture());
+                    break;
 
-				Debug.LogError("[MediaMovieModule] Already playing " + streamPath);
+                } else {
 
-			} else {
+                    yield return 0;
 
-				item = this.CreatePlayerInstance(movieItem);
-				this.playingInstances.Add(streamPath, item);
-				this.counter = this.playingInstances.Count;
+                }
 
-			}
+            }
 
-			yield return false;
+        }
 
-			if (item.Load(streamPath) == false) {
+        protected override void OnUnload(ResourceBase resource) {
 
-				asyncOperation.SetValues(isDone: true, progress: 1f, asset: null);
+            var key = resource.GetStreamPath();
 
-			} else {
-				
-				while (item.IsReady() == false) yield return false;
+            Item value;
+            if (this.playingInstances.TryGetValue(key, out value) == true) {
 
-				asyncOperation.SetValues(isDone: true, progress: 1f, asset: item.GetTexture());
+                value.Dispose();
+                this.playingInstances.Remove(key);
+                this.counter = this.playingInstances.Count;
 
-			}
-				
-		}
+            }
 
-		public Item CreatePlayerInstance(MovieItem movieItem) {
+        }
 
-			var item = new Item();
+        public override bool IsVerticalFlipped() {
 
-			item.Init(this, movieItem);
-		
-			return item;
+            return false;
 
-		}
+        }
 
-		public override bool IsMovie(Texture texture) {
+        public override bool IsMovie(Texture texture) {
 
-			return true;
+            return true;
 
-		}
+        }
 
-		protected override void OnRewind(ResourceBase resource, Texture movie, bool pause) {
+        protected override void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
 
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
+            var instance = this.FindInstance(resource);
+            if (instance != null) {
 
-				instance.Rewind(pause);
+                instance.Play(loop: false, onComplete: onComplete);
 
-			}
+            }
 
-		}
+        }
 
-		protected override void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
+        protected override void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
 
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
+            var instance = this.FindInstance(resource);
+            if (instance != null) {
 
-				instance.Play(loop: false, onComplete: onComplete);
+                instance.Play(loop, onComplete);
 
-			}
+            }
 
-		}
-
-		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
-
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
-
-				instance.Play(loop, onComplete);
-
-			}
-
-		}
-
-		protected override void OnPause(ResourceBase resource, Texture movie) {
-
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
-
-				instance.Pause();
-
-			}
-
-		}
+        }
 
 		protected override void OnStop(ResourceBase resource, Texture movie) {
 
@@ -332,32 +297,6 @@ namespace UnityEngine.UI.Windows.Movies {
 
 		}
 
-		protected override bool IsPlaying(ResourceBase resource, Texture movie) {
-
-			var instance = this.FindInstance(resource);
-			if (instance != null) {
-
-				return instance.IsPlaying();
-
-			}
-
-			return false;
-
-		}
-
-		private Item FindInstance(ResourceBase resource) {
-
-			Item value;
-			if (this.playingInstances.TryGetValue(resource.GetStreamPath(), out value) == true) {
-
-				return value;
-
-			}
-
-			return null;
-
-		}
-
-	}
+    }
 
 }

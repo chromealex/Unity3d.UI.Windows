@@ -18,6 +18,8 @@ using UnityEditor.SceneManagement;
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowSceneItem {
+
+		private const float kToolbarHeight = 18f;
 		
 		public const float POPUP_OFFSET = 50f;
 		public const float POPUP_MARGIN = 5f;
@@ -236,7 +238,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			
 			if (this.view != null) {
 
-				GUILayout.BeginArea(new Rect(0f, SceneView.kToolbarHeight, this.view.position.width, this.view.position.height));
+				GUILayout.BeginArea(new Rect(0f, FlowSceneItem.kToolbarHeight, this.view.position.width, this.view.position.height));
 
 				var headerStyle = new GUIStyle(EditorStyles.whiteLargeLabel);
 				headerStyle.fontSize = 30;
@@ -245,7 +247,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var color = Color.white;
 				color.a = 0.6f;
 				GUI.color = color;
-				GUI.Label(new Rect(30f, SceneView.kToolbarHeight, this.view.position.width, this.view.position.height), this.window.title, headerStyle);
+				GUI.Label(new Rect(30f, FlowSceneItem.kToolbarHeight, this.view.position.width, this.view.position.height), this.window.title, headerStyle);
 				GUI.color = oldColor;
 
 				GUILayout.EndArea();

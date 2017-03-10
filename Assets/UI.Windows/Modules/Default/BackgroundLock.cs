@@ -4,7 +4,7 @@ using UnityEngine.UI.Windows;
 
 namespace UnityEngine.UI.Windows.Modules {
 
-	public class BackgroundLock : WindowModule {
+	public class BackgroundLock : BackgroundBase {
 		
 	}
 

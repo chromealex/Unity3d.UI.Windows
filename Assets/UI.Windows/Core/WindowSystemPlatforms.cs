@@ -4,23 +4,24 @@
 
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows {
 	
 	public class WindowSystemPlatforms : WindowSystem {
 
 		#if UNITY_EDITOR || UNITY_MOBILE
-		public List<WindowBase> defaultsMobileOnly = new List<WindowBase>();
+		public List<WindowItem> defaultsMobileOnly = new List<WindowItem>();
 		#endif
 		#if UNITY_EDITOR || UNITY_STANDALONE
-		public List<WindowBase> defaultsStandaloneOnly = new List<WindowBase>();
+		public List<WindowItem> defaultsStandaloneOnly = new List<WindowItem>();
 		#endif
 		
 		#if UNITY_EDITOR || UNITY_MOBILE
-		public List<WindowBase> mobileOnly = new List<WindowBase>();
+		public List<WindowItem> mobileOnly = new List<WindowItem>();
 		#endif
 		#if UNITY_EDITOR || UNITY_STANDALONE
-		public List<WindowBase> standaloneOnly = new List<WindowBase>();
+		public List<WindowItem> standaloneOnly = new List<WindowItem>();
 		#endif
 
 		protected override void Init() {

@@ -16,7 +16,7 @@ namespace Tacticsoft.Examples
         public int rowNumber { get; set; }
 
         [System.Serializable]
-        public class CellHeightChangedEvent : UnityEvent<int, float> { }
+		public class CellHeightChangedEvent : ME.Events.SimpleEvent<int, float> { }
         public CellHeightChangedEvent onCellHeightChanged;
 
         void Update() {

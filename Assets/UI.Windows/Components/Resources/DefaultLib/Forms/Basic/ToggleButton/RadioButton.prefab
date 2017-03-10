@@ -114,14 +114,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -140,78 +136,6 @@ MonoBehaviour:
   hoverIsActive: 1
   hoverOnAnyPointerState: 0
   images: []
-  navigationType: 0
-  navigateOnDisabled: 0
-  navigationCustomSelector: 0
-  navigationCustomSelectorObject: {fileID: 0}
-  navigateLeftInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  navigateRightInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  navigateUpInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  navigateDownInfo:
-    stop: 0
-    directionAxisOnly: 0
-    explicit: 0
-    next: {fileID: 0}
-  button: {fileID: 11425590}
-  callback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  selectByDefault: 0
-  setDefaultNavigationModeOnStart: 1
-  defaultNavigationMode: 0
-  hoverOnAnyButtonState: 0
-  hoverCursorDefaultOnInactive: 0
-  image: {fileID: 0}
-  rawImage: {fileID: 0}
-  preserveAspect: 0
-  imageLocalizationKey:
-    key: 
-    parameters: 0
-    formatWithDeclension: 0
-    outputDeclensionWithoutNumber: 0
-  playOnShow: 0
-  loop: 0
-  imageResource:
-    async: 1
-    controlType: 0
-    assetPath: 
-    resourcesPath: 
-    loadableResource: 0
-    loadableStream: 0
-    multiObjects: 0
-    objectIndex: 0
-    customResourcePath: 
-    id: 0
-    streamingAssetsPathStandalone: 
-    streamingAssetsPathIOS: 
-    streamingAssetsPathAndroid: 
-    streamingAssetsPathPS4: 
-    streamingAssetsPathXBOXONE: 
-    streamingAssetsPathCommon: 
-    tempObject: {fileID: 0}
-  imageCrossFadeModule:
-    enabled: 0
-    sourceImage: {fileID: 0}
-    copyImage: {fileID: 0}
-    sourceRawImage: {fileID: 0}
-    copyRawImage: {fileID: 0}
-    duration: 0.5
-    fadeIfWasNull: 0
-    easeType: 0
   text: {fileID: 11426978}
   valueFormat: 0
   fullTextFormat: 0
@@ -223,7 +147,7 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   valueAnimate: 0
   valueAnimateDuration: 2
-  toggle: {fileID: 11425596}
+  toggle: {fileID: 0}
 --- !u!114 &11425584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -249,14 +173,10 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -308,10 +228,13 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  scrollbarVisibility: 1
+  horizontalScrollbar: {fileID: 0}
+  verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 11425586}
   navigationMode: 0
   navigationInverse: 0
-  toggleGroup: {fileID: 11425598}
+  toggleGroup: {fileID: 0}
   allowSwitchOff: 0
 --- !u!114 &11425586
 MonoBehaviour:
@@ -419,6 +342,7 @@ MonoBehaviour:
     fadeDuration: 0.1
   transitionExtended: 0
   m_TargetGraphics: []
+  graphicItems: []
   rootButton: {fileID: 0}
   referenceButton: {fileID: 0}
 --- !u!114 &11425592

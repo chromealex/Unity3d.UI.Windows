@@ -41,7 +41,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetCallback(UnityAction<ButtonComponent, int> onSelect = null, UnityAction<WindowComponent, int> onChangeBefore = null, UnityAction<WindowComponent, int> onChangeAfter = null) {
+		public void SetCallback(System.Action<ButtonComponent, int> onSelect = null, System.Action<WindowComponent, int> onChangeBefore = null, System.Action<WindowComponent, int> onChangeAfter = null) {
 
 			if (onSelect != null) this.onSelect.AddListenerDistinct(onSelect);
 			if (onChangeBefore != null) this.onChangeBefore.AddListenerDistinct(onChangeBefore);
@@ -49,7 +49,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public void SetCallbacks(UnityAction<WindowComponent, int> onChangeBefore, UnityAction<WindowComponent, int> onChangeAfter) {
+		public void SetCallbacks(System.Action<WindowComponent, int> onChangeBefore, System.Action<WindowComponent, int> onChangeAfter) {
 			
 			this.onChangeBefore.AddListenerDistinct(onChangeBefore);
 			this.onChangeAfter.AddListenerDistinct(onChangeAfter);
@@ -62,7 +62,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public T1 AddItem<T1, T2>(T2 component, UnityAction<T1> onClick = null, bool autoEvents = true) where T1 : ButtonComponent where T2 : WindowComponent {
+		public T1 AddItem<T1, T2>(T2 component, System.Action<T1> onClick = null, bool autoEvents = true) where T1 : ButtonComponent where T2 : WindowComponent {
 			
 			var element = this.AddItem<T1>();
 			element.SetCallback((button) => {
@@ -90,7 +90,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public T1 AddItem<T1>(UnityAction<ButtonComponent, int> onClick, bool autoEvents) where T1 : ButtonComponent {
+		public T1 AddItem<T1>(System.Action<ButtonComponent, int> onClick, bool autoEvents) where T1 : ButtonComponent {
 			
 			var element = this.AddItem<T1>();
 			element.SetCallback((button) => {
@@ -149,7 +149,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void Load(int index, bool immediately = false, UnityAction callback = null) {
+		public void Load(int index, bool immediately = false, System.Action callback = null) {
 
 			if (this.lastIndex >= 0) {
 
@@ -177,27 +177,30 @@ namespace UnityEngine.UI.Windows.Components {
 
 				this.layoutContent.Unload(() => {
 
-					this.layoutContent.Load(component);
-					this.layoutContent.Show();
-					
-					this.onChangeAfter.Invoke(this.layoutContent.GetCurrentComponent(), index);
-					
-					//var prevLastIndex = this.lastIndex;
-					this.lastIndex = index;
-					
-					if (this.lastIndex >= 0) {
+					this.layoutContent.Load<WindowComponent>(component, (c) => {
 						
-						var lastItem = this.GetItem<ButtonComponent>(this.lastIndex);
-						if (lastItem != null) {
-							
-							lastItem.SetDisabled();
-							//if (prevLastIndex != index) lastItem.OnClick();
-							
+						this.layoutContent.Show();
+
+						this.onChangeAfter.Invoke(this.layoutContent.GetCurrentComponent(), index);
+
+						//var prevLastIndex = this.lastIndex;
+						this.lastIndex = index;
+
+						if (this.lastIndex >= 0) {
+
+							var lastItem = this.GetItem<ButtonComponent>(this.lastIndex);
+							if (lastItem != null) {
+
+								lastItem.SetDisabled();
+								//if (prevLastIndex != index) lastItem.OnClick();
+
+							}
+
 						}
-						
-					}
-					
-					if (callback != null) callback.Invoke();
+
+						if (callback != null) callback.Invoke();
+
+					}, onItem: null, async: true);
 
 				});
 
@@ -205,10 +208,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnDeinit() {
+		public override void OnDeinit(System.Action callback) {
 
-			base.OnDeinit();
-			
+			base.OnDeinit(callback);
+
 			this.onChangeBefore.RemoveAllListeners();
 			this.onChangeAfter.RemoveAllListeners();
 

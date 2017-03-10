@@ -22,7 +22,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		public static string ReplaceText(string text, Tpl.Info oldInfo, Tpl.Info newInfo) {
 
-			var file = Resources.Load("UI.Windows/Templates/TemplateReplaceRules") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateReplaceRules") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("Template Loading Error: Could not load template 'TemplateReplaceRules'");
@@ -60,7 +60,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		public static string GenerateWindowLayoutBaseClass( string className, string classNamespace, string transitionMethods ) {
 
-			var file = Resources.Load( "UI.Windows/Templates/TemplateBaseClass" ) as TextAsset;
+			var file = UnityEngine.Resources.Load( "UI.Windows/Templates/TemplateBaseClass" ) as TextAsset;
 			if (file == null) {
 
 				Debug.LogError( "Template Loading Error: Could not load template 'TemplateBaseClass'" );
@@ -76,7 +76,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		public static string GenerateWindowLayoutDerivedClass( string className, string baseClassName, string classNamespace ) {
 
-			var file = Resources.Load( "UI.Windows/Templates/TemplateDerivedClass" ) as TextAsset;
+			var file = UnityEngine.Resources.Load( "UI.Windows/Templates/TemplateDerivedClass" ) as TextAsset;
 			if (file == null) {
 
 				Debug.LogError( "Template Loading Error: Could not load template 'TemplateDerivedClass'" );
@@ -92,7 +92,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		
 		public static string GenerateWindowLayoutTransitionMethod(FD.FlowWindow from, FD.FlowWindow to, string targetClassName, string targetClassNameWithNamespace) {
 			
-			var file = Resources.Load("UI.Windows/Templates/TemplateTransitionMethod") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("Template Loading Error: Could not load template 'TemplateTransitionMethod'");
@@ -110,7 +110,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		
 		public static string GenerateWindowLayoutTransitionTypedMethod(FD.FlowWindow from, FD.FlowWindow to, string targetClassName, string targetClassNameWithNamespace, System.Type[] parameters, string[] parameterNames) {
 			
-			var file = Resources.Load("UI.Windows/Templates/TemplateTransitionTypedMethod") as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateTransitionTypedMethod") as TextAsset;
 			if (file == null) {
 				
 				Debug.LogError("Template Loading Error: Could not load template 'TemplateTransitionTypedMethod'");
@@ -128,7 +128,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 					.Replace("{FLOW_TO_ID}", to.id.ToString())
 					.Replace("{CLASS_NAME_WITH_NAMESPACE}", targetClassNameWithNamespace)
 					.Replace("{PARAMETERS_DEFINITION}", string.Join(", ", definition))
-					.Replace("{PARAMETERS_DEFINITION_WITH_INSTANCE}", (definition.Length > 0 ? string.Join(", ", definition) + ", " : string.Empty))
+					.Replace("{PARAMETERS_DEFINITION_WITH_INSTANCE}", (definition.Length > 0 ? ", " + string.Join(", ", definition) : string.Empty))
 					.Replace("{PARAMETERS_CALL}", string.Join(", ", call))
 					.Replace("{PARAMETERS_DESCRIPTION}", string.Join(System.Environment.NewLine, description));
 			
@@ -136,7 +136,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		public static string GenerateWindowLayoutTransitionMethodDefault() {
 			
-			var file = Resources.Load( "UI.Windows/Templates/TemplateDefaultTransitionMethod" ) as TextAsset;
+			var file = UnityEngine.Resources.Load( "UI.Windows/Templates/TemplateDefaultTransitionMethod" ) as TextAsset;
 			if ( file == null ) {
 				
 				Debug.LogError( "Template Loading Error: Could not load template 'TemplateDefaultTransitionMethod'" );

@@ -133,7 +133,15 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 			this.LoadUsers(userIDs, (ISocialUser[] users) => callback(users.Cast<IUserProfile>().ToArray()));
 
 		}
-		
+
+		#if UNITY_5_5_OR_NEWER
+		void ISocialPlatform.Authenticate(ILocalUser user, Action<bool, string> callback) {
+
+			this.Authenticate((result) => callback.Invoke(result, string.Empty));
+
+		}
+		#endif
+
 		void ISocialPlatform.Authenticate(ILocalUser user, Action<bool> callback) {
 
 			this.Authenticate(callback);

@@ -93,9 +93,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public override void OnDeinit() {
+		public override void OnDeinit(System.Action callback) {
 			
-			base.OnDeinit();
+			base.OnDeinit(callback);
 			
 			#region source macros UI.Windows.OnDeinit.ImageComponent
 			{
@@ -109,12 +109,50 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public override void OnShowBegin() {
+		public override void DoShowBegin(AppearanceParameters parameters) {
 
-			base.OnShowBegin();
+			#region source macros UI.Windows.DoShowBegin.ImageComponent
+			{
+				
+				if (this.imageResourceWait == true && this.imageResource.IsValid() == true) {
+					
+					WindowSystemResources.LoadAuto(this, onDataLoaded: () => {
 
+						this.tempImagePlayOnShow = true;
+
+						if (this.playOnShow == true) {
+
+							this.Play();
+
+						}
+
+					}, onComplete: () => {
+
+						base.DoShowBegin(parameters);
+
+					}, onShowHide: true);
+
+				} else {
+
+					base.DoShowBegin(parameters);
+
+				}
+
+			}
+			#endregion
+
+		}
+
+		public override void OnShowBegin(AppearanceParameters parameters) {
+			
 			#region source macros UI.Windows.OnShowBegin.ImageComponent
 			{
+
+				if (this.imageCrossFadeModule.IsValid() == true) {
+
+					this.imageCrossFadeModule.Prepare(this);
+
+				}
 
 				if (this.imageLocalizationKey.IsNone() == false) {
 
@@ -150,6 +188,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 			#endregion
+
+			base.OnShowBegin(parameters);
 
 		}
 
@@ -187,6 +227,11 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		private bool preserveAspect;
 
+		[HideInInspector][SerializeField]
+		private UIFlippable flippableEffect;
+		[HideInInspector][SerializeField]
+		private UIPreserveAspect preserveAspectEffect;
+
 		public UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey imageLocalizationKey;
 
 		[ReadOnly("rawImage", null)]
@@ -197,14 +242,16 @@ namespace UnityEngine.UI.Windows.Components {
 		private bool loop;
 
 		[SerializeField]
-		private AutoResourceItem imageResource = new AutoResourceItem();
+		private bool imageResourceWait = false;
+		[SerializeField]
+		private ResourceAuto imageResource = new ResourceAuto();
 
 		[EndGroup][SerializeField]
 		private ImageCrossFadeModule imageCrossFadeModule = new ImageCrossFadeModule();
 
 		private bool tempImagePlayOnShow = false;
 
-		public AutoResourceItem GetResource() {
+		public ResourceBase GetResource() {
 
 			return this.imageResource;
 
@@ -249,9 +296,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public IImageComponent SetMovieTexture(AutoResourceItem resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null) {
+		public void SetVerticesDirty() {
+
+			if (this.image != null) this.image.SetVerticesDirty();
+			if (this.rawImage != null) this.rawImage.SetVerticesDirty();
+
+		}
+
+		public IImageComponent SetMovieTexture(ResourceAuto resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null) {
 
 			this.flipVerticalInternal = MovieSystem.IsVerticalFlipped();
+			this.SetVerticesDirty();
 
 			this.Stop();
 			this.SetImage(resource,
@@ -415,7 +470,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public Graphic GetGraphicSource() {
 
-			return this.image;
+			if (this.image != null) return this.image;
+			return this.rawImage;
 
 		}
 
@@ -443,6 +499,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public bool IsPreserveAspect() {
+
+			return this.preserveAspect;
+
+		}
+
 		public IImageComponent SetImage(ImageComponent source) {
 			
 			if (source.GetImageSource() != null) this.SetImage(source.GetImageSource().sprite);
@@ -452,31 +514,39 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
-		public IImageComponent SetImage(AutoResourceItem resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null) {
+		public IImageComponent SetImage(ResourceAuto resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null) {
+
+			if (this.imageCrossFadeModule.IsValid() == true) {
+
+				this.imageCrossFadeModule.Prepare(this);
+
+			}
 
 			var oldResource = this.imageResource;
-			this.imageResource = resource;
+		    var newResource = resource;
+            this.imageResource = resource;
 
-			//Debug.Log("Loading resource: " + this.imageResource.GetId());
+            // Debug.Log("Loading resource: " + this.imageResource.GetId());
 			WindowSystemResources.Load(this,
 				onDataLoaded: onDataLoaded,
 				onComplete: () => {
 
 					//Debug.Log("Resource loaded: " + newResource.GetId() + " :: " + this.name, this);
-					if (this.imageResource.GetId() != oldResource.GetId()) {
+					if (newResource.GetId() != oldResource.GetId()) {
 
-						//Debug.Log("Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
+						// Debug.Log("Unloading: " + newResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
 						WindowSystemResources.Unload(this, oldResource, resetController: false);
 
 					}
 
-					if (onComplete != null) onComplete.Invoke();
+                    
+                    if (onComplete != null) onComplete.Invoke();
 
 				},
 				onFailed: () => {
 
 					//Debug.Log("Resource loading failed: " + newResource.GetId() + " :: " + this.name, this);
-					if (this.imageResource.GetId() != oldResource.GetId()) {
+					if (newResource.GetId() != oldResource.GetId()) {
 
 						//Debug.Log("Failed, Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
 						WindowSystemResources.Unload(this, oldResource, resetController: false);
@@ -497,13 +567,21 @@ namespace UnityEngine.UI.Windows.Components {
 		private object[] lastImageLocalizationParameters;
 		public IImageComponent SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey key, params object[] parameters) {
 
+			if (this.imageCrossFadeModule.IsValid() == true) {
+
+				this.imageCrossFadeModule.Prepare(this);
+
+			}
+
 			this.lastImageLocalization = true;
 			this.lastImageLocalizationKey = key;
 			this.lastImageLocalizationParameters = parameters;
 
+			this.SetImage(ResourceAuto.CreateResourceRequest(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSpritePath(key, parameters)));
+
 			//this.SetImage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSprite(key, parameters));
-			WindowSystemResources.Unload(this, this.GetResource());
-			WindowSystemResources.Load(this, onDataLoaded: null, onComplete: null, customResourcePath: UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSpritePath(key, parameters));
+			//WindowSystemResources.Unload(this, this.GetResource());
+			//WindowSystemResources.Load(this, onDataLoaded: null, onComplete: null, customResourcePath: UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetSpritePath(key, parameters));
 
 			return this;
 
@@ -613,8 +691,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.rawImage != null) {
 				
-				if (this.preserveAspect == true) ME.Utilities.PreserveAspect(this.rawImage);
-
 				if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 
 					this.imageCrossFadeModule.FadeTo(this, texture, onComplete);
@@ -800,27 +876,41 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 		}
-
+		/*
 		public void ModifyMesh(Mesh mesh) {}
 
 		private System.Collections.Generic.List<UIVertex> modifyVertsTemp = new System.Collections.Generic.List<UIVertex>();
 		public void ModifyMesh(VertexHelper helper) {
 
-			if (this.flipHorizontal == false &&
-			    this.flipVertical == false &&
-			    this.flipHorizontalInternal == false &&
-			    this.flipVerticalInternal == false) {
+			if (this.rawImage != null && this.preserveAspect == true) {
 
-				return;
+				var vh = helper;
+				var drawingDimensions = ME.Utilities.GetDrawingDimensions(this.rawImage, this.preserveAspect, this.rawImage.texture == null ? Vector2.zero : new Vector2(this.rawImage.texture.width, this.rawImage.texture.height), Vector4.zero);
+				var vector = new Vector4(this.rawImage.uvRect.x, this.rawImage.uvRect.y, this.rawImage.uvRect.width, this.rawImage.uvRect.height);
+				var color = this.GetColor();
+				vh.Clear();
+				vh.AddVert(new Vector3(drawingDimensions.x, drawingDimensions.y), color, new Vector2(vector.x, vector.y));
+				vh.AddVert(new Vector3(drawingDimensions.x, drawingDimensions.w), color, new Vector2(vector.x, vector.w));
+				vh.AddVert(new Vector3(drawingDimensions.z, drawingDimensions.w), color, new Vector2(vector.z, vector.w));
+				vh.AddVert(new Vector3(drawingDimensions.z, drawingDimensions.y), color, new Vector2(vector.z, vector.y));
+				vh.AddTriangle(0, 1, 2);
+				vh.AddTriangle(2, 3, 0);
 
 			}
 
-			this.modifyVertsTemp.Clear();
-			helper.GetUIVertexStream(this.modifyVertsTemp);
+			if (this.flipHorizontal == true ||
+				this.flipVertical == true ||
+				this.flipHorizontalInternal == true ||
+				this.flipVerticalInternal == true) {
 
-			this.ModifyVertices(this.modifyVertsTemp);
+				this.modifyVertsTemp.Clear();
+				helper.GetUIVertexStream(this.modifyVertsTemp);
 
-			helper.AddUIVertexTriangleStream(this.modifyVertsTemp);
+				this.ModifyVertices(this.modifyVertsTemp);
+
+				helper.AddUIVertexTriangleStream(this.modifyVertsTemp);
+
+			}
 
 		}
 
@@ -840,15 +930,29 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-		}
+		}*/
 		#endregion
 
 		#if UNITY_EDITOR
+		[ContextMenu("Setup UI.Image")]
+		public void SetupImage() {
+
+			this.image = ME.Utilities.FindReferenceChildren<Image>(this);
+
+		}
+
+		[ContextMenu("Setup UI.RawImage")]
+		public void SetupRawImage() {
+
+			this.rawImage = ME.Utilities.FindReferenceChildren<RawImage>(this);
+
+		}
+
 		public override void OnValidateEditor() {
 
 			base.OnValidateEditor();
 			
-			if (this.gameObject.activeSelf == false) return;
+			//if (this.gameObject.activeSelf == false) return;
 
 			#region source macros UI.Windows.Editor.ImageComponent
 			{
@@ -860,6 +964,46 @@ namespace UnityEngine.UI.Windows.Components {
 
 				this.imageCrossFadeModule.Init(this);
 				this.imageCrossFadeModule.OnValidateEditor();
+
+				/*if (this.image == null || this.image.GetComponent<UIFlippable>() == null ||
+					this.rawImage == null || this.rawImage.GetComponent<UIFlippable>() == null) {
+
+					if (this.flippableEffect != null) ME.EditorUtilities.Destroy(this.flippableEffect, () => { this.flippableEffect = null; });
+
+				}
+
+				if (this.rawImage == null || this.rawImage.GetComponent<UIPreserveAspect>() == null) {
+
+					if (this.preserveAspectEffect != null) ME.EditorUtilities.Destroy(this.preserveAspectEffect, () => { this.preserveAspectEffect = null; });
+
+				}*/
+
+				var gr = (this.rawImage as Graphic ?? this.image as Graphic);
+				if (gr != null) {
+
+					this.flippableEffect = gr.GetComponent<UIFlippable>();
+					if (this.flippableEffect == null) this.flippableEffect = gr.gameObject.AddComponent<UIFlippable>();
+					if (this.flippableEffect != null) {
+
+						this.flippableEffect.horizontal = this.flipHorizontal;
+						this.flippableEffect.vertical = this.flipVertical;
+
+					}
+
+				}
+
+				if (this.rawImage != null) {
+
+					this.preserveAspectEffect = this.rawImage.GetComponent<UIPreserveAspect>();
+					if (this.preserveAspectEffect == null) this.preserveAspectEffect = this.rawImage.gameObject.AddComponent<UIPreserveAspect>();
+					if (this.preserveAspectEffect != null) {
+
+						this.preserveAspectEffect.preserveAspect = this.preserveAspect;
+						this.preserveAspectEffect.rawImage = this.rawImage;
+
+					}
+
+				}
 
 			}
 			#endregion

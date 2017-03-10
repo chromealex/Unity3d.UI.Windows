@@ -131,10 +131,7 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 22511332}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}

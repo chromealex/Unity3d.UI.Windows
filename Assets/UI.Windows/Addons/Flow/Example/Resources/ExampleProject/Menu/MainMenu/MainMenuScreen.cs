@@ -36,11 +36,15 @@ namespace ExampleProject.UI.Menu.MainMenu {
 
 			this.FlowHideFunctionLoader((routes) => {
 
+				#if !NO_WS_CLEANUP
 				WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: () => {
-
+				#else
+				WindowSystem.HideAll(except: (WindowBase)null, callback: () => {
+				#endif
+					
 					routes.FlowGameplayView(side);
 
-				});
+				}, forceAll: false, immediately: true);
 
 			});
 

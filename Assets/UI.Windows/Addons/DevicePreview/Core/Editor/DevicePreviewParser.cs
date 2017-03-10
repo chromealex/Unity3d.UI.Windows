@@ -90,7 +90,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 			output.Clear();
 
-			var data = Resources.Load("UI.Windows/DevicePreview/" + file) as TextAsset;
+			var data = UnityEngine.Resources.Load("UI.Windows/DevicePreview/" + file) as TextAsset;
 			if (data != null) {
 
 				var lines = data.text.Split('\n');

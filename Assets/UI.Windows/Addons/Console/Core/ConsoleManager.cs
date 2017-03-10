@@ -9,6 +9,9 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 	
 	public class ConsoleManager : ServiceManager<ConsoleManager> {
 
+		public const int TOUCH_COUNT_TO_OPEN = 7;
+		public const int TOUCH_COUNT_TO_CLOSE = 3;
+
 		public override string GetServiceName() {
 
 			return "Console";
@@ -57,12 +60,6 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
-		public static ConsoleManager GetInstance() {
-
-			return ConsoleManager.instance;
-
-		}
-
 		public void OnDestroy() {
 
 			if (this.screen != null) {
@@ -78,23 +75,45 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 			if (this.screen != null) {
 
 				#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8
-				if (UnityEngine.Input.touchCount == 4) {
+				if (UnityEngine.Input.touchCount > 0) {
 
-					if (this.state == false) {
+					var failed = false;
+					for (int i = 0; i < UnityEngine.Input.touchCount; ++i) {
 
-						this.state = true;
-						this.Show();
+						var touch = UnityEngine.Input.GetTouch(i);
+						if (touch.phase != TouchPhase.Moved &&
+							touch.phase != TouchPhase.Stationary) {
+
+							failed = true;
+							break;
+
+						}
 
 					}
 
-				}
+					if (failed == false) {
 
-				if (UnityEngine.Input.touchCount == 3) {
+						if (UnityEngine.Input.touchCount == ConsoleManager.TOUCH_COUNT_TO_OPEN) {
 
-					if (this.state == true) {
+							if (this.state == false) {
 
-						this.state = false;
-						this.Hide();
+								this.state = true;
+								this.Show();
+
+							}
+
+						}
+
+						if (UnityEngine.Input.touchCount == ConsoleManager.TOUCH_COUNT_TO_CLOSE) {
+
+							if (this.state == true) {
+
+								this.state = false;
+								this.Hide();
+
+							}
+
+						}
 
 					}
 
@@ -506,6 +525,8 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 				
 			}
 
+			cmd = cmd.Trim().ToLower();
+
 			//var screen = this.root.GetWindow<GameplayScreen>();
 
 			//string @namespaceBattle = "MW2.Managers.Console.SubModules.Battle";
@@ -587,7 +608,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 					    } catch (System.Exception exception) {
 					        
-                            Debug.LogWarning("Execute console command exception: " + exception.Message);
+							Debug.LogWarning(string.Format("Execute console command exception: {0}", exception.Message));
 
 					    }
 

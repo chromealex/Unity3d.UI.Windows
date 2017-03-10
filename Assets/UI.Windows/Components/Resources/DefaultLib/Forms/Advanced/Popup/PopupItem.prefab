@@ -32,6 +32,7 @@ GameObject:
   - 114: {fileID: 11494844}
   - 225: {fileID: 22538790}
   - 114: {fileID: 11420996}
+  - 114: {fileID: 11414938}
   m_Layer: 5
   m_Name: PopupItem
   m_TagString: Untagged
@@ -39,6 +40,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11414938
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 194842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa94093bf92fb4b1ba54e65a2bd6ae80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Horizontal: 0
+  m_Veritical: 0
 --- !u!114 &11420996
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51,6 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22538790}
   parameters:
     inDelay: 0
     outDelay: 0
@@ -174,6 +189,7 @@ MonoBehaviour:
     fadeDuration: 0.1
   transitionExtended: 1
   m_TargetGraphics: []
+  graphicItems: []
   rootButton: {fileID: 0}
   referenceButton: {fileID: 0}
   label: {fileID: 11494842}
@@ -184,6 +200,8 @@ MonoBehaviour:
     m_DisabledColor: {r: 0.5, g: 0.8551724, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
+  pointerUpClick: 0
+  pointerDownClick: 0
 --- !u!114 &11494846
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -236,15 +254,11 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11420996}
-  canvas: {fileID: 22538790}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
-  heatmapActive: 1
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -288,11 +302,6 @@ MonoBehaviour:
     explicit: 0
     next: {fileID: 0}
   button: {fileID: 11494844}
-  callback:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.Windows.Components.Events.ComponentEvent, Assembly-CSharp,
-      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   selectByDefault: 0
   setDefaultNavigationModeOnStart: 1
   defaultNavigationMode: 0
@@ -300,7 +309,11 @@ MonoBehaviour:
   hoverCursorDefaultOnInactive: 0
   image: {fileID: 11494846}
   rawImage: {fileID: 0}
+  flipHorizontal: 0
+  flipVertical: 0
   preserveAspect: 0
+  flippableEffect: {fileID: 11414938}
+  preserveAspectEffect: {fileID: 0}
   imageLocalizationKey:
     key: 
     parameters: 0
@@ -308,33 +321,56 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   playOnShow: 0
   loop: 0
+  imageResourceWait: 0
   imageResource:
     async: 1
     controlType: 0
     assetPath: 
+    assetBundleName: 
     resourcesPath: 
+    webPath: 
+    loadableWeb: 0
     loadableResource: 0
     loadableStream: 0
+    loadableAssetBundle: 0
     multiObjects: 0
     objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
     customResourcePath: 
     id: 0
+    cacheVersion: 0
     streamingAssetsPathStandalone: 
     streamingAssetsPathIOS: 
     streamingAssetsPathAndroid: 
     streamingAssetsPathPS4: 
     streamingAssetsPathXBOXONE: 
     streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
     tempObject: {fileID: 0}
   imageCrossFadeModule:
     enabled: 0
+    image: {fileID: 11494848}
     sourceImage: {fileID: 0}
     copyImage: {fileID: 0}
+    copyFlippableImage: {fileID: 0}
     sourceRawImage: {fileID: 0}
     copyRawImage: {fileID: 0}
+    copyFlippableRawImage: {fileID: 0}
+    copyPreserveAspectRawImage: {fileID: 0}
     duration: 0.5
     fadeIfWasNull: 0
+    fadeOutSource: 0
     easeType: 0
+    startColor: {r: 1, g: 1, b: 1, a: 0}
+    targetColor: {r: 1, g: 1, b: 1, a: 1}
   text: {fileID: 11494842}
   valueFormat: 0
   fullTextFormat: 0

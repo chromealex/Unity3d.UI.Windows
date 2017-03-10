@@ -23,8 +23,12 @@ namespace ExampleProject.UI.Other.Error {
 
 			this.button.SetCallback(() => {
 
+				#if !NO_WS_CLEANUP
 				WindowSystem.HideAllAndClean(except: (WindowBase)null, callback: () => {
-
+				#else
+				WindowSystem.HideAll(except: (WindowBase)null, callback: () => {
+				#endif
+					
 					WindowSystem.ShowRoot();
 
 				}, forceAll: true, immediately: true);

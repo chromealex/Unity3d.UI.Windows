@@ -12,6 +12,7 @@ using UnityEditor.UI.Windows.Plugins.Flow.Audio;
 using UnityEditorInternal;
 using UnityEngine.UI.Windows.Audio;
 using UnityEditor.UI.Windows.Audio;
+using UnityEngine.UI.Windows;
 
 namespace UnityEditor.UI.Windows.Plugins.Audio {
 
@@ -71,7 +72,7 @@ namespace UnityEditor.UI.Windows.Plugins.Audio {
 				    window.IsShowDefault() == true)
 					return;
 
-				var screen = window.GetScreen();
+				var screen = window.GetScreen().Load<WindowBase>();
 				if (screen != null) {
 
 					GUILayout.BeginHorizontal();

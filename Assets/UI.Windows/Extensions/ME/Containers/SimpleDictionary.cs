@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -98,19 +98,31 @@ namespace ME {
 
             if (array == null) {
                 
-                throw new ArgumentNullException();
+                throw new System.ArgumentNullException();
 
             }
 
             if (arrayIndex < 0 || arrayIndex > array.Length)
-                throw new ArgumentOutOfRangeException();
+                throw new System.ArgumentOutOfRangeException();
 
             if (array.Length - arrayIndex < this.Count)
-                throw new ArgumentException("Array too small");
+                throw new System.ArgumentException("Array too small");
 
             for (var i = 0; i < this.Count; ++i) {
 
                 array[i + arrayIndex] = new KeyValuePair<K, V>(this.keys[i], this.values[i]);
+
+            }
+
+        }
+
+        public void RemoveAll(System.Func<KeyValuePair<K, V>, bool> predicate) {
+
+            for (var i = this.Count - 1; i >= 0; --i) {
+                
+                if (predicate(this.GetAt(i)) == false) continue;
+
+                this.RemoveAt(i);
 
             }
 
@@ -237,6 +249,13 @@ namespace ME {
 
         }
 
+        public void RemoveAt(int index) {
+
+            this.keys.RemoveAt(index);
+            this.values.RemoveAt(index);
+
+        }
+
         public bool IsFixedSize { get { return false; } }
         bool IDictionary.IsReadOnly { get { return false; } }
 
@@ -250,7 +269,7 @@ namespace ME {
             var index = this.IndexOf(key);
             if (index >= 0) {
                 
-				throw new DuplicateWaitObjectException();
+				throw new System.DuplicateWaitObjectException();
 
             }
 
@@ -305,7 +324,7 @@ namespace ME {
             var index = this.IndexOf(key);
             if (index < 0) {
 
-                throw new ArgumentException();
+                throw new System.ArgumentException();
 
             }
 
@@ -343,32 +362,34 @@ namespace ME {
 
         }
 
-        ICollection IDictionary.Keys { get { return this.keys; } }
-        ICollection IDictionary.Values { get { return this.values; } }
+        public List<K> Keys { get { return this.keys; } }
+        public List<V> Values { get { return this.values; } }
+
+        ICollection IDictionary.Keys { get { return this.Keys; } }
+        ICollection IDictionary.Values { get { return this.Values; } }
         
-        ICollection<K> IDictionary<K, V>.Keys { get { return this.keys; } }
-        ICollection<V> IDictionary<K, V>.Values { get { return this.values; } }
+        ICollection<K> IDictionary<K, V>.Keys { get { return this.Keys; } }
+        ICollection<V> IDictionary<K, V>.Values { get { return this.Values; } }
 
-
-        IEnumerator IEnumerable.GetEnumerator() {
+        System.Collections.IEnumerator IEnumerable.GetEnumerator() {
 
             return this.GetEnumerator();
 
         }
 
-        public void CopyTo(Array array, int index) {
+        public void CopyTo(System.Array array, int index) {
 
             if (array == null) {
 
-                throw new ArgumentNullException();
+                throw new System.ArgumentNullException();
 
             }
 
             if (index < 0 || index > array.Length)
-                throw new ArgumentOutOfRangeException();
+                throw new System.ArgumentOutOfRangeException();
 
             if (array.Length - index < this.Count)
-                throw new ArgumentException("Array too small");
+                throw new System.ArgumentException("Array too small");
 
             for (var i = 0; i < this.Count; ++i) {
 

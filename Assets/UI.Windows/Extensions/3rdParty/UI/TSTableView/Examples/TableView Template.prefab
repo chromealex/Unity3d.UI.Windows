@@ -148,22 +148,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noContentContainer: {fileID: 0}
   hasContentContainer: {fileID: 0}
-  onCellVisibilityChanged:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: TableViewCellVisibilityChanged
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: Tacticsoft.TableView+CellVisibilityChangeEvent, Assembly-CSharp, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!114 &11446008
 MonoBehaviour:
   m_ObjectHideFlags: 1

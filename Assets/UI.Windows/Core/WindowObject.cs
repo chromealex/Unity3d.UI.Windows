@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Extensions;
+using UnityEngine.UI.Windows.Extensions;
 
 namespace UnityEngine.UI.Windows {
 
 	public interface IWindowObject {
 
+		void Setup(WindowBase window);
 		T GetWindow<T>() where T : WindowBase;
 		WindowBase GetWindow();
 		void HideCurrentWindow();
@@ -24,14 +27,52 @@ namespace UnityEngine.UI.Windows {
 		public int windowId;
 
 		[Header("Navigation")]
-		public NavigationGroup navigationGroup;
+		public NavigationGroup navigationGroup = new NavigationGroup();
 
-		internal virtual void Setup(WindowBase window) {
+		public virtual bool IsDestroyable() {
 			
-			this.window = window;
+			return true;
+			
+		}
 
-			var flowWindow = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow(this.window, runtime: true);
-			this.windowId = (flowWindow != null ? flowWindow.id : -1);
+		public virtual void OnDeinit(System.Action callback) {
+			
+			this.window = null;
+			if (this.navigationGroup != null) this.navigationGroup.Clear();
+			
+			if (this != null && this.IsDestroyable() == true) {
+				
+				//WindowObject.Destroy(this);
+				//WindowObject.Destroy(this.gameObject);
+				//Debug.LogWarning("RECYCLE: " + this.name);
+				this.Recycle();
+
+			}
+
+			WindowSystemResources.UnregisterObject(this);
+			WindowSystem.RemoveDebugWeakReference(this);
+
+			callback.Invoke();
+
+		}
+		
+		public virtual void Setup(WindowBase window) {
+
+			if (this.window != window) {
+
+				this.window = window;
+
+				var flowWindow = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow(this.window, runtime: true);
+				this.windowId = (flowWindow != null ? flowWindow.id : -1);
+				
+				if ((this is WindowModule) == false || (this as WindowModule).IsInstantiate() == true) {
+
+					WindowSystemResources.RegisterObject(this);
+					WindowSystem.AddDebugWeakReference(this);
+
+				}
+
+			}
 
 		}
 
@@ -68,6 +109,7 @@ namespace UnityEngine.UI.Windows {
 		public void OnValidate() {
 
 			if (Application.isPlaying == true) return;
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
 
 			this.OnValidateEditor();
 
@@ -79,7 +121,33 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		public virtual void OnValidateEditor() {
 
+			if (this.navigationGroup == null) this.navigationGroup = new NavigationGroup();
 			this.navigationGroup.OnValidate();
+
+		}
+
+		[ContextMenu("Create Canvas Linker")]
+		public void CreateCanvasLinker_EDITOR() {
+
+			this.CleanCanvasLinker_EDITOR();
+
+			var linker = this.gameObject.AddComponent<CanvasLinker>();
+			var canvas = this.gameObject.AddComponent<Canvas>();
+			var raycaster = this.gameObject.AddComponent<GraphicRaycaster>();
+
+			linker.canvas = canvas;
+			linker.raycaster = raycaster;
+			linker.windowObject = this;
+			linker.orderDelta = 1;
+
+		}
+
+		[ContextMenu("Clean Canvas Linker")]
+		public void CleanCanvasLinker_EDITOR() {
+
+			Component.DestroyImmediate(this.GetComponent<CanvasLinker>(), true);
+			Component.DestroyImmediate(this.GetComponent<GraphicRaycaster>(), true);
+			Component.DestroyImmediate(this.GetComponent<Canvas>(), true);
 
 		}
 		#endif

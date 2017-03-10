@@ -55,6 +55,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public CanvasGroup canvasGroup;
+
 		[Header("Popup Component")]
 		public LinkerComponent buttonWithText;
 		public LinkerComponent list;
@@ -119,9 +121,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnDeinit() {
-			
-			base.OnDeinit();
+		public override void OnDeinit(System.Action callback) {
+
+			base.OnDeinit(callback);
 
 			this.callback.RemoveAllListeners();
 			this.callbackButton.RemoveAllListeners();
@@ -138,15 +140,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		private void OnPressDown() {
+		private void OnPressDown(int id) {
 
 			if (this.opened == false) return;
 
-			var raycast = (EventSystem.current.currentInputModule as WindowSystemInputModule).GetCurrentRaycast();
+			var raycast = (EventSystem.current.currentInputModule as WindowSystemInputModule).GetCurrentRaycast(id);
 			var current = raycast.gameObject;
 
 			if (current == (this.label as Component).gameObject) return;
-			if (current == null || current.GetComponentsInParent<CanvasGroup>().Contains(this.list.canvas) == false) {
+			if (current == null || current.GetComponentsInParent<CanvasGroup>().Contains(this.canvasGroup) == false) {
 				
 				// Close
 				this.SetState(opened: false, immediately: false);
@@ -204,14 +206,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public virtual void SetCallback(UnityAction callback) {
+		public virtual void SetCallback(System.Action callback) {
 
 			this.callback.AddListenerDistinct(callback);
 			this.callbackButton.RemoveAllListeners();
 
 		}
 
-		public virtual void SetCallback(UnityAction<ButtonComponent> callback) {
+		public virtual void SetCallback(System.Action<ButtonComponent> callback) {
 
 			this.callbackButton.AddListenerDistinct(callback);
 			this.callback.RemoveAllListeners();
@@ -248,7 +250,7 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public void SetItems(int capacity, UnityAction<IComponent, int> onItem = null) {
+		public void SetItems(int capacity, System.Action<IComponent, int> onItem = null) {
 			
 			this.SetItems(capacity, onItem);
 			
@@ -260,7 +262,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetItems<T>(int capacity, UnityAction<T, int> onItem = null) where T : ITextComponent {
+		public void SetItems<T>(int capacity, System.Action<T, int> onItem = null) where T : ITextComponent {
 
 			this.items.BeginLoad();
 			this.items.SetItems<T>(capacity, (element, index) => {
@@ -366,6 +368,16 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 		}
+
+		#if UNITY_EDITOR
+		public override void OnValidateEditor() {
+
+			base.OnValidateEditor();
+
+			if (this.canvasGroup == null) this.canvasGroup = this.GetComponent<CanvasGroup>();
+
+		}
+		#endif
 
 	}
 	

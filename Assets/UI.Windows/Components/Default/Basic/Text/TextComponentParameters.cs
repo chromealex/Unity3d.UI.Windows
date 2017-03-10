@@ -41,9 +41,9 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P3) == true) component.SetValueFormat(this.format);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P16) == true) component.SetFullTextFormat(this.fullTextFormat);
 
-			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P4) == true) component.SetFont(this.font);
+			//if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P4) == true) component.SetFont(this.font);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P5) == true) component.SetFontSize(this.fontSize);
-			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P6) == true) component.SetFontStyle(this.fontStyle);
+			//if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P6) == true) component.SetFontStyle(this.fontStyle);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P7) == true) component.SetLineSpacing(this.lineSpacing);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P8) == true) component.SetRichText(this.richText);
 

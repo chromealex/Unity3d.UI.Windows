@@ -12,6 +12,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 	public class LocalizationSettings : ServiceSettings {
 
 		public string url;
+		public string eTag;
 		public List<LocalizationServiceItem> items = new List<LocalizationServiceItem>();
 		
 		public override void AddService(ServiceItem item) {

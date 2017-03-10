@@ -147,6 +147,8 @@ namespace UnityEditor.UI.Windows {
 		private bool processReconnection = false;
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, System.Action<WindowLayoutElement, Rect, bool> onElementGUI, List<WindowLayoutElement> highlighted) {
 
+			GUI.BeginClip(r);
+
 			var oldColor = GUI.color;
 			var c = Color.white;
 			c.a = 0.3f;
@@ -245,6 +247,8 @@ namespace UnityEditor.UI.Windows {
 				rect.y *= scaleFactor;
 				rect.x += r.x + r.width * 0.5f;
 				rect.y += r.y + r.height * 0.5f;
+				rect.x -= r.x;
+				rect.y -= r.y;
 				rect.width *= scaleFactor;
 				rect.height *= scaleFactor;
 
@@ -397,6 +401,8 @@ namespace UnityEditor.UI.Windows {
 			}
 
 			GUI.color = oldColor;
+
+			GUI.EndClip();
 
 		}
 

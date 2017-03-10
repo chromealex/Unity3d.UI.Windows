@@ -6,7 +6,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class ToggleComponent : ListComponent {
 
-		public ToggleGroup toggleGroup;
+		public ToggleGroupExtended toggleGroup;
 		public bool allowSwitchOff = false;
 		
 		private ComponentEvent<bool> callback = new ComponentEvent<bool>();
@@ -31,14 +31,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 		
-		public virtual void SetCallback(UnityAction<bool> callback) {
+		public virtual void SetCallback(System.Action<bool> callback) {
 			
 			this.callback.AddListenerDistinct(callback);
 			this.callbackButton.RemoveAllListeners();
 
 		}
 		
-		public virtual void SetCallback(UnityAction<ToggleItemComponent, bool> callback) {
+		public virtual void SetCallback(System.Action<ToggleItemComponent, bool> callback) {
 			
 			this.callbackButton.AddListenerDistinct(callback);
 			this.callback.RemoveAllListeners();

@@ -33,9 +33,19 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 		private string key;
 
 
-		public UIWService() {
+		public override void Awake() {
+
+			base.Awake();
+
 			net.log = logNetwork;
 			net.keepAlive = true;
+
+		}
+
+		public override bool IsSupported() {
+
+			return true;
+
 		}
 
 		public override AuthKeyPermissions GetAuthPermissions() {
@@ -51,7 +61,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 			
 		}
 
-		public override IEnumerator Auth(string key) {
+		public override System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
 
 			var request = "{\"key\": \"" + key + "\"}";
 			Debug.Log(this.GetServiceName() + " :: " + host);
@@ -106,7 +116,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 		}
 		#endif
 
-		public override IEnumerator GetData(int testId, System.Action<ABTestResult> onResult) {
+		public override System.Collections.Generic.IEnumerator<byte> GetData(int testId, System.Action<ABTestResult> onResult) {
 
 			var request = "{\"id\": " + testId + "}";
 
@@ -125,7 +135,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 
 		}
 
-		public override IEnumerator GetDataAll(System.Action<ABTestsResult> onResult) {
+		public override System.Collections.Generic.IEnumerator<byte> GetDataAll(System.Action<ABTestsResult> onResult) {
 
 			var request = "{}";
 

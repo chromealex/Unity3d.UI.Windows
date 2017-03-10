@@ -35,6 +35,99 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 	}
 
 	[System.Serializable]
+	public class WindowItem {
+
+		[ReadOnly] public int windowId;
+		[ReadOnly] public string resourcesPath;
+		[System.NonSerialized]
+		[ReadOnly] public WindowBase loaded;
+
+		public T Load<T>() where T : WindowBase {
+
+			if (this.loaded == null) {
+				
+				var asset = UnityEngine.Resources.Load<T>(this.resourcesPath);
+				if (asset != null) this.windowId = asset.windowId;
+				return asset;
+				this.loaded = asset;
+
+			}
+
+			return this.loaded as T;
+			
+		}
+
+		public void Unload() {
+
+			UnityEngine.Resources.UnloadAsset(this.loaded);
+			this.loaded = null;
+
+		}
+
+		public System.Type GetWindowType() {
+
+			if (this.loaded == null) {
+
+				var asset = UnityEngine.Resources.Load<WindowBase>(this.resourcesPath);
+				if (asset != null) return asset.GetType();
+				return null;
+
+			}
+
+			return this.loaded.GetType();
+
+		}
+
+		public bool IsType<T>() where T : Object {
+
+			if (this.loaded == null) {
+
+				var asset = UnityEngine.Resources.Load<T>(this.resourcesPath);
+				if (asset != null) return true;
+				return false;
+
+			}
+
+			return this.loaded is T;
+
+		}
+
+		#if UNITY_EDITOR
+		[Header("Editor Only")]
+		public WindowBase window;
+		[ReadOnly] public string name;
+		[ReadOnly] public bool loadableResource;
+		[ReadOnly] public string assetPath;
+
+		public bool IsEmpty() {
+
+			return this.window == null;
+
+		}
+
+		public void Validate() {
+
+			if (this.window != null) {
+
+				this.assetPath = UnityEditor.AssetDatabase.GetAssetPath(this.window);
+				this.resourcesPath = ResourceBase.GetResourcePathFromAssetPath(this.assetPath);
+				this.loadableResource = (string.IsNullOrEmpty(this.resourcesPath) == false);
+				this.windowId = this.window.windowId;
+				this.name = this.window.name;
+
+			} else {
+
+				this.resourcesPath = string.Empty;
+				this.loadableResource = false;
+
+			}
+
+		}
+		#endif
+
+	}
+
+	[System.Serializable]
 	public class FlowWindow : ScriptableObject {
 		
 		private const int STATES_COUNT = 3;
@@ -146,12 +239,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		#if UNITY_EDITOR
 		public UnityEditor.Editor audioEditor;
-		#endif
+#endif
 
-		//[SerializeField]
-		//private WindowBase screen;
-		[SerializeField]
-		private WindowBase[] screens;
+        //[SerializeField]
+        //private WindowBase screen;
+#if UNITY_EDITOR
+        [SerializeField]
+		private WindowItem[] screens;
+#endif
+        [SerializeField]
+		private List<WindowItem> runtimeScreens = new List<WindowItem>();
 		public int selectedScreenIndex = 0;
 
 		public bool isDirty = false;
@@ -299,15 +396,16 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 			WindowLayoutElement.waitForComponentConnectionTemp = false;
 
-			var screen = this.GetScreen() as LayoutWindowType;
-			if (this.GetScreen() != null && (this.GetScreen() is LayoutWindowType) == false) {
+			var screenInfo = this.GetScreen();
+			if (screenInfo != null && screenInfo.IsEmpty() == false && screenInfo.IsType<LayoutWindowType>() == false) {
 
 				UnityEditor.EditorGUI.HelpBox(rect, "This window doesn't have `LayoutWindowType` inheritance.", UnityEditor.MessageType.Info);
 
 			} else {
+				
+				if (screenInfo != null && screenInfo.IsEmpty() == false && screenInfo.Load<LayoutWindowType>().layout.layout != null) {
 
-				if (screen != null && screen.layout.layout != null) {
-
+					var screen = screenInfo.Load<LayoutWindowType>();
 					var layout = screen.layout.layout;
 					if (layout != null) {
 
@@ -336,9 +434,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 					} else {
 
-						if (screen != null) {
+						if (screenInfo != null && screenInfo.IsEmpty() == false) {
 
-							var layout = screen.layout.layout;
+							var layout = screenInfo.Load<LayoutWindowType>().layout.layout;
 							if (layout == null) {
 								
 								GUI.BeginGroup(rect);
@@ -386,9 +484,12 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		}
 		#endif
 
-		public void SetScreens(List<WindowBase> screens) {
+		public void SetScreens(List<WindowItem> screens) {
 
-			this.screens = screens.ToArray();
+#if UNITY_EDITOR
+            this.screens = screens.ToArray();
+#endif
+			this.runtimeScreens = screens.ToList();
 
 			#if UNITY_EDITOR
 			UnityEditor.EditorUtility.SetDirty(this);
@@ -396,18 +497,30 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		}
 
-		public WindowBase[] GetScreens() {
+		public List<WindowItem> GetScreens() {
 
-			return this.screens;
+			// return this.screens;
+		    return this.runtimeScreens;
 
 		}
 
-		public WindowBase GetScreen(bool runtime = false) {
-			
-			if (this.storeType == StoreType.ReUseScreen) {
+		private WindowItem emptyResult = new WindowItem();
+
+		public WindowItem GetScreen(bool runtime = false) {
+
+#if UNITY_EDITOR
+            var screens = runtime == true ? this.runtimeScreens : ((this.screens != null) ? this.screens.ToList() : null);
+#else
+            var screens = this.runtimeScreens;
+#endif
+
+			var emptyResult = this.emptyResult;
+			if (runtime == true) emptyResult = null;
+
+            if (this.storeType == StoreType.ReUseScreen) {
 
 				var win = FlowSystem.GetWindow(this.screenWindowId);
-				if (win == null) return null;
+				if (win == null) return emptyResult;
 
 				return win.GetScreen(runtime);
 
@@ -419,7 +532,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 				if (func != null) {
 
 					var win = FlowSystem.GetWindow(func.functionExitId);
-					if (win == null) return null;
+					if (win == null) return emptyResult;
 
 					return win.GetScreen(runtime);
 
@@ -427,28 +540,28 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 			}
 
-			if (this.screens == null || this.screens.Length == 0) {
+			if (screens == null || screens.Count == 0) {
 
-				#if UNITY_EDITOR
+#if UNITY_EDITOR
 				if (Application.isPlaying == false) {
 
 					this.RefreshScreen();
 
 				}
-				#endif
+#endif
 
-				if (this.screens == null) return null;
+				if (screens == null || screens.Count == 0) return emptyResult;
 
-				return this.screens.FirstOrDefault();
+				return screens.FirstOrDefault();
 
 			}
 
-			if (runtime == true) {
+			/*if (runtime == true) {
 
 				WindowBase target = null;
-				for (int i = 0; i < this.screens.Length; ++i) {
+				for (int i = 0; i < screens.Count; ++i) {
 
-					var screen = this.screens[i];
+					var screen = screens[i];
 					if (screen.targetPreferences.GetRunOnAnyTarget() == false) {
 
 						if (screen.targetPreferences.IsValid() == true) {
@@ -471,16 +584,17 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 				//var screen = this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == false && x.targetPreferences.IsValid() == true);
 				//if (screen == null) return this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == true);
 
-			}
+			}*/
 
-			this.selectedScreenIndex = Mathf.Clamp(this.selectedScreenIndex, 0, this.screens.Length - 1);
-			return this.screens[this.selectedScreenIndex];
+			this.selectedScreenIndex = Mathf.Clamp(this.selectedScreenIndex, 0, screens.Count - 1);
+			return screens[this.selectedScreenIndex];
 
 		}
 
+		#if UNITY_EDITOR
 		public WindowLayoutElement GetLayoutComponent(LayoutTag tag) {
 
-			var screen = this.GetScreen() as LayoutWindowType;
+			var screen = this.GetScreen().Load<LayoutWindowType>();
 			if (screen != null && screen.layout.layout != null) {
 				
 				return screen.layout.layout.GetRootByTag(tag);
@@ -490,6 +604,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			return null;
 
 		}
+		#endif
 
 		public void AddTag(FlowTag tag) {
 			
@@ -860,7 +975,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			
 		}
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		public bool AlreadyAttached(int id, int index = 0, WindowLayoutElement component = null) {
 			
 			if (component != null) {
@@ -961,31 +1076,39 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			
 			var window = this;
 
-			if (window.compiled == true) {
+		    if (window.compiled == true) {
 
-				var list = new List<WindowBase>();
+		        var list = new List<WindowItem>();
 
-				var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] { window.compiledDirectory.Trim('/') + "/Screens" });
-				foreach (var file in files) {
-					
-					var path = UnityEditor.AssetDatabase.GUIDToAssetPath(file);
-					var go = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
-					if (go != null) {
-						
-						var screen = go.GetComponent<WindowBase>();
-						if (screen != null) {
+		        var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] {window.compiledDirectory.Trim('/') + "/Screens"});
+		        foreach (var file in files) {
 
-							list.Add(screen);
+		            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(file);
+		            var go = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof (GameObject)) as GameObject;
+		            if (go != null) {
 
-						}
+		                var screen = go.GetComponent<WindowBase>();
+		                if (screen != null) {
 
-					}
+							var item = new WindowItem();
+							item.window = screen;
+							item.Validate();
+		                    list.Add(item);
 
-				}
+		                }
 
-				window.SetScreens(list);
+		            }
 
-			}
+		        }
+
+		        window.SetScreens(list);
+
+		    } else {
+
+				this.screens = new WindowItem[0];
+				this.runtimeScreens = new List<WindowItem>();
+
+		    }
 
 		}
 
@@ -1064,7 +1187,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 			}
 
 		}
-		#endif
+#endif
 
 		public override string ToString() {
 
@@ -1072,14 +1195,85 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		}
 
-		#if UNITY_EDITOR
+#if UNITY_EDITOR
 		[UnityEditor.MenuItem("Assets/Create/UI Windows/Flow/Window")]
 		public static FlowWindow CreateInstance() {
 			
 			return ME.EditorUtilities.CreateAsset<FlowWindow>();
 			
 		}
-		#endif
+#endif
+
+	    public void FilterRuntimeScreens() {
+
+            /*if (runtime == true) {
+
+				WindowBase target = null;
+				for (int i = 0; i < screens.Count; ++i) {
+
+					var screen = screens[i];
+					if (screen.targetPreferences.GetRunOnAnyTarget() == false) {
+
+						if (screen.targetPreferences.IsValid() == true) {
+
+							target = screen;
+							break;
+
+						}
+
+					} else {
+
+						target = screen;
+
+					}
+
+				}
+
+				return target;
+
+				//var screen = this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == false && x.targetPreferences.IsValid() == true);
+				//if (screen == null) return this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == true);
+
+			}*/
+
+#if true
+
+	        var screens = this.runtimeScreens.Where(x => x != null);
+			var screen = screens.FirstOrDefault(x => x.Load<WindowBase>().targetPreferences.IsValid() == true) ?? screens.FirstOrDefault(x => x.Load<WindowBase>().targetPreferences.GetRunOnAnyTarget() == true);
+            this.runtimeScreens = new List<WindowItem>();
+	        if (screen != null) {
+
+				this.runtimeScreens.Add(screen);
+
+            }
+
+#else
+            this.runtimeScreens = this.runtimeScreens.FirstOrDefault(x => x.targetPreferences.IsValid() == true)
+
+            var res = new List<WindowBase>();
+	        for (var i = 0; i < this.runtimeScreens.Count; ++i) {
+
+                var screen = this.runtimeScreens[i];
+                if (screen.targetPreferences.GetRunOnAnyTarget() == false) {
+
+                    if (screen.targetPreferences.IsValid() == true) {
+
+                        res.Add(screen);
+
+                    }
+
+                } else {
+
+                    res.Add(screen);
+
+                }
+
+            }
+
+            this.runtimeScreens = res;
+#endif
+
+        }
 
 	}
 

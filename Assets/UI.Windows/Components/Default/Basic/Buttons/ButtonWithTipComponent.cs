@@ -105,11 +105,11 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 		
-		public override void OnDeinit() {
+		public override void OnDeinit(System.Action callback) {
 
 			this.SetState(state: false);
-			
-			base.OnDeinit();
+
+			base.OnDeinit(callback);
 
 		}
 

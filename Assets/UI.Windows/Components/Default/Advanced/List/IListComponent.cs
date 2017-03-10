@@ -3,6 +3,13 @@ using System.Collections;
 
 namespace UnityEngine.UI.Windows.Components {
 
+	public interface IListViewHandler {
+
+		void OnItemBecomeVisible();
+		void OnItemBecomeInvisible();
+
+	}
+
 	public interface IListViewDataSource {
 
 		/// <summary>

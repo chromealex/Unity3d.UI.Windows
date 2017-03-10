@@ -108,8 +108,13 @@ namespace UnityEngine.UI.Windows {
 
 			for (int i = 0; i < this.elements.Count; ++i) {
 
-				this.elements[i].Setup(this.GetWindow());
-				this.elements[i].SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
+				var element = this.elements[i];
+				if (element.autoRegisterInRoot == true) {
+					
+					element.Setup(this.GetWindow());
+					element.SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
+
+				}
 
 			}
 
@@ -349,6 +354,19 @@ namespace UnityEngine.UI.Windows {
 			CanvasUpdateRegistry.UnRegisterCanvasElementForRebuild(this);
 
 			base.OnHideEnd();
+
+		}
+
+		public override void OnDeinit(System.Action callback) {
+
+			ME.Utilities.CallInSequence<System.Action<System.Action>>(callback, /*waitPrevious:*/ true, (item, c) => {
+
+				item.Invoke(c);
+
+			},
+				this.root.OnDeinit,
+				base.OnDeinit
+			);
 
 		}
 

@@ -28,6 +28,16 @@ namespace UnityEngine.UI.Windows {
 
 		private RectTransform _rectTransform;
 
+		public override void OnDeinit(System.Action callback) {
+
+			base.OnDeinit(callback);
+
+			this._rectTransform = null;
+			this.rootComponent = null;
+			//this.subComponents = null;
+
+		}
+
 		public RectTransform GetRectTransform() {
 
 			if (this._rectTransform == null) this._rectTransform = this.transform as RectTransform;
@@ -103,12 +113,26 @@ namespace UnityEngine.UI.Windows {
 				this.currentState == WindowObjectState.Shown) {
 
 				if (go != null) go.SetActive(true);
+				/*if (go != null) {
+
+					//var r = go.GetComponent<CanvasRenderer>();
+					//if (r != null) r.EnableRectClipping(new Rect(0f, 0f, 0f, 0f));
+					go.transform.localScale = Vector3.one;
+
+				}*/
 
 			} else if (this.currentState == WindowObjectState.Hidden ||
 			           this.currentState == WindowObjectState.NotInitialized ||
 			           this.currentState == WindowObjectState.Initializing) {
 				
-				if (go != null && this.NeedToInactive() == true && dontInactivate == false) go.SetActive(false);
+				if (go != null && this.NeedToInactive() == true && dontInactivate == false) {
+
+					//var r = go.GetComponent<CanvasRenderer>();
+					//if (r != null) r.DisableRectClipping();
+					//go.transform.localScale = Vector3.zero;
+					go.SetActive(false);
+
+				}
 
 			}
 
@@ -157,13 +181,13 @@ namespace UnityEngine.UI.Windows {
 
         }
 
-        internal virtual void Setup(WindowLayoutBase layoutRoot) {
+		public virtual void Setup(WindowLayoutBase layoutRoot) {
 
             for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].Setup(layoutRoot);
 
         }
 
-        internal override void Setup(WindowBase window) {
+        public override void Setup(WindowBase window) {
 
             base.Setup(window);
 
@@ -171,24 +195,36 @@ namespace UnityEngine.UI.Windows {
 
         }
 
+		public virtual void OnLocalizationChanged() {
+
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnLocalizationChanged();
+
+		}
+
+		public virtual void OnManualEvent<T>(T data) where T : IManualEvent {
+
+			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnManualEvent<T>(data);
+
+		}
+
 		/// <summary>
 		/// Raises the window open/close event.
 		/// Fires before OnShowBegin/OnHideBegin, but after OnInit/OnParametersPass/OnEmptyPass
 		/// </summary>
 		#region OnWindowOpen/Close
-		public virtual void DoWindowActive() {
+		void IWindowEventsController.DoWindowActive() {
 
 			this.OnWindowActive();
 
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowActive();
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowActive();
 
 		}
 
-		public virtual void DoWindowInactive() {
+		void IWindowEventsController.DoWindowInactive() {
 
 			this.OnWindowInactive();
 
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowInactive();
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowInactive();
 
 		}
 
@@ -201,19 +237,19 @@ namespace UnityEngine.UI.Windows {
 		/// Fires before OnShowBegin/OnHideBegin, but after OnInit/OnParametersPass/OnEmptyPass
 		/// </summary>
 		#region OnWindowOpen/Close
-		public virtual void DoWindowOpen() {
+		void IWindowEventsController.DoWindowOpen() {
 			
 			this.OnWindowOpen();
 			
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowOpen();
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowOpen();
 			
 		}
 		
-		public virtual void DoWindowClose() {
+		void IWindowEventsController.DoWindowClose() {
 			
 			this.OnWindowClose();
 			
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowClose();
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowClose();
 			
 		}
 
@@ -221,28 +257,16 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnWindowClose() {}
 		#endregion
 
-		public virtual void OnLocalizationChanged() {
-			
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnLocalizationChanged();
-
-		}
-		
-		public virtual void OnManualEvent<T>(T data) where T : IManualEvent {
-			
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].OnManualEvent<T>(data);
-
-		}
-
 		#region Base Events
 	    /// <summary>
 	    /// Raises the init event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-	    public virtual void DoInit() {
+		void IWindowEventsController.DoInit() {
 			
 			this.SetComponentState(WindowObjectState.Initializing);
 
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoInit();
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoInit();
 
 			this.SetComponentState(WindowObjectState.Initialized);
 			this.OnInit();
@@ -255,14 +279,20 @@ namespace UnityEngine.UI.Windows {
 	    /// Raises the deinit event.
 	    /// You can override this method but call it's base.
 	    /// </summary>
-        public virtual void DoDeinit() {
+		void IWindowEventsController.DoDeinit(System.Action callback) {
 			
 			this.SetComponentState(WindowObjectState.Deinitializing);
 
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoDeinit();
-			
-			this.SetComponentState(WindowObjectState.NotInitialized);
-			this.OnDeinit();
+			ME.Utilities.CallInSequence(() => {
+
+				this.SetComponentState(WindowObjectState.NotInitialized);
+				this.OnDeinit(callback);
+
+			},
+				this.subComponents.ToArray(),
+				(item, cb) => (item as IWindowEventsController).DoDeinit(cb),
+				waitPrevious: true
+			);
 
         }
 
@@ -275,7 +305,7 @@ namespace UnityEngine.UI.Windows {
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			if (includeChilds == true) {
 
-				for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoShowEnd(parameters);
+				for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoShowEnd(parameters);
 
 			}
 
@@ -294,7 +324,7 @@ namespace UnityEngine.UI.Windows {
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			if (includeChilds == true) {
 
-				for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoHideEnd(parameters);
+				for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoHideEnd(parameters);
 
 			}
 
@@ -303,27 +333,18 @@ namespace UnityEngine.UI.Windows {
 			this.OnHideEnd(parameters);
 
 	    }
-		
-		public void DoShowBegin(System.Action callback) {
-
-			this.DoShowBegin(AppearanceParameters.Default().ReplaceCallback(callback: callback));
-
-		}
 
 		public virtual void DoShowBegin(AppearanceParameters parameters) {
 			
 			this.SetComponentState(WindowObjectState.Showing);
 			this.OnShowBegin();
 			this.OnShowBegin(parameters);
-			#pragma warning disable
-			this.OnShowBegin(parameters.callback, parameters.resetAnimation);
-			#pragma warning restore
-			
+
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			if (includeChilds == true) {
 
 				var callback = parameters.callback;
-				ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoShowBegin(parameters.ReplaceCallback(cb)));
+				ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => (item as IWindowEventsController).DoShowBegin(parameters.ReplaceCallback(cb)));
 
 			} else {
 
@@ -331,12 +352,6 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-		}
-		
-		public void DoHideBegin(System.Action callback) {
-			
-			this.DoHideBegin(AppearanceParameters.Default().ReplaceCallback(callback: callback));
-			
 		}
 
 		public virtual void DoHideBegin(AppearanceParameters parameters) {
@@ -344,15 +359,12 @@ namespace UnityEngine.UI.Windows {
 			this.SetComponentState(WindowObjectState.Hiding);
 			this.OnHideBegin();
 			this.OnHideBegin(parameters);
-			#pragma warning disable
-			this.OnHideBegin(parameters.callback, parameters.immediately);
-			#pragma warning restore
 
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			if (includeChilds == true) {
 
 				var callback = parameters.callback;
-				ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => item.DoHideBegin(parameters.ReplaceCallback(cb)));
+				ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => (item as IWindowEventsController).DoHideBegin(parameters.ReplaceCallback(cb)));
 
 			} else {
 
@@ -362,16 +374,31 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public virtual void DoWindowUnload() {
+		void IWindowEventsController.DoWindowUnload() {
 
-			for (int i = 0; i < this.subComponents.Count; ++i) this.subComponents[i].DoWindowUnload();
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowUnload();
 
 			this.OnWindowUnload();
 
 		}
 
+		public virtual void DoLoad(bool async, System.Action<WindowObjectElement> onItem, System.Action callback) {
+
+			ME.Utilities.CallInSequence(callback, this.subComponents, (item, cb) => {
+
+				item.DoLoad(async, null, () => {
+
+					if (onItem != null) onItem.Invoke(item);
+					cb.Invoke();
+
+				});
+
+			}, waitPrevious: async); 
+
+		}
+
 		public virtual void OnInit() {}
-		public virtual void OnDeinit() {}
+		//public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
 		public virtual void OnHideEnd() {}
 		public virtual void OnShowEnd(AppearanceParameters parameters) {}
@@ -381,11 +408,6 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnShowBegin(AppearanceParameters parameters) {}
 		public virtual void OnHideBegin(AppearanceParameters parameters) {}
 		public virtual void OnWindowUnload() {}
-
-		[System.Obsolete("Use OnShowBegin with AppearanceParameters or OnShowBegin without parameters")]
-		public virtual void OnShowBegin(System.Action callback, bool resetAnimation = true) {}
-		[System.Obsolete("Use OnHideBegin with AppearanceParameters or OnHideBegin without parameters")]
-		public virtual void OnHideBegin(System.Action callback, bool immediately = false) {}
 		#endregion
 
         /// <summary>
@@ -408,13 +430,19 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) return;
+			#endif
+
+			var controller = (subComponent as IWindowEventsController);
+
 			switch (this.GetComponentState()) {
 				
 				case WindowObjectState.Hiding:
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.DoInit();
+						controller.DoInit();
 						subComponent.OnWindowActive();
 						
 					}
@@ -427,7 +455,7 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.DoInit();
+						controller.DoInit();
 						subComponent.OnWindowActive();
 						
 					}
@@ -441,7 +469,7 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.DoInit();
+						controller.DoInit();
 						subComponent.OnWindowActive();
 						
 					}
@@ -454,14 +482,14 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.DoInit();
+						controller.DoInit();
 						subComponent.OnWindowActive();
 						
 					}
 
 					if (subComponent.showOnStart == true) {
 
-						subComponent.DoShowBegin(AppearanceParameters.Default());
+						controller.DoShowBegin(AppearanceParameters.Default());
 
 					}
 
@@ -473,16 +501,16 @@ namespace UnityEngine.UI.Windows {
 					
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
-						subComponent.DoInit();
+						controller.DoInit();
 						subComponent.OnWindowActive();
 						
 					}
 
 					if (subComponent.showOnStart == true) {
 
-						subComponent.DoShowBegin(AppearanceParameters.Default().ReplaceCallback(() => {
+						controller.DoShowBegin(AppearanceParameters.Default().ReplaceCallback(() => {
 
-							subComponent.DoShowEnd(AppearanceParameters.Default());
+							controller.DoShowEnd(AppearanceParameters.Default());
 
 	                    }));
 
@@ -507,9 +535,9 @@ namespace UnityEngine.UI.Windows {
         /// <param name="subComponent">Sub component.</param>
 		public virtual void UnregisterSubComponent(WindowObjectElement subComponent, System.Action callback = null, bool immediately = true) {
 
-#if UNITY_EDITOR
+			#if UNITY_EDITOR
 			if (Application.isPlaying == false) return;
-#endif
+			#endif
 
 			var sendCallback = true;
 
@@ -518,45 +546,47 @@ namespace UnityEngine.UI.Windows {
 			subComponent.rootComponent = null;
 			this.subComponents.Remove(subComponent);
 
+			var controller = (subComponent as IWindowEventsController);
+
 			switch (subComponent.GetComponentState()) {
 
 				case WindowObjectState.Showing:
-                case WindowObjectState.Shown:
+				case WindowObjectState.Shown:
 
                     // after OnShowEnd
-					subComponent.DoWindowClose();
-					subComponent.DoWindowInactive();
-					subComponent.DoHideBegin(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
-					subComponent.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
-					subComponent.DoDeinit();
+					controller.DoWindowClose();
+					controller.DoWindowInactive();
+					controller.DoHideBegin(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					controller.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					controller.DoWindowUnload();
+					controller.DoDeinit(() => { if (callback != null) callback(); });
 
 					sendCallback = false;
-					if (callback != null) callback();
 
                     break;
 
                 case WindowObjectState.Hiding:
 
 					// after OnHideBegin
-					subComponent.DoWindowClose();
-					subComponent.DoWindowInactive();
-					subComponent.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
-					subComponent.DoDeinit();
+					controller.DoWindowClose();
+					controller.DoWindowInactive();
+					controller.DoHideEnd(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceImmediately(immediately));
+					controller.DoWindowUnload();
+					controller.DoDeinit(() => { if (callback != null) callback(); });
 
 					sendCallback = false;
-					if (callback != null) callback();
 
                     break;
 
                 case WindowObjectState.Hidden:
 
 					// after OnHideEnd
-					subComponent.DoWindowClose();
-					subComponent.DoWindowInactive();
-					subComponent.DoDeinit();
+					controller.DoWindowClose();
+					controller.DoWindowInactive();
+					controller.DoWindowUnload();
+					controller.DoDeinit(() => { if (callback != null) callback(); });
 
 					sendCallback = false;
-					if (callback != null) callback();
 
                     break;
 

@@ -4,12 +4,23 @@ using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public interface ICarouselItem : IComponent {
+	public interface ICarouselItemCanvas : IComponent {
+
+		void SetSiblingIndex(int index);
+
+	}
+
+	public interface ICarouselItemAlpha : IComponent {
+
+		void SetCarouselAlpha(float value);
+
+	};
+
+	public interface ICarouselItem : ICarouselItemAlpha, IComponent {
 
 		void OnSelect(int index, System.Action<int> callback);
 		void OnElementSelected(int index);
 		void OnElementDeselected(int index);
-		void SetCarouselAlpha(float value);
 
 	};
 
@@ -20,10 +31,25 @@ namespace UnityEngine.UI.Windows.Components {
 			Vertical
 		};
 
+		public enum EaseFlags : byte {
+			None = 0x0,
+			Position = 0x1,
+			Rotation = 0x2,
+			Alpha = 0x4,
+			Scale = 0x8,
+		};
+
 		public bool interactable = true;
 
 		public RectTransform contentRect;
 		public float value = 0f;
+
+		[Header("Modules")]
+		public LinkerComponent dotsLinker;
+		public DotsComponent dots;
+
+		public LinkerComponent arrowsLinker;
+		public ArrowsComponent arrows;
 
 		[Header("Parameters")]
 		public Axis axis;
@@ -32,7 +58,9 @@ namespace UnityEngine.UI.Windows.Components {
 		public float maxAngle = 0f;
 		public Vector3 rotationAxis = new Vector3(1f, 1f, -0.5f);
 
-		[Header("Transitions")]
+		[Header("Easings")]
+		[BitMask(typeof(EaseFlags))]
+		public EaseFlags easeFlags = EaseFlags.Position | EaseFlags.Rotation | EaseFlags.Alpha | EaseFlags.Scale;
 		public ME.Ease.Type easePosition = ME.Ease.Type.InOutQuad;
 		public ME.Ease.Type easeRotation = ME.Ease.Type.InOutQuad;
 		public ME.Ease.Type easeAlpha = ME.Ease.Type.InOutQuad;
@@ -46,7 +74,30 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private int lastCurrentIndex = -1;
 		private bool isDragging;
-		private float targetValue;
+		private float lastDragSide = 0f;
+
+		private float _targetValue;
+		private float targetValue {
+
+			set {
+
+				if (this._targetValue != value) {
+
+					this._targetValue = value;
+					this.Clamp();
+
+				}
+
+			}
+
+			get {
+
+				return this._targetValue;
+
+			}
+
+		}
+
 		private float visualCount;
 		private float lastValue = -1f;
 
@@ -62,6 +113,24 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void BeginLoad() {
+
+			base.BeginLoad();
+
+			if (this.dots != null) this.dots.Hide(AppearanceParameters.Default().ReplaceImmediately(immediately: true).ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
+			if (this.arrows != null) this.arrows.Hide(AppearanceParameters.Default().ReplaceImmediately(immediately: true).ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
+
+		}
+
+		public override void EndLoad() {
+
+			base.EndLoad();
+
+			if (this.dots != null) this.dots.Show(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
+			if (this.arrows != null) this.arrows.Show(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
+
+		}
+
 		public override void OnNewItem(WindowComponent instance) {
 
 			base.OnNewItem(instance);
@@ -73,6 +142,9 @@ namespace UnityEngine.UI.Windows.Components {
 				carouselItem.OnSelect(index, this.MoveTo);
 
 			}
+
+			if (this.dots != null) this.dots.Refresh(this);
+			if (this.arrows != null) this.arrows.Refresh(this);
 
 			this.ArrangeItems();
 
@@ -162,6 +234,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnNavigate(WindowComponentNavigation source, NavigationSide side) {
+			
+		}
+
 		public override void Clear() {
 
 			base.Clear();
@@ -178,6 +254,18 @@ namespace UnityEngine.UI.Windows.Components {
 			this.visualCount = 0f;
 			this.lastCurrentIndex = -1;
 			this.lastValue = -1f;
+
+		}
+
+		public override void OnInit() {
+
+			base.OnInit();
+
+			if (this.dotsLinker != null) this.dotsLinker.Get(ref this.dots);
+			if (this.dots != null) this.dots.showOnStart = false;
+
+			if (this.arrowsLinker != null) this.arrowsLinker.Get(ref this.arrows);
+			if (this.arrows != null) this.arrows.showOnStart = false;
 
 		}
 
@@ -259,46 +347,47 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (normalizedValue <= 0f || normalizedValue >= 1f) {
 
-				elementRect.localScale = Vector3.zero;
-				elementRect.gameObject.SetActive(false);
+				this.SetActive(elementRect, false);
 				return false;
 
 			}
 
-			elementRect.gameObject.SetActive(true);
+			this.SetActive(elementRect, true);
 
 			var s = normalizedValue - 0.5f;
 			var abs = Mathf.Abs(s) * 2f;
 			var sign = Mathf.Sign(s);
 
-			var easePosition = ME.Ease.GetByType(this.easePosition);
-			var easeRotation = ME.Ease.GetByType(this.easeRotation);
-			var easeAlpha = ME.Ease.GetByType(this.easeAlpha);
-			var easeScale = ME.Ease.GetByType(this.easeScale);
+			var noInterpolationValue = 0f;
 
-			var normalizedValuePosition = sign * easePosition.interpolate(0f, 1f, abs, 1f);
+			var normalizedValuePosition = sign * ((this.easeFlags & EaseFlags.Position) != 0 ? ME.Ease.GetByType(this.easePosition).interpolate(0f, 1f, abs, 1f) : noInterpolationValue);
 			var pos = this.GetSize() * 0.5f * normalizedValuePosition;
 
-			var normalizedValueAlpha = easeAlpha.interpolate(0f, 1f, abs, 1f);
+			var normalizedValueAlpha = ((this.easeFlags & EaseFlags.Alpha) != 0 ? ME.Ease.GetByType(this.easeAlpha).interpolate(0f, 1f, abs, 1f) : noInterpolationValue);
 			var alpha = 1f - normalizedValueAlpha;
 
-			var normalizedValueScale = easeScale.interpolate(0f, 1f, abs, 1f);
+			var normalizedValueScale = ((this.easeFlags & EaseFlags.Scale) != 0 ? ME.Ease.GetByType(this.easeScale).interpolate(0f, 1f, abs, 1f) : noInterpolationValue);
 			var scale = 1f - normalizedValueScale;
 
-			var normalizedValueRotation = sign * easeRotation.interpolate(0f, 1f, abs, 1f);
+			var normalizedValueRotation = sign * ((this.easeFlags & EaseFlags.Rotation) != 0 ? ME.Ease.GetByType(this.easeRotation).interpolate(0f, 1f, abs, 1f) : noInterpolationValue);
 			var rotation = normalizedValueRotation;
 
 			elementRect.localScale = Vector3.one * scale;
 			elementRect.anchoredPosition3D = this.GetAxisVector3(pos);
 			elementRect.localRotation = Quaternion.AngleAxis(rotation * this.maxAngle, this.rotationAxis);
 
-			var carouselItem = (component as ICarouselItem);
-			if (carouselItem != null) {
+			var carouselItemAlpha = (component as ICarouselItemAlpha);
+			if (carouselItemAlpha != null) {
 
-				carouselItem.SetCarouselAlpha(alpha);
+				carouselItemAlpha.SetCarouselAlpha(alpha);
 
-				if (index == currentIndex && this.lastCurrentIndex != currentIndex) {
+			}
 
+			if (index == currentIndex && this.lastCurrentIndex != currentIndex) {
+				
+				var carouselItem = (component as ICarouselItem);
+				if (carouselItem != null) {
+				
 					if (this.lastCurrentIndex >= 0) {
 
 						(this.list[this.lastCurrentIndex] as ICarouselItem).OnElementDeselected(this.lastCurrentIndex);
@@ -306,15 +395,51 @@ namespace UnityEngine.UI.Windows.Components {
 					}
 
 					carouselItem.OnElementSelected(index);
-					this.lastCurrentIndex = currentIndex;
+
+				}
+
+				if (this.dots != null) this.dots.OnSelect(index);
+				if (this.arrows != null) this.arrows.OnSelect(index);
+				this.lastCurrentIndex = currentIndex;
+
+			}
+
+			if (rebuildState == false) {
+
+				var carouselItemCanvas = (component as ICarouselItemCanvas);
+				if (carouselItemCanvas != null) {
+
+					carouselItemCanvas.SetSiblingIndex(index != currentIndex ? -1 : 0);//currentIndex - elementRect.parent.childCount);
+
+				} else {
+
+					if (elementRect.GetSiblingIndex() != elementRect.parent.childCount) elementRect.SetAsLastSibling();
 
 				}
 
 			}
 
-			if (rebuildState == false) elementRect.SetAsLastSibling();
-
 			return true;
+
+		}
+
+		public int GetCurrentIndex() {
+
+			return this.lastCurrentIndex;
+
+		}
+
+		public void SetActive(RectTransform obj, bool state) {
+
+			if (state == true) {
+
+				obj.localScale = Vector3.one;
+
+			} else {
+
+				obj.localScale = Vector3.zero;
+
+			}
 
 		}
 
@@ -335,6 +460,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.interactable == false) return;
 
+			this.lastDragSide = 0f;
 			this.isDragging = true;
 
 		}
@@ -346,6 +472,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.isDragging == true) {
 				
 				var windowDelta = this.GetAxisValue(WindowSystem.ConvertPointScreenToWindow(eventData.delta, this));
+				this.lastDragSide = Mathf.Sign(windowDelta);
 				this.Move(-windowDelta / this.GetSize() * this.dragSpeed, immediately: true);
 
 			}
@@ -356,9 +483,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.interactable == false) return;
 
-			var windowDelta = this.GetAxisValue(WindowSystem.ConvertPointScreenToWindow(eventData.delta, this));
-			this.Move(-windowDelta / this.GetSize() * this.dragSpeed, immediately: false);
-			this.targetValue = Mathf.RoundToInt(this.targetValue);
+			this.targetValue = this.RoundToInt(this.targetValue, this.lastDragSide > 0f ? 0.8f : 0.2f);
 			this.isDragging = false;
 
 		}
@@ -381,28 +506,39 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
+			this.targetValue += value;
+
 			if (immediately == true) {
-
-				this.targetValue += value;
-
-				if (this.cyclical == false) {
-					
-					this.targetValue = Mathf.Clamp(this.targetValue, 0f, this.list.Count - 1);
-
-				}
-
+				
 				this.value = this.targetValue;
 				this.ArrangeItems();
 
+			}
+
+		}
+
+		public int RoundToInt(float value, float weight) {
+
+			var floor = Mathf.FloorToInt(value);
+			var dec = value - floor;
+
+			if (dec >= weight) {
+
+				return Mathf.CeilToInt(value);
+
 			} else {
 
-				this.targetValue += value;
+				return floor;
 
-				if (this.cyclical == false) {
-					
-					this.targetValue = Mathf.Clamp(this.targetValue, 0f, this.list.Count - 1);
+			}
 
-				}
+		}
+
+		public void Clamp() {
+
+			if (this.cyclical == false) {
+
+				this._targetValue = Mathf.Clamp(this._targetValue, 0f, this.list.Count - 1);
 
 			}
 

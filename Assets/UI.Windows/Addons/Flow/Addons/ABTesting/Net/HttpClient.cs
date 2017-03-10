@@ -12,7 +12,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net {
 		public bool keepAlive = false;
 		public Dictionary<string, string> extraHeaders = new Dictionary<string, string>();
 
-		public IEnumerator JsonPost(string host, string func, string jsonString,
+		public System.Collections.Generic.IEnumerator<byte> JsonPost(string host, string func, string jsonString,
 			System.Action<string> callback,
 			System.Action<string> callbackFail) {
 
@@ -23,7 +23,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net {
 			}
 		}
 
-		public IEnumerator JsonPostWWW(string host, string func, string jsonString,
+		public System.Collections.Generic.IEnumerator<byte> JsonPostWWW(string host, string func, string jsonString,
 			System.Action<string> callback,
 			System.Action<string> callbackFail) {
 
@@ -44,7 +44,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net {
 				postHeader);
 
 			while (www.isDone == false) {
-				yield return false;
+				yield return 0;
 			}
 
 			// check for errors
@@ -61,7 +61,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net {
 			www = null;
 		}
 
-		public IEnumerator JsonPostWebRequest(string host, string func, string jsonString,
+		public System.Collections.Generic.IEnumerator<byte> JsonPostWebRequest(string host, string func, string jsonString,
 			System.Action<string> callback,
 			System.Action<string> callbackFail) {
 
@@ -81,7 +81,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net {
 			var streamOut = wr.GetRequestStream();
 			streamOut.Write(bytes, 0, bytes.Length);
 
-			while (!wr.HaveResponse) yield return null;
+			while (!wr.HaveResponse) yield return 0;
 
 			try {
 				string text;

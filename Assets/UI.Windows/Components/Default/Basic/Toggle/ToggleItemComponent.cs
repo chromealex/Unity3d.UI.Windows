@@ -5,43 +5,86 @@ using UnityEngine.Events;
 
 namespace UnityEngine.UI.Windows.Components {
 
-	public class ToggleItemComponent : ButtonComponent {
+	public class ToggleItemComponent : TextComponent {
 
 		[Header("Toggle Item Component")]
-		public Toggle toggle;
+		public ToggleExtended toggle;
 
 		private ComponentEvent<bool> callbackToggle = new ComponentEvent<bool>();
-		private ComponentEvent<ToggleItemComponent, bool> callbackButton = new ComponentEvent<ToggleItemComponent, bool>();
+		private ComponentEvent<ToggleItemComponent, bool> callbackToggleButton = new ComponentEvent<ToggleItemComponent, bool>();
 
-		public virtual void SetCallback(UnityAction<bool> callback) {
+		public virtual void SetCallback(System.Action<bool> callback) {
 
 			this.callbackToggle.AddListenerDistinct(callback);
-			this.callbackButton.RemoveAllListeners();
-			
-			this.SetCallback(() => {
-				
-				this.Toggle();
-				this.callbackToggle.Invoke(this.GetState());
+			this.callbackToggleButton.RemoveAllListeners();
 
-			});
+			this.toggle.onValueChanged.RemoveListener(this.OnValueChanged);
+			this.toggle.onValueChanged.AddListener(this.OnValueChanged);
 
 		}
 		
-		public virtual void SetCallback(UnityAction<ToggleItemComponent, bool> callback) {
+		public virtual void SetCallback(System.Action<ToggleItemComponent, bool> callback) {
 			
-			this.callbackButton.AddListenerDistinct(callback);
+			this.callbackToggleButton.AddListenerDistinct(callback);
 			this.callbackToggle.RemoveAllListeners();
 
-			this.SetCallback(() => {
-
-				this.Toggle();
-				this.callbackButton.Invoke(this, this.GetState());
-				
-			});
+			this.toggle.onValueChanged.RemoveListener(this.OnValueChanged);
+			this.toggle.onValueChanged.AddListener(this.OnValueChanged);
 
 		}
 
-		public void Register(ToggleGroup toggleGroup) {
+		private void OnValueChanged(bool state) {
+
+			this.callbackToggle.Invoke(state);
+			this.callbackToggleButton.Invoke(this, state);
+
+		}
+
+		public ToggleItemComponent SetEnabledState(bool state) {
+
+			if (state == true) {
+
+				this.SetEnabled();
+
+			} else {
+
+				this.SetDisabled();
+
+			}
+
+			return this;
+
+		}
+
+		public ToggleItemComponent SetEnabled() {
+
+			this.GetSelectable().interactable = true;
+
+			return this;
+
+		}
+
+		public ToggleItemComponent SetDisabled() {
+
+			this.GetSelectable().interactable = false;
+
+			return this;
+
+		}
+
+		public bool IsInteractable() {
+
+			return this.GetSelectable().IsInteractable();
+
+		}
+
+		public Selectable GetSelectable() {
+		
+			return this.toggle;
+
+		}
+
+		public void Register(ToggleGroupExtended toggleGroup) {
 
 			this.toggle.group = toggleGroup;
 

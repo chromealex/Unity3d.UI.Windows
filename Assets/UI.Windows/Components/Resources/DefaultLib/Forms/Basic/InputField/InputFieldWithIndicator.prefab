@@ -111,19 +111,59 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
+  images: []
+  navigationType: 0
+  navigateOnDisabled: 0
+  navigationCustomSelector: 0
+  navigationCustomSelectorObject: {fileID: 0}
+  navigateLeftInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
+  navigateRightInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
+  navigateUpInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
+  navigateDownInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
   convertToUppercase: 0
   text: {fileID: 11438722}
   inputField: {fileID: 11438724}
   placeholder: {fileID: 0}
   selectByDefault: 0
+  hoverOnAnyButtonState: 0
+  hoverCursorDefaultOnInactive: 0
 --- !u!114 &11438720
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -272,18 +312,51 @@ MonoBehaviour:
   animation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   childsShowMode: 0
   childsHideMode: 0
-  eventsHistoryTracker:
-    items: []
   animationInputParams:
   - {fileID: 11484752}
-  canvas: {fileID: 22584752}
   manualShowHideControl: 0
   animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
-  heatmapActive: 1
   prefab: {fileID: 11475670, guid: ec9073e296fb04dfca40d210d6a8f6ec, type: 2}
+  editorPreload: 0
+  editorPreloadRefresh: 0
+  prefabNoResource: {fileID: 0}
+  prefabResource:
+    async: 0
+    controlType: 0
+    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Indicators/Indicator4.prefab
+    assetBundleName: 
+    resourcesPath: DefaultLib/Forms/Advanced/Indicators/Indicator4
+    webPath: 
+    loadableWeb: 0
+    loadableResource: 1
+    loadableStream: 0
+    loadableAssetBundle: 0
+    multiObjects: 0
+    objectIndex: 0
+    multiObjectsAssetBundle: 0
+    objectIndexAssetBundle: 0
+    customResourcePath: 
+    id: 1224017373
+    cacheVersion: 0
+    streamingAssetsPathStandalone: 
+    streamingAssetsPathIOS: 
+    streamingAssetsPathAndroid: 
+    streamingAssetsPathPS4: 
+    streamingAssetsPathXBOXONE: 
+    streamingAssetsPathCommon: 
+    streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathIOSMovieAudio: 
+    streamingAssetsPathAndroidMovieAudio: 
+    streamingAssetsPathPS4MovieAudio: 
+    streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathCommonMovieAudio: 
+    isMovie: 0
+    canBeUnloaded: 0
+    tempObject: {fileID: 11475670, guid: ec9073e296fb04dfca40d210d6a8f6ec, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
+  _instance: {fileID: 0}
 --- !u!114 &11484752
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -296,6 +369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   useDefault: 1
+  canvasGroup: {fileID: 22584752}
   parameters:
     inDelay: 0
     outDelay: 0

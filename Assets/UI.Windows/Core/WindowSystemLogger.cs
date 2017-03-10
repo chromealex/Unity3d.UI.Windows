@@ -141,6 +141,13 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+
+	    protected virtual void OnDestory() {
+
+	        WindowSystemLogger.instance = null;
+
+	    }
+
 		private Logger logger;
 
 		public void Awake() {

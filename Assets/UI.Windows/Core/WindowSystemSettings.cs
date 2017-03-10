@@ -19,11 +19,13 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 			[Tooltip("Turn off camera render instead of GameObject.SetActive(false)")]
 			public bool turnOffCameraRenderOnly = true;
 
+			[Tooltip("Restores UI.EventSystem last selected element on window activation")]
+			public bool restoreSelectedElement = true;
+
 			public int poolSize = 100;
 			public int preallocatedWindowsPoolSize = 0;
 
 			public float zDepthStep = 200f;
-
 			public DepthLayer[] depthLayers = new DepthLayer[] {
 				new DepthLayer() { layer = -4, minDepth = -89f, maxDepth = -70f, minZDepth = -40000f },
 				new DepthLayer() { layer = -3, minDepth = -69f, maxDepth = -50f, minZDepth = -30000f },
@@ -51,6 +53,12 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 			public float GetMinZDepth(int layer) {
 				
 				return this.depthLayers.First(x => x.layer == layer).minZDepth;
+
+			}
+
+			public bool IsRestoreSelectedElement() {
+
+				return this.restoreSelectedElement;
 
 			}
 
@@ -82,7 +90,10 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 		public class Camera {
 
 			public bool orthographic = true;
+			[Hidden("orthographic", false)]
 			public float orthographicSize = 5f;
+			[Hidden("orthographic", true)]
+			public float fieldOfView = 60f;
 			public float nearClipPlane = -100f;
 			public float farClipPlane = 100f;
 			public bool useOcclusionCulling = false;
@@ -91,6 +102,7 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 			public void Apply(UnityEngine.Camera camera) {
 				
 				camera.orthographic = this.orthographic;
+				camera.fieldOfView = this.fieldOfView;
 				camera.orthographicSize = this.orthographicSize;
 				camera.nearClipPlane = this.nearClipPlane;
 				camera.farClipPlane = this.farClipPlane;

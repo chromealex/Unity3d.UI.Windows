@@ -200,19 +200,59 @@ MonoBehaviour:
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 1
-  eventsHistoryTracker:
-    items: []
   animationInputParams: []
-  canvas: {fileID: 0}
   manualShowHideControl: 0
   animationRefresh: 0
   lastAnimation: {fileID: 0}
-  heatmapActive: 1
+  sfxOnClick:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnEnter:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  sfxOnLeave:
+    flowData: {fileID: 0}
+    randomize: 0
+    id: 0
+    randomIds: 
+  hoverIsActive: 1
+  hoverOnAnyPointerState: 0
+  images: []
+  navigationType: 0
+  navigateOnDisabled: 0
+  navigationCustomSelector: 0
+  navigationCustomSelectorObject: {fileID: 0}
+  navigateLeftInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
+  navigateRightInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
+  navigateUpInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
+  navigateDownInfo:
+    stop: 0
+    directionAxisOnly: 0
+    explicit: 0
+    next: {fileID: 0}
   convertToUppercase: 0
   text: {fileID: 11456348}
   inputField: {fileID: 11448052}
   placeholder: {fileID: 0}
   selectByDefault: 0
+  hoverOnAnyButtonState: 0
+  hoverCursorDefaultOnInactive: 0
 --- !u!114 &11490094
 MonoBehaviour:
   m_ObjectHideFlags: 1

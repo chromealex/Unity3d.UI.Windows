@@ -9,11 +9,70 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Plugins.Flow;
+using UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows {
 	
 	public class WindowSystemFlow : WindowSystem {
-		
+
+		[System.Serializable]
+		public class FlowItem {
+
+			public RuntimePlatform[] oneOfPlatforms;
+			public FlowData flow;
+			public bool customDefaultsOverride;
+			public WindowItem[] customDefaults;
+
+			public bool HasCustomDefaults() {
+
+				return this.customDefaults != null && this.customDefaults.Length > 0;
+
+			}
+
+			public bool IsDefaultsOverride() {
+
+				return this.customDefaultsOverride;
+
+			}
+
+			public virtual bool IsValid() {
+
+				var checkPlatform = WindowSystem.GetCurrentRuntimePlatform();
+				for (int i = 0; i < this.oneOfPlatforms.Length; ++i) {
+
+					if (checkPlatform == this.oneOfPlatforms[i]) return true;
+
+				}
+
+				return false;
+
+			}
+
+			#if UNITY_EDITOR
+			public void Validate() {
+
+				if (this.customDefaults != null) {
+
+					for (int i = 0; i < this.customDefaults.Length; ++i) {
+
+						this.customDefaults[i].Validate();
+
+					}
+
+				}
+
+			}
+			#endif
+
+		}
+
+		[System.Serializable]
+		public class FlowAdditive : FlowItem {
+
+			public LoadType loadType = LoadType.None;
+
+		}
+
 		public enum LoadType : int {
 
 			None = 0x0,
@@ -25,9 +84,10 @@ namespace UnityEngine.UI.Windows {
 		};
 
 		[Header("Flow Projects")]
-		public FlowData flow;
+		public FlowItem[] flow;
+		public FlowAdditive[] flowAdditive;
 
-		#if UNITY_EDITOR || UNITY_MOBILE
+		/*#if UNITY_EDITOR || UNITY_MOBILE
 		public FlowData flowMobileOnly;
 		#endif
 		#if UNITY_EDITOR || UNITY_STANDALONE
@@ -55,40 +115,74 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR || UNITY_CONSOLE
 		[ReadOnly("additionalLoadType", (int)(LoadType.Window | LoadType.Function), bitMask: true)]
 		public FlowData additionalFlowConsoleOnly;
-		#endif
+		#endif*/
 
 		[Header("Start Settings")]
 		public bool showRootOnStart = true;
+
+		private FlowData currentFlow;
 
 		protected override void Init() {
 			
 			#region FLOW DEFAULT
 			{
-				var flow = this.flow;
+				var customDefaults = false;
+				List<WindowItem> defaults = new List<WindowItem>();
+				FlowData flow = null;
+				for (int i = 0; i < this.flow.Length; ++i) {
+
+					var item = this.flow[i];
+					if (item.IsValid() == false) continue;
+
+					flow = item.flow;
+					if (item.HasCustomDefaults() == true) {
+
+						if (item.IsDefaultsOverride() == true) {
+
+							defaults.Clear();
+							defaults.AddRange(item.customDefaults);
+
+						} else {
+
+							defaults.AddRange(item.customDefaults);
+
+						}
+
+						customDefaults = true;
+
+					}
+
+				}
+
 				if (flow == null) {
 
-					Debug.LogError("Flow data was not set to WindowSystemFlow.");
+					Debug.LogErrorFormat("Flow data was not found for current platform: {0}.", Application.platform);
 					return;
 
 				}
 
-				#if UNITY_MOBILE
-				if (this.flowMobileOnly != null) flow = this.flowMobileOnly;
-				#endif
-				#if UNITY_STANDALONE
-				if (this.flowStandaloneOnly != null) flow = this.flowStandaloneOnly;
-				#endif
-				#if UNITY_CONSOLE
-				if (this.flowConsoleOnly != null) flow = this.flowConsoleOnly;
-				#endif
+				this.currentFlow = flow;
 
-				FlowSystem.SetData(flow);
+                #if UNITY_EDITOR
+                flow.RefreshAllScreens();
+                #endif
+
+                FlowSystem.SetData(flow);
 				Audio.Manager.InitAndAdd(flow.audio);
+                
+				if (customDefaults == false) {
 
-				this.defaults.AddRange(flow.GetDefaultScreens(runtime: true));
+					this.defaults.AddRange(flow.GetDefaultScreens(runtime: true));
+
+				} else {
+
+					this.defaults.AddRange(defaults);
+
+				}
+
 				this.windows.AddRange(flow.GetAllScreens(runtime: true));
 
-				this.rootScreen = this.flow.GetRootScreen(runtime: true);
+				this.rootScreen = flow.GetRootScreen(runtime: true);
 
 			}
 			#endregion
@@ -96,30 +190,45 @@ namespace UnityEngine.UI.Windows {
 			#region FLOW ADDITIONAL
 			{
 
-				var additionalFlow = this.additionalFlow;
-				#if UNITY_MOBILE
-				if (this.additionalFlowMobileOnly != null) additionalFlow = this.additionalFlowMobileOnly;
-				#endif
-				#if UNITY_STANDALONE
-				if (this.additionalFlowStandaloneOnly != null) additionalFlow = this.additionalFlowStandaloneOnly;
-				#endif
-				#if UNITY_CONSOLE
-				if (this.additionalFlowConsoleOnly != null) additionalFlow = this.additionalFlowConsoleOnly;
-				#endif
+				for (int i = 0; i < this.flowAdditive.Length; ++i) {
 
-				if (additionalFlow != null) {
+					var item = this.flowAdditive[i];
+					if (item.IsValid() == false) continue;
 
-					var screens = additionalFlow.GetAllScreens((w) => ((this.additionalLoadType & LoadType.Function) != 0 && (w.IsFunction() == true || w.GetFunctionContainer() != null)) || ((this.additionalLoadType & LoadType.Window) != 0 && w.IsFunction() == false), runtime: true);
+					var additionalFlow = item.flow;
+					var loadType = item.loadType;
+
+                    #if UNITY_EDITOR
+                    additionalFlow.RefreshAllScreens();
+                    #endif
+
+                    var screens = additionalFlow.GetAllScreens((w) => ((loadType & LoadType.Function) != 0 && (w.IsFunction() == true || w.GetFunctionContainer() != null)) || ((loadType & LoadType.Window) != 0 && w.IsFunction() == false), runtime: true);
 					this.windows.RemoveAll(x => screens.Select(w => w.windowId).Contains(x.windowId));
 					this.windows.AddRange(screens);
-					if ((this.additionalLoadType & LoadType.Audio) != 0) Audio.Manager.InitAndAdd(flow.audio);
+					if ((loadType & LoadType.Audio) != 0) Audio.Manager.InitAndAdd(additionalFlow.audio);
 
 				}
 
 			}
 			#endregion
-			
+
 			base.Init();
+
+		}
+
+		public FlowData GetBaseFlow() {
+
+			FlowData flow = null;
+			for (int i = 0; i < this.flow.Length; ++i) {
+
+				var item = this.flow[i];
+				if (item.IsValid() == false) continue;
+
+				flow = item.flow;
+
+			}
+
+			return flow;
 
 		}
 
@@ -133,17 +242,30 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.showRootOnStart == true) {
 
-				var root = this.flow.GetRootScreen(runtime: true);
+				var root = this.currentFlow.GetRootScreen(runtime: true);
 				if (root != null) WindowSystem.Show(root);
 
 			}
 			
 		}
 
-		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null) where T : WindowBase {
-			
+		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null, bool async = false) where T : WindowBase {
+
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(from, to);
-			return WindowSystemFlow.DoFlow<T>(screen, item, hide, onParametersPassCall, onInstance);
+			return WindowSystemFlow.DoFlow<T>(screen, item, hide, false, async, onParametersPassCall, onInstance);
+
+		}
+
+		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, bool waitHide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null, bool async = false) where T : WindowBase {
+
+			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(from, to);
+			return WindowSystemFlow.DoFlow<T>(screen, item, hide, waitHide, async, onParametersPassCall, onInstance);
+
+		}
+
+		public static T DoFlow<T>(IFunctionIteration screen, AttachItem item, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null, bool async = false) where T : WindowBase {
+
+			return WindowSystemFlow.DoFlow<T>(screen, item, hide, false, async, onParametersPassCall, onInstance);
 
 		}
 
@@ -157,22 +279,79 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="onParametersPassCall">On parameters pass call.</param>
 		/// <param name="onInstance">On instance.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T DoFlow<T>(IFunctionIteration screen, AttachItem item, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null) where T : WindowBase {
-			
-			var newWindow = WindowSystem.Show<T>(
-                transitionItem: item,
-                afterGetInstance: (w) => {
+		public static T DoFlow<T>(IFunctionIteration screen, AttachItem item, bool hide, bool waitHide, bool async, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null) where T : WindowBase {
+
+			if (async == true) {
+
+				WindowSystem.ShowAsyncLoader();
+
+			}
+
+			T newWindow = default(T);
+
+			if (hide == true && waitHide == true) {
+
+				screen.Hide(() => {
+
+					newWindow = WindowSystem.Show<T>(
+						async: async,
+						transitionItem: item,
+						afterGetInstance: (w) => {
+
+							if (onInstance != null) onInstance.Invoke(w);
+							w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex());
+
+						}, onParametersPassCall: onParametersPassCall);
 					
-					if (onInstance != null) onInstance(w);
-					w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex());
+					UnityEngine.Events.UnityAction action = null;
+					action = () => {
 
-				}, onParametersPassCall: onParametersPassCall);
+						newWindow.events.onEveryInstance.Unregister(WindowEventType.OnShowEnd, action);
+						if (async == true) {
 
-			WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);
+							WindowSystem.HideAsyncLoader();
 
-			if (hide == true) {
+						}
 
-				screen.Hide(item);
+					};
+					newWindow.events.onEveryInstance.Register(WindowEventType.OnShowEnd, action);
+
+					WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);
+
+				}, item);
+					
+			} else {
+
+				newWindow = WindowSystem.Show<T>(
+					async: async,
+	                transitionItem: item,
+	                afterGetInstance: (w) => {
+						
+						if (onInstance != null) onInstance.Invoke(w);
+						w.SetFunctionIterationIndex(screen.GetFunctionIterationIndex());
+
+					}, onParametersPassCall: onParametersPassCall);
+
+				UnityEngine.Events.UnityAction action = null;
+				action = () => {
+
+					newWindow.events.onEveryInstance.Unregister(WindowEventType.OnShowEnd, action);
+					if (async == true) {
+
+						WindowSystem.HideAsyncLoader();
+
+					}
+
+				};
+				newWindow.events.onEveryInstance.Register(WindowEventType.OnShowEnd, action);
+
+				WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);
+
+				if (hide == true) {
+
+					screen.Hide(item);
+
+				}
 
 			}
 
@@ -182,9 +361,40 @@ namespace UnityEngine.UI.Windows {
 
 		public static void OnDoTransition(int index, WindowBase fromScreen, int targetId, bool hide = true) {
 
-			WindowSystem.OnDoTransition(index, fromScreen.windowId, targetId, hide);
+			if (fromScreen != null) WindowSystem.OnDoTransition(index, fromScreen.windowId, targetId, hide);
 			
 		}
+
+		#if UNITY_EDITOR
+		public override void OnValidate() {
+
+			if (Application.isPlaying == true) return;
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			
+			base.OnValidate();
+
+			if (this.flow != null) {
+
+				for (int i = 0; i < this.flow.Length; ++i) {
+
+					this.flow[i].Validate();
+
+				}
+
+			}
+
+			if (this.flowAdditive != null) {
+
+				for (int i = 0; i < this.flowAdditive.Length; ++i) {
+
+					this.flowAdditive[i].Validate();
+
+				}
+
+			}
+
+		}
+		#endif
 
 	}
 

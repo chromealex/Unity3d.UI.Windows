@@ -12,6 +12,7 @@ namespace UnityEngine.UI.Windows.Animations {
 		[System.Serializable]
 		public class Parameters : TransitionBase.ParametersVideoBase {
 
+			public Parameters() : base() {}
 			public Parameters(TransitionBase.ParametersBase baseDefaults) : base(baseDefaults) {}
 
 			[System.Serializable]
