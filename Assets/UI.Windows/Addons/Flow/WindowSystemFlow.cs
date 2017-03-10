@@ -37,6 +37,8 @@ namespace UnityEngine.UI.Windows {
 
 			public virtual bool IsValid() {
 
+				if (this.oneOfPlatforms.Length == 0) return true;
+
 				var checkPlatform = WindowSystem.GetCurrentRuntimePlatform();
 				for (int i = 0; i < this.oneOfPlatforms.Length; ++i) {
 

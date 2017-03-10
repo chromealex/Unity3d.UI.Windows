@@ -34,6 +34,20 @@ namespace ExampleProject.UI.Loader.Loading {
 			
 		}
 
+		/// <summary>
+		/// Call the end of current function Loader and hides current and wait while it hidden.
+		/// Function: Loading
+		/// </summary>
+		public void FlowWaitHideFunctionReturn(bool reusable = false) {
+			
+			this.Hide(() => {
+				
+				WindowSystem.CallFunction(this, reusable);
+				
+			});
+
+		}
+
 	}
 
 }

@@ -16,7 +16,7 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 		public class FlowFunctionLoaderRoutes : WindowRoutes {
 			
 			public FlowFunctionLoaderRoutes(IFunctionIteration window, int index) : base(window, index) {}
-					
+			
 			/// <summary>
 			/// Flows to the MainMenu.
 			/// Use this method to play transition effect on B window only.
@@ -26,10 +26,10 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 			/// <returns>MainMenu</returns>
 			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowMainMenu() {
 				
-				return this.INTERNAL_FlowMainMenu(hide: false);
+				return this.INTERNAL_FlowMainMenu(hide: false, hideWait: false, async: false);
 				
 			}
-			
+	
 			/// <summary>
 			/// Flows to the MainMenu.
 			/// Hides current window.
@@ -39,13 +39,65 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 			/// <returns>MainMenu</returns>
 			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowHideMainMenu() {
 				
-				return this.INTERNAL_FlowMainMenu(hide: true);
+				return this.INTERNAL_FlowMainMenu(hide: true, hideWait: false, async: false);
+				
+			}
+	
+			/// <summary>
+			/// Flows to the MainMenu.
+			/// Hides current window and wait while it hidden, then flow.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+			/// </summary>
+			/// <returns>MainMenu</returns>
+			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowWaitHideMainMenu() {
+				
+				return this.INTERNAL_FlowMainMenu(hide: true, hideWait: true, async: false);
+				
+			}
+	
+			/// <summary>
+			/// Flows to the MainMenu. Async method.
+			/// Use this method to play transition effect on B window only.
+			/// If you call Hide() on A window - it will hide with standard behaviour.
+			/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+			/// </summary>
+			/// <returns>MainMenu</returns>
+			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowAsyncMainMenu() {
+				
+				return this.INTERNAL_FlowMainMenu(hide: false, hideWait: false, async: true);
+				
+			}
+	
+			/// <summary>
+			/// Flows to the MainMenu. Async method.
+			/// Hides current window.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+			/// </summary>
+			/// <returns>MainMenu</returns>
+			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowAsyncHideMainMenu() {
+				
+				return this.INTERNAL_FlowMainMenu(hide: true, hideWait: false, async: true);
+				
+			}
+	
+			/// <summary>
+			/// Flows to the MainMenu. Async method.
+			/// Hides current window and wait while it hidden, then flow.
+			/// Use this method to play transition effect on both windows (A and B).
+			/// Full Name: ExampleProject.UI.Menu.MainMenu.MainMenuScreen
+			/// </summary>
+			/// <returns>MainMenu</returns>
+			public virtual ExampleProject.UI.Menu.MainMenu.MainMenuScreen FlowAsyncWaitHideMainMenu() {
+				
+				return this.INTERNAL_FlowMainMenu(hide: true, hideWait: true, async: true);
 				
 			}
 			
-			private ExampleProject.UI.Menu.MainMenu.MainMenuScreen INTERNAL_FlowMainMenu(bool hide, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onInstance = null) {
+			private ExampleProject.UI.Menu.MainMenu.MainMenuScreen INTERNAL_FlowMainMenu(bool hide, bool hideWait, bool async, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Menu.MainMenu.MainMenuScreen> onInstance = null) {
 				
-				return WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, 40, 38, hide, onParametersPassCall, onInstance);
+				return WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, 40, 38, hide, hideWait, onParametersPassCall, onInstance, async);
 				
 			}
 					
@@ -60,7 +112,7 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 			}
 			
 		}
-		
+
 		/// <summary>
 		/// Call the Function Loader.
 		/// Use this method to play transition effect on B window only.
@@ -68,12 +120,12 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 		/// Function: Loading
 		/// </summary>
 		/// <returns>Function root window</returns>
-		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds) {
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader(System.Action<FlowFunctionLoaderRoutes> onFunctionEnds) {
 			
-			return this.INTERNAL_FlowFunctionLoader(false, onFunctionEnds);
+			return this.INTERNAL_FlowFunctionLoader(false, false, onFunctionEnds);
 			
 		}
-		
+
 		/// <summary>
 		/// Call the Function Loader.
 		/// Hides current window.
@@ -81,25 +133,121 @@ namespace ExampleProject.UI.Gameplay.EndGame {
 		/// Function: Loading
 		/// </summary>
 		/// <returns>Function root window</returns>
-		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowHideFunctionLoader(UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds) {
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowHideFunctionLoader(System.Action<FlowFunctionLoaderRoutes> onFunctionEnds) {
 			
-			return this.INTERNAL_FlowFunctionLoader(true, onFunctionEnds);
+			return this.INTERNAL_FlowFunctionLoader(true, false, onFunctionEnds);
+			
+		}
+
+		/// <summary>
+		/// Call the Function Loader.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Function: Loading
+		/// </summary>
+		/// <returns>Function root window</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowWaitHideFunctionLoader(System.Action<FlowFunctionLoaderRoutes> onFunctionEnds) {
+			
+			return this.INTERNAL_FlowFunctionLoader(true, true, onFunctionEnds);
+			
+		}
+
+		/// <summary>
+		/// Call the Function Loader.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
+		/// Function: Loading
+		/// </summary>
+		/// <returns>Function root window</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowFunctionLoader() {
+			
+			return this.INTERNAL_FlowFunctionLoader(false, false, null);
+			
+		}
+
+		/// <summary>
+		/// Call the Function Loader.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Function: Loading
+		/// </summary>
+		/// <returns>Function root window</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowHideFunctionLoader() {
+			
+			return this.INTERNAL_FlowFunctionLoader(true, false, null);
+			
+		}
+
+		/// <summary>
+		/// Call the Function Loader.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Function: Loading
+		/// </summary>
+		/// <returns>Function root window</returns>
+		public virtual ExampleProject.UI.Loader.Loading.LoadingScreen FlowWaitHideFunctionLoader() {
+			
+			return this.INTERNAL_FlowFunctionLoader(true, true, null);
 			
 		}
 		
-		private ExampleProject.UI.Loader.Loading.LoadingScreen INTERNAL_FlowFunctionLoader(bool hide, UnityEngine.Events.UnityAction<FlowFunctionLoaderRoutes> onFunctionEnds, System.Action<ExampleProject.UI.Loader.Loading.LoadingScreen> onParametersPassCall = null) {
-			
+		private ExampleProject.UI.Loader.Loading.LoadingScreen INTERNAL_FlowFunctionLoader(bool hide, bool hideWait, System.Action<FlowFunctionLoaderRoutes> onFunctionEnds, System.Action<ExampleProject.UI.Loader.Loading.LoadingScreen> onParametersPassCall = null) {
+
+			ExampleProject.UI.Loader.Loading.LoadingScreen newWindow = default(ExampleProject.UI.Loader.Loading.LoadingScreen);
 			var item = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetAttachItem(28, 40);
-			var newWindow = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
-				(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunctionLoaderRoutes(this, index))),
-				item,
-				onParametersPassCall
-			);
-			
-			WindowSystemFlow.OnDoTransition(item.index, 28, 40, hide);
-			
-			if (hide == true) this.Hide(item);
-			
+
+			if (hide == true && hideWait == true) {
+
+				this.Hide(() => {
+					
+					if (onFunctionEnds != null) {
+
+						newWindow = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
+							(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunctionLoaderRoutes(w, index))),
+							item,
+							onParametersPassCall
+						);
+
+					} else {
+						
+						newWindow = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
+							null,
+							item,
+							onParametersPassCall
+						);
+						
+					}
+
+					WindowSystemFlow.OnDoTransition(item.index, 28, 40, hide);
+
+				}, item);
+
+			} else {
+
+				if (onFunctionEnds != null) {
+					
+					newWindow = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
+						(w) => WindowSystem.RegisterFunctionCallback(w, (index) => onFunctionEnds(new FlowFunctionLoaderRoutes(w, index))),
+						item,
+						onParametersPassCall
+					);
+
+				} else {
+					
+					newWindow = WindowSystem.Show<ExampleProject.UI.Loader.Loading.LoadingScreen>(
+						null,
+						item,
+						onParametersPassCall
+					);
+					
+				}
+				
+				WindowSystemFlow.OnDoTransition(item.index, 28, 40, hide);
+				
+				if (hide == true) this.Hide(item);
+
+			}
+
 			return newWindow;
 			
 		}

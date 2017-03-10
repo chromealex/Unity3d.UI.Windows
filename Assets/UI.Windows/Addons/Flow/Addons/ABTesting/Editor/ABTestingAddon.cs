@@ -39,7 +39,7 @@ namespace UnityEditor.UI.Windows.Plugins.ABTesting {
 			var result = string.Empty;
 			var part = file.text;
 
-			var methodPatternDefault = "(item, h, wh) => WindowSystemFlow.DoFlow<{0}>(this, item, h, wh, null)";
+			var methodPatternDefault = "(item, h, wh) => WindowSystemFlow.DoFlow<{0}>(this, item, h, wh, false, null)";
 			var methods = string.Empty;
 			var methodList = new List<string>();
 

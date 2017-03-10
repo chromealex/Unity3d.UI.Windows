@@ -12,7 +12,7 @@ using UnityEngine.UI.Windows.Types;
 namespace ExampleProject.UI.Other.MainLoader {
 
 	public class MainLoaderScreenBase : LayoutWindowType {
-		
+
 		/// <summary>
 		/// Flows to the UserInfo.
 		/// Use this method to play transition effect on B window only.
@@ -22,10 +22,10 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// <returns>UserInfo</returns>
 		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowUserInfo() {
 			
-			return this.INTERNAL_FlowUserInfo(hide: false);
+			return this.INTERNAL_FlowUserInfo(hide: false, hideWait: false, async: false);
 			
 		}
-		
+
 		/// <summary>
 		/// Flows to the UserInfo.
 		/// Hides current window.
@@ -35,13 +35,65 @@ namespace ExampleProject.UI.Other.MainLoader {
 		/// <returns>UserInfo</returns>
 		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowHideUserInfo() {
 			
-			return this.INTERNAL_FlowUserInfo(hide: true);
+			return this.INTERNAL_FlowUserInfo(hide: true, hideWait: false, async: false);
+			
+		}
+
+		/// <summary>
+		/// Flows to the UserInfo.
+		/// Hides current window and wait while it hidden, then flow.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Other.UserInfo.UserInfoScreen
+		/// </summary>
+		/// <returns>UserInfo</returns>
+		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowWaitHideUserInfo() {
+			
+			return this.INTERNAL_FlowUserInfo(hide: true, hideWait: true, async: false);
+			
+		}
+
+		/// <summary>
+		/// Flows to the UserInfo. Async method.
+		/// Use this method to play transition effect on B window only.
+		/// If you call Hide() on A window - it will hide with standard behaviour.
+		/// Full Name: ExampleProject.UI.Other.UserInfo.UserInfoScreen
+		/// </summary>
+		/// <returns>UserInfo</returns>
+		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowAsyncUserInfo() {
+			
+			return this.INTERNAL_FlowUserInfo(hide: false, hideWait: false, async: true);
+			
+		}
+
+		/// <summary>
+		/// Flows to the UserInfo. Async method.
+		/// Hides current window.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Other.UserInfo.UserInfoScreen
+		/// </summary>
+		/// <returns>UserInfo</returns>
+		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowAsyncHideUserInfo() {
+			
+			return this.INTERNAL_FlowUserInfo(hide: true, hideWait: false, async: true);
+			
+		}
+
+		/// <summary>
+		/// Flows to the UserInfo. Async method.
+		/// Hides current window and wait while it hidden, then flow.
+		/// Use this method to play transition effect on both windows (A and B).
+		/// Full Name: ExampleProject.UI.Other.UserInfo.UserInfoScreen
+		/// </summary>
+		/// <returns>UserInfo</returns>
+		public virtual ExampleProject.UI.Other.UserInfo.UserInfoScreen FlowAsyncWaitHideUserInfo() {
+			
+			return this.INTERNAL_FlowUserInfo(hide: true, hideWait: true, async: true);
 			
 		}
 		
-		private ExampleProject.UI.Other.UserInfo.UserInfoScreen INTERNAL_FlowUserInfo(bool hide, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onInstance = null) {
+		private ExampleProject.UI.Other.UserInfo.UserInfoScreen INTERNAL_FlowUserInfo(bool hide, bool hideWait, bool async, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onParametersPassCall = null, System.Action<ExampleProject.UI.Other.UserInfo.UserInfoScreen> onInstance = null) {
 			
-			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.UserInfo.UserInfoScreen>(this, 18, 45, hide, onParametersPassCall, onInstance);
+			return WindowSystemFlow.DoFlow<ExampleProject.UI.Other.UserInfo.UserInfoScreen>(this, 18, 45, hide, hideWait, onParametersPassCall, onInstance, async);
 			
 		}
 				
@@ -54,10 +106,10 @@ namespace ExampleProject.UI.Other.MainLoader {
 			System.Action<int> onCondition = null,
 			System.Action onAnyOther = null) {
 			
-			this.INTERNAL_FlowABTest(false, onCondition, onAnyOther);
+			this.INTERNAL_FlowABTest(false, false, onCondition, onAnyOther);
 			
 		}
-		
+
 		/// <summary>
 		/// Call the A/B Test.
 		/// Use this method to filter users.
@@ -67,12 +119,26 @@ namespace ExampleProject.UI.Other.MainLoader {
 			System.Action<int> onCondition = null,
 			System.Action onAnyOther = null) {
 			
-			this.INTERNAL_FlowABTest(true, onCondition, onAnyOther);
+			this.INTERNAL_FlowABTest(true, false, onCondition, onAnyOther);
+			
+		}
+
+		/// <summary>
+		/// Call the A/B Test.
+		/// Use this method to filter users.
+		/// This method hides current window.
+		/// </summary>
+		public virtual void FlowWaitHideABTest(
+			System.Action<int> onCondition = null,
+			System.Action onAnyOther = null) {
+			
+			this.INTERNAL_FlowABTest(true, true, onCondition, onAnyOther);
 			
 		}
 		
 		private void INTERNAL_FlowABTest(
 			bool hide,
+			bool waitHide,
 			System.Action<int> onCondition = null,
 			System.Action onAnyOther = null) {
 			
@@ -82,8 +148,8 @@ namespace ExampleProject.UI.Other.MainLoader {
 				AttachItem attachItem;
 				var wayId = window.abTests.Resolve(window, out attachItem);
 				
-				System.Action<AttachItem, bool>[] ways = new System.Action<AttachItem, bool>[] {
-					(item, h) => WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, item, h, null), (item, h) => WindowSystemFlow.DoFlow<ExampleProject.UI.Other.Error.ErrorScreen>(this, item, h, null)
+				System.Action<AttachItem, bool, bool>[] ways = new System.Action<AttachItem, bool, bool>[] {
+					(item, h, wh) => WindowSystemFlow.DoFlow<ExampleProject.UI.Menu.MainMenu.MainMenuScreen>(this, item, h, wh, false, null), (item, h, wh) => WindowSystemFlow.DoFlow<ExampleProject.UI.Other.Error.ErrorScreen>(this, item, h, wh, false, null)
 				};
 				
 				if (wayId == 0) {
@@ -97,7 +163,7 @@ namespace ExampleProject.UI.Other.MainLoader {
 				}
 				
 				var way = ways[wayId];
-				if (way != null) way.Invoke(attachItem, hide);
+				if (way != null) way.Invoke(attachItem, hide, waitHide);
 				
 			}
 			
