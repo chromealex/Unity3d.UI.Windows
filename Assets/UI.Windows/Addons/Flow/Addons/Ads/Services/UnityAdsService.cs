@@ -14,7 +14,9 @@ namespace UnityEngine.UI.Windows.Plugins.Ads.Services {
 		
 		public override string GetAuthKey(ServiceItem item) {
 
+			#pragma warning disable
 			var itemAds = (item as AdsServiceItem);
+			#pragma warning restore
 
 			#if UNITY_IOS
 			return itemAds.iosKey;

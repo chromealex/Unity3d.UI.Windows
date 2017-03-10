@@ -28,7 +28,7 @@ namespace UnityEngine.UI {
 
 		}
 
-		private System.Collections.Generic.List<UIVertex> modifyVertsTemp = new System.Collections.Generic.List<UIVertex>();
+		//private System.Collections.Generic.List<UIVertex> modifyVertsTemp = new System.Collections.Generic.List<UIVertex>();
 		public void ModifyMesh(VertexHelper helper) {
 
 			if (this.rawImage == null || this.rawImage.texture == null) return;

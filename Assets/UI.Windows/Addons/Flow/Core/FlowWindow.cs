@@ -48,7 +48,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 				
 				var asset = UnityEngine.Resources.Load<T>(this.resourcesPath);
 				if (asset != null) this.windowId = asset.windowId;
-				return asset;
+				//return asset;
 				this.loaded = asset;
 
 			}

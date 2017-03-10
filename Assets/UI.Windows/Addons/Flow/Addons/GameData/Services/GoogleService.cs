@@ -69,7 +69,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData.Services {
 
 			var www = UnityEngine.Experimental.Networking.UnityWebRequest.Get(settings.url);
 			www.SetRequestHeader("ETag", eTag);
-			var op = www.Send();
+			www.Send();
 			#if UNITY_EDITOR
 			if (Application.isPlaying == false) {
 

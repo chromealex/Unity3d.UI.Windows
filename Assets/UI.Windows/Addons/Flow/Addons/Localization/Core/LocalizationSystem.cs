@@ -272,8 +272,8 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		public static UnityEngine.SystemLanguage GetCurrentLanguage() {
 
-			if (LocalizationSystem.currentLanguage == null) LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
-			if (LocalizationSystem.currentLanguage == null) LocalizationSystem.currentLanguage = SystemLanguage.English;
+			//if (LocalizationSystem.currentLanguage == null) LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
+			//if (LocalizationSystem.currentLanguage == null) LocalizationSystem.currentLanguage = SystemLanguage.English;
 
 			return LocalizationSystem.currentLanguage;
 
