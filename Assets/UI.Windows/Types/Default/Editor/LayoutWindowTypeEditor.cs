@@ -64,15 +64,17 @@ namespace UnityEditor.UI.Windows.Types {
 
 		private Layout.Component selectedComponent;
 		private WindowLayoutEditor layoutEditor;
+		private WindowLayout layoutCache;
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, System.Action<WindowLayoutElement, Rect, bool> onElementGUI, List<WindowLayoutElement> highlighted) {
 
 			var _target = this.target as LayoutWindowType;
-			var layout = _target.layout.layout;
-			var layoutElements = _target.layout.components;
+			var layout = _target.GetCurrentLayout().layout;
+			var layoutElements = _target.GetCurrentLayout().components;
 
 			if (layout != null) {
 
-				if (this.layoutEditor == null) this.layoutEditor = Editor.CreateEditor(layout) as WindowLayoutEditor;
+				if (this.layoutEditor == null || this.layoutCache != layout) this.layoutEditor = Editor.CreateEditor(layout) as WindowLayoutEditor;
+				this.layoutCache = layout;
 				if (this.layoutEditor != null) {
 
 					//var emptyStyle = GUIStyle.none;

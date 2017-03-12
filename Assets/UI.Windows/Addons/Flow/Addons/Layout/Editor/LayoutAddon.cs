@@ -207,10 +207,10 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 					this.allListHeight = 0f;
 					for (int i = 0; i < this.props.Count; ++i) {
 						
-						var root = this.screen.layout.layout.GetRootByTag(this.screen.layout.components[i].tag);
+						var root = this.screen.GetCurrentLayout().layout.GetRootByTag(this.screen.GetCurrentLayout().components[i].tag);
 						if (root.showInComponentsList == false) continue;
 
-						if (this.screen.layout.components[i].component == null) {
+						if (this.screen.GetCurrentLayout().components[i].component == null) {
 
 							this.highlighted.Add(root);
 
@@ -233,7 +233,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 							this.hovered = null;
 							for (int i = 0; i < this.props.Count; ++i) {
 
-								var root = this.screen.layout.layout.GetRootByTag(this.screen.layout.components[i].tag);
+								var root = this.screen.GetCurrentLayout().layout.GetRootByTag(this.screen.GetCurrentLayout().components[i].tag);
 								if (root.showInComponentsList == false) continue;
 
 								var r = new Rect(0f, h, viewRect.width, itemHeight).PixelPerfect();
@@ -242,14 +242,14 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 								var isSelected = (this.element == root);
 								if (isSelected == true) {
 
-									GUI.Label(r, this.screen.layout.components[i].description, Layout.styles.listButtonSelected);
+									GUI.Label(r, this.screen.GetCurrentLayout().components[i].description, Layout.styles.listButtonSelected);
 
 								} else {
 									
 									//r.width -= scrollWidth;
-									if (GUI.Button(r, this.screen.layout.components[i].description, Layout.styles.listButton) == true) {
+									if (GUI.Button(r, this.screen.GetCurrentLayout().components[i].description, Layout.styles.listButton) == true) {
 
-										this.component = this.screen.layout.components.FirstOrDefault(c => c.tag == root.tag);
+										this.component = this.screen.GetCurrentLayout().components.FirstOrDefault(c => c.tag == root.tag);
 										this.element = root;
 
 									}
@@ -258,7 +258,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 									if (GUI.enabled == true) EditorGUIUtility.AddCursorRect(r, MouseCursor.Link);
 									if (r.Contains(Event.current.mousePosition) == true && inRect == true) {
 										
-										this.hovered = this.screen.layout.components[i];
+										this.hovered = this.screen.GetCurrentLayout().components[i];
 										
 									}
 									//r.width += scrollWidth;
@@ -266,7 +266,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 								}
 
 								//r.width -= scrollWidth;
-								GUI.Label(r, this.screen.layout.components[i].tag.ToString(), Layout.styles.listTag);
+								GUI.Label(r, this.screen.GetCurrentLayout().components[i].tag.ToString(), Layout.styles.listTag);
 
 							}
 						}
@@ -277,10 +277,10 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 				}
 				GUI.EndGroup();
 
-				var selected = (this.hovered != null) ? this.screen.layout.layout.GetRootByTag(this.hovered.tag) : this.element;
+				var selected = (this.hovered != null) ? this.screen.GetCurrentLayout().layout.GetRootByTag(this.hovered.tag) : this.element;
 				this.editor.OnPreviewGUI(Color.white, rectContent, Layout.styles.content, selected: selected, onSelection: (element) => {
 
-					this.component = this.screen.layout.components.FirstOrDefault(c => c.tag == element.tag);
+					this.component = this.screen.GetCurrentLayout().components.FirstOrDefault(c => c.tag == element.tag);
 					this.element = element;
 
 				}, highlighted: this.highlighted);
@@ -322,11 +322,11 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 						var component = components.GetArrayElementAtIndex(i);
 						this.props.Add(component);
 						
-						var componentParametersEditor = this.screen.layout.components[i].OnComponentChanged(this.screen, this.screen.layout.components[i].component);
+						var componentParametersEditor = this.screen.GetCurrentLayout().components[i].OnComponentChanged(this.screen, this.screen.GetCurrentLayout().components[i].component);
 						if (componentParametersEditor != null) {
 							
 							var e = Editor.CreateEditor(componentParametersEditor) as IParametersEditor;
-							this.screen.layout.components[i].componentParametersEditor = e;
+							this.screen.GetCurrentLayout().components[i].componentParametersEditor = e;
 							
 						}
 

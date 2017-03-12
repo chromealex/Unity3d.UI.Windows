@@ -95,7 +95,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				if (layoutScreen != null) {
 					
-					layoutScreen.layout.layout = layoutPrefab;
+					layoutScreen.GetCurrentLayout().layout = layoutPrefab;
 					layoutScreen.OnValidate();
 					EditorUtility.SetDirty(layoutScreen);
 					

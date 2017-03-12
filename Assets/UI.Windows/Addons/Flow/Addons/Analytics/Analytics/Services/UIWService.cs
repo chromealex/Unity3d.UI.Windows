@@ -142,7 +142,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
         public void SendMsg<T>(T to) where T : StatTO {
             if (this.authTO == null) {
-                Debug.LogError("Sending Msg in Non-Auth Mode: " + to.GetTypeTO());
+				
+				if (this.logTcp == true) Debug.LogError("Sending Msg in Non-Auth Mode: " + to.GetTypeTO());
 
             } else if (!net.Connected()) {
                 if (needReconnect == true) {

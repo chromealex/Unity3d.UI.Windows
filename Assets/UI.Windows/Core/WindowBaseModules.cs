@@ -1277,7 +1277,7 @@ namespace UnityEngine.UI.Windows {
 				var layoutWindow = (this.window as LayoutWindowType);
 				if (layoutWindow != null) {
 
-					layoutWindow.layout.GetLayoutInstance().root.Reset();
+					layoutWindow.GetCurrentLayout().GetLayoutInstance().root.Reset();
 
 				}
 
@@ -1411,7 +1411,7 @@ namespace UnityEngine.UI.Windows {
 			var layoutWindow = (this.window as LayoutWindowType);
 			if (layoutWindow != null) {
 
-				var canvas = layoutWindow.layout.GetLayoutInstance().canvas;
+				var canvas = layoutWindow.GetCurrentLayout().GetLayoutInstance().canvas;
 
 				canvas.renderMode = RenderMode.WorldSpace;
 				canvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -1440,7 +1440,7 @@ namespace UnityEngine.UI.Windows {
 			// Unity bug
 			
 			var layoutWindow = (this.window as LayoutWindowType);
-			if (layoutWindow != null) layoutWindow.layout.GetLayoutInstance().canvas.renderMode = RenderMode.ScreenSpaceCamera;
+			if (layoutWindow != null) layoutWindow.GetCurrentLayout().GetLayoutInstance().canvas.renderMode = RenderMode.ScreenSpaceCamera;
 
 		}
 

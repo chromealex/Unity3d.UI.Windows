@@ -250,6 +250,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
         [SerializeField]
 		private List<WindowItem> runtimeScreens = new List<WindowItem>();
 		public int selectedScreenIndex = 0;
+		public int selectedViewIndex = 0;
 
 		public bool isDirty = false;
 
@@ -391,6 +392,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		#if UNITY_EDITOR
 		private WindowBase editorCacheScreen;
+		private WindowLayout editorCacheLayout;
 		private IPreviewEditor editorCache;
 		public bool OnPreviewGUI(Rect rect, GUIStyle buttonStyle, GUIStyle background, bool drawInfo, bool selectable, System.Action onCreateScreen, System.Action onCreateLayout) {
 
@@ -403,14 +405,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 			} else {
 				
-				if (screenInfo != null && screenInfo.IsEmpty() == false && screenInfo.Load<LayoutWindowType>().layout.layout != null) {
+				if (screenInfo != null && screenInfo.IsEmpty() == false && screenInfo.Load<LayoutWindowType>().GetCurrentLayout().layout != null) {
 
 					var screen = screenInfo.Load<LayoutWindowType>();
-					var layout = screen.layout.layout;
+					var layout = screen.GetCurrentLayout().layout;
 					if (layout != null) {
 
-						if (this.editorCacheScreen != screen) this.editorCache = null;
+						if (this.editorCacheScreen != screen || this.editorCacheLayout != layout) this.editorCache = null;
 						this.editorCacheScreen = screen;
+						this.editorCacheLayout = layout;
 
 						if (this.editorCache == null) this.editorCache = UnityEditor.Editor.CreateEditor(layout) as IPreviewEditor;
 						if (this.editorCache != null) this.editorCache.OnPreviewGUI(Color.white, rect, background, drawInfo, selectable);
@@ -436,7 +439,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 						if (screenInfo != null && screenInfo.IsEmpty() == false) {
 
-							var layout = screenInfo.Load<LayoutWindowType>().layout.layout;
+							var layout = screenInfo.Load<LayoutWindowType>().GetCurrentLayout().layout;
 							if (layout == null) {
 								
 								GUI.BeginGroup(rect);
@@ -595,9 +598,9 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		public WindowLayoutElement GetLayoutComponent(LayoutTag tag) {
 
 			var screen = this.GetScreen().Load<LayoutWindowType>();
-			if (screen != null && screen.layout.layout != null) {
+			if (screen != null && screen.GetCurrentLayout().layout != null) {
 				
-				return screen.layout.layout.GetRootByTag(tag);
+				return screen.GetCurrentLayout().layout.GetRootByTag(tag);
 
 			}
 
@@ -1153,10 +1156,10 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 							var lWin = screen as LayoutWindowType;
 							if (lWin != null) {
 								
-								if (lWin.layout.layout != null) {
+								if (lWin.GetCurrentLayout().layout != null) {
 									
 									window.SetCompletedState(1, CompletedState.Ready);
-									window.SetCompletedState(2, (lWin.layout.components.Any((c) => c.component == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
+									window.SetCompletedState(2, (lWin.GetCurrentLayout().components.Any((c) => c.component == null) == true) ? CompletedState.ReadyButWarnings : CompletedState.Ready);
 									
 								} else {
 									

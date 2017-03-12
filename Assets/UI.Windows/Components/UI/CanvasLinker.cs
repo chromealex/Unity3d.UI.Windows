@@ -57,7 +57,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 				if (this.raycasterSource == null) {
 
-					this.raycasterSource = (window as LayoutWindowType).layout.GetLayoutInstance().GetComponent<BaseRaycaster>();
+					this.raycasterSource = (window as LayoutWindowType).GetCurrentLayout().GetLayoutInstance().GetComponent<BaseRaycaster>();
 					raycasterTemp = true;
 
 				}

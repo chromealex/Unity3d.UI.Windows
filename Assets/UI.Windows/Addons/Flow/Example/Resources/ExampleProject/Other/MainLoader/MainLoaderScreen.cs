@@ -16,6 +16,7 @@ namespace ExampleProject.UI.Other.MainLoader {
 	public class MainLoaderScreen : MainLoaderScreenBase {
 
 		private ProgressComponent progress;
+		public WindowBase userInfo;
 
 		public override void OnInit() {
 
@@ -24,7 +25,7 @@ namespace ExampleProject.UI.Other.MainLoader {
 			this.progress = this.GetLayoutComponent<ProgressComponent>();
 
 			User.instance.id = Random.Range(0, 500);
-			this.FlowUserInfo();
+			this.userInfo = this.FlowUserInfo();
 
 		}
 

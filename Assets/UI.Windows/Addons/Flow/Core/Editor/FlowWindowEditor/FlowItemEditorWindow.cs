@@ -682,14 +682,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			errors = false;
 
 			var screen = this.screenInstance as LayoutWindowType;
-			if (screen == null || screen.layout.layout == null) {
+			if (screen == null || screen.GetCurrentLayout().layout == null) {
 
 				errors = true;
 				return true;
 
 			}
 
-			foreach (var component in screen.layout.components) {
+			foreach (var component in screen.GetCurrentLayout().components) {
 
 				if (component.component == null) {
 
@@ -865,19 +865,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						EditorGUILayout.Space();
 						EditorGUILayout.LabelField("Layout Fit", EditorStyles.boldLabel);
 
-						var scaleMode = (WindowLayout.ScaleMode)EditorGUILayout.EnumPopup("", layoutScreen.layout.scaleMode);
-						if (scaleMode != layoutScreen.layout.scaleMode) {
+						var scaleMode = (WindowLayout.ScaleMode)EditorGUILayout.EnumPopup("", layoutScreen.GetCurrentLayout().scaleMode);
+						if (scaleMode != layoutScreen.GetCurrentLayout().scaleMode) {
 
-							layoutScreen.layout.scaleMode = scaleMode;
+							layoutScreen.GetCurrentLayout().scaleMode = scaleMode;
 
 							this.isScreenDirty = true;
 							this.isLayoutDirty = true;
 
-							this.layoutInstance.SetScale(scaleMode, layoutScreen.layout.fixedScaleResolution, layoutScreen.layout.matchWidthOrHeight);
+							this.layoutInstance.SetScale(scaleMode, layoutScreen.GetCurrentLayout().fixedScaleResolution, layoutScreen.GetCurrentLayout().matchWidthOrHeight);
 
 						}
 
-						if (layoutScreen.layout.scaleMode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Custom) {
+						if (layoutScreen.GetCurrentLayout().scaleMode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Custom) {
 
 							EditorGUIUtility.labelWidth = 70f;
 							
@@ -1042,7 +1042,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					var layout = this.layoutInstance;
 
-					foreach (var component in screen.layout.components) {
+					foreach (var component in screen.GetCurrentLayout().components) {
 
 						this.DrawLayoutItem(screen, layout, component, width);
 
@@ -1204,7 +1204,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				if ((this.screenInstance as LayoutWindowType) != null) {
 					
 					var layoutScreen = this.screenInstance as LayoutWindowType;
-					layoutScreen.layout.layout = layoutPrefab;
+					layoutScreen.GetCurrentLayout().layout = layoutPrefab;
 					this.isScreenDirty = true;
 
 				}

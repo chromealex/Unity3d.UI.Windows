@@ -12,8 +12,87 @@ namespace UnityEngine.UI.Windows.Types {
 
 	[ExecuteInEditMode()]
 	public class LayoutWindowType : WindowBase {
+		
+		public Layouts layouts;
 
-		public Layout layout;
+		// Current Layout
+		[HideInInspector][SerializeField]
+		private Layout layout;
+
+		public override void ApplyOrientationIndexDirect(int index) {
+
+			base.ApplyOrientationIndexDirect(index);
+
+			if (this.layouts.IsValid(index) == true) {
+
+				this.layouts.ApplyOrientationIndex(index);
+
+			}
+
+		}
+
+		public override void ApplyOrientationIndex(int index) {
+
+			base.ApplyOrientationIndex(index);
+
+			// Is new orientation supported?
+			if (this.layouts.IsSupported() == true && this.layouts.IsValid(index) == true) {
+
+				// Reload window
+				if (this.GetState() == WindowObjectState.Shown) {
+
+					System.Action onHideEnd = () => {
+
+						ME.Coroutines.Run(this.ApplyOrientationIndex_YIELD(index));
+
+					};
+
+					// Hide
+					this.skipRecycle = true;
+					if (this.Hide(onHideEnd) == false) {
+
+						UnityEngine.Events.UnityAction action = null;
+						action = () => {
+
+							this.events.onEveryInstance.Unregister(WindowEventType.OnHideEndLate, action);
+							onHideEnd.Invoke();
+
+						};
+						this.events.onEveryInstance.Register(WindowEventType.OnHideEndLate, action);
+
+					}
+
+				} else {
+
+					Debug.LogWarning(string.Format("Window `{0}` is not in `Shown` state, this behaviour currently unsupported.", this.name));
+					
+				}
+
+			}
+
+		}
+
+		private IEnumerator<byte> ApplyOrientationIndex_YIELD(int index) {
+
+			yield return 0;
+
+			this.skipRecycle = false;
+			this.layouts.ApplyOrientationIndex(index);
+			// Reinit
+			this.setup = false;
+			this.Init(this.initializeParameters, () => {
+
+				this.Show();
+
+			}, async: false);
+
+		}
+
+		public Layout GetCurrentLayout() {
+
+			return this.layouts.GetCurrentLayout();
+
+		}
 
 		new public LayoutWindowType GetWindow() {
 			
@@ -23,7 +102,7 @@ namespace UnityEngine.UI.Windows.Types {
 		
 		public override Canvas GetCanvas() {
 
-			var layoutInstance = this.layout.GetLayoutInstance();
+			var layoutInstance = this.GetCurrentLayout().GetLayoutInstance();
 			if (layoutInstance == null) return null;
 
 			return layoutInstance.canvas;
@@ -32,7 +111,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public override CanvasScaler GetCanvasScaler() {
 
-			var layoutInstance = this.layout.GetLayoutInstance();
+			var layoutInstance = this.GetCurrentLayout().GetLayoutInstance();
 			if (layoutInstance == null) return null;
 
 			return layoutInstance.canvasScaler;
@@ -47,13 +126,13 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public T GetLayoutComponent<T>(LayoutTag tag = LayoutTag.None) where T : WindowComponent {
 			
-			return this.layout.Get<T>(tag);
+			return this.GetCurrentLayout().Get<T>(tag);
 			
 		}
 		
 		public override Vector2 GetSize() {
 
-			var layoutInstance = this.layout.GetLayoutInstance();
+			var layoutInstance = this.GetCurrentLayout().GetLayoutInstance();
 			if (layoutInstance == null) return Vector2.zero;
 
 			return layoutInstance.GetSize();
@@ -62,19 +141,19 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public WindowLayoutElement GetLayoutContainer(LayoutTag tag) {
 
-			return this.layout.GetContainer(tag);
+			return this.GetCurrentLayout().GetContainer(tag);
 
 		}
 
 		public override int GetSortingOrder() {
 			
-			return this.layout.GetSortingOrder();
+			return this.GetCurrentLayout().GetSortingOrder();
 			
 		}
 		
 		public override float GetLayoutAnimationDuration(bool forward) {
 			
-			return this.layout.GetAnimationDuration(forward);
+			return this.GetCurrentLayout().GetAnimationDuration(forward);
 			
 		}
 		
@@ -82,7 +161,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 			var bounds = base.GetRect();
 			//var root = this.layout.GetLayoutInstance().root;
-			var baseSubElements = this.layout.GetLayoutInstance().GetSubComponents();
+			var baseSubElements = this.GetCurrentLayout().GetLayoutInstance().GetSubComponents();
 			if (baseSubElements.Count == 1) {
 
 				var baseLayoutElement = baseSubElements[0];
@@ -111,13 +190,14 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public override Transform GetLayoutRoot() {
 			
-			return this.layout.GetRoot();
+			return this.GetCurrentLayout().GetRoot();
 			
 		}
 
 		protected override void MoveLayout(Vector2 delta) {
 
-			this.layout.GetLayoutInstance().root.Move(delta);
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.GetLayoutInstance().root.Move(delta);
 
 		}
 		
@@ -125,7 +205,8 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			base.OnLocalizationChanged();
 			
-			this.layout.OnLocalizationChanged();
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.OnLocalizationChanged();
 			
 		}
 
@@ -133,15 +214,17 @@ namespace UnityEngine.UI.Windows.Types {
 
 			base.OnManualEvent<T>(data);
 
-			this.layout.OnManualEvent<T>(data);
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.OnManualEvent<T>(data);
 
 		}
 
 		protected override void DoLayoutInit(float depth, int raycastPriority, int orderInLayer, System.Action callback, bool async) {
 
-			this.layout.Create(this, this.transform, depth, raycastPriority, orderInLayer, () => {
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.Create(this, this.transform, depth, raycastPriority, orderInLayer, () => {
 
-				this.layout.DoInit();
+				this.GetCurrentLayout().DoInit();
 				if (callback != null) callback.Invoke();
 
 			}, async);
@@ -150,63 +233,73 @@ namespace UnityEngine.UI.Windows.Types {
 
 		protected override void DoLayoutDeinit(System.Action callback) {
 
-			this.layout.DoDeinit(callback);
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoDeinit(callback);
 
 		}
 
 		protected override void DoLayoutShowBegin(AppearanceParameters parameters) {
 
 			//this.layout.DoWindowOpen();
-			this.layout.DoShowBegin(parameters);
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoShowBegin(parameters);
 
 		}
 
 		protected override void DoLayoutShowEnd(AppearanceParameters parameters) {
 
-			this.layout.DoShowEnd(parameters);
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoShowEnd(parameters);
 
 		}
 
 		protected override void DoLayoutHideBegin(AppearanceParameters parameters) {
 			
 			//this.layout.DoWindowClose();
-			this.layout.DoHideBegin(parameters);
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoHideBegin(parameters);
 
 		}
 
 		protected override void DoLayoutHideEnd(AppearanceParameters parameters) {
 
-			this.layout.DoHideEnd(parameters);
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoHideEnd(parameters);
 
 		}
 
 		protected override void DoLayoutWindowOpen() {
 
-			this.layout.DoWindowOpen();
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoWindowOpen();
 
 		}
 
 		protected override void DoLayoutWindowClose() {
 
-			this.layout.DoWindowClose();
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoWindowClose();
 
 		}
 
 		protected override void DoLayoutWindowActive() {
 
-			this.layout.DoWindowActive();
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoWindowActive();
 
 		}
 
 		protected override void DoLayoutWindowInactive() {
 
-			this.layout.DoWindowInactive();
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoWindowInactive();
 
 		}
 
 		protected override void DoLayoutUnload() {
 
-			this.layout.DoWindowUnload();
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoWindowUnload();
 
 		}
 
@@ -215,18 +308,92 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			base.OnValidateEditor();
 
-			if (this.layout == null) return;
+			this.layouts.OnValidateEditor(this, this.layout);
 
-			this.layout.Update_EDITOR(this);
+			if (this.GetCurrentLayout() == null) return;
+
+			this.GetCurrentLayout().Update_EDITOR(this);
 			
 		}
 		#endif
 
 	}
-	
+
+	[System.Serializable]
+	public class Layouts {
+
+		public string[] types;		// horizontal, vertical
+		public Layout[] layouts;	// 
+		//[System.NonSerialized]
+		public int currentLayoutIndex;
+
+		public Layout GetCurrentLayout() {
+
+			if (this.layouts == null || this.layouts.Length == 0) return null;
+
+			if (this.currentLayoutIndex < 0 || this.currentLayoutIndex >= this.layouts.Length) {
+
+				return this.layouts[0];
+
+			}
+
+			return this.layouts[this.currentLayoutIndex];
+
+		}
+
+		public bool IsSupported() {
+
+			return this.IsValid(0) == true && this.IsValid(1) == true;
+
+		}
+
+		public bool IsValid(int index) {
+
+			if (index < 0 || index >= this.layouts.Length) {
+
+				return false;
+
+			}
+
+			return this.layouts[index].enabled;
+
+		}
+
+		public void ApplyOrientationIndex(int index) {
+
+			this.currentLayoutIndex = index;
+
+		}
+
+		#if UNITY_EDITOR
+		public void OnValidateEditor(LayoutWindowType root, Layout layout) {
+
+			if (this.layouts == null || this.layouts.Length == 0 || this.layouts[0] == null || this.layouts[0].enabled == false) {
+
+				// Setup as default
+				this.types = new string[2];
+				this.types[0] = "Horizontal";
+				this.types[1] = "Vertical";
+
+				this.layouts = new Layout[2];
+				this.layouts[0] = layout;
+				layout.enabled = true;
+				this.layouts[1] = new Layout();
+
+				UnityEditor.EditorUtility.SetDirty(root);
+
+			}
+
+		}
+		#endif
+
+	}
+
 	[System.Serializable]
 	public class Layout : IWindowEventsController, ILoadableResource, ILoadableReference {
-		
+
+		public bool enabled;
+
 		private class ComponentComparer : IEqualityComparer<Component> {
 			
 			public bool Equals(Component x, Component y) {
@@ -257,9 +424,9 @@ namespace UnityEngine.UI.Windows.Types {
 			public string GetDescription(LayoutWindowType layoutWindow) {
 
 				if (layoutWindow != null &&
-				    layoutWindow.layout.layout != null) {
+					layoutWindow.GetCurrentLayout().layout != null) {
 
-					var element = layoutWindow.layout.layout.GetRootByTag(this.tag);
+					var element = layoutWindow.GetCurrentLayout().layout.GetRootByTag(this.tag);
 					if (element != null) return element.comment;
 
 				}
@@ -586,27 +753,33 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
+		#region Scale
 		public WindowLayout.ScaleMode scaleMode;
 		public Vector2 fixedScaleResolution = new Vector2(1024f, 768f);
 		public float matchWidthOrHeight = 0f;
 		public WindowLayoutPreferences layoutPreferences;
 		public bool allowCustomLayoutPreferences = true;
+		#endregion
 
-		private WindowBase window;
-
+		#region Layout
 		#if UNITY_EDITOR
 		[BundleIgnore]
 		public WindowLayout layout;
 		#endif
 		[SerializeField] private WindowLayout layoutNoResource;
 		[SerializeField] private ResourceAuto layoutResource;
+		#endregion
 
+		#region Components
 		public Component[] components;
+		#endregion
 
+		#region Runtime
+		private WindowBase window;
 		[System.NonSerialized]
 		private IWindowEventsController instance;
-
 		private bool stopped = false;
+		#endregion
 
 		public IResourceReference GetReference() {
 

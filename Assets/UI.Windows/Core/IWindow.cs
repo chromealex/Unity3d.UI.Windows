@@ -4,6 +4,22 @@ using System.Collections.Generic;
 
 namespace UnityEngine.UI.Windows {
 
+	public enum Orientation : byte {
+
+		Horizontal,
+		Vertical,
+
+	};
+
+	public struct InitializeParameters {
+
+		public float depth;
+		public float zDepth;
+		public int raycastPriority;
+		public int orderInLayer;
+
+	}
+
 	public struct AppearanceParameters {
 		
 		public bool replaceCallback;

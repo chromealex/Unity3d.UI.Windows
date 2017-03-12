@@ -168,7 +168,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		private WindowLayoutRoot GetRoot(Parameters parameters, WindowBase window) {
 
-			return (window as LayoutWindowType).layout.GetLayoutInstance().root;
+			return (window as LayoutWindowType).GetCurrentLayout().GetLayoutInstance().root;
 
 		}
 

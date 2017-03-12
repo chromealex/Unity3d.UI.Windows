@@ -162,14 +162,14 @@ namespace UnityEditor.UI.Windows.Animations {
 
 					this.windowA.transform.SetParent(this.sceneTestContainer.transform);
 					image = this.windowA.GetLayoutComponent<ImageComponent>();
-					image.SetImage(this.styles.transitionA.normal.background);
+					if (image != null) image.SetImage(this.styles.transitionA.normal.background);
 					
 					this.windowB = WindowSystem.Show(windowSource);
 					if (this.windowB != null) {
 
 						this.windowB.transform.SetParent(this.sceneTestContainer.transform);
 						image = this.windowB.GetLayoutComponent<ImageComponent>();
-						image.SetImage(this.styles.transitionB.normal.background);
+						if (image != null) image.SetImage(this.styles.transitionB.normal.background);
 						
 						this.changed = true;
 

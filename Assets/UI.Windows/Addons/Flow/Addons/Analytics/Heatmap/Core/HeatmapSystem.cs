@@ -189,9 +189,9 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			if (screenInfo == null) return null;
 
 			screen = screenInfo.Load<LayoutWindowType>();
-			if (screen == null || screen.layout.layout == null) return null;
+			if (screen == null || screen.GetCurrentLayout().layout == null) return null;
 			
-			return screen.layout.layout;
+			return screen.GetCurrentLayout().layout;
 			
 		}
 		#endif

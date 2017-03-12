@@ -593,6 +593,8 @@ namespace UnityEngine.UI.Windows {
 		//private WindowBase previousInstance;
 		protected virtual void LateUpdate() {
 
+			WindowSystem.UpdateDeviceOrientation();
+
 			var lastWindow = this.lastInstance;
 			if (lastWindow != null) {
 
@@ -717,7 +719,7 @@ namespace UnityEngine.UI.Windows {
 				var window = w as LayoutWindowType;
 				if (window != null) {
 
-					window.layout.SetCustomLayoutPreferences(WindowSystem.instance.customLayoutPreferences);
+					window.GetCurrentLayout().SetCustomLayoutPreferences(WindowSystem.instance.customLayoutPreferences);
 
 				}
 
@@ -890,6 +892,36 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			return found;
+
+		}
+
+		public static Orientation GetOrientation() {
+
+			return Screen.width > Screen.height ? Orientation.Horizontal : Orientation.Vertical;
+
+		}
+
+		private static bool deviceOrientationChecked = false;
+		private static Orientation previousDeviceOrientation;
+		public static void UpdateDeviceOrientation() {
+
+			var currentOrientation = WindowSystem.GetOrientation();
+			if (WindowSystem.deviceOrientationChecked == false || WindowSystem.previousDeviceOrientation != currentOrientation) {
+
+				if (WindowSystem.deviceOrientationChecked == true) {
+
+					WindowSystem.ForEachWindow(x => {
+
+						x.SetOrientationChanged();
+
+					}, includeInactive: true);
+
+				}
+
+				WindowSystem.previousDeviceOrientation = currentOrientation;
+				WindowSystem.deviceOrientationChecked = true;
+
+			}
 
 		}
 
@@ -1762,21 +1794,25 @@ namespace UnityEngine.UI.Windows {
 
 		public static void Recycle(WindowBase window, bool setInactive) {
 			
-			if (window.preferences.createPool == false ||
-			    ObjectPool.IsRegisteredInPool(window.GetSource()) == false) {
-				
-				WindowSystem.CleanWindow(window, removeFromList: true, callback: () => {
+			if (window.skipRecycle == false) {
+
+				if (window.preferences.createPool == false ||
+				    ObjectPool.IsRegisteredInPool(window.GetSource()) == false) {
+					
+					WindowSystem.CleanWindow(window, removeFromList: true, callback: () => {
+						
+						window.Recycle(setInactive);
+						
+					});
+					
+				} else {
 					
 					window.Recycle(setInactive);
-					
-				});
-				
-			} else {
-				
-				window.Recycle(setInactive);
 
+				}
+				
 			}
-			
+
 		}
 
         private bool DestroyWindowCheckOnClean_INTERNAL(WindowBase window, List<WindowBase> exceptList, WindowBase exceptItem, bool forceAll = false) {
@@ -2378,7 +2414,7 @@ namespace UnityEngine.UI.Windows {
 
         public static Vector2 ConvertPointWindowToGLScreen(Vector2 point, WindowObject handler) {
 
-            var size = (handler.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>().layout.GetLayoutInstance().transform as RectTransform).sizeDelta;
+			var size = (handler.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>().GetCurrentLayout().GetLayoutInstance().transform as RectTransform).sizeDelta;
             var screenSize = new Vector2(Screen.width, Screen.height);
 
             var result = new Vector2(screenSize.x / size.x, screenSize.y / size.y);
@@ -2390,7 +2426,7 @@ namespace UnityEngine.UI.Windows {
 
         public static Vector2 ConvertPointWindowToUnityScreen(Vector2 point, WindowObject handler) {
 
-			var size = (handler.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>().layout.GetLayoutInstance().transform as RectTransform).sizeDelta;
+			var size = (handler.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>().GetCurrentLayout().GetLayoutInstance().transform as RectTransform).sizeDelta;
 			return new Vector2(size.x * 0.5f + point.x, size.y * 0.5f + point.y);
 
 		}
@@ -2419,8 +2455,8 @@ namespace UnityEngine.UI.Windows {
 
 			if (fromLayout != null && toLayout != null) {
 
-				var scaleFrom = fromLayout.layout.GetLayoutInstance().transform.localScale.x;
-				var scaleTo = toLayout.layout.GetLayoutInstance().transform.localScale.x;
+				var scaleFrom = fromLayout.GetCurrentLayout().GetLayoutInstance().transform.localScale.x;
+				var scaleTo = toLayout.GetCurrentLayout().GetLayoutInstance().transform.localScale.x;
 
 				var scaleK = 1f;
 				if (withoutCamera == true) {

@@ -2819,6 +2819,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					if (state == true) {
 
+						var screen = window.GetScreen().Load<WindowBase>();
+
 						var menu = new GenericMenu();
 						menu.AddItem(new GUIContent("Select Package"), on: false, func: () => { this.SelectWindow(window); });
 						
@@ -2848,11 +2850,29 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							}
 
+							//var screen = screens[window.selectedScreenIndex];
+							//var wt = screen.Load<LayoutWindowType>();
+							var wt = screen as LayoutWindowType;
+							if (wt != null) {
+								
+								for (int i = 0; i < wt.layouts.layouts.Length; ++i) {
+
+									var index = i;
+									menu.AddItem(new GUIContent(string.Format("Views/{0}", wt.layouts.types[i])), on: (window.selectedViewIndex == index), func: () => {
+
+										window.selectedViewIndex = index;
+										wt.ApplyOrientationIndexDirect(index);
+										EditorUtility.SetDirty(window);
+
+									});
+
+								}
+
+							}
+
 						}
 
 						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScene(window); });
-
-						var screen = window.GetScreen().Load<WindowBase>();
 
 						var methodsCount = 0;
 						WindowSystem.CollectCallVariations(screen, (types, names) => {

@@ -36,7 +36,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Editors {
 			var layoutWindow = this.previewScreen as LayoutWindowType;
 			if (layoutWindow != null) {
 				
-				var layout = layoutWindow.layout.GetLayoutInstance();
+				var layout = layoutWindow.GetCurrentLayout().GetLayoutInstance();
 				
 				this.tempRenderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32, RenderTextureReadWrite.Default);
 				this.previewScreen.workCamera.targetTexture = this.tempRenderTexture;

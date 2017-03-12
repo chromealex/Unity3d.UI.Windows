@@ -21,13 +21,19 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 		private bool inited = false;
 		//private ReorderableList elements;
 		private ReorderableListControl elements;
-		private IReorderableListAdaptor adapter;
+		private IReorderableListAdaptor adaptor;
 		private ReorderableListControl.ItemDrawer<SerializedProperty> onItemDraw;
 		private List<UnityEngine.UI.Windows.Types.Layout.Component> components;
 		private List<SerializedProperty> items;
 		
 		private LayoutWindowType window;
-		
+
+		public void Reset() {
+
+			this.inited = false;
+
+		}
+
 		public void Init(Rect position, SerializedProperty property, GUIContent label) {
 			
 			if (property == null) return;
@@ -40,12 +46,12 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			for (int i = 0; i < property.arraySize; ++i) {
 				
 				var element = property.GetArrayElementAtIndex(i);
-				if (this.window.layout.layout == null) continue;
+				if (this.window.GetCurrentLayout().layout == null) continue;
 				
-				var rootElement = this.window.layout.layout.GetRootByTag(this.window.layout.components[i].tag);
+				var rootElement = this.window.GetCurrentLayout().layout.GetRootByTag(this.window.GetCurrentLayout().components[i].tag);
 				if (rootElement != null && rootElement.showInComponentsList == true) {
 					
-					this.components.Add(this.window.layout.components[i]);
+					this.components.Add(this.window.GetCurrentLayout().components[i]);
 					this.items.Add(element);
 					
 				}
@@ -73,7 +79,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			                                           ReorderableListFlags.DisableAutoScroll |
 			                                           ReorderableListFlags.DisableReordering);
 			
-			this.adapter = new ComponentsListAdaptor<SerializedProperty>(this.items, this.onItemDraw, getHeight);
+			this.adaptor = new ComponentsListAdaptor<SerializedProperty>(this.items, this.onItemDraw, getHeight);
 			
 			this.inited = true;
 			
@@ -204,8 +210,23 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			rect.y += height;
 			height = EditorGUI.GetPropertyHeight(sortingOrder, new GUIContent(title)) + offset;
 			rect.height = height - offset;
-			if (draw == true) EditorGUI.PropertyField(rect, sortingOrder, new GUIContent(title), true);
-			if (sortingOrder.intValue < 0) sortingOrder.intValue = 0;
+			if (draw == true) {
+
+				var oldValue = sortingOrder.intValue;
+				EditorGUI.PropertyField(rect, sortingOrder, new GUIContent(title), true);
+				if (sortingOrder.intValue < 0) {
+
+					sortingOrder.intValue = 0;
+
+				}
+				if (oldValue != sortingOrder.intValue) {
+
+					item.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+					UnityEditor.EditorUtility.SetDirty(window);
+
+				}
+
+			}
 			
 			if (parameters.objectReferenceValue == null && LayoutSettingsEditor.componentParametersSearched[index] == false) {
 				
@@ -288,7 +309,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			
 			//var window = (property.serializedObject.targetObject as LayoutWindowType);
 			this.Init(position, property.FindPropertyRelative("components"), new GUIContent("Components"));
-			
+
+			var enabledField = property.FindPropertyRelative("enabled");
+
 			var scaleMode = property.FindPropertyRelative("scaleMode");
 			var fixedScaleSize = property.FindPropertyRelative("fixedScaleResolution");
 			var matchWidthOrHeight = property.FindPropertyRelative("matchWidthOrHeight");
@@ -296,10 +319,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			var allowCustomLayoutPreferences = property.FindPropertyRelative("allowCustomLayoutPreferences");
 			var layout = property.FindPropertyRelative("layout");
 			
-			if (EditorGUI.PropertyField(position, property, label, false) == true) {
+			//if (EditorGUI.PropertyField(position, property, label, false) == true) {
 				
-				++EditorGUI.indentLevel;
-				
+				//++EditorGUI.indentLevel;
+
+			EditorGUILayout.PropertyField(enabledField);
+			EditorGUI.BeginDisabledGroup(!enabledField.boolValue);
+			{
+					
 				var oldValue = layout.objectReferenceValue;
 				EditorGUILayout.PropertyField(layout, new GUIContent("Layout:"));
 				var newValue = layout.objectReferenceValue;
@@ -307,14 +334,14 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					
 					if (oldValue == null ||
 					    EditorUtility.DisplayDialog("Layout Changing Warning",
-					                            "Do you really want to change this layout? Components list will be destroyed and the new one will be created. Are you sure?",
-					                            "Yes",
-					                            "No") == true) {
+						    "Do you really want to change this layout? Components list will be destroyed and the new one will be created. Are you sure?",
+						    "Yes",
+						    "No") == true) {
 						
 						this.canvasScalerEditor = null;
 						this.inited = false;
 						GUI.changed = true;
-						this.window.layout.components = new UnityEngine.UI.Windows.Types.Layout.Component[0];
+						this.window.GetCurrentLayout().components = new UnityEngine.UI.Windows.Types.Layout.Component[0];
 						this.window.OnValidate();
 
 					}
@@ -390,16 +417,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					}
 
 					EditorGUI.BeginDisabledGroup(!enabled);
-					if (this.canvasScalerEditor != null) this.canvasScalerEditor.OnInspectorGUI();
+					if (this.canvasScalerEditor != null)
+						this.canvasScalerEditor.OnInspectorGUI();
 					EditorGUI.EndDisabledGroup();
 
 					CustomGUI.Splitter();
 					
 				}
 				
-				--EditorGUI.indentLevel;
+				//--EditorGUI.indentLevel;
 				
-				if (this.inited == true && this.window != null && this.window.layout.layout != null) {
+				if (this.inited == true && this.window != null && this.window.GetCurrentLayout().layout != null) {
 					
 					if (GUILayout.Button("Reset") == true) {
 						
@@ -408,13 +436,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					}
 					
 					ReorderableListGUI.Title("Components");
-					this.elements.Draw(this.adapter);
+					this.elements.Draw(this.adaptor);
 					
 				}
-				
+					
 			}
+			EditorGUI.EndDisabledGroup();
+
+			//}
 			
-			property.serializedObject.ApplyModifiedProperties();
+			//property.serializedObject.ApplyModifiedProperties();
 			
 		}
 

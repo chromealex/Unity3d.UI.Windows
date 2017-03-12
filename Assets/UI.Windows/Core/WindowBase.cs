@@ -86,12 +86,17 @@ namespace UnityEngine.UI.Windows {
 		private int functionIterationIndex = 0;
 
 		[HideInInspector]
-		private bool setup = false;
+		protected bool setup = false;
 		[HideInInspector]
 		private bool passParams = false;
 		[HideInInspector]
 		private object[] parameters;
 		private System.Action<WindowBase> onParametersPassCall;
+
+		[HideInInspector][System.NonSerialized]
+		public bool skipRecycle = false;
+
+		protected InitializeParameters initializeParameters;
 
 		private WindowBase source;
 
@@ -177,6 +182,14 @@ namespace UnityEngine.UI.Windows {
 
 		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer, System.Action onInitialized, bool async) {
 
+			this.Init(new InitializeParameters() { depth = depth, zDepth = zDepth, raycastPriority = raycastPriority, orderInLayer = orderInLayer }, onInitialized, async);
+
+		}
+
+		internal void Init(InitializeParameters parameters, System.Action onInitialized, bool async) {
+
+			this.initializeParameters = parameters;
+
 			this.currentState = WindowObjectState.Initializing;
 
 			if (this.isReady == false) {
@@ -188,7 +201,8 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			this.SetDepth(depth, zDepth);
+			this.SetOrientationChangedDirect();
+			this.SetDepth(this.initializeParameters.depth, this.initializeParameters.zDepth);
 
 			if (Application.isPlaying == true) {
 				
@@ -274,7 +288,7 @@ namespace UnityEngine.UI.Windows {
 				Profiler.BeginSample("WindowBase::OnInit()");
 				#endif
 
-				this.DoLayoutInit(depth, raycastPriority, orderInLayer, () => {
+				this.DoLayoutInit(this.initializeParameters.depth, this.initializeParameters.raycastPriority, this.initializeParameters.orderInLayer, () => {
 
 					WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
 
@@ -579,6 +593,49 @@ namespace UnityEngine.UI.Windows {
 
 		public virtual void OnBackButtonAction() {
 		}
+
+		#region Orientation
+		public virtual void SetOrientationChangedDirect() {
+
+			var orientation = WindowSystem.GetOrientation();
+			if (orientation == Orientation.Horizontal) {
+
+				this.ApplyOrientationIndexDirect(0);
+
+			} else if (orientation == Orientation.Vertical) {
+
+				this.ApplyOrientationIndexDirect(1);
+
+			}
+
+		}
+
+		public virtual void ApplyOrientationIndexDirect(int index) {
+		}
+
+		public virtual void SetOrientationChanged() {
+
+			var orientation = WindowSystem.GetOrientation();
+			if (orientation == Orientation.Horizontal) {
+
+				this.ApplyOrientationIndex(0);
+
+			} else if (orientation == Orientation.Vertical) {
+
+				this.ApplyOrientationIndex(1);
+
+			}
+
+			this.OnOrientationChanged();
+
+		}
+
+		public virtual void ApplyOrientationIndex(int index) {
+		}
+
+		public virtual void OnOrientationChanged() {
+		}
+		#endregion
 
 		#region DRAG'n'DROP
 		private List<WindowLayoutElement> dragTempParent = new List<WindowLayoutElement>();
@@ -1071,12 +1128,19 @@ namespace UnityEngine.UI.Windows {
 
 		private bool Hide_INTERNAL(System.Action onHideEnd, AttachItem transitionItem, bool immediately = false, bool forced = false) {
 
+			return this.Hide_INTERNAL(onHideEnd, transitionItem, AppearanceParameters.Default().ReplaceImmediately(immediately).ReplaceForced(forced));
+
+		}
+
+		private bool Hide_INTERNAL(System.Action onHideEnd, AttachItem transitionItem, AppearanceParameters parameters) {
+			
 			if (this == null) {
 
 				return false;
 
 			}
 
+			var forced = parameters.GetForced(defaultValue: false);
 			if ((this.currentState == WindowObjectState.Hidden || this.currentState == WindowObjectState.Hiding) && forced == false) {
 
 				return false;
@@ -1087,13 +1151,13 @@ namespace UnityEngine.UI.Windows {
 			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.HideBegin);
 
 			//if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
-			ME.Coroutines.Run(this.Hide_INTERNAL_YIELD(onHideEnd, transitionItem, immediately, forced));
+			ME.Coroutines.Run(this.Hide_INTERNAL_YIELD(onHideEnd, transitionItem, parameters));
 
 			return true;
 
 		}
 		
-		private System.Collections.Generic.IEnumerator<byte> Hide_INTERNAL_YIELD(System.Action onHideEnd, AttachItem transitionItem, bool immediately, bool forced) {
+		private System.Collections.Generic.IEnumerator<byte> Hide_INTERNAL_YIELD(System.Action onHideEnd, AttachItem transitionItem, AppearanceParameters parameters) {
 			
 			while (this.paused == true) yield return 0;
 
@@ -1106,10 +1170,10 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			var parameters = AppearanceParameters.Default();
+			//var parameters = AppearanceParameters.Default();
 
-			parameters.ReplaceImmediately(immediately);
-			parameters.ReplaceForced(forced);
+			//parameters.ReplaceImmediately(immediately);
+			//parameters.ReplaceForced(forced);
 
 			this.hideWaitCounter = 0;
 			var counter = 0;
@@ -1506,9 +1570,9 @@ namespace UnityEngine.UI.Windows {
 					var layoutWindow = window as UnityEngine.UI.Windows.Types.LayoutWindowType;
 					if (layoutWindow != null) {
 						
-						foreach (var component in layoutWindow.layout.components) {
+						foreach (var component in layoutWindow.GetCurrentLayout().components) {
 							
-							var compInstance = layoutWindow.layout.Get<WindowComponent>(component.tag);
+							var compInstance = layoutWindow.GetCurrentLayout().Get<WindowComponent>(component.tag);
 							if (compInstance != null) selection.Add(compInstance.gameObject);
 							
 						}

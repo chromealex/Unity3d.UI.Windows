@@ -73,7 +73,7 @@ namespace ME {
 				if (window != null) {
 					
 					this.rootScaler = window.GetCanvasScaler();
-					this.rootTransform = window.layout.GetRoot() as RectTransform;
+					this.rootTransform = window.GetCurrentLayout().GetRoot() as RectTransform;
 
 				}
 

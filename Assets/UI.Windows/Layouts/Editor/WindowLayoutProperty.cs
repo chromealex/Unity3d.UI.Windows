@@ -20,7 +20,28 @@ namespace UnityEditor.UI.Windows {
 
 			if (this.editor == null) this.editor = new LayoutSettingsEditor();
 
+			//property.serializedObject.Update();
+
 			this.editor.OnGUI(position, property, label);
+
+			property.serializedObject.ApplyModifiedProperties();
+
+		}
+
+	}
+
+	[CustomPropertyDrawer(typeof(UnityEngine.UI.Windows.Types.Layouts))]
+	public class WindowLayoutsProperty : PropertyDrawer {
+
+		private LayoutsSettingsEditor editor;
+
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+
+			if (this.editor == null) this.editor = new LayoutsSettingsEditor();
+
+			this.editor.OnGUI(position, property, label);
+
+			property.serializedObject.ApplyModifiedProperties();
 
 		}
 
