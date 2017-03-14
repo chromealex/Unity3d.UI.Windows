@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UnityEngine.UI.Extensions
+namespace UnityEngine.UI.Windows.Extensions
 {
 	[AddComponentMenu("UI/Extensions/Primitives/UI Circle")]
 	public class UICircle : MaskableGraphic

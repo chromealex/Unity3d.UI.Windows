@@ -3,7 +3,7 @@
 /// Example http://forum.unity3d.com/threads/flowlayoutgroup.296709/
 using System.Collections.Generic;
 
-namespace UnityEngine.UI.Extensions {
+namespace UnityEngine.UI.Windows.Extensions {
 	/// <summary>
 	/// Layout Group controller that arranges children in rows, fitting as many on a line until total width exceeds parent bounds
 	/// </summary>

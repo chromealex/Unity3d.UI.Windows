@@ -78,7 +78,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 						layoutsArray.InsertArrayElementAtIndex(0);
 						val = layoutsArray.GetArrayElementAtIndex(0);
 						object root;
-						var layout = (UnityEngine.UI.Windows.Types.Layout)PropertyExtensions.GetTargetObjectOfProperty(val, out root);
+						PropertyExtensions.GetTargetObjectOfProperty(val, out root);
 						var layoutRoot = root as UnityEngine.UI.Windows.Types.Layouts;
 						layoutRoot.layouts[0] = (property.serializedObject.targetObject as UnityEngine.UI.Windows.Types.LayoutWindowType).GetCurrentLayout();
 						layoutRoot.layouts[0].enabled = true;
@@ -95,7 +95,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					//layoutsArray.InsertArrayElementAtIndex(layoutsArray.arraySize - 1);
 					var val = layoutsArray.GetArrayElementAtIndex(layoutsArray.arraySize - 1);
 					object root;
-					var layout = (UnityEngine.UI.Windows.Types.Layout)PropertyExtensions.GetTargetObjectOfProperty(val, out root);
+					PropertyExtensions.GetTargetObjectOfProperty(val, out root);
 					var layoutRoot = root as UnityEngine.UI.Windows.Types.Layouts;
 					var list = layoutRoot.layouts.ToList();
 					list.Add(new UnityEngine.UI.Windows.Types.Layout());
@@ -126,7 +126,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 
 								var currentLayout = layoutsArray.GetArrayElementAtIndex(this.selected);
 								object root;
-								var layout = (UnityEngine.UI.Windows.Types.Layout)PropertyExtensions.GetTargetObjectOfProperty(currentLayout, out root);
+								PropertyExtensions.GetTargetObjectOfProperty(currentLayout, out root);
 								var layoutRoot = root as UnityEngine.UI.Windows.Types.Layouts;
 								layoutRoot.currentLayoutIndex = this.selected;
 

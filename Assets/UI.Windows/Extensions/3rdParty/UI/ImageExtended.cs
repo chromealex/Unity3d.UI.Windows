@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Serialization;
 
-namespace UnityEngine.UI.Extensions
+namespace UnityEngine.UI.Windows.Extensions
 {
 	/// <summary>
 	/// Image is a textured element in the UI hierarchy.
