@@ -2645,7 +2645,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 									
 								} else {
 
-									var abTests = (window.abTests.sourceWindowId >= 0/* || currentAttach.attachItems.Any(x => FlowSystem.GetWindow(x.targetId).IsABTest() == true) == true*/);
+									var abTests = (window.abTests != null && window.abTests.sourceWindowId >= 0/* || currentAttach.attachItems.Any(x => FlowSystem.GetWindow(x.targetId).IsABTest() == true) == true*/);
 
 									if (this.currentAttachIndex == 0 && 
 									    (currentAttach.IsABTest() == true ||

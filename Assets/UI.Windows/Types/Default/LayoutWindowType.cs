@@ -368,7 +368,7 @@ namespace UnityEngine.UI.Windows.Types {
 		#if UNITY_EDITOR
 		public void OnValidateEditor(LayoutWindowType root, Layout layout) {
 
-			if (this.layouts == null || this.layouts.Length == 0 || this.layouts[0] == null || this.layouts[0].enabled == false) {
+			if (this.layouts == null || this.layouts.Length == 0 || this.layouts[0] == null) {
 
 				// Setup as default
 				this.types = new string[2];
@@ -381,6 +381,12 @@ namespace UnityEngine.UI.Windows.Types {
 				this.layouts[1] = new Layout();
 
 				UnityEditor.EditorUtility.SetDirty(root);
+
+			}
+
+			if (this.layouts[0].enabled == false) {
+
+				this.layouts[0].enabled = true;
 
 			}
 

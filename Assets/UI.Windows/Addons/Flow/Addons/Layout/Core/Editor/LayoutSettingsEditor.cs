@@ -318,7 +318,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			var layoutPreferences = property.FindPropertyRelative("layoutPreferences");
 			var allowCustomLayoutPreferences = property.FindPropertyRelative("allowCustomLayoutPreferences");
 			var layout = property.FindPropertyRelative("layout");
-			
+
 			//if (EditorGUI.PropertyField(position, property, label, false) == true) {
 				
 				//++EditorGUI.indentLevel;
@@ -343,6 +343,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 						GUI.changed = true;
 						this.window.GetCurrentLayout().components = new UnityEngine.UI.Windows.Types.Layout.Component[0];
 						this.window.OnValidate();
+
+						property.serializedObject.ApplyModifiedProperties();
 
 					}
 					
