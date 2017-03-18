@@ -79,7 +79,7 @@ namespace UnityEngine.UI {
 
 		}
 
-		public enum Transition : byte {
+		new public enum Transition : byte {
 
 			// Defaults
 			None = 0x0,

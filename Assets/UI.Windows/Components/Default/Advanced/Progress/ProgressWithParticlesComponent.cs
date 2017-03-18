@@ -26,7 +26,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.SetColor(color);
 
-			if (this.effect != null) this.effect.mainParticleSystem.startColor = color;
+			if (this.effect != null) this.effect.SetStartColor(color, withChildren: true);
 
 		}
 
@@ -44,7 +44,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.bar.continuous == true) {
 
-				if (this.effect != null) this.effect.mainParticleSystem.simulationSpace = ParticleSystemSimulationSpace.Local;
+				if (this.effect != null) this.effect.simulationSpace = ParticleSystemSimulationSpace.Local;
 
 				var rect = (this.bar.transform as RectTransform).rect;
 				var s = this.bar.continuousWidth;
@@ -52,7 +52,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			} else {
 				
-				if (this.effect != null) this.effect.mainParticleSystem.simulationSpace = ParticleSystemSimulationSpace.World;
+				if (this.effect != null) this.effect.simulationSpace = ParticleSystemSimulationSpace.World;
 
 				var rect = this.bar.fillRect.rect;
 				size = new Vector2(rect.width, rect.height) + this.bar.fillRect.sizeDelta;

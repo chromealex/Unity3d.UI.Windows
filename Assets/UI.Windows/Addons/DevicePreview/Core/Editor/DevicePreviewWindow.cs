@@ -61,7 +61,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		}
 
-		public static Styles styles = new Styles();
+		public static Styles styles = null;
 
 		public class GameView {
 
@@ -393,9 +393,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		public override void OnClose() {
 			
-			this.Validate();
-
-			this.gameView.CleanUp();
+			if (this.gameView != null) this.gameView.CleanUp();
 
 			if (this.onClose != null) this.onClose();
 
@@ -403,7 +401,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		public void Validate() {
 
-			if (DevicePreviewWindow.styles == null | DevicePreviewWindow.styles.IsValid() == false) DevicePreviewWindow.styles = new Styles();
+			if (DevicePreviewWindow.styles == null || DevicePreviewWindow.styles.IsValid() == false) DevicePreviewWindow.styles = new Styles();
 
 			if (Parser.manufacturerToDevices == null || Parser.manufacturerToDevices.Count == 0) {
 
@@ -417,8 +415,6 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 		public override void Update() {
 			
-			this.Validate();
-
 			this.gameView.Update();
 			
 			this.Repaint();

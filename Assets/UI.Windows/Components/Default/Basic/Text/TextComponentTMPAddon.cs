@@ -6,7 +6,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static bool IsValid(MaskableGraphic text) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			return text is TMPro.TMP_Text;
 			#else
 			return false;
@@ -16,7 +16,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetBestFitState(MaskableGraphic text, bool state) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.enableAutoSizing = state;
 			#endif
@@ -25,7 +25,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetBestFitMinSize(MaskableGraphic text, int size) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.fontSizeMin = size;
 			#endif
@@ -34,7 +34,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetBestFitMaxSize(MaskableGraphic text, int size) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.fontSizeMax = size;
 			#endif
@@ -43,7 +43,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static int GetFontSize(MaskableGraphic text) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) return (int)instance.fontSize;
 			#endif
@@ -54,7 +54,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetFontSize(MaskableGraphic text, int fontSize) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.fontSize = fontSize;
 			#endif
@@ -63,7 +63,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetLineSpacing(MaskableGraphic text, float value) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.lineSpacing = value;
 			#endif
@@ -90,7 +90,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetTextVerticalOverflow(MaskableGraphic text, VerticalWrapMode mode) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.OverflowMode = (mode == VerticalWrapMode.Overflow ? TMPro.TextOverflowModes.Overflow : TMPro.TextOverflowModes.Truncate);
 			#endif
@@ -99,7 +99,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetTextHorizontalOverflow(MaskableGraphic text, HorizontalWrapMode mode) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.OverflowMode = (mode == HorizontalWrapMode.Overflow ? TMPro.TextOverflowModes.Overflow : TMPro.TextOverflowModes.Truncate);
 			#endif
@@ -114,7 +114,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static bool IsRichtextSupported(MaskableGraphic text) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			return true;
 			#else
 			return false;
@@ -124,7 +124,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static string GetText(MaskableGraphic text) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) return instance.text;
 			#endif
@@ -135,7 +135,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetText(MaskableGraphic text, string contentText) {
 
-			#if TEXTEMESHPRO_SUPPORTED
+			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
 			if (instance != null) instance.text = contentText;
 			#endif

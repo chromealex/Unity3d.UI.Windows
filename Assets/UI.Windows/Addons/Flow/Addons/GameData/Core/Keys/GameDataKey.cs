@@ -35,6 +35,12 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 		    return this.cache.Value;
 
 		}
+
+	    public void ForceSet(float value) {
+
+	        this.cache = value;
+
+	    }
 		
 	}
 	
@@ -73,6 +79,12 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
         }
 
+        public void ForceSet(int value) {
+
+            this.cache = value;
+
+        }
+
     }
 
     [System.Serializable]
@@ -107,6 +119,12 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
             this.cache = GameDataSystem.Get(this);
             return this.cache.Value;
+
+        }
+
+        public void ForceSet(bool value) {
+
+            this.cache = value;
 
         }
 

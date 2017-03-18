@@ -15,9 +15,13 @@ class MinMaxSliderDrawer : ReadOnlyAttributeDrawer {
 			float min = range.x;
 			float max = range.y;
 			MinMaxSliderAttribute attr = attribute as MinMaxSliderAttribute;
-			EditorGUI.BeginChangeCheck ();
+			EditorGUI.BeginChangeCheck();
+			#if UNITY_5_5_OR_NEWER
+			EditorGUI.MinMaxSlider(position, label, ref min, ref max, attr.min, attr.max);
+			#else
 			EditorGUI.MinMaxSlider(label, position, ref min, ref max, attr.min, attr.max);
-			if (EditorGUI.EndChangeCheck ()) {
+			#endif
+			if (EditorGUI.EndChangeCheck()) {
 				range.x = min;
 				range.y = max;
 				property.vector2Value = range;

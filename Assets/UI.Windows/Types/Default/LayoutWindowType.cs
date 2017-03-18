@@ -427,17 +427,19 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			#if UNITY_EDITOR
 			public string description;
-			public string GetDescription(LayoutWindowType layoutWindow) {
+			public void UpdateDescription(LayoutWindowType layoutWindow) {
 
 				if (layoutWindow != null &&
 					layoutWindow.GetCurrentLayout().layout != null) {
 
 					var element = layoutWindow.GetCurrentLayout().layout.GetRootByTag(this.tag);
-					if (element != null) return element.comment;
+					if (element != null) {
+
+						this.description = element.comment;
+
+					}
 
 				}
-
-				return string.Empty;
 
 			}
 			#endif
@@ -555,6 +557,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 				}*/
 
+				if (this.componentResource == null) this.componentResource = new ResourceMono();
 				this.componentResource.Validate(this.component);
 
 				if (this.componentResource.IsLoadable() == false) {
@@ -1102,13 +1105,21 @@ namespace UnityEngine.UI.Windows.Types {
 			if (this.layout == null) return;
 			
 			this.layout.GetTags(this.tags);
-			
+
+			foreach (var tag in this.tags) {
+
+				this.AddComponentLink(tag);
+
+			}
+
+			this.components = this.components.Distinct(new ComponentComparer()).ToArray();
+
 			// Used
 			for (int i = 0; i < this.components.Length; ++i) {
 
 				this.components[i].OnValidate();
 
-				this.components[i].description = this.components[i].GetDescription(layoutWindow);
+				this.components[i].UpdateDescription(layoutWindow);
 
 				var index = this.tags.IndexOf(this.components[i].tag);
 				if (index == -1) {
@@ -1120,14 +1131,6 @@ namespace UnityEngine.UI.Windows.Types {
 				this.tags.RemoveAt(index);
 
 			}
-
-			foreach (var tag in this.tags) {
-				
-				this.AddComponentLink(tag);
-				
-			}
-			
-			this.components = this.components.Distinct(new ComponentComparer()).ToArray();
 
 			this.layoutResource.tempObject = this.layout;
 			this.layoutResource.Validate();

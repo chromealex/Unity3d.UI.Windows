@@ -500,10 +500,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		}
 
-		public List<WindowItem> GetScreens() {
+		public WindowItem[] GetScreens() {
 
-			// return this.screens;
-		    return this.runtimeScreens;
+			#if UNITY_EDITOR
+			return this.screens;
+			#else
+			return null;
+			#endif
+		    //return this.runtimeScreens;
 
 		}
 
@@ -558,36 +562,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 				return screens.FirstOrDefault();
 
 			}
-
-			/*if (runtime == true) {
-
-				WindowBase target = null;
-				for (int i = 0; i < screens.Count; ++i) {
-
-					var screen = screens[i];
-					if (screen.targetPreferences.GetRunOnAnyTarget() == false) {
-
-						if (screen.targetPreferences.IsValid() == true) {
-
-							target = screen;
-							break;
-
-						}
-
-					} else {
-
-						target = screen;
-
-					}
-
-				}
-
-				return target;
-
-				//var screen = this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == false && x.targetPreferences.IsValid() == true);
-				//if (screen == null) return this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == true);
-
-			}*/
 
 			this.selectedScreenIndex = Mathf.Clamp(this.selectedScreenIndex, 0, screens.Count - 1);
 			return screens[this.selectedScreenIndex];
@@ -1208,39 +1182,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 #endif
 
 	    public void FilterRuntimeScreens() {
-
-            /*if (runtime == true) {
-
-				WindowBase target = null;
-				for (int i = 0; i < screens.Count; ++i) {
-
-					var screen = screens[i];
-					if (screen.targetPreferences.GetRunOnAnyTarget() == false) {
-
-						if (screen.targetPreferences.IsValid() == true) {
-
-							target = screen;
-							break;
-
-						}
-
-					} else {
-
-						target = screen;
-
-					}
-
-				}
-
-				return target;
-
-				//var screen = this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == false && x.targetPreferences.IsValid() == true);
-				//if (screen == null) return this.screens.FirstOrDefault(x => x.targetPreferences.GetRunOnAnyTarget() == true);
-
-			}*/
-
-#if true
-
+			
 	        var screens = this.runtimeScreens.Where(x => x != null);
 			var screen = screens.FirstOrDefault(x => x.Load<WindowBase>().targetPreferences.IsValid() == true) ?? screens.FirstOrDefault(x => x.Load<WindowBase>().targetPreferences.GetRunOnAnyTarget() == true);
             this.runtimeScreens = new List<WindowItem>();
@@ -1249,32 +1191,6 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 				this.runtimeScreens.Add(screen);
 
             }
-
-#else
-            this.runtimeScreens = this.runtimeScreens.FirstOrDefault(x => x.targetPreferences.IsValid() == true)
-
-            var res = new List<WindowBase>();
-	        for (var i = 0; i < this.runtimeScreens.Count; ++i) {
-
-                var screen = this.runtimeScreens[i];
-                if (screen.targetPreferences.GetRunOnAnyTarget() == false) {
-
-                    if (screen.targetPreferences.IsValid() == true) {
-
-                        res.Add(screen);
-
-                    }
-
-                } else {
-
-                    res.Add(screen);
-
-                }
-
-            }
-
-            this.runtimeScreens = res;
-#endif
 
         }
 

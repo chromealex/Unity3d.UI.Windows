@@ -583,6 +583,8 @@ namespace UnityEngine.UI.Windows {
 
 			this.objectPool.Init();
 
+			Debug.LogFormat("[ WindowSystem ] Initialized with platform `{0}`", WindowSystem.GetCurrentRuntimePlatform());
+
 			GameObject.DontDestroyOnLoad(this.gameObject);
 
 			this.Init();

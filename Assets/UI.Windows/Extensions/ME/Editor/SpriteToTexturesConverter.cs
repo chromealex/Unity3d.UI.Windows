@@ -63,7 +63,15 @@ namespace ME {
 								if (importer != null) {
 									
 									importer.mipmapEnabled = false;
+									#if UNITY_5_5_OR_NEWER
+									var settings = new TextureImporterPlatformSettings();
+									settings.format = TextureImporterFormat.ARGB32;
+									settings.maxTextureSize = 2048;
+									settings.name = "default";
+									importer.SetPlatformTextureSettings(settings);
+									#else
 									importer.SetPlatformTextureSettings("default", 2048, TextureImporterFormat.ARGB32);
+									#endif
 									importer.SaveAndReimport();
 
 								} else {

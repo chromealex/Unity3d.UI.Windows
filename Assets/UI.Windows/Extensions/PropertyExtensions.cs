@@ -228,12 +228,12 @@ namespace UnityEditor.UI.Windows.Extensions {
 		}
 
 		public static object GetTargetObjectOfProperty(SerializedProperty prop) {
-			object rootObject = null;
+			//object rootObject = null;
 			var path = prop.propertyPath.Replace(".Array.data[", "[");
 			object obj = prop.serializedObject.targetObject;
 			var elements = path.Split('.');
 			foreach (var element in elements) {
-				rootObject = obj;
+				//rootObject = obj;
 				if (element.Contains("[")) {
 					var elementName = element.Substring(0, element.IndexOf("["));
 					var index = System.Convert.ToInt32(element.Substring(element.IndexOf("[")).Replace("[", "").Replace("]", ""));

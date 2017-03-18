@@ -183,7 +183,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					if (this.imageLocalizationKey.IsNone() == false) {
 	
-						if ((this.imageResource.controlType & ResourceBase.ControlType.Init) != 0) {
+						if ((this.imageResource.controlType & ResourceAuto.ControlType.Init) != 0) {
 	
 							this.SetImage(this.imageLocalizationKey);
 	
@@ -323,7 +323,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					if (this.imageLocalizationKey.IsNone() == false) {
 	
-						if ((this.imageResource.controlType & ResourceBase.ControlType.Show) != 0) {
+					if ((this.imageResource.controlType & ResourceAuto.ControlType.Show) != 0) {
 	
 							this.SetImage(this.imageLocalizationKey);
 	
@@ -921,7 +921,7 @@ namespace UnityEngine.UI.Windows.Components {
 			private void ValidateTexture(IImageComponent component, Texture texture) {
 	
 				//Debug.Log("ValidateTexture: " + (component as MonoBehaviour) + ", tex: " + texture, component as MonoBehaviour);
-				if (this == component) {
+				if (this as IImageComponent == component) {
 					
 					if (this.rawImage != null) {
 	

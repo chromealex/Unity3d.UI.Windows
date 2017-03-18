@@ -2836,7 +2836,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							var k = 0;
 							var screens = window.GetScreens();
-							for (int i = 0; i < screens.Count; ++i) {
+							for (int i = 0; i < screens.Length; ++i) {
 
 								if (screens[i] == null) continue;
 

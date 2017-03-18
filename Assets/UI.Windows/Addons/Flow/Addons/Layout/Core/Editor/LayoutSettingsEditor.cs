@@ -253,18 +253,22 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 					rect.y += height;
 					var _height = height = 16f;
 					rect.height = height - offset;
-					var foldout = false;
 					var editorFoldout = item.FindPropertyRelative("editorParametersFoldout");
-					foldout = editorFoldout.boolValue;
 					if (draw == true) {
 						
 						++EditorGUI.indentLevel;
-						editorFoldout.boolValue = foldout = EditorGUI.Foldout(rect, editorFoldout.boolValue, new GUIContent(title));
+						var newValue = EditorGUI.Foldout(rect, editorFoldout.boolValue, new GUIContent(title));
+						if (newValue != editorFoldout.boolValue) {
+
+							editorFoldout.boolValue = newValue;
+							editorFoldout.serializedObject.ApplyModifiedProperties();
+
+						}
 						--EditorGUI.indentLevel;
 						
 					}
 					
-					if (foldout == true) {
+					if (editorFoldout.boolValue == true) {
 						
 						rect.y += height;
 						height = 0f;
@@ -431,13 +435,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 				
 				if (this.inited == true && this.window != null && this.window.GetCurrentLayout().layout != null) {
 					
-					if (GUILayout.Button("Reset") == true) {
-						
-						this.inited = false;
-						
-					}
-					
 					ReorderableListGUI.Title("Components");
+					var lastRect = GUILayoutUtility.GetLastRect();
+					var rect = new Rect(lastRect.x + lastRect.width - 100f - 4f, lastRect.y, 100f, lastRect.height);
+					if (GUI.Button(rect, "Refresh", EditorStyles.toolbarButton) == true) {
+
+						var target = property.serializedObject.targetObject as LayoutWindowType;
+						target.OnValidateEditor();
+
+						this.Reset();
+
+					}
 					this.elements.Draw(this.adaptor);
 					
 				}

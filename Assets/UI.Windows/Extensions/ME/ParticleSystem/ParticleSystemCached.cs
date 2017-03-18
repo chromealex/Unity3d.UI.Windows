@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if !UNITY_5_5_OR_NEWER
+#define PARTICLESYSTEM_LEGACYAPI
+#endif
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI.Windows;
 
@@ -159,8 +162,30 @@ namespace ME {
 
 		}
 
+		public ParticleSystemSimulationSpace simulationSpace {
+
+			set {
+
+				if (this.mainParticleSystem != null) {
+
+					var main = this.mainParticleSystem.main;
+					main.simulationSpace = value;
+
+				}
+
+			}
+
+			get {
+
+				return (this.mainParticleSystem != null) ? this.mainParticleSystem.main.simulationSpace : ParticleSystemSimulationSpace.Custom;
+
+			}
+
+		}
+
 		public bool loop {
-			
+
+			#if PARTICLESYSTEM_LEGACY
 			set {
 				
 				if (this.mainParticleSystem != null) this.mainParticleSystem.loop = value;
@@ -172,6 +197,24 @@ namespace ME {
 				return (this.mainParticleSystem != null) ? this.mainParticleSystem.loop : false;
 				
 			}
+			#else
+			set {
+
+				if (this.mainParticleSystem != null) {
+
+					var main = this.mainParticleSystem.main;
+					main.loop = value;
+
+				}
+
+			}
+
+			get {
+
+				return (this.mainParticleSystem != null) ? this.mainParticleSystem.main.loop : false;
+
+			}
+			#endif
 			
 		}
 
@@ -179,7 +222,11 @@ namespace ME {
 
 	        get {
 
-                return (this.mainParticleSystem != null) ? this.mainParticleSystem.startLifetime : 0f;
+				#if PARTICLESYSTEM_LEGACY
+				return (this.mainParticleSystem != null) ? this.mainParticleSystem.startLifetime : 0f;
+				#else
+				return (this.mainParticleSystem != null) ? this.mainParticleSystem.main.startLifetime.constant : 0f;
+				#endif
 
             }
 
@@ -189,16 +236,30 @@ namespace ME {
 
 			get {
 
+				#if PARTICLESYSTEM_LEGACY
 				return (this.mainParticleSystem != null) ? this.mainParticleSystem.duration : 0f;
+				#else
+				return (this.mainParticleSystem != null) ? this.mainParticleSystem.main.duration : 0f;
+				#endif
 
 			}
 
 		}
 
 		public float GetStartAlpha() {
+			
+			return this.GetStartColor().a;
 
+		}
+
+		public Color GetStartColor() {
+
+			#if PARTICLESYSTEM_LEGACY
 			var color = this.mainParticleSystem.startColor;
-			return color.a;
+			#else
+			var color = this.mainParticleSystem.main.startColor.color;
+			#endif
+			return color;
 
 		}
 
@@ -235,12 +296,6 @@ namespace ME {
 				this.mainParticleSystemItem.SetStartAlpha(alpha);
 
 			}
-
-		}
-
-		public Color GetStartColor() {
-
-			return this.mainParticleSystem.startColor;
 
 		}
 

@@ -36,7 +36,7 @@ namespace UnityEditor {
 			
 		}
 
-		#if UNITY_5
+		#if UNITY_5_3_OR_NEWER
 		public void Update() {
 
 			this.currentVisibleState = this.IsVisible();

@@ -21,8 +21,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		[ReadOnly]
 		public WindowComponent prefabNoResource;
-		[ReadOnly][SerializeField][ResourceParameters(ResourceBase.ControlType.None)]
-		public ResourceAuto prefabResource = new ResourceAuto(ResourceBase.ControlType.None, async: false);
+		[ReadOnly][SerializeField][ResourceParameters(ResourceAuto.ControlType.None)]
+		public ResourceAuto prefabResource = new ResourceAuto(ResourceAuto.ControlType.None, async: false);
 
 		[HideInInspector]
 		[SerializeField]

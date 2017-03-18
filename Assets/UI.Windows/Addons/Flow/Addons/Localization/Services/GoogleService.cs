@@ -7,6 +7,11 @@ using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows.Extensions.Tiny;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Services;
+#if UNITY_5_4_OR_NEWER
+using UnityEngine.Networking;
+#else
+using UnityEngine.Experimental.Networking;
+#endif
 
 namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
@@ -71,7 +76,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 			}
 
-			var www = UnityEngine.Experimental.Networking.UnityWebRequest.Get(settings.url);
+			var www = UnityWebRequest.Get(settings.url);
 			www.SetRequestHeader("ETag", eTag);
 			www.Send();
 			#if UNITY_EDITOR

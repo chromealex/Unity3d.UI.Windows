@@ -332,7 +332,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void LoadAuto(ILoadableResource resourceController, System.Action onDataLoaded, System.Action onComplete, bool onShowHide, System.Action onFailed = null) {
 
-			var type = resourceController.GetResource().controlType;
+			var type = (resourceController.GetResource() as ResourceAuto).controlType;
 			if (onShowHide == true && (type & ResourceAuto.ControlType.Show) != 0) {
 
 				WindowSystemResources.instance.LoadAuto_INTERNAL(resourceController, onDataLoaded, onComplete, onFailed);
@@ -616,7 +616,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void UnloadAuto(ILoadableResource resourceController, bool onShowHide) {
 			
-			var type = resourceController.GetResource().controlType;
+			var type = (resourceController.GetResource() as ResourceAuto).controlType;
 			if (onShowHide == true && (type & ResourceAuto.ControlType.Hide) != 0) {
 				
 				WindowSystemResources.instance.Unload_INTERNAL(resourceController as IResourceReference, resourceController.GetResource());
@@ -1109,7 +1109,7 @@ namespace UnityEngine.UI.Windows {
 			//var mapInstance = WindowSystemResourcesMap.FindFirst();
 			//if (mapInstance == null) return;
 
-			/*if (resourceController.GetResource().controlType != ResourceBase.ControlType.None) {
+			/*if (resourceController.GetResource().controlType != ResourceAuto.ControlType.None) {
 
 				var image = resourceController as IImageComponent;
 				//mapInstance.Register(image);
