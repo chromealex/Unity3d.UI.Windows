@@ -1,5 +1,5 @@
 ﻿#if !UNITY_5_5_OR_NEWER
-#define PARTICLESYSTEM_LEGACYAPI
+#define PARTICLESYSTEM_LEGACY
 #endif
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -89,47 +89,6 @@ namespace ME {
 
 		}
 
-		#if UNITY_EDITOR
-		[ContextMenu("Setup")]
-		public void Setup() {
-
-			this.particleSystems = this.GetComponentsInChildren<ParticleSystem>(true);
-			this.mainParticleSystem = (this.particleSystems.Length > 0) ? this.particleSystems[0] : null;
-			this.count = this.particleSystems.Length;
-
-			this.ValidateCanvasGroup();
-
-			this.particleSystemItems = new ParticleSystemCachedItem[this.particleSystems.Length];
-			for (int i = 0; i < this.particleSystems.Length; ++i) {
-				
-				var ps = this.particleSystems[i];
-
-				var item = ps.gameObject.GetComponent<ParticleSystemCachedItem>();
-				if (item == null) item = ps.gameObject.AddComponent<ParticleSystemCachedItem>();
-
-				item.Setup();
-				this.particleSystemItems[i] = item;
-
-			}
-
-			var index = System.Array.IndexOf(this.particleSystems, this.mainParticleSystem);
-			if (index >= 0) this.mainParticleSystemItem = this.particleSystemItems[index];
-
-		}
-
-		protected override void OnValidate() {
-
-			if (Application.isPlaying == true) return;
-			#if UNITY_EDITOR
-			if (UnityEditor.EditorApplication.isUpdating == true) return;
-			#endif
-			
-			this.Setup();
-			this.LateUpdate();
-
-		}
-		#endif
-
 		public Color32 startColor {
 
 			set {
@@ -164,6 +123,23 @@ namespace ME {
 
 		public ParticleSystemSimulationSpace simulationSpace {
 
+			#if PARTICLESYSTEM_LEGACY
+			set {
+				
+				if (this.mainParticleSystem != null) {
+					
+					this.mainParticleSystem.simulationSpace = value;
+					
+				}
+				
+			}
+
+			get {
+				
+				return (this.mainParticleSystem != null) ? this.mainParticleSystem.simulationSpace : ParticleSystemSimulationSpace.Local;
+				
+			}
+			#else
 			set {
 
 				if (this.mainParticleSystem != null) {
@@ -180,6 +156,7 @@ namespace ME {
 				return (this.mainParticleSystem != null) ? this.mainParticleSystem.main.simulationSpace : ParticleSystemSimulationSpace.Custom;
 
 			}
+			#endif
 
 		}
 
@@ -478,7 +455,48 @@ namespace ME {
 			}
 
 		}
-		
+
+		#if UNITY_EDITOR
+		[ContextMenu("Setup")]
+		public void Setup() {
+			
+			this.particleSystems = this.GetComponentsInChildren<ParticleSystem>(true);
+			this.mainParticleSystem = (this.particleSystems.Length > 0) ? this.particleSystems[0] : null;
+			this.count = this.particleSystems.Length;
+			
+			this.ValidateCanvasGroup();
+			
+			this.particleSystemItems = new ParticleSystemCachedItem[this.particleSystems.Length];
+			for (int i = 0; i < this.particleSystems.Length; ++i) {
+			
+			var ps = this.particleSystems[i];
+			
+			var item = ps.gameObject.GetComponent<ParticleSystemCachedItem>();
+			if (item == null) item = ps.gameObject.AddComponent<ParticleSystemCachedItem>();
+				
+				item.Setup();
+				this.particleSystemItems[i] = item;
+				
+			}
+			
+			var index = System.Array.IndexOf(this.particleSystems, this.mainParticleSystem);
+			if (index >= 0) this.mainParticleSystemItem = this.particleSystemItems[index];
+			
+		}
+
+		protected override void OnValidate() {
+			
+			if (Application.isPlaying == true) return;
+			#if UNITY_EDITOR
+			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			#endif
+			
+			this.Setup();
+			this.LateUpdate();
+			
+		}
+		#endif
+
 	}
 
 }

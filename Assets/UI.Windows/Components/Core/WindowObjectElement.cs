@@ -214,7 +214,7 @@ namespace UnityEngine.UI.Windows {
 		#region OnWindowOpen/Close
 		void IWindowEventsController.DoWindowActive() {
 
-			this.OnWindowActive();
+			WindowSystem.RunSafe(this.OnWindowActive);
 
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowActive();
 
@@ -222,7 +222,7 @@ namespace UnityEngine.UI.Windows {
 
 		void IWindowEventsController.DoWindowInactive() {
 
-			this.OnWindowInactive();
+			WindowSystem.RunSafe(this.OnWindowInactive);
 
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowInactive();
 
@@ -239,7 +239,7 @@ namespace UnityEngine.UI.Windows {
 		#region OnWindowOpen/Close
 		void IWindowEventsController.DoWindowOpen() {
 			
-			this.OnWindowOpen();
+			WindowSystem.RunSafe(this.OnWindowOpen);
 			
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowOpen();
 			
@@ -247,7 +247,7 @@ namespace UnityEngine.UI.Windows {
 		
 		void IWindowEventsController.DoWindowClose() {
 			
-			this.OnWindowClose();
+			WindowSystem.RunSafe(this.OnWindowClose);
 			
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowClose();
 			
@@ -269,9 +269,7 @@ namespace UnityEngine.UI.Windows {
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoInit();
 
 			this.SetComponentState(WindowObjectState.Initialized);
-			this.OnInit();
-			
-			//this.SetComponentState(WindowObjectState.Initialized);
+			WindowSystem.RunSafe(this.OnInit);
 
 	    }
 
@@ -286,7 +284,7 @@ namespace UnityEngine.UI.Windows {
 			ME.Utilities.CallInSequence(() => {
 
 				this.SetComponentState(WindowObjectState.NotInitialized);
-				this.OnDeinit(callback);
+				WindowSystem.RunSafe(this.OnDeinit, callback);
 
 			},
 				this.subComponents.ToArray(),
@@ -310,8 +308,8 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.SetComponentState(WindowObjectState.Shown);
-			this.OnShowEnd();
-			this.OnShowEnd(parameters);
+			WindowSystem.RunSafe(this.OnShowEnd);
+			WindowSystem.RunSafe(this.OnShowEnd, parameters);
 
         }
 
@@ -329,16 +327,16 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.SetComponentState(WindowObjectState.Hidden);
-			this.OnHideEnd();
-			this.OnHideEnd(parameters);
+			WindowSystem.RunSafe(this.OnHideEnd);
+			WindowSystem.RunSafe(this.OnHideEnd, parameters);
 
 	    }
 
 		public virtual void DoShowBegin(AppearanceParameters parameters) {
 			
 			this.SetComponentState(WindowObjectState.Showing);
-			this.OnShowBegin();
-			this.OnShowBegin(parameters);
+			WindowSystem.RunSafe(this.OnShowBegin);
+			WindowSystem.RunSafe(this.OnShowBegin, parameters);
 
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			if (includeChilds == true) {
@@ -357,8 +355,8 @@ namespace UnityEngine.UI.Windows {
 		public virtual void DoHideBegin(AppearanceParameters parameters) {
 			
 			this.SetComponentState(WindowObjectState.Hiding);
-			this.OnHideBegin();
-			this.OnHideBegin(parameters);
+			WindowSystem.RunSafe(this.OnHideBegin);
+			WindowSystem.RunSafe(this.OnHideBegin, parameters);
 
 			var includeChilds = parameters.GetIncludeChilds(defaultValue: true);
 			if (includeChilds == true) {
@@ -378,7 +376,7 @@ namespace UnityEngine.UI.Windows {
 
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowUnload();
 
-			this.OnWindowUnload();
+			WindowSystem.RunSafe(this.OnWindowUnload);
 
 		}
 
@@ -443,7 +441,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						controller.DoInit();
-						subComponent.OnWindowActive();
+						WindowSystem.RunSafe(subComponent.OnWindowActive);
 						
 					}
 
@@ -456,7 +454,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						controller.DoInit();
-						subComponent.OnWindowActive();
+						WindowSystem.RunSafe(subComponent.OnWindowActive);
 						
 					}
 
@@ -470,7 +468,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						controller.DoInit();
-						subComponent.OnWindowActive();
+						WindowSystem.RunSafe(subComponent.OnWindowActive);
 						
 					}
 
@@ -483,7 +481,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						controller.DoInit();
-						subComponent.OnWindowActive();
+						WindowSystem.RunSafe(subComponent.OnWindowActive);
 						
 					}
 
@@ -502,7 +500,7 @@ namespace UnityEngine.UI.Windows {
 					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
 						
 						controller.DoInit();
-						subComponent.OnWindowActive();
+						WindowSystem.RunSafe(subComponent.OnWindowActive);
 						
 					}
 

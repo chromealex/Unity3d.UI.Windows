@@ -371,8 +371,8 @@ namespace UnityEngine.UI.Windows {
 			Profiler.BeginSample("WindowComponentBase::OnShowBegin()");
 			#endif
 
-			this.OnShowBegin();
-			this.OnShowBegin(parameters);
+			WindowSystem.RunSafe(this.OnShowBegin);
+			WindowSystem.RunSafe(this.OnShowBegin, parameters);
 
 			#if DEBUGBUILD
 			Profiler.EndSample();
@@ -484,8 +484,8 @@ namespace UnityEngine.UI.Windows {
 			Profiler.BeginSample("WindowComponentBase::OnHideBegin()");
 			#endif
 
-			this.OnHideBegin();
-			this.OnHideBegin(parameters);
+			WindowSystem.RunSafe(this.OnHideBegin);
+			WindowSystem.RunSafe(this.OnHideBegin, parameters);
 
 			#if DEBUGBUILD
 			Profiler.EndSample();

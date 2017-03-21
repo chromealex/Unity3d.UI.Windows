@@ -1,5 +1,5 @@
 ﻿#if !UNITY_5_5_OR_NEWER
-#define PARTICLESYSTEM_LEGACYAPI
+#define PARTICLESYSTEM_LEGACY
 #endif
 using UnityEngine;
 
@@ -97,7 +97,7 @@ namespace ME {
 		}
 		#endif
 
-		#if PARTICLESYSTEM_LEGACYAPI
+		#if PARTICLESYSTEM_LEGACY
 		private System.Type startColorType;
 		private void SetColor_REFLECTION(ParticleSystem ps, string propertyName, object color) {
 
@@ -158,7 +158,7 @@ namespace ME {
 			if (this.startColor.minMaxState == MinMaxState.MaxColor) {
 
 				var _color = this.ApplyColor(ref this.startColor.maxColor, color);
-				#if PARTICLESYSTEM_LEGACYAPI
+				#if PARTICLESYSTEM_LEGACY
                 this.particleSystem.startColor = _color;
 				#else
 				var main = this.particleSystem.main;
@@ -179,7 +179,7 @@ namespace ME {
 				var _minColor = this.ApplyColor(ref this.startColor.minColor, minColor);
 				var _maxColor = this.ApplyColor(ref this.startColor.maxColor, maxColor);
 
-				#if PARTICLESYSTEM_LEGACYAPI
+				#if PARTICLESYSTEM_LEGACY
 				this.SetColor_REFLECTION(this.particleSystem, "minColor", _minColor);
 				this.particleSystem.startColor = _maxColor;
 				this.SetColor_PARTICLES(Color.Lerp(_minColor, _maxColor, 0.5f));
@@ -199,7 +199,7 @@ namespace ME {
 
 			if (this.startColor.minMaxState == MinMaxState.MaxGradient) {
 
-				#if PARTICLESYSTEM_LEGACYAPI
+				#if PARTICLESYSTEM_LEGACY
 				this.SetColor_REFLECTION(this.particleSystem, "maxGradient", gradient);
 				this.SetColor_PARTICLES(gradient.Evaluate(0f));
 				#else
@@ -218,7 +218,7 @@ namespace ME {
 
 			if (this.startColor.minMaxState == MinMaxState.MinMaxGradient) {
 
-				#if PARTICLESYSTEM_LEGACYAPI
+				#if PARTICLESYSTEM_LEGACY
 				this.SetColor_REFLECTION(this.particleSystem, "minGradient", minGradient);
 				this.SetColor_REFLECTION(this.particleSystem, "maxGradient", maxGradient);
 				this.SetColor_PARTICLES(maxGradient.Evaluate(0f));

@@ -608,11 +608,15 @@ namespace UnityEngine.UI.Windows {
 
 		public static Events GetEvents() {
 
+			if (WindowSystem.instance == null) return new Events();
+
 			return WindowSystem.instance.events;
 
 		}
 
 		public static HistoryTracker GetHistoryTracker() {
+
+			if (WindowSystem.instance == null) return new HistoryTracker();
 
 			return WindowSystem.instance.historyTracker;
 
@@ -626,7 +630,7 @@ namespace UnityEngine.UI.Windows {
 
 			} catch (System.Exception ex) {
 
-				Debug.LogException(ex);
+				Debug.LogError(string.Format("RunSafe Exception: {0}\nStack: {1}", ex.Message, ex.StackTrace));
 
 			}
 
@@ -640,7 +644,7 @@ namespace UnityEngine.UI.Windows {
 
 			} catch (System.Exception ex) {
 
-				Debug.LogException(ex);
+				Debug.LogError(string.Format("RunSafe Exception: {0}\nStack: {1}", ex.Message, ex.StackTrace));
 
 			}
 
