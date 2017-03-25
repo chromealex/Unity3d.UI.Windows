@@ -1,8 +1,10 @@
 Quick start and full doc here: https://docs.google.com/document/d/1U1We9b9x6UR5U6ZKktigeX8wxMVvp0fxML-t2B3nIRY
 
+You can download splitted Core and modules here: https://github.com/chromealex/Unity3D.UI.Windows.Core
+
 <img src="https://github.com/chromealex/Unity3d.UI.Windows/blob/master/UIWImage.png"/>
 
-### Current Version: 1.0.6a
+### Previous Changes:
 
 ## 1.0.6a
 - Audio Manager play queue fixes
