@@ -323,7 +323,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 					if (this.imageLocalizationKey.IsNone() == false) {
 	
-					if ((this.imageResource.controlType & ResourceAuto.ControlType.Show) != 0) {
+						if ((this.imageResource.controlType & ResourceAuto.ControlType.Show) != 0) {
 	
 							this.SetImage(this.imageLocalizationKey);
 	
@@ -1530,7 +1530,7 @@ namespace UnityEngine.UI.Windows.Components {
 	[Header("Text Component")]
 			[BeginGroup]
 			[SerializeField]
-			private Text text;
+			private MaskableGraphic text;
 			[SerializeField]
 			private TextValueFormat valueFormat;
 			[SerializeField][BitMask(typeof(FullTextFormat))]
@@ -1552,9 +1552,9 @@ namespace UnityEngine.UI.Windows.Components {
 				
 				if (this.text != null) {
 					
-					this.text.resizeTextForBestFit = state;
-					this.text.resizeTextMinSize = minSize;
-					this.text.resizeTextMaxSize = maxSize;
+					this.SetBestFitState(state);
+					this.SetBestFitMinSize(minSize);
+					this.SetBestFitMaxSize(maxSize);
 					
 				}
 	
@@ -1563,77 +1563,68 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 			
 			public ITextComponent SetBestFitState(bool state) {
-				
-				if (this.text != null) this.text.resizeTextForBestFit = state;
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetBestFitState(this.text, state);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetBestFitState(this.text, state);
 	
 				return this;
 	
 			}
 			
 			public ITextComponent SetBestFitMinSize(int size) {
-				
-				if (this.text != null) this.text.resizeTextMinSize = size;
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetBestFitMinSize(this.text, size);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetBestFitMinSize(this.text, size);
 	
 				return this;
 	
 			}
 			
 			public ITextComponent SetBestFitMaxSize(int size) {
-				
-				if (this.text != null) this.text.resizeTextMaxSize = size;
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetBestFitMaxSize(this.text, size);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetBestFitMaxSize(this.text, size);
 	
 				return this;
 	
 			}
 	
-			public ITextComponent SetFont(Font font) {
-				
-				if (this.text != null) this.text.font = font;
-	
-				return this;
-	
-			}
-			
 			public int GetFontSize() {
-				
-				if (this.text != null) return this.text.fontSize;
-				
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) return TextComponentUGUIAddon.GetFontSize(this.text);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) return TextComponentTMPAddon.GetFontSize(this.text);
+	
 				return 0;
 				
 			}
 	
 			public ITextComponent SetFontSize(int fontSize) {
-				
-				if (this.text != null) this.text.fontSize = fontSize;
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetFontSize(this.text, fontSize);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetFontSize(this.text, fontSize);
 	
 				return this;
 	
 			}
 	
 			public ITextComponent SetLineSpacing(float value) {
-				
-				if (this.text != null) this.text.lineSpacing = value;
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetLineSpacing(this.text, value);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetLineSpacing(this.text, value);
 	
 				return this;
 	
 			}
 			
 			public ITextComponent SetRichText(bool state) {
-				
-				if (this.text != null) this.text.supportRichText = state;
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetRichText(this.text, state);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetRichText(this.text, state);
 	
 				return this;
 	
 			}
-			
-			public ITextComponent SetFontStyle(FontStyle fontStyle) {
-				
-				if (this.text != null) this.text.fontStyle = fontStyle;
 	
-				return this;
-	
-			}
-			
 			public float GetContentHeight(float heightPadding = 0f) {
 				
 				if (this.text == null) return 0f;
@@ -1654,17 +1645,58 @@ namespace UnityEngine.UI.Windows.Components {
 	
 				if (this.text == null) return 0f;
 	
-				if (text.Length > TextComponent.MAX_CHARACTERS_COUNT) {
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) return TextComponentUGUIAddon.GetContentHeight(this.text, text, containerSize);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) return TextComponentTMPAddon.GetContentHeight(this.text, text, containerSize);
 	
-					text = text.Substring(0, TextComponent.MAX_CHARACTERS_COUNT);
-	
-				}
-	
-				var settings = this.text.GetGenerationSettings(containerSize);
-				return this.text.cachedTextGenerator.GetPreferredHeight(text, settings);
+				return 0f;
 	
 			}
-			
+	
+			public ITextComponent SetTextAlignByGeometry(bool state) {
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetTextAlignByGeometry(this.text, state);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetTextAlignByGeometry(this.text, state);
+	
+				return this;
+	
+			}
+	
+			public ITextComponent SetTextVerticalOverflow(VerticalWrapMode mode) {
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetTextVerticalOverflow(this.text, mode);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetTextVerticalOverflow(this.text, mode);
+	
+				return this;
+	
+			}
+	
+			public ITextComponent SetTextHorizontalOverflow(HorizontalWrapMode mode) {
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetTextHorizontalOverflow(this.text, mode);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetTextHorizontalOverflow(this.text, mode);
+	
+				return this;
+	
+			}
+	
+			public ITextComponent SetTextAlignment(TextAnchor anchor) {
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetTextAlignment(this.text, anchor);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetTextAlignment(this.text, anchor);
+	
+				return this;
+	
+			}
+	
+			public string GetText() {
+	
+				if (TextComponentUGUIAddon.IsValid(this.text) == true) return TextComponentUGUIAddon.GetText(this.text);
+				if (TextComponentTMPAddon.IsValid(this.text) == true) return TextComponentTMPAddon.GetText(this.text);
+	
+				return string.Empty;
+	
+			}
+	
 			public ITextComponent SetValueAnimate(bool state) {
 				
 				this.valueAnimate = state;
@@ -1764,44 +1796,6 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public ITextComponent SetTextAlignByGeometry(bool state) {
-	
-				if (this.text != null) this.text.alignByGeometry = state;
-	
-				return this;
-	
-			}
-	
-			public ITextComponent SetTextVerticalOverflow(VerticalWrapMode mode) {
-				
-				if (this.text != null) this.text.verticalOverflow = mode;
-	
-				return this;
-	
-			}
-			
-			public ITextComponent SetTextHorizontalOverflow(HorizontalWrapMode mode) {
-				
-				if (this.text != null) this.text.horizontalOverflow = mode;
-	
-				return this;
-	
-			}
-	
-			public ITextComponent SetTextAlignment(TextAnchor anchor) {
-				
-				if (this.text != null) this.text.alignment = anchor;
-	
-				return this;
-	
-			}
-	
-			public string GetText() {
-	
-				return (this.text != null) ? this.text.text : string.Empty;
-	
-			}
-	
 			public ITextComponent SetHyphenSymbol() {
 	
 				return this.SetText("\u2014");
@@ -1834,17 +1828,22 @@ namespace UnityEngine.UI.Windows.Components {
 			private void SetText_INTERNAL(string text) {
 				
 				if (this.text != null) {
-					
-					if (this.text.supportRichText == true) {
+	
+					bool supportRichText = false;
+					if (TextComponentUGUIAddon.IsValid(this.text) == true) supportRichText = TextComponentUGUIAddon.IsRichtextSupported(this.text);
+					if (TextComponentTMPAddon.IsValid(this.text) == true) supportRichText = TextComponentTMPAddon.IsRichtextSupported(this.text);
+	
+					if (supportRichText == true) {
 						
 						text = TextComponent.ParseRichText(text, this.GetFontSize(), this.richTextFlags);
 						
 					}
 					
 					text = TextComponent.FullTextFormat(text, this.fullTextFormat);
-					
-					this.text.text = text;
-					
+	
+					if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetText(this.text, text);
+					if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetText(this.text, text);
+	
 				}
 	
 			}

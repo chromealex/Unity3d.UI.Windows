@@ -748,9 +748,7 @@ namespace UnityEngine.UI.Windows {
 			this.Update_EDITOR();
 
 		}
-		
-		[UnityEngine.UI.Windows.Plugins.Resources.BundleIgnore][HideInInspector]
-		public bool animationRefresh = false;
+
 		[HideInInspector]
 		private List<TransitionInputParameters> componentsToDestroy = new List<TransitionInputParameters>();
 		[HideInInspector][SerializeField]

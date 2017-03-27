@@ -4,7 +4,7 @@ using UnityEngine.UI.Windows;
 using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.Extensions;
 using System.Collections.Generic;
-using UnityEngine.UI.Windows.Plugins.Resources;
+using ME.UAB;
 
 namespace UnityEngine.UI.Windows.Components {
 

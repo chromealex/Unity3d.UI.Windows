@@ -1164,14 +1164,9 @@ namespace UnityEngine.UI.Windows {
 		public static void ApplyToSettings(Camera camera) {
 			
 			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
-				
-				/*camera.orthographic = true;
-				camera.orthographicSize = 5f;
-				camera.nearClipPlane = -100f;
-				camera.farClipPlane = 100f;
-				camera.useOcclusionCulling = false;
-				camera.hdr = false;*/
-				
+
+				// no settings file
+
 			} else {
 				
 				WindowSystem.instance.settings.file.Apply(camera: camera);
@@ -1187,10 +1182,8 @@ namespace UnityEngine.UI.Windows {
 		public static void ApplyToSettings(Canvas canvas) {
 
 			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
-				
-				/*canvas.overrideSorting = true;
-				canvas.sortingLayerName = "Windows";
-				canvas.sortingOrder = 0;*/
+
+				// no settings file
 
 			} else {
 				
@@ -1320,7 +1313,7 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		/// <summary>
-		/// Gets the last window in history with the predicate.
+		/// Gets the last window in history.
 		/// </summary>
 		public static T GetWindow<T>() where T : WindowBase {
 
@@ -1371,7 +1364,12 @@ namespace UnityEngine.UI.Windows {
 			return WindowSystem.instance.currentWindows.FirstOrDefault((item) => item is T) as T;
 
 		}
-
+		
+		/// <summary>
+		/// Finds the opened window with a predicate.
+		/// </summary>
+		/// <param name="predicate">Predicate to filter</param>
+		/// <param name="last">Use LastOrDefault()?</param>
 		public static T FindOpened<T>(System.Func<T, bool> predicate, bool last = false) where T : WindowBase {
 
 			if (last == true) {

@@ -1,0 +1,386 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &158946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 425556}
+  - 4: {fileID: 467108}
+  - 20: {fileID: 2058946}
+  - 114: {fileID: 11483758}
+  m_Layer: 5
+  m_Name: Default
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &425556
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!4 &467108
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!20 &2058946
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 3
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: -100
+  far clip plane: 100
+  field of view: 60
+  orthographic: 1
+  orthographic size: 130
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 32
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
+--- !u!114 &11483758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e408a6c6b0f642ac95f1abf4b10c2c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
+  editorInfoFold: 0
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
+  preferences:
+    layer: 0
+    dontDestroy: 1
+    history: 0
+    deactivateImmediately: 0
+    deactivateMaxTimeout: {x: 2, y: 5}
+    sendActiveState: 1
+    fullCoverage: 0
+    forceSingleInstance: 0
+    singleInstanceIgnoreActions: 0
+    restoreSelectedElement: 1
+    createPool: 1
+    preallocatedCount: 0
+    draggable: 0
+    dragTag: 0
+    dragFlags: 0
+    overrideCameraSettings: 0
+    cameraSettings:
+      orthographic: 1
+      orthographicSize: 5
+      fieldOfView: 60
+      nearClipPlane: -100
+      farClipPlane: 100
+      useOcclusionCulling: 0
+      hdr: 0
+  audio:
+    flowData: {fileID: 0}
+    playType: 0
+    clipType: 0
+    id: 0
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+    bypassEffect: 0
+    bypassListenerEffect: 0
+    bypassReverbEffect: 0
+    loop: 1
+    priority: 128
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 0
+    reverbZoneMix: 1
+  modules:
+    elements: []
+  events:
+    backButtonBehaviour:
+      backAction: 0
+      window: {fileID: 0}
+      onBackAction:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+BackButtonBehaviour+OnBackAction,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    once:
+      onInit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnInit, Assembly-CSharp, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      onDeinit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnDeinit, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    onEveryInstance:
+      onShowBegin:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowBegin, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onShowEnd:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowEnd, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideBegin:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideBegin, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideEnd:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEnd, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideEndLate:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEndLate, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowOpen:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowOpen, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowClose:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowClose, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowActive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowActive, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowInactive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowInactive,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  transition:
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  eventsHistoryTracker:
+    items: []
+  activeState: 0
+  _currentState: 0
+  lastState: 0
+  dragState: 0
+  paused: 0
+  layouts:
+    types:
+    - 486f72697a6f6e74616c
+    - 566572746963616c
+    layouts:
+    - enabled: 1
+      scaleMode: 0
+      fixedScaleResolution: {x: 1024, y: 768}
+      matchWidthOrHeight: 0
+      layoutPreferences: {fileID: 0}
+      allowCustomLayoutPreferences: 1
+      layout: {fileID: 0}
+      layoutNoResource: {fileID: 0}
+      layoutResource:
+        async: 1
+        assetPath: 
+        assetBundleName: 
+        resourcesPath: 
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 0
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: 0
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        controlType: 0
+        tempObject: {fileID: 0}
+      components: []
+    - enabled: 0
+      scaleMode: 0
+      fixedScaleResolution: {x: 1024, y: 768}
+      matchWidthOrHeight: 0
+      layoutPreferences: {fileID: 0}
+      allowCustomLayoutPreferences: 1
+      layout: {fileID: 0}
+      layoutNoResource: {fileID: 0}
+      layoutResource:
+        async: 1
+        assetPath: 
+        assetBundleName: 
+        resourcesPath: 
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 0
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: 0
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        controlType: 0
+        tempObject: {fileID: 0}
+      components: []
+    currentLayoutIndex: 0
+  layout:
+    enabled: 1
+    scaleMode: 0
+    fixedScaleResolution: {x: 1024, y: 768}
+    matchWidthOrHeight: 0
+    layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
+    layout: {fileID: 0}
+    layoutNoResource: {fileID: 0}
+    layoutResource:
+      async: 1
+      assetPath: 
+      assetBundleName: 
+      resourcesPath: 
+      webPath: 
+      loadableWeb: 0
+      loadableResource: 0
+      loadableStream: 0
+      loadableAssetBundle: 0
+      multiObjects: 0
+      objectIndex: 0
+      multiObjectsAssetBundle: 0
+      objectIndexAssetBundle: 0
+      customResourcePath: 
+      id: 0
+      cacheVersion: 0
+      streamingAssetsPathStandalone: 
+      streamingAssetsPathIOS: 
+      streamingAssetsPathAndroid: 
+      streamingAssetsPathPS4: 
+      streamingAssetsPathXBOXONE: 
+      streamingAssetsPathCommon: 
+      streamingAssetsPathStandaloneMovieAudio: 
+      streamingAssetsPathIOSMovieAudio: 
+      streamingAssetsPathAndroidMovieAudio: 
+      streamingAssetsPathPS4MovieAudio: 
+      streamingAssetsPathXBOXONEMovieAudio: 
+      streamingAssetsPathCommonMovieAudio: 
+      streamingAssetsPathStandaloneIsMovie: 0
+      streamingAssetsPathIOSIsMovie: 0
+      streamingAssetsPathAndroidIsMovie: 0
+      streamingAssetsPathPS4IsMovie: 0
+      streamingAssetsPathXBOXONEIsMovie: 0
+      streamingAssetsPathCommonIsMovie: 0
+      canBeUnloaded: 0
+      controlType: 0
+      tempObject: {fileID: 0}
+    components: []
+  comment: 44656661756c742053637265656e
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: comment
+      value: Layout Type Screen
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 158946}
+  m_IsPrefabParent: 1

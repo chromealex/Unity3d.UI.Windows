@@ -125,7 +125,17 @@ namespace UnityEngine.UI.Windows {
 		public static void SetText(MaskableGraphic text, string contentText) {
 
 			var instance = text as Text;
-			if (instance != null) instance.text = contentText;
+			if (instance != null) {
+
+				if (contentText.Length > TextComponent.MAX_CHARACTERS_COUNT) {
+
+					contentText = contentText.Substring(0, TextComponent.MAX_CHARACTERS_COUNT);
+
+				}
+
+				instance.text = contentText;
+
+			}
 
 		}
 

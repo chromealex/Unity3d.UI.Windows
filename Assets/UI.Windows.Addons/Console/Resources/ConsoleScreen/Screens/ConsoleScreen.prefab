@@ -1,0 +1,935 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &158946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 498600}
+  - 20: {fileID: 2058946}
+  - 114: {fileID: 11402944}
+  - 114: {fileID: 11483758}
+  m_Layer: 5
+  m_Name: ConsoleScreen
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &498600
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!20 &2058946
+Camera:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 3
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: -100
+  far clip plane: 100
+  field of view: 60
+  orthographic: 1
+  orthographic size: 130
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 32
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
+--- !u!114 &11402944
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f3161d3dee0a4c36bc04c14270ac6c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flags1: 0
+  flags2: 0
+  text: 
+  localizationKey:
+    key: 
+    parameters: 0
+    formatWithDeclension: 0
+    outputDeclensionWithoutNumber: 0
+  color: {r: 1, g: 1, b: 1, a: 1}
+  format: 0
+  fullTextFormat: 0
+  font: {fileID: 0}
+  fontSize: 16
+  fontStyle: 0
+  lineSpacing: 1
+  richText: 0
+  alignment: 0
+  verticalWrap: 0
+  horizontalWrap: 0
+  bestFit: 0
+  bestMinSize: 10
+  bestMaxSize: 40
+  valueAnimate: 0
+  valueAnimateDuration: 2
+--- !u!114 &11483758
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b3b1057e8c004fd1ae3274bebb2aeeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windowId: 0
+  navigationGroup:
+    enabled: 0
+    navigationComponents: []
+  editorInfoFold: 0
+  _workCamera: {fileID: 2058946}
+  isReady: 1
+  targetPreferences:
+    preferencesFile: {fileID: 0}
+    runOnAnyTarget: 1
+    targets: []
+  preferences:
+    layer: 4
+    dontDestroy: 5
+    history: 1
+    deactivateImmediately: 0
+    deactivateMaxTimeout: {x: 2, y: 5}
+    sendActiveState: 0
+    fullCoverage: 0
+    forceSingleInstance: 1
+    singleInstanceIgnoreActions: 0
+    restoreSelectedElement: 0
+    createPool: 0
+    preallocatedCount: 0
+    draggable: 0
+    dragTag: 0
+    dragFlags: 0
+    overrideCameraSettings: 0
+    cameraSettings:
+      orthographic: 1
+      orthographicSize: 5
+      fieldOfView: 60
+      nearClipPlane: -100
+      farClipPlane: 100
+      useOcclusionCulling: 0
+      hdr: 0
+  audio:
+    flowData: {fileID: 11400000, guid: a1bd805bdc8434764bd048f65a277867, type: 2}
+    playType: 0
+    clipType: 0
+    id: 0
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+    bypassEffect: 0
+    bypassListenerEffect: 0
+    bypassReverbEffect: 0
+    loop: 1
+    priority: 128
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    spatialBlend: 0
+    reverbZoneMix: 1
+  modules:
+    elements: []
+  events:
+    backButtonBehaviour:
+      backAction: 0
+      window: {fileID: 0}
+      onBackAction:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+BackButtonBehaviour+OnBackAction,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    once:
+      onInit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnInit, Assembly-CSharp, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+      onDeinit:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+Once+OnDeinit, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    onEveryInstance:
+      onShowBegin:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowBegin, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onShowEnd:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnShowEnd, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideBegin:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideBegin, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideEnd:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEnd, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onHideEndLate:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnHideEndLate, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowOpen:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowOpen, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowClose:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowClose, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowActive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowActive, Assembly-CSharp,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowInactive:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowInactive,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  transition:
+    transition: {fileID: 0}
+    transitionParameters: {fileID: 0}
+  eventsHistoryTracker:
+    items: []
+  activeState: 0
+  _currentState: 0
+  lastState: 0
+  dragState: 0
+  paused: 0
+  layouts:
+    types:
+    - 486f72697a6f6e74616c
+    - 566572746963616c
+    layouts:
+    - enabled: 1
+      scaleMode: 0
+      fixedScaleResolution: {x: 1024, y: 768}
+      matchWidthOrHeight: 0
+      layoutPreferences: {fileID: 0}
+      allowCustomLayoutPreferences: 1
+      layout: {fileID: 11479802, guid: d17afffb657b645f5ad76ca0a2d8ec4c, type: 2}
+      layoutNoResource: {fileID: 0}
+      layoutResource:
+        async: 1
+        assetPath: Assets/UI.Windows.Addons/Console/Resources/ConsoleScreen/Layouts/ConsoleLayout.prefab
+        assetBundleName: 
+        resourcesPath: ConsoleScreen/Layouts/ConsoleLayout
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 1
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: -1914645848
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        controlType: 0
+        tempObject: {fileID: 11479802, guid: d17afffb657b645f5ad76ca0a2d8ec4c, type: 2}
+      components:
+      - description: CONTENT BORDER
+        tag: 1
+        component: {fileID: 11440684, guid: 8bf48790edfd743bfba4d3f6b0e2259f, type: 2}
+        componentResource:
+          async: 1
+          assetPath: Assets/UI.Windows.Addons/Console/Resources/ConsoleScreen/Components/Decorator.asset
+          assetBundleName: 
+          resourcesPath: ConsoleScreen/Components/Decorator
+          webPath: 
+          loadableWeb: 0
+          loadableResource: 1
+          loadableStream: 0
+          loadableAssetBundle: 0
+          multiObjects: 0
+          objectIndex: 0
+          multiObjectsAssetBundle: 0
+          objectIndexAssetBundle: 0
+          customResourcePath: 
+          id: -143548235
+          cacheVersion: 0
+          streamingAssetsPathStandalone: 
+          streamingAssetsPathIOS: 
+          streamingAssetsPathAndroid: 
+          streamingAssetsPathPS4: 
+          streamingAssetsPathXBOXONE: 
+          streamingAssetsPathCommon: 
+          streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathIOSMovieAudio: 
+          streamingAssetsPathAndroidMovieAudio: 
+          streamingAssetsPathPS4MovieAudio: 
+          streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathCommonMovieAudio: 
+          streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathIOSIsMovie: 0
+          streamingAssetsPathAndroidIsMovie: 0
+          streamingAssetsPathPS4IsMovie: 0
+          streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathCommonIsMovie: 0
+          canBeUnloaded: 0
+          tempResource: {fileID: 11440684, guid: 8bf48790edfd743bfba4d3f6b0e2259f,
+            type: 2}
+        componentNoResource: {fileID: 0}
+        sortingOrder: 0
+        componentParameters: {fileID: 0}
+        editorParametersFoldout: 0
+      - description: CMD LINE
+        tag: 2
+        component: {fileID: 11471902, guid: 5a526ab58a1c54a63bfa1e685184cd2d, type: 2}
+        componentResource:
+          async: 1
+          assetPath: Assets/UI.Windows.Addons/Console/Resources/ConsoleScreen/Components/InputField.asset
+          assetBundleName: 
+          resourcesPath: ConsoleScreen/Components/InputField
+          webPath: 
+          loadableWeb: 0
+          loadableResource: 1
+          loadableStream: 0
+          loadableAssetBundle: 0
+          multiObjects: 0
+          objectIndex: 0
+          multiObjectsAssetBundle: 0
+          objectIndexAssetBundle: 0
+          customResourcePath: 
+          id: 157089946
+          cacheVersion: 0
+          streamingAssetsPathStandalone: 
+          streamingAssetsPathIOS: 
+          streamingAssetsPathAndroid: 
+          streamingAssetsPathPS4: 
+          streamingAssetsPathXBOXONE: 
+          streamingAssetsPathCommon: 
+          streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathIOSMovieAudio: 
+          streamingAssetsPathAndroidMovieAudio: 
+          streamingAssetsPathPS4MovieAudio: 
+          streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathCommonMovieAudio: 
+          streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathIOSIsMovie: 0
+          streamingAssetsPathAndroidIsMovie: 0
+          streamingAssetsPathPS4IsMovie: 0
+          streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathCommonIsMovie: 0
+          canBeUnloaded: 0
+          tempResource: {fileID: 11471902, guid: 5a526ab58a1c54a63bfa1e685184cd2d,
+            type: 2}
+        componentNoResource: {fileID: 0}
+        sortingOrder: 0
+        componentParameters: {fileID: 0}
+        editorParametersFoldout: 0
+      - description: QUEUE
+        tag: 3
+        component: {fileID: 11411412, guid: a5da888b635894aff8489de96258608c, type: 2}
+        componentResource:
+          async: 1
+          assetPath: Assets/UI.Windows.Addons/Console/Resources/ConsoleScreen/Components/Queue/TableView.prefab
+          assetBundleName: 
+          resourcesPath: ConsoleScreen/Components/Queue/TableView
+          webPath: 
+          loadableWeb: 0
+          loadableResource: 1
+          loadableStream: 0
+          loadableAssetBundle: 0
+          multiObjects: 0
+          objectIndex: 0
+          multiObjectsAssetBundle: 0
+          objectIndexAssetBundle: 0
+          customResourcePath: 
+          id: 1726955877
+          cacheVersion: 0
+          streamingAssetsPathStandalone: 
+          streamingAssetsPathIOS: 
+          streamingAssetsPathAndroid: 
+          streamingAssetsPathPS4: 
+          streamingAssetsPathXBOXONE: 
+          streamingAssetsPathCommon: 
+          streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathIOSMovieAudio: 
+          streamingAssetsPathAndroidMovieAudio: 
+          streamingAssetsPathPS4MovieAudio: 
+          streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathCommonMovieAudio: 
+          streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathIOSIsMovie: 0
+          streamingAssetsPathAndroidIsMovie: 0
+          streamingAssetsPathPS4IsMovie: 0
+          streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathCommonIsMovie: 0
+          canBeUnloaded: 0
+          tempResource: {fileID: 11411412, guid: a5da888b635894aff8489de96258608c,
+            type: 2}
+        componentNoResource: {fileID: 0}
+        sortingOrder: 0
+        componentParameters: {fileID: 0}
+        editorParametersFoldout: 0
+      - description: ALWAYS SHOWN
+        tag: 4
+        component: {fileID: 11450942, guid: 7706e158ed72549389367a1bd9873b43, type: 2}
+        componentResource:
+          async: 1
+          assetPath: Assets/UI.Windows.Addons/Console/Resources/ConsoleScreen/Components/AlwaysText.asset
+          assetBundleName: 
+          resourcesPath: ConsoleScreen/Components/AlwaysText
+          webPath: 
+          loadableWeb: 0
+          loadableResource: 1
+          loadableStream: 0
+          loadableAssetBundle: 0
+          multiObjects: 0
+          objectIndex: 0
+          multiObjectsAssetBundle: 0
+          objectIndexAssetBundle: 0
+          customResourcePath: 
+          id: 1233284134
+          cacheVersion: 0
+          streamingAssetsPathStandalone: 
+          streamingAssetsPathIOS: 
+          streamingAssetsPathAndroid: 
+          streamingAssetsPathPS4: 
+          streamingAssetsPathXBOXONE: 
+          streamingAssetsPathCommon: 
+          streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathIOSMovieAudio: 
+          streamingAssetsPathAndroidMovieAudio: 
+          streamingAssetsPathPS4MovieAudio: 
+          streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathCommonMovieAudio: 
+          streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathIOSIsMovie: 0
+          streamingAssetsPathAndroidIsMovie: 0
+          streamingAssetsPathPS4IsMovie: 0
+          streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathCommonIsMovie: 0
+          canBeUnloaded: 0
+          tempResource: {fileID: 11450942, guid: 7706e158ed72549389367a1bd9873b43,
+            type: 2}
+        componentNoResource: {fileID: 0}
+        sortingOrder: 0
+        componentParameters: {fileID: 11402944}
+        editorParametersFoldout: 0
+      - description: Exception Border
+        tag: 6
+        component: {fileID: 11440684, guid: 5f3a46bca6ab9401e819baf53c624a8b, type: 2}
+        componentResource:
+          async: 1
+          assetPath: Assets/UI.Windows.Addons/Console/Resources/ConsoleScreen/Components/ExceptionBorder.asset
+          assetBundleName: 
+          resourcesPath: ConsoleScreen/Components/ExceptionBorder
+          webPath: 
+          loadableWeb: 0
+          loadableResource: 1
+          loadableStream: 0
+          loadableAssetBundle: 0
+          multiObjects: 0
+          objectIndex: 0
+          multiObjectsAssetBundle: 0
+          objectIndexAssetBundle: 0
+          customResourcePath: 
+          id: 1153875925
+          cacheVersion: 0
+          streamingAssetsPathStandalone: 
+          streamingAssetsPathIOS: 
+          streamingAssetsPathAndroid: 
+          streamingAssetsPathPS4: 
+          streamingAssetsPathXBOXONE: 
+          streamingAssetsPathCommon: 
+          streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathIOSMovieAudio: 
+          streamingAssetsPathAndroidMovieAudio: 
+          streamingAssetsPathPS4MovieAudio: 
+          streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathCommonMovieAudio: 
+          streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathIOSIsMovie: 0
+          streamingAssetsPathAndroidIsMovie: 0
+          streamingAssetsPathPS4IsMovie: 0
+          streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathCommonIsMovie: 0
+          canBeUnloaded: 0
+          tempResource: {fileID: 11440684, guid: 5f3a46bca6ab9401e819baf53c624a8b,
+            type: 2}
+        componentNoResource: {fileID: 0}
+        sortingOrder: 0
+        componentParameters: {fileID: 0}
+        editorParametersFoldout: 0
+    - enabled: 0
+      scaleMode: 0
+      fixedScaleResolution: {x: 1024, y: 768}
+      matchWidthOrHeight: 0
+      layoutPreferences: {fileID: 0}
+      allowCustomLayoutPreferences: 1
+      layout: {fileID: 0}
+      layoutNoResource: {fileID: 0}
+      layoutResource:
+        async: 1
+        assetPath: 
+        assetBundleName: 
+        resourcesPath: 
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 0
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: 0
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        controlType: 0
+        tempObject: {fileID: 0}
+      components: []
+    currentLayoutIndex: 0
+  layout:
+    enabled: 1
+    scaleMode: 0
+    fixedScaleResolution: {x: 1024, y: 768}
+    matchWidthOrHeight: 0
+    layoutPreferences: {fileID: 0}
+    allowCustomLayoutPreferences: 1
+    layout: {fileID: 11479802, guid: d17afffb657b645f5ad76ca0a2d8ec4c, type: 2}
+    layoutNoResource: {fileID: 0}
+    layoutResource:
+      async: 1
+      assetPath: 4173736574732f55492e57696e646f77732e4d6f64756c652f4164646f6e732f436f6e736f6c652f5265736f75726365732f436f6e736f6c6553637265656e2f4c61796f7574732f436f6e736f6c654c61796f75742e707265666162
+      assetBundleName: 
+      resourcesPath: 436f6e736f6c6553637265656e2f4c61796f7574732f436f6e736f6c654c61796f7574
+      webPath: 
+      loadableWeb: 0
+      loadableResource: 1
+      loadableStream: 0
+      loadableAssetBundle: 0
+      multiObjects: 0
+      objectIndex: 0
+      multiObjectsAssetBundle: 0
+      objectIndexAssetBundle: 0
+      customResourcePath: 
+      id: 825697207
+      cacheVersion: 0
+      streamingAssetsPathStandalone: 
+      streamingAssetsPathIOS: 
+      streamingAssetsPathAndroid: 
+      streamingAssetsPathPS4: 
+      streamingAssetsPathXBOXONE: 
+      streamingAssetsPathCommon: 
+      streamingAssetsPathStandaloneMovieAudio: 
+      streamingAssetsPathIOSMovieAudio: 
+      streamingAssetsPathAndroidMovieAudio: 
+      streamingAssetsPathPS4MovieAudio: 
+      streamingAssetsPathXBOXONEMovieAudio: 
+      streamingAssetsPathCommonMovieAudio: 
+      streamingAssetsPathStandaloneIsMovie: 0
+      streamingAssetsPathIOSIsMovie: 0
+      streamingAssetsPathAndroidIsMovie: 0
+      streamingAssetsPathPS4IsMovie: 0
+      streamingAssetsPathXBOXONEIsMovie: 0
+      streamingAssetsPathCommonIsMovie: 0
+      canBeUnloaded: 0
+      controlType: 0
+      tempObject: {fileID: 11479802, guid: d17afffb657b645f5ad76ca0a2d8ec4c, type: 2}
+    components:
+    - description: 434f4e54454e5420424f52444552
+      tag: 1
+      component: {fileID: 11440684, guid: 8bf48790edfd743bfba4d3f6b0e2259f, type: 2}
+      componentResource:
+        async: 1
+        assetPath: 4173736574732f55492e57696e646f77732e4d6f64756c652f4164646f6e732f436f6e736f6c652f5265736f75726365732f436f6e736f6c6553637265656e2f436f6d706f6e656e74732f4465636f7261746f722e6173736574
+        assetBundleName: 
+        resourcesPath: 436f6e736f6c6553637265656e2f436f6d706f6e656e74732f4465636f7261746f72
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 1
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: 1727457668
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        tempResource: {fileID: 11440684, guid: 8bf48790edfd743bfba4d3f6b0e2259f, type: 2}
+      componentNoResource: {fileID: 0}
+      sortingOrder: 0
+      componentParameters: {fileID: 0}
+      editorParametersFoldout: 0
+    - description: 434d44204c494e45
+      tag: 2
+      component: {fileID: 11471902, guid: 5a526ab58a1c54a63bfa1e685184cd2d, type: 2}
+      componentResource:
+        async: 1
+        assetPath: 4173736574732f55492e57696e646f77732e4d6f64756c652f4164646f6e732f436f6e736f6c652f5265736f75726365732f436f6e736f6c6553637265656e2f436f6d706f6e656e74732f496e7075744669656c642e6173736574
+        assetBundleName: 
+        resourcesPath: 436f6e736f6c6553637265656e2f436f6d706f6e656e74732f496e7075744669656c64
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 1
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: -1971269205
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        tempResource: {fileID: 11471902, guid: 5a526ab58a1c54a63bfa1e685184cd2d, type: 2}
+      componentNoResource: {fileID: 0}
+      sortingOrder: 0
+      componentParameters: {fileID: 0}
+      editorParametersFoldout: 0
+    - description: 5155455545
+      tag: 3
+      component: {fileID: 11411412, guid: a5da888b635894aff8489de96258608c, type: 2}
+      componentResource:
+        async: 1
+        assetPath: 4173736574732f55492e57696e646f77732e4d6f64756c652f4164646f6e732f436f6e736f6c652f5265736f75726365732f436f6e736f6c6553637265656e2f436f6d706f6e656e74732f51756575652f5461626c65566965772e707265666162
+        assetBundleName: 
+        resourcesPath: 436f6e736f6c6553637265656e2f436f6d706f6e656e74732f51756575652f5461626c6556696577
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 1
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: -1149484618
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        tempResource: {fileID: 11411412, guid: a5da888b635894aff8489de96258608c, type: 2}
+      componentNoResource: {fileID: 0}
+      sortingOrder: 0
+      componentParameters: {fileID: 0}
+      editorParametersFoldout: 0
+    - description: 414c574159532053484f574e
+      tag: 4
+      component: {fileID: 11450942, guid: 7706e158ed72549389367a1bd9873b43, type: 2}
+      componentResource:
+        async: 1
+        assetPath: 4173736574732f55492e57696e646f77732e4d6f64756c652f4164646f6e732f436f6e736f6c652f5265736f75726365732f436f6e736f6c6553637265656e2f436f6d706f6e656e74732f416c77617973546578742e6173736574
+        assetBundleName: 
+        resourcesPath: 436f6e736f6c6553637265656e2f436f6d706f6e656e74732f416c7761797354657874
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 1
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: -895075017
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        tempResource: {fileID: 11450942, guid: 7706e158ed72549389367a1bd9873b43, type: 2}
+      componentNoResource: {fileID: 0}
+      sortingOrder: 0
+      componentParameters: {fileID: 11402944}
+      editorParametersFoldout: 0
+    - description: 457863657074696f6e20426f72646572
+      tag: 6
+      component: {fileID: 11440684, guid: 5f3a46bca6ab9401e819baf53c624a8b, type: 2}
+      componentResource:
+        async: 1
+        assetPath: 4173736574732f55492e57696e646f77732e4d6f64756c652f4164646f6e732f436f6e736f6c652f5265736f75726365732f436f6e736f6c6553637265656e2f436f6d706f6e656e74732f457863657074696f6e426f726465722e6173736574
+        assetBundleName: 
+        resourcesPath: 436f6e736f6c6553637265656e2f436f6d706f6e656e74732f457863657074696f6e426f72646572
+        webPath: 
+        loadableWeb: 0
+        loadableResource: 1
+        loadableStream: 0
+        loadableAssetBundle: 0
+        multiObjects: 0
+        objectIndex: 0
+        multiObjectsAssetBundle: 0
+        objectIndexAssetBundle: 0
+        customResourcePath: 
+        id: -1017122460
+        cacheVersion: 0
+        streamingAssetsPathStandalone: 
+        streamingAssetsPathIOS: 
+        streamingAssetsPathAndroid: 
+        streamingAssetsPathPS4: 
+        streamingAssetsPathXBOXONE: 
+        streamingAssetsPathCommon: 
+        streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathIOSMovieAudio: 
+        streamingAssetsPathAndroidMovieAudio: 
+        streamingAssetsPathPS4MovieAudio: 
+        streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathCommonMovieAudio: 
+        streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathIOSIsMovie: 0
+        streamingAssetsPathAndroidIsMovie: 0
+        streamingAssetsPathPS4IsMovie: 0
+        streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathCommonIsMovie: 0
+        canBeUnloaded: 0
+        tempResource: {fileID: 11440684, guid: 5f3a46bca6ab9401e819baf53c624a8b, type: 2}
+      componentNoResource: {fileID: 0}
+      sortingOrder: 0
+      componentParameters: {fileID: 0}
+      editorParametersFoldout: 0
+  clearTime: -1
+  heightPadding: 8
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.scaleMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[0].description
+      value: CONTENT BORDER
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[1].description
+      value: CMD LINE
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[1].component
+      value: 
+      objectReference: {fileID: 11471902, guid: 5ce968b34564c41cc9b8a13cf1fe6c22,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[2].description
+      value: QUEUE
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: preferences.depth
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[0].component
+      value: 
+      objectReference: {fileID: 11440684, guid: 436ff01a7e1f94f4fbc7f2ae7ccdb57f,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: preferences.dontDestroy
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[2].component
+      value: 
+      objectReference: {fileID: 11450942, guid: 0abbd7d8a6a894d1490babe2d10a0a95,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[3].component
+      value: 
+      objectReference: {fileID: 11450942, guid: 5c0e33c98f2234079b6bd82f5beb35d1,
+        type: 2}
+    - target: {fileID: 0}
+      propertyPath: preferences.history
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: heightPadding
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[4].editorParametersFoldout
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[3].editorParametersFoldout
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.components.Array.data[5].description
+      value: Exception Border
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: preferences.layer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.fixedScaleResolution.x
+      value: 3840
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.fixedScaleResolution.y
+      value: 2160
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: layout.layoutPreferences
+      value: 
+      objectReference: {fileID: 11400000, guid: 1fc250506cda844a98f39320e043a409,
+        type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 158946}
+  m_IsPrefabParent: 1

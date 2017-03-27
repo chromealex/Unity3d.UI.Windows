@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.UI.Windows.Styles;
+using System.Reflection;
 
 namespace UnityEditor.UI.Windows {
 
@@ -159,8 +160,10 @@ namespace UnityEditor.UI.Windows {
 			var _target = this.target as UnityEngine.UI.Windows.WindowLayout;
 			if (_target == null) return;
 
+			color.a = 0.4f;
 			var selectedColor = color;
 			var notSelectedColor = color;
+			selectedColor.a = 0.8f;
 			notSelectedColor.a = 0.4f;
 
 			var elements = _target.elements;
@@ -233,6 +236,9 @@ namespace UnityEditor.UI.Windows {
 			
 			var horStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.horStyle", "box", (style) => new GUIStyle(style));
 			var vertStyle = ME.Utilities.CacheStyle("WindowLayout.GetEditorStyle.vertStyle", "box", (style) => new GUIStyle(style));
+
+			var tagSelectedRectBool = false;
+			var tagSelectedRect = new Rect();
 
 			var selectedRect = new Rect();
 			foreach (var element in elements) {
@@ -333,6 +339,13 @@ namespace UnityEditor.UI.Windows {
 
 				if (Event.current.type == EventType.Repaint) element.tempEditorRect = rect;
 
+				if (UnityEditor.UI.Windows.Plugins.Flow.Layout.LayoutSettingsEditor.selectedTagIndex == (int)element.tag) {
+
+					tagSelectedRectBool = true;
+					tagSelectedRect = rect;
+
+				}
+
 			}
 
 			if (highlighted != null) {
@@ -403,6 +416,29 @@ namespace UnityEditor.UI.Windows {
 			GUI.color = oldColor;
 
 			GUI.EndClip();
+
+			if (tagSelectedRectBool == true) {
+
+				var scrollValue = Vector2.zero;
+
+				var inspectorType = Assembly.GetAssembly(typeof(Editor)).GetType("UnityEditor.InspectorWindow");
+				if (EditorWindow.mouseOverWindow != null) {
+
+					var scrollType = inspectorType.GetField("m_ScrollPosition", BindingFlags.Instance | BindingFlags.Public);
+					if (scrollType != null) scrollValue = (Vector2)scrollType.GetValue(EditorWindow.mouseOverWindow);
+
+				}
+
+				var tagSelectedRectOffset = tagSelectedRect;
+				tagSelectedRectOffset.center += r.center;
+				tagSelectedRectOffset.center -= new Vector2(r.width * 0.5f, r.height * 0.5f);
+				var rc = UnityEditor.UI.Windows.Plugins.Flow.Layout.LayoutSettingsEditor.selectedTagRect;
+				rc.center -= scrollValue;
+				GUI.Box(tagSelectedRectOffset, string.Empty, elementHighlightStyle);
+				GUI.Box(rc, string.Empty, elementHighlightStyle);
+				WindowLayoutEditor.DrawNavigationArrow(true, Vector2.up, tagSelectedRectOffset.xMin <= 20f ? Vector2.down : Vector2.left, rc, tagSelectedRectOffset);
+
+			}
 
 		}
 
@@ -568,6 +604,51 @@ namespace UnityEditor.UI.Windows {
 			
 			return LayoutTag.None;
 			
+		}
+
+		private static Vector2 GetPointOnRectEdge(Rect rect, Vector2 dir) {
+
+			if (dir != Vector2.zero) dir /= Mathf.Max(Mathf.Abs(dir.x), Mathf.Abs(dir.y));
+			dir = rect.center + Vector2.Scale(rect.size, dir * 0.5f);
+
+			return dir;
+
+		}
+
+		const float kArrowThickness = 4f;
+		const float kArrowHeadSize = 6f;
+		const float kTargetOffset = 0f;
+		const float kMinSplineForce = 0.2f;
+		const float kMaxSplineForce = 0.8f;
+		const float maxLength = 300f;
+
+		private static void DrawNavigationArrow(bool selected, Vector2 directionFrom, Vector2 directionTo, Rect fromRect, Rect toRect) {
+
+			UnityEditor.Handles.color = new Color(1.0f, 0.9f, 0.1f, selected == true ? 1f : 0.3f);
+
+			Vector2 sideDirFrom = new Vector2(directionFrom.y, -directionFrom.x);
+			Vector2 sideDirTo = new Vector2(directionTo.y, -directionTo.x);
+
+			var fromPoint = WindowLayoutEditor.GetPointOnRectEdge(fromRect, directionFrom);
+			var toPoint = WindowLayoutEditor.GetPointOnRectEdge(toRect, directionTo);
+			fromPoint.y += kTargetOffset;
+			toPoint.y -= kTargetOffset;
+			float fromSize = UnityEditor.HandleUtility.GetHandleSize(fromPoint) * 0.05f;
+			float toSize = UnityEditor.HandleUtility.GetHandleSize(toPoint) * 0.05f;
+			fromPoint += sideDirFrom * fromSize;
+			toPoint += sideDirTo * toSize;
+			float length = Vector2.Distance(fromPoint, toPoint);
+			var force = Mathf.Lerp(kMaxSplineForce, kMinSplineForce, length / maxLength);
+			Vector2 fromTangent = directionFrom * length * force;
+			Vector2 toTangent = directionTo * length * force;
+
+			UnityEditor.Handles.DrawBezier(fromPoint, toPoint, fromPoint + fromTangent, toPoint + toTangent, UnityEditor.Handles.color, null, kArrowThickness);
+			var color = UnityEditor.Handles.color;
+			color.a = selected == true ? 1f : 0.5f;
+			UnityEditor.Handles.color = color;
+			UnityEditor.Handles.DrawAAPolyLine(kArrowThickness, toPoint, toPoint + (directionTo - sideDirTo) * toSize * kArrowHeadSize);
+			UnityEditor.Handles.DrawAAPolyLine(kArrowThickness, toPoint, toPoint + (directionTo + sideDirTo) * toSize * kArrowHeadSize);
+
 		}
 
 	}

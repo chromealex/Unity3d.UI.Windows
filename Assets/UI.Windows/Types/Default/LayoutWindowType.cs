@@ -6,7 +6,7 @@ using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Components;
 using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Extensions;
-using UnityEngine.UI.Windows.Plugins.Resources;
+using ME.UAB;
 
 namespace UnityEngine.UI.Windows.Types {
 
@@ -343,7 +343,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public bool IsSupported() {
 
-			return this.IsValid(0) == true && this.IsValid(1) == true;
+			return this.IsValid(0) == true || this.IsValid(1) == true;
 
 		}
 
@@ -381,12 +381,6 @@ namespace UnityEngine.UI.Windows.Types {
 				this.layouts[1] = new Layout();
 
 				UnityEditor.EditorUtility.SetDirty(root);
-
-			}
-
-			if (this.layouts[0].enabled == false) {
-
-				this.layouts[0].enabled = true;
 
 			}
 
