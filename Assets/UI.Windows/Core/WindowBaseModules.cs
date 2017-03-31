@@ -1143,21 +1143,25 @@ namespace UnityEngine.UI.Windows {
 		[BitMask(typeof(History))]
 		public History history = History.Auto;
 
-		public bool deactivateImmediately = false;
-		[MinMaxSlider(2f, 5f, "deactivateImmediately", state: true)]
+		[Tooltip("This window will be turned off immediately after CleanWindow call or will be using deactivateMaxTimeout to become inactive.")]
+		public bool deactivateOnRecycleImmediately = true;
+		[MinMaxSlider(2f, 5f, "deactivateOnRecycleImmediately", state: true)]
 		public Vector2 deactivateMaxTimeout = new Vector2(2f, 5f);
 
-		[Tooltip("Send Active/Inactive states on Show/Hide")]
+		[Tooltip("If `true` this type of windows will be show after previous window of this type. If `false` window will shown normaly.")]
+		public bool showInSequence = false;
+
+		[Tooltip("Send Active/Inactive states on Show/Hide events.")]
 		public bool sendActiveState = true;
 
 		[Tooltip("This window cover all previous content. If `true` previous windows will be disabled.")]
 		public bool fullCoverage = false;
 
-		[Tooltip("Forces one instance only on scene")]
+		[Tooltip("Forces one instance only on scene.")]
 		public bool forceSingleInstance = false;
-		[ReadOnly("forceSingleInstance", state: false)][Tooltip("Ignores `new` instance initialize and layout events")]
+		[ReadOnly("forceSingleInstance", state: false)][Tooltip("Ignores `new` instance initialize and layout events.")]
 		public bool singleInstanceIgnoreActions = false;
-		[Tooltip("Restores UI.EventSystem last selected element on window activation")]
+		[Tooltip("Restores UI.EventSystem last selected element on window activation.")]
 		public bool restoreSelectedElement = true;
 
 		[Header("Pool")]

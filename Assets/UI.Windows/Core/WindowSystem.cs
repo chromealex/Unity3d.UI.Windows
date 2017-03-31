@@ -1371,17 +1371,17 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="predicate">Predicate to filter</param>
 		/// <param name="last">Use LastOrDefault()?</param>
 		public static T FindOpened<T>(System.Func<T, bool> predicate, bool last = false) where T : WindowBase {
-
+			
 			if (last == true) {
-
-				return WindowSystem.instance.currentWindows.LastOrDefault(x => predicate(x as T)) as T;
-
+				
+				return WindowSystem.instance.currentWindows.LastOrDefault(x => x is T && predicate(x as T)) as T;
+				
 			} else {
-
-				return WindowSystem.instance.currentWindows.FirstOrDefault(x => predicate(x as T)) as T;
-
+				
+				return WindowSystem.instance.currentWindows.FirstOrDefault(x => x is T && predicate(x as T)) as T;
+				
 			}
-
+			
 		}
 
 		/// <summary>
@@ -1765,18 +1765,17 @@ namespace UnityEngine.UI.Windows {
 				});
 
 			};
-			/*
-			if (window.preferences.deactivateImmediately == true) {
-
+			
+			if (window.preferences.deactivateOnRecycleImmediately == true) {
+				
 				callbackInner.Invoke();
-
+				
 			} else {
-
+				
 				TweenerGlobal.instance.addTween(window, Random.Range(window.preferences.deactivateMaxTimeout.x, window.preferences.deactivateMaxTimeout.y), 0f, 0f).tag(window).onComplete(callbackInner);
 				
-			}*/
-			callbackInner.Invoke();
-
+			}
+			
 		}
 		
 		public static void CleanWindows<T>(List<T> windows) where T : WindowBase {
@@ -2021,7 +2020,7 @@ namespace UnityEngine.UI.Windows {
 			}, true);
 			
 		}
-
+		
 		public static T ShowAsync<T>(System.Action<T> onParametersPassCall, System.Action<T> onReady) where T : WindowBase {
 			
 			WindowSystem.ShowAsyncLoader();
@@ -2040,7 +2039,7 @@ namespace UnityEngine.UI.Windows {
 			return newWindow;
 			
 		}
-
+		
 		/// <summary>
 		/// Shows window of T type.
 		/// Returns null if window not registered.
@@ -2052,7 +2051,7 @@ namespace UnityEngine.UI.Windows {
 			return WindowSystem.ShowWithParameters<T>(null, null, null, null, null, null, false, parameters);
 			
 		}
-
+		
 		/// <summary>
 		/// Shows window of T type.
 		/// Returns null if window not registered.
@@ -2219,17 +2218,48 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				if (ignoreActions == false) {
-
-					if (transitionItem != null && transitionItem.transition != null && transitionItem.transitionParameters != null) {
-
-						windowInstance.Show(transitionItem);
-
+					
+					System.Action showInstance = () => {
+						
+						if (transitionItem != null && transitionItem.transition != null && transitionItem.transitionParameters != null) {
+							
+							windowInstance.Show(transitionItem);
+							
+						} else {
+							
+							windowInstance.Show();
+							
+						}
+						
+					};
+					
+					if (windowInstance.preferences.showInSequence == true) {
+						
+						var openedInstance = WindowSystem.FindOpened<T>(x => x != instance && x.IsVisibile() == true, last: true);
+						if (openedInstance != null) {
+							
+							UnityAction action = null;
+							action = () => {
+								
+								showInstance.Invoke();
+								
+								openedInstance.events.onEveryInstance.Unregister(WindowEventType.OnHideEnd, action);
+								
+							};
+							openedInstance.events.onEveryInstance.Register(WindowEventType.OnHideEnd, action);
+							
+						} else {
+							
+							showInstance.Invoke();
+							
+						}
+						
 					} else {
-
-						windowInstance.Show();
-
+						
+						showInstance.Invoke();
+						
 					}
-
+					
 				}
 
 			};
