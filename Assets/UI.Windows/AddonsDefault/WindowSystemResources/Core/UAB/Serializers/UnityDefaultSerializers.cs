@@ -5,10 +5,16 @@ using System.Collections.Generic;
 namespace ME.UAB.Serializers {
 
 	public class KeyframeSerializer : ISerializer {
-		
-		public bool IsValid(int id) {
 
-			return this.GetHashCode() == id;
+		public string GetId() {
+
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -27,7 +33,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fields = packer.SerializeForced(value, serializers);
 
 		}
@@ -35,16 +41,22 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class AnimationCurveSerializer : ISerializer {
-
+		
 		public class Data {
 			
 			public Keyframe[] keys;
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -64,7 +76,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			var data = new Data();
 			var tr = value as AnimationCurve;
 			data.keys = tr.keys;
@@ -75,7 +87,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class Color32Serializer : ISerializer {
-
+		
 		public class Data {
 
 			public byte r;
@@ -85,9 +97,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -107,7 +125,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fields = packer.Serialize(value, serializers);
 
 		}
@@ -115,7 +133,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class ColorSerializer : ISerializer {
-
+		
 		public class Data {
 
 			public float r;
@@ -125,9 +143,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -147,7 +171,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fields = packer.Serialize(value, serializers);
 
 		}
@@ -155,7 +179,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class QuaternionSerializer : ISerializer {
-
+		
 		public class Data {
 
 			public float x;
@@ -165,9 +189,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -187,7 +217,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fields = packer.Serialize(value, serializers);
 
 		}
@@ -195,7 +225,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class Vector4Serializer : ISerializer {
-
+		
 		public class Data {
 
 			public float x;
@@ -205,9 +235,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -227,7 +263,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fields = packer.Serialize(value, serializers);
 
 		}
@@ -235,7 +271,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class Vector3Serializer : ISerializer {
-
+		
 		public class Data {
 
 			public float x;
@@ -244,9 +280,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -266,7 +308,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fields = packer.Serialize(value, serializers);
 
 		}
@@ -282,9 +324,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -304,7 +352,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fields = packer.Serialize(value, serializers);
 
 		}
@@ -312,7 +360,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class TransformSerializer : ISerializer {
-
+		
 		public class Data {
 
 			public Vector3 position;
@@ -321,9 +369,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -346,7 +400,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			var tr = value as Transform;
 			var data = new Data();
 			data.position = tr.localPosition;
@@ -359,7 +413,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class RectTransformSerializer : ISerializer {
-
+		
 		public class Data {
 
 			public Vector3 position;
@@ -373,9 +427,15 @@ namespace ME.UAB.Serializers {
 
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -403,7 +463,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			var tr = value as RectTransform;
 			var data = new Data();
 			data.position = tr.localPosition;
@@ -414,6 +474,58 @@ namespace ME.UAB.Serializers {
 			data.anchorMin = tr.anchorMax;
 			data.sizeDelta = tr.sizeDelta;
 			data.pivot = tr.pivot;
+			field.fields = packer.Serialize(data, serializers);
+
+		}
+
+	}
+
+	public class RectOffsetSerializer : ISerializer {
+		
+		public class Data {
+
+			public int x;
+			public int y;
+			public int z;
+			public int w;
+
+		}
+
+		public string GetId() {
+
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
+
+		}
+
+		public bool IsValid(object value) {
+
+			return value.GetType() == typeof(RectOffset);
+
+		}
+
+		public void DeserializeBeforeRef(UABUnpacker unpacker, UABField field, ref object value, List<ISerializer> serializers) {
+
+			var data = new Data();
+			unpacker.Deserialize(data, field.fields, serializers);
+			value = new RectOffset(data.x, data.y, data.z, data.w);
+
+		}
+
+		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
+
+			field.serializatorId = this.GetId();
+			var tr = value as RectOffset;
+			var data = new Data();
+			data.x = tr.left;
+			data.y = tr.right;
+			data.z = tr.top;
+			data.w = tr.bottom;
 			field.fields = packer.Serialize(data, serializers);
 
 		}

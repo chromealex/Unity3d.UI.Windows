@@ -10,9 +10,9 @@ namespace ME.UAB {
 	
 	public static class Builder {
 		
-		#if UNITY_EDITOR
 		public static UABConfig GetDefaultConfig(bool required) {
 
+			#if UNITY_EDITOR
 			var guids = UnityEditor.AssetDatabase.FindAssets("t:UABConfig");
 			foreach (var guid in guids) {
 
@@ -24,6 +24,10 @@ namespace ME.UAB {
 				}
 
 			}
+			#else
+			var config = Resources.Load<UABConfig>("UAB/Config");
+			if (config != null) return config;
+			#endif
 
 			if (required == true) {
 
@@ -35,6 +39,7 @@ namespace ME.UAB {
 
 		}
 
+		#if UNITY_EDITOR
 		public static void RebuildAll(string path, UABConfig config = null, int version = 0) {
 
 			if (config == null) config = Builder.GetDefaultConfig(required: true);
@@ -100,33 +105,66 @@ namespace ME.UAB {
 				}
 
 				var assetBuildPath = string.Format("{0}/{1}.{2}", path, bundle, config.UAB_EXT);
+				var assetBuildPathBytes = string.Format("{0}/bytes/{1}.{2}.bytes", path, bundle, config.UAB_EXT);
 				foreach (var asset in buildingAssets) {
 
 					var assets = asset.Value.ToArray();
 
-					var dir = System.IO.Path.GetDirectoryName(assetBuildPath);
-					if (System.IO.Directory.Exists(dir) == false) {
+					var zipped = Builder.PackToBytes(assets, config);
 
-						System.IO.Directory.CreateDirectory(dir);
+					{
+						var dir = System.IO.Path.GetDirectoryName(assetBuildPath);
+						if (System.IO.Directory.Exists(dir) == false) {
+
+							System.IO.Directory.CreateDirectory(dir);
+
+						}
+						System.IO.File.WriteAllBytes(assetBuildPath, zipped);
+					}
+
+					if (config.UAB_BUILD_BYTES == true) {
+						
+						var dir = System.IO.Path.GetDirectoryName(assetBuildPathBytes);
+						if (System.IO.Directory.Exists(dir) == false) {
+
+							System.IO.Directory.CreateDirectory(dir);
+
+						}
+						System.IO.File.WriteAllBytes(assetBuildPathBytes, zipped);
 
 					}
 
-					var zipped = Builder.PackToBytes(assets, config);
-					System.IO.File.WriteAllBytes(assetBuildPath, zipped);
-					Debug.Log("Built to `" + assetBuildPath + "`, size: " + zipped.Length + " bytes.");
+					Debug.Log(string.Format("Built to `{0}`, size: {1} bytes, version: {2}.", assetBuildPath, zipped.Length, version));
 
 					if (version > 0) {
 
-						var name = System.IO.Path.GetFileName(assetBuildPath);
-						var builtinPath = string.Format(config.UAB_CACHE_PATH, Application.streamingAssetsPath, version, name);
-						var builtinDir = System.IO.Path.GetDirectoryName(builtinPath);
-						if (System.IO.Directory.Exists(builtinDir) == false) {
+						if (config.UAB_CACHE_TYPE == UABConfig.CacheType.StreamingAssets) {
 
-							System.IO.Directory.CreateDirectory(builtinDir);
+							var name = System.IO.Path.GetFileName(assetBuildPath);
+							var builtinPath = string.Format(config.UAB_CACHE_PATH, Application.streamingAssetsPath, version, name);
+							var builtinDir = System.IO.Path.GetDirectoryName(builtinPath);
+							if (System.IO.Directory.Exists(builtinDir) == false) {
+
+								System.IO.Directory.CreateDirectory(builtinDir);
+
+							}
+
+							System.IO.File.WriteAllBytes(builtinPath, zipped);
+
+						} else if (config.UAB_CACHE_TYPE == UABConfig.CacheType.Resources) {
+
+							var name = string.Format("{0}.bytes", System.IO.Path.GetFileName(assetBuildPath));
+							var builtinPath = string.Format(config.UAB_CACHE_PATH, string.Format("{0}/Resources", Application.dataPath), version, name);
+							var builtinDir = System.IO.Path.GetDirectoryName(builtinPath);
+							if (System.IO.Directory.Exists(builtinDir) == false) {
+
+								System.IO.Directory.CreateDirectory(builtinDir);
+
+							}
+
+							System.IO.File.WriteAllBytes(builtinPath, zipped);
 
 						}
-
-						System.IO.File.WriteAllBytes(builtinPath, zipped);
 
 					}
 
@@ -139,9 +177,13 @@ namespace ME.UAB {
 
 		public static List<ISerializer> GetAllSerializers(UABConfig config = null) {
 
-			#if UNITY_EDITOR
 			if (config == null) config = Builder.GetDefaultConfig(required: true);
-			#endif
+
+			if (config == null) {
+
+				throw new Exception("UAB.Config file was not found");
+
+			}
 
 			var output = new List<ISerializer>();
 
@@ -176,17 +218,17 @@ namespace ME.UAB {
 		}
 
 		#region Unpack
-		public static GameObject[] Unpack(byte[] bytes, List<ISerializer> serializers = null) {
+		public static GameObject[] Unpack(byte[] bytes, UABConfig config = null, List<ISerializer> serializers = null) {
 			
 			var unzipped = Zipper.UnzipString(bytes);
 			var dataDeserialized = UABSerializer.DeserializeValueType<UABPackage>(unzipped);
-			return Builder.Unpack(dataDeserialized, serializers);
+			return Builder.Unpack(dataDeserialized, config, serializers);
 
 		}
 
-		public static GameObject[] Unpack(UABPackage package, List<ISerializer> serializers = null) {
+		public static GameObject[] Unpack(UABPackage package, UABConfig config = null, List<ISerializer> serializers = null) {
 
-			return new UABUnpacker().Run(package, serializers);
+			return new UABUnpacker().Run(package, config, serializers);
 
 		}
 		#endregion

@@ -129,7 +129,7 @@ namespace UnityEngine.UI.Windows {
 			if (tempSprite != null) {
 				
 				var imp = UnityEditor.TextureImporter.GetAtPath(this.assetPath) as UnityEditor.TextureImporter;
-				if (imp != null && imp.spriteImportMode == UnityEditor.SpriteImportMode.Multiple) {
+				if (imp != null /*&& (imp.spriteImportMode == UnityEditor.SpriteImportMode.Multiple)*/) {
 
 					var allObjects = Resources.LoadAll(this.resourcesPath);
 					ME.EditorUtilities.SetValueIfDirty(ref this.multiObjects, true);
@@ -142,6 +142,10 @@ namespace UnityEngine.UI.Windows {
 
 				}
 				
+			} else {
+
+				ME.EditorUtilities.SetValueIfDirty(ref this.multiObjects, false);
+
 			}
 
 			ME.EditorUtilities.SetObjectIfDirty(ref this.tempObject, item);

@@ -217,8 +217,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11419482}
   m_HandleRect: {fileID: 22419480}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 1
+  m_Value: 0.5
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 100
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 11419484}
@@ -435,7 +435,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -501,7 +500,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 119492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e74a4d88e4097bd48af63341126d76cf, type: 3}
+  m_Script: {fileID: 11500000, guid: ae3fc0a7c61364a93b28411444b2b9a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
@@ -509,7 +508,7 @@ MonoBehaviour:
     enabled: 0
     navigationComponents: []
   autoRegisterInRoot: 1
-  autoRegisterSubComponents: 0
+  autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
   rootComponent: {fileID: 0}
@@ -520,7 +519,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -566,7 +564,7 @@ MonoBehaviour:
     next: {fileID: 0}
   list: []
   source: {fileID: 11419502}
-  scrollRect: {fileID: 11419488}
+  scrollRect: {fileID: 0}
   content: {fileID: 0}
   noElements: {fileID: 0}
   loading: {fileID: 0}
@@ -576,7 +574,7 @@ MonoBehaviour:
   scrollbarVisibility: 1
   horizontalScrollbar: {fileID: 0}
   verticalScrollbar: {fileID: 0}
-  layoutGroup: {fileID: 11419494}
+  layoutGroup: {fileID: 0}
   navigationMode: 0
   navigationInverse: 0
 --- !u!222 &22219480

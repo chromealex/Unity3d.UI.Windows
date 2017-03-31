@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ME {
 
-	public class Tweener: MonoBehaviour {
+	public class Tweener : MonoBehaviour {
 
 		public interface ITransition {
 
@@ -650,10 +650,10 @@ namespace ME {
 			_func = func;
 
 		}
-		
+
 		public float interpolate(float start, float distance, float elapsedTime, float duration) {
 
-			return _func(start, distance, elapsedTime, duration);
+			return _func(elapsedTime, start, distance, duration);
 
 		}
 
@@ -668,7 +668,7 @@ namespace ME {
 			_curve = curve;
 
 		}
-		
+
 		public float interpolate(float start, float distance, float elapsedTime, float duration) {
 
 			float curveDuration = 0.0f;
@@ -717,7 +717,17 @@ namespace ME {
 			InOutBack,
 			InBounce,
 			OutBounce,
-			InOutBounce
+			InOutBounce,
+			OutInQuad,
+			OutInCubic,
+			OutInQuart,
+			OutInQuint,
+			OutInSine, 
+			OutInExpo, 
+			OutInCirc,
+			OutInElastic,
+			OutInBack,
+			OutInBounce,
 			
 		};
 		
@@ -727,39 +737,57 @@ namespace ME {
 			
 		}
 		
-		public static EaseTransition Linear = new EaseTransition(_linear);
-		public static EaseTransition InQuad = new EaseTransition(_inQuad);
-		public static EaseTransition OutQuad = new EaseTransition(_outQuad);
-		public static EaseTransition InOutQuad = new EaseTransition(_inOutQuad);
-		public static EaseTransition InCubic = new EaseTransition(_inCubic);
-		public static EaseTransition OutCubic = new EaseTransition(_outCubic);
-		public static EaseTransition InOutCubic = new EaseTransition(_inOutCubic);
-		public static EaseTransition InQuart = new EaseTransition(_inQuart);
-		public static EaseTransition OutQuart = new EaseTransition(_outQuart);
-		public static EaseTransition InOutQuart = new EaseTransition(_inOutQuart);
-		public static EaseTransition InQuint = new EaseTransition(_inQuint);
-		public static EaseTransition OutQuint = new EaseTransition(_outQuint);
-		public static EaseTransition InOutQuint = new EaseTransition(_inOutQuint);
-		public static EaseTransition InSine = new EaseTransition(_inSine);
-		public static EaseTransition OutSine = new EaseTransition(_outSine);
-		public static EaseTransition InOutSine = new EaseTransition(_inOutSine);
-		public static EaseTransition InExpo = new EaseTransition(_inExpo);
-		public static EaseTransition OutExpo = new EaseTransition(_outExpo);
-		public static EaseTransition InOutExpo = new EaseTransition(_inOutExpo);
-		public static EaseTransition InCirc = new EaseTransition(_inCirc);
-		public static EaseTransition OutCirc = new EaseTransition(_outCirc);
-		public static EaseTransition InOutCirc = new EaseTransition(_inOutCirc);
-		
-		// TODO: implement
-		public static EaseTransition InElastic = new EaseTransition(_inExpo);
-		public static EaseTransition OutElastic = new EaseTransition(_outExpo);
-		public static EaseTransition InOutElastic = new EaseTransition(_inOutExpo);
-		public static EaseTransition InBack = new EaseTransition(_inExpo);
-		public static EaseTransition OutBack = new EaseTransition(_outExpo);
-		public static EaseTransition InOutBack = new EaseTransition(_inOutExpo);
-		public static EaseTransition InBounce = new EaseTransition(_inBounce);
-		public static EaseTransition OutBounce = new EaseTransition(_outBounce);
-		public static EaseTransition InOutBounce = new EaseTransition(_inOutBounce);
+		public static EaseTransition Linear = new EaseTransition(Easings.Linear);
+
+		public static EaseTransition InQuad = new EaseTransition(Easings.QuadEaseIn);
+		public static EaseTransition OutQuad = new EaseTransition(Easings.QuadEaseOut);
+		public static EaseTransition InOutQuad = new EaseTransition(Easings.QuadEaseInOut);
+		public static EaseTransition OutInQuad = new EaseTransition(Easings.QuadEaseOutIn);
+
+		public static EaseTransition InCubic = new EaseTransition(Easings.CubicEaseIn);
+		public static EaseTransition OutCubic = new EaseTransition(Easings.CubicEaseOut);
+		public static EaseTransition InOutCubic = new EaseTransition(Easings.CubicEaseInOut);
+		public static EaseTransition OutInCubic = new EaseTransition(Easings.CubicEaseOutIn);
+
+		public static EaseTransition InQuart = new EaseTransition(Easings.QuartEaseIn);
+		public static EaseTransition OutQuart = new EaseTransition(Easings.QuartEaseOut);
+		public static EaseTransition InOutQuart = new EaseTransition(Easings.QuartEaseInOut);
+		public static EaseTransition OutInQuart = new EaseTransition(Easings.QuartEaseOutIn);
+
+		public static EaseTransition InQuint = new EaseTransition(Easings.QuintEaseIn);
+		public static EaseTransition OutQuint = new EaseTransition(Easings.QuintEaseOut);
+		public static EaseTransition InOutQuint = new EaseTransition(Easings.QuintEaseInOut);
+		public static EaseTransition OutInQuint = new EaseTransition(Easings.QuintEaseOutIn);
+
+		public static EaseTransition InSine = new EaseTransition(Easings.SineEaseIn);
+		public static EaseTransition OutSine = new EaseTransition(Easings.SineEaseOut);
+		public static EaseTransition InOutSine = new EaseTransition(Easings.SineEaseInOut);
+		public static EaseTransition OutInSine = new EaseTransition(Easings.SineEaseOutIn);
+
+		public static EaseTransition InExpo = new EaseTransition(Easings.ExpoEaseIn);
+		public static EaseTransition OutExpo = new EaseTransition(Easings.ExpoEaseOut);
+		public static EaseTransition InOutExpo = new EaseTransition(Easings.ExpoEaseInOut);
+		public static EaseTransition OutInExpo = new EaseTransition(Easings.ExpoEaseOutIn);
+
+		public static EaseTransition InCirc = new EaseTransition(Easings.CircEaseIn);
+		public static EaseTransition OutCirc = new EaseTransition(Easings.CircEaseOut);
+		public static EaseTransition InOutCirc = new EaseTransition(Easings.CircEaseInOut);
+		public static EaseTransition OutInCirc = new EaseTransition(Easings.CircEaseOutIn);
+
+		public static EaseTransition InElastic = new EaseTransition(Easings.ElasticEaseIn);
+		public static EaseTransition OutElastic = new EaseTransition(Easings.ElasticEaseOut);
+		public static EaseTransition InOutElastic = new EaseTransition(Easings.ElasticEaseInOut);
+		public static EaseTransition OutInElastic = new EaseTransition(Easings.ElasticEaseOutIn);
+
+		public static EaseTransition InBack = new EaseTransition(Easings.BackEaseIn);
+		public static EaseTransition OutBack = new EaseTransition(Easings.BackEaseOut);
+		public static EaseTransition InOutBack = new EaseTransition(Easings.BackEaseInOut);
+		public static EaseTransition OutInBack = new EaseTransition(Easings.BackEaseOutIn);
+
+		public static EaseTransition InBounce = new EaseTransition(Easings.BounceEaseIn);
+		public static EaseTransition OutBounce = new EaseTransition(Easings.BounceEaseOut);
+		public static EaseTransition InOutBounce = new EaseTransition(Easings.BounceEaseOutIn);
+		public static EaseTransition OutInBounce = new EaseTransition(Easings.BounceEaseInOut);
 		
 		private static Tweener.ITransition[] easings = new Tweener.ITransition[] {
 			Linear,
@@ -777,10 +805,10 @@ namespace ME {
 			InOutQuint,
 			InSine,
 			OutSine, 
-			InOutSine, 
+			InOutSine,
 			InExpo,
 			OutExpo, 
-			InOutExpo, 
+			InOutExpo,
 			InCirc,
 			OutCirc, 
 			InOutCirc,
@@ -792,9 +820,724 @@ namespace ME {
 			InOutBack,
 			InBounce,
 			OutBounce,
-			InOutBounce
+			InOutBounce,
+			OutInQuad,
+			OutInCubic,
+			OutInQuart,
+			OutInQuint,
+			OutInSine, 
+			OutInExpo, 
+			OutInCirc,
+			OutInElastic,
+			OutInBack,
+			OutInBounce,
 		};
 
+	}
+
+	public static class Easings {
+
+		#region Linear
+
+		/// <summary>
+		/// Easing equation function for a simple linear tweening, with no easing.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float Linear( float t, float b, float c, float d )
+		{
+			return c * t / d + b;
+		}
+
+		#endregion
+
+		#region Expo
+
+		/// <summary>
+		/// Easing equation function for an exponential (2^t) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ExpoEaseOut( float t, float b, float c, float d )
+		{
+			return ( t == d ) ? b + c : c * ( -Mathf.Pow( 2, -10 * t / d ) + 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for an exponential (2^t) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ExpoEaseIn( float t, float b, float c, float d )
+		{
+			return ( t == 0 ) ? b : c * Mathf.Pow( 2, 10 * ( t / d - 1 ) ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for an exponential (2^t) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ExpoEaseInOut( float t, float b, float c, float d )
+		{
+			if ( t == 0 )
+				return b;
+
+			if ( t == d )
+				return b + c;
+
+			if ( ( t /= d / 2 ) < 1 )
+				return c / 2 * Mathf.Pow( 2, 10 * ( t - 1 ) ) + b;
+
+			return c / 2 * ( -Mathf.Pow( 2, -10 * --t ) + 2 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for an exponential (2^t) easing out/in: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ExpoEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return ExpoEaseOut( t * 2, b, c / 2, d );
+
+			return ExpoEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Circular
+
+		/// <summary>
+		/// Easing equation function for a circular (sqrt(1-t^2)) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CircEaseOut( float t, float b, float c, float d )
+		{
+			return c * Mathf.Sqrt( 1 - ( t = t / d - 1 ) * t ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a circular (sqrt(1-t^2)) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CircEaseIn( float t, float b, float c, float d )
+		{
+			return -c * ( Mathf.Sqrt( 1 - ( t /= d ) * t ) - 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a circular (sqrt(1-t^2)) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CircEaseInOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d / 2 ) < 1 )
+				return -c / 2 * ( Mathf.Sqrt( 1 - t * t ) - 1 ) + b;
+
+			return c / 2 * ( Mathf.Sqrt( 1 - ( t -= 2 ) * t ) + 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a circular (sqrt(1-t^2)) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CircEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return CircEaseOut( t * 2, b, c / 2, d );
+
+			return CircEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Quad
+
+		/// <summary>
+		/// Easing equation function for a quadratic (t^2) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuadEaseOut( float t, float b, float c, float d )
+		{
+			return -c * ( t /= d ) * ( t - 2 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quadratic (t^2) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuadEaseIn( float t, float b, float c, float d )
+		{
+			return c * ( t /= d ) * t + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quadratic (t^2) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuadEaseInOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d / 2 ) < 1 )
+				return c / 2 * t * t + b;
+
+			return -c / 2 * ( ( --t ) * ( t - 2 ) - 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quadratic (t^2) easing out/in: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuadEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return QuadEaseOut( t * 2, b, c / 2, d );
+
+			return QuadEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Sine
+
+		/// <summary>
+		/// Easing equation function for a sinusoidal (sin(t)) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float SineEaseOut( float t, float b, float c, float d )
+		{
+			return c * Mathf.Sin( t / d * ( Mathf.PI / 2 ) ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a sinusoidal (sin(t)) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float SineEaseIn( float t, float b, float c, float d )
+		{
+			return -c * Mathf.Cos( t / d * ( Mathf.PI / 2 ) ) + c + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a sinusoidal (sin(t)) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float SineEaseInOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d / 2 ) < 1 )
+				return c / 2 * ( Mathf.Sin( Mathf.PI * t / 2 ) ) + b;
+
+			return -c / 2 * ( Mathf.Cos( Mathf.PI * --t / 2 ) - 2 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a sinusoidal (sin(t)) easing in/out: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float SineEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return SineEaseOut( t * 2, b, c / 2, d );
+
+			return SineEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Cubic
+
+		/// <summary>
+		/// Easing equation function for a cubic (t^3) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CubicEaseOut( float t, float b, float c, float d )
+		{
+			return c * ( ( t = t / d - 1 ) * t * t + 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a cubic (t^3) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CubicEaseIn( float t, float b, float c, float d )
+		{
+			return c * ( t /= d ) * t * t + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a cubic (t^3) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CubicEaseInOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d / 2 ) < 1 )
+				return c / 2 * t * t * t + b;
+
+			return c / 2 * ( ( t -= 2 ) * t * t + 2 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a cubic (t^3) easing out/in: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float CubicEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return CubicEaseOut( t * 2, b, c / 2, d );
+
+			return CubicEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Quartic
+
+		/// <summary>
+		/// Easing equation function for a quartic (t^4) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuartEaseOut( float t, float b, float c, float d )
+		{
+			return -c * ( ( t = t / d - 1 ) * t * t * t - 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quartic (t^4) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuartEaseIn( float t, float b, float c, float d )
+		{
+			return c * ( t /= d ) * t * t * t + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quartic (t^4) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuartEaseInOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d / 2 ) < 1 )
+				return c / 2 * t * t * t * t + b;
+
+			return -c / 2 * ( ( t -= 2 ) * t * t * t - 2 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quartic (t^4) easing out/in: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuartEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return QuartEaseOut( t * 2, b, c / 2, d );
+
+			return QuartEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Quintic
+
+		/// <summary>
+		/// Easing equation function for a quintic (t^5) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuintEaseOut( float t, float b, float c, float d )
+		{
+			return c * ( ( t = t / d - 1 ) * t * t * t * t + 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quintic (t^5) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuintEaseIn( float t, float b, float c, float d )
+		{
+			return c * ( t /= d ) * t * t * t * t + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quintic (t^5) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuintEaseInOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d / 2 ) < 1 )
+				return c / 2 * t * t * t * t * t + b;
+			return c / 2 * ( ( t -= 2 ) * t * t * t * t + 2 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a quintic (t^5) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float QuintEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return QuintEaseOut( t * 2, b, c / 2, d );
+			return QuintEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Elastic
+
+		/// <summary>
+		/// Easing equation function for an elastic (exponentially decaying sine wave) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ElasticEaseOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d ) == 1 )
+				return b + c;
+
+			float p = d * .3f;
+			float s = p / 4.0f;
+
+			return ( c * Mathf.Pow( 2, -10 * t ) * Mathf.Sin( ( t * d - s ) * ( 2 * Mathf.PI ) / p ) + c + b );
+		}
+
+		/// <summary>
+		/// Easing equation function for an elastic (exponentially decaying sine wave) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ElasticEaseIn( float t, float b, float c, float d )
+		{
+			if ( ( t /= d ) == 1 )
+				return b + c;
+
+			float p = d * .3f;
+			float s = p / 4;
+
+			return -( c * Mathf.Pow( 2, 10 * ( t -= 1 ) ) * Mathf.Sin( ( t * d - s ) * ( 2 * Mathf.PI ) / p ) ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for an elastic (exponentially decaying sine wave) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ElasticEaseInOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d / 2 ) == 2 )
+				return b + c;
+
+			float p = d * ( .3f * 1.5f );
+			float s = p / 4;
+
+			if ( t < 1 )
+				return -.5f * ( c * Mathf.Pow( 2, 10 * ( t -= 1 ) ) * Mathf.Sin( ( t * d - s ) * ( 2 * Mathf.PI ) / p ) ) + b;
+			return c * Mathf.Pow( 2, -10 * ( t -= 1 ) ) * Mathf.Sin( ( t * d - s ) * ( 2 * Mathf.PI ) / p ) * .5f + c + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for an elastic (exponentially decaying sine wave) easing out/in: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float ElasticEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return ElasticEaseOut( t * 2, b, c / 2, d );
+			return ElasticEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Bounce
+
+		/// <summary>
+		/// Easing equation function for a bounce (exponentially decaying parabolic bounce) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BounceEaseOut( float t, float b, float c, float d )
+		{
+			if ( ( t /= d ) < ( 1 / 2.75 ) )
+				return c * ( 7.5625f * t * t ) + b;
+			else if ( t < ( 2 / 2.75f ) )
+				return c * ( 7.5625f * ( t -= ( 1.5f / 2.75f ) ) * t + .75f ) + b;
+			else if ( t < ( 2.5f / 2.75f ) )
+				return c * ( 7.5625f * ( t -= ( 2.25f / 2.75f ) ) * t + .9375f ) + b;
+			else
+				return c * ( 7.5625f * ( t -= ( 2.625f / 2.75f ) ) * t + .984375f ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a bounce (exponentially decaying parabolic bounce) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BounceEaseIn( float t, float b, float c, float d )
+		{
+			return c - BounceEaseOut( d - t, 0, c, d ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a bounce (exponentially decaying parabolic bounce) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BounceEaseInOut( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return BounceEaseIn( t * 2, 0, c, d ) * .5f + b;
+			else
+				return BounceEaseOut( t * 2 - d, 0, c, d ) * .5f + c * .5f + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a bounce (exponentially decaying parabolic bounce) easing out/in: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BounceEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return BounceEaseOut( t * 2, b, c / 2, d );
+			return BounceEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+
+		#endregion
+
+		#region Back
+
+		/// <summary>
+		/// Easing equation function for a back (overshooting cubic easing: (s+1)*t^3 - s*t^2) easing out: 
+		/// decelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BackEaseOut( float t, float b, float c, float d )
+		{
+			return c * ( ( t = t / d - 1 ) * t * ( ( 1.70158f + 1 ) * t + 1.70158f ) + 1 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a back (overshooting cubic easing: (s+1)*t^3 - s*t^2) easing in: 
+		/// accelerating from zero velocity.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BackEaseIn( float t, float b, float c, float d )
+		{
+			return c * ( t /= d ) * t * ( ( 1.70158f + 1 ) * t - 1.70158f ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a back (overshooting cubic easing: (s+1)*t^3 - s*t^2) easing in/out: 
+		/// acceleration until halfway, then deceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BackEaseInOut( float t, float b, float c, float d )
+		{
+			float s = 1.70158f;
+			if ( ( t /= d / 2 ) < 1 )
+				return c / 2 * ( t * t * ( ( ( s *= ( 1.525f ) ) + 1 ) * t - s ) ) + b;
+			return c / 2 * ( ( t -= 2 ) * t * ( ( ( s *= ( 1.525f ) ) + 1 ) * t + s ) + 2 ) + b;
+		}
+
+		/// <summary>
+		/// Easing equation function for a back (overshooting cubic easing: (s+1)*t^3 - s*t^2) easing out/in: 
+		/// deceleration until halfway, then acceleration.
+		/// </summary>
+		/// <param name="t">Current time in seconds.</param>
+		/// <param name="b">Starting value.</param>
+		/// <param name="c">Final value.</param>
+		/// <param name="d">Duration of animation.</param>
+		/// <returns>The correct value.</returns>
+		public static float BackEaseOutIn( float t, float b, float c, float d )
+		{
+			if ( t < d / 2 )
+				return BackEaseOut( t * 2, b, c / 2, d );
+			return BackEaseIn( ( t * 2 ) - d, b + c / 2, c / 2, d );
+		}
+		#endregion
+		/*
 		static float _inBounce(float startValue, float changeValue, float time, float duration) {
 			return changeValue - _outBounce(duration - time, changeValue, 0f, duration) + startValue;
 		}
@@ -955,51 +1698,51 @@ namespace ME {
 				return -distance / 2 * (Mathf.Sqrt(1 - elapsedTime * elapsedTime) - 1) + start;
 			elapsedTime -= 2;
 			return distance / 2 * (Mathf.Sqrt(1 - elapsedTime * elapsedTime) + 1) + start;
-		}
-	
+		}*/
+
 		/*static float _inElastic(float start, float distance, float elapsedTime, float duration)
 		{
 			if (elapsedTime > duration)
 				elapsedTime = duration;
-	
+
 			if (elapsedTime == 0.0f)
 				return start;
-	
+
 			if ((elapsedTime /= duration) == 1.0f)
-			        return start + distance;
-	
-	        float p = duration * 0.3f;
-	        float a = distance;
-	        float s = p / 4.0f;
-	        float postFix = a * Mathf.Pow(2.0f, 10.0 * (elapsedTime -= 1.0f));
-	
-	        return -(postFix * Mathf.Sin((elapsedTime * duration - s) * (2.0 * Mathf.PI) / p)) + start;
+				return start + distance;
+
+			float p = duration * 0.3f;
+			float a = distance;
+			float s = p / 4.0f;
+			float postFix = a * Mathf.Pow(2.0f, 10.0 * (elapsedTime -= 1.0f));
+
+			return -(postFix * Mathf.Sin((elapsedTime * duration - s) * (2.0 * Mathf.PI) / p)) + start;
 		}
-	
+
 		static float _outElastic(float start, float distance, float elapsedTime, float duration)
 		{
 			if (elapsedTime > duration)
 				elapsedTime = duration;
-	
+
 			if (elapsedTime == 0.0f)
 				return start;
-	
+
 			if ((elapsedTime /= duration) == 1.0f)
-			        return start + distance;
-	
-	        float p = duration * 0.3f;
-	        float a = distance;
-	        float s = p / 4.0f;
-	
-	        return a * Mathf.Pow(2.0, -10.0 * elapsedTime) * Mathf.Sin((elapsedTime * duration - s) * (2.0 * Mathf.PI) / p) + distance + start;
+				return start + distance;
+
+			float p = duration * 0.3f;
+			float a = distance;
+			float s = p / 4.0f;
+
+			return a * Mathf.Pow(2.0, -10.0 * elapsedTime) * Mathf.Sin((elapsedTime * duration - s) * (2.0 * Mathf.PI) / p) + distance + start;
 		}
-	
+
 		static float _inOutElastic(float start, float distance, float elapsedTime, float duration)
 		{
 			// TODO: implement
 			return 0.0f;
 		}*/
-		
+
 	}
 	
 }

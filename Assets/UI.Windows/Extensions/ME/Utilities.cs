@@ -26,7 +26,7 @@ namespace ME {
 
 	public static class ObjectExt {
 
-        public static int GetID(this Object obj) {
+		public static int GetID(this Object obj) {
 
 			if (obj == null) return 0;
 
@@ -41,6 +41,28 @@ namespace ME {
 			return obj.GetInstanceID();
 
 		}*/
+
+	}
+
+	public static class ReflectionExt {
+
+		public static bool HasBaseType(this System.Type type, System.Type checkType) {
+
+			return type.GetBaseClassesAndInterfaces().Any(x => x == checkType);
+
+		}
+
+		public static IEnumerable<System.Type> GetBaseClassesAndInterfaces(this System.Type type) {
+			
+			return type.BaseType == typeof(object) 
+				? type.GetInterfaces()
+					: Enumerable
+					.Repeat(type.BaseType, 1)
+					.Concat(type.GetInterfaces())
+					.Concat(type.BaseType.GetBaseClassesAndInterfaces())
+					.Distinct();
+			
+		}
 
 	}
 

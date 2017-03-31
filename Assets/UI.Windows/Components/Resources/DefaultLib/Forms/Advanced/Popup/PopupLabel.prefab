@@ -45,7 +45,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 109546}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c7df3d8c8cab44b99c417fc57b43c48, type: 3}
+  m_Script: {fileID: 11500000, guid: a99a01f98e98d4c55aacf53b199642f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
@@ -64,7 +64,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -131,7 +130,6 @@ MonoBehaviour:
   imageResourceWait: 0
   imageResource:
     async: 1
-    controlType: 0
     assetPath: 
     assetBundleName: 
     resourcesPath: 
@@ -159,19 +157,17 @@ MonoBehaviour:
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
-    isMovie: 0
+    streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathIOSIsMovie: 0
+    streamingAssetsPathAndroidIsMovie: 0
+    streamingAssetsPathPS4IsMovie: 0
+    streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    controlType: 0
     tempObject: {fileID: 0}
   imageCrossFadeModule:
     enabled: 0
-    image: {fileID: 11409546}
-    sourceImage: {fileID: 0}
-    copyImage: {fileID: 0}
-    copyFlippableImage: {fileID: 0}
-    sourceRawImage: {fileID: 0}
-    copyRawImage: {fileID: 0}
-    copyFlippableRawImage: {fileID: 0}
-    copyPreserveAspectRawImage: {fileID: 0}
     duration: 0.5
     fadeIfWasNull: 0
     fadeOutSource: 0

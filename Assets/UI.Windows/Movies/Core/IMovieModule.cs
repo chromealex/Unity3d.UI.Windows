@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Components;
 using System.Linq;
+using ME;
 
 #if UNITY_PS4
 using UnityEngine.PS4;
@@ -403,7 +404,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 				if (instanceId != 0) {
 
-					return x.resource.loadedObjectId == instanceId;
+					return (x.resource.loadedObject as Object).GetID() == instanceId;
 
 				} else {
 

@@ -280,7 +280,12 @@ namespace UnityEngine.UI.Windows.Components {
 	
 							base.DoShowBegin(parameters);
 	
-						}, onShowHide: true);
+						}, onShowHide: true,
+							onFailed: () => {
+	
+								base.DoShowBegin(parameters);
+	
+							});
 	
 					} else {
 	
@@ -1105,6 +1110,16 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			public IImageComponent SetImage(ResourceAuto resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null) {
 	
+				ME.Coroutines.Run(this.SetImage_INTERNAL(resource, onDataLoaded, onComplete, onFailed));
+	
+				return this;
+				
+			}
+	
+			private System.Collections.Generic.IEnumerator<byte> SetImage_INTERNAL(ResourceAuto resource, System.Action onDataLoaded = null, System.Action onComplete = null, System.Action onFailed = null) {
+	
+				yield return 0;
+	
 				if (this.imageCrossFadeModule.IsValid() == true) {
 	
 					this.imageCrossFadeModule.Prepare(this);
@@ -1112,10 +1127,10 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 	
 				var oldResource = this.imageResource;
-			    var newResource = resource;
-	            this.imageResource = resource;
+				var newResource = resource;
+				this.imageResource = resource;
 	
-	            // Debug.Log("Loading resource: " + this.imageResource.GetId());
+				// Debug.Log("Loading resource: " + this.imageResource.GetId());
 				WindowSystemResources.Load(this,
 					onDataLoaded: onDataLoaded,
 					onComplete: () => {
@@ -1128,8 +1143,8 @@ namespace UnityEngine.UI.Windows.Components {
 	
 						}
 	
-	                    
-	                    if (onComplete != null) onComplete.Invoke();
+	
+						if (onComplete != null) onComplete.Invoke();
 	
 					},
 					onFailed: () => {
@@ -1147,8 +1162,6 @@ namespace UnityEngine.UI.Windows.Components {
 					}
 				);
 	
-				return this;
-				
 			}
 	
 			private bool lastImageLocalization = false;
@@ -1283,7 +1296,7 @@ namespace UnityEngine.UI.Windows.Components {
 					if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 	
 						this.imageCrossFadeModule.FadeTo(this, texture, onComplete);
-	
+						
 					} else {
 						
 						this.rawImage.texture = texture;
@@ -1419,7 +1432,7 @@ namespace UnityEngine.UI.Windows.Components {
 						this.imageCrossFadeModule.FadeTo<RawImage>(this, material, () => {
 	
 							if (setMainTexture == true) {
-								
+	
 								this.rawImage.texture = tex;
 	
 							}

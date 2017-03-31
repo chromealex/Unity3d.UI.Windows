@@ -81,7 +81,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   prefab: {fileID: 11409546, guid: ceee67989766d46b39e3e72ccc364825, type: 2}
   editorPreload: 0
@@ -89,8 +88,7 @@ MonoBehaviour:
   prefabNoResource: {fileID: 0}
   prefabResource:
     async: 0
-    controlType: 0
-    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupLabel.prefab
+    assetPath: Assets/UI.Windows/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupLabel.prefab
     assetBundleName: 
     resourcesPath: DefaultLib/Forms/Advanced/Popup/PopupLabel
     webPath: 
@@ -103,7 +101,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
-    id: -1600926356
+    id: -906190820
     cacheVersion: 0
     streamingAssetsPathStandalone: 
     streamingAssetsPathIOS: 
@@ -117,8 +115,14 @@ MonoBehaviour:
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
-    isMovie: 0
+    streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathIOSIsMovie: 0
+    streamingAssetsPathAndroidIsMovie: 0
+    streamingAssetsPathPS4IsMovie: 0
+    streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    controlType: 0
     tempObject: {fileID: 11409546, guid: ceee67989766d46b39e3e72ccc364825, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
@@ -152,7 +156,6 @@ MonoBehaviour:
   - {fileID: 11416518}
   - {fileID: 11416520}
   manualShowHideControl: 0
-  animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   prefab: {fileID: 11473206, guid: 5451f45ea8b9e4f2d963a8f5498f5123, type: 2}
   editorPreload: 0
@@ -160,8 +163,7 @@ MonoBehaviour:
   prefabNoResource: {fileID: 0}
   prefabResource:
     async: 0
-    controlType: 0
-    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupItems.prefab
+    assetPath: Assets/UI.Windows/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupItems.prefab
     assetBundleName: 
     resourcesPath: DefaultLib/Forms/Advanced/Popup/PopupItems
     webPath: 
@@ -174,7 +176,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
-    id: -325048544
+    id: 369686992
     cacheVersion: 0
     streamingAssetsPathStandalone: 
     streamingAssetsPathIOS: 
@@ -188,8 +190,14 @@ MonoBehaviour:
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
-    isMovie: 0
+    streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathIOSIsMovie: 0
+    streamingAssetsPathAndroidIsMovie: 0
+    streamingAssetsPathPS4IsMovie: 0
+    streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    controlType: 0
     tempObject: {fileID: 11473206, guid: 5451f45ea8b9e4f2d963a8f5498f5123, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
@@ -320,7 +328,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   canvasGroup: {fileID: 22516520}
   buttonWithText: {fileID: 11416514}

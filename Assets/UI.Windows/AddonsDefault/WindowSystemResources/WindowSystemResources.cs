@@ -64,8 +64,8 @@ namespace UnityEngine.UI.Windows {
 
 			public List<IResourceReference> references;
 
-			public Object _loadedObject;
-			public Object loadedObject {
+			public object _loadedObject;
+			public object loadedObject {
 
 				set {
 
@@ -84,14 +84,13 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			public int loadedObjectId;
 			public bool loaded;
 		    public bool loadingResult;
 
-#if UNITY_EDITOR
+			#if UNITY_EDITOR
 			private void UpdateName() {
 
-				if (this._loadedObject != null) this.name = string.Format("[{0}] {1}", this._referencesCount, this._loadedObject.name);
+				if (this._loadedObject != null) this.name = string.Format("[{0}] {1}", this._referencesCount, this._loadedObject is Object ? (this._loadedObject as Object).name : this._loadedObject.ToString());
 
 			}
 			#endif
@@ -106,7 +105,6 @@ namespace UnityEngine.UI.Windows {
 				this.references = null;
 
 				this.id = 0;
-				this.loadedObjectId = 0;
 				this.loaded = false;
 
 				#if UNITY_EDITOR
@@ -179,7 +177,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static Object GetResourceObjectById(ResourceBase resource) {
+		public static object GetResourceObjectById(ResourceBase resource) {
 
 			var item = WindowSystemResources.GetItem(resource);
 			if (item == null) return null;
@@ -241,7 +239,6 @@ namespace UnityEngine.UI.Windows {
 				if (item.references.Contains(comp) == true) {
 					
 					item.loadedObject = texture;
-					item.loadedObjectId = texture.GetID();
 
 				}
 
@@ -426,7 +423,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void LoadRefCounter<T>(IResourceReference reference, ResourceBase resource, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async) where T : Object {
+		public static void LoadRefCounter<T>(IResourceReference reference, ResourceBase resource, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async) /*where T : Object*/ {
 
 			if (WindowSystemResources.instance != null) {
 
@@ -446,7 +443,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void LoadRefCounter<T>(ILoadableResource image, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async, string customResourcePath) where T : Object {
+		public static void LoadRefCounter<T>(ILoadableResource image, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async, string customResourcePath) /*where T : Object*/ {
 
 			if (WindowSystemResources.instance != null) {
 
@@ -456,7 +453,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void LoadRefCounter_INTERNAL<T>(ILoadableResource image, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async, string customResourcePath) where T : Object {
+		private void LoadRefCounter_INTERNAL<T>(ILoadableResource image, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async, string customResourcePath) /*where T : Object*/ {
 			
 			IResourceReference reference = null;
 			if (image is ILoadableReference) {
@@ -474,15 +471,17 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private void LoadRefCounter_INTERNAL<T>(IResourceReference reference, ResourceBase resource, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async, string customResourcePath) where T : Object {
+		private void LoadRefCounter_INTERNAL<T>(IResourceReference reference, ResourceBase resource, System.Action<T> callbackOnLoad, System.Action callbackOnFailed, bool async, string customResourcePath) /*where T : Object*/ {
 
 			if (resource.IsLoadable() == true) {
 
 				Item item;
 				if (this.IsLoaded<T>(reference, resource, out item, callbackOnLoad, callbackOnFailed) == false) {
 
+					//Debug.Log("Loading: " + resource.assetPath);
 					Coroutines.Run(resource.Load<T>(reference, customResourcePath, (data) => {
 
+						//Debug.Log("Loaded: " + resource.assetPath + " >> " + data);
 						if (data == null) {
 
 							//Debug.LogWarning(string.Format("Failed to load resource in {0}", resource.assetPath));
@@ -504,7 +503,6 @@ namespace UnityEngine.UI.Windows {
 
 					    item.loadingResult = true;
 						item.loadedObject = data;
-						item.loadedObjectId = data.GetID();
 						item.loaded = true;
 
 						if (item.onObjectLoaded != null) item.onObjectLoaded.Invoke(item);
@@ -525,13 +523,13 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-        private void OnItemCallback_INTERNAL<T>(Item item, ResourceBase resource, System.Action<T> callbackLoaded, System.Action callbackFailed) where T : Object {
+        private void OnItemCallback_INTERNAL<T>(Item item, ResourceBase resource, System.Action<T> callbackLoaded, System.Action callbackFailed) /*where T : Object*/ {
 
             item.onObjectLoaded += (itemInner) => {
 
                 if (WindowSystemResources.RemoveIfRefsZero_INTERNAL(itemInner, resource) == true) return;
 
-				if (callbackLoaded != null) callbackLoaded.Invoke(itemInner.loadedObject as T);
+				if (callbackLoaded != null) callbackLoaded.Invoke((T)itemInner.loadedObject);
 
             };
 
@@ -543,7 +541,7 @@ namespace UnityEngine.UI.Windows {
 
         }
         
-        private bool IsLoaded<T>(IResourceReference reference, ResourceBase resource, out Item item, System.Action<T> callbackLoaded, System.Action callbackFailed) where T : Object {
+        private bool IsLoaded<T>(IResourceReference reference, ResourceBase resource, out Item item, System.Action<T> callbackLoaded, System.Action callbackFailed) /*where T : Object*/ {
 
 			var itemInner = this.loaded.FirstOrDefault(x => x.id == resource.GetId()/*(x.@object == null || x.@object is T)*/);
 			if (itemInner != null) {
@@ -571,7 +569,7 @@ namespace UnityEngine.UI.Windows {
                     
 				    if (itemInner.loadingResult == true) {
 
-				        callbackLoaded.Invoke(itemInner.loadedObject as T);
+						callbackLoaded.Invoke((T)itemInner.loadedObject);
 
 				    } else {
 				        
@@ -707,19 +705,19 @@ namespace UnityEngine.UI.Windows {
 
 		public List<TaskItem> tasks;
 		
-		public static void LoadResource<T>(ResourceBase resource, System.Action<T> callback, bool async) where T : Object {
+		public static void LoadResource<T>(ResourceBase resource, System.Action<T> callback, bool async) /*where T : Object*/ {
 
 			Coroutines.Run(WindowSystemResources.instance.LoadResource_INTERNAL<T>(resource, component: null, customResourcePath: null, callback: callback, async: async));
 
 		}
 
-		public static System.Collections.Generic.IEnumerator<byte> LoadResource<T>(ResourceBase resource, IResourceReference component, string customResourcePath, System.Action<T> callback, bool async) where T : Object {
+		public static System.Collections.Generic.IEnumerator<byte> LoadResource<T>(ResourceBase resource, IResourceReference component, string customResourcePath, System.Action<T> callback, bool async) /*where T : Object*/ {
 			
 			return WindowSystemResources.instance.LoadResource_INTERNAL<T>(resource, component, customResourcePath, callback, async);
 
 		}
 
-		private System.Collections.Generic.IEnumerator<byte> LoadResource_INTERNAL<T>(ResourceBase resource, IResourceReference component, string customResourcePath, System.Action<T> callback, bool async) where T : Object {
+		private System.Collections.Generic.IEnumerator<byte> LoadResource_INTERNAL<T>(ResourceBase resource, IResourceReference component, string customResourcePath, System.Action<T> callback, bool async) /*where T : Object*/ {
 
 			var task = new TaskItem();
 			task.id = resource.GetId();
@@ -729,15 +727,16 @@ namespace UnityEngine.UI.Windows {
 			task.customResourcePath = customResourcePath;
 			task.onSuccess = (obj) => {
 
-				T resultObj = null;
+				T resultObj = default(T);
 
-				if (obj is GameObject) {
+				if (obj is GameObject && typeof(T).HasBaseType(typeof(Component)) == true && typeof(T).HasBaseType(typeof(GameObject)) == false) {
 
 					resultObj = (obj as GameObject).GetComponent<T>();
 
 				} else {
 
-					resultObj = obj as T;
+					//Debug.Log(typeof(T) + " << " + obj);
+					resultObj = (T)obj;
 
 				}
 
@@ -746,7 +745,7 @@ namespace UnityEngine.UI.Windows {
 			};
 			task.onFailed = () => {
 
-				callback.Invoke(null);
+				callback.Invoke(default(T));
 
 			};
 
@@ -766,10 +765,18 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private System.Collections.Generic.IEnumerator<byte> StartTask<T>(TaskItem task) where T : Object {
+		private System.Collections.Generic.IEnumerator<byte> StartTask<T>(TaskItem task) /*where T : Object*/ {
+
+			var isBytesOutput = (typeof(T) == typeof(byte[]));
 
 			#region Load Resource
 			if (task.resource.loadableWeb == true) {
+
+				if (task.resource.webPath.Contains("://") == false) {
+
+					task.resource.webPath = string.Format("file://{0}", task.resource.webPath);
+
+				}
 
 				WWW www = null;
 				if (task.resource.cacheVersion > 0) {
@@ -810,38 +817,37 @@ namespace UnityEngine.UI.Windows {
 
 			} else if (task.resource.loadableResource == true || (string.IsNullOrEmpty(task.customResourcePath) == false && task.resource.loadableAssetBundle == false)) {
 
+				Object data = null;
 				var resourcePath = task.customResourcePath ?? task.resource.resourcesPath;
 				if (task.async == true) {
 
-					var asyncTask = Resources.LoadAsync<T>(resourcePath);
+					var asyncTask = Resources.LoadAsync(resourcePath, isBytesOutput == true ? typeof(TextAsset) : typeof(T));
 					while (asyncTask.isDone == false) {
 
 						yield return 0;
 
 					}
 
-					if (task.resource.multiObjects == true && task.resource.objectIndex >= 0) {
-						
-						task.RaiseSuccess(Resources.LoadAll(resourcePath)[task.resource.objectIndex]);
-
-					} else {
-
-						//Debug.Log("LOADED: " + asyncTask.asset + " :: " + task.resource.resourcesPath + " :: " + (asyncTask.asset is Texture) + " :: " + (asyncTask.asset is Sprite));
-						task.RaiseSuccess(asyncTask.asset);
-
-					}
-
+					data = asyncTask.asset;
 					asyncTask = null;
+
+				}
+
+				if (task.resource.multiObjects == true && task.resource.objectIndex >= 0) {
+					
+					task.RaiseSuccess(Resources.LoadAll(resourcePath)[task.resource.objectIndex]);
 
 				} else {
 
-					if (task.resource.multiObjects == true && task.resource.objectIndex >= 0) {
+					if (isBytesOutput == true) {
 
-						task.RaiseSuccess(Resources.LoadAll(resourcePath)[task.resource.objectIndex]);
-						
+						if (data == null) data = Resources.Load<TextAsset>(resourcePath);
+						task.RaiseSuccess(((data as TextAsset).bytes));
+
 					} else {
 
-						task.RaiseSuccess(Resources.Load<T>(resourcePath));
+						if (data == null) data = Resources.Load(resourcePath, typeof(T));
+						task.RaiseSuccess(data);
 
 					}
 
@@ -851,6 +857,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (task.resource.IsMovie() == true) {
 
+					Debug.Log("LoadMovie: " + task.component);
 					task.task = MovieSystem.LoadTexture(task.component as IImageComponent);
 					var startTime = Time.realtimeSinceStartup;
 					var timer = 0f;
@@ -904,8 +911,17 @@ namespace UnityEngine.UI.Windows {
 							task.RaiseSuccess(www.textureNonReadable);
 
 						} else {
+							
+							var data = www.bytes;
+							if (isBytesOutput == true) {
 
-							task.RaiseSuccess(null);
+								task.RaiseSuccess(data);
+
+							} else {
+
+								task.RaiseSuccess(null);
+
+							}
 
 						}
 

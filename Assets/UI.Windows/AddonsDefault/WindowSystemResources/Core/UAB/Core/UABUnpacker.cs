@@ -10,10 +10,14 @@ namespace ME.UAB {
 
 		private Dictionary<int, Object> tempReferencesUnpack = null;
 		private UABPackage package = null;
+		private GameObject[] unpackgedGameObjects = null;
 
-		public GameObject[] Run(UABPackage package, List<ISerializer> serializers = null) {
+		public GameObject[] Run(UABPackage package, UABConfig config = null, List<ISerializer> serializers = null) {
 
-			if (serializers == null) serializers = Builder.GetAllSerializers();
+			if (this.unpackgedGameObjects != null) return this.unpackgedGameObjects;
+
+			if (config == null) config = Builder.GetDefaultConfig(required: true);
+			if (serializers == null) serializers = Builder.GetAllSerializers(config);
 
 			this.Free();
 
@@ -25,9 +29,12 @@ namespace ME.UAB {
 
 				var go = this.Unpack(package.objects[i], serializers);
 				go.hideFlags = HideFlags.HideAndDontSave;
+				GameObject.DontDestroyOnLoad(go);
 				gos[i] = go;
 
 			}
+
+			this.unpackgedGameObjects = gos;
 
 			this.Free();
 			return gos;

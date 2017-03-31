@@ -31,10 +31,8 @@ namespace ME.UAB {
 
 		public UABPackage Run(GameObject[] objects, UABConfig config = null, List<ISerializer> serializers = null) {
 
-			#if UNITY_EDITOR
 			if (config == null) config = Builder.GetDefaultConfig(required: true);
-			#endif
-			if (serializers == null) serializers = Builder.GetAllSerializers();
+			if (serializers == null) serializers = Builder.GetAllSerializers(config);
 
 			this.Free();
 
@@ -194,7 +192,7 @@ namespace ME.UAB {
 				}
 				#endif
 
-				uField.serializatorId = -3;
+				uField.serializatorId = "-3";
 				uField.data = UABSerializer.SerializeValueType(new UABBinary() { instanceId = headerId });
 
 				if (found == false) {
@@ -344,7 +342,7 @@ namespace ME.UAB {
 
 				}
 
-				uField.serializatorId = -2;
+				uField.serializatorId = "-2";
 				uField.data = UABSerializer.SerializeValueType(new UABReference() { instanceId = resultInstanceId, isLocal = isLocal, isGameObject = isGameObject });
 
 			}
@@ -523,7 +521,7 @@ namespace ME.UAB {
 				if (found == false) {
 
 					// no custom serializator was found - use default
-					uField.serializatorId = -1;
+					uField.serializatorId = "-1";
 					if (value is string) {
 
 						uField.data = (string)value;

@@ -5,14 +5,20 @@ using System.IO;
 namespace ME.UAB.Serializers {
 	
 	public class MeshSerializer : IBinarySerializer, ISerializer {
-
+		
 		public class Data {
 			
 		}
 
-		public bool IsValid(int id) {
+		public string GetId() {
 
-			return this.GetHashCode() == id;
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
 
 		}
 
@@ -33,7 +39,7 @@ namespace ME.UAB.Serializers {
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
-			field.serializatorId = this.GetHashCode();
+			field.serializatorId = this.GetId();
 			field.fieldType = FieldType.BinaryType;
 
 			if (packer == null) {

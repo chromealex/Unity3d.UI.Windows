@@ -68,6 +68,8 @@ namespace UnityEditor.UI.Windows.Types {
 		public void OnPreviewGUI(Color color, Rect r, GUIStyle background, bool drawInfo, bool selectable, bool hovered, WindowLayoutElement selectedElement, System.Action<WindowLayoutElement> onSelection, System.Action<WindowLayoutElement, Rect, bool> onElementGUI, List<WindowLayoutElement> highlighted) {
 
 			var _target = this.target as LayoutWindowType;
+			if (_target == null)
+				return;
 			var layout = _target.GetCurrentLayout().layout;
 			var layoutElements = _target.GetCurrentLayout().components;
 

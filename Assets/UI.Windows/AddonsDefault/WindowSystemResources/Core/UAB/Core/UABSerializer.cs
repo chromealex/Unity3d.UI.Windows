@@ -10,7 +10,7 @@ namespace ME.UAB {
 		void DeserializeBeforeRef(UABUnpacker unpacker, UABField field, ref object value, List<ISerializer> serializers);
 		void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers);
 		bool IsValid(object value);
-		bool IsValid(int id);
+		bool IsValid(string id);
 
 	}
 

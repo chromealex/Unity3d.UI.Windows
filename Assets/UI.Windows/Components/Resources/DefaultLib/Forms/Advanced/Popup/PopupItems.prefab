@@ -313,7 +313,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   prefab: {fileID: 11494848, guid: 9959008b987df46258fa3debc5c649b5, type: 2}
   editorPreload: 0
@@ -321,8 +320,7 @@ MonoBehaviour:
   prefabNoResource: {fileID: 0}
   prefabResource:
     async: 0
-    controlType: 0
-    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupItem.prefab
+    assetPath: Assets/UI.Windows/Components/Resources/DefaultLib/Forms/Advanced/Popup/PopupItem.prefab
     assetBundleName: 
     resourcesPath: DefaultLib/Forms/Advanced/Popup/PopupItem
     webPath: 
@@ -335,7 +333,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
-    id: -1305922735
+    id: -1006417247
     cacheVersion: 0
     streamingAssetsPathStandalone: 
     streamingAssetsPathIOS: 
@@ -349,8 +347,14 @@ MonoBehaviour:
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
-    isMovie: 0
+    streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathIOSIsMovie: 0
+    streamingAssetsPathAndroidIsMovie: 0
+    streamingAssetsPathPS4IsMovie: 0
+    streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    controlType: 0
     tempObject: {fileID: 11494848, guid: 9959008b987df46258fa3debc5c649b5, type: 2}
   prefabParameters: {fileID: 0}
   fitToRoot: 1
@@ -363,29 +367,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 173206}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e74a4d88e4097bd48af63341126d76cf, type: 3}
+  m_Script: {fileID: 11500000, guid: ae3fc0a7c61364a93b28411444b2b9a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   windowId: 0
   navigationGroup:
     enabled: 0
     navigationComponents: []
-  autoRegisterInRoot: 0
-  autoRegisterSubComponents: 0
+  autoRegisterInRoot: 1
+  autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
-  showOnStart: 0
+  showOnStart: 1
   rootComponent: {fileID: 0}
-  subComponents: []
+  subComponents:
+  - {fileID: 11470026}
   currentState: 0
-  animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
-  animationInputParams:
-  - {fileID: 11491026}
-  - {fileID: 11491028}
+  animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 1
-  lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
+  lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
     randomize: 0
@@ -430,9 +432,9 @@ MonoBehaviour:
     next: {fileID: 0}
   list: []
   source: {fileID: 11470026}
-  scrollRect: {fileID: 11473224}
-  content: {fileID: 100510}
-  noElements: {fileID: 100514}
+  scrollRect: {fileID: 0}
+  content: {fileID: 0}
+  noElements: {fileID: 0}
   loading: {fileID: 0}
   loader: {fileID: 0}
   top: {fileID: 0}

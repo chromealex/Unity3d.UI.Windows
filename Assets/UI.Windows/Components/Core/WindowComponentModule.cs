@@ -4,13 +4,22 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 	public class ComponentModuleBase {
 
-		[SceneEditOnly][SerializeField] private bool enabled;
+		[HideInInspector][SerializeField] protected IImageComponent image;
+		[SerializeField] private bool enabled;
 
 		public bool IsValid() {
 
 			return this.enabled;
 
 		}
+
+		public virtual void Init(IImageComponent source) {
+
+			this.image = source;
+
+		}
+
+		public virtual void Prepare(IImageComponent source) {}
 
 		public virtual void ValidateTexture(Texture texture) {}
 

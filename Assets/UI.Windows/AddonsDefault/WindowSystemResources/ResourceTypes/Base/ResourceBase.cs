@@ -63,7 +63,7 @@ namespace UnityEngine.UI.Windows {
 
 		[ReadOnly] public int cacheVersion;
 
-		public Object loadedObject {
+		public object loadedObject {
 
 			get {
 
@@ -153,7 +153,7 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.IsLoadable() == true) {
 
-				this.UnloadObject_INTERNAL(this.loadedObject);
+				this.UnloadObject_INTERNAL(this.loadedObject as Object);
 
 			}
 
@@ -270,7 +270,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public System.Collections.Generic.IEnumerator<byte> Load<T>(IResourceReference component, string customResourcePath, System.Action<T> callback, bool async) where T : Object {
+		public System.Collections.Generic.IEnumerator<byte> Load<T>(IResourceReference component, string customResourcePath, System.Action<T> callback, bool async) /*where T : Object*/ {
 			
 			return WindowSystemResources.LoadResource<T>(this, component, customResourcePath, callback, async);
 

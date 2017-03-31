@@ -37,7 +37,7 @@ namespace ME.UAB {
 
 		public string name;
 		public FieldType fieldType;
-		public int serializatorId;
+		public string serializatorId;
 		public UABField[] fields;
 		public string data;
 

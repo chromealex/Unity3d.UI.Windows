@@ -18,6 +18,20 @@ namespace ME.UAB.Editor {
 			UABTests.OneSelectionPack();
 
 		}
+
+		[UnityEditor.MenuItem("Tools/ME.UAB/Tests/One Selection->Pack into File", false, 22)]
+		public static void OneSelectionPackFile() {
+
+			UABTests.OneSelectionPackToFile(filename: "Assets/UAB/Test.bytes");
+
+		}
+
+		[UnityEditor.MenuItem("Tools/ME.UAB/Tests/One Selection->Unpack", false, 23)]
+		public static void OneSelectionUnpack() {
+
+			UABTests.OneSelectionUnpack();
+
+		}
 		#endregion
 
 	}

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Config
   m_EditorClassIdentifier: 
   UAB_SERIALIZERS_NAMESPACE: ME.UAB.Serializers
+  UAB_CACHE_TYPE: 1
   UAB_CACHE_PATH: '{0}/BundlesCache/{1}'
   UAB_EXT: uab
   UAB_RESOURCES_PATH: UAB/Resources
