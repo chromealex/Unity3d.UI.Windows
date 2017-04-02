@@ -18,15 +18,14 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 		private static string currentProject;
 		private static string currentProjectDirectory;
 
-#if UNITY_EDITOR
-
+		#if UNITY_EDITOR
 		private static void GenerateWindow(string newPath, FD.FlowWindow window, bool recompile, bool minimalScriptsSize) {
 
 			if (window.compiled == true && recompile == false) return;
 
 			var oldPath = window.compiledDirectory;
 			
-			var newInfo = new Tpl.Info(Tpl.GetNamespace(window), Tpl.GetDerivedClassName(window), Tpl.GetBaseClassName(window), window.directory);
+			var newInfo = new Tpl.Info(Tpl.GetNamespace(window), Tpl.GetDerivedClassName(window), Tpl.GetBaseClassName(window), Tpl.GetContainerClassName(window), window.directory);
 			var oldInfo = new Tpl.Info(window);
 
 			if (string.IsNullOrEmpty(oldPath) == true) {
@@ -69,17 +68,35 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			// Rebuild without rename
 			//Debug.Log(window.title + " :: REBUILD BASE :: " + path);
 
-			IO.CreateDirectory(path, string.Empty);
-			IO.CreateDirectory(path, FlowDatabase.COMPONENTS_FOLDER);
-			IO.CreateDirectory(path, FlowDatabase.LAYOUT_FOLDER);
-			IO.CreateDirectory(path, FlowDatabase.SCREENS_FOLDER);
+			string baseClassTemplate = null;
 
-			var baseClassTemplate = TemplateGenerator.GenerateWindowLayoutBaseClass(newInfo.baseClassname, newInfo.baseNamespace, Tpl.GenerateTransitionMethods(window));
+			if (window.IsContainer() == true) {
+
+				baseClassTemplate = TemplateGenerator.GenerateWindowLayoutContainerBaseClass(newInfo.baseClassname, newInfo.baseNamespace, newInfo.containerClassName);
+
+			} else {
+
+				baseClassTemplate = TemplateGenerator.GenerateWindowLayoutBaseClass(newInfo.baseClassname, newInfo.baseNamespace, newInfo.containerClassName, Tpl.GenerateTransitionMethods(window));
+
+			}
+
 			var derivedClassTemplate = TemplateGenerator.GenerateWindowLayoutDerivedClass(newInfo.classname, newInfo.baseClassname, newInfo.baseNamespace);
+
+			//Debug.Log(newPath + " :: " + newInfo.containerClassName + " :: " + baseClassTemplate);
+			//return;
 
 			if (minimalScriptsSize == true) {
 
 				baseClassTemplate = CompilerSystem.Compress(baseClassTemplate);
+
+			}
+
+			if (window.IsContainer() == false) {
+
+				IO.CreateDirectory(path, string.Empty);
+				IO.CreateDirectory(path, FlowDatabase.COMPONENTS_FOLDER);
+				IO.CreateDirectory(path, FlowDatabase.LAYOUT_FOLDER);
+				IO.CreateDirectory(path, FlowDatabase.SCREENS_FOLDER);
 
 			}
 
@@ -111,7 +128,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var strings = @"""((\\[^\n]|[^""\n])*)""";
 			var verbatimStrings = @"@(""[^""]*"")+";
 
-			data = Regex.Replace(data, blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings, me => {
+			data = Regex.Replace(data, string.Format("{0}|{1}|{2}|{3}", blockComments, lineComments, strings, verbatimStrings), me => {
 				if (me.Value.StartsWith("/*") || me.Value.StartsWith("//"))
 					return me.Value.StartsWith("//") ? Environment.NewLine : "";
 				// Keep the literal strings
@@ -159,14 +176,22 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				try {
 
-					var windows = FlowSystem.GetWindows().Where(w => w.CanCompiled() && predicate(w));
-
+					var windows = FlowSystem.GetContainersAndWindows().Where(w => w.CanCompiled() && predicate(w));
+					//var windows = FlowSystem.GetContainers().Where(w => w.CanCompiled() && predicate(w));
 					foreach (var each in windows) {
 
 						var relativePath = IO.GetRelativePath(each, "/");
 						CompilerSystem.GenerateWindow(string.Format("{0}{1}/", basePath, relativePath), each, recompile, minimalScriptsSize);
 
 					}
+
+					// Generate Base Files
+					var newInfo = new Tpl.Info(CompilerSystem.currentNamespace, "Container", "ContainerBase", "LayoutWindowType", basePath);
+					var baseClassTemplate = TemplateGenerator.GenerateWindowLayoutContainerBaseClass(newInfo.baseClassname, newInfo.baseNamespace, newInfo.containerClassName);
+					var derivedClassTemplate = TemplateGenerator.GenerateWindowLayoutDerivedClass(newInfo.classname, newInfo.baseClassname, newInfo.baseNamespace);
+
+					IO.CreateFile(basePath, newInfo.baseClassnameFile, baseClassTemplate, rewrite: true);
+					IO.CreateFile(basePath, newInfo.classnameFile, derivedClassTemplate, rewrite: false);
 
 				} catch (Exception e) {
 					
@@ -218,8 +243,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			
 		}
 		#endregion
-
-#endif
+		#endif
 
 	}
 

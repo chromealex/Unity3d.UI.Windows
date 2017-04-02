@@ -35,7 +35,8 @@ namespace UnityEditor.UI.Windows.Extensions {
 		private static void OnProjectItemGUI(string guid, Rect rect) {
 
 			if ((Event.current.type == EventType.KeyUp ||
-				Event.current.type == EventType.MouseUp || Event.current.type == EventType.ScrollWheel) && cleared == false) {
+				Event.current.type == EventType.MouseUp ||
+				Event.current.type == EventType.ScrollWheel) && cleared == false) {
 
 				frameCheck = Time.renderedFrameCount;
 				frameCheckCircle = cirlceCount;

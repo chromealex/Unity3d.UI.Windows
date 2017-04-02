@@ -9,6 +9,8 @@ using UnityEngine;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using System.Text.RegularExpressions;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
+using System.Collections;
+using UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
@@ -20,12 +22,13 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			public string classname;
 			public string baseClassname;
 			public string screenName;
+			public string containerName;
 			
 			public string classnameFile {
 				
 				get {
 					
-					return this.classname + ".cs";
+					return string.Format("{0}.cs", this.classname);
 					
 				}
 				
@@ -35,7 +38,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				
 				get {
 					
-					return this.baseClassname + ".cs";
+					return string.Format("{0}.cs", this.baseClassname);
 					
 				}
 				
@@ -45,10 +48,20 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				
 				get {
 					
-					return this.baseNamespace + "." + this.screenName;
+					return string.Format("{0}.{1}", this.baseNamespace, this.screenName);
 					
 				}
 				
+			}
+
+			public string containerClassName {
+
+				get {
+
+					return this.containerName;
+
+				}
+
 			}
 
 			public Info(FD.FlowWindow window) {
@@ -57,15 +70,17 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				this.classname = window.compiledDerivedClassName;
 				this.baseClassname = window.compiledBaseClassName;
 				this.screenName = window.directory;
+				this.containerName = Tpl.GetContainerClassName(window);
 
 			}
 
-			public Info(string baseNamespace, string classname, string baseClassname, string screenName) {
+			public Info(string baseNamespace, string classname, string baseClassname, string containerName, string screenName) {
 
 				this.baseNamespace = baseNamespace;
 				this.classname = classname;
 				this.baseClassname = baseClassname;
 				this.screenName = screenName;
+				this.containerName = containerName;
 
 			}
 
@@ -95,38 +110,90 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			return CompilerSystem.currentNamespace;
 
 		}
-		
+
+		public static string GetContainerClassName(FD.FlowWindow flowWindow) {
+
+			var container = flowWindow.GetParentContainer();
+			if (container == null) {
+
+				return "Container";
+
+			}
+
+			return Tpl.GetDerivedClassName(container);
+
+		}
+
 		public static string GetBaseClassName(FD.FlowWindow flowWindow) {
-			
-			return flowWindow.directory.UppercaseFirst() + "ScreenBase";
+
+			if (flowWindow.IsContainer() == true) {
+
+				return string.Format("{0}ContainerBase", flowWindow.directory.UppercaseFirst());
+
+			}
+
+			return string.Format("{0}ScreenBase", flowWindow.directory.UppercaseFirst());
 			
 		}
 		
 		public static string GetDerivedClassName(FD.FlowWindow flowWindow) {
-			
-			return flowWindow.directory.UppercaseFirst() + "Screen";
+
+			if (flowWindow.IsContainer() == true) {
+
+				return string.Format("{0}Container", flowWindow.directory.UppercaseFirst());
+
+			}
+
+			return string.Format("{0}Screen", flowWindow.directory.UppercaseFirst());
 			
 		}
 		
 		public static string GetNamespace(FD.FlowWindow window) {
 			
-			return Tpl.GetNamespace() + IO.GetRelativePath(window, ".");
+			return string.Format("{0}{1}", Tpl.GetNamespace(), IO.GetRelativePath(window, "."));
 			
 		}
 		
 		public static string GetClassNameWithNamespace(FD.FlowWindow window) {
 			
-			return Tpl.GetNamespace(window) + "." + Tpl.GetDerivedClassName(window);
+			return string.Format("{0}.{1}", Tpl.GetNamespace(window), Tpl.GetDerivedClassName(window));
 			
 		}
 
 		public static string GenerateTransitionMethods(FD.FlowWindow window) {
 
 			var flowData = FlowSystem.GetData();
-			
-			var transitions = flowData.windowAssets.Where(w => window.attachItems.Any((item) => item.targetId == w.id) && !w.IsContainer());
-
 			var result = string.Empty;
+			var transitions = new List<FlowWindow>();
+
+			if (window.IsContainer() == true) {
+
+				foreach (var attachItem in window.attachItems) {
+
+					var attachWindow = flowData.GetWindow(attachItem.targetId);
+					if (attachWindow.IsContainer() == true) continue;
+
+					var items = attachWindow.attachItems.Where(x => { var w = flowData.GetWindow(x.targetId); return w.IsContainer() == false; }).Select(x => flowData.GetWindow(x.targetId));
+					foreach (var item in items) {
+						
+						if (transitions.Any(x => x.id == item.id) == false) transitions.Add(item);
+
+					}
+
+				}
+
+			} else {
+
+				transitions = flowData.windowAssets.Where(w => window.attachItems.Any((item) => item.targetId == w.id) && !w.IsContainer()).ToList();
+
+			}
+
+			if (transitions == null) {
+				
+				return result;
+
+			}
+
 			foreach (var each in transitions) {
 				
 				var className = each.directory;

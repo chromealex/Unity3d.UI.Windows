@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 
 namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
-	
+
 	public static class IO {
 		
 		public static void RenameDirectory(string oldPath, string newPath) {
@@ -27,7 +27,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 			
 		}
-		
+
 		public static void RenameFile(string oldFile, string newFile) {
 			
 			oldFile = oldFile.Replace("//", "/");
@@ -40,7 +40,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 			
 		}
-		
+
 		public static void ReplaceInFiles(string path, System.Func<MonoScript, bool> predicate, System.Func<string, string> replace) {
 			
 			#if !UNITY_WEBPLAYER
@@ -52,9 +52,9 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				
 				var scripts = AssetDatabase.FindAssets("t:MonoScript", new string[] { path })
 					.Select(file => AssetDatabase.GUIDToAssetPath(file))
-						.Select(file => AssetDatabase.LoadAssetAtPath(file, typeof(MonoScript)))
-						.OfType<MonoScript>()
-						.Where(predicate);
+					.Select(file => AssetDatabase.LoadAssetAtPath(file, typeof(MonoScript)))
+					.OfType<MonoScript>()
+					.Where(predicate);
 				
 				foreach (var each in scripts) {
 					
@@ -82,7 +82,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			#endif
 			
 		}
-		
+
 		public static void CreateFile(string path, string filename, string content, bool rewrite = true) {
 			
 			#if !UNITY_WEBPLAYER
@@ -103,7 +103,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			#endif
 			
 		}
-		
+
 		public static void CreateDirectory(string root, string folder) {
 			
 			#if !UNITY_WEBPLAYER
@@ -112,9 +112,24 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			
 			var path = Path.Combine(root, folder);
 			path = path.Replace("//", "/");
-			
-			if (Directory.Exists(path) == false) {
+
+			var dummyFile = string.Format("{0}/Dummy.txt", path);
+
+			var filesCount = Directory.GetFiles(path).Count(x => Path.GetFileName(x) != "Dummy.txt" && x.EndsWith(".meta") == false);
+			if (filesCount > 0) {
 				
+				File.Delete(dummyFile);
+
+			} else {
+
+				File.WriteAllText(dummyFile, string.Empty);
+
+			}
+
+			if (Directory.Exists(path) == false) {
+
+				File.WriteAllText(dummyFile, string.Empty);
+
 				Directory.CreateDirectory(path);
 				AssetDatabase.Refresh();
 				
@@ -122,7 +137,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			#endif
 			
 		}
-		
+
 		private static IEnumerable<FD.FlowWindow> GetParentContainers(FD.FlowWindow window, IEnumerable<FD.FlowWindow> containers) {
 			
 			var parent = containers.FirstOrDefault(where => where.attachItems.Any((item) => item.targetId == window.id));
@@ -135,15 +150,15 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			}
 			
 		}
-		
+
 		public static string GetRelativePath(FD.FlowWindow window, string token) {
 			
 			var result = GetParentContainers(window, FlowSystem.GetContainers())
 				.Reverse()
-					.Select(w => w.directory)
-					.Aggregate(string.Empty, (total, path) => total + token + path);
+				.Select(w => w.directory)
+				.Aggregate(string.Empty, (total, path) => total + token + path);
 			
-			if (string.IsNullOrEmpty(result) == true) {
+			if (string.IsNullOrEmpty(result) == true && window.IsContainer() == false) {
 				
 				result = token + FlowDatabase.OTHER_NAME;
 				

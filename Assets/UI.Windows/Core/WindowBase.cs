@@ -9,7 +9,6 @@ using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Animations;
 using UnityEngine.UI.Extensions;
 using UnityEngine.EventSystems;
-using UnityEngine.UI.Windows.Components;
 using UnityEngine.Serialization;
 
 namespace UnityEngine.UI.Windows {
@@ -26,8 +25,18 @@ namespace UnityEngine.UI.Windows {
 
 	[ExecuteInEditMode()]
 	//[RequireComponent(typeof(Camera))]
-	public abstract class WindowBase : WindowObject, IWindowEventsAsync, IWindowEventsController, IFunctionIteration, IWindow, IBeginDragHandler, IDragHandler, IEndDragHandler, IDraggableHandler, IResourceReference {
-
+	public abstract class WindowBase :
+		WindowObject,
+		IWindowEventsAsync,
+		IWindowEventsController,
+		IFunctionIteration,
+		IWindow,
+		IBeginDragHandler,
+		IDragHandler,
+		IEndDragHandler,
+		IDraggableHandler,
+		IResourceReference {
+		
 		#if UNITY_EDITOR
 		[HideInInspector]
 		public bool editorInfoFold = false;

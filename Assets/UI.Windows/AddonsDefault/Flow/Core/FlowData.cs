@@ -706,13 +706,19 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			return this.windowAssets.Where((w) => w.IsContainer() == false && w.IsEnabled());
 			
 		}
-		
+
 		public IEnumerable<Data.FlowWindow> GetContainers() {
-			
+
 			return this.windowAssets.Where((w) => w.IsContainer() == true && w.IsEnabled());
-			
+
 		}
-		
+
+		public IEnumerable<Data.FlowWindow> GetContainersAndWindows() {
+
+			return this.windowAssets.Where((w) => w.IsEnabled());
+
+		}
+
 		public Data.FlowWindow GetWindow(WindowBase window, bool runtime) {
 
 			if (window == null) return null;
@@ -733,6 +739,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 		private Cache windowsCache = new Cache();
 		public Data.FlowWindow GetWindow(int id) {
+
+			if (id == 0) return null;
 
 			if (this.windowsCache.IsEmpty() == true) {
 

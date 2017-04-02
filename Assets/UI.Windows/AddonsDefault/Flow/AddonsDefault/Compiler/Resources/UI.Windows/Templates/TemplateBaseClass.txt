@@ -11,7 +11,7 @@ using UnityEngine.UI.Windows.Types;
 
 namespace {NAMESPACE_NAME} {
 
-	public class {CLASS_NAME} : LayoutWindowType {
+	public class {CLASS_NAME} : {BASE_CLASS_NAME} {
 {TRANSITION_METHODS}
 	}
 

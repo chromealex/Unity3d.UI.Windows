@@ -548,6 +548,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.tempAttaches.Clear();
 						if (hasData == true && windows != null) {
 
+							foreach (var container in containers) {
+
+								var attaches = container.attachItems;
+								foreach (var attachItem in attaches) {
+
+									var curWindow = FlowSystem.GetWindow(attachItem.targetId);
+									curWindow.parentId = container.id;
+
+								}
+
+							}
+
 							foreach (var window in windows) {
 								
 								var attaches = window.attachItems;
@@ -602,7 +614,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				Handles.EndGUI();
 
 			}
-			
+
 		}
 
 		public bool ContainsRect(Rect sourceRect) {

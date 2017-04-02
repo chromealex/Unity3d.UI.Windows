@@ -194,6 +194,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		#region VALUES
 		public int id;
+		public int parentId;
 		[BitMask(typeof(Flags))]
 		public Flags flags;
 		public string title = string.Empty;
@@ -895,9 +896,15 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		
 		public FlowWindow GetContainer() {
 			
-			return ME.Utilities.CacheByFrame("FlowWindow." + this.id.ToString() + ".GetContainer", () => {
+			return ME.Utilities.CacheByFrame(string.Format("FlowWindow.{0}.GetContainer", this.id), () => {
 
-				var container = this.attachItems.FirstOrDefault((item) => FlowSystem.GetWindow(item.targetId).IsContainer());
+				var container = this.attachItems.FirstOrDefault((item) => {
+
+					var w = FlowSystem.GetWindow(item.targetId);
+					return w.IsContainer() == true && w.IsFunction() == false;
+
+				});
+
 				if (container == null) return null;
 
 				return FlowSystem.GetWindow(container.targetId);
@@ -908,14 +915,20 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 		
 		public bool HasContainer() {
 			
-			return this.attachItems.Any((item) => FlowSystem.GetWindow(item.targetId).IsContainer());
+			return this.attachItems.Any((item) => FlowSystem.GetWindow(item.targetId).IsContainer() == true && FlowSystem.GetWindow(item.targetId).IsFunction() == false);
 			
 		}
 		
 		public bool HasContainer(FlowWindow predicate) {
 			
-			return this.attachItems.Any((item) => item.targetId == predicate.id && FlowSystem.GetWindow(item.targetId).IsContainer());
+			return this.attachItems.Any((item) => item.targetId == predicate.id && FlowSystem.GetWindow(item.targetId).IsContainer() == true && FlowSystem.GetWindow(item.targetId).IsFunction() == false);
 			
+		}
+
+		public FlowWindow GetParentContainer() {
+
+			return FlowSystem.GetWindow(this.parentId);
+
 		}
 
 		public List<FlowWindow> GetAttachedWindows() {
@@ -1057,26 +1070,31 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		        var list = new List<WindowItem>();
 
-		        var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] {window.compiledDirectory.Trim('/') + "/Screens"});
-		        foreach (var file in files) {
+				var _path = string.Format("{0}/Screens", window.compiledDirectory.Trim('/'));
+				if (Directory.Exists(_path) == true) {
+					
+					var files = UnityEditor.AssetDatabase.FindAssets("t:GameObject", new string[] { _path });
+					foreach (var file in files) {
 
-		            var path = UnityEditor.AssetDatabase.GUIDToAssetPath(file);
-		            var go = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof (GameObject)) as GameObject;
-		            if (go != null) {
+						var path = UnityEditor.AssetDatabase.GUIDToAssetPath(file);
+						var go = UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(GameObject)) as GameObject;
+						if (go != null) {
 
-		                var screen = go.GetComponent<WindowBase>();
-		                if (screen != null) {
+							var screen = go.GetComponent<WindowBase>();
+							if (screen != null) {
 
-							var item = new WindowItem();
-							item.window = screen;
-							item.Validate();
-		                    list.Add(item);
+								var item = new WindowItem();
+								item.window = screen;
+								item.Validate();
+								list.Add(item);
 
-		                }
+							}
 
-		            }
+						}
 
-		        }
+					}
+
+				}
 
 		        window.SetScreens(list);
 

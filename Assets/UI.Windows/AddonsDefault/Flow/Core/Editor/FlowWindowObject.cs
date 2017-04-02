@@ -19,6 +19,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				public bool isDirty;
 				
 				public bool isPackage;
+				public bool isPackageContainer;
 				public bool isBaseClass;
 				public bool isComponentsFolder;
 				public bool isLayoutsFolder;
@@ -75,7 +76,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 						item.isValidPackage = true;
 						item.isPackage = true;
-						
+
+					}
+
+					if (item.isPackage == false && FlowEditorUtilities.IsValidPackageContainer(item.path) == true) {
+
+						item.isPackageContainer = true;
+
 					}
 
 					var packageDir = item.path;
@@ -87,7 +94,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						
 					}
 
-					if (FlowEditorUtilities.IsValidPackage(packageDir) == true || FlowEditorUtilities.IsValidPackage(System.IO.Path.Combine(packageDir, "..")) == true) {
+					if (FlowEditorUtilities.IsValidPackage(packageDir) == true ||
+						FlowEditorUtilities.IsValidPackage(System.IO.Path.Combine(packageDir, "..")) == true ||
+						FlowEditorUtilities.IsValidPackageContainer(packageDir) == true ||
+						FlowEditorUtilities.IsValidPackageContainer(System.IO.Path.Combine(packageDir, "..")) == true
+					) {
 						
 						var last = item.path.Split('/');
 						if (last.Length > 0) {
@@ -127,6 +138,18 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				}
 
 				this.OnGUIItem(item.path, rect, item);
+
+			}
+
+			private Texture2D packageContainerIcon;
+			private Texture2D packageContainerIconLarge;
+
+			public void DrawFlowFolderContainerProjectGUI(string path, Rect rect) {
+
+				if (this.packageContainerIcon == null) this.packageContainerIcon = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/PackageContainerIcon");
+				if (this.packageContainerIconLarge == null) this.packageContainerIconLarge = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/PackageContainerIconLarge");
+
+				this.DrawIcon(rect, this.packageContainerIcon, this.packageContainerIconLarge, new Vector2(0f, 0f), new Vector2(0.1f, 3f));
 
 			}
 
@@ -224,6 +247,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					GUI.Box(r, string.Empty, this.unityMarkBackStyle);
 					
+				}
+
+				if (item.isPackageContainer == true) {
+
+					this.DrawFlowFolderContainerProjectGUI(path, rect);
+					return;
+
 				}
 
 				if (item.isPackage == true) {
@@ -335,19 +365,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 	[CanEditMultipleObjects]
 	[CustomEditor(typeof(UnityEngine.Object), true)]
 	public class FlowWindowObject : Editor {
-
-		/*public override void OnInspectorGUI() {
-
-			//UnityEditor.ProjectWindowCallback.EndNameEditAction.
-			//var pBrowser = EditorWindow.GetWindow<ProjectBrowser>();
-			var _target = this.target;
-
-			Debug.Log(_target);
-
-			base.OnInspectorGUI();
-
-		}*/
-
+		
 		private Texture2D packageIcon;
 
 		public virtual void OnEnable() {

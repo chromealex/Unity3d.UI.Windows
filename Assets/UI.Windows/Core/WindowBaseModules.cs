@@ -1181,6 +1181,36 @@ namespace UnityEngine.UI.Windows {
 		[Hidden("overrideCameraSettings", false)]
 		public WindowSystemSettings.Camera cameraSettings;
 
+		public Preferences() {}
+
+		public Preferences(Preferences other) {
+
+			this.layer = other.layer;
+			this.dontDestroy = other.dontDestroy;
+			this.history = other.history;
+
+			this.deactivateOnRecycleImmediately = other.deactivateOnRecycleImmediately;
+			this.deactivateMaxTimeout = other.deactivateMaxTimeout;
+
+			this.showInSequence = other.showInSequence;
+			this.sendActiveState = other.sendActiveState;
+			this.fullCoverage = other.fullCoverage;
+			this.forceSingleInstance = other.forceSingleInstance;
+			this.singleInstanceIgnoreActions = other.singleInstanceIgnoreActions;
+			this.restoreSelectedElement = other.restoreSelectedElement;
+
+			this.createPool = other.createPool;
+			this.preallocatedCount = other.preallocatedCount;
+
+			this.draggable = other.draggable;
+			this.dragTag = other.dragTag;
+			this.dragFlags = other.dragFlags;
+
+			this.overrideCameraSettings = other.overrideCameraSettings;
+			this.cameraSettings = new WindowSystemSettings.Camera(other.cameraSettings);
+
+		}
+
 		public bool IsDragViewportRestricted() {
 
 			return (this.dragFlags & DragFlag.ViewportRestricted) != 0;

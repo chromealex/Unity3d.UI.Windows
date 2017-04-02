@@ -53,6 +53,28 @@ namespace UnityEngine.UI.Windows {
 		
 	}
 
+	public struct WindowSystemShowParameters<T> where T : WindowBase {
+
+		public System.Action<T> afterGetInstance;
+		public System.Action onInitialized;
+		public AttachItem transitionItem;
+		public T source;
+		public System.Action<T> onParametersPassCall;
+		public System.Action<T> onReady;
+		public bool async;
+		public object[] parameters;
+
+		public bool overridePreferences;
+		public Preferences prefereces;
+
+		public Preferences GetPreferences() {
+
+			return (this.overridePreferences == true) ? this.prefereces : null;
+
+		}
+
+	}
+
 	public class WindowRoutes : IFunctionIteration {
 
 		private int index;
@@ -590,7 +612,7 @@ namespace UnityEngine.UI.Windows {
 			this.Init();
 
 		}
-		
+
 		private WindowBase lastInstance;
 		//private WindowBase previousInstance;
 		protected virtual void LateUpdate() {
@@ -1037,7 +1059,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (window.preferences.preallocatedCount > 0) {
 
-				window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source, null, null, false); });
+				window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source, null, null, null, false); });
 
 			} else {
 
@@ -1327,23 +1349,11 @@ namespace UnityEngine.UI.Windows {
 		public static WindowBase GetWindow(System.Func<HistoryItem, bool> predicateHistory = null, System.Func<WindowBase, bool> predicateFilter = null) {
 
 			WindowBase last = null;
-			last = WindowSystem.instance.history.Where(item => predicateHistory.Invoke(item) == true).Select(item => WindowSystem.FindOpened<WindowBase>((x) => item.IsValid(x) == true && predicateFilter.Invoke(x) == true, last: true)).LastOrDefault();
-			/*if (item != null) {
+			last = WindowSystem.instance.history
+				.Where(item => predicateHistory.Invoke(item) == true)
+				.Select(item => WindowSystem.FindOpened<WindowBase>((x) => item.IsValid(x) == true && predicateFilter.Invoke(x) == true, last: true))
+				.LastOrDefault();
 
-				last = WindowSystem.FindOpened<WindowBase>((x) => item.IsValid(x) == true && predicateFilter.Invoke(x) == true, last: true);
-
-			}*/
-
-			/*foreach (var item in WindowSystem.instance.history) {
-
-				if (predicate == null || predicate(item) == true) {
-					
-					last = item.window;
-					
-				}
-				
-			}*/
-			
 			return last;
 			
 		}
@@ -1404,7 +1414,7 @@ namespace UnityEngine.UI.Windows {
 
 			ME.Utilities.CallInSequence(onReady, this.defaults.Select(x => x.Load<WindowBase>()).ToArray(), (window, c) => {
 
-				this.Create_INTERNAL(window, onParametersPassCall: null, onInitialized: (w) => {
+				this.Create_INTERNAL(window, customPreferences: null, onParametersPassCall: null, onInitialized: (w) => {
 
 					w.Show(c);
 
@@ -1448,19 +1458,6 @@ namespace UnityEngine.UI.Windows {
 			if (root != null) WindowSystem.Show(root, parameters);
 
 		}
-	/*
-		private WindowBase GetInstance(WindowBase window, params object[] parameters) {
-
-			var instance = this.currentWindows.FirstOrDefault((w) => w != null && w.GetType().IsInstanceOfType(window));
-			if (instance == null) {
-
-				instance = this.Create_INTERNAL(window, onParametersPassCall: null, onInitialized: null, async: false, parameters: parameters);
-
-			}
-
-			return instance;
-
-		}*/
 
 		internal static void ResetDepth() {
 
@@ -1929,31 +1926,38 @@ namespace UnityEngine.UI.Windows {
 			});
 			
 		}
-		
+
+		public static T GetSource<T>() where T : WindowBase {
+
+			var source = WindowSystem.instance.windows.FirstOrDefault(w => w.IsType<T>() == true).Load<T>();
+			return source;
+
+		}
+
 		/// <summary>
 		/// Create the specified parameters.
 		/// </summary>
 		/// <param name="parameters">Parameters.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Create<T>(System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) where T : WindowBase {
+		public static T Create<T>(Preferences prefs, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) where T : WindowBase {
 
 			ignoreActions = false;
 			
-			var source = WindowSystem.instance.windows.FirstOrDefault(w => w.IsType<T>() == true).Load<T>();
+			var source = WindowSystem.GetSource<T>();
 			if (source == null) return null;
 
-			return WindowSystem.CreateWithIgnore_INTERNAL(source, onParametersPassCall, onInitialized, out ignoreActions, async, parameters) as T;
+			return WindowSystem.CreateWithIgnore_INTERNAL(source, prefs, onParametersPassCall, onInitialized, out ignoreActions, async, parameters) as T;
 
 		}
 		
-		internal WindowBase Create_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, bool async, params object[] parameters) {
+		internal WindowBase Create_INTERNAL(WindowBase source, Preferences customPreferences, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, bool async, params object[] parameters) {
 
 			bool ignoreActions;
-			return WindowSystem.CreateWithIgnore_INTERNAL(source, onParametersPassCall, onInitialized, out ignoreActions, async, parameters);
+			return WindowSystem.CreateWithIgnore_INTERNAL(source, customPreferences, onParametersPassCall, onInitialized, out ignoreActions, async, parameters);
 
 		}
 
-		internal static WindowBase CreateWithIgnore_INTERNAL(WindowBase source, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) {
+		internal static WindowBase CreateWithIgnore_INTERNAL(WindowBase source, Preferences customPreferences, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) {
 
 			ignoreActions = false;
 			
@@ -1978,7 +1982,13 @@ namespace UnityEngine.UI.Windows {
 				#endif
 				
 			}
-			
+
+			if (customPreferences != null) {
+
+				instance.preferences = customPreferences;
+
+			}
+
 			if (WindowSystem.instance.currentWindows.Contains(instance) == false) {
 				
 				WindowSystem.instance.currentWindows.Add(instance);
@@ -2157,7 +2167,7 @@ namespace UnityEngine.UI.Windows {
 			return WindowSystem.ShowWithParameters<T>(afterGetInstance, null, transitionItem, null, onParametersPassCall, null, async, parameters);
 
 		}
-		
+
 		/// <summary>
 		/// Shows window of T type.
 		/// Returns null if window not registered.
@@ -2168,24 +2178,40 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="parameters">OnParametersPass() values.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
 		public static T ShowWithParameters<T>(
-				System.Action<T> afterGetInstance,
-				System.Action onInitialized,
-				AttachItem transitionItem,
-				T source,
-				System.Action<T> onParametersPassCall,
-				System.Action<T> onReady,
-				bool async,
-				params object[] parameters
+			System.Action<T> afterGetInstance,
+			System.Action onInitialized,
+			AttachItem transitionItem,
+			T source,
+			System.Action<T> onParametersPassCall,
+			System.Action<T> onReady,
+			bool async,
+			params object[] parameters
 			) where T : WindowBase {
 
+			var p = new WindowSystemShowParameters<T>() {
+				afterGetInstance = afterGetInstance,
+				onInitialized = onInitialized,
+				transitionItem = transitionItem,
+				source = source,
+				onParametersPassCall = onParametersPassCall,
+				onReady = onReady,
+				@async = async,
+				parameters = parameters,
+			};
+			return WindowSystem.ShowWithParameters<T>(p);
+
+		}
+
+		public static T ShowWithParameters<T>(WindowSystemShowParameters<T> parameters) where T : WindowBase {
+
 			System.Action<WindowBase> parametersPassCall = null;
-			if (onParametersPassCall != null) {
+			if (parameters.onParametersPassCall != null) {
 
 				parametersPassCall = (WindowBase window) => {
 
-					if (onParametersPassCall != null) {
+					if (parameters.onParametersPassCall != null) {
 						
-						onParametersPassCall.Invoke(window as T);
+						parameters.onParametersPassCall.Invoke(window as T);
 						
 					}
 
@@ -2198,22 +2224,22 @@ namespace UnityEngine.UI.Windows {
 			var ignoreActions = false;
 			System.Action<WindowBase> onInitializedInner = (WindowBase windowInstance) => {
 
-				if (onInitialized != null) {
+				if (parameters.onInitialized != null) {
 
-					onInitialized.Invoke();
-
-				}
-
-				if (onReady != null) {
-
-					onReady.Invoke(windowInstance as T);
+					parameters.onInitialized.Invoke();
 
 				}
 
+				if (parameters.onReady != null) {
 
-				if (afterGetInstance != null) {
+					parameters.onReady.Invoke(windowInstance as T);
 
-					afterGetInstance.Invoke(windowInstance as T);
+				}
+
+
+				if (parameters.afterGetInstance != null) {
+
+					parameters.afterGetInstance.Invoke(windowInstance as T);
 
 				}
 
@@ -2221,9 +2247,9 @@ namespace UnityEngine.UI.Windows {
 					
 					System.Action showInstance = () => {
 						
-						if (transitionItem != null && transitionItem.transition != null && transitionItem.transitionParameters != null) {
+						if (parameters.transitionItem != null && parameters.transitionItem.transition != null && parameters.transitionItem.transitionParameters != null) {
 							
-							windowInstance.Show(transitionItem);
+							windowInstance.Show(parameters.transitionItem);
 							
 						} else {
 							
@@ -2264,7 +2290,10 @@ namespace UnityEngine.UI.Windows {
 
 			};
 
-			instance = (source != null) ? WindowSystem.CreateWithIgnore_INTERNAL(source, parametersPassCall, onInitializedInner, out ignoreActions, async, parameters) as T : WindowSystem.Create<T>(parametersPassCall, onInitializedInner, out ignoreActions, async, parameters);
+			instance = (parameters.source != null) ?
+				WindowSystem.CreateWithIgnore_INTERNAL(parameters.source, parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters) as T : 
+				WindowSystem.Create<T>(parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters);
+			
 			return instance;
 
 		}

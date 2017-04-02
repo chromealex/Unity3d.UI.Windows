@@ -99,6 +99,20 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 			public bool useOcclusionCulling = false;
 			public bool hdr = false;
 
+			public Camera() {}
+
+			public Camera(Camera other) {
+
+				this.orthographic = other.orthographic;
+				this.orthographicSize = other.orthographicSize;
+				this.fieldOfView = other.fieldOfView;
+				this.nearClipPlane = other.nearClipPlane;
+				this.farClipPlane = other.farClipPlane;
+				this.useOcclusionCulling = other.useOcclusionCulling;
+				this.hdr = other.hdr;
+
+			}
+
 			public void Apply(UnityEngine.Camera camera) {
 				
 				camera.orthographic = this.orthographic;

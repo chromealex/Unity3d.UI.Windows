@@ -58,38 +58,55 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			
 		}
 
-		public static string GenerateWindowLayoutBaseClass( string className, string classNamespace, string transitionMethods ) {
+		public static string GenerateWindowLayoutContainerBaseClass(string className, string classNamespace, string baseClassName) {
 
-			var file = UnityEngine.Resources.Load( "UI.Windows/Templates/TemplateBaseClass" ) as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateContainerBaseClass") as TextAsset;
 			if (file == null) {
 
-				Debug.LogError( "Template Loading Error: Could not load template 'TemplateBaseClass'" );
+				Debug.LogError("Template Loading Error: Could not load template 'TemplateContainerBaseClass'");
 
 				return null;
 			}
 
-			return file.text.Replace( "{NAMESPACE_NAME}", classNamespace )
-							.Replace( "{CLASS_NAME}", className )
-							.Replace( "{TRANSITION_METHODS}", transitionMethods );
+			return file.text.Replace("{NAMESPACE_NAME}", classNamespace)
+				.Replace("{CLASS_NAME}", className)
+				.Replace("{BASE_CLASS_NAME}", baseClassName);
 
 		}
 
-		public static string GenerateWindowLayoutDerivedClass( string className, string baseClassName, string classNamespace ) {
+		public static string GenerateWindowLayoutBaseClass(string className, string classNamespace, string baseClassName, string transitionMethods) {
 
-			var file = UnityEngine.Resources.Load( "UI.Windows/Templates/TemplateDerivedClass" ) as TextAsset;
+			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateBaseClass") as TextAsset;
 			if (file == null) {
 
-				Debug.LogError( "Template Loading Error: Could not load template 'TemplateDerivedClass'" );
+				Debug.LogError("Template Loading Error: Could not load template 'TemplateBaseClass'");
 
 				return null;
 			}
 
-			return file.text.Replace( "{NAMESPACE_NAME}", classNamespace )
-							.Replace( "{CLASS_NAME}", className )
-							.Replace( "{BASE_CLASS_NAME}", baseClassName );
+			return file.text.Replace("{NAMESPACE_NAME}", classNamespace)
+				.Replace("{CLASS_NAME}", className)
+				.Replace("{BASE_CLASS_NAME}", baseClassName)
+				.Replace("{TRANSITION_METHODS}", transitionMethods);
 
 		}
-		
+
+		public static string GenerateWindowLayoutDerivedClass(string className, string baseClassName, string classNamespace) {
+
+			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateDerivedClass") as TextAsset;
+			if (file == null) {
+
+				Debug.LogError("Template Loading Error: Could not load template 'TemplateDerivedClass'");
+
+				return null;
+			}
+
+			return file.text.Replace("{NAMESPACE_NAME}", classNamespace)
+				.Replace("{CLASS_NAME}", className)
+				.Replace("{BASE_CLASS_NAME}", baseClassName);
+
+		}
+
 		public static string GenerateWindowLayoutTransitionMethod(FD.FlowWindow from, FD.FlowWindow to, string targetClassName, string targetClassNameWithNamespace) {
 			
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateTransitionMethod") as TextAsset;
@@ -107,7 +124,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 					.Replace("{CLASS_NAME_WITH_NAMESPACE}", targetClassNameWithNamespace);
 			
 		}
-		
+
 		public static string GenerateWindowLayoutTransitionTypedMethod(FD.FlowWindow from, FD.FlowWindow to, string targetClassName, string targetClassNameWithNamespace, System.Type[] parameters, string[] parameterNames) {
 			
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateTransitionTypedMethod") as TextAsset;
@@ -136,10 +153,10 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		public static string GenerateWindowLayoutTransitionMethodDefault() {
 			
-			var file = UnityEngine.Resources.Load( "UI.Windows/Templates/TemplateDefaultTransitionMethod" ) as TextAsset;
-			if ( file == null ) {
+			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateDefaultTransitionMethod") as TextAsset;
+			if (file == null) {
 				
-				Debug.LogError( "Template Loading Error: Could not load template 'TemplateDefaultTransitionMethod'" );
+				Debug.LogError("Template Loading Error: Could not load template 'TemplateDefaultTransitionMethod'");
 				
 				return null;
 			}

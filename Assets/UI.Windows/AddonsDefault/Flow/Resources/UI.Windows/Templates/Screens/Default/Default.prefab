@@ -104,8 +104,9 @@ MonoBehaviour:
     layer: 0
     dontDestroy: 1
     history: 0
-    deactivateImmediately: 0
+    deactivateOnRecycleImmediately: 1
     deactivateMaxTimeout: {x: 2, y: 5}
+    showInSequence: 0
     sendActiveState: 1
     fullCoverage: 0
     forceSingleInstance: 0

@@ -213,6 +213,14 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 			
 		}
 
+		public static IEnumerable<Data.FlowWindow> GetContainersAndWindows() {
+
+			if (FlowSystem.HasData() == false) return null;
+
+			return FlowSystem.instance.data.GetContainersAndWindows();
+
+		}
+
 		public static Data.FlowWindow GetWindow(WindowBase window, bool runtime) {
 			
 			if (FlowSystem.HasData() == false) return null;
