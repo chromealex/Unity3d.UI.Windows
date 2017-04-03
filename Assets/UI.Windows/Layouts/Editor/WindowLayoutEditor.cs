@@ -556,13 +556,12 @@ namespace UnityEditor.UI.Windows {
 		}
 
 		private void Update_EDITOR(UnityEngine.UI.Windows.WindowLayout _target) {
-			
+
 			foreach (var element in _target.elements) element.OnValidateEditor();
 			
 			#region COMPONENTS
-			_target.canvas = _target.GetComponentsInChildren<Canvas>(true)[0];
-			var raycasters = _target.GetComponentsInChildren<UnityEngine.EventSystems.BaseRaycaster>(true);
-			if (raycasters != null && raycasters.Length > 0) _target.raycaster = raycasters[0];
+			_target.canvas = ME.Utilities.FindReferenceChildren<Canvas>(_target);
+			_target.raycaster = ME.Utilities.FindReferenceChildren<UnityEngine.EventSystems.BaseRaycaster>(_target);
 			#endregion
 			
 			_target.initialized = (_target.canvas != null);

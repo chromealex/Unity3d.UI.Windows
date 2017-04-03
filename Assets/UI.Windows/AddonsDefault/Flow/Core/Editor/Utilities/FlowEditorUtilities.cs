@@ -11,22 +11,27 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public static bool IsValidPackageContainer(string path) {
 
-			var files = System.IO.Directory.GetFiles(path);
-			foreach (var file in files) {
+			try {
 
-				var filename = Path.GetFileName(file);
-				if (filename.EndsWith("Base.cs") == true) {
+				var files = System.IO.Directory.GetFiles(path);
+				foreach (var file in files) {
 
-					var original = filename.Replace("Base.cs", ".cs");
-					var exists = System.IO.File.Exists(Path.Combine(path, original));
-					if (exists == true) {
+					var filename = Path.GetFileName(file);
+					if (filename.EndsWith("Base.cs") == true) {
 
-						return true;
+						var original = filename.Replace("Base.cs", ".cs");
+						var exists = System.IO.File.Exists(Path.Combine(path, original));
+						if (exists == true) {
+
+							return true;
+
+						}
 
 					}
 
 				}
 
+			} catch (Exception) {
 			}
 
 			return false;

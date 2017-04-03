@@ -113,11 +113,13 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var path = Path.Combine(root, folder);
 			path = path.Replace("//", "/");
 
-			var dummyFile = string.Format("{0}/Dummy.txt", path);
+			var dummyFile = string.Format("{0}/.dummy", path);
 
-			var filesCount = Directory.GetFiles(path).Count(x => Path.GetFileName(x) != "Dummy.txt" && x.EndsWith(".meta") == false);
-			if (filesCount > 0) {
-				
+			var dirs = Directory.GetDirectories(path);
+			var filesCount = Directory.GetFiles(path).Count(x => Path.GetFileName(x) != ".dummy" && Path.GetFileNameWithoutExtension(x) != string.Empty && x.EndsWith(".meta") == false);
+			if (filesCount > 0 || dirs.Length > 0) {
+
+				//Debug.Log("D: " + filesCount + " :: " + string.Join("|", Directory.GetFiles(path)) + " :: " + dummyFile);
 				File.Delete(dummyFile);
 
 			} else {
@@ -127,10 +129,10 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			}
 
 			if (Directory.Exists(path) == false) {
-
+				
+				Directory.CreateDirectory(path);
 				File.WriteAllText(dummyFile, string.Empty);
 
-				Directory.CreateDirectory(path);
 				AssetDatabase.Refresh();
 				
 			}

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI.Windows.Components;
 using System.Reflection;
 using System.Linq;
+using UnityEngine.UI.Windows.Types;
 
 namespace UnityEditor.UI.Windows.Components {
 
@@ -62,7 +63,27 @@ namespace UnityEditor.UI.Windows.Components {
 
 		public override void OnInspectorGUI() {
 
-			EditorGUILayout.HelpBox("Do not destroy this object", MessageType.Warning);
+			var referenceName = "Null";
+			var found = false;
+
+			if (this.serializedObject.isEditingMultipleObjects == true) {
+
+				referenceName = "[Multiply Values]";
+				found = true;
+
+			} else {
+
+				found = this.GetReferenceName(ref referenceName);
+
+			}
+
+			EditorGUILayout.HelpBox(string.Format("Do not destroy this object. Referenced by: {0}.", referenceName) + (found == false ? " You can remove this item." : string.Empty), MessageType.Warning);
+
+			if (found == false) {
+
+				Component.DestroyImmediate(this.target, allowDestroyingAssets: true);
+
+			}
 
 			/*if (this.targets.Length != 1) {
 
@@ -75,6 +96,51 @@ namespace UnityEditor.UI.Windows.Components {
 			GUI.enabled = false;
 			this.DrawDefaultInspector();
 			GUI.enabled = oldState;*/
+
+		}
+
+		public bool GetReferenceName(ref string referenceName) {
+
+			var found = false;
+			var parameters = this.target as WindowComponentParametersBase;
+
+			var linkerComponent = parameters.GetComponent<LinkerComponent>();
+			if (linkerComponent != null) {
+
+				if (linkerComponent.prefabParameters == parameters) {
+
+					referenceName = string.Format("[{0}] LinkerComponent", System.Array.IndexOf(linkerComponent.transform.GetComponents<Component>(), linkerComponent));
+					found = true;
+					return found;
+
+				}
+
+			}
+
+			var layoutWindow = parameters.GetComponent<LayoutWindowType>();
+			if (layoutWindow != null) {
+
+				for (int i = 0; i < layoutWindow.layouts.layouts.Length; ++i) {
+
+					var layout = layoutWindow.layouts.layouts[i];
+					for (int j = 0; j < layout.components.Length; ++j) {
+
+						var component = layout.components[j];
+						if (component.componentParameters == parameters) {
+
+							referenceName = string.Format("[{0}] {1}", layoutWindow.layouts.types[i], component.description);
+							found = true;
+							return found;
+
+						}
+
+					}
+
+				}
+
+			}
+
+			return found;
 
 		}
 
