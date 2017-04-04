@@ -4,7 +4,7 @@ namespace UnityEngine.UI.Windows.Plugins.Resources {
 
 	public static class Utilities {
 
-		public static ResourceAuto GetResource(string groupName, string filename, string resourcesPathMask = "{0}", string webPathMask = null, string webPath = null) {
+		public static ResourceAuto GetResource(string groupName, string filename, string resourcesPathMask = "{0}", string webPathMask = null, string webPath = null, bool readable = true) {
 
 			//Debug.Log("Load: " + groupName + " :: " + filename + " :: " + resourcesPathMask + " :: " + webPathMask);
 
@@ -30,7 +30,7 @@ namespace UnityEngine.UI.Windows.Plugins.Resources {
 				//Debug.Log("CCH: " + path);
 				if (File.Exists(path) == true) {
 
-					resource = ResourceAuto.CreateWebRequest(path);
+					resource = ResourceAuto.CreateWebRequest(path, readable: true);
 
 				}
 
@@ -41,7 +41,7 @@ namespace UnityEngine.UI.Windows.Plugins.Resources {
 
 				var path = (string.IsNullOrEmpty(webPath) == false ? webPath : string.Format(webPathMask, filename));
 				//Debug.Log("WEB: " + path);
-				resource = ResourceAuto.CreateWebRequest(path);
+				resource = ResourceAuto.CreateWebRequest(path, readable: true);
 
 			}
 

@@ -129,6 +129,7 @@ namespace UnityEngine.UI.Windows {
 	public class WindowComponentNavigation : ColoredComponent, IWindowNavigation {
 
 		[Header("Navigation")]
+		[BeginGroup()]
 		public NavigationType navigationType = NavigationType.None;
 		public bool navigateOnDisabled = false;
 
@@ -139,6 +140,7 @@ namespace UnityEngine.UI.Windows {
 		public NavigationSideInfo navigateLeftInfo;
 		public NavigationSideInfo navigateRightInfo;
 		public NavigationSideInfo navigateUpInfo;
+		[EndGroup()]
 		public NavigationSideInfo navigateDownInfo;
 
 		public IListComponent listContainer;
@@ -475,7 +477,7 @@ namespace UnityEngine.UI.Windows {
 
 			var dir = Vector3.zero;
 			var rotation = this.GetRectTransform().rotation;
-			NavigationSideInfo sideInfo = new NavigationSideInfo();
+			var sideInfo = new NavigationSideInfo();
 			switch (side) {
 
 				case NavigationSide.Left:
@@ -512,7 +514,9 @@ namespace UnityEngine.UI.Windows {
 
 		public WindowComponentNavigation GetNavigation(Vector3 dir, NavigationSideInfo sideInfo) {
 
-			return this.FindSelectable(dir, sideInfo) as WindowComponentNavigation;
+			var navTarget = this.FindSelectable(dir, sideInfo, pointOnEdge: true) as WindowComponentNavigation;
+			if (navTarget == null) navTarget = this.FindSelectable(dir, sideInfo, pointOnEdge: false) as WindowComponentNavigation;
+			return navTarget;
 
 		}
 
@@ -620,7 +624,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		#region Utils
-		public WindowComponentNavigation FindSelectable(Vector3 dir, NavigationSideInfo sideInfo) {
+		public WindowComponentNavigation FindSelectable(Vector3 dir, NavigationSideInfo sideInfo, bool pointOnEdge = true) {
 
 			if (sideInfo.stop == true) return null;
 
@@ -628,8 +632,9 @@ namespace UnityEngine.UI.Windows {
 			if (navGroup == null) return null;
 
 			dir = dir.normalized;
-			var localDir = Quaternion.Inverse(transform.rotation) * dir;
-			var pos = transform.TransformPoint(WindowComponentNavigation.GetPointOnRectEdge(transform as RectTransform, localDir));
+			var tr = this.transform as RectTransform;
+			var localDir = Quaternion.Inverse(tr.rotation) * dir;
+			var pos = tr.TransformPoint(pointOnEdge == true ? WindowComponentNavigation.GetPointOnRectEdge(tr, localDir) : (Vector3)tr.rect.center);
 			var maxScore = Mathf.NegativeInfinity;
 
 			var components = navGroup.GetNavigationComponents();

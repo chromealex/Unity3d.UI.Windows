@@ -38,7 +38,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static ResourceAuto CreateResourceRequest(string path) {
+		public static ResourceAuto CreateResourceRequest(string path, bool readable = false) {
 
 			var item = new ResourceAuto();
 
@@ -46,13 +46,14 @@ namespace UnityEngine.UI.Windows {
 			item.id = ResourceBase.GetJavaHash(path);
 			item.controlType = ControlType.Show | ControlType.Hide;
 			item.loadableResource = true;
+			item.readableTexture = readable;
 			item.resourcesPath = path;
 
 			return item;
 
 		}
 
-		public static ResourceAuto CreateStreamRequest(string path, int cacheVersion = 0) {
+		public static ResourceAuto CreateStreamRequest(string path, int cacheVersion = 0, bool readable = false) {
 
 			var item = new ResourceAuto();
 
@@ -61,13 +62,14 @@ namespace UnityEngine.UI.Windows {
 			item.controlType = ControlType.Show | ControlType.Hide;
 			item.loadableStream = true;
 			item.cacheVersion = cacheVersion;
+			item.readableTexture = readable;
 			item.streamingAssetsPathCommon = path;
 
 			return item;
 
 		}
 
-		public static ResourceAuto CreateWebRequest(string path, int cacheVersion = 0) {
+		public static ResourceAuto CreateWebRequest(string path, int cacheVersion = 0, bool readable = false) {
 
 			var item = new ResourceAuto();
 
@@ -76,6 +78,7 @@ namespace UnityEngine.UI.Windows {
 			item.controlType = ControlType.Show | ControlType.Hide;
 			item.loadableWeb = true;
 			item.cacheVersion = cacheVersion;
+			item.readableTexture = readable;
 			item.webPath = path;
 
 			return item;

@@ -199,11 +199,13 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 			var go = new GameObject(string.Format("{0}_copy", name), typeof(RectTransform), typeof(UIPreserveAspect), typeof(UIFlippable), typeof(T));
 			go.transform.SetParent((this.image as WindowComponent).transform);
 
+			var graphic = go.GetComponent<T>();
+
 			this.CopyRect(this.image.GetGraphicSource().rectTransform, go.transform as RectTransform);
 			this.CopyFlippable(this.image.IsHorizontalFlip(), this.image.IsVerticalFlip(), go.GetComponent<UIFlippable>());
-			this.CopyPreserveAspect(this.image.IsPreserveAspect(), go.GetComponent<UIPreserveAspect>());
+			this.CopyPreserveAspect(this.image.IsPreserveAspect(), graphic, go.GetComponent<UIPreserveAspect>());
 
-			return go.GetComponent<T>();
+			return graphic;
 
 		}
 
@@ -214,9 +216,10 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
-		private void CopyPreserveAspect(bool isPreserveAspect, UIPreserveAspect copy) {
+		private void CopyPreserveAspect(bool isPreserveAspect, Graphic graphic, UIPreserveAspect copy) {
 
 			copy.preserveAspect = isPreserveAspect;
+			copy.rawImage = graphic as RawImage;
 
 		}
 

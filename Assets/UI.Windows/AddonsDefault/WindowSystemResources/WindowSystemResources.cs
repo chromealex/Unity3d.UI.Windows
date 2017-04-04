@@ -797,7 +797,7 @@ namespace UnityEngine.UI.Windows {
 					if (type == typeof(Texture) ||
 						type == typeof(Texture2D)) {
 
-						task.RaiseSuccess(www.textureNonReadable);
+						task.RaiseSuccess(task.resource.readableTexture == true ? www.texture : www.textureNonReadable);
 
 					} else {
 
@@ -908,7 +908,7 @@ namespace UnityEngine.UI.Windows {
 						if (type == typeof(Texture) ||
 							type == typeof(Texture2D)) {
 
-							task.RaiseSuccess(www.textureNonReadable);
+							task.RaiseSuccess(task.resource.readableTexture == true ? www.texture : www.textureNonReadable);
 
 						} else {
 							
@@ -939,7 +939,7 @@ namespace UnityEngine.UI.Windows {
 
 			} else if (task.resource.loadableAssetBundle == true) {
 
-#if UNITY_IOS
+				#if UNITY_IOS
 				if (UnityEngine.iOS.OnDemandResources.enabled == true) {
 					/*var request = UnityEngine.iOS.OnDemandResources.PreloadAsync(new string[] { odrTag } );
 					// Wait until request is completed
@@ -951,7 +951,7 @@ namespace UnityEngine.UI.Windows {
 					}
 					 var bundle = AssetBundle.CreateFromFile("res://" + resourceName);*/
 				}
-#endif
+				#endif
 
 				var path = task.resource.GetAssetBundlePath(true);
 
@@ -989,131 +989,6 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		/*private void ___() {
-
-			if (ResourceBase.iterations == null) ResourceBase.iterations = new Dictionary<Graphic, int>();
-			//if (ResourceBase.colorCache == null) ResourceBase.colorCache = new Dictionary<Graphic, Color>();
-
-			customResourcePath = customResourcePath ?? (string.IsNullOrEmpty(this.customResourcePath) == true ? null : this.customResourcePath);
-			this.customResourcePath = customResourcePath;
-
-			var isFade = (WindowSystemResources.GetAsyncLoadFadeTime() > 0f);
-
-			var iterationFailed = false;
-			var iteration = 0;
-			var oldColor = Color.white;
-			if (graphic != null) {
-				
-				if (ResourceBase.iterations.TryGetValue(graphic, out iteration) == false) {
-
-					ResourceBase.iterations.Add(graphic, iteration);
-
-				}
-
-				++ResourceBase.iterations[graphic];
-				iteration = ResourceBase.iterations[graphic];
-
-			}
-
-			#region Load Resource
-			if (this.loadableResource == true || string.IsNullOrEmpty(customResourcePath) == false) {
-
-				var resourcePath = customResourcePath ?? this.resourcesPath;
-
-				if (this.async == true) {
-
-					var task = Resources.LoadAsync<T>(resourcePath);
-					while (task.isDone == false) {
-
-						yield return 0;
-
-					}
-
-					iterationFailed = !(graphic == null || iteration == ResourceBase.iterations[graphic]);
-					if (iterationFailed == false) {
-
-						if (this.multiObjects == true && this.objectIndex >= 0) {
-
-							callback.Invoke(Resources.LoadAll(resourcePath)[this.objectIndex] as T);
-
-						} else {
-
-							callback.Invoke(task.asset as T);
-
-						}
-
-					}
-
-					task = null;
-
-				} else {
-
-					if (this.multiObjects == true && this.objectIndex >= 0) {
-
-						callback.Invoke(Resources.LoadAll(resourcePath)[this.objectIndex] as T);
-
-					} else {
-
-						var asset = Resources.Load<T>(resourcePath);
-						callback.Invoke(asset);
-
-					}
-
-				}
-
-			} else if (this.loadableStream == true) {
-
-				if (this.task != null) {
-
-					//Debug.LogWarning("Resource start loading while old was not complete");
-
-				}
-
-				this.task = MovieSystem.LoadTexture(component);
-				while (this.task != null && this.task.isDone == false) {
-
-					iterationFailed = !(graphic == null || iteration == ResourceBase.iterations[graphic]);
-					if (iterationFailed == true && this.task != null) {
-
-						//Debug.Log("Break: " + this.GetStreamPath());
-
-						this.task.Break();
-						this.task.Dispose();
-						this.task = null;
-						callback.Invoke(null);
-						yield break;
-
-					}
-
-					yield return 0;
-
-				}
-
-				if (this.task != null) {
-
-					iterationFailed = !(graphic == null || iteration == ResourceBase.iterations[graphic]);
-					if (iterationFailed == false) {
-
-						//Debug.Log("Loaded: " + component.GetResource().GetStreamPath() + ", iter: " + iteration + ", type: " + typeof(T).ToString() + ", asset: " + task.asset, graphic);
-
-						callback.Invoke(this.task.asset as T);
-
-					} else {
-
-						callback.Invoke(null);
-
-					}
-
-					this.task.Dispose();
-					this.task = null;
-
-				}
-
-			}
-			#endregion
-
-		}*/
-		
 		#if UNITY_EDITOR
 		public static void Validate(ILoadableResource resourceController) {
 

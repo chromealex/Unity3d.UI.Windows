@@ -27,7 +27,6 @@ public class HiddenAttributeDrawer : PropertyDrawer {
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
 		
 		var state = HiddenAttributeDrawer.IsEnabled(this, property);
-
 		if (state == true) {
 
 			return EditorGUI.GetPropertyHeight(property, label, true) + 2f;

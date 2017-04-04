@@ -2291,8 +2291,8 @@ namespace UnityEngine.UI.Windows {
 			};
 
 			instance = (parameters.source != null) ?
-				WindowSystem.CreateWithIgnore_INTERNAL(parameters.source, parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters) as T : 
-				WindowSystem.Create<T>(parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters);
+				WindowSystem.CreateWithIgnore_INTERNAL(parameters.source, parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters.parameters) as T : 
+				WindowSystem.Create<T>(parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters.parameters);
 			
 			return instance;
 

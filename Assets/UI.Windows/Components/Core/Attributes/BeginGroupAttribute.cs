@@ -41,6 +41,14 @@ namespace UnityEditor.UI.Windows {
 			var otherProp = PropertyExtensions.GetRelativeProperty(property, property.propertyPath, attribute.otherFieldName);
 
 			var isNull = false;
+
+			if (property.propertyType == SerializedPropertyType.Integer ||
+			    property.propertyType == SerializedPropertyType.Enum) {
+
+				isNull = (property.intValue == 0);
+
+			}
+				
 			if (property.propertyType == SerializedPropertyType.ObjectReference) {
 
 				isNull = (property.objectReferenceValue == null);

@@ -1067,14 +1067,15 @@ namespace UnityEngine.UI.Windows {
 		public WindowTargetPreferences preferencesFile;
 
 		[Header("-- Or --")]
+		[ReadOnly("preferencesFile", state: null, inverseCondition: true)]
 		public bool runOnAnyTarget = true;
-		[ReadOnly("runOnAnyTarget", state: true)]
+		[Hidden("runOnAnyTarget", state: true)]
 		public TargetInfo[] targets;
 
-		[System.NonSerialized]
+		/*[System.NonSerialized]
 		private bool isDirty = true;
 		[System.NonSerialized]
-		private bool lastResult = false;
+		private bool lastResult = false;*/
 
 		public bool GetRunOnAnyTarget() {
 
@@ -1096,25 +1097,27 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			if (this.isDirty == true) {
+			/*if (this.isDirty == true) {
 				
 				this.isDirty = false;
-				this.lastResult = false;
+				this.lastResult = false;*/
 
-				for (int i = 0; i < this.targets.Length; ++i) {
+			for (int i = 0; i < this.targets.Length; ++i) {
 
-					if (targets[i].IsValid() == true) {
+				if (this.targets[i].IsValid() == true) {
 
-						this.lastResult = true;
-						break;
-
-					}
+					//this.lastResult = true;
+					//break;
+					return true;
 
 				}
 
 			}
 
-			return this.lastResult;
+			//}
+
+			//return this.lastResult;
+			return false;
 
 		}
 
@@ -1127,7 +1130,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			this.isDirty = true;
+			//this.isDirty = true;
 
 		}
 
@@ -1150,13 +1153,10 @@ namespace UnityEngine.UI.Windows {
 
 		[Tooltip("If `true` this type of windows will be show after previous window of this type. If `false` window will shown normaly.")]
 		public bool showInSequence = false;
-
 		[Tooltip("Send Active/Inactive states on Show/Hide events.")]
 		public bool sendActiveState = true;
-
 		[Tooltip("This window cover all previous content. If `true` previous windows will be disabled.")]
 		public bool fullCoverage = false;
-
 		[Tooltip("Forces one instance only on scene.")]
 		public bool forceSingleInstance = false;
 		[ReadOnly("forceSingleInstance", state: false)][Tooltip("Ignores `new` instance initialize and layout events.")]
@@ -1166,7 +1166,7 @@ namespace UnityEngine.UI.Windows {
 
 		[Header("Pool")]
 		public bool createPool = true;
-		[ReadOnly("createPool", state: false)]
+		[Hidden("createPool", state: false)]
 		public int preallocatedCount = 0;
 
 		[Header("Draggable")]
@@ -1181,7 +1181,8 @@ namespace UnityEngine.UI.Windows {
 		[Hidden("overrideCameraSettings", false)]
 		public WindowSystemSettings.Camera cameraSettings;
 
-		public Preferences() {}
+		public Preferences() {
+		}
 
 		public Preferences(Preferences other) {
 

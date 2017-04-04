@@ -212,6 +212,7 @@ namespace UnityEngine.UI.Windows {
 
 			this.SetOrientationChangedDirect();
 			this.SetDepth(this.initializeParameters.depth, this.initializeParameters.zDepth);
+			this.events.LateUpdate(this);
 
 			if (Application.isPlaying == true) {
 				
@@ -236,12 +237,13 @@ namespace UnityEngine.UI.Windows {
 					} else {
 
 						// Method not found
-						Debug.LogWarning("Method `OnParametersPass` was not found with input parameters.", this);
+						var prs = new string[this.parameters.Length];
+						for (int i = 0; i < prs.Length; ++i) prs[i] = this.parameters[i].ToString();
+						Debug.LogWarning(string.Format("Method `OnParametersPass` was not found with input parameters: {0}, Parameters: {1}", this.parameters.Length, string.Join(", ", prs)), this);
 
 					}
 
 				}
-
 
                 if (this.onParametersPassCall != null) {
 
@@ -270,14 +272,6 @@ namespace UnityEngine.UI.Windows {
 				if (onInitialized != null) onInitialized.Invoke();
 
 			};
-
-			this.activeIteration = -WindowSystem.GetWindowsInFrontCount(this) - 1;
-			this.SetActive();
-			if (this.preferences.sendActiveState == true) {
-
-				WindowSystem.SendInactiveStateByWindow(this);
-
-			}
 
 			if (this.setup == false) {
 
@@ -339,6 +333,18 @@ namespace UnityEngine.UI.Windows {
 			this.transition.DoWindowUnload();
 
 			this.OnWindowUnload();
+
+		}
+
+		public void ApplyActiveState() {
+
+			this.activeIteration = -WindowSystem.GetWindowsInFrontCount(this) - 1;
+			this.SetActive();
+			if (this.preferences.sendActiveState == true) {
+
+				WindowSystem.SendInactiveStateByWindow(this);
+
+			}
 
 		}
 
@@ -975,7 +981,8 @@ namespace UnityEngine.UI.Windows {
 		private System.Collections.Generic.IEnumerator<byte> Show_INTERNAL_YIELD(System.Action onShowEnd, AttachItem transitionItem) {
 
 			while (this.paused == true) yield return 0;
-			
+
+			this.ApplyActiveState();
 			this.TurnOn();
 
 			var parameters = AppearanceParameters.Default();

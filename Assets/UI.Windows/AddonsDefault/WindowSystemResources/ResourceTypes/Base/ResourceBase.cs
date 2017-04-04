@@ -59,6 +59,8 @@ namespace UnityEngine.UI.Windows {
 		
 		[ReadOnly] public string customResourcePath;
 
+		[ReadOnly] public bool readableTexture;
+
 		[ReadOnly] public int id;
 
 		[ReadOnly] public int cacheVersion;

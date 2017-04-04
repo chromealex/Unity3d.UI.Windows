@@ -218,10 +218,10 @@ namespace ME {
 			var cellWidth = 80f;
 			var cellHeight = 40f;
 
-			var maxWidth = this.position.width - margin.horizontal;
+			var maxWidth = this.position.width - margin.horizontal - 20f;
 
 			var scrollRect = new Rect(0f, 0f, this.position.width, this.position.height);
-			var viewRect = new Rect(0f, 0f, maxWidth, Mathf.Ceil(this.items.Count / ((maxWidth / cellWidth) - 1)) * cellHeight + cellHeight - margin.vertical);
+			var viewRect = new Rect(0f, 0f, maxWidth, Mathf.Ceil(this.items.Count / (float)(Mathf.CeilToInt(maxWidth / cellWidth) - 1)) * cellHeight + cellHeight - margin.vertical);
 			this.scrollPosition = GUI.BeginScrollView(scrollRect, this.scrollPosition, viewRect, false, false);
 			{
 				
