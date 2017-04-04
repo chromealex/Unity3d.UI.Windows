@@ -115,20 +115,22 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			var dummyFile = string.Format("{0}/.dummy", path);
 
-			var dirs = Directory.GetDirectories(path);
-			var filesCount = Directory.GetFiles(path).Count(x => Path.GetFileName(x) != ".dummy" && Path.GetFileNameWithoutExtension(x) != string.Empty && x.EndsWith(".meta") == false);
-			if (filesCount > 0 || dirs.Length > 0) {
+			if (Directory.Exists(path) == true) {
 
-				//Debug.Log("D: " + filesCount + " :: " + string.Join("|", Directory.GetFiles(path)) + " :: " + dummyFile);
-				File.Delete(dummyFile);
+				var dirs = Directory.GetDirectories(path);
+				var filesCount = Directory.GetFiles(path).Count(x => Path.GetFileName(x) != ".dummy" && Path.GetFileNameWithoutExtension(x) != string.Empty && x.EndsWith(".meta") == false);
+				if (filesCount > 0 || dirs.Length > 0) {
+
+					//Debug.Log("D: " + filesCount + " :: " + string.Join("|", Directory.GetFiles(path)) + " :: " + dummyFile);
+					File.Delete(dummyFile);
+
+				} else {
+
+					File.WriteAllText(dummyFile, string.Empty);
+
+				}
 
 			} else {
-
-				File.WriteAllText(dummyFile, string.Empty);
-
-			}
-
-			if (Directory.Exists(path) == false) {
 				
 				Directory.CreateDirectory(path);
 				File.WriteAllText(dummyFile, string.Empty);

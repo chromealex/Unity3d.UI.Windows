@@ -197,7 +197,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 			var name = (this.image as WindowComponent).name;
 			var go = new GameObject(string.Format("{0}_copy", name), typeof(RectTransform), typeof(UIPreserveAspect), typeof(UIFlippable), typeof(T));
-			go.transform.SetParent((this.image as WindowComponent).transform);
+			go.transform.SetParent(this.source.transform);
 
 			var graphic = go.GetComponent<T>();
 
