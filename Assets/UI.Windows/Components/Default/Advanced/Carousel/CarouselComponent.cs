@@ -57,6 +57,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public float maxVisualCount = 1f;
 		public float maxAngle = 0f;
 		public Vector3 rotationAxis = new Vector3(1f, 1f, -0.5f);
+		public float positionScale = 0.5f;
 
 		[Header("Easings")]
 		[BitMask(typeof(EaseFlags))]
@@ -100,6 +101,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private float visualCount;
 		private float lastValue = -1f;
+		private System.Action<int> onSelect;
 
 		public void SetDisabled() {
 
@@ -110,6 +112,12 @@ namespace UnityEngine.UI.Windows.Components {
 		public void SetEnabled() {
 
 			this.interactable = true;
+
+		}
+
+		public void SetCallback(System.Action<int> onSelect) {
+
+			this.onSelect = onSelect;
 
 		}
 
@@ -269,17 +277,25 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnShowEnd() {
+		public override void OnDeinit(System.Action callback) {
 
-			base.OnShowEnd();
+			base.OnDeinit(callback);
 
-			this.ArrangeItems();
+			this.onSelect = null;
 
 		}
 
 		public override void OnShowBegin() {
 
 			base.OnShowBegin();
+
+			this.ArrangeItems();
+
+		}
+
+		public override void OnShowEnd() {
+
+			base.OnShowEnd();
 
 			this.ArrangeItems();
 
@@ -361,7 +377,7 @@ namespace UnityEngine.UI.Windows.Components {
 			var noInterpolationValue = 0f;
 
 			var normalizedValuePosition = sign * ((this.easeFlags & EaseFlags.Position) != 0 ? ME.Ease.GetByType(this.easePosition).interpolate(0f, 1f, abs, 1f) : noInterpolationValue);
-			var pos = this.GetSize() * 0.5f * normalizedValuePosition;
+			var pos = this.GetSize() * this.positionScale * normalizedValuePosition;
 
 			var normalizedValueAlpha = ((this.easeFlags & EaseFlags.Alpha) != 0 ? ME.Ease.GetByType(this.easeAlpha).interpolate(0f, 1f, abs, 1f) : noInterpolationValue);
 			var alpha = 1f - normalizedValueAlpha;
@@ -398,6 +414,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 
+				if (this.onSelect != null) this.onSelect.Invoke(index);
 				if (this.dots != null) this.dots.OnSelect(index);
 				if (this.arrows != null) this.arrows.OnSelect(index);
 				this.lastCurrentIndex = currentIndex;

@@ -35,7 +35,8 @@ namespace UnityEngine.UI.Windows {
 		IDragHandler,
 		IEndDragHandler,
 		IDraggableHandler,
-		IResourceReference {
+		IResourceReference,
+		ICanvasElement {
 		
 		#if UNITY_EDITOR
 		[HideInInspector]
@@ -111,6 +112,37 @@ namespace UnityEngine.UI.Windows {
 
 		private GameObject firstSelectedGameObject;
 		private GameObject currentSelectedGameObject;
+
+		#region ICanvasElement
+		Transform ICanvasElement.transform {
+			get { return base.transform; }
+		}
+
+		void ICanvasElement.GraphicUpdateComplete() {
+
+		}
+
+		bool ICanvasElement.IsDestroyed() {
+
+			return this == null;
+
+		}
+
+		void ICanvasElement.LayoutComplete() {
+
+			this.DoLayoutWindowLayoutComplete();
+			this.modules.DoWindowLayoutComplete();
+			this.audio.DoWindowLayoutComplete();
+			this.events.DoWindowLayoutComplete();
+			this.transition.DoWindowLayoutComplete();
+			(this as IWindowEventsController).DoWindowLayoutComplete();
+
+		}
+
+		void ICanvasElement.Rebuild(CanvasUpdate executing) {
+
+		}
+		#endregion
 
 		public override bool IsDestroyable() {
 
@@ -565,6 +597,15 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		void IWindowEventsController.DoWindowLayoutComplete() {
+			
+			WindowSystem.RunSafe(this.OnWindowLayoutComplete);
+
+		}
+
+		public virtual void OnWindowLayoutComplete() {
+		}
+
 		void IWindowEventsController.DoWindowActive() {
 
 			WindowSystem.RunSafe(this.OnWindowActive);
@@ -971,6 +1012,8 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.AddToHistory(this);
 
+			CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
+
 			if (this.gameObject.activeSelf == false) this.gameObject.SetActive(true);
 			ME.Coroutines.Run(this.Show_INTERNAL_YIELD(onShowEnd, transitionItem));
 
@@ -979,7 +1022,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private System.Collections.Generic.IEnumerator<byte> Show_INTERNAL_YIELD(System.Action onShowEnd, AttachItem transitionItem) {
-
+			
 			while (this.paused == true) yield return 0;
 
 			this.ApplyActiveState();
@@ -1224,6 +1267,8 @@ namespace UnityEngine.UI.Windows {
 				WindowSystem.RunSafe(this.OnHideEndLate);
 				this.events.DoHideEndLate(parameters);
 
+				CanvasUpdateRegistry.UnRegisterCanvasElementForRebuild(this);
+
 				WindowSystem.Recycle(this, setInactive: this.TurnOff());
 
 			};
@@ -1330,6 +1375,8 @@ namespace UnityEngine.UI.Windows {
 
 		protected virtual void DoLayoutWindowOpen() {}
 		protected virtual void DoLayoutWindowClose() {}
+
+		protected virtual void DoLayoutWindowLayoutComplete() {}
 
 		protected virtual void DoLayoutUnload() {}
 

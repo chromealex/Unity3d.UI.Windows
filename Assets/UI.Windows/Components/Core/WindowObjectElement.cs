@@ -257,6 +257,18 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnWindowClose() {}
 		#endregion
 
+		#region OnWindowLayoutComplete
+		void IWindowEventsController.DoWindowLayoutComplete() {
+
+			WindowSystem.RunSafe(this.OnWindowLayoutComplete);
+
+			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowLayoutComplete();
+
+		}
+
+		public virtual void OnWindowLayoutComplete() {}
+		#endregion
+
 		#region Base Events
 	    /// <summary>
 	    /// Raises the init event.

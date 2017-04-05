@@ -235,6 +235,7 @@ MonoBehaviour:
         multiObjectsAssetBundle: 0
         objectIndexAssetBundle: 0
         customResourcePath: 
+        readableTexture: 0
         id: -2114129100
         cacheVersion: 0
         streamingAssetsPathStandalone: 
@@ -277,6 +278,7 @@ MonoBehaviour:
           multiObjectsAssetBundle: 0
           objectIndexAssetBundle: 0
           customResourcePath: 
+          readableTexture: 0
           id: -1311585706
           cacheVersion: 0
           streamingAssetsPathStandalone: 
@@ -327,6 +329,7 @@ MonoBehaviour:
         multiObjectsAssetBundle: 0
         objectIndexAssetBundle: 0
         customResourcePath: 
+        readableTexture: 0
         id: 0
         cacheVersion: 0
         streamingAssetsPathStandalone: 
@@ -376,6 +379,7 @@ MonoBehaviour:
       multiObjectsAssetBundle: 0
       objectIndexAssetBundle: 0
       customResourcePath: 
+      readableTexture: 0
       id: -1607562268
       cacheVersion: 0
       streamingAssetsPathStandalone: 
@@ -418,6 +422,7 @@ MonoBehaviour:
         multiObjectsAssetBundle: 0
         objectIndexAssetBundle: 0
         customResourcePath: 
+        readableTexture: 0
         id: -55984218
         cacheVersion: 0
         streamingAssetsPathStandalone: 

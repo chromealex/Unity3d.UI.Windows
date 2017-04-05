@@ -21,6 +21,16 @@ MonoBehaviour:
     - {fileID: 11494848, guid: 9959008b987df46258fa3debc5c649b5, type: 2}
     - {fileID: 11473206, guid: 5451f45ea8b9e4f2d963a8f5498f5123, type: 2}
     - {fileID: 11409546, guid: ceee67989766d46b39e3e72ccc364825, type: 2}
+  - title: CarouselComponent
+    localDirectory: Forms/Advanced/Carousel
+    mainComponent: {fileID: 11468108, guid: 51b44a71d156a406ca8e94f24069a0fe, type: 2}
+    components:
+    - {fileID: 11468108, guid: 51b44a71d156a406ca8e94f24069a0fe, type: 2}
+  - title: Dots
+    localDirectory: Forms/Advanced/Carousel
+    mainComponent: {fileID: 11424478, guid: 68f4a707c8208405c898df3e725da8cc, type: 2}
+    components:
+    - {fileID: 11424478, guid: 68f4a707c8208405c898df3e725da8cc, type: 2}
   - title: Indicator1
     localDirectory: Forms/Advanced/Indicators
     mainComponent: {fileID: 11475670, guid: e60b9db910e09405bbe3667645dd57d6, type: 2}

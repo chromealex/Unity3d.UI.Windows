@@ -340,6 +340,7 @@ namespace UnityEngine.UI.Windows {
 		OnWindowClose,
 		OnWindowActive,
 		OnWindowInactive,
+		OnWindowLayoutComplete,
 
 	};
 
@@ -371,6 +372,7 @@ namespace UnityEngine.UI.Windows {
 		void DoWindowInactive();
 		void DoWindowOpen();
 		void DoWindowClose();
+		void DoWindowLayoutComplete();
 
 		void DoInit();
 		void DoDeinit(System.Action callback);

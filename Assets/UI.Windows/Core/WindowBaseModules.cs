@@ -100,6 +100,17 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 
+			public void DoWindowLayoutComplete() {
+
+				if (this.instance != null) {
+
+					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
+					this.instance.DoWindowLayoutComplete();
+
+				}
+
+			}
+
 			public void DoWindowActive() {
 
 				if (this.instance != null) {
@@ -324,6 +335,7 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		// Events
+		public void DoWindowLayoutComplete() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowLayoutComplete(); }
 		public void DoWindowActive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowActive(); }
 		public void DoWindowInactive() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowInactive(); }
 		public void DoWindowOpen() { for (int i = 0; i < this.elements.Length; ++i) this.elements[i].DoWindowOpen(); }
@@ -661,6 +673,11 @@ namespace UnityEngine.UI.Windows {
 			public OnWindowInactive onWindowInactive = new OnWindowInactive();
 			public ME.Events.SimpleUnityEvent onWindowInactiveEvent = new ME.Events.SimpleUnityEvent();
 
+			[System.Serializable]
+			public class OnWindowLayoutComplete : UnityEvent {}
+			public OnWindowLayoutComplete onWindowLayoutComplete = new OnWindowLayoutComplete();
+			public ME.Events.SimpleUnityEvent onWindowLayoutCompleteEvent = new ME.Events.SimpleUnityEvent();
+
 			public void Clear() {
 
 				Events.RemoveAllListeners(this.onShowBegin, this.onShowBeginEvent);
@@ -672,6 +689,7 @@ namespace UnityEngine.UI.Windows {
 				Events.RemoveAllListeners(this.onWindowClose, this.onWindowCloseEvent);
 				Events.RemoveAllListeners(this.onWindowActive, this.onWindowActiveEvent);
 				Events.RemoveAllListeners(this.onWindowInactive, this.onWindowInactiveEvent);
+				Events.RemoveAllListeners(this.onWindowLayoutComplete, this.onWindowLayoutCompleteEvent);
 
 			}
 
@@ -686,6 +704,7 @@ namespace UnityEngine.UI.Windows {
 				Events.Initialize(ref this.onWindowClose, ref this.onWindowCloseEvent);
 				Events.Initialize(ref this.onWindowActive, ref this.onWindowActiveEvent);
 				Events.Initialize(ref this.onWindowInactive, ref this.onWindowInactiveEvent);
+				Events.Initialize(ref this.onWindowLayoutComplete, ref this.onWindowLayoutCompleteEvent);
 
 			}
 
@@ -727,6 +746,10 @@ namespace UnityEngine.UI.Windows {
 
 					case WindowEventType.OnWindowInactive:
 						Events.Register(this.onWindowInactive, this.onWindowInactiveEvent, callback);
+						break;
+
+					case WindowEventType.OnWindowLayoutComplete:
+						Events.Register(this.onWindowLayoutComplete, this.onWindowLayoutCompleteEvent, callback);
 						break;
 
 				}
@@ -773,6 +796,10 @@ namespace UnityEngine.UI.Windows {
 						Events.Unregister(this.onWindowInactive, this.onWindowInactiveEvent, callback);
 						break;
 
+					case WindowEventType.OnWindowLayoutComplete:
+						Events.Unregister(this.onWindowLayoutComplete, this.onWindowLayoutCompleteEvent, callback);
+						break;
+
 				}
 				
 			}
@@ -815,6 +842,10 @@ namespace UnityEngine.UI.Windows {
 
 					case WindowEventType.OnWindowInactive:
 						Events.RemoveAllListeners(this.onWindowInactive, this.onWindowInactiveEvent);
+						break;
+
+					case WindowEventType.OnWindowLayoutComplete:
+						Events.RemoveAllListeners(this.onWindowLayoutComplete, this.onWindowLayoutCompleteEvent);
 						break;
 
 				}
@@ -861,6 +892,10 @@ namespace UnityEngine.UI.Windows {
 						Events.Raise(this.onWindowInactive, this.onWindowInactiveEvent);
 						break;
 
+					case WindowEventType.OnWindowLayoutComplete:
+						Events.Raise(this.onWindowLayoutComplete, this.onWindowLayoutCompleteEvent);
+						break;
+
 				}
 
 			}
@@ -892,6 +927,12 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		// Events
+		public void DoWindowLayoutComplete() {
+
+			this.RaiseEvents(WindowEventType.OnWindowLayoutComplete);
+
+		}
+
 		public void DoWindowActive() {
 
 			this.RaiseEvents(WindowEventType.OnWindowActive);
@@ -1277,6 +1318,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		// Events
+		public void DoWindowLayoutComplete() { }
 		public void DoWindowActive() { }
 		public void DoWindowInactive() { }
 		public void DoWindowOpen() { }

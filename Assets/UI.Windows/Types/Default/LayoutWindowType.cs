@@ -268,6 +268,13 @@ namespace UnityEngine.UI.Windows.Types {
 
 		}
 
+		protected override void DoLayoutWindowLayoutComplete() {
+
+			var layout = this.GetCurrentLayout();
+			if (layout != null) layout.DoWindowLayoutComplete();
+
+		}
+
 		protected override void DoLayoutWindowOpen() {
 
 			var layout = this.GetCurrentLayout();
@@ -986,6 +993,12 @@ namespace UnityEngine.UI.Windows.Types {
 			
 			if (this.instance != null) this.GetLayoutInstance().OnManualEvent<T>(data);
 			
+		}
+
+		public void DoWindowLayoutComplete() {
+
+			if (this.instance != null) this.instance.DoWindowLayoutComplete();
+
 		}
 
 		public void DoWindowOpen() {

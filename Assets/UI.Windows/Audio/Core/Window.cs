@@ -98,6 +98,7 @@ namespace UnityEngine.UI.Windows.Audio {
 		}
 
 		// Events
+		public void DoWindowLayoutComplete() { }
 		public void DoWindowActive() { }
 		public void DoWindowInactive() { }
 		public void DoWindowOpen() { }
