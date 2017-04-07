@@ -144,6 +144,25 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public T GetSubComponentInParent<T>(System.Predicate<T> predicate = null) where T : IComponent {
+
+			if (this.rootComponent == null) return default(T);
+
+			var component = this.rootComponent;
+			if (component is T) {
+
+				var result = (T)(component as IComponent);
+				if (predicate == null || predicate(result) == true) return result;
+
+			}
+
+			var comp = component.GetSubComponentInParent<T>(predicate);
+			if (comp != null) return comp;
+
+			return default(T);
+
+		}
+
 		public T GetSubComponentInChildren<T>(System.Predicate<T> predicate = null) where T : IComponent {
 			
 			for (int i = 0; i < this.subComponents.Count; ++i) {

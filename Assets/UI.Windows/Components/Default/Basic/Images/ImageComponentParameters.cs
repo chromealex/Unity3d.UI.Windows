@@ -20,7 +20,7 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P1) == true) component.SetPreserveAspectState(this.preserveAspect);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P2) == true) component.SetImage(this.image);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P3) == true) component.SetImage(this.rawImage);
-			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P7) == true) component.SetImage(this.imageLocalizationKey);
+			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P7) == true) component.SetImageLocalizationKey(this.imageLocalizationKey);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P4) == true) component.SetColor(this.imageColor);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P5) == true) component.SetPlayOnShow(this.playOnShow);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P6) == true) component.SetLoop(this.loop);

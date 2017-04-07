@@ -109,7 +109,7 @@ namespace UnityEngine.UI.Windows.Components {
 			public void Setup(ITextComponent component) {
 	
 				if (this.IsChanged(ParameterFlag.AP1) == true) component.SetText(this.text);
-				if (this.IsChanged(ParameterFlag.AP15) == true) component.SetText(this.localizationKey);
+				if (this.IsChanged(ParameterFlag.AP15) == true) component.SetTextLocalizationKey(this.localizationKey);
 				if (this.IsChanged(ParameterFlag.AP2) == true) component.SetTextColor(this.color);
 				if (this.IsChanged(ParameterFlag.AP3) == true) component.SetValueFormat(this.format);
 				if (this.IsChanged(ParameterFlag.AP16) == true) component.SetFullTextFormat(this.fullTextFormat);
@@ -153,7 +153,7 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.IsChanged(ParameterFlag.BP1) == true) component.SetPreserveAspectState(this.preserveAspect);
 				if (this.IsChanged(ParameterFlag.BP2) == true) component.SetImage(this.image);
 				if (this.IsChanged(ParameterFlag.BP3) == true) component.SetImage(this.rawImage);
-				if (this.IsChanged(ParameterFlag.BP7) == true) component.SetImage(this.imageLocalizationKey);
+				if (this.IsChanged(ParameterFlag.BP7) == true) component.SetImageLocalizationKey(this.imageLocalizationKey);
 				if (this.IsChanged(ParameterFlag.BP4) == true) component.SetColor(this.imageColor);
 				if (this.IsChanged(ParameterFlag.BP5) == true) component.SetPlayOnShow(this.playOnShow);
 				if (this.IsChanged(ParameterFlag.BP6) == true) component.SetLoop(this.loop);

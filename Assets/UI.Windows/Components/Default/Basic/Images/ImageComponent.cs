@@ -308,6 +308,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public IImageComponent SetImageLocalizationKey(UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey key) {
+
+			this.imageLocalizationKey = key;
+
+			return this;
+
+		}
+
 		public IImageComponent SetMovieTexture(ResourceAuto resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null) {
 
 			this.flipVerticalInternal = MovieSystem.IsVerticalFlipped();

@@ -197,6 +197,11 @@ MonoBehaviour:
           m_Calls: []
         m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowInactive,
           Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      onWindowLayoutComplete:
+        m_PersistentCalls:
+          m_Calls: []
+        m_TypeName: UnityEngine.UI.Windows.Events+EveryInstance+OnWindowLayoutComplete,
+          Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   transition:
     transition: {fileID: 0}
     transitionParameters: {fileID: 0}

@@ -119,7 +119,7 @@ namespace UnityEngine.UI.Windows {
 						WindowSystemLogger._instance = Object.FindObjectOfType<WindowSystemLogger>();
 						if (WindowSystemLogger._instance == null) {
 
-							WindowSystemLogger._instance = GameObject.Find("Localization").GetComponent<WindowSystemLogger>();
+							WindowSystemLogger._instance = GameObject.Find("Logger").GetComponent<WindowSystemLogger>();
 
 						}
 

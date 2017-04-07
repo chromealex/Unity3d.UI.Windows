@@ -13,6 +13,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 		public ComponentEvent onMovingBeginEvent = new ComponentEvent();
 		public ComponentEvent onMovingEndEvent = new ComponentEvent();
 		public LayoutElement layoutElement;
+		public bool manualMoving = false;
 
 		private bool isMoving = false;
 
@@ -32,19 +33,71 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		}
 
+		public void DoBeginDrag(PointerEventData eventData) {
+
+			if (this.manualMoving == true) {
+
+				base.OnBeginDrag(eventData);
+
+				this.onBeginDragEvent.Invoke();
+
+			}
+
+		}
+
+		public void DoDrag(PointerEventData eventData) {
+
+			if (this.manualMoving == true) {
+
+				base.OnDrag(eventData);
+
+			}
+
+		}
+
+		public void DoEndDrag(PointerEventData eventData) {
+
+			if (this.manualMoving == true) {
+
+				base.OnEndDrag(eventData);
+
+				this.onEndDragEvent.Invoke();
+
+			}
+
+		}
+
 		public override void OnBeginDrag(PointerEventData eventData) {
 
-			base.OnBeginDrag(eventData);
+			if (this.manualMoving == false) {
 
-			this.onBeginDragEvent.Invoke();
+				base.OnBeginDrag(eventData);
+
+				this.onBeginDragEvent.Invoke();
+
+			}
+
+		}
+
+		public override void OnDrag(PointerEventData eventData) {
+
+			if (this.manualMoving == false) {
+
+				base.OnDrag(eventData);
+
+			}
 
 		}
 
 		public override void OnEndDrag(PointerEventData eventData) {
 
-			base.OnEndDrag(eventData);
+			if (this.manualMoving == false) {
+				
+				base.OnEndDrag(eventData);
 
-			this.onEndDragEvent.Invoke();
+				this.onEndDragEvent.Invoke();
+
+			}
 
 		}
 
@@ -73,6 +126,8 @@ namespace UnityEngine.UI.Windows.Extensions {
 		}
 
 		protected override void LateUpdate() {
+
+			if (this.transform.lossyScale == Vector3.zero) return;
 
 			base.LateUpdate();
 

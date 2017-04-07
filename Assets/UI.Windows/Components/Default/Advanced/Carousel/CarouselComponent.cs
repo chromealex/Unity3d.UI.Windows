@@ -72,9 +72,11 @@ namespace UnityEngine.UI.Windows.Components {
 		public float movementSpeed = 1f;
 		public float dragSpeed = 3f;
 		public float slowdownSpeed = 10f;
+		public float movementTime = 0.3f;
 
 		private int lastCurrentIndex = -1;
 		private bool isDragging;
+		private float dragStartTime = 0f;
 		private float lastDragSide = 0f;
 
 		private float _targetValue;
@@ -83,7 +85,7 @@ namespace UnityEngine.UI.Windows.Components {
 			set {
 
 				if (this._targetValue != value) {
-
+					
 					this._targetValue = value;
 					this.Clamp();
 
@@ -477,6 +479,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.interactable == false) return;
 
+			this.dragStartTime = Time.time;
 			this.lastDragSide = 0f;
 			this.isDragging = true;
 
@@ -500,7 +503,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.interactable == false) return;
 
-			this.targetValue = this.RoundToInt(this.targetValue, this.lastDragSide > 0f ? 0.8f : 0.2f);
+			if ((Time.time - this.dragStartTime) <= this.movementTime) {
+
+				this.targetValue = this.RoundToInt((this.lastDragSide > 0f ? this.targetValue - 1f : this.targetValue + 1f), this.lastDragSide > 0f ? 0.8f : 0.2f);
+
+			} else {
+
+				this.targetValue = this.RoundToInt(this.targetValue, this.lastDragSide > 0f ? 0.8f : 0.2f);
+
+			}
+
 			this.isDragging = false;
 
 		}
@@ -526,7 +538,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.targetValue += value;
 
 			if (immediately == true) {
-				
+
 				this.value = this.targetValue;
 				this.ArrangeItems();
 
@@ -575,6 +587,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public void MoveTo(int index) {
 
+			this.MoveTo(index, immediately: false);
+
+		}
+
+		public void MoveTo(int index, bool immediately) {
+
 			if (this.cyclical == true) {
 
 				var count = this.list.Count;
@@ -595,6 +613,13 @@ namespace UnityEngine.UI.Windows.Components {
 			} else {
 
 				this.targetValue = index;
+
+			}
+
+			if (immediately == true) {
+
+				this.value = this.targetValue;
+				this.ArrangeItems();
 
 			}
 

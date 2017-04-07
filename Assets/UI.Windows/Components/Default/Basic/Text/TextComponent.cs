@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Text.RegularExpressions;
 using ME;
-using UnityEngine.UI.Windows.Plugins.Localization;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -104,7 +103,15 @@ namespace UnityEngine.UI.Windows.Components {
 			return this;
 
 		}
-		
+
+		public ITextComponent SetTextLocalizationKey(UnityEngine.UI.Windows.Plugins.Localization.LocalizationKey key) {
+
+			this.textLocalizationKey = key;
+
+			return this;
+
+		}
+
 		public ITextComponent SetBestFitState(bool state) {
 
 			if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetBestFitState(this.text, state);
@@ -644,7 +651,7 @@ namespace UnityEngine.UI.Windows.Components {
 				case TextValueFormat.DateUniversalFromMilliseconds: {
 
 					DateTime date = TextComponent.TimeStampToDateTime(value, milliseconds: true);
-					output = date.ToString("U", System.Globalization.CultureInfo.CreateSpecificCulture(LocalizationSystem.GetCultureNameByLanguage(LocalizationSystem.GetCurrentLanguage())));
+					output = date.ToString("U", System.Globalization.CultureInfo.CreateSpecificCulture(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetCultureNameByLanguage(UnityEngine.UI.Windows.Plugins.Localization.LocalizationSystem.GetCurrentLanguage())));
 
 					break;
 

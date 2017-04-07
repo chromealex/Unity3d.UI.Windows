@@ -154,6 +154,7 @@ namespace UnityEngine.UI.Windows.Components {
 		ITextComponent SetValueAnimate(bool state);
 		ITextComponent SetValueAnimateDuration(float duration);
 
+		ITextComponent SetTextLocalizationKey(LocalizationKey key);
 		ITextComponent SetText(string text);
 		ITextComponent SetText(LocalizationKey key, params object[] parameters);
 		string GetText();
@@ -204,6 +205,8 @@ namespace UnityEngine.UI.Windows.Components {
 		IImageComponent SetImage(Texture texture, bool preserveAspect, System.Action onComplete, bool immediately);
 
 		IImageComponent SetImage(LocalizationKey key, params object[] parameters);
+
+		IImageComponent SetImageLocalizationKey(LocalizationKey key);
 
 		IImageComponent SetMaterial(Material material, bool setMainTexture = false, System.Action callback = null);
 		Color GetColor();

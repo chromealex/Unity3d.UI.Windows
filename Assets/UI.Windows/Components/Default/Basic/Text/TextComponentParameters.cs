@@ -36,7 +36,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public void Setup(ITextComponent component) {
 
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P1) == true) component.SetText(this.text);
-			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P15) == true) component.SetText(this.localizationKey);
+			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P15) == true) component.SetTextLocalizationKey(this.localizationKey);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P2) == true) component.SetTextColor(this.color);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P3) == true) component.SetValueFormat(this.format);
 			if (this.IsChanged(ParameterFlag./*{flagPrefix}*/P16) == true) component.SetFullTextFormat(this.fullTextFormat);
