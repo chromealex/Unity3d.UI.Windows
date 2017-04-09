@@ -122,7 +122,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public override void DoLoad(bool async, System.Action<WindowObjectElement> onItem, System.Action callback) {
-			
+
 			this.InitInstance(c => base.DoLoad(async, onItem, callback), async);
 
 		}

@@ -148,6 +148,7 @@ MonoBehaviour:
       farClipPlane: 100
       useOcclusionCulling: 0
       hdr: 0
+      msaa: 0
   audio:
     flowData: {fileID: 11400000, guid: a1bd805bdc8434764bd048f65a277867, type: 2}
     playType: 0

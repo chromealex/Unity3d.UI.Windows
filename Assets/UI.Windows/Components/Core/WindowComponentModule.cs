@@ -5,6 +5,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 	public class ComponentModuleBase {
 
 		[HideInInspector][SerializeField] protected IImageComponent image;
+		[ReadOnlyBeginGroup("enabled", state: false)]
 		[SerializeField] private bool enabled;
 
 		public bool IsValid() {

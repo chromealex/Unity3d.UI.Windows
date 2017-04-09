@@ -78,12 +78,18 @@ namespace UnityEngine.UI.Windows {
 
 		[SerializeField]
 		private bool enabled = false;
-		[SerializeField][ReadOnly("enabled", state: false)]
+		[SerializeField][Hidden("enabled", state: false)]
 		private List<WindowComponentNavigation> navigationComponents = new List<WindowComponentNavigation>();
 
 		public bool IsActive() {
 
 			return this.enabled;
+
+		}
+
+		public void SetActive(bool state) {
+
+			this.enabled = state;
 
 		}
 
@@ -126,7 +132,7 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
-	public class WindowComponentNavigation : ColoredComponent, IWindowNavigation {
+	public abstract class WindowComponentNavigation : ColoredComponent, IWindowNavigation {
 
 		[Header("Navigation")]
 		[BeginGroup()]

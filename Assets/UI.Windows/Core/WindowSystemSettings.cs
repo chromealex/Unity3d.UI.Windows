@@ -98,6 +98,7 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 			public float farClipPlane = 100f;
 			public bool useOcclusionCulling = false;
 			public bool hdr = false;
+			public bool msaa = false;
 
 			public Camera() {}
 
@@ -109,7 +110,12 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 				this.nearClipPlane = other.nearClipPlane;
 				this.farClipPlane = other.farClipPlane;
 				this.useOcclusionCulling = other.useOcclusionCulling;
+				#if UNITY_5_6_OR_NEWER
+				this.allowHDR = other.allowHDR;
+				this.allowMSAA = other.allowMSAA;
+				#else
 				this.hdr = other.hdr;
+				#endif
 
 			}
 
@@ -121,7 +127,12 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 				camera.nearClipPlane = this.nearClipPlane;
 				camera.farClipPlane = this.farClipPlane;
 				camera.useOcclusionCulling = this.useOcclusionCulling;
+				#if UNITY_5_6_OR_NEWER
+				camera.allowHDR = this.hdr;
+				camera.allowMSAA = this.msaa;
+				#else
 				camera.hdr = this.hdr;
+				#endif
 
 			}
 			

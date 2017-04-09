@@ -16,11 +16,16 @@ namespace UnityEngine.UI.Windows.Components {
 
 	};
 
-	public interface ICarouselItem : ICarouselItemAlpha, IComponent {
+	public interface ICarouselItemSelectable : IComponent {
 
-		void OnSelect(int index, System.Action<int> callback);
 		void OnElementSelected(int index);
 		void OnElementDeselected(int index);
+
+	};
+
+	public interface ICarouselItem : ICarouselItemSelectable, ICarouselItemAlpha, IComponent {
+
+		void OnSelect(int index, System.Action<int> callback);
 
 	};
 
@@ -394,7 +399,8 @@ namespace UnityEngine.UI.Windows.Components {
 			elementRect.anchoredPosition3D = this.GetAxisVector3(pos);
 			elementRect.localRotation = Quaternion.AngleAxis(rotation * this.maxAngle, this.rotationAxis);
 
-			var carouselItemAlpha = (component as ICarouselItemAlpha);
+			var eventComponent = this.GetEventComponent(index);
+			var carouselItemAlpha = eventComponent as ICarouselItemAlpha;
 			if (carouselItemAlpha != null) {
 
 				carouselItemAlpha.SetCarouselAlpha(alpha);
@@ -402,15 +408,20 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			if (index == currentIndex && this.lastCurrentIndex != currentIndex) {
-				
-				var carouselItem = (component as ICarouselItem);
-				if (carouselItem != null) {
-				
-					if (this.lastCurrentIndex >= 0) {
 
-						(this.list[this.lastCurrentIndex] as ICarouselItem).OnElementDeselected(this.lastCurrentIndex);
+				if (this.lastCurrentIndex >= 0) {
+
+					var prevItem = this.list[this.lastCurrentIndex] as ICarouselItemSelectable;
+					if (prevItem != null) {
+
+						prevItem.OnElementDeselected(this.lastCurrentIndex);
 
 					}
+
+				}
+
+				var carouselItem = eventComponent as ICarouselItemSelectable;
+				if (carouselItem != null) {
 
 					carouselItem.OnElementSelected(index);
 
@@ -425,7 +436,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (rebuildState == false) {
 
-				var carouselItemCanvas = (component as ICarouselItemCanvas);
+				var carouselItemCanvas = component as ICarouselItemCanvas;
 				if (carouselItemCanvas != null) {
 
 					carouselItemCanvas.SetSiblingIndex(index != currentIndex ? -1 : 0);//currentIndex - elementRect.parent.childCount);
@@ -439,6 +450,19 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			return true;
+
+		}
+
+		public WindowComponent GetEventComponent(int index) {
+
+			var component = this.list[index];
+			if (component is LinkerComponent) {
+
+				return (component as LinkerComponent).Get<WindowComponent>();
+
+			}
+
+			return component;
 
 		}
 

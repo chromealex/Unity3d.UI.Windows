@@ -18,18 +18,18 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		};
 
-		[ReadOnly("enabled", state: false)]
 		public float duration = 0.5f;
-		[ReadOnly("enabled", state: false)]
+		//[ReadOnly("enabled", state: false)]
 		public bool fadeIfWasNull = false;
-		[ReadOnly("enabled", state: false)]
+		//[ReadOnly("enabled", state: false)]
 		public bool fadeOutSource = false;
-		[ReadOnly("enabled", state: false)]
+		//[ReadOnly("enabled", state: false)]
 		public ME.Ease.Type easeType;
 
-		[ReadOnly("enabled", state: false)]
+		//[ReadOnly("enabled", state: false)]
 		public Color startColor = new Color(1f, 1f, 1f, 0f);
-		[ReadOnly("enabled", state: false)]
+		//[ReadOnly("enabled", state: false)]
+		[ReadOnlyEndGroup("enabled", state: false)]
 		public Color targetColor = new Color(1f, 1f, 1f, 1f);
 
 		private Graphic source;

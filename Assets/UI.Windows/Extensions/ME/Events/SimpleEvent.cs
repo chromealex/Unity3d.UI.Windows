@@ -63,7 +63,7 @@ namespace ME.Events {
 	}
 
 	public abstract class SimpleEventBase<TAction> : MW2.Extensions.ValuesBase, ISimpleEvent {
-
+		
 		protected List<TAction> listeners;
 
 		public SimpleEventBase() {

@@ -464,97 +464,100 @@ namespace UnityEngine.UI.Windows {
 			#endif
 
 			var controller = (subComponent as IWindowEventsController);
-
-			switch (this.GetComponentState()) {
+			subComponent.DoLoad(async: false, onItem: null, callback: () => {
 				
-				case WindowObjectState.Hiding:
+				switch (this.GetComponentState()) {
 					
-					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+					case WindowObjectState.Hiding:
 						
-						controller.DoInit();
-						WindowSystem.RunSafe(subComponent.OnWindowActive);
+						if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+
+							controller.DoInit();
+							WindowSystem.RunSafe(subComponent.OnWindowActive);
+							
+						}
+
+						subComponent.SetComponentState(this.GetComponentState());
+
+						break;
+
+					case WindowObjectState.Hidden:
 						
-					}
+						if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+							
+							controller.DoInit();
+							WindowSystem.RunSafe(subComponent.OnWindowActive);
+							
+						}
 
-					subComponent.SetComponentState(this.GetComponentState());
+						subComponent.SetComponentState(this.GetComponentState());
 
-					break;
+						break;
 
-				case WindowObjectState.Hidden:
-					
-					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+					case WindowObjectState.Initializing:
+					case WindowObjectState.Initialized:
 						
-						controller.DoInit();
-						WindowSystem.RunSafe(subComponent.OnWindowActive);
+						if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+							
+							controller.DoInit();
+							WindowSystem.RunSafe(subComponent.OnWindowActive);
+							
+						}
+
+						break;
+
+					case WindowObjectState.Showing:
+	                    
+						// after OnShowBegin
 						
-					}
+						if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+							
+							controller.DoInit();
+							WindowSystem.RunSafe(subComponent.OnWindowActive);
+							
+						}
 
-					subComponent.SetComponentState(this.GetComponentState());
+						if (subComponent.showOnStart == true) {
 
-					break;
+							controller.DoShowBegin(AppearanceParameters.Default());
 
-				case WindowObjectState.Initializing:
-				case WindowObjectState.Initialized:
-					
-					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+						}
+
+						break;
+
+					case WindowObjectState.Shown:
+
+	                    // after OnShowEnd
 						
-						controller.DoInit();
-						WindowSystem.RunSafe(subComponent.OnWindowActive);
-						
-					}
+						if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
+							
+							controller.DoInit();
+							WindowSystem.RunSafe(subComponent.OnWindowActive);
+							
+						}
 
-	                break;
+						if (subComponent.showOnStart == true) {
 
-                case WindowObjectState.Showing:
-                    
-					// after OnShowBegin
-					
-					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
-						
-						controller.DoInit();
-						WindowSystem.RunSafe(subComponent.OnWindowActive);
-						
-					}
+							controller.DoShowBegin(AppearanceParameters.Default().ReplaceCallback(() => {
 
-					if (subComponent.showOnStart == true) {
+								controller.DoShowEnd(AppearanceParameters.Default());
 
-						controller.DoShowBegin(AppearanceParameters.Default());
+							}));
 
-					}
+						}
 
-                    break;
+						break;
 
-                case WindowObjectState.Shown:
+				}
+				
+				if (this.GetWindow() != null) {
 
-                    // after OnShowEnd
-					
-					if (subComponent.GetComponentState() == WindowObjectState.NotInitialized) {
-						
-						controller.DoInit();
-						WindowSystem.RunSafe(subComponent.OnWindowActive);
-						
-					}
+					subComponent.Setup(this.GetWindow());
+					// subComponent.Setup(this.GetLayoutRoot());
 
-					if (subComponent.showOnStart == true) {
+				}
 
-						controller.DoShowBegin(AppearanceParameters.Default().ReplaceCallback(() => {
-
-							controller.DoShowEnd(AppearanceParameters.Default());
-
-	                    }));
-
-					}
-
-                    break;
-
-            }
-			
-			if (this.GetWindow() != null) {
-
-                subComponent.Setup(this.GetWindow());
-                // subComponent.Setup(this.GetLayoutRoot());
-
-            }
+			});
 
         }
 

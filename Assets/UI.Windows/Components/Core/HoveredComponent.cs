@@ -50,7 +50,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Hover Actions")]
 		[SerializeField]
 		private bool hoverIsActive = true;
-		[SerializeField]
+		[SerializeField][ReadOnly("hoverIsActive", state: false)]
 		private bool hoverOnAnyPointerState = false;
 		public ComponentEvent<bool> onHover = new ComponentEvent<bool>();
 

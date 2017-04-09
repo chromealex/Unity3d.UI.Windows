@@ -66,6 +66,7 @@ namespace UnityEditor.UI.Windows {
 			}
 
 			++EditorGUI.indentLevel;
+
 			EditorGUI.BeginDisabledGroup(isNull);
 
 			CustomGUI.Splitter();

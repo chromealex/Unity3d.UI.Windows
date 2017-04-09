@@ -41,7 +41,7 @@ namespace ME {
 
 			this.item.OnGUI(previewPosition);
 
-			if (Event.current.type == EventType.Repaint) {
+			if (GUI.enabled == true && Event.current.type == EventType.Repaint) {
 
 				if (position.Contains(Event.current.mousePosition) == true) {
 					

@@ -26,7 +26,7 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly]
 		public int windowId;
 
-		[Header("Navigation")]
+		//[Header("Navigation")]
 		public NavigationGroup navigationGroup = new NavigationGroup();
 
 		public virtual bool IsDestroyable() {

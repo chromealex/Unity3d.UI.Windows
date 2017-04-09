@@ -399,23 +399,18 @@ namespace UnityEngine.UI.Windows.Components {
 
 		#region Button Base
 		[Header("Button Component")]
-		[SerializeField]
-		protected Button button;
-
-		public ComponentEvent callback = new ComponentEvent();
+		private ComponentEvent callback = new ComponentEvent();
 		private ComponentEvent<ButtonComponent> callbackButton = new ComponentEvent<ButtonComponent>();
 
-		//private System.Func<bool> onState;
-		//private bool oldState = false;
-		//private bool onStateActive = false;
-		
 		[SerializeField]
-		protected bool selectByDefault;
-		
+		[BeginGroup("button")]
+		protected Button button;
 		[SerializeField]
 		private bool setDefaultNavigationModeOnStart = true;
 		[SerializeField][ReadOnly("setDefaultNavigationModeOnStart", state: false)]
 		private Navigation.Mode defaultNavigationMode = Navigation.Mode.None;
+		[SerializeField][EndGroup]
+		protected bool selectByDefault;
 
 		public virtual IButtonComponent SetSelectByDefault(bool state) {
 			
@@ -545,10 +540,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		#region source macros UI.Windows.ButtonComponent.States
 
-		[SerializeField]
+		[SerializeField][ReadOnly("hoverIsActive", state: false)]
 		private bool hoverOnAnyButtonState = false;
-
-		[SerializeField]
+		[SerializeField][ReadOnly("hoverIsActive", state: false)]
 		private bool hoverCursorDefaultOnInactive = false;
 
 		public bool IsHoverCursorDefaultOnInactive() {

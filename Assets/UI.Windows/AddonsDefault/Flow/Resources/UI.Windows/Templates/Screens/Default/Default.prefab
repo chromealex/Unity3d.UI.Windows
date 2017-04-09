@@ -112,6 +112,7 @@ MonoBehaviour:
       farClipPlane: 100
       useOcclusionCulling: 0
       hdr: 0
+      msaa: 0
   audio:
     flowData: {fileID: 0}
     playType: 0
@@ -218,7 +219,7 @@ MonoBehaviour:
     - Vertical
     layouts:
     - enabled: 1
-      scaleMode: 0
+      scaleMode: 3
       fixedScaleResolution: {x: 1024, y: 768}
       matchWidthOrHeight: 0
       layoutPreferences: {fileID: 0}
@@ -227,12 +228,12 @@ MonoBehaviour:
       layoutNoResource: {fileID: 0}
       layoutResource:
         async: 1
-        assetPath: 
+        assetPath: Assets/MW2Data/Resources/MW2/Social/Username/Layouts/UsernameLayout.prefab
         assetBundleName: 
-        resourcesPath: 
+        resourcesPath: MW2/Social/Username/Layouts/UsernameLayout
         webPath: 
         loadableWeb: 0
-        loadableResource: 0
+        loadableResource: 1
         loadableStream: 0
         loadableAssetBundle: 0
         multiObjects: 0
@@ -241,7 +242,7 @@ MonoBehaviour:
         objectIndexAssetBundle: 0
         customResourcePath: 
         readableTexture: 0
-        id: 0
+        id: 390898875
         cacheVersion: 0
         streamingAssetsPathStandalone: 
         streamingAssetsPathIOS: 
@@ -263,10 +264,100 @@ MonoBehaviour:
         streamingAssetsPathCommonIsMovie: 0
         canBeUnloaded: 0
         controlType: 0
-        tempObject: {fileID: 0}
-      components: []
+        tempObject: {fileID: 11496590, guid: 52e7d39980b394400965301c7d6fac17, type: 2}
+      components:
+      - description: CONTENT BORDER
+        tag: 1
+        component: {fileID: 0}
+        componentResource:
+          async: 1
+          assetPath: 
+          assetBundleName: 
+          resourcesPath: 
+          webPath: 
+          loadableWeb: 0
+          loadableResource: 0
+          loadableStream: 0
+          loadableAssetBundle: 0
+          multiObjects: 0
+          objectIndex: 0
+          multiObjectsAssetBundle: 0
+          objectIndexAssetBundle: 0
+          customResourcePath: 
+          readableTexture: 0
+          id: 0
+          cacheVersion: 0
+          streamingAssetsPathStandalone: 
+          streamingAssetsPathIOS: 
+          streamingAssetsPathAndroid: 
+          streamingAssetsPathPS4: 
+          streamingAssetsPathXBOXONE: 
+          streamingAssetsPathCommon: 
+          streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathIOSMovieAudio: 
+          streamingAssetsPathAndroidMovieAudio: 
+          streamingAssetsPathPS4MovieAudio: 
+          streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathCommonMovieAudio: 
+          streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathIOSIsMovie: 0
+          streamingAssetsPathAndroidIsMovie: 0
+          streamingAssetsPathPS4IsMovie: 0
+          streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathCommonIsMovie: 0
+          canBeUnloaded: 0
+          tempResource: {fileID: 0}
+        componentNoResource: {fileID: 0}
+        sortingOrder: 0
+        componentParameters: {fileID: 0}
+        editorParametersFoldout: 0
+      - description: CONTENT
+        tag: 2
+        component: {fileID: 0}
+        componentResource:
+          async: 1
+          assetPath: 
+          assetBundleName: 
+          resourcesPath: 
+          webPath: 
+          loadableWeb: 0
+          loadableResource: 0
+          loadableStream: 0
+          loadableAssetBundle: 0
+          multiObjects: 0
+          objectIndex: 0
+          multiObjectsAssetBundle: 0
+          objectIndexAssetBundle: 0
+          customResourcePath: 
+          readableTexture: 0
+          id: 0
+          cacheVersion: 0
+          streamingAssetsPathStandalone: 
+          streamingAssetsPathIOS: 
+          streamingAssetsPathAndroid: 
+          streamingAssetsPathPS4: 
+          streamingAssetsPathXBOXONE: 
+          streamingAssetsPathCommon: 
+          streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathIOSMovieAudio: 
+          streamingAssetsPathAndroidMovieAudio: 
+          streamingAssetsPathPS4MovieAudio: 
+          streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathCommonMovieAudio: 
+          streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathIOSIsMovie: 0
+          streamingAssetsPathAndroidIsMovie: 0
+          streamingAssetsPathPS4IsMovie: 0
+          streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathCommonIsMovie: 0
+          canBeUnloaded: 0
+          tempResource: {fileID: 0}
+        componentNoResource: {fileID: 0}
+        sortingOrder: 0
+        componentParameters: {fileID: 0}
+        editorParametersFoldout: 0
     - enabled: 0
-      scaleMode: 0
+      scaleMode: 3
       fixedScaleResolution: {x: 1024, y: 768}
       matchWidthOrHeight: 0
       layoutPreferences: {fileID: 0}

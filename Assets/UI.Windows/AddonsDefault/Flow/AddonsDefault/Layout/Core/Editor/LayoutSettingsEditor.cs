@@ -357,109 +357,130 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 			EditorGUILayout.PropertyField(enabledField);
 			EditorGUI.BeginDisabledGroup(!enabledField.boolValue);
 			{
-					
-				var oldValue = layout.objectReferenceValue;
-				EditorGUILayout.PropertyField(layout, new GUIContent("Layout:"));
-				var newValue = layout.objectReferenceValue;
-				if (oldValue != newValue) {
-					
-					if (oldValue == null ||
-					    EditorUtility.DisplayDialog("Layout Changing Warning",
-						    "Do you really want to change this layout? Components list will be destroyed and the new one will be created. Are you sure?",
-						    "Yes",
-						    "No") == true) {
-						
-						this.canvasScalerEditor = null;
-						this.inited = false;
-						GUI.changed = true;
-						this.window.GetCurrentLayout().components = new UnityEngine.UI.Windows.Types.Layout.Component[0];
-						this.window.OnValidate();
 
-						property.serializedObject.ApplyModifiedProperties();
+				CustomGUI.Splitter();
 
-					}
+				{
 					
-				}
-				
-				if (layout.objectReferenceValue != null) {
-					
-					CustomGUI.Splitter();
-					
-					EditorGUILayout.PropertyField(scaleMode, new GUIContent("Scale Mode:"));
-					
-					if (this.canvasScalerEditor == null) {
+					var oldValue = layout.objectReferenceValue;
+					EditorGUILayout.PropertyField(layout, new GUIContent("Layout:"));
+					var newValue = layout.objectReferenceValue;
+					if (oldValue != newValue) {
 						
-						var layoutSource = layout.objectReferenceValue as UnityEngine.UI.Windows.WindowLayout;
-						if (layoutSource != null && layoutSource.canvasScaler != null) {
-							
-							this.canvasScalerEditor = Editor.CreateEditor(layoutSource.canvasScaler);
-							
-						} else {
+						if (oldValue == null ||
+						    EditorUtility.DisplayDialog("Layout Changing Warning",
+							    "Do you really want to change this layout? Components list will be destroyed and the new one will be created. Are you sure?",
+							    "Yes",
+							    "No") == true) {
 							
 							this.canvasScalerEditor = null;
-							
+							this.inited = false;
+							GUI.changed = true;
+							this.window.GetCurrentLayout().components = new UnityEngine.UI.Windows.Types.Layout.Component[0];
+							this.window.OnValidate();
+
+							property.serializedObject.ApplyModifiedProperties();
+
 						}
 						
 					}
-					
+
+				}
+
+				if (layout.objectReferenceValue != null || property.serializedObject.targetObject is FlowLayoutWindowTypeTemplate) {
+
+					CustomGUI.Splitter();
+
+					EditorGUILayout.PropertyField(scaleMode, new GUIContent("Scale Mode:"));
+
+					if (this.canvasScalerEditor == null) {
+
+						var layoutSource = layout.objectReferenceValue as UnityEngine.UI.Windows.WindowLayout;
+						if (layoutSource != null && layoutSource.canvasScaler != null) {
+
+							this.canvasScalerEditor = Editor.CreateEditor(layoutSource.canvasScaler);
+
+						} else {
+
+							this.canvasScalerEditor = null;
+
+						}
+
+					}
+
 					var mode = (UnityEngine.UI.Windows.WindowLayout.ScaleMode)System.Enum.GetValues(typeof(UnityEngine.UI.Windows.WindowLayout.ScaleMode)).GetValue(scaleMode.enumValueIndex);
+
+					if (layout.objectReferenceValue == null && property.serializedObject.targetObject is FlowLayoutWindowTypeTemplate) {
+
+						EditorGUILayout.HelpBox("To use ScaleMode you need to setup `Layout` to store values. You can only use `Preferences` mode without `Layout`.", MessageType.Warning);
+
+						if (mode != UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences) {
+
+							mode = UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences;
+							scaleMode.enumValueIndex = (int)mode;
+
+						}
+
+					}
+
+					EditorGUILayout.PropertyField(allowCustomLayoutPreferences, new GUIContent("Allow Custom Layout Preferences", "This option allows set up custom preferences by the code. If false code set up will do nothing."));
+
+					++EditorGUI.indentLevel;
 
 					var enabled = true;
 					if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Normal || // Normal mode
-					    mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed || // Fixed mode
-					    mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences) { // Custom mode
-						
-						var layoutSource = layout.objectReferenceValue as UnityEngine.UI.Windows.WindowLayout;
-						if (layoutSource != null) {
-							
-							if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed) {
-								
-								EditorGUILayout.PropertyField(fixedScaleSize, new GUIContent("Resolution:"));
-								
-							} else if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences) {
+						mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed || // Fixed mode
+						mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences) { // Custom mode
 
-								EditorGUILayout.PropertyField(layoutPreferences, new GUIContent("File Link:"));
-								if (layoutPreferences.objectReferenceValue != null) {
+						if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed) {
 
-									var obj = new SerializedObject(layoutPreferences.objectReferenceValue);
-									var fixedScale = obj.FindProperty("fixedScale").boolValue;
-									fixedScaleSize.vector2Value = obj.FindProperty("fixedScaleResolution").vector2Value;
-									matchWidthOrHeight.floatValue = obj.FindProperty("matchWidthOrHeight").floatValue;
+							EditorGUILayout.PropertyField(fixedScaleSize, new GUIContent("Resolution:"));
 
-									if (fixedScale == true) {
+						} else if (mode == UnityEngine.UI.Windows.WindowLayout.ScaleMode.Preferences) {
 
-										mode = UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed;
+							EditorGUILayout.PropertyField(layoutPreferences, new GUIContent("File Link:"));
+							if (layoutPreferences.objectReferenceValue != null) {
 
-									} else {
-										
-										mode = UnityEngine.UI.Windows.WindowLayout.ScaleMode.Normal;
+								var obj = new SerializedObject(layoutPreferences.objectReferenceValue);
+								var fixedScale = obj.FindProperty("fixedScale").boolValue;
+								fixedScaleSize.vector2Value = obj.FindProperty("fixedScaleResolution").vector2Value;
+								matchWidthOrHeight.floatValue = obj.FindProperty("matchWidthOrHeight").floatValue;
 
-									}
+								if (fixedScale == true) {
+
+									mode = UnityEngine.UI.Windows.WindowLayout.ScaleMode.Fixed;
+
+								} else {
+
+									mode = UnityEngine.UI.Windows.WindowLayout.ScaleMode.Normal;
 
 								}
 
 							}
 
-							EditorGUILayout.PropertyField(allowCustomLayoutPreferences, new GUIContent("Allow Custom Layout Preferences"));
+						}
+
+						var layoutSource = layout.objectReferenceValue as UnityEngine.UI.Windows.WindowLayout;
+						if (layoutSource != null) {
 
 							layoutSource.SetScale(mode, fixedScaleSize.vector2Value, matchWidthOrHeight.floatValue);
-							
+
 						}
+
 						enabled = false;
-						
+
 					}
 
 					EditorGUI.BeginDisabledGroup(!enabled);
-					if (this.canvasScalerEditor != null)
-						this.canvasScalerEditor.OnInspectorGUI();
+					if (this.canvasScalerEditor != null) this.canvasScalerEditor.OnInspectorGUI();
 					EditorGUI.EndDisabledGroup();
 
-					CustomGUI.Splitter();
-					
+					--EditorGUI.indentLevel;
+
 				}
-				
-				//--EditorGUI.indentLevel;
-				
+
+				CustomGUI.Splitter();
+
 				if (this.inited == true && this.window != null && this.window.GetCurrentLayout().layout != null) {
 					
 					ReorderableListGUI.Title("Components");
