@@ -15,7 +15,7 @@ MonoBehaviour:
     inDelay: 0
     outDelay: 0
     inDuration: 0.5
-    outDuration: 0.1
+    outDuration: 0.5
     inEase: 0
     outEase: 0
     material: {fileID: 0}

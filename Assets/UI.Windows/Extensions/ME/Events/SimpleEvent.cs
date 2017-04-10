@@ -50,6 +50,8 @@ namespace ME.Events {
 
 		public static void AddListener(System.Action action) {
 
+			if (action == null) return;
+
 			SimpleEventDebug.listeners.Add(new Item() { action = action, trace = UnityEngine.StackTraceUtility.ExtractStackTrace() });
 
 		}
@@ -85,6 +87,8 @@ namespace ME.Events {
 		}
 
 		public void AddListener(TAction action) {
+
+			if (action == null) return;
 
 			this.listeners.Add(action);
 			if (WindowSystem.IsDebugWeakReferences() == true) SimpleEventDebug.AddListener(action as System.Action);
@@ -146,6 +150,8 @@ namespace ME.Events {
 		}
 
 		public void AddListener(TAction action) {
+
+			if (action == null) return;
 
 			this.listeners.Add(action);
 

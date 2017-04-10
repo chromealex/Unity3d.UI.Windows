@@ -550,21 +550,26 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		protected virtual void SetItems(int capacity, System.Action<IComponent, int> onItem) {
 
-			if (capacity == this.Count() && capacity > 0) {
+			var existCount = this.Count();
+			if (existCount > capacity) {
 
-				this.ForEach(onItem);
-				return;
+				for (int i = existCount - 1; i >= capacity; --i) {
+
+					this.RemoveItem(this.GetItem(i, linkerLookup: false));
+
+				}
+
+			} else if (existCount < capacity) {
+
+				for (int i = existCount; i < capacity; ++i) {
+
+					this.AddItem<IComponent>();
+
+				}
 
 			}
 
-			this.Clear();
-			
-			for (int i = 0; i < capacity; ++i) {
-				
-				var instance = this.AddItem<IComponent>();
-				if (instance != null && onItem != null) onItem.Invoke(instance, i);
-				
-			}
+			this.ForEach(onItem);
 
 			this.Refresh(withNoElements: true);
 
@@ -590,7 +595,6 @@ namespace UnityEngine.UI.Windows.Components {
 		private System.Collections.Generic.IEnumerator<byte> SetItemsAsync_INTERNAL<T>(int capacity, System.Action onComplete, System.Action<T, int> onItem = null) where T : IComponent {
 			
 			var timer = ME.Utilities.StartWatch();
-
 			for (int i = 0; i < capacity; ++i) {
 
 				ME.Utilities.ResetWatch(timer);
