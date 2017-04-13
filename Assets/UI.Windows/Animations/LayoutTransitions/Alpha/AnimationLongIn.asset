@@ -14,8 +14,8 @@ MonoBehaviour:
   defaultInputParams:
     inDelay: 0
     outDelay: 0
-    inDuration: 0.2
-    outDuration: 0.2
+    inDuration: 1
+    outDuration: 0.5
     inEase: 0
     outEase: 0
     material: {fileID: 0}

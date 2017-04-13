@@ -72,7 +72,10 @@ namespace UnityEngine.UI.Windows {
 
 		public static void SetRichText(MaskableGraphic text, bool state) {
 
-			throw new System.Exception("SetRichText not supported while using TextMeshPro");
+			#if TEXTMESHPRO_SUPPORTED
+			var instance = text as TMPro.TMP_Text;
+			if (instance != null) instance.richText = state;
+			#endif
 
 		}
 
@@ -92,7 +95,7 @@ namespace UnityEngine.UI.Windows {
 
 			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
-			if (instance != null) instance.OverflowMode = (mode == VerticalWrapMode.Overflow ? TMPro.TextOverflowModes.Overflow : TMPro.TextOverflowModes.Truncate);
+			if (instance != null) instance.overflowMode = (mode == VerticalWrapMode.Overflow ? TMPro.TextOverflowModes.Overflow : TMPro.TextOverflowModes.Truncate);
 			#endif
 
 		}
@@ -101,14 +104,51 @@ namespace UnityEngine.UI.Windows {
 
 			#if TEXTMESHPRO_SUPPORTED
 			var instance = text as TMPro.TMP_Text;
-			if (instance != null) instance.OverflowMode = (mode == HorizontalWrapMode.Overflow ? TMPro.TextOverflowModes.Overflow : TMPro.TextOverflowModes.Truncate);
+			if (instance != null) instance.overflowMode = (mode == HorizontalWrapMode.Overflow ? TMPro.TextOverflowModes.Overflow : TMPro.TextOverflowModes.Truncate);
 			#endif
 
 		}
 
 		public static void SetTextAlignment(MaskableGraphic text, TextAnchor anchor) {
 
-			throw new System.Exception("SetTextAlignment not supported while using TextMeshPro");
+			#if TEXTMESHPRO_SUPPORTED
+			var instance = text as TMPro.TMP_Text;
+			if (instance == null) return;
+
+			switch (anchor) {
+				
+				case TextAnchor.UpperLeft:
+					instance.alignment = TMPro.TextAlignmentOptions.TopLeft;
+					break;
+				case TextAnchor.UpperCenter:
+					instance.alignment = TMPro.TextAlignmentOptions.Top;
+					break;
+				case TextAnchor.UpperRight:
+					instance.alignment = TMPro.TextAlignmentOptions.TopRight;
+					break;
+				case TextAnchor.MiddleLeft:
+					instance.alignment = TMPro.TextAlignmentOptions.MidlineLeft;
+					break;
+				case TextAnchor.MiddleCenter:
+					instance.alignment = TMPro.TextAlignmentOptions.Midline;
+					break;
+				case TextAnchor.MiddleRight:
+					instance.alignment = TMPro.TextAlignmentOptions.MidlineRight;
+					break;
+				case TextAnchor.LowerLeft:
+					instance.alignment = TMPro.TextAlignmentOptions.BottomLeft;
+					break;
+				case TextAnchor.LowerCenter:
+					instance.alignment = TMPro.TextAlignmentOptions.Bottom;
+					break;
+				case TextAnchor.LowerRight:
+					instance.alignment = TMPro.TextAlignmentOptions.BottomRight;
+					break;
+				default:
+					throw new System.ArgumentOutOfRangeException("anchor", anchor, null);
+
+			}
+			#endif
 
 		}
 

@@ -224,7 +224,7 @@ namespace UnityEngine.UI.Windows.Components {
 		IImageComponent SetMovieTexture(ResourceAuto resource, System.Action onDataLoaded, System.Action onComplete = null, System.Action onFailed = null);
 		IImageComponent SetPlayOnShow(bool state);
 		IImageComponent SetLoop(bool state);
-		bool GetLoop();
+		bool IsLoop();
 		bool IsPlaying();
 		IImageComponent Play();
 		IImageComponent Play(bool loop);

@@ -34,6 +34,20 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		private Graphic source;
 
+		public override void Prepare(IImageComponent source) {
+
+			base.Prepare(source);
+
+			this.source = this.image.GetGraphicSource();
+
+			if (this.source.mainTexture == null) {
+
+				this.source.color = this.startColor;
+
+			}
+
+		}
+
 		public void FadeTo(IImageComponent source, Sprite to, System.Action callback = null) {
 
 			this.FadeTo<Image>(source, to, this.duration, this.fadeIfWasNull, callback, DataType.Sprite);
@@ -73,6 +87,30 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 			var isMaterial = (dataType == DataType.Material);
 			var hasSourceTexture = false;
 
+			var hasChanged = false;
+			if (isMaterial == true) {
+
+				hasChanged = (this.source.material != to);
+
+			} else if (isTexture == true) {
+
+				var sourceImage = this.image.GetRawImageSource();
+				hasChanged = (sourceImage.texture != to);
+
+			} else if (isSprite == true) {
+
+				var sourceImage = this.image.GetImageSource();
+				hasChanged = (sourceImage.sprite != to);
+
+			}
+
+			if (hasChanged == false) {
+
+				if (callback != null) callback.Invoke();
+				return;
+
+			}
+
 			var copy = this.MakeCopy<T>();
 
 			if (isMaterial == true) {
@@ -86,6 +124,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				var copyImage = (copy as RawImage);
 				hasSourceTexture = (sourceImage.texture != null);
 
+				copyImage.material = this.source.material;
 				copyImage.texture = to as Texture;
 				copyImage.uvRect = sourceImage.uvRect;
 
@@ -95,6 +134,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				var copyImage = (copy as Image);
 				hasSourceTexture = (sourceImage.sprite != null);
 
+				copyImage.material = this.source.material;
 				copyImage.sprite = to as Sprite;
 				copyImage.preserveAspect = sourceImage.preserveAspect;
 				copyImage.fillAmount = sourceImage.fillAmount;

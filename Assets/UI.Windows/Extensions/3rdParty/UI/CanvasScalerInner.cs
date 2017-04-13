@@ -71,9 +71,10 @@ namespace ME {
 
 				var window = this.windowObject.GetWindow<UnityEngine.UI.Windows.Types.LayoutWindowType>();
 				if (window != null) {
-					
+
+					var currentLayout = window.GetCurrentLayout();
 					this.rootScaler = window.GetCanvasScaler();
-					this.rootTransform = window.GetCurrentLayout().GetRoot() as RectTransform;
+					if (currentLayout != null) this.rootTransform = currentLayout.GetRoot() as RectTransform;
 
 				}
 
@@ -99,7 +100,7 @@ namespace ME {
 
 			}
 
-			this.tracker.Add(this, this.rect, DrivenTransformProperties.Scale | DrivenTransformProperties.AnchoredPosition | DrivenTransformProperties.SizeDelta);
+			this.tracker.Add(this, this.rect, DrivenTransformProperties.Scale | DrivenTransformProperties.AnchoredPosition | DrivenTransformProperties.SizeDelta | DrivenTransformProperties.Pivot | DrivenTransformProperties.Anchors);
 
 		}
 
@@ -142,6 +143,9 @@ namespace ME {
 			if (this.rect == null) {
 
 				this.rect = this.GetComponent<RectTransform>();
+				this.rect.anchorMin = Vector2.one * 0.5f;
+				this.rect.anchorMax = Vector2.one * 0.5f;
+				this.rect.pivot = Vector2.one * 0.5f;
 
 			}
 

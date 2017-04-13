@@ -502,7 +502,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public void ForEach<T>(System.Action<T, int> onItem = null) where T : IComponent {
 
-			this.ForEach<T>((element, index) => {
+			this.ForEach((element, index) => {
 
 				if (onItem != null) onItem.Invoke((T)element, index);
 

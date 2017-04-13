@@ -949,8 +949,9 @@ namespace UnityEngine.UI.Windows.Types {
 		}
 		
 		public Transform GetRoot() {
-			
-			return this.GetLayoutInstance().transform;
+
+			var instance = this.GetLayoutInstance();
+			return (instance != null ? instance.transform : null);
 			
 		}
 

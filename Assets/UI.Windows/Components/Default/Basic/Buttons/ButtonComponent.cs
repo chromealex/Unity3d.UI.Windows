@@ -861,7 +861,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			}
 	
-			public bool GetLoop() {
+		public bool IsLoop() {
 				
 				return this.loop;
 	

@@ -9,7 +9,6 @@ namespace UnityEngine.UI.Windows.Components {
 		[Header("Button: Base")]
 		[ParamFlag(ParameterFlag.P1)] public bool interactableByDefault = true;
 		[ParamFlag(ParameterFlag.P11)] public bool selectByDefault = false;
-		[ParamFlag(ParameterFlag.P2)] public ComponentEvent callback = new ComponentEvent();
 		[ParamFlag(ParameterFlag.P12)] public Navigation.Mode navigationMode = Navigation.Mode.Automatic;
 
 		[Header("Button: SFX")]
@@ -27,12 +26,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public virtual void Setup(IButtonComponent component) {
 			
 			if (this.IsChanged(ParameterFlag.P1) == true) component.SetEnabledState(this.interactableByDefault);
-			if (this.IsChanged(ParameterFlag.P2) == true) {
 
-				component.SetCallback(() => this.callback.Invoke());
-
-			}
-			
 			if (this.IsChanged(ParameterFlag.P3) == true) component.SetHoverState(this.hoverIsActive);
 			if (this.IsChanged(ParameterFlag.P4) == true) component.SetHoverOnAnyPointerState(this.hoverOnAnyPointerState);
 
