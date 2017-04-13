@@ -31,6 +31,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 	public class CarouselComponent : ListComponent, ILayoutSelfController, ILayoutGroup, IDragHandler, IBeginDragHandler, IEndDragHandler, IScrollHandler {
 
+		public enum SwitchBehaviour : byte {
+			HideContent,
+			ScaleContent,
+		};
+
 		public enum Axis : byte {
 			Horizontal,
 			Vertical
@@ -57,6 +62,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public ArrowsComponent arrows;
 
 		[Header("Parameters")]
+		public SwitchBehaviour switchBehaviour = SwitchBehaviour.HideContent;
 		public Axis axis;
 		public bool cyclical = false;
 		public float maxVisualCount = 1f;
@@ -370,12 +376,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (normalizedValue <= 0f || normalizedValue >= 1f) {
 
-				this.SetActive(elementRect, false);
+				this.SetActive(elementRect, component, false);
 				return false;
 
 			}
 
-			this.SetActive(elementRect, true);
+			this.SetActive(elementRect, component, true);
 
 			var s = normalizedValue - 0.5f;
 			var abs = Mathf.Abs(s) * 2f;
@@ -472,15 +478,31 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetActive(RectTransform obj, bool state) {
+		public void SetActive(RectTransform obj, WindowComponent component, bool state) {
 
 			if (state == true) {
 
-				obj.localScale = Vector3.one;
+				if (this.switchBehaviour == SwitchBehaviour.HideContent) {
+
+					component.Hide(AppearanceParameters.Default().ReplaceImmediately(immediately: true));
+
+				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
+
+					obj.localScale = Vector3.one;
+
+				}
 
 			} else {
 
-				obj.localScale = Vector3.zero;
+				if (this.switchBehaviour == SwitchBehaviour.HideContent) {
+
+					component.Show(AppearanceParameters.Default().ReplaceImmediately(immediately: true));
+
+				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
+
+					obj.localScale = Vector3.zero;
+
+				}
 
 			}
 
