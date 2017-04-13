@@ -4,11 +4,11 @@ using System.Collections;
 namespace UnityEngine.UI.Windows.Components {
 
 	[System.Serializable]
-	public class LinkerComponentProxy<T> where T : WindowComponent {
+	public class LinkerComponentProxy {
 		
-		[SerializeField] private T component;
+		public WindowComponent component;
 
-		public T Get() {
+		public T Get<T>() where T : WindowComponent {
 			
 			var linker = this.component as LinkerComponent;
 			if (linker != null) {
@@ -17,7 +17,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			return this.component;
+			return this.component as T;
 
 		}
 
