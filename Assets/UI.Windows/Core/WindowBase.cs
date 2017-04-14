@@ -186,7 +186,7 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnCameraReset() {
 		}
 
-		public bool IsVisibile() {
+		public bool IsVisible() {
 
 			return (this.GetState() == WindowObjectState.Showing || this.GetState() == WindowObjectState.Shown);
 

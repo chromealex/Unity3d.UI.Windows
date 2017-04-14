@@ -484,7 +484,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (this.switchBehaviour == SwitchBehaviour.HideContent) {
 
-					component.Hide(AppearanceParameters.Default().ReplaceImmediately(immediately: true));
+					component.Show(AppearanceParameters.Default().ReplaceImmediately(immediately: true));
 
 				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
 
@@ -496,7 +496,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (this.switchBehaviour == SwitchBehaviour.HideContent) {
 
-					component.Show(AppearanceParameters.Default().ReplaceImmediately(immediately: true));
+					component.Hide(AppearanceParameters.Default().ReplaceImmediately(immediately: true));
 
 				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
 

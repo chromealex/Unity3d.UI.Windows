@@ -830,7 +830,7 @@ namespace UnityEngine.UI.Windows {
 
 				var window = allWindows[i];
 				if (window == null) continue;
-				if (window.IsVisibile() == false) continue;
+				if (window.IsVisible() == false) continue;
 				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
 
 					//Debug.Log("SetInactive: " + window);
@@ -856,7 +856,7 @@ namespace UnityEngine.UI.Windows {
 
 				var window = allWindows[i];
 				if (window == null) continue;
-				if (window.IsVisibile() == false) continue;
+				if (window.IsVisible() == false) continue;
 				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
 					
 					window.SetActive();
@@ -880,7 +880,7 @@ namespace UnityEngine.UI.Windows {
 
 				var window = allWindows[i];
 				if (window == null || window.preferences.sendActiveState == false) continue;
-				if (window.IsVisibile() == false) continue;
+				if (window.IsVisible() == false) continue;
 				if (/*window.preferences.fullCoverage == true &&*/ (window.preferences.layer > layer || (window.preferences.layer == layer && window.GetDepth() > depth))) {
 
 					//Debug.Log("++count: " + window);
@@ -905,7 +905,7 @@ namespace UnityEngine.UI.Windows {
 
 				var window = allWindows[i];
 				if (window == null || window.preferences.sendActiveState == false) continue;
-				if (window.IsVisibile() == false) continue;
+				if (window.IsVisible() == false) continue;
 				if ((window.preferences.layer > layer || (window.preferences.layer == layer && window.GetDepth() > depth))) {
 
 					if (window.preferences.fullCoverage == true) {
@@ -2261,7 +2261,7 @@ namespace UnityEngine.UI.Windows {
 					
 					if (windowInstance.preferences.showInSequence == true) {
 						
-						var openedInstance = WindowSystem.FindOpened<T>(x => x != instance && x.IsVisibile() == true, last: true);
+						var openedInstance = WindowSystem.FindOpened<T>(x => x != instance && x.IsVisible() == true, last: true);
 						if (openedInstance != null) {
 							
 							UnityAction action = null;

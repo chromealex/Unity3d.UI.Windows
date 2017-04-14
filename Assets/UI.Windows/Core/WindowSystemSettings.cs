@@ -111,8 +111,8 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 				this.farClipPlane = other.farClipPlane;
 				this.useOcclusionCulling = other.useOcclusionCulling;
 				#if UNITY_5_6_OR_NEWER
-				this.hdr = other.allowHDR;
-				this.msaa = other.allowMSAA;
+				this.hdr = other.hdr;
+				this.msaa = other.msaa;
 				#else
 				this.hdr = other.hdr;
 				#endif

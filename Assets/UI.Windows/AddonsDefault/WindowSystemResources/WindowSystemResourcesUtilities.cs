@@ -24,7 +24,7 @@ namespace UnityEngine.UI.Windows.Plugins.Resources {
 			}
 
 			// Look up cache storage
-			/*if (resource == null) {
+			if (resource == null) {
 
 				var path = Utilities.GetCachePath(groupName, filename);
 				//Debug.Log("CCH: " + path);
@@ -34,7 +34,7 @@ namespace UnityEngine.UI.Windows.Plugins.Resources {
 
 				}
 
-			}*/
+			}
 
 			// Create web request
 			if (resource == null) {
