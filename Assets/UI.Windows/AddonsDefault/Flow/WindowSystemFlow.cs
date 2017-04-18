@@ -395,6 +395,35 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+			WindowSystemFlow.RefreshAll();
+
+		}
+
+		[UnityEditor.MenuItem("Window/UI.Windows: Tools/Refresh All")]
+		public static void RefreshAll() {
+
+			var obj = Object.FindObjectOfType<WindowSystemFlow>();
+			if (obj != null) {
+
+				var flow = obj.GetBaseFlow();
+				if (flow != null) {
+
+					flow.Setup();
+					flow.RefreshAllScreens();
+					Debug.Log("Done.");
+
+				} else {
+
+					Debug.LogWarning("`WindowSystemFlow` FlowData was not set.");
+
+				}
+
+			} else {
+
+				Debug.LogWarning("`WindowSystemFlow` was not found on the scene.");
+
+			}
+
 		}
 		#endif
 

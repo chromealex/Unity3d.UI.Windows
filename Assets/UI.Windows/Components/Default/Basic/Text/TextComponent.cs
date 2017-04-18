@@ -376,7 +376,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		private void SetText_INTERNAL(string text) {
-			
+
+			if (text == null) text = string.Empty;
+
 			if (this.text != null) {
 
 				bool supportRichText = false;

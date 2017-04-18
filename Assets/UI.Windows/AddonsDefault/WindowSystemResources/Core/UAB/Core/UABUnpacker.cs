@@ -29,7 +29,7 @@ namespace ME.UAB {
 
 				var go = this.Unpack(package.objects[i], serializers);
 				go.hideFlags = HideFlags.HideAndDontSave;
-				GameObject.DontDestroyOnLoad(go);
+				if (Application.isPlaying == true) GameObject.DontDestroyOnLoad(go);
 				gos[i] = go;
 
 			}

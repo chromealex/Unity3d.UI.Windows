@@ -614,6 +614,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		private WindowBase lastInstance;
+		private WindowBase topInstance;
 		//private WindowBase previousInstance;
 		protected virtual void LateUpdate() {
 
@@ -958,35 +959,36 @@ namespace UnityEngine.UI.Windows {
 			if (WindowSystem.instance == null) return;
 
 			WindowBase lastInstance = null;
-
-			/*if (WindowSystem.instance.historyEnabled == true) {
-
-				lastInstance = WindowSystem.GetWindow((item) => item.window != null && (item.state == WindowObjectState.Shown || item.state == WindowObjectState.Showing), (item) => (item.GetState() == WindowObjectState.Shown || item.GetState() == WindowObjectState.Showing));
-
-			} else {*/
-
-			lastInstance = WindowSystem.FindOpened<WindowBase>((item) => item != null /*&& item.preferences.IsHistoryActive() == true*/ && (item.GetState() == WindowObjectState.Shown || item.GetState() == WindowObjectState.Showing), last: true);
-
-			//}
-
-			/*if (lastInstance != WindowSystem.instance.lastInstance) {
-
-				WindowSystem.instance.previousInstance = WindowSystem.instance.lastInstance;
-
-			}*/
+			lastInstance = WindowSystem.FindOpened<WindowBase>((item) => item != null && item.preferences.IsHistoryActive() == true && (item.GetState() == WindowObjectState.Shown || item.GetState() == WindowObjectState.Showing), last: true);
 
 			WindowSystem.instance.lastInstance = lastInstance;
-
 			if (WindowSystem.instance.lastInstance == null) WindowSystem.instance.lastInstance = null;
-			//if (WindowSystem.instance.previousInstance == null) WindowSystem.instance.previousInstance = null;
 
-			//WindowSystem.instance.LateUpdate();
+		}
 
-			/*if (WindowSystem.instance.lastInstance != null) {
-				
-				WindowSystem.instance.lastInstance.SetActive();
-				
-			}*/
+		public static void UpdateTopInstance() {
+
+			if (WindowSystem.instance == null) return;
+
+			WindowBase topWindow = null;
+			var layer = DepthLayer.BackLayer4;
+			var depth = float.MinValue;
+
+			for (int i = 0, count = WindowSystem.instance.currentWindows.Count; i < count; ++i) {
+
+				var window = WindowSystem.instance.currentWindows[i];
+				if (window.preferences.IsHistoryActive() == true && (window.preferences.layer > layer || (window.preferences.layer == layer && window.GetDepth() > depth))) {
+
+					topWindow = window;
+					depth = window.GetDepth();
+					layer = window.preferences.layer;
+
+				}
+
+			}
+
+			WindowSystem.instance.topInstance = topWindow;
+			if (WindowSystem.instance.topInstance == null) WindowSystem.instance.topInstance = null;
 
 		}
 
@@ -1258,6 +1260,7 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			WindowSystem.UpdateLastInstance();
+			WindowSystem.UpdateTopInstance();
 
 		}
 
@@ -1285,9 +1288,10 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			WindowSystem.UpdateLastInstance();
+			WindowSystem.UpdateTopInstance();
 
 		}
-		
+
 		/// <summary>
 		/// Gets the current window
 		/// </summary>
@@ -1297,9 +1301,21 @@ namespace UnityEngine.UI.Windows {
 			if (WindowSystem.instance == null) return null;
 
 			return WindowSystem.instance.lastInstance;
-			
+
 		}
-		
+
+		/// <summary>
+		/// Gets the top window
+		/// </summary>
+		/// <returns>The top window.</returns>
+		public static WindowBase GetTopWindow() {
+
+			if (WindowSystem.instance == null) return null;
+
+			return WindowSystem.instance.topInstance;
+
+		}
+
 		/// <summary>
 		/// Gets the previous window (Last opened)
 		/// </summary>

@@ -57,6 +57,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				this.scrollRect.onMovingBeginEvent.AddListener(this.OnMovingContentBegin);
 				this.scrollRect.onMovingEndEvent.AddListener(this.OnMovingContentEnd);
+				this.scrollRect.onValueChanged.AddListener(this.OnMovingContent);
 
 			}
 
@@ -72,6 +73,7 @@ namespace UnityEngine.UI.Windows.Components {
 				
 				this.scrollRect.onMovingBeginEvent.RemoveListener(this.OnMovingContentBegin);
 				this.scrollRect.onMovingEndEvent.RemoveListener(this.OnMovingContentEnd);
+				this.scrollRect.onValueChanged.RemoveListener(this.OnMovingContent);
 
 			}
 
@@ -110,6 +112,12 @@ namespace UnityEngine.UI.Windows.Components {
 		protected virtual void OnMovingContentEnd() {
 
 			this.TryToHideScrollbars();
+
+		}
+
+		protected virtual void OnMovingContent(Vector2 delta) {
+
+			this.UpdateBottomTop();
 
 		}
 

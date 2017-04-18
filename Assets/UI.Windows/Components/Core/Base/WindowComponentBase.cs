@@ -749,9 +749,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		[HideInInspector]
+		[ME.UAB.BundleIgnore][HideInInspector]
 		private List<TransitionInputParameters> componentsToDestroy = new List<TransitionInputParameters>();
-		[HideInInspector][SerializeField]
+		[ME.UAB.BundleIgnore][HideInInspector][SerializeField]
 		private WindowAnimationBase lastAnimation;
 
 		private void Update_EDITOR() {

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2d27e5266da94455aa238570a55c11f, type: 3}
+  m_Name: DefaultWindowSystemSettings
+  m_EditorClassIdentifier: 
+  baseInfo:
+    turnOffCameraRenderOnly: 0
+    restoreSelectedElement: 0
+    poolSize: 1000
+    preallocatedWindowsPoolSize: 0
+    zDepthStep: 200
+    depthLayers:
+    - layer: -4
+      minDepth: -89
+      maxDepth: -70
+      minZDepth: -40000
+    - layer: -3
+      minDepth: -69
+      maxDepth: -50
+      minZDepth: -30000
+    - layer: -2
+      minDepth: -49
+      maxDepth: -30
+      minZDepth: -20000
+    - layer: -1
+      minDepth: -29
+      maxDepth: -10
+      minZDepth: -10000
+    - layer: 0
+      minDepth: 1
+      maxDepth: 20
+      minZDepth: 0
+    - layer: 1
+      minDepth: 21
+      maxDepth: 40
+      minZDepth: 10000
+    - layer: 2
+      minDepth: 41
+      maxDepth: 60
+      minZDepth: 20000
+    - layer: 3
+      minDepth: 61
+      maxDepth: 80
+      minZDepth: 30000
+    - layer: 4
+      minDepth: 81
+      maxDepth: 100
+      minZDepth: 40000
+  canvas:
+    overridePixelPerfect: 1
+    pixelPerfect: 0
+    sortingLayerName: Windows
+  camera:
+    orthographic: 1
+    orthographicSize: 130
+    fieldOfView: 60
+    nearClipPlane: -100
+    farClipPlane: 100
+    useOcclusionCulling: 0
+    hdr: 0
+    msaa: 0

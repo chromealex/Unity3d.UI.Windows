@@ -22,8 +22,12 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			}
 
+			#if UNITY_5_6_OR_NEWER
+			var movie = task.GetMovieTexture();
+			#else
 			var movie = task.movie;
-
+			#endif
+			
 			asyncOperation.SetValues(isDone: false, progress: 1f, asset: movie);
 
 			task.Dispose();

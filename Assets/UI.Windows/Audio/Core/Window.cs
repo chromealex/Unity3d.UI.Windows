@@ -13,7 +13,7 @@ namespace UnityEngine.UI.Windows.Audio {
 		
 		#if UNITY_EDITOR
 		//[HideInInspector]
-		[FlowDataPopup]
+		[ME.UAB.BundleIgnore][FlowDataPopup]
 		public FlowData flowData;
 		#endif
 		
@@ -56,7 +56,7 @@ namespace UnityEngine.UI.Windows.Audio {
 		#if UNITY_EDITOR
 		[Header("Source")]
 		//[HideInInspector]
-		[FlowDataPopup]
+		[ME.UAB.BundleIgnore][FlowDataPopup]
 		public FlowData flowData;
 		#endif
 
