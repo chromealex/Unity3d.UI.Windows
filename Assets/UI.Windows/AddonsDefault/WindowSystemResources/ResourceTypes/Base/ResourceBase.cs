@@ -236,8 +236,11 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				if (string.IsNullOrEmpty(www.error) == true) {
-					
+#if UNITY_5_6_OR_NEWER
+					var clip = www.GetAudioClip();
+#else
 					var clip = www.audioClip;
+#endif
 					//Debug.Log("Callback!");
 					callback.Invoke(clip);
 
