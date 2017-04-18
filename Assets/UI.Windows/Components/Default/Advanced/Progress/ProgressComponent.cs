@@ -511,18 +511,19 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		private void SetValue_INTERNAL(float value)
-		{
-			value *= inputValueMultiplier;
-
+		private void SetValue_INTERNAL(float value) {
+			
+			value *= this.inputValueMultiplier;
+			
 			this.currentValue = value;
 			this.bar.normalizedValue = value;
-
+			
 			if (this.continious == false) {
 
 				this.bar.normalizedValue = Mathf.Clamp(this.bar.normalizedValue, this.minNormalizedValue, 1f);
+				
 			}
-
+			
 		}
 
 		public float GetValue() {
