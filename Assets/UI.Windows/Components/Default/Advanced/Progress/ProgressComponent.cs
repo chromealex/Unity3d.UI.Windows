@@ -13,7 +13,10 @@ namespace UnityEngine.UI.Windows.Components {
 		public float duration = 1f;
 		public float minNormalizedValue = 0f;
 		public Extensions.Slider bar;
-		
+
+		[Header("Input value modification")]
+		public float inputValueMultiplier = 1f;
+
 		[Header("Continious")]
 		public bool continious;
 		[ReadOnly("continious", state: false)][Range(0f, 1f, order = 2)]
@@ -510,15 +513,17 @@ namespace UnityEngine.UI.Windows.Components {
 
 		private void SetValue_INTERNAL(float value) {
 			
+			value *= this.inputValueMultiplier;
+			
 			this.currentValue = value;
 			this.bar.normalizedValue = value;
-
+			
 			if (this.continious == false) {
 
 				this.bar.normalizedValue = Mathf.Clamp(this.bar.normalizedValue, this.minNormalizedValue, 1f);
-
+				
 			}
-
+			
 		}
 
 		public float GetValue() {
