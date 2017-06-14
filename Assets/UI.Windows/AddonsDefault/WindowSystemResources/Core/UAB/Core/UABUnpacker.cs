@@ -53,11 +53,14 @@ namespace ME.UAB {
 		#region Unpack
 		public GameObject Unpack(UABGameObject root, List<ISerializer> serializers) {
 
-			return this.Unpack(root, null, serializers);
+			System.Action nextStep = null;
+			var go = this.Unpack(root, null, serializers, ref nextStep);
+			nextStep.Invoke();
+			return go;
 
 		}
 
-		public GameObject Unpack(UABGameObject root, Transform parent, List<ISerializer> serializers) {
+		private GameObject Unpack(UABGameObject root, Transform parent, List<ISerializer> serializers, ref System.Action nextStep) {
 			
 			var go = new GameObject(root.name);
 			go.tag = root.tag;
@@ -86,13 +89,19 @@ namespace ME.UAB {
 
 				} else {
 
-					c = go.AddComponent(type);
+					if (type == typeof(ParticleSystemRenderer)) {
+
+						c = go.GetComponent<ParticleSystemRenderer>();
+
+					}
+
+					if (c == null) c = go.AddComponent(type);
 
 				}
 
 				if (c == null) {
 
-					throw new UnityException("Package malformed. Type was not found: " + root.components[i].type);
+					throw new UnityException(string.Format("Package malformed. Type was not found: {0}", root.components[i].type));
 
 				} else {
 
@@ -103,19 +112,32 @@ namespace ME.UAB {
 
 			}
 
+			System.Action[] childsNextStep = new System.Action[root.childs.Length];
 			for (int i = 0; i < root.childs.Length; ++i) {
 
-				this.Unpack(root.childs[i], go.transform, serializers);
+				var childNextStep = childsNextStep[i];
+				this.Unpack(root.childs[i], go.transform, serializers, ref childNextStep);
+				childsNextStep[i] = childNextStep;
 
 			}
 
-			for (int i = 0; i < root.components.Length; ++i) {
+			nextStep = () => {
 
-				this.Unpack(tempList[i], root.components[i], serializers);
+				for (int i = 0; i < childsNextStep.Length; ++i) {
 
-			}
+					childsNextStep[i].Invoke();
 
-			ListPool<Component>.Release(tempList);
+				}
+
+				for (int i = 0; i < root.components.Length; ++i) {
+
+					this.Unpack(tempList[i], root.components[i], serializers);
+
+				}
+
+				ListPool<Component>.Release(tempList);
+
+			};
 
 			return go;
 

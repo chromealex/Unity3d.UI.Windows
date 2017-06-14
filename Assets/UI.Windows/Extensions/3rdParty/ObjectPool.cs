@@ -368,9 +368,10 @@ namespace UnityEngine.Extensions {
 
 			prefab.RecycleAll();
 
-			if (instance.objectLookup.ContainsKey(prefab)) {
+			List<Component> prefabs;
+			if (instance.objectLookup.TryGetValue(prefab, out prefabs) == true) {
 
-				foreach (var item in instance.objectLookup[prefab]) {
+				foreach (var item in prefabs) {
 					
 					if (item != null) GameObject.Destroy(item.gameObject);
 					instance.prefabLookup.Remove(item);
@@ -378,7 +379,7 @@ namespace UnityEngine.Extensions {
 
 				}
 				
-				instance.objectLookup[prefab].Clear();
+				prefabs.Clear();
 				instance.objectLookup.Remove(prefab);
 
 			}
@@ -389,7 +390,7 @@ namespace UnityEngine.Extensions {
 
 			if (prefab == null) return;
 			
-			if (!instance.objectLookup.ContainsKey(prefab)) {
+			if (instance.objectLookup.ContainsKey(prefab) == false) {
 
                 instance.objectLookup.Add(prefab, new List<Component>());
 				
@@ -744,6 +745,18 @@ namespace UnityEngine.Extensions {
 	};
 
 	public static class TransformExtensions {
+
+		public static void SetPivot(this RectTransform rectTransform, Vector2 pivot) {
+			
+			if (rectTransform == null) return;
+
+			Vector2 size = rectTransform.rect.size;
+			Vector2 deltaPivot = rectTransform.pivot - pivot;
+			Vector3 deltaPosition = new Vector3(deltaPivot.x * size.x, deltaPivot.y * size.y);
+			rectTransform.pivot = pivot;
+			rectTransform.localPosition -= deltaPosition;
+
+		}
 
 		public static void ResetTransform<T>(this T source, TransformEntity entities = TransformEntity.All) where T : Component {
 

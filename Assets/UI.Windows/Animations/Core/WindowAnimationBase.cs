@@ -13,9 +13,12 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			public void ApplyInputParameters(WindowComponentBase layoutElement) {
 
-				var component = layoutElement.gameObject.AddComponent(System.Type.GetType("UnityEngine.UI.Windows.Animations." + this.transition.GetType().Name + "Parameters")) as TransitionInputParameters;
+				var component = layoutElement.gameObject.AddComponent(System.Type.GetType(string.Format("UnityEngine.UI.Windows.Animations.{0}Parameters", this.transition.GetType().Name))) as TransitionInputParameters;
 				component.SetDefaultParameters(this.GetDefaultInputParameters());
 				layoutElement.animationInputParams.Add(component);
+				#if UNITY_EDITOR
+				component.OnValidate();
+				#endif
 
 			}
 
@@ -147,7 +150,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			if (this.CheckMismatch(window, parameters) == false) {
 
-				if (callback != null) callback();
+				if (callback != null) callback.Invoke();
 				return;
 
 			}
@@ -179,7 +182,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			}
 
-			if (callbacker == null && callback != null) callback();
+			if (callbacker == null && callback != null) callback.Invoke();
 
 		}
 

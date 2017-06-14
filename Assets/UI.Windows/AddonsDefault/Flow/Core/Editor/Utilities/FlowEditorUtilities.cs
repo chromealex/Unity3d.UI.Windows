@@ -4,15 +4,60 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI.Windows;
 
 namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 	public class FlowEditorUtilities {
 
+		public static void CollectCallVariations(WindowBase screen, System.Action<System.Type[], string[]> onEveryVariation) {
+
+			if (screen != null) {
+
+				var methods = screen.GetType().GetMethods().Where((info) => info.IsVirtual == false && info.Name == "OnParametersPass").ToList();
+				for (int i = 0; i < methods.Count; ++i) {
+
+					var notValid = false;
+					var attrs = methods[i].GetCustomAttributes(true);
+					foreach (var attr in attrs) {
+
+						if (attr is CompilerIgnore) {
+
+							notValid = true;
+							break;
+
+						}
+
+					}
+
+					if (notValid == true) continue;
+
+					var method = methods[i];
+					var parameters = method.GetParameters();
+
+					var listTypes = new List<System.Type>();
+					var listNames = new List<string>();
+					foreach (var p in parameters) {
+
+						listTypes.Add(p.ParameterType);
+						listNames.Add(p.Name);
+
+					}
+
+					onEveryVariation(listTypes.ToArray(), listNames.ToArray());
+
+				}
+
+			}
+
+		}
+
 		public static bool IsValidPackageContainer(string path) {
 
 			try {
 
+                return System.IO.File.Exists(System.IO.Path.Combine(path, ".uiwscontainer"));
+                /*
 				var files = System.IO.Directory.GetFiles(path);
 				foreach (var file in files) {
 
@@ -29,7 +74,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 					}
 
-				}
+				}*/
 
 			} catch (Exception) {
 			}
@@ -40,7 +85,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public static bool IsValidPackage(string path) {
 
-			return ME.Utilities.CacheByFrame<bool>("FlowEditorUtilities.IsValidPackage." + path, () => {
+            return System.IO.File.Exists(System.IO.Path.Combine(path, ".uiwspackage"));
+
+			/*return ME.Utilities.CacheByFrame<bool>("FlowEditorUtilities.IsValidPackage." + path, () => {
 
 				if (System.IO.Directory.Exists(path) == true) {
 					
@@ -58,7 +105,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				return false;
 
-			});
+			});*/
 
 		}
 

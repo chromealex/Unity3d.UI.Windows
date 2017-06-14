@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &100512
 GameObject:
   m_ObjectHideFlags: 1
@@ -285,6 +285,8 @@ MonoBehaviour:
   canvas: {fileID: 22334116}
   raycaster: {fileID: 11480016}
   orderDelta: 1
+  overridePixelPerfect: 0
+  pixelPrefect: 1
   raycasterSource: {fileID: 0}
 --- !u!114 &11470026
 MonoBehaviour:
@@ -301,7 +303,7 @@ MonoBehaviour:
   navigationGroup:
     enabled: 0
     navigationComponents: []
-  autoRegisterInRoot: 1
+  autoRegisterInRoot: 0
   autoRegisterSubComponents: 1
   setInactiveOnHiddenState: 1
   showOnStart: 1
@@ -333,6 +335,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
+    readableTexture: 0
     id: -1006417247
     cacheVersion: 0
     streamingAssetsPathStandalone: 
@@ -357,6 +360,7 @@ MonoBehaviour:
     controlType: 0
     tempObject: {fileID: 11494848, guid: 9959008b987df46258fa3debc5c649b5, type: 2}
   prefabParameters: {fileID: 0}
+  autoload: 1
   fitToRoot: 1
   _instance: {fileID: 0}
 --- !u!114 &11473206
@@ -379,8 +383,7 @@ MonoBehaviour:
   setInactiveOnHiddenState: 1
   showOnStart: 1
   rootComponent: {fileID: 0}
-  subComponents:
-  - {fileID: 11470026}
+  subComponents: []
   currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
@@ -433,18 +436,18 @@ MonoBehaviour:
   list: []
   source: {fileID: 11470026}
   scrollRect: {fileID: 0}
-  content: {fileID: 0}
-  noElements: {fileID: 0}
+  content: {fileID: 197484}
+  noElements: {fileID: 100514}
   loading: {fileID: 0}
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
   scrollbarVisibility: 1
   horizontalScrollbar: {fileID: 0}
   verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 11497478}
-  navigationMode: 0
-  navigationInverse: 0
 --- !u!114 &11473208
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -531,6 +534,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   layoutElement: {fileID: 11497480}
+  manualMoving: 0
 --- !u!114 &11473226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -578,7 +582,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 11473230}
   m_HandleRect: {fileID: 22473218}
   m_Direction: 2
   m_Value: 0
@@ -723,6 +727,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -730,6 +735,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -737,6 +743,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
 --- !u!114 &11497476
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -897,10 +904,10 @@ RectTransform:
   - {fileID: 22473210}
   m_Father: {fileID: 22473206}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 122.5, y: -22.5}
-  m_SizeDelta: {x: 235, y: 25}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22400512
 RectTransform:
@@ -965,7 +972,7 @@ RectTransform:
   m_GameObject: {fileID: 173206}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22400510}
@@ -976,7 +983,7 @@ RectTransform:
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22473208
 RectTransform:
   m_ObjectHideFlags: 1
@@ -991,10 +998,10 @@ RectTransform:
   - {fileID: 22497484}
   m_Father: {fileID: 22400510}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 115, y: -12.5}
-  m_SizeDelta: {x: 230, y: 25}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22473210
 RectTransform:
@@ -1010,10 +1017,10 @@ RectTransform:
   - {fileID: 22473218}
   m_Father: {fileID: 22400510}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 235, y: -12.5}
-  m_SizeDelta: {x: 5, y: 25}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &22473218
 RectTransform:
@@ -1047,10 +1054,10 @@ RectTransform:
   - {fileID: 22470026}
   m_Father: {fileID: 22473208}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 115, y: 0}
-  m_SizeDelta: {x: 230, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &22591026
 CanvasGroup:

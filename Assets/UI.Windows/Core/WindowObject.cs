@@ -17,7 +17,7 @@ namespace UnityEngine.UI.Windows {
 	public interface IWindow : IWindowObject {
 	};
 
-	public class WindowObject : MonoBehaviour, IWindowObject {
+	public abstract class WindowObject : MonoBehaviour, IWindowObject {
 
 		[HideInInspector]
 		private WindowBase window;
@@ -106,7 +106,7 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the validate event. Editor Only.
 		/// </summary>
-		public void OnValidate() {
+		public virtual void OnValidate() {
 
 			if (Application.isPlaying == true) return;
 			if (UnityEditor.EditorApplication.isUpdating == true) return;

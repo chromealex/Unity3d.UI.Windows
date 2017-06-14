@@ -141,3 +141,14 @@ extern "C" void VideoPlayer_Play(unsigned index, bool loop)
     VideoPlayerToTexture* player = (VideoPlayerToTexture*)players[index];
     [player play:loop];
 }
+
+extern "C" void VideoPlayer_Pause(unsigned index)
+{
+    if (index >= [players count])
+    {
+        return;
+    }
+    
+    VideoPlayerToTexture* player = (VideoPlayerToTexture*)players[index];
+    [player pause];
+}

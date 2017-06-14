@@ -92,18 +92,22 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 
 		}
 
+		public bool IsEmpty() {
+
+			#if UNITY_EDITOR
+			return this.window == null;
+			#else
+			return string.IsNullOrEmpty(this.resourcesPath);
+			#endif
+
+		}
+
 		#if UNITY_EDITOR
 		[Header("Editor Only")]
 		public WindowBase window;
 		[ReadOnly] public string name;
 		[ReadOnly] public bool loadableResource;
 		[ReadOnly] public string assetPath;
-
-		public bool IsEmpty() {
-
-			return this.window == null;
-
-		}
 
 		public void Validate() {
 

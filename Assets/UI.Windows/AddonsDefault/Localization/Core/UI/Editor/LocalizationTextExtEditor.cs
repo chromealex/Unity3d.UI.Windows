@@ -7,7 +7,7 @@ using UnityEditor.UI.Windows.Hierarchy;
 
 namespace UnityEditor.UI.Windows.Plugins.Localization.UI {
 
-	[CustomPropertyDrawer(typeof(TextAreaAttribute))]
+	/*[CustomPropertyDrawer(typeof(TextAreaAttribute))]
 	public class TextDrawer : PropertyDrawer {
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
@@ -24,8 +24,6 @@ namespace UnityEditor.UI.Windows.Plugins.Localization.UI {
 			var locText = property.serializedObject.targetObject as LocalizationText;
 			if (text != null && property.serializedObject.targetObject.GetType() == typeof(UnityEngine.UI.Text)) {
 
-				/*EditorGUI.LabelField(position, label);
-				property.stringValue = EditorGUI.TextArea(new Rect(position.x, position.y + 16f, position.width, position.height - 16f), property.stringValue);*/
 				EditorGUILayout.LabelField(label);
 				property.stringValue = EditorGUILayout.TextArea(property.stringValue, GUILayout.MinHeight(40f));
 
@@ -39,8 +37,6 @@ namespace UnityEditor.UI.Windows.Plugins.Localization.UI {
 
 			} else if (locText != null && property.serializedObject.targetObject.GetType() == typeof(LocalizationText)) {
 
-				/*EditorGUI.LabelField(position, label);
-				property.stringValue = EditorGUI.TextArea(new Rect(position.x, position.y + 16f, position.width, position.height - 16f), property.stringValue);*/
 				EditorGUILayout.LabelField(label);
 				property.stringValue = EditorGUILayout.TextArea(property.stringValue, GUILayout.MinHeight(40f));
 
@@ -65,6 +61,6 @@ namespace UnityEditor.UI.Windows.Plugins.Localization.UI {
 
 		}
 
-	}
+	}*/
 
 }

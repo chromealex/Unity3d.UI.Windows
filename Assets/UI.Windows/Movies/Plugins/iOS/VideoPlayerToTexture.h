@@ -25,6 +25,7 @@
 
 - (void)update;
 
+- (void)pause;
 - (void)play:(BOOL)loop;
 
 - (void)setAudioVolume:(float)volume;

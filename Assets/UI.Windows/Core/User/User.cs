@@ -84,6 +84,7 @@ namespace UnityEngine.UI.Windows.UserInfo {
 			set {
 				
 				this._id = value;
+				if (this.onSetUserId != null) this.onSetUserId.Invoke(value);
 
 			}
 			
@@ -101,6 +102,7 @@ namespace UnityEngine.UI.Windows.UserInfo {
 			set {
 				
 				this._id2 = value;
+				if (this.onSetUserId2 != null) this.onSetUserId2.Invoke(value);
 
 			}
 			
@@ -118,6 +120,7 @@ namespace UnityEngine.UI.Windows.UserInfo {
 			set {
 
 				this._gender = value;
+				if (this.onSetGender != null) this.onSetGender.Invoke(value);
 
 			}
 			
@@ -135,6 +138,7 @@ namespace UnityEngine.UI.Windows.UserInfo {
 			set {
 				
 				this._birthYear = value;
+				if (this.onSetBirthYear != null) this.onSetBirthYear.Invoke(value);
 
 			}
 			

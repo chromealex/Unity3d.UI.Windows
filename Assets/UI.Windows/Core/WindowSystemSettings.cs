@@ -77,10 +77,20 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 
 			}
 
-			public void ApplyEveryInstance(UnityEngine.Canvas canvas) {
+			public void ApplyEveryInstance(UnityEngine.Canvas canvas, WindowBase window) {
 
 				if (this.overridePixelPerfect == true) canvas.pixelPerfect = this.pixelPerfect;
 				canvas.sortingLayerName = this.sortingLayerName;
+
+				if (window != null) {
+					
+					if (window.preferences.overrideCanvasPixelPerfect == true) {
+
+						canvas.pixelPerfect = window.preferences.canvasPixelPerfect;
+
+					}
+
+				}
 
 			}
 
@@ -89,13 +99,33 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 		[System.Serializable]
 		public class Camera {
 
+			public enum Mode : byte {
+
+				Auto = 0,
+				Orthographic,
+				Perspective,
+
+			}
+
 			public bool orthographic = true;
-			[Hidden("orthographic", false)]
+
+			[Header("Orthographic")]
+			[ReadOnly("orthographic", false)]
 			public float orthographicSize = 5f;
-			[Hidden("orthographic", true)]
+			[ReadOnly("orthographic", false)]
+			public float orthographicNearClipPlane = -100f;
+			[ReadOnly("orthographic", false)]
+			public float orthographicFarClipPlane = 100f;
+
+			[Header("Perspective")]
+			[ReadOnly("orthographic", true)]
 			public float fieldOfView = 60f;
-			public float nearClipPlane = -100f;
-			public float farClipPlane = 100f;
+			[ReadOnly("orthographic", true)]
+			public float perspectiveNearClipPlane = 0.001f;
+			[ReadOnly("orthographic", true)]
+			public float perspectiveFarClipPlane = 1000f;
+
+			[Header("Common")]
 			public bool useOcclusionCulling = false;
 			public bool hdr = false;
 			public bool msaa = false;
@@ -107,8 +137,10 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 				this.orthographic = other.orthographic;
 				this.orthographicSize = other.orthographicSize;
 				this.fieldOfView = other.fieldOfView;
-				this.nearClipPlane = other.nearClipPlane;
-				this.farClipPlane = other.farClipPlane;
+				this.orthographicNearClipPlane = other.orthographicNearClipPlane;
+				this.orthographicFarClipPlane = other.orthographicFarClipPlane;
+				this.perspectiveNearClipPlane = other.perspectiveNearClipPlane;
+				this.perspectiveFarClipPlane = other.perspectiveFarClipPlane;
 				this.useOcclusionCulling = other.useOcclusionCulling;
 				#if UNITY_5_6_OR_NEWER
 				this.hdr = other.hdr;
@@ -119,13 +151,37 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 
 			}
 
-			public void Apply(UnityEngine.Camera camera) {
-				
-				camera.orthographic = this.orthographic;
+			public void Apply(UnityEngine.Camera camera, Mode mode = Mode.Auto) {
+
+				var nearClipPlane = 0f;
+				var farClipPlane = 0f;
+				var orthographic = false;
+
+				if (mode == Mode.Auto) {
+					
+					nearClipPlane = (this.orthographic == true ? this.orthographicNearClipPlane : this.perspectiveNearClipPlane);
+					farClipPlane = (this.orthographic == true ? this.orthographicFarClipPlane : this.perspectiveFarClipPlane);
+					orthographic = this.orthographic;
+
+				} else if (mode == Mode.Orthographic) {
+
+					nearClipPlane = this.orthographicNearClipPlane;
+					farClipPlane = this.orthographicFarClipPlane;
+					orthographic = true;
+
+				} else if (mode == Mode.Perspective) {
+
+					nearClipPlane = this.perspectiveNearClipPlane;
+					farClipPlane = this.perspectiveFarClipPlane;
+					orthographic = false;
+
+				}
+
+				camera.orthographic = orthographic;
 				camera.fieldOfView = this.fieldOfView;
 				camera.orthographicSize = this.orthographicSize;
-				camera.nearClipPlane = this.nearClipPlane;
-				camera.farClipPlane = this.farClipPlane;
+				camera.nearClipPlane = nearClipPlane;
+				camera.farClipPlane = farClipPlane;
 				camera.useOcclusionCulling = this.useOcclusionCulling;
 				#if UNITY_5_6_OR_NEWER
 				camera.allowHDR = this.hdr;
@@ -145,17 +201,17 @@ using System.Linq;namespace UnityEngine.UI.Windows {
 		public Canvas canvas;
 		public Camera camera;
 		
-		public void Apply(UnityEngine.Camera camera = null, UnityEngine.Canvas canvas = null) {
+		public void Apply(UnityEngine.Camera camera = null, UnityEngine.Canvas canvas = null, Camera.Mode mode = Camera.Mode.Auto) {
 			
-			if (camera != null) this.camera.Apply(camera);
+			if (camera != null) this.camera.Apply(camera, mode);
 			if (canvas != null) this.canvas.Apply(canvas);
 			
 		}
 		
-		public void ApplyEveryInstance(UnityEngine.Camera camera = null, UnityEngine.Canvas canvas = null) {
+		public void ApplyEveryInstance(UnityEngine.Camera camera = null, UnityEngine.Canvas canvas = null, WindowBase window = null) {
 			
 			if (camera != null) this.camera.ApplyEveryInstance(camera);
-			if (canvas != null) this.canvas.ApplyEveryInstance(canvas);
+			if (canvas != null) this.canvas.ApplyEveryInstance(canvas, window);
 			
 		}
 

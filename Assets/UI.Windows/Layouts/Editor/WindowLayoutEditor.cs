@@ -13,8 +13,11 @@ namespace UnityEditor.UI.Windows {
 	public class WindowLayoutEditor : Editor, IPreviewEditor {
 
 		private bool isDirty = false;
-		
-		public void OnEnable() {
+
+		public void OnEnable() {}
+		public void OnDisable() {}
+
+		/*public void OnEnable() {
 
 			EditorApplication.update += this.ValidateElements;
 
@@ -24,7 +27,7 @@ namespace UnityEditor.UI.Windows {
 
 			EditorApplication.update -= this.ValidateElements;
 
-		}
+		}*/
 
 		public override void OnInspectorGUI() {
 
@@ -106,6 +109,12 @@ namespace UnityEditor.UI.Windows {
 			_target.root.editorRectLocal = (_target.root.transform as RectTransform).rect;
 			
 			(_target.transform as RectTransform).localPosition = pos;
+
+		}
+
+		public override bool HasPreviewGUI() {
+
+			return true;
 
 		}
 
@@ -442,12 +451,6 @@ namespace UnityEditor.UI.Windows {
 
 		}
 
-		public override bool HasPreviewGUI() {
-
-			return true;
-
-		}
-
 		private void ApplyRoot(UnityEngine.UI.Windows.WindowLayout _target) {
 			
 			if (_target.root == null) {
@@ -569,7 +572,8 @@ namespace UnityEditor.UI.Windows {
 			#region SETUP
 			if (_target.initialized == true) {
 				
-				WindowSystem.ApplyToSettings(_target.canvas);
+				//WindowSystem.ApplyToSettings(_target.canvas);
+				_target.OnValidateEditor();
 				
 				// Raycaster
 				if ((_target.raycaster as GraphicRaycaster) != null) {

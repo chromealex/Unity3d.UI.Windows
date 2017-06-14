@@ -24,6 +24,7 @@ namespace UnityEngine.UI.Windows {
 		public class PointerEvent : ME.Events.SimpleEvent {}
 		public static PointerEventKey onPointerUp = new PointerEventKey();
 		public static PointerEventKey onPointerDown = new PointerEventKey();
+		public static PointerEvent onAnyPointerDown = new PointerEvent();
 		public static PointerEvent onAnyKeyDown = new PointerEvent();
 
 		private static PointerEventData scrollEvent;
@@ -73,12 +74,12 @@ namespace UnityEngine.UI.Windows {
 		public override void UpdateModule() {
 			
 			#if UNITY_STANDALONE || UNITY_TVOS || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_EDITOR
-			if (Input.GetMouseButtonDown(0) == true) WindowSystemInput.onPointerDown.Invoke(0);
-			if (Input.GetMouseButtonUp(0) == true) WindowSystemInput.onPointerUp.Invoke(0);
-			if (Input.GetMouseButtonDown(1) == true) WindowSystemInput.onPointerDown.Invoke(1);
-			if (Input.GetMouseButtonUp(1) == true) WindowSystemInput.onPointerUp.Invoke(1);
-			if (Input.GetMouseButtonDown(2) == true) WindowSystemInput.onPointerDown.Invoke(2);
-			if (Input.GetMouseButtonUp(2) == true) WindowSystemInput.onPointerUp.Invoke(2);
+			if (Input.GetMouseButtonDown(0) == true) { WindowSystemInput.onPointerDown.Invoke(0); WindowSystemInput.onAnyPointerDown.Invoke(); }
+			if (Input.GetMouseButtonUp(0) == true) { WindowSystemInput.onPointerUp.Invoke(0); }
+			if (Input.GetMouseButtonDown(1) == true) { WindowSystemInput.onPointerDown.Invoke(1); WindowSystemInput.onAnyPointerDown.Invoke(); }
+			if (Input.GetMouseButtonUp(1) == true) { WindowSystemInput.onPointerUp.Invoke(1); }
+			if (Input.GetMouseButtonDown(2) == true) { WindowSystemInput.onPointerDown.Invoke(2); WindowSystemInput.onAnyPointerDown.Invoke(); }
+			if (Input.GetMouseButtonUp(2) == true) { WindowSystemInput.onPointerUp.Invoke(2); }
 			#endif
 
 			#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8
@@ -90,6 +91,7 @@ namespace UnityEngine.UI.Windows {
 					if (touch.phase == TouchPhase.Began) {
 
 						WindowSystemInput.onPointerDown.Invoke(touch.fingerId);
+						WindowSystemInput.onAnyPointerDown.Invoke();
 
 					}
 

@@ -13,7 +13,7 @@ namespace UnityEditor.UI.Windows {
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
 
-			return EditorGUI.GetPropertyHeight(property, label, includeChildren: true);
+			return 16f;//EditorGUI.GetPropertyHeight(property, label, includeChildren: true);
 
 		}
 

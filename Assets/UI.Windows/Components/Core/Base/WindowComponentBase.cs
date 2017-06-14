@@ -6,10 +6,10 @@ using UnityEngine.UI.Windows.Animations;
 
 namespace UnityEngine.UI.Windows {
 
-	public class WindowComponentBase : WindowObjectElement, IWindowAnimation {
+	public abstract class WindowComponentBase : WindowObjectElement, IWindowAnimation {
 		
 		[Header("Animation Info")]
-		[SceneEditOnly]
+		//[SceneEditOnly]
 		new public WindowAnimationBase animation;
 		
 		public ChildsBehaviourMode childsShowMode = ChildsBehaviourMode.Simultaneously;
@@ -28,6 +28,8 @@ namespace UnityEngine.UI.Windows {
 		public override void OnInit() {
 			
 			WindowSystem.GetHistoryTracker().Add(this, HistoryTrackerEventType.Init);
+
+			this.DoResetState();
 
 			base.OnInit();
 
@@ -198,8 +200,7 @@ namespace UnityEngine.UI.Windows {
 		
 		public void Show(AppearanceParameters parameters) {
 
-			if ((this.GetComponentState() == WindowObjectState.Shown ||
-				this.GetComponentState() == WindowObjectState.Showing) &&
+			if (this.IsStateReadyToShow() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
 
 				parameters.Call();
@@ -227,15 +228,15 @@ namespace UnityEngine.UI.Windows {
 				if (callback != null) callback.Invoke();
 				
 			});
-			
+			parametersResult = parametersResult.ReplaceForced(forced: true);
+
 			this.DoShowBegin_INTERNAL(parametersResult);
 			
 		}
 
 		public void Hide(AppearanceParameters parameters) {
 			
-			if ((this.GetComponentState() == WindowObjectState.Hidden ||
-			    this.GetComponentState() == WindowObjectState.Hiding) &&
+			if (this.IsStateReadyToHide() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
 
 				parameters.Call();
@@ -263,6 +264,7 @@ namespace UnityEngine.UI.Windows {
 				if (callback != null) callback.Invoke();
 
 			});
+			parametersResult = parametersResult.ReplaceForced(forced: true);
 
 			this.DoHideBegin_INTERNAL(parametersResult);
 
@@ -274,6 +276,7 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.manualShowHideControl == true || this.showOnStart == false) {
 
+				this.DoShowEndManualControl(parameters);
 				return;
 				
 			}
@@ -295,7 +298,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.manualShowHideControl == true || this.showOnStart == false) {
 
-				parameters.Call();
+				this.DoShowBeginManualControl(parameters);
 				return;
 
 			}
@@ -306,10 +309,83 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		private void DoShowEndManualControl(AppearanceParameters parameters) {
+
+			if (this.GetComponentState() == WindowObjectState.NotInitialized ||
+				this.GetComponentState() == WindowObjectState.Initializing ||
+				this.GetComponentState() == WindowObjectState.Initialized) {
+
+				//parameters.Call();
+				return;
+
+			}
+
+			if (this.IsStateReadyToShow() == false &&
+				parameters.GetForced(defaultValue: false) == false) {
+
+				//parameters.Call();
+				return;
+
+			}
+
+			for (int i = 0; i < this.subComponents.Count; ++i) {
+
+				var sub = this.subComponents[i] as WindowComponentBase;
+				sub.DoShowEndManualControl(parameters.ReplaceCallback(null));
+
+			}
+
+			WindowSystem.RunSafe(this.OnShowEnd);
+			WindowSystem.RunSafe(this.OnShowEnd, parameters);
+
+			//parameters.Call();
+
+		}
+
+		private void DoShowBeginManualControl(AppearanceParameters parameters) {
+
+			if (this.GetComponentState() == WindowObjectState.NotInitialized ||
+				this.GetComponentState() == WindowObjectState.Initializing ||
+				this.GetComponentState() == WindowObjectState.Initialized) {
+
+				parameters.Call();
+				return;
+
+			}
+
+			if (this.IsStateReadyToShow() == false &&
+				parameters.GetForced(defaultValue: false) == false) {
+
+				parameters.Call();
+				return;
+
+			}
+
+			for (int i = 0; i < this.subComponents.Count; ++i) {
+
+				var sub = this.subComponents[i] as WindowComponentBase;
+				sub.DoShowBeginManualControl(parameters.ReplaceCallback(null));
+
+			}
+
+			WindowSystem.RunSafe(this.OnShowBegin);
+			WindowSystem.RunSafe(this.OnShowBegin, parameters);
+
+			parameters.Call();
+
+		}
+
 		public override void DoHideEnd(AppearanceParameters parameters) {
-			
+
+			if (this == null) {
+
+				return;
+
+			}
+
 			if (this.manualShowHideControl == true) {
-				
+
+				this.DoHideEndManualControl(parameters);
 				return;
 				
 			}
@@ -324,6 +400,13 @@ namespace UnityEngine.UI.Windows {
 
 		public override void DoHideBegin(AppearanceParameters parameters) {
 
+			if (this == null) {
+
+				parameters.Call();
+				return;
+
+			}
+
 			if (parameters.GetManual(false) == true) {
 
 				this.Hide(parameters);
@@ -333,7 +416,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.manualShowHideControl == true) {
 				
-				parameters.Call();
+				this.DoHideBeginManualControl(parameters);
 				return;
 				
 			}
@@ -343,12 +426,59 @@ namespace UnityEngine.UI.Windows {
 			this.DoHideBegin_INTERNAL(parameters);
 
 		}
+
+		private void DoHideEndManualControl(AppearanceParameters parameters) {
+
+			if (this.IsStateReadyToHide() == false &&
+				parameters.GetForced(defaultValue: false) == false) {
+
+				//parameters.Call();
+				return;
+
+			}
+
+			for (int i = 0; i < this.subComponents.Count; ++i) {
+
+				var sub = this.subComponents[i] as WindowComponentBase;
+				sub.DoHideEndManualControl(parameters.ReplaceCallback(null));
+
+			}
+
+			WindowSystem.RunSafe(this.OnHideEnd);
+			WindowSystem.RunSafe(this.OnHideEnd, parameters);
+
+			//parameters.Call();
+
+		}
+
+		private void DoHideBeginManualControl(AppearanceParameters parameters) {
+
+			if (this.IsStateReadyToHide() == false &&
+				parameters.GetForced(defaultValue: false) == false) {
+
+				parameters.Call();
+				return;
+
+			}
+
+			for (int i = 0; i < this.subComponents.Count; ++i) {
+
+				var sub = this.subComponents[i] as WindowComponentBase;
+				sub.DoHideBeginManualControl(parameters.ReplaceCallback(null));
+
+			}
+
+			WindowSystem.RunSafe(this.OnHideBegin);
+			WindowSystem.RunSafe(this.OnHideBegin, parameters);
+
+			parameters.Call();
+
+		}
 		#endregion
 
 		private void DoShowBegin_INTERNAL(AppearanceParameters parameters) {
 
-			if ((this.GetComponentState() == WindowObjectState.Showing ||
-			    this.GetComponentState() == WindowObjectState.Shown) &&
+			if (this.IsStateReadyToShow() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
 				
 				parameters.Call();
@@ -360,8 +490,27 @@ namespace UnityEngine.UI.Windows {
 
 			WindowSystem.GetEvents().Raise(this, WindowEventType.OnShowBegin);
 
+			var window = this.GetWindow();
+			if (window != null) {
+				
+				var canvas = window.GetCanvas();
+				if (canvas != null) {
+
+					canvas.pixelPerfect = false;
+
+				}
+
+			}
+
 			var parametersCallback = parameters.callback;
 			System.Action onResult = () => {
+
+				if (window != null) {
+					
+					var canvas = window.GetCanvas();
+					if (canvas != null) WindowSystem.ApplyToSettingsInstance(null, canvas, this.GetWindow());
+
+				}
 
 				if (parametersCallback != null) parametersCallback.Invoke();
 
@@ -410,7 +559,9 @@ namespace UnityEngine.UI.Windows {
 			}
 			#endregion
 
-			if (childsBehaviour == ChildsBehaviourMode.Simultaneously) {
+			this.RunChilds_INTERNAL(parameters, onResult, this.DoShowBeginAnimation_INTERNAL, (e, p) => e.DoShowBegin(p));
+
+			/*if (childsBehaviour == ChildsBehaviourMode.Simultaneously) {
 
 				#region Childs Simultaneously
 				var counter = 0;
@@ -446,7 +597,7 @@ namespace UnityEngine.UI.Windows {
 				}, waitPrevious: true);
 				#endregion
 
-			}
+			}*/
 
 		}
 		
@@ -460,8 +611,7 @@ namespace UnityEngine.UI.Windows {
 		
 		private void DoHideBegin_INTERNAL(AppearanceParameters parameters) {
 			
-			if ((this.GetComponentState() == WindowObjectState.Hiding ||
-			    this.GetComponentState() == WindowObjectState.Hidden) &&
+			if (this.IsStateReadyToHide() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
 				
 				parameters.Call();
@@ -473,8 +623,27 @@ namespace UnityEngine.UI.Windows {
 
 			WindowSystem.GetEvents().Raise(this, WindowEventType.OnHideBegin);
 
+			var window = this.GetWindow();
+			if (window != null) {
+				
+				var canvas = window.GetCanvas();
+				if (canvas != null) {
+
+					canvas.pixelPerfect = false;
+
+				}
+
+			}
+
 			var parametersCallback = parameters.callback;
 			System.Action onResult = () => {
+
+				if (window != null) {
+
+					var canvas = window.GetCanvas();
+					if (canvas != null) WindowSystem.ApplyToSettingsInstance(null, canvas, this.GetWindow());
+
+				}
 
 				if (parametersCallback != null) parametersCallback.Invoke();
 
@@ -501,7 +670,10 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			#endregion
-			
+
+			this.RunChilds_INTERNAL(parameters, onResult, this.DoHideBeginAnimation_INTERNAL, (e, p) => e.DoHideBegin(p));
+
+			/*
 			var childsBehaviour = parameters.GetChildsBehaviourMode(this.childsHideMode);
 			if (childsBehaviour == ChildsBehaviourMode.Simultaneously) {
 				
@@ -539,6 +711,58 @@ namespace UnityEngine.UI.Windows {
 				}, waitPrevious: true);
 				#endregion
 				
+			}*/
+
+		}
+
+		private void RunChilds_INTERNAL(
+			AppearanceParameters parameters,
+			System.Action onResult,
+			System.Action<System.Action, AppearanceParameters> onInstance,
+			System.Action<WindowObjectElement, AppearanceParameters> onChildInstance
+		) {
+			
+			var childsBehaviour = parameters.GetChildsBehaviourMode(this.childsHideMode);
+			if (childsBehaviour == ChildsBehaviourMode.Simultaneously) {
+
+				#region Childs Simultaneously
+				var counter = 0;
+				System.Action callback = () => {
+
+					++counter;
+					if (counter < 2) return;
+
+					onResult.Invoke();
+
+				};
+
+				//this.DoHideBeginAnimation_INTERNAL(callback, parameters);
+				onInstance.Invoke(callback, parameters);
+
+				ME.Utilities.CallInSequence(callback, this.subComponents, (e, c) => {
+
+					//e.DoHideBegin(parameters.ReplaceCallback(c));
+					onChildInstance.Invoke(e, parameters.ReplaceCallback(c));
+
+				});
+				#endregion
+
+			} else if (childsBehaviour == ChildsBehaviourMode.Consequentially) {
+
+				#region Childs Consequentially
+				ME.Utilities.CallInSequence(() => {
+
+					//this.DoHideBeginAnimation_INTERNAL(onResult, parameters);
+					onInstance.Invoke(onResult, parameters);
+
+				}, this.subComponents, (e, c) => {
+
+					//e.DoHideBegin(parameters.ReplaceCallback(c));
+					onChildInstance.Invoke(e, parameters.ReplaceCallback(c));
+
+				}, waitPrevious: true);
+				#endregion
+
 			}
 
 		}
@@ -551,12 +775,14 @@ namespace UnityEngine.UI.Windows {
 		
 		private void DoShowBeginAnimation_INTERNAL(System.Action callback, AppearanceParameters parameters) {
 			
-			var resetAnimation = parameters.GetResetAnimation(defaultValue: true);
+			var resetAnimation = parameters.GetResetAnimation(defaultValue: false);
 			var immediately = parameters.GetImmediately(defaultValue: false);
 			var delay = parameters.GetDelay(defaultValue: 0f);
 			
 			System.Action callbackInner = () => {
-				
+
+				this.BreakState("hide");
+
 				if (this.animation != null) {
 					
 					if (resetAnimation == true) this.SetResetState();
@@ -582,8 +808,8 @@ namespace UnityEngine.UI.Windows {
 
 			if (TweenerGlobal.instance != null) {
 
-				var tag = this.BreakState();
-
+				this.BreakState("show");
+				var tag = this.BreakState("delay");
 				if (immediately == false && delay > 0f) {
 
 					TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
@@ -592,12 +818,12 @@ namespace UnityEngine.UI.Windows {
 
 					}).onCancel((obj) => {
 
-						callbackInner.Invoke();
+						callback.Invoke();
 
 					});
 
 				} else {
-
+					
 					callbackInner.Invoke();
 
 				}
@@ -617,10 +843,12 @@ namespace UnityEngine.UI.Windows {
 			var delay = parameters.GetDelay(defaultValue: 0f);
 
 			System.Action callbackInner = () => {
-				
+
+				this.BreakState("show");
+
 				if (this.animation != null) {
 					
-					if (resetAnimation == true) this.SetResetState();
+					if (resetAnimation == true) this.SetInState();
 					
 					if (immediately == true) {
 						
@@ -643,17 +871,17 @@ namespace UnityEngine.UI.Windows {
 
 			if (TweenerGlobal.instance != null) {
 
-				var tag = this.BreakState();
-
+				this.BreakState("hide");
+				var tag = this.BreakState("delay");
 				if (immediately == false && delay > 0f) {
-
+					
 					TweenerGlobal.instance.addTween(this, delay, 0f, 0f).tag(tag).onComplete(() => {
 
 						callbackInner.Invoke();
 
 					}).onCancel((obj) => {
-						
-						callbackInner.Invoke();
+
+						callback.Invoke();
 
 					});
 
@@ -673,7 +901,9 @@ namespace UnityEngine.UI.Windows {
 
 		public void DoBreakState() {
 
-			this.BreakState();
+			this.BreakState("delay");
+			this.BreakState("show");
+			this.BreakState("hide");
 
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as WindowComponentBase).DoBreakState();
 
@@ -687,10 +917,11 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public ME.Tweener.MultiTag BreakState() {
+		public ME.Tweener.MultiTag BreakState(string tag3) {
 
-			var tag = (this.animation != null ? this.GetCustomTag(this.animation) : this.GetTag());
-			TweenerGlobal.instance.removeTweens(tag);
+			var tag = this.GetCustomTag(this.animation);
+			tag.tag3 = tag3;
+			if (TweenerGlobal.instance != null) TweenerGlobal.instance.removeTweens(tag);
 
 			return tag;
 
@@ -745,6 +976,14 @@ namespace UnityEngine.UI.Windows {
 
 			base.OnValidateEditor();
 
+			//this.Update_EDITOR();
+
+		}
+
+		public override void OnValidate() {
+
+			base.OnValidate();
+
 			this.Update_EDITOR();
 
 		}
@@ -760,7 +999,7 @@ namespace UnityEngine.UI.Windows {
 			
 			//this.canvas = this.GetComponent<CanvasGroup>();
 
-			if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) return;
+			//if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) return;
 
 			var changed = (this.lastAnimation != this.animation);
 			if (changed == true) {
@@ -801,7 +1040,7 @@ namespace UnityEngine.UI.Windows {
 
 				foreach (var c in toDestroy) {
 
-					Component.DestroyImmediate(c);
+					Component.DestroyImmediate(c, allowDestroyingAssets: true);
 
 				}
 

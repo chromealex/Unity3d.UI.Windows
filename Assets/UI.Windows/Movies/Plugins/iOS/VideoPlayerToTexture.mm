@@ -403,10 +403,21 @@
     {
         return;
     }
-
+    
     _loop = loop;
     playFinished = NO;
     [_player play];
+}
+
+- (void)pause
+{
+    if (!ready)
+    {
+        return;
+    }
+    
+    playFinished = NO;
+    [_player pause];
 }
 
 - (void)setAudioVolume:(float)volume

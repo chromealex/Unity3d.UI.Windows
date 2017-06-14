@@ -232,13 +232,13 @@ namespace UnityEngine.UI.Windows {
 
 		private void Stop_INTERNAL(IImageComponent component, int instanceId) {
 
-			this.movieModule.Stop(component, instanceId);
+			if (component.IsMovie() == true && component.IsPlaying() == true) this.movieModule.Stop(component, instanceId);
 
 		}
 
 		private void Pause_INTERNAL(IImageComponent component) {
 
-			this.movieModule.Pause(component);
+			if (component.IsMovie() == true && component.IsPlaying() == true) this.movieModule.Pause(component);
 
 		}
 		

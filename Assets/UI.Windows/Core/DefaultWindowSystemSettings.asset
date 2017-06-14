@@ -61,9 +61,11 @@ MonoBehaviour:
   camera:
     orthographic: 1
     orthographicSize: 130
+    orthographicNearClipPlane: -100
+    orthographicFarClipPlane: 100
     fieldOfView: 60
-    nearClipPlane: -100
-    farClipPlane: 100
+    perspectiveNearClipPlane: 0.001
+    perspectiveFarClipPlane: 1000
     useOcclusionCulling: 0
     hdr: 0
     msaa: 0

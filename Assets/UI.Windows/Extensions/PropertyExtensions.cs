@@ -227,6 +227,33 @@ namespace UnityEditor.UI.Windows.Extensions {
 			
 		}
 
+		public static void GetTargetObjectsOfProperty<T>(SerializedProperty prop, System.Action<T> callback) {
+			//object rootObject = null;
+			var path = prop.propertyPath.Replace(".Array.data[", "[");
+			UnityEngine.Object[] objs = prop.serializedObject.targetObjects;
+			foreach (var obj in objs) {
+
+				object _obj = null;
+
+				var elements = path.Split('.');
+				foreach (var element in elements) {
+					//rootObject = obj;
+					if (element.Contains("[")) {
+						var elementName = element.Substring(0, element.IndexOf("["));
+						var index = System.Convert.ToInt32(element.Substring(element.IndexOf("[")).Replace("[", "").Replace("]", ""));
+						_obj = GetValue_Imp(obj, elementName, index);
+					} else {
+						_obj = GetValue_Imp(obj, element);
+					}
+
+				}
+
+				callback.Invoke((T)_obj);
+
+			}
+
+		}
+
 		public static object GetTargetObjectOfProperty(SerializedProperty prop) {
 			//object rootObject = null;
 			var path = prop.propertyPath.Replace(".Array.data[", "[");

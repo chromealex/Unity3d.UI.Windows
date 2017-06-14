@@ -1,4 +1,4 @@
-//#if UNITY_TVOS
+﻿//#if UNITY_TVOS
 //#define STORAGE_NOT_SUPPORTED
 //#endif
 using UnityEngine;
@@ -181,7 +181,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 				}
 
-				Debug.LogWarningFormat("[ GameData ] Key was not found: {0}", key);
+				//Debug.LogWarningFormat("[ GameData ] Key was not found: {0}", key);
 
 			} else {
 

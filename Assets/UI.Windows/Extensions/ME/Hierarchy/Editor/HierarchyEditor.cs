@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿//#define TURN_ON
+using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows;
@@ -116,9 +117,11 @@ namespace UnityEditor.UI.Windows.Hierarchy {
 		static HierarchyEditor() {
 
 			// Init
+			#if TURN_ON
 			EditorApplication.update += HierarchyEditor.Update;
 			EditorApplication.hierarchyWindowItemOnGUI += HierarchyEditor.HierarchyItemGUI;
 			EditorApplication.hierarchyWindowChanged += HierarchyEditor.OnChanged;
+			#endif
 
 		}
 

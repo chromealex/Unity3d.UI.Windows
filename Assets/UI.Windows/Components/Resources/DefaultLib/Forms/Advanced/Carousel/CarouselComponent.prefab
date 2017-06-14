@@ -87,7 +87,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -140,12 +139,12 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
   scrollbarVisibility: 1
   horizontalScrollbar: {fileID: 0}
   verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 0}
-  navigationMode: 0
-  navigationInverse: 0
   interactable: 1
   contentRect: {fileID: 22470822}
   value: 0
@@ -153,11 +152,13 @@ MonoBehaviour:
   dots: {fileID: 0}
   arrowsLinker: {fileID: 0}
   arrows: {fileID: 0}
+  switchBehaviour: 1
   axis: 0
   cyclical: 0
   maxVisualCount: 12
   maxAngle: 45
   rotationAxis: {x: 0, y: 0, z: 1}
+  positionScale: 0.5
   easeFlags: 15
   easePosition: 26
   easeRotation: 6
@@ -167,6 +168,7 @@ MonoBehaviour:
   movementSpeed: 1
   dragSpeed: 3
   slowdownSpeed: 10
+  movementTime: 0.3
 --- !u!222 &22210536
 CanvasRenderer:
   m_ObjectHideFlags: 1

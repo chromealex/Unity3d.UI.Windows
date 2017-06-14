@@ -270,6 +270,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   layoutElement: {fileID: 0}
+  manualMoving: 0
 --- !u!114 &11419490
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -465,6 +466,14 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   valueAnimate: 0
   valueAnimateDuration: 2
+  textCrossFadeModule:
+    enabled: 0
+    duration: 0.5
+    fadeIfWasNull: 0
+    fadeOutSource: 0
+    easeType: 0
+    startColor: {r: 1, g: 1, b: 1, a: 0}
+    targetColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &11419506
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -512,7 +521,8 @@ MonoBehaviour:
   setInactiveOnHiddenState: 1
   showOnStart: 1
   rootComponent: {fileID: 0}
-  subComponents: []
+  subComponents:
+  - {fileID: 11419502}
   currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
@@ -571,12 +581,12 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
   scrollbarVisibility: 1
   horizontalScrollbar: {fileID: 0}
   verticalScrollbar: {fileID: 0}
-  layoutGroup: {fileID: 0}
-  navigationMode: 0
-  navigationInverse: 0
+  layoutGroup: {fileID: 11419494}
 --- !u!222 &22219480
 CanvasRenderer:
   m_ObjectHideFlags: 1

@@ -29,7 +29,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 	};
 
-	public class CarouselComponent : ListComponent, ILayoutSelfController, ILayoutGroup, IDragHandler, IBeginDragHandler, IEndDragHandler, IScrollHandler {
+	public class CarouselComponent : ListComponent, ILayoutSelfController, ILayoutGroup, IDragHandler, IBeginDragHandler, IEndDragHandler, IScrollHandler, ICanvasElement {
 
 		public enum SwitchBehaviour : byte {
 			HideContent,
@@ -62,7 +62,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public ArrowsComponent arrows;
 
 		[Header("Parameters")]
-		public SwitchBehaviour switchBehaviour = SwitchBehaviour.HideContent;
+		public SwitchBehaviour switchBehaviour = SwitchBehaviour.ScaleContent;
 		public Axis axis;
 		public bool cyclical = false;
 		public float maxVisualCount = 1f;
@@ -84,6 +84,9 @@ namespace UnityEngine.UI.Windows.Components {
 		public float dragSpeed = 3f;
 		public float slowdownSpeed = 10f;
 		public float movementTime = 0.3f;
+
+		public System.Action<int, WindowComponent> onItemSelected;
+		public System.Action<int, WindowComponent> onItemDeselected;
 
 		private int lastCurrentIndex = -1;
 		private bool isDragging;
@@ -115,6 +118,46 @@ namespace UnityEngine.UI.Windows.Components {
 		private float visualCount;
 		private float lastValue = -1f;
 		private System.Action<int> onSelect;
+
+		#region Rebuild
+		Transform ICanvasElement.transform {
+			get { return base.transform; }
+		}
+
+		void ICanvasElement.GraphicUpdateComplete() {
+		}
+
+		bool ICanvasElement.IsDestroyed() {
+
+			return this == null;
+
+		}
+
+		void ICanvasElement.LayoutComplete() {
+
+			this.ArrangeItems(rebuildState: false);
+
+		}
+
+		void ICanvasElement.Rebuild(CanvasUpdate executing) {
+
+			var rebuildState = (executing == CanvasUpdate.Layout);
+			this.ArrangeItems(rebuildState);
+
+		}
+
+		public void SetLayoutHorizontal() {
+
+			this.ArrangeItems(rebuildState: false);
+
+		}
+
+		public void SetLayoutVertical() {
+
+			this.ArrangeItems(rebuildState: false);
+
+		}
+		#endregion
 
 		public void SetDisabled() {
 
@@ -376,12 +419,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (normalizedValue <= 0f || normalizedValue >= 1f) {
 
-				this.SetActive(elementRect, component, false);
+				this.SetActive(elementRect, component, false, rebuildState);
 				return false;
 
 			}
 
-			this.SetActive(elementRect, component, true);
+			this.SetActive(elementRect, component, true, rebuildState);
 
 			var s = normalizedValue - 0.5f;
 			var abs = Mathf.Abs(s) * 2f;
@@ -424,6 +467,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 					}
 
+					if (this.onItemDeselected != null) this.onItemDeselected.Invoke(this.lastCurrentIndex, this.list[this.lastCurrentIndex]);
+
 				}
 
 				var carouselItem = eventComponent as ICarouselItemSelectable;
@@ -432,6 +477,8 @@ namespace UnityEngine.UI.Windows.Components {
 					carouselItem.OnElementSelected(index);
 
 				}
+
+				if (this.onItemSelected != null) this.onItemSelected.Invoke(index, eventComponent);
 
 				if (this.onSelect != null) this.onSelect.Invoke(index);
 				if (this.dots != null) this.dots.OnSelect(index);
@@ -478,7 +525,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void SetActive(RectTransform obj, WindowComponent component, bool state) {
+		public void SetActive(RectTransform obj, WindowComponent component, bool state, bool rebuildState) {
+
+			if (rebuildState == true) return;
 
 			if (state == true) {
 
@@ -505,18 +554,6 @@ namespace UnityEngine.UI.Windows.Components {
 				}
 
 			}
-
-		}
-
-		public void SetLayoutHorizontal() {
-
-			this.ArrangeItems(rebuildState: false);
-
-		}
-
-		public void SetLayoutVertical() {
-
-			this.ArrangeItems(rebuildState: false);
 
 		}
 

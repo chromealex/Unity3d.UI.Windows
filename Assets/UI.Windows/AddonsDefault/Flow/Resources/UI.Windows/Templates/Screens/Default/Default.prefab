@@ -98,6 +98,8 @@ MonoBehaviour:
     forceSingleInstance: 0
     singleInstanceIgnoreActions: 0
     restoreSelectedElement: 1
+    overrideCanvasPixelPerfect: 0
+    canvasPixelPerfect: 1
     createPool: 1
     preallocatedCount: 0
     draggable: 0
@@ -107,9 +109,11 @@ MonoBehaviour:
     cameraSettings:
       orthographic: 1
       orthographicSize: 5
+      orthographicNearClipPlane: -100
+      orthographicFarClipPlane: 100
       fieldOfView: 60
-      nearClipPlane: -100
-      farClipPlane: 100
+      perspectiveNearClipPlane: 0.001
+      perspectiveFarClipPlane: 1000
       useOcclusionCulling: 0
       hdr: 0
       msaa: 0

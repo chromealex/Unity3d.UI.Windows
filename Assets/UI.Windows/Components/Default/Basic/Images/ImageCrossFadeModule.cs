@@ -32,15 +32,32 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 		[ReadOnlyEndGroup("enabled", state: false)]
 		public Color targetColor = new Color(1f, 1f, 1f, 1f);
 
+		private IImageComponent image;
 		private Graphic source;
 
-		public override void Prepare(IImageComponent source) {
+		public override void Init(IComponent source) {
+
+			base.Init(source);
+
+			this.image = source as IImageComponent;
+
+		}
+
+		public override void SetDisabled() {
+
+			base.SetDisabled();
+
+			this.source.color = this.targetColor;
+
+		}
+
+		public override void Prepare(IComponent source) {
 
 			base.Prepare(source);
 
 			this.source = this.image.GetGraphicSource();
 
-			if (this.source.mainTexture == null) {
+			if (this.source.mainTexture == null || this.source.mainTexture == Texture2D.whiteTexture) {
 
 				this.source.color = this.startColor;
 
@@ -80,8 +97,6 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		private void FadeTo<T>(IImageComponent imageSource, Object to, float duration, bool fadeIfWasNull, System.Action callback, DataType dataType) where T : Graphic {
 			
-			this.source = this.image.GetGraphicSource();
-
 			var isSprite = (dataType == DataType.Sprite);
 			var isTexture = (dataType == DataType.Texture);
 			var isMaterial = (dataType == DataType.Material);
@@ -111,7 +126,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 			}
 
-			var copy = this.MakeCopy<T>();
+			var copy = this.MakeCopy<T>(this.source.rectTransform);
 
 			if (isMaterial == true) {
 
@@ -124,7 +139,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				var copyImage = (copy as RawImage);
 				hasSourceTexture = (sourceImage.texture != null);
 
-				copyImage.material = this.source.material;
+				copyImage.material = (this.source.defaultMaterial == this.source.material ? null : this.source.material);
 				copyImage.texture = to as Texture;
 				copyImage.uvRect = sourceImage.uvRect;
 
@@ -134,7 +149,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 				var copyImage = (copy as Image);
 				hasSourceTexture = (sourceImage.sprite != null);
 
-				copyImage.material = this.source.material;
+				copyImage.material = (this.source.defaultMaterial == this.source.material ? null : this.source.material);
 				copyImage.sprite = to as Sprite;
 				copyImage.preserveAspect = sourceImage.preserveAspect;
 				copyImage.fillAmount = sourceImage.fillAmount;
@@ -233,19 +248,14 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 		}
 
-		private T MakeCopy<T>() where T : Graphic {
+		protected override T MakeCopy<T>(RectTransform transform) {
 
-			var name = (this.image as WindowComponent).name;
-			var go = new GameObject(string.Format("{0}_copy", name), typeof(RectTransform), typeof(UIPreserveAspect), typeof(UIFlippable), typeof(T));
-			go.transform.SetParent(this.source.transform);
+			var component = base.MakeCopy<T>(transform);
 
-			var graphic = go.GetComponent<T>();
+			this.CopyFlippable(this.image.IsHorizontalFlip(), this.image.IsVerticalFlip(), component.gameObject.AddComponent<UIFlippable>());
+			this.CopyPreserveAspect(this.image.IsPreserveAspect(), component, component.gameObject.AddComponent<UIPreserveAspect>());
 
-			this.CopyRect(this.image.GetGraphicSource().rectTransform, go.transform as RectTransform);
-			this.CopyFlippable(this.image.IsHorizontalFlip(), this.image.IsVerticalFlip(), go.GetComponent<UIFlippable>());
-			this.CopyPreserveAspect(this.image.IsPreserveAspect(), graphic, go.GetComponent<UIPreserveAspect>());
-
-			return graphic;
+			return component;
 
 		}
 
@@ -260,19 +270,6 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 			copy.preserveAspect = isPreserveAspect;
 			copy.rawImage = graphic as RawImage;
-
-		}
-
-		private void CopyRect(RectTransform source, RectTransform copy) {
-
-			var rect = copy;
-			rect.sizeDelta = Vector2.zero;
-			rect.pivot = source.pivot;
-			rect.anchoredPosition3D = Vector3.zero;
-			rect.localScale = Vector3.one;
-			rect.localRotation = Quaternion.identity;
-			rect.anchorMin = Vector2.zero;
-			rect.anchorMax = Vector2.one;
 
 		}
 

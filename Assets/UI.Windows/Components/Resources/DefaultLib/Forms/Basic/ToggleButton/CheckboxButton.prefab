@@ -128,7 +128,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -159,6 +158,14 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   valueAnimate: 0
   valueAnimateDuration: 2
+  textCrossFadeModule:
+    enabled: 0
+    duration: 0.5
+    fadeIfWasNull: 0
+    fadeOutSource: 0
+    easeType: 0
+    startColor: {r: 1, g: 1, b: 1, a: 0}
+    targetColor: {r: 1, g: 1, b: 1, a: 1}
   toggle: {fileID: 11425596}
 --- !u!114 &11425584
 MonoBehaviour:
@@ -187,7 +194,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -240,12 +246,12 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
   scrollbarVisibility: 1
   horizontalScrollbar: {fileID: 0}
   verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 11425586}
-  navigationMode: 0
-  navigationInverse: 0
   toggleGroup: {fileID: 11410234}
   allowSwitchOff: 1
 --- !u!114 &11425586

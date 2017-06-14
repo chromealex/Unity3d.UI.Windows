@@ -26,7 +26,9 @@ namespace UnityEngine.UI.Windows.Animations {
 		}
 
 		#if UNITY_EDITOR
-		public void OnValidate() {
+		public override void OnValidate() {
+
+			base.OnValidate();
 
 			if (this.canvasGroup == null) this.canvasGroup = this.GetComponent<CanvasGroup>();
 

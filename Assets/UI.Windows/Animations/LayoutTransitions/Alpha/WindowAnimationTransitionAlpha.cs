@@ -84,7 +84,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 		
-		public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
+		public override void OnPlay(WindowBase window, ME.Tweener.MultiTag tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var param = this.GetParams<Parameters>(parameters);
 			if (param == null || root == null) {
@@ -102,7 +102,11 @@ namespace UnityEngine.UI.Windows.Animations {
 			if (TweenerGlobal.instance != null) {
 
 				//TweenerGlobal.instance.removeTweens(tag);
-				TweenerGlobal.instance.addTweenAlpha(canvasGroup, duration, result).ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase)).onComplete((obj) => { if (callback != null) callback(); }).onCancel((obj) => { if (callback != null) callback(); }).tag(tag);
+				TweenerGlobal.instance.addTweenAlpha(canvasGroup, duration, result)
+					.ease(ME.Ease.GetByType(forward == true ? param.inEase : param.outEase))
+					.onComplete((obj) => { if (callback != null) callback(); })
+					.onCancel((obj) => { if (callback != null) callback(); })
+					.tag(tag);
 
 			} else {
 

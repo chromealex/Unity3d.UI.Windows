@@ -191,7 +191,17 @@ namespace UnityEditor.UI.Windows.Components {
 				cRect.x += toggleWidth;
 				cRect.width -= toggleWidth;
 				cRect.height = height;
-				EditorGUI.PropertyField(cRect, property, includeChildren: true);
+				if (property.propertyType == SerializedPropertyType.String) {
+
+					var offsetX = 16f;
+					GUI.Label(new Rect(cRect.x + offsetX, cRect.y, EditorGUIUtility.labelWidth, cRect.height), property.displayName);
+					property.stringValue = GUI.TextArea(new Rect(cRect.x + EditorGUIUtility.labelWidth, cRect.y, cRect.width - EditorGUIUtility.labelWidth, cRect.height), property.stringValue);
+
+				} else {
+					
+					EditorGUI.PropertyField(cRect, property, includeChildren: true);
+
+				}
 
 				GUI.enabled = true;
 

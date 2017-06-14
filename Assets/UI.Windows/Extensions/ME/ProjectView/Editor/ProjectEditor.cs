@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#define TURN_ON
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI.Windows.Extensions;
@@ -19,10 +20,12 @@ namespace UnityEditor.UI.Windows.Extensions {
 
 		static ProjectEditor() {
 
+			#if TURN_ON
 			EditorApplication.projectWindowItemOnGUI -= ProjectEditor.OnProjectItemGUI;
 			EditorApplication.projectWindowItemOnGUI += ProjectEditor.OnProjectItemGUI;
 			EditorApplication.projectWindowChanged -= ProjectEditor.OnProjectChanged;
 			EditorApplication.projectWindowChanged += ProjectEditor.OnProjectChanged;
+			#endif
 
 		}
 

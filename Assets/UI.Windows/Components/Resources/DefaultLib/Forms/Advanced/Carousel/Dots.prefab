@@ -97,7 +97,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -150,12 +149,12 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
   scrollbarVisibility: 1
   horizontalScrollbar: {fileID: 0}
   verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 11456300}
-  navigationMode: 0
-  navigationInverse: 0
   minCount: 2
 --- !u!114 &11441978
 MonoBehaviour:
@@ -184,7 +183,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -229,9 +227,9 @@ MonoBehaviour:
     explicit: 0
     next: {fileID: 0}
   button: {fileID: 11469484}
-  selectByDefault: 0
   setDefaultNavigationModeOnStart: 1
   defaultNavigationMode: 0
+  selectByDefault: 0
   hoverOnAnyButtonState: 0
   hoverCursorDefaultOnInactive: 0
   image: {fileID: 0}
@@ -251,7 +249,6 @@ MonoBehaviour:
   imageResourceWait: 0
   imageResource:
     async: 1
-    controlType: 0
     assetPath: 
     assetBundleName: 
     resourcesPath: 
@@ -265,6 +262,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
+    readableTexture: 0
     id: 0
     cacheVersion: 0
     streamingAssetsPathStandalone: 
@@ -279,19 +277,17 @@ MonoBehaviour:
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
-    isMovie: 0
+    streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathIOSIsMovie: 0
+    streamingAssetsPathAndroidIsMovie: 0
+    streamingAssetsPathPS4IsMovie: 0
+    streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    controlType: 0
     tempObject: {fileID: 0}
   imageCrossFadeModule:
     enabled: 0
-    image: {fileID: 11441978}
-    sourceImage: {fileID: 0}
-    copyImage: {fileID: 0}
-    copyFlippableImage: {fileID: 0}
-    sourceRawImage: {fileID: 0}
-    copyRawImage: {fileID: 0}
-    copyFlippableRawImage: {fileID: 0}
-    copyPreserveAspectRawImage: {fileID: 0}
     duration: 0.5
     fadeIfWasNull: 0
     fadeOutSource: 0
@@ -309,6 +305,14 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   valueAnimate: 0
   valueAnimateDuration: 2
+  textCrossFadeModule:
+    enabled: 0
+    duration: 0.5
+    fadeIfWasNull: 0
+    fadeOutSource: 0
+    easeType: 0
+    startColor: {r: 1, g: 1, b: 1, a: 0}
+    targetColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &11456300
 MonoBehaviour:
   m_ObjectHideFlags: 1

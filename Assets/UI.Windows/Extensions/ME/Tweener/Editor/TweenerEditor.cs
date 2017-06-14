@@ -89,14 +89,27 @@ namespace ME {
 
 					}
 
-					var multiTag = tween.getMultiTag();
-					EditorGUILayout.LabelField("MultiTag: ");
-					this.DrawObject(multiTag.tag1);
-					this.DrawObject(multiTag.tag2);
-					this.DrawObject(multiTag.tag3);
+					if (tween.hasMultiTag() == true) {
+
+						var multiTag = tween.getMultiTag();
+						EditorGUILayout.LabelField("MultiTag: ");
+						this.DrawObject(multiTag.tag1);
+						this.DrawObject(multiTag.tag2);
+						this.DrawObject(multiTag.tag3);
+
+					}
+
+					var rect = GUILayoutUtility.GetRect(1f, 20f);
+					EditorGUI.ProgressBar(rect, tween.progress, (tween.currentTarget + 1) + "/" + tween.Count);
 
 				}
 				--EditorGUI.indentLevel;
+
+			}
+
+			if (tweens.Count > 0) {
+
+				this.Repaint();
 
 			}
 

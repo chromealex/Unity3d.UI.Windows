@@ -232,7 +232,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 3
   containsLayouts: 0
@@ -253,10 +252,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 246.73723
-    y: 72.17517
-    width: 120.52555
-    height: 16.817518
+    x: 46.1084
+    y: 66.60098
+    width: 67.78325
+    height: 9.458128
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11404928
@@ -312,6 +311,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -319,6 +319,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -326,6 +327,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
 --- !u!114 &11428698
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -386,7 +388,6 @@ MonoBehaviour:
   - {fileID: 11428698}
   - {fileID: 11414648}
   manualShowHideControl: 0
-  animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   tag: 1
   containsLayouts: 1
@@ -407,10 +408,10 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 164.75182
-    y: 0
-    width: 284.49637
-    height: 192
+    x: 0
+    y: 26.009857
+    width: 160
+    height: 107.98029
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11442514
@@ -499,7 +500,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 8
   containsLayouts: 0
@@ -520,10 +520,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 328.48904
-    y: 104.40881
-    width: 37.372257
-    height: 14.014599
+    x: 92.08539
+    y: 84.729065
+    width: 21.018059
+    height: 7.8817735
   editorDrawDepth: 3
   editorHovered: 0
 --- !u!114 &11465188
@@ -627,7 +627,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 7
   containsLayouts: 0
@@ -648,10 +647,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 288.31387
-    y: 104.40881
-    width: 37.37226
-    height: 14.014599
+    x: 69.49097
+    y: 84.729065
+    width: 21.01806
+    height: 7.8817735
   editorDrawDepth: 3
   editorHovered: 0
 --- !u!114 &11465198
@@ -681,7 +680,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 6
   containsLayouts: 0
@@ -702,10 +700,10 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 248.13869
-    y: 104.40881
-    width: 37.37226
-    height: 14.014599
+    x: 46.896545
+    y: 84.729065
+    width: 21.01806
+    height: 7.8817735
   editorDrawDepth: 3
   editorHovered: 0
 --- !u!114 &11465200
@@ -814,7 +812,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 2
   containsLayouts: 1
@@ -835,10 +832,10 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 243.93431
-    y: 69.372314
-    width: 126.131386
-    height: 53.255474
+    x: 44.532043
+    y: 65.02463
+    width: 70.93596
+    height: 29.950739
   editorDrawDepth: 1
   editorHovered: 0
 --- !u!114 &11465206
@@ -868,7 +865,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 4
   containsLayouts: 0
@@ -889,10 +885,10 @@ MonoBehaviour:
   editorMinHeight: 30
   tempEditorRect:
     serializedVersion: 2
-    x: 246.73723
-    y: 91.795654
-    width: 120.52555
-    height: 8.408759
+    x: 46.1084
+    y: 77.63547
+    width: 67.78325
+    height: 4.729064
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11465208
@@ -925,7 +921,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 5
   containsLayouts: 1
@@ -946,10 +941,10 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 246.73723
-    y: 103.007324
-    width: 120.52555
-    height: 16.817518
+    x: 46.1084
+    y: 83.94089
+    width: 67.78325
+    height: 9.458128
   editorDrawDepth: 2
   editorHovered: 0
 --- !u!114 &11465214

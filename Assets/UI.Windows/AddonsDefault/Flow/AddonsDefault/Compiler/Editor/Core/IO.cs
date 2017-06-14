@@ -83,7 +83,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			
 		}
 
-		public static void CreateFile(string path, string filename, string content, bool rewrite = true) {
+		public static void CreateFile(string path, string filename, string content, bool rewrite = true, bool import = true) {
 			
 			#if !UNITY_WEBPLAYER
 			IO.CreateDirectory(path, string.Empty);
@@ -97,7 +97,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			if (File.Exists(filepath) == false || rewrite == true) {
 				
 				File.WriteAllText(filepath, content);
-				AssetDatabase.ImportAsset(filepath);
+				if (import == true) AssetDatabase.ImportAsset(filepath);
 				
 			}
 			#endif

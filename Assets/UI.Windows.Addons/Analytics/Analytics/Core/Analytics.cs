@@ -42,13 +42,24 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 		}
 
 		public override void OnInitialized() {
-			
+
 			WindowSystem.onTransition.AddListener(Analytics.OnScreenTransition);
+			WindowSystem.onWindowOpened += Analytics.OnScreenOpened;
 
 			User.instance.onSetUserId += Analytics.SetUserId;
 			User.instance.onSetUserId2 += Analytics.SetUserId;
 			User.instance.onSetBirthYear += Analytics.SetUserBirthYear;
 			User.instance.onSetGender += Analytics.SetUserGender;
+
+		}
+
+		private static void OnScreenOpened(WindowBase window) {
+
+			if (window != null) {
+
+				Analytics.SendEvent(window.windowId, "WindowSystem", "OnScreenOpened");
+
+			}
 
 		}
 

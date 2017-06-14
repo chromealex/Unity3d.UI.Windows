@@ -45,6 +45,23 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		protected bool IsStateReadyToHide() {
+
+			return
+				this.GetComponentState() != WindowObjectState.Initialized &&
+				this.GetComponentState() != WindowObjectState.Hiding &&
+				this.GetComponentState() != WindowObjectState.Hidden;
+
+		}
+
+		protected bool IsStateReadyToShow() {
+
+			return
+				this.GetComponentState() != WindowObjectState.Showing &&
+				this.GetComponentState() != WindowObjectState.Shown;
+			
+		}
+
 		public WindowObjectElement GetRootComponent() {
 
 			#if UNITY_EDITOR
@@ -109,7 +126,8 @@ namespace UnityEngine.UI.Windows {
 
 			var go = this.gameObject;
 
-			if (this.currentState == WindowObjectState.Showing ||
+			if (
+				this.currentState == WindowObjectState.Showing ||
 				this.currentState == WindowObjectState.Shown) {
 
 				if (go != null) go.SetActive(true);
@@ -121,9 +139,12 @@ namespace UnityEngine.UI.Windows {
 
 				}*/
 
-			} else if (this.currentState == WindowObjectState.Hidden ||
-			           this.currentState == WindowObjectState.NotInitialized ||
-			           this.currentState == WindowObjectState.Initializing) {
+			} else if (
+				this.currentState == WindowObjectState.Hidden ||
+				this.currentState == WindowObjectState.NotInitialized ||
+				this.currentState == WindowObjectState.Initializing ||
+				this.currentState == WindowObjectState.Initialized ||
+				this.currentState == WindowObjectState.Deinitializing) {
 				
 				if (go != null && this.NeedToInactive() == true && dontInactivate == false) {
 
@@ -429,12 +450,12 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnInit() {}
 		//public virtual void OnDeinit() {}
 		public virtual void OnShowEnd() {}
-		public virtual void OnHideEnd() {}
 		public virtual void OnShowEnd(AppearanceParameters parameters) {}
+		public virtual void OnHideEnd() {}
 		public virtual void OnHideEnd(AppearanceParameters parameters) {}
 		public virtual void OnShowBegin() {}
-		public virtual void OnHideBegin() {}
 		public virtual void OnShowBegin(AppearanceParameters parameters) {}
+		public virtual void OnHideBegin() {}
 		public virtual void OnHideBegin(AppearanceParameters parameters) {}
 		public virtual void OnWindowUnload() {}
 		#endregion
@@ -635,32 +656,33 @@ namespace UnityEngine.UI.Windows {
 		}*/
 
 		#if UNITY_EDITOR
-		public override void OnValidateEditor() {
+		public override void OnValidate() {
 
-			base.OnValidateEditor();
+			base.OnValidate();
 
 			this.Update_EDITOR();
-			
+
 		}
 
 		private void Update_EDITOR() {
+			
+			if (Application.isPlaying == false) {
 
-			if (Application.isPlaying == true) return;
+				this.rootComponent = ME.Utilities.FindReferenceParent<WindowObjectElement>(this.transform.parent);
+				this.SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
 
-			this.rootComponent = ME.Utilities.FindReferenceParent<WindowObjectElement>(this.transform.parent);
-
-			this.SetComponentState(WindowObjectState.NotInitialized, dontInactivate: true);
+			}
 
 			if (this.autoRegisterSubComponents == true) {
 				
-				var components = this.GetComponentsInChildren<WindowObjectElement>(true).ToList();
+				var components = this.GetComponentsInChildren<WindowObjectElement>(includeInactive: true).ToList();
 				
 				this.subComponents.Clear();
 				foreach (var component in components) {
 					
 					if (component == this) continue;
 					
-					var parents = component.GetComponentsInParent<WindowObjectElement>(true).ToList();
+					var parents = component.GetComponentsInParent<WindowObjectElement>(includeInactive: true).ToList();
 					parents.Remove(component);
 					
 					if (parents.Count > 0 && parents[0] != this) continue;

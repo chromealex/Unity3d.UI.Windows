@@ -197,6 +197,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -204,6 +205,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -211,6 +213,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
 --- !u!114 &11442514
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -307,7 +310,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 4
   containsLayouts: 0
@@ -328,8 +330,8 @@ MonoBehaviour:
   editorMinHeight: 30
   tempEditorRect:
     serializedVersion: 2
-    x: 393.10837
-    y: 272.63547
+    x: 46.108368
+    y: 77.63547
     width: 67.78325
     height: 4.729064
   editorDrawDepth: 2
@@ -384,7 +386,6 @@ MonoBehaviour:
   - {fileID: 11456068}
   - {fileID: 11431078}
   manualShowHideControl: 0
-  animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   tag: 1
   containsLayouts: 1
@@ -405,8 +406,8 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 347
-    y: 221.00986
+    x: 0
+    y: 26.009857
     width: 160
     height: 107.98029
   editorDrawDepth: 0
@@ -494,7 +495,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 6
   containsLayouts: 0
@@ -515,8 +515,8 @@ MonoBehaviour:
   editorMinHeight: -1
   tempEditorRect:
     serializedVersion: 2
-    x: 415.17734
-    y: 279.72906
+    x: 68.17734
+    y: 84.729065
     width: 23.645319
     height: 7.8817735
   editorDrawDepth: 3
@@ -549,7 +549,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 5
   containsLayouts: 1
@@ -570,8 +569,8 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 393.10837
-    y: 278.9409
+    x: 46.108368
+    y: 83.94089
     width: 67.78325
     height: 9.458128
   editorDrawDepth: 2
@@ -670,7 +669,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 3
   containsLayouts: 0
@@ -691,8 +689,8 @@ MonoBehaviour:
   editorMinHeight: 60
   tempEditorRect:
     serializedVersion: 2
-    x: 393.10837
-    y: 261.60098
+    x: 46.108368
+    y: 66.60098
     width: 67.78325
     height: 9.458128
   editorDrawDepth: 2
@@ -727,7 +725,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   tag: 2
   containsLayouts: 1
@@ -748,8 +745,8 @@ MonoBehaviour:
   editorMinHeight: 130
   tempEditorRect:
     serializedVersion: 2
-    x: 391.532
-    y: 260.02463
+    x: 44.532013
+    y: 65.02463
     width: 70.93596
     height: 29.950739
   editorDrawDepth: 1
@@ -822,7 +819,7 @@ MonoBehaviour:
   showGrid: 0
   gridSize: {x: 5, y: 5}
   canvas: {fileID: 22393888}
-  raycaster: {fileID: 0}
+  raycaster: {fileID: 11493872}
   canvasUpdater: {fileID: 11411862}
   initialized: 1
   isAlive: 0

@@ -1205,6 +1205,12 @@ namespace UnityEngine.UI.Windows {
 		[Tooltip("Restores UI.EventSystem last selected element on window activation.")]
 		public bool restoreSelectedElement = true;
 
+		[Header("Canvas")]
+		[Tooltip("Should we override default canvas PixelPerfect parameter. If WindowSystemSettings used, this parameter override these too.")]
+		public bool overrideCanvasPixelPerfect = false;
+		[Hidden("overrideCanvasPixelPerfect", false)]
+		public bool canvasPixelPerfect = true;
+
 		[Header("Pool")]
 		public bool createPool = true;
 		[Hidden("createPool", state: false)]

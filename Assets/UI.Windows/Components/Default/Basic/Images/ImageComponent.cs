@@ -49,6 +49,44 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnWindowInactive() {
+			
+			base.OnWindowInactive();
+
+			#region source macros UI.Windows.OnWindowInactive.ImageComponent
+			{
+
+				if (this.IsVisible() == true) {
+
+					this.tempMovieIsPlaying = (this.IsMovie() == true && this.IsPlaying() == true);
+					this.Pause();
+
+				}
+
+			}
+			#endregion
+
+		}
+
+		public override void OnWindowActive() {
+
+			base.OnWindowActive();
+
+			#region source macros UI.Windows.OnWindowActive.ImageComponent
+			{
+				
+				if (this.IsVisible() == true && this.tempMovieIsPlaying == true) {
+
+					this.Play();
+					this.tempMovieIsPlaying = false;
+
+				}
+
+			}
+			#endregion
+
+		}
+
 		public override void OnInit() {
 
 			base.OnInit();
@@ -198,6 +236,21 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override void OnHideBegin() {
+
+			base.OnHideBegin();
+
+			#region source macros UI.Windows.OnHideBegin.ImageComponent
+			{
+
+				this.tempImagePlayOnShow = (this.IsMovie() == true && this.IsPlaying() == true);
+				this.Pause();
+
+			}
+			#endregion
+
+		}
+
 		public override void OnHideEnd() {
 			
 			base.OnHideEnd();
@@ -255,6 +308,13 @@ namespace UnityEngine.UI.Windows.Components {
 		private ImageCrossFadeModule imageCrossFadeModule = new ImageCrossFadeModule();
 
 		private bool tempImagePlayOnShow = false;
+		private bool tempMovieIsPlaying = false;
+
+		public ImageCrossFadeModule GetImageCrossFadeModule() {
+
+			return this.imageCrossFadeModule;
+
+		}
 
 		public ResourceBase GetResource() {
 
@@ -288,8 +348,8 @@ namespace UnityEngine.UI.Windows.Components {
 			
 			var image = this.GetRawImageSource();
 			if (image == null) return false;
-			
-			return MovieSystem.IsMovie(image.mainTexture);
+
+			return this.imageResource.IsMovie() == true && MovieSystem.IsMovie(image.mainTexture) == true;
 			
 		}
 
@@ -409,7 +469,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public virtual IImageComponent Play(bool loop) {
 
-			MovieSystem.Play(this, loop);
+			if (this.GetWindow() != null && this.GetWindow().GetActiveState() == ActiveState.Active) {
+
+				MovieSystem.Play(this, loop);
+
+			} else {
+
+				this.tempMovieIsPlaying = true;
+
+			}
 
 			return this;
 
@@ -481,7 +549,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public Graphic GetGraphicSource() {
+		Graphic IImageComponent.GetGraphicSource() {
 
 			if (this.image != null) return this.image;
 			return this.rawImage;
@@ -641,7 +709,13 @@ namespace UnityEngine.UI.Windows.Components {
 		public IImageComponent SetImage(Sprite sprite, bool preserveAspect, bool withPivotsAndSize, System.Action onComplete = null, bool immediately = false) {
 			
 			if (this.image != null) {
-				
+
+				if (this.imageCrossFadeModule.IsValid() == true) {
+
+					this.imageCrossFadeModule.Prepare(this);
+
+				}
+
 				this.image.preserveAspect = preserveAspect;
 
 				if (withPivotsAndSize == true && sprite != null) {
@@ -711,7 +785,13 @@ namespace UnityEngine.UI.Windows.Components {
 			//MovieSystem.Stop(this, this.rawImage.texture.GetInstanceID());
 
 			if (this.rawImage != null) {
-				
+
+				if (this.imageCrossFadeModule.IsValid() == true) {
+
+					this.imageCrossFadeModule.Prepare(this);
+
+				}
+
 				if (immediately == false && this.imageCrossFadeModule.IsValid() == true) {
 
 					this.imageCrossFadeModule.FadeTo(this, texture, onComplete);

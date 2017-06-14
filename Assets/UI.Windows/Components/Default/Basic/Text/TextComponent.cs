@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Text.RegularExpressions;
 using ME;
+using UnityEngine.UI.Windows.Components.Modules;
 
 namespace UnityEngine.UI.Windows.Components {
 
@@ -57,6 +58,8 @@ namespace UnityEngine.UI.Windows.Components {
 			#region source macros UI.Windows.OnInit.TextComponent
 			{
 
+				this.textCrossFadeModule.Init(this);
+
 				if (this.textLocalizationKey.IsNone() == false) {
 
 					this.SetText(this.textLocalizationKey);
@@ -84,11 +87,20 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		[SerializeField]
 		private bool valueAnimate = false;
-		[SerializeField][EndGroupReadOnly("valueAnimate", state: false)]
+		[SerializeField][ReadOnly("valueAnimate", state: false)]
 		private float valueAnimateDuration = 2f;
+		[EndGroup][SerializeField]
+		private TextCrossFadeModule textCrossFadeModule = new TextCrossFadeModule();
+
 		private long valueAnimateLastValue;
 		private long tempLastValue = long.MinValue;
 		private TextValueFormat tempLastFormat = TextValueFormat.None;
+
+		Graphic ITextComponent.GetGraphicSource() {
+
+			return this.text;
+
+		}
 
 		public ITextComponent SetBestFit(bool state, int minSize = 10, int maxSize = 40) {
 			
@@ -334,10 +346,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 				var duration = this.valueAnimateDuration;
 				if (Mathf.Abs(this.valueAnimateLastValue - value) < 2) duration = 0.2f;
-				TweenerGlobal.instance.addTweenCount(this, duration, this.valueAnimateLastValue, value, format, (v) => { this.valueAnimateLastValue = v; this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true); }).tag(tag);
+				TweenerGlobal.instance.addTweenCount(this, duration, this.valueAnimateLastValue, value, format, (v) => { this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true); }).tag(tag);
 				
 			} else {
-				
+
+				this.valueAnimateLastValue = value;
 				this.SetText_INTERNAL(TextComponent.FormatValue(value, format));
 				
 			}
@@ -348,7 +361,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public ITextComponent SetHyphenSymbol() {
 
-			return this.SetText("\u2014");
+			return this.SetText(TextComponent.GetHyphenSymbol());
+
+		}
+
+		public static string GetHyphenSymbol() {
+
+			return "\u2014";
 
 		}
 
@@ -375,6 +394,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		private string lastText = null;
 		private void SetText_INTERNAL(string text) {
 
 			if (text == null) text = string.Empty;
@@ -386,15 +406,33 @@ namespace UnityEngine.UI.Windows.Components {
 				if (TextComponentTMPAddon.IsValid(this.text) == true) supportRichText = TextComponentTMPAddon.IsRichtextSupported(this.text);
 
 				if (supportRichText == true) {
-					
+
 					text = TextComponent.ParseRichText(text, this.GetFontSize(), this.richTextFlags);
-					
+
 				}
-				
+
 				text = TextComponent.FullTextFormat(text, this.fullTextFormat);
 
-				if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetText(this.text, text);
-				if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetText(this.text, text);
+				if (this.lastText == text) return;
+				this.lastText = text;
+
+				System.Action onComplete = () => {
+					
+					if (TextComponentUGUIAddon.IsValid(this.text) == true) TextComponentUGUIAddon.SetText(this.text, text);
+					if (TextComponentTMPAddon.IsValid(this.text) == true) TextComponentTMPAddon.SetText(this.text, text);
+
+				};
+
+				if (this.textCrossFadeModule.IsValid() == true && TextComponentUGUIAddon.IsValid(this.text) == true) {
+
+					this.textCrossFadeModule.Prepare(this);
+					this.textCrossFadeModule.FadeTo(this, text, onComplete);
+
+				} else {
+
+					onComplete.Invoke();
+
+				}
 
 			}
 

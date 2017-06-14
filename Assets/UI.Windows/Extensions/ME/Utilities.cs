@@ -288,6 +288,7 @@ namespace ME {
 
 			result = Regex.Replace(result, pattern, string.Empty);
 			result = result.Replace("System.Object<>", "params object[]");
+			result = result.Replace("<>", "[]");
 			return result;
 
 		}

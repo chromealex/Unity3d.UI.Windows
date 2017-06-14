@@ -1,3 +1,4 @@
+#define TURN_ON
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
@@ -356,7 +357,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		static FlowProjectWindowObject() {
 
 			FlowProjectWindowObject.drawer = new Drawer();
+			#if TURN_ON
 			EditorApplication.projectWindowItemOnGUI += FlowProjectWindowObject.drawer.OnProjectItemGUI;
+			#endif
 
 		}
 

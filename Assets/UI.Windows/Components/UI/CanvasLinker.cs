@@ -13,8 +13,11 @@ namespace UnityEngine.UI.Windows.Extensions {
 		public UnityEngine.Canvas canvas;
 		public BaseRaycaster raycaster;
 		
-		[Header("Order Delta (From the Root Canvas)")]
+		[Header("Parameters")]
 		public int orderDelta;
+		public bool overridePixelPerfect;
+		[Hidden("overridePixelPerfect", state: false)]
+		public bool pixelPrefect = true;
 
 		[Header("Raycaster Source (Optional)")]
 		public BaseRaycaster raycasterSource;
@@ -30,13 +33,31 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		}
 
-		public void Start() {
+		public void OnEnable() {
 
 			this.Init();
 
 		}
 
+		public void OnDisable() {
+
+			WindowSystem.GetEvents().Unregister(this.windowObject, WindowEventType.OnShowBegin, this.Init);
+			WindowSystem.GetEvents().Unregister(this.windowObject, WindowEventType.OnWindowActive, this.Init);
+
+		}
+
 		public void Init() {
+
+			if (this.canvas != null && this.windowObject != null && this.windowObject.GetWindow() == null) {
+
+				WindowSystem.GetEvents().Register(this.windowObject, WindowEventType.OnShowBegin, this.Init);
+				WindowSystem.GetEvents().Register(this.windowObject, WindowEventType.OnWindowActive, this.Init);
+				return;
+
+			}
+
+			WindowSystem.GetEvents().Unregister(this.windowObject, WindowEventType.OnShowBegin, this.Init);
+			WindowSystem.GetEvents().Unregister(this.windowObject, WindowEventType.OnWindowActive, this.Init);
 
 			var raycasterTemp = false;
 			if (this.canvas != null && this.windowObject != null) {
@@ -50,10 +71,19 @@ namespace UnityEngine.UI.Windows.Extensions {
 					return;
 
 				}
-				
+
+				//Debug.Log("[ CanvasLinker ] Initialized", this);
+
 				this.canvas.overrideSorting = true;
 				this.canvas.sortingLayerName = window.GetSortingLayerName();
 				this.canvas.sortingOrder = window.GetSortingOrder() + this.orderDelta;
+
+				if (this.overridePixelPerfect == true) {
+
+					this.canvas.overridePixelPerfect = true;
+					this.canvas.pixelPerfect = this.pixelPrefect;
+
+				}
 
 				if (this.raycasterSource == null) {
 

@@ -113,7 +113,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -221,7 +220,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 0
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Sample text input
 --- !u!114 &11438724
@@ -315,7 +314,6 @@ MonoBehaviour:
   animationInputParams:
   - {fileID: 11484752}
   manualShowHideControl: 0
-  animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   prefab: {fileID: 11475670, guid: ec9073e296fb04dfca40d210d6a8f6ec, type: 2}
   editorPreload: 0
@@ -323,8 +321,7 @@ MonoBehaviour:
   prefabNoResource: {fileID: 0}
   prefabResource:
     async: 0
-    controlType: 0
-    assetPath: Assets/UI.Windows.Module/Components/Resources/DefaultLib/Forms/Advanced/Indicators/Indicator4.prefab
+    assetPath: Assets/UI.Windows/Components/Resources/DefaultLib/Forms/Advanced/Indicators/Indicator4.prefab
     assetBundleName: 
     resourcesPath: DefaultLib/Forms/Advanced/Indicators/Indicator4
     webPath: 
@@ -337,7 +334,8 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
-    id: 1224017373
+    readableTexture: 0
+    id: 1184129325
     cacheVersion: 0
     streamingAssetsPathStandalone: 
     streamingAssetsPathIOS: 
@@ -351,10 +349,17 @@ MonoBehaviour:
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
-    isMovie: 0
+    streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathIOSIsMovie: 0
+    streamingAssetsPathAndroidIsMovie: 0
+    streamingAssetsPathPS4IsMovie: 0
+    streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    controlType: 0
     tempObject: {fileID: 11475670, guid: ec9073e296fb04dfca40d210d6a8f6ec, type: 2}
   prefabParameters: {fileID: 0}
+  autoload: 1
   fitToRoot: 1
   _instance: {fileID: 0}
 --- !u!114 &11484752

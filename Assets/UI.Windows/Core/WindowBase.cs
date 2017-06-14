@@ -106,7 +106,7 @@ namespace UnityEngine.UI.Windows {
 		[HideInInspector][System.NonSerialized]
 		public bool skipRecycle = false;
 
-		protected InitializeParameters initializeParameters;
+		protected InitialParameters initialParameters;
 
 		private WindowBase source;
 
@@ -119,7 +119,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		void ICanvasElement.GraphicUpdateComplete() {
-
+			
 		}
 
 		bool ICanvasElement.IsDestroyed() {
@@ -130,17 +130,28 @@ namespace UnityEngine.UI.Windows {
 
 		void ICanvasElement.LayoutComplete() {
 
-			this.DoLayoutWindowLayoutComplete();
-			this.modules.DoWindowLayoutComplete();
-			this.audio.DoWindowLayoutComplete();
-			this.events.DoWindowLayoutComplete();
-			this.transition.DoWindowLayoutComplete();
-			(this as IWindowEventsController).DoWindowLayoutComplete();
+			ME.Coroutines.RunNextFrame(() => {
+
+				if (this.GetState() != WindowObjectState.Hiding &&
+					this.GetState() != WindowObjectState.Hidden &&
+					this.GetState() != WindowObjectState.Deinitializing &&
+					this.GetState() != WindowObjectState.NotInitialized) {
+
+					this.DoLayoutWindowLayoutComplete();
+					this.modules.DoWindowLayoutComplete();
+					this.audio.DoWindowLayoutComplete();
+					this.events.DoWindowLayoutComplete();
+					this.transition.DoWindowLayoutComplete();
+					(this as IWindowEventsController).DoWindowLayoutComplete();
+
+				}
+
+			});
 
 		}
 
 		void ICanvasElement.Rebuild(CanvasUpdate executing) {
-
+			
 		}
 		#endregion
 
@@ -186,6 +197,18 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnCameraReset() {
 		}
 
+		public void SetAsPerspective() {
+
+			WindowSystem.ApplyToSettings(this.workCamera, mode: WindowSystemSettings.Camera.Mode.Perspective);
+
+		}
+
+		public void SetAsOrthoraphic() {
+
+			WindowSystem.ApplyToSettings(this.workCamera, mode: WindowSystemSettings.Camera.Mode.Orthographic);
+
+		}
+
 		public bool IsVisible() {
 
 			return (this.GetState() == WindowObjectState.Showing || this.GetState() == WindowObjectState.Shown);
@@ -223,13 +246,13 @@ namespace UnityEngine.UI.Windows {
 
 		internal void Init(float depth, float zDepth, int raycastPriority, int orderInLayer, System.Action onInitialized, bool async) {
 
-			this.Init(new InitializeParameters() { depth = depth, zDepth = zDepth, raycastPriority = raycastPriority, orderInLayer = orderInLayer }, onInitialized, async);
+			this.Init(new InitialParameters() { depth = depth, zDepth = zDepth, raycastPriority = raycastPriority, orderInLayer = orderInLayer }, onInitialized, async);
 
 		}
 
-		internal void Init(InitializeParameters parameters, System.Action onInitialized, bool async) {
+		internal void Init(InitialParameters parameters, System.Action onInitialized, bool async) {
 
-			this.initializeParameters = parameters;
+			this.initialParameters = parameters;
 
 			this.currentState = WindowObjectState.Initializing;
 
@@ -243,7 +266,7 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			this.SetOrientationChangedDirect();
-			this.SetDepth(this.initializeParameters.depth, this.initializeParameters.zDepth);
+			this.SetDepth(this.initialParameters.depth, this.initialParameters.zDepth);
 			this.events.LateUpdate(this);
 
 			if (Application.isPlaying == true) {
@@ -323,9 +346,9 @@ namespace UnityEngine.UI.Windows {
 				Profiler.BeginSample("WindowBase::OnInit()");
 				#endif
 
-				this.DoLayoutInit(this.initializeParameters.depth, this.initializeParameters.raycastPriority, this.initializeParameters.orderInLayer, () => {
+				this.DoLayoutInit(this.initialParameters.depth, this.initialParameters.raycastPriority, this.initialParameters.orderInLayer, () => {
 
-					WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas());
+					WindowSystem.ApplyToSettingsInstance(this.workCamera, this.GetCanvas(), this);
 
 					this.OnModulesInit();
 					this.OnAudioInit();
@@ -1217,8 +1240,12 @@ namespace UnityEngine.UI.Windows {
 		}
 		
 		private System.Collections.Generic.IEnumerator<byte> Hide_INTERNAL_YIELD(System.Action onHideEnd, AttachItem transitionItem, AppearanceParameters parameters) {
-			
-			while (this.paused == true) yield return 0;
+
+			if (parameters.GetForced(defaultValue: false) == false) {
+
+				while (this.paused == true) yield return 0;
+
+			}
 
 			this.activeIteration = 0;
 			this.SetInactive(null);
@@ -1331,13 +1358,28 @@ namespace UnityEngine.UI.Windows {
 			
 			if (Application.isPlaying == false) return;
 
+			if (this.GetState() == WindowObjectState.Deinitializing ||
+				this.GetState() == WindowObjectState.NotInitialized) {
+
+				callback.Invoke();
+				return;
+
+			}
+
 			this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.Deinit);
 
 			#if DEBUGBUILD
 			Profiler.BeginSample("WindowBase::OnDeinit()");
 			#endif
 
-			ME.Utilities.CallInSequence<System.Action<System.Action>>(callback, /*waitPrevious:*/ true, (item, c) => {
+			this.currentState = WindowObjectState.Deinitializing;
+
+			ME.Utilities.CallInSequence<System.Action<System.Action>>(() => {
+
+				this.currentState = WindowObjectState.NotInitialized;
+				if (callback != null) callback.Invoke();
+
+			}, /*waitPrevious:*/ true, (item, c) => {
 
 				item.Invoke(c);
 
@@ -1474,7 +1516,7 @@ namespace UnityEngine.UI.Windows {
 		/// Raises the deinit event.
 		/// </summary>
 		void IWindowEventsController.DoDeinit(System.Action callback) {
-
+			
 			WindowSystem.RunSafe(this.OnDeinit, callback);
 
 		}
@@ -1632,10 +1674,11 @@ namespace UnityEngine.UI.Windows {
 					var selection = new List<GameObject>();
 					var layoutWindow = window as UnityEngine.UI.Windows.Types.LayoutWindowType;
 					if (layoutWindow != null) {
-						
-						foreach (var component in layoutWindow.GetCurrentLayout().components) {
+
+						var currentLayout = layoutWindow.layouts.layouts[0];
+						foreach (var component in currentLayout.components) {
 							
-							var compInstance = layoutWindow.GetCurrentLayout().Get<WindowComponent>(component.tag);
+							var compInstance = currentLayout.Get<WindowComponent>(component.tag);
 							if (compInstance != null) selection.Add(compInstance.gameObject);
 							
 						}

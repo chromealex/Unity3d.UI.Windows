@@ -129,7 +129,6 @@ MonoBehaviour:
   animationInputParams:
   - {fileID: 11431626}
   manualShowHideControl: 0
-  animationRefresh: 1
   lastAnimation: {fileID: 11400000, guid: ece04fe7fd56d429e80748c3f309bc61, type: 2}
   tag: 1
   containsLayouts: 0
@@ -150,10 +149,10 @@ MonoBehaviour:
   editorMinHeight: 0
   tempEditorRect:
     serializedVersion: 2
-    x: 136.44287
-    y: 0
-    width: 341.11426
-    height: 192
+    x: 0
+    y: 34.9711
+    width: 160
+    height: 90.0578
   editorDrawDepth: 0
   editorHovered: 0
 --- !u!114 &11440508

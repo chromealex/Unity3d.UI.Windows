@@ -109,7 +109,13 @@ namespace UnityEngine.UI.Windows.Plugins.Console.SubModules {
 
 			}
 
-			this.screen.AddLine("<color=" + color + ">" + condition + "</color>");
+			this.screen.AddLine(string.Format("<color={0}>{1}</color>", color, condition));
+
+			if (type == LogType.Exception) {
+
+				this.screen.AddLine(string.Format("<color={0}>{1}</color>", color, stackTrace));
+
+			}
 
 		}
 		

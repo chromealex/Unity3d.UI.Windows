@@ -6,14 +6,15 @@ using System.Linq;
 namespace ME {
 
 	public class Tweener : MonoBehaviour {
-
+		
 		public interface ITransition {
 
 			float interpolate(float start, float distance, float elapsedTime, float duration);
 
 		}
 
-        public struct MultiTag {
+		[System.Serializable]
+        public class MultiTag {
 
             public object tag1;
             public object tag2;
@@ -21,11 +22,19 @@ namespace ME {
 
             public static bool operator ==(MultiTag mt1, MultiTag mt2) {
 
+				if (TweenerGlobal.instance.debug == true) {
+
+					Debug.Log(mt1.tag1 + " == " + mt2.tag1);
+					Debug.Log(mt1.tag2 + " == " + mt2.tag2);
+					Debug.Log(mt1.tag3 + " == " + mt2.tag3);
+
+				}
+
                 if (mt1.tag1 != mt2.tag1) return false;
                 if (mt1.tag2 != mt2.tag2) return false;
                 if (mt1.tag3 != mt2.tag3) return false;
 
-                return false;
+                return true;
 
             }
 
@@ -61,6 +70,7 @@ namespace ME {
 		public interface ITween {
 
 		    int Count { get; }
+			float progress { get; }
 		    bool isCompleted();
 			void RaiseCancel();
 			void RaiseComplete();
@@ -72,6 +82,7 @@ namespace ME {
 			bool isDirty { get; set; }
 		    void ClearAll();
 			int GetLoops();
+			int currentTarget { get; }
 
 #if UNITY_EDITOR
 		    //string stackTrace { get; }
@@ -123,6 +134,26 @@ namespace ME {
 			private System.Action<T> _complete = null;
 			private System.Action<T> _cancel = null;
             //public string stackTrace { get; private set; }
+
+			public int currentTarget {
+
+				get {
+
+					return this._currentTarget;
+
+				}
+
+			}
+
+			public float progress {
+
+				get {
+
+					return this._elapsed / this._targets[this._currentTarget].duration;
+
+				}
+
+			}
 
             public Tween(T obj, float duration, float start, float end) {
 				_obj = obj;
@@ -316,6 +347,13 @@ namespace ME {
 			}
 
 			public Tween<T> tag(object value, object group = null) {
+				
+				if (value is MultiTag) {
+
+					return this.multiTag(value as MultiTag, group);
+
+				}
+
 				_multiTag = default(MultiTag);
 				_multiTagFlag = false;
 			    _group = group;
@@ -323,7 +361,7 @@ namespace ME {
 				return this;
 			}
 
-		    public Tween<T> multiTag(MultiTag value, object group = null) {
+			public Tween<T> multiTag(MultiTag value, object group = null) {
                 _multiTag = value;
 				_multiTagFlag = true;
                 _group = group;
@@ -491,9 +529,15 @@ namespace ME {
 
         public void removeTweens(MultiTag multiTag) {
 
-            this.removeTweens(multiTag, immediately: false);
+            this.removeTweensByMultiTag(multiTag, immediately: false);
 
         }
+
+		public void removeTweensByMultiTag(MultiTag multiTag, bool immediately) {
+
+			Mark(tween => tween.hasMultiTag() == true && tween.getMultiTag() == multiTag, immediately);
+
+		}
 
         public void removeTweens(string tweenerTag) {
 			
@@ -512,12 +556,6 @@ namespace ME {
 			this.removeGroup(tweenerGroup, immediately: false);
 			
 		}
-
-        public void removeTweens(MultiTag multiTag, bool immediately) {
-
-            Mark(tween => tween.hasMultiTag() == true && tween.getMultiTag() == multiTag, immediately);
-
-        }
 
         public void removeTweens(string tweenerTag, bool immediately) {
 
