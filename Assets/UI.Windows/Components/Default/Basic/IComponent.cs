@@ -176,6 +176,8 @@ namespace UnityEngine.UI.Windows.Components {
 		ITextComponent SetBestFitMinSize(int value);
 		ITextComponent SetBestFitMaxSize(int value);
 
+		Graphic GetGraphicSource();
+
 	}
 
 	public interface IAlphaComponent {

@@ -16,7 +16,6 @@ namespace UnityEngine.UI.Windows.Components {
 			ShowOnMove,
 		};
 
-		[Header("List")]
 		public List<WindowComponent> list = new List<WindowComponent>();
 
 		[Header("Required")]
@@ -27,22 +26,21 @@ namespace UnityEngine.UI.Windows.Components {
 		public GameObject content;
 		public GameObject noElements;
 		public GameObject loading;
-
 		public WindowComponent loader;
-		
+
+		[Header("Faders")]
 		public WindowComponent top;
 		public WindowComponent bottom;
+		public WindowComponent left;
+		public WindowComponent right;
 
+		[Header("Scrollbars")]
 		public ScrollbarVisibility scrollbarVisibility = ScrollbarVisibility.ShowOnMove;
 		public WindowComponent horizontalScrollbar;
 		public WindowComponent verticalScrollbar;
 
 		[SerializeField]
 		private LayoutGroup layoutGroup;
-
-		[Header("Navigation")]
-		public Navigation.Mode navigationMode = Navigation.Mode.None;
-		public bool navigationInverse = false;
 
 		public override void OnInit() {
 
@@ -117,25 +115,61 @@ namespace UnityEngine.UI.Windows.Components {
 
 		protected virtual void OnMovingContent(Vector2 delta) {
 
-			this.UpdateBottomTop();
+			this.UpdateBorderFades();
 
 		}
 
-		protected virtual void UpdateBottomTop() {
+		protected virtual void UpdateBorderFades() {
 
 			if (this.scrollRect != null) {
 
-				if (this.scrollRect.verticalNormalizedPosition <= 0f) {
+				if (this.scrollRect.vertical == true) {
 
-					// bottom
-					if (this.bottom != null) this.bottom.Hide();
-					if (this.top != null) this.top.Show();
+					var valPosition = 1f - this.scrollRect.verticalNormalizedPosition;
+					if (valPosition > 0f && this.scrollRect.vScrollingNeeded == true) {
 
-				} else if (this.scrollRect.verticalNormalizedPosition >= 1f) {
+						if (this.top != null) this.top.Show();
 
-					// top
-					if (this.bottom != null) this.bottom.Show();
-					if (this.top != null) this.top.Hide();
+					} else {
+
+						if (this.top != null) this.top.Hide();
+
+					}
+
+					if (valPosition < 1f && this.scrollRect.vScrollingNeeded == true) {
+
+						if (this.bottom != null) this.bottom.Show();
+
+					} else {
+
+						if (this.bottom != null) this.bottom.Hide();
+
+					}
+
+				}
+
+				if (this.scrollRect.horizontal == true) {
+
+					var valPosition = this.scrollRect.horizontalNormalizedPosition;
+					if (valPosition > 0f && this.scrollRect.hScrollingNeeded == true) {
+
+						if (this.left != null) this.left.Show();
+
+					} else {
+
+						if (this.left != null) this.left.Hide();
+
+					}
+
+					if (valPosition < 1f && this.scrollRect.hScrollingNeeded == true) {
+
+						if (this.right != null) this.right.Show();
+
+					} else {
+
+						if (this.right != null) this.right.Hide();
+
+					}
 
 				}
 
@@ -374,14 +408,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		private IButtonComponent lastSelectableInstance;
-		public virtual T AddItem<T>() where T : IComponent {
-
-			return this.AddItem<T>(this.navigationMode, this.navigationInverse);
-
-		}
-
-		public virtual T AddItem<T>(Navigation.Mode navigationMode, bool navigationInverse) where T : IComponent {
+		public virtual T AddItem<T>(bool autoRefresh = true) where T : IComponent {
 
 			if (this.source == null) return default(T);
 
@@ -415,19 +442,19 @@ namespace UnityEngine.UI.Windows.Components {
 			if (instance is LinkerComponent && typeof(T) != typeof(LinkerComponent)) {
 
 				//instance.OnInit();
-				instance.gameObject.SetActive(true);
+				//instance.gameObject.SetActive(true);
 				var linkerComponent = (instance as LinkerComponent).Get<WindowComponent>();
 				if (linkerComponent != null) instance = linkerComponent;
 
 			}
 
-			if (instance != null) {
+			/*if (instance != null) {
 
 				instance.gameObject.SetActive(true);
 
-			}
+			}*/
 
-			this.Refresh();
+			if (autoRefresh == true) this.Refresh();
 
 			this.OnNewItem(instance);
 
@@ -571,7 +598,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				for (int i = existCount; i < capacity; ++i) {
 
-					this.AddItem<IComponent>();
+					this.AddItem<IComponent>(autoRefresh: false);
 
 				}
 
@@ -607,7 +634,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				ME.Utilities.ResetWatch(timer);
 
-				var instance = this.AddItem<T>();
+				var instance = this.AddItem<T>(autoRefresh: false);
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 
 				if (ME.Utilities.StopWatch(timer) == true) {

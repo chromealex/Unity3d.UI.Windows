@@ -178,7 +178,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}
@@ -231,12 +230,12 @@ MonoBehaviour:
   loader: {fileID: 0}
   top: {fileID: 0}
   bottom: {fileID: 0}
+  left: {fileID: 0}
+  right: {fileID: 0}
   scrollbarVisibility: 1
   horizontalScrollbar: {fileID: 0}
   verticalScrollbar: {fileID: 0}
   layoutGroup: {fileID: 11490028}
-  navigationMode: 0
-  navigationInverse: 0
   offsetStartY: 0
   offsetEndY: 0
   specialSize: {fileID: 0}
@@ -271,6 +270,8 @@ MonoBehaviour:
   canvas: {fileID: 22368790}
   raycaster: {fileID: 11415618}
   orderDelta: 1
+  overridePixelPerfect: 0
+  pixelPrefect: 1
   raycasterSource: {fileID: 0}
 --- !u!114 &11428294
 MonoBehaviour:
@@ -405,6 +406,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -412,6 +414,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -419,6 +422,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
 --- !u!114 &11474004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -463,6 +467,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   layoutElement: {fileID: 0}
+  manualMoving: 0
 --- !u!114 &11478968
 MonoBehaviour:
   m_ObjectHideFlags: 1

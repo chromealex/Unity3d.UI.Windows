@@ -41,7 +41,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class AnimationCurveSerializer : ISerializer {
-		
+
 		public class Data {
 			
 			public Keyframe[] keys;
@@ -86,8 +86,205 @@ namespace ME.UAB.Serializers {
 
 	}
 
+	public class NavMeshPathSerializer : ISerializer {
+
+		public class Data {
+			
+		}
+
+		public string GetId() {
+
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
+
+		}
+
+		public bool IsValid(object value) {
+
+			#if UNITY_5_5_OR_NEWER
+			return value.GetType() == typeof(UnityEngine.AI.NavMeshPath);
+			#else
+			return value.GetType() == typeof(UnityEngine.NavMeshPath);
+			#endif
+
+		}
+
+		public void DeserializeBeforeRef(UABUnpacker unpacker, UABField field, ref object value, List<ISerializer> serializers) {
+
+			var data = new Data();
+			unpacker.Deserialize(data, field.fields, serializers);
+			#if UNITY_5_5_OR_NEWER
+			value = new UnityEngine.AI.NavMeshPath();
+			#else
+			value = new UnityEngine.NavMeshPath();
+			#endif
+
+		}
+
+		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
+
+			field.serializatorId = this.GetId();
+			field.fields = packer.Serialize(value, serializers);
+
+		}
+
+	}
+
+	public class GradientAlphaKeySerializer : ISerializer {
+
+		public class Data {
+
+			public float alpha;
+			public float time;
+
+		}
+
+		public string GetId() {
+
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
+
+		}
+
+		public bool IsValid(object value) {
+
+			return value.GetType() == typeof(GradientAlphaKey);
+
+		}
+
+		public void DeserializeBeforeRef(UABUnpacker unpacker, UABField field, ref object value, List<ISerializer> serializers) {
+
+			var data = new Data();
+			unpacker.Deserialize(data, field.fields, serializers);
+			value = new GradientAlphaKey() { alpha = data.alpha, time = data.time };
+
+		}
+
+		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
+
+			field.serializatorId = this.GetId();
+			field.fields = packer.Serialize(value, serializers);
+
+		}
+
+	}
+
+	public class GradientColorKeySerializer : ISerializer {
+
+		public class Data {
+
+			public Color color;
+			public float time;
+
+		}
+
+		public string GetId() {
+
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
+
+		}
+
+		public bool IsValid(object value) {
+
+			return value.GetType() == typeof(GradientColorKey);
+
+		}
+
+		public void DeserializeBeforeRef(UABUnpacker unpacker, UABField field, ref object value, List<ISerializer> serializers) {
+
+			var data = new Data();
+			unpacker.Deserialize(data, field.fields, serializers);
+			value = new GradientColorKey() { color = data.color, time = data.time };
+
+		}
+
+		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
+
+			field.serializatorId = this.GetId();
+			field.fields = packer.Serialize(value, serializers);
+
+		}
+
+	}
+
+	public class GradientSerializer : ISerializer {
+
+		public class Data {
+
+			public GradientColorKey[] colorKeys;
+			public GradientAlphaKey[] alphaKeys;
+			#if UNITY_5_5_OR_NEWER
+			public GradientMode mode;
+			#endif
+
+		}
+
+		public string GetId() {
+
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
+
+		}
+
+		public bool IsValid(object value) {
+
+			return value.GetType() == typeof(Gradient);
+
+		}
+
+		public void DeserializeBeforeRef(UABUnpacker unpacker, UABField field, ref object value, List<ISerializer> serializers) {
+
+			var data = new Data();
+			unpacker.Deserialize(data, field.fields, serializers);
+			if (data.colorKeys == null) data.colorKeys = new GradientColorKey[0];
+			if (data.alphaKeys == null) data.alphaKeys = new GradientAlphaKey[0];
+			#if UNITY_5_5_OR_NEWER
+			value = new Gradient() { mode = data.mode, colorKeys = data.colorKeys, alphaKeys = data.alphaKeys };
+			#else
+			value = new Gradient() { colorKeys = data.colorKeys, alphaKeys = data.alphaKeys };
+			#endif
+
+		}
+
+		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
+
+			field.serializatorId = this.GetId();
+			var v = (Gradient)value;
+			var data = new Data();
+			#if UNITY_5_5_OR_NEWER
+			data.mode = v.mode;
+			#endif
+			data.colorKeys = v.colorKeys;
+			data.alphaKeys = v.alphaKeys;
+			field.fields = packer.Serialize(data, serializers);
+
+		}
+
+	}
+
 	public class Color32Serializer : ISerializer {
-		
+
 		public class Data {
 
 			public byte r;
@@ -133,7 +330,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class ColorSerializer : ISerializer {
-		
+
 		public class Data {
 
 			public float r;
@@ -179,7 +376,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class QuaternionSerializer : ISerializer {
-		
+
 		public class Data {
 
 			public float x;
@@ -225,7 +422,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class Vector4Serializer : ISerializer {
-		
+
 		public class Data {
 
 			public float x;
@@ -271,7 +468,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class Vector3Serializer : ISerializer {
-		
+
 		public class Data {
 
 			public float x;
@@ -359,8 +556,60 @@ namespace ME.UAB.Serializers {
 
 	}
 
+	public class RectOffsetSerializer : ISerializer {
+
+		public class Data {
+
+			public int x;
+			public int y;
+			public int z;
+			public int w;
+
+		}
+
+		public string GetId() {
+
+			return this.GetType().Name;
+
+		}
+
+		public bool IsValid(string id) {
+
+			return this.GetId() == id;
+
+		}
+
+		public bool IsValid(object value) {
+
+			return value.GetType() == typeof(RectOffset);
+
+		}
+
+		public void DeserializeBeforeRef(UABUnpacker unpacker, UABField field, ref object value, List<ISerializer> serializers) {
+
+			var data = new Data();
+			unpacker.Deserialize(data, field.fields, serializers);
+			value = new RectOffset(data.x, data.y, data.z, data.w);
+
+		}
+
+		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
+
+			field.serializatorId = this.GetId();
+			var tr = value as RectOffset;
+			var data = new Data();
+			data.x = tr.left;
+			data.y = tr.right;
+			data.z = tr.top;
+			data.w = tr.bottom;
+			field.fields = packer.Serialize(data, serializers);
+
+		}
+
+	}
+
 	public class TransformSerializer : ISerializer {
-		
+
 		public class Data {
 
 			public Vector3 position;
@@ -413,7 +662,7 @@ namespace ME.UAB.Serializers {
 	}
 
 	public class RectTransformSerializer : ISerializer {
-		
+
 		public class Data {
 
 			public Vector3 position;
@@ -480,14 +729,16 @@ namespace ME.UAB.Serializers {
 
 	}
 
-	public class RectOffsetSerializer : ISerializer {
-		
+	public class AnimatorSerializer : ISerializer {
+
 		public class Data {
 
-			public int x;
-			public int y;
-			public int z;
-			public int w;
+			public Avatar avatar;
+			public RuntimeAnimatorController runtimeAnimatorController;
+			public AnimatorCullingMode cullingMode;
+			public AnimatorUpdateMode updateMode;
+			public bool applyRootMotion;
+			public bool linearVelocityBlending;
 
 		}
 
@@ -505,7 +756,7 @@ namespace ME.UAB.Serializers {
 
 		public bool IsValid(object value) {
 
-			return value.GetType() == typeof(RectOffset);
+			return value.GetType() == typeof(Animator);
 
 		}
 
@@ -513,19 +764,27 @@ namespace ME.UAB.Serializers {
 
 			var data = new Data();
 			unpacker.Deserialize(data, field.fields, serializers);
-			value = new RectOffset(data.x, data.y, data.z, data.w);
+			var animator = value as Animator;
+			animator.avatar = data.avatar;
+			animator.runtimeAnimatorController = data.runtimeAnimatorController;
+			animator.cullingMode = data.cullingMode;
+			animator.updateMode = data.updateMode;
+			animator.applyRootMotion = data.applyRootMotion;
+			animator.linearVelocityBlending = data.linearVelocityBlending;
 
 		}
 
 		public void Serialize(UABPacker packer, UABField field, ref object value, List<ISerializer> serializers) {
 
 			field.serializatorId = this.GetId();
-			var tr = value as RectOffset;
+			var animator = value as Animator;
 			var data = new Data();
-			data.x = tr.left;
-			data.y = tr.right;
-			data.z = tr.top;
-			data.w = tr.bottom;
+			data.avatar = animator.avatar;
+			data.runtimeAnimatorController = animator.runtimeAnimatorController;
+			data.cullingMode = animator.cullingMode;
+			data.updateMode = animator.updateMode;
+			data.applyRootMotion = animator.applyRootMotion;
+			data.linearVelocityBlending = animator.linearVelocityBlending;
 			field.fields = packer.Serialize(data, serializers);
 
 		}

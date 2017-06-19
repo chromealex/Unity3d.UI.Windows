@@ -111,6 +111,12 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 		}
 
+		public virtual bool PassCommandRewrite(ref string[] args) {
+
+			return false;
+
+		}
+
 		public virtual bool HasCommandRewrite(string[] args) {
 
 			return false;

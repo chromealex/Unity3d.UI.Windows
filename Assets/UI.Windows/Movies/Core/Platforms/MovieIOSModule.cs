@@ -28,9 +28,11 @@ namespace UnityEngine.UI.Windows.Movies {
         [DllImport("__Internal")]
         private static extern uint VideoPlayer_GetVideoSize(uint index, out uint width, out uint height);
         [DllImport("__Internal")]
-        private static extern void VideoPlayer_Update(uint index, out bool complete);
-        [DllImport("__Internal")]
-        private static extern void VideoPlayer_Play(uint index, bool loop);
+		private static extern void VideoPlayer_Update(uint index, out bool complete);
+		[DllImport("__Internal")]
+		private static extern void VideoPlayer_Play(uint index, bool loop);
+		[DllImport("__Internal")]
+		private static extern void VideoPlayer_Pause(uint index);
 		#else
 		private static bool VideoPlayer_Initialize(uint capacity) { return false; }
 		private static void VideoPlayer_Finalize() {}
@@ -42,6 +44,7 @@ namespace UnityEngine.UI.Windows.Movies {
 		private static uint VideoPlayer_GetVideoSize(uint index, out uint width, out uint height) { width = 0u; height = 0u; return 0u; }
 		private static void VideoPlayer_Update(uint index, out bool complete) { complete = true; }
 		private static void VideoPlayer_Play(uint index, bool loop) {}
+		private static void VideoPlayer_Pause(uint index) {}
 		#endif
 
         public class Item {
@@ -139,8 +142,14 @@ namespace UnityEngine.UI.Windows.Movies {
             }
 
 			public void Stop() {
-				
+
 				this.onComplete = null;
+
+			}
+
+			public void Pause() {
+
+				MovieIOSModule.VideoPlayer_Pause(this.index);
 
 			}
 
@@ -285,6 +294,17 @@ namespace UnityEngine.UI.Windows.Movies {
             }
 
         }
+
+		protected override void OnPause(ResourceBase resource, Texture movie) {
+
+			var instance = this.FindInstance(resource);
+			if (instance != null) {
+
+				instance.Pause();
+
+			}
+
+		}
 
 		protected override void OnStop(ResourceBase resource, Texture movie) {
 

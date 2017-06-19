@@ -456,12 +456,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 								rect = GUI.Window(window.id, rect, this.DrawNodeWindow, title, style);
 								GUI.BringWindowToFront(window.id);
 
-								GUI.Window(-window.id, new Rect(rect.x, rect.y + rect.height, rect.width, this.GetTagsHeight(window)), (id) => {
+								if (FlowSystem.GetData().flowDrawTags == true) {
 
-									this.DrawTags(FlowSystem.GetWindow(-id), true);
+									GUI.Window(-window.id, new Rect(rect.x, rect.y + rect.height, rect.width, this.GetTagsHeight(window)), (id) => {
 
-								}, string.Empty, GUIStyle.none);
-								GUI.BringWindowToFront(-window.id);
+										this.DrawTags(FlowSystem.GetWindow(-id), true);
+
+									}, string.Empty, GUIStyle.none);
+									GUI.BringWindowToFront(-window.id);
+
+								}
 
 								var isMoving = (rect != window.rect);
 								
@@ -1430,6 +1434,21 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 					
 					GUILayout.Label("Settings:", EditorStyles.boldLabel);
 					var anySettings = false;
+
+					{
+						
+						anySettings = true;
+						var flowDrawTags = EditorGUILayout.Toggle("Draw Tags", FlowSystem.GetData().flowDrawTags);
+						if (flowDrawTags != FlowSystem.GetData().flowDrawTags) {
+
+							FlowSystem.GetData().flowDrawTags = flowDrawTags;
+							FlowSystem.SetDirty();
+
+							this.Repaint();
+
+						}
+
+					}
 
 					if (FlowSystem.GetData().HasView(FlowView.Layout) == true) {
 						
@@ -2892,7 +2911,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						menu.AddItem(new GUIContent("Create on Scene"), on: false, func: () => { this.CreateOnScene(window); });
 
 						var methodsCount = 0;
-						WindowSystem.CollectCallVariations(screen, (types, names) => {
+						FlowEditorUtilities.CollectCallVariations(screen, (types, names) => {
 
 							++methodsCount;
 
@@ -2927,7 +2946,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						    screen != null) {
 
 							methodsCount = 0;
-							WindowSystem.CollectCallVariations(screen, (types, names) => {
+							FlowEditorUtilities.CollectCallVariations(screen, (types, names) => {
 
 								var parameters = new List<string>();
 								for (int i = 0; i < types.Length; ++i) {

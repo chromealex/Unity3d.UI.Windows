@@ -212,7 +212,44 @@ namespace ME.UAB {
 
 		}
 
+		public void CleanUpReferences() {
+
+			#if UNITY_EDITOR
+			var localPath = this.config.UAB_RESOURCES_PATH;
+			var projectPath = string.Format("Assets/{0}", localPath);
+
+			{ // Creating `Resources` directory
+				
+				var path = string.Format("{0}/{1}", Application.dataPath, localPath);
+				if (System.IO.Directory.Exists(path) == false) {
+					
+					System.IO.Directory.CreateDirectory(path);
+					UnityEditor.AssetDatabase.ImportAsset(projectPath);
+					
+				}
+				
+			}
+
+			var assets = UnityEditor.AssetDatabase.FindAssets(string.Empty, new string[] { projectPath });
+			for (int i = 0; i < assets.Length; ++i) {
+				
+				var path = UnityEditor.AssetDatabase.GUIDToAssetPath(assets[i]);
+				var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<ObjectReference>(path);
+				if (asset != null && asset.reference == null) {
+					
+					// delete
+					UnityEditor.AssetDatabase.DeleteAsset(path);
+					
+				}
+				
+			}
+			#endif
+
+		}
+
 		public void BuildReferences(Transform root) {
+
+			this.CleanUpReferences();
 
 			var list = this.tempReferencesPack;
 			for (int i = 0; i < list.Count; ++i) {
@@ -242,7 +279,7 @@ namespace ME.UAB {
 					if (assetPath.StartsWith("Assets/") == false) {
 
 						// Unity default resource
-						instanceId = "_" + value.GetType().FullName + "." + (value as Object).name;
+						instanceId = string.Format("_{0}.{1}", value.GetType().FullName, (value as Object).name);
 
 					} else {
 
@@ -290,11 +327,11 @@ namespace ME.UAB {
 					}
 
 					var localPath = this.config.UAB_RESOURCES_PATH;
-					var projectPath = "Assets/" + localPath;
+					var projectPath = string.Format("Assets/{0}", localPath);
 
 					{ // Creating `Resources` directory
 						
-						var path = Application.dataPath + "/" + localPath;
+						var path = string.Format("{0}/{1}", Application.dataPath, localPath);
 						if (System.IO.Directory.Exists(path) == false) {
 
 							System.IO.Directory.CreateDirectory(path);
@@ -306,11 +343,11 @@ namespace ME.UAB {
 
 					{ // Creating asset by GUID
 						
-						var guid = instanceId + "_" + postInstanceId;
-						var name = guid + ".asset";
+						var guid = string.Format("{0}_{1}", instanceId, postInstanceId);
+						var name = string.Format("{0}.asset", guid);
 
 						ObjectReference reference = null;
-						var fullPath = projectPath + "/" + name;
+						var fullPath = string.Format("{0}/{1}", projectPath, name);
 						if (System.IO.File.Exists(fullPath) == false) {
 
 							reference = ME.UAB.Extensions.EditorUtilities.CreateAsset<ObjectReference>(name, projectPath);
@@ -527,6 +564,22 @@ namespace ME.UAB {
 						uField.data = (string)value;
 
 					} else {
+
+						if (value is float) {
+
+							if (((float)value).HasValue() == false) value = 0f;
+							if ((float)value >= float.MaxValue) value = float.MaxValue;
+							if ((float)value <= float.MinValue) value = float.MinValue;
+
+						}
+
+						if (value is double) {
+
+							if (((double)value).HasValue() == false) value = 0d;
+							if ((double)value >= double.MaxValue) value = double.MaxValue;
+							if ((double)value <= double.MinValue) value = double.MinValue;
+
+						}
 
 						uField.data = UABSerializer.SerializeValueType(value);
 

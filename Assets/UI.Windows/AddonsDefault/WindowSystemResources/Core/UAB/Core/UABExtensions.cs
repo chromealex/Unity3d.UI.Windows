@@ -5,6 +5,103 @@ using System.Collections.Generic;
 
 namespace ME.UAB {
 
+	public static class UABUtils {
+
+		public static T2 CopyToParticleSystemModule<T1, T2>(T1 source, T2 target) where T1 : class where T2 : struct {
+
+			var fieldsTarget = typeof(T2)
+				.GetAllProperties()
+				.Where(x => 
+					x.GetCustomAttributes(true).Any(a => a is System.ObsoleteAttribute) == false &&
+					x.CanWrite == true)
+				.OrderBy(x => x.Name)
+				.ToArray();
+
+			var fieldsSource = typeof(T1)
+				.GetAllFields()
+				.Where(x => x.GetCustomAttributes(true).Any(a => a is System.ObsoleteAttribute) == false)
+				.OrderBy(x => x.Name)
+				.ToArray();
+
+			for (int i = 0; i < fieldsSource.Length; ++i) {
+
+				var propSource = fieldsSource[i];
+				var propTarget = fieldsTarget[i];
+				var value = propSource.GetValue(source);
+				var targetBoxed = (object)target;
+				propTarget.SetValue(targetBoxed, value, null);
+				target = (T2)targetBoxed;
+
+			}
+
+			return target;
+
+		}
+
+		public static T2 CopyFromParticleSystemModule<T1, T2>(T1 source, T2 target) where T1 : struct where T2 : class {
+
+			var fieldsSource = typeof(T1)
+				.GetAllProperties()
+				.Where(x => 
+					x.GetCustomAttributes(true).Any(a => a is System.ObsoleteAttribute) == false &&
+					x.CanWrite == true)
+				.OrderBy(x => x.Name)
+				.ToArray();
+
+			var fieldsTarget = typeof(T2)
+				.GetAllFields()
+				.Where(x => x.GetCustomAttributes(true).Any(a => a is System.ObsoleteAttribute) == false)
+				.OrderBy(x => x.Name)
+				.ToArray();
+
+			/*Debug.Log(fieldsSource.Length + " :: " + fieldsTarget.Length + " :: " + typeof(T2));
+
+			for (int i = 0; i < fieldsSource.Length; ++i) {
+
+				Debug.Log("S: " + fieldsSource[i].Name);
+
+			}
+
+			for (int i = 0; i < fieldsTarget.Length; ++i) {
+
+				Debug.Log("T: " + fieldsTarget[i].Name);
+
+			}*/
+
+			for (int i = 0; i < fieldsSource.Length; ++i) {
+
+				var propSource = fieldsSource[i];
+				var propTarget = fieldsTarget[i];
+
+				//if (propSource.Name == "color") continue;
+
+				var value = propSource.GetValue(source, null);
+				propTarget.SetValue(target, value);
+
+			}
+
+			return target;
+
+		}
+
+	}
+
+	public static class ValuesExtension {
+
+		public static bool HasValue(this float value) {
+
+			return float.IsNaN(value) == false && float.IsInfinity(value) == false;
+
+		}
+
+		public static bool HasValue(this double value) {
+
+			return double.IsNaN(value) == false && double.IsInfinity(value) == false;
+
+		}
+
+	}
+
 	public class BundleImporter {
 
 		public static string GetBundleName(UnityEngine.Object obj) {

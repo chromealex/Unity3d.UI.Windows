@@ -22,9 +22,9 @@ namespace UnityEngine.UI.Windows {
 			UnityAction action = null;
 			action = () => {
 
-				instance.Show();
-
 				window.events.onEveryInstance.Unregister(WindowEventType.OnHideEnd, action);
+
+				instance.Show();
 
 			};
 			window.events.onEveryInstance.Register(WindowEventType.OnHideEnd, action);

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace UnityEngine.UI.Windows {
 
@@ -11,7 +9,7 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
-	public struct InitializeParameters {
+	public struct InitialParameters {
 
 		public float depth;
 		public float zDepth;

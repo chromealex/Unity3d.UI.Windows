@@ -9,7 +9,7 @@ using ME.UAB;
 namespace UnityEngine.UI.Windows.Components {
 
 	public class LinkerComponent : WindowComponent, IResourceReference {
-
+		
 		#if UNITY_EDITOR
 		[SerializeField][BundleIgnore][ComponentChooser]
 		private WindowComponent prefab;
@@ -28,6 +28,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[SerializeField]
 		public WindowComponentParametersBase prefabParameters;
 
+		public bool autoload = true;
 		public bool fitToRoot = true;
 
 		[HideInInspector]
@@ -68,6 +69,32 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public bool IsEmpty() {
+
+			return (this.prefabNoResource == null && this.prefabResource.IsLoadable() == false);
+
+		}
+
+		public void Load() {
+
+			this.Get<IComponent>();
+
+		}
+
+		public void LoadAsync(System.Action callback = null) {
+
+			if (callback == null) {
+
+				this.GetAsync<IComponent>();
+
+			} else {
+
+				this.GetAsync<IComponent>((asset) => { if (callback != null) callback.Invoke(); });
+
+			}
+
+		}
+
 		public T Get<T>(ref T instance) where T : IComponent {
 			
 			instance = this.Get<T>();
@@ -89,14 +116,7 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		public void GetAsync<T>(System.Action<T> callback = null) where T : IComponent {
-
-			/*if (this.instance != null) {
-
-				if (callback != null) callback.Invoke((T)(this.instance as IComponent));
-				return;
-
-			}*/
-
+			
 			this.InitInstance((asset) => {
 
 				if (callback != null) callback.Invoke((T)(this.instance as IComponent));
@@ -123,7 +143,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public override void DoLoad(bool async, System.Action<WindowObjectElement> onItem, System.Action callback) {
 
-			this.InitInstance(c => base.DoLoad(async, onItem, callback), async);
+			if (this.autoload == true) {
+
+				this.InitInstance(c => base.DoLoad(async, onItem, callback), async);
+
+			} else {
+
+				base.DoLoad(@async, onItem, callback);
+
+			}
 
 		}
 
@@ -223,9 +251,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidateEditor() {
+		public override void OnValidate() {
 
-			base.OnValidateEditor();
+			base.OnValidate();
 
 			if (this.editorPreload == false) {
 					

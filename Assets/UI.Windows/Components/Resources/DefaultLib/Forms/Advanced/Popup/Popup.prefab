@@ -101,6 +101,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
+    readableTexture: 0
     id: -906190820
     cacheVersion: 0
     streamingAssetsPathStandalone: 
@@ -125,6 +126,7 @@ MonoBehaviour:
     controlType: 0
     tempObject: {fileID: 11409546, guid: ceee67989766d46b39e3e72ccc364825, type: 2}
   prefabParameters: {fileID: 0}
+  autoload: 1
   fitToRoot: 1
   _instance: {fileID: 0}
 --- !u!114 &11416516
@@ -176,6 +178,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
+    readableTexture: 0
     id: 369686992
     cacheVersion: 0
     streamingAssetsPathStandalone: 
@@ -200,6 +203,7 @@ MonoBehaviour:
     controlType: 0
     tempObject: {fileID: 11473206, guid: 5451f45ea8b9e4f2d963a8f5498f5123, type: 2}
   prefabParameters: {fileID: 0}
+  autoload: 1
   fitToRoot: 1
   _instance: {fileID: 0}
 --- !u!114 &11416518
@@ -265,6 +269,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -272,6 +277,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -279,6 +285,7 @@ MonoBehaviour:
       scale: {x: 0, y: 0}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
 --- !u!114 &11433852
 MonoBehaviour:
   m_ObjectHideFlags: 1

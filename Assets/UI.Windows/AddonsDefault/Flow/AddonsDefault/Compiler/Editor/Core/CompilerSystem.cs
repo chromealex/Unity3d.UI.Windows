@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -91,21 +91,26 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			}
 
-			if (window.IsContainer() == false) {
+            if (window.IsContainer() == false) {
 
-				IO.CreateDirectory(path, string.Empty);
-				IO.CreateDirectory(path, FlowDatabase.COMPONENTS_FOLDER);
-				IO.CreateDirectory(path, FlowDatabase.LAYOUT_FOLDER);
-				IO.CreateDirectory(path, FlowDatabase.SCREENS_FOLDER);
+				IO.CreateFile(path, ".uiwspackage", string.Empty, import: false);
+                IO.CreateDirectory(path, string.Empty);
+                IO.CreateDirectory(path, FlowDatabase.COMPONENTS_FOLDER);
+                IO.CreateDirectory(path, FlowDatabase.LAYOUT_FOLDER);
+                IO.CreateDirectory(path, FlowDatabase.SCREENS_FOLDER);
 
-			}
+            } else {
+                
+				IO.CreateFile(path, ".uiwscontainer", string.Empty, import: false);
+                
+            }
 
-			if (baseClassTemplate != null && derivedClassTemplate != null) {
+            if (baseClassTemplate != null && derivedClassTemplate != null) {
 
-				IO.CreateFile(path, newInfo.baseClassnameFile, baseClassTemplate, rewrite: true);
-				IO.CreateFile(path, newInfo.classnameFile, derivedClassTemplate, rewrite: false);
-				
-			}
+                IO.CreateFile (path, newInfo.baseClassnameFile, baseClassTemplate, rewrite: true);
+                IO.CreateFile (path, newInfo.classnameFile, derivedClassTemplate, rewrite: false);
+
+            }
 
 			window.compiledNamespace = newInfo.baseNamespace;
 			window.compiledScreenName = newInfo.screenName;

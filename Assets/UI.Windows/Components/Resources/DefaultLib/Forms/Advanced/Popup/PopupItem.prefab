@@ -300,9 +300,9 @@ MonoBehaviour:
     explicit: 0
     next: {fileID: 0}
   button: {fileID: 11494844}
-  selectByDefault: 0
   setDefaultNavigationModeOnStart: 1
   defaultNavigationMode: 0
+  selectByDefault: 0
   hoverOnAnyButtonState: 0
   hoverCursorDefaultOnInactive: 0
   image: {fileID: 0}
@@ -335,6 +335,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
+    readableTexture: 0
     id: 0
     cacheVersion: 0
     streamingAssetsPathStandalone: 
@@ -377,6 +378,14 @@ MonoBehaviour:
     outputDeclensionWithoutNumber: 0
   valueAnimate: 0
   valueAnimateDuration: 2
+  textCrossFadeModule:
+    enabled: 0
+    duration: 0.5
+    fadeIfWasNull: 0
+    fadeOutSource: 0
+    easeType: 0
+    startColor: {r: 1, g: 1, b: 1, a: 0}
+    targetColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!222 &22294840
 CanvasRenderer:
   m_ObjectHideFlags: 1

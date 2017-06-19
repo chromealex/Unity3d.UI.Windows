@@ -124,6 +124,9 @@ namespace UnityEngine.UI.Windows {
 		public class OnDoTransitionEvent : ME.Events.SimpleEvent<int, int, int, bool> {}
 		public static OnDoTransitionEvent onTransition = new OnDoTransitionEvent();
 
+		public static System.Action<WindowBase> onWindowOpened;
+		public static System.Func<WindowBase, bool> onShowValidation;
+
 	    protected virtual void OnDestory() {
 
 	        WindowSystem.onTransition = null;
@@ -403,7 +406,9 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
-		
+
+		private static int counter = 0;
+
 		[Header("Required")]
 		public ObjectPool objectPool;
 		
@@ -475,8 +480,9 @@ namespace UnityEngine.UI.Windows {
 
 		private WindowLayoutPreferences customLayoutPreferences;
 
-		private List<DebugWeakReference> debugWeakReferencesList = new List<DebugWeakReference>();
-		private Transform debugRoot;
+		private WindowBase lastInstance;
+		private WindowBase topInstance;
+		//private WindowBase previousInstance;
 
 	    protected virtual void OnDestroy() {
 
@@ -513,6 +519,10 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+
+		#region Debug
+		private List<DebugWeakReference> debugWeakReferencesList = new List<DebugWeakReference>();
+		private Transform debugRoot;
 
 		public static bool IsDebugWeakReferences() {
 
@@ -552,6 +562,7 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+		#endregion
 
 		public static RuntimePlatform GetCurrentRuntimePlatform() {
 			
@@ -577,6 +588,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		#region UnityEvents
 		#if UNITY_EDITOR
 		public virtual void OnValidate() {
 
@@ -613,9 +625,6 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private WindowBase lastInstance;
-		private WindowBase topInstance;
-		//private WindowBase previousInstance;
 		protected virtual void LateUpdate() {
 
 			WindowSystem.UpdateDeviceOrientation();
@@ -628,23 +637,9 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+		#endregion
 
-		public static Events GetEvents() {
-
-			if (WindowSystem.instance == null) return new Events();
-
-			return WindowSystem.instance.events;
-
-		}
-
-		public static HistoryTracker GetHistoryTracker() {
-
-			if (WindowSystem.instance == null) return new HistoryTracker();
-
-			return WindowSystem.instance.historyTracker;
-
-		}
-
+		#region RunSafe
 		public static void RunSafe(System.Action method) {
 
 			try {
@@ -672,50 +667,9 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+		#endregion
 
-		public static void RegisterWindow(WindowBase window) {
-
-			WindowSystem.instance.windows.Add(new WindowItem() { loaded = window });
-
-		}
-
-		public static void OnDoTransition(int index, int fromScreenId, int toScreenId, bool hide = true) {
-			
-			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId, hide);
-			
-		}
-
-		public static void DestroyWindow(WindowBase window) {
-
-			if (WindowSystem.instance == null) return;
-
-			WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, null);
-
-		}
-
-		public static void SendManualEvent<T>(T data, bool includeInactive) where T : IManualEvent {
-
-			WindowSystem.ForEachWindow(w => w.OnManualEvent<T>(data), includeInactive);
-
-		}
-
-		public static void ForEachWindow(System.Action<WindowBase> onEach, bool includeInactive) {
-
-			for (int i = 0; i < WindowSystem.instance.currentWindows.Count; ++i) {
-				
-				var window = WindowSystem.instance.currentWindows[i];
-				if (includeInactive == true || 
-					(window.GetState() == WindowObjectState.Showing ||
-					window.GetState() == WindowObjectState.Shown)) {
-
-					onEach.Invoke(window);
-
-				}
-
-			}
-
-		}
-
+		#region Audio API
 		public static void AudioPlayFX(int id, int[] randomIds, bool randomize) {
 			
 			if (randomize == true) {
@@ -737,29 +691,6 @@ namespace UnityEngine.UI.Windows {
 				
 			}
 			
-		}
-
-		public static void SetCustomLayoutPreferences(WindowLayoutPreferences preferences) {
-
-			WindowSystem.instance.customLayoutPreferences = preferences;
-
-			WindowSystem.ForEachWindow(w => {
-
-				var window = w as LayoutWindowType;
-				if (window != null) {
-
-					window.GetCurrentLayout().SetCustomLayoutPreferences(WindowSystem.instance.customLayoutPreferences);
-
-				}
-
-			}, includeInactive: false);
-
-		}
-
-		public static WindowLayoutPreferences GetCustomLayoutPreferences() {
-
-			return WindowSystem.instance.customLayoutPreferences;
-
 		}
 
 		public static void AudioMute() {
@@ -816,8 +747,24 @@ namespace UnityEngine.UI.Windows {
 			Audio.Manager.Change(window, WindowSystem.instance.audio, clipType, id, audioSettings);
 			
 		}
+		#endregion
 
-		public static void SendInactiveStateByWindow(WindowBase newWindow) {
+		#region Internal API
+		internal static HistoryTracker GetHistoryTracker() {
+
+			if (WindowSystem.instance == null) return new HistoryTracker();
+
+			return WindowSystem.instance.historyTracker;
+
+		}
+
+		internal static void OnDoTransition(int index, int fromScreenId, int toScreenId, bool hide = true) {
+
+			WindowSystem.onTransition.Invoke(index, fromScreenId, toScreenId, hide);
+
+		}
+
+		internal static void SendInactiveStateByWindow(WindowBase newWindow) {
 
 			if (WindowSystem.instance == null) return;
 
@@ -843,7 +790,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void SendActiveStateByWindow(WindowBase closingWindow) {
+		internal static void SendActiveStateByWindow(WindowBase closingWindow) {
 
 			if (WindowSystem.instance == null) return;
 
@@ -859,7 +806,7 @@ namespace UnityEngine.UI.Windows {
 				if (window == null) continue;
 				if (window.IsVisible() == false) continue;
 				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
-					
+
 					window.SetActive();
 
 				}
@@ -868,7 +815,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static int GetWindowsInFrontCount(WindowBase targetWindow) {
+		internal static int GetWindowsInFrontCount(WindowBase targetWindow) {
 
 			var layer = targetWindow.preferences.layer;
 			var depth = targetWindow.GetDepth();
@@ -895,7 +842,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static bool IsWindowsInFrontFullCoverage(WindowBase targetWindow) {
+		internal static bool IsWindowsInFrontFullCoverage(WindowBase targetWindow) {
 
 			var layer = targetWindow.preferences.layer;
 			var depth = targetWindow.GetDepth();
@@ -924,15 +871,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static Orientation GetOrientation() {
-
-			return Screen.width > Screen.height ? Orientation.Horizontal : Orientation.Vertical;
-
-		}
-
 		private static bool deviceOrientationChecked = false;
 		private static Orientation previousDeviceOrientation;
-		public static void UpdateDeviceOrientation() {
+		internal static void UpdateDeviceOrientation() {
 
 			var currentOrientation = WindowSystem.GetOrientation();
 			if (WindowSystem.deviceOrientationChecked == false || WindowSystem.previousDeviceOrientation != currentOrientation) {
@@ -954,19 +895,19 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void UpdateLastInstance() {
+		internal static void UpdateLastInstance() {
 
 			if (WindowSystem.instance == null) return;
 
 			WindowBase lastInstance = null;
-			lastInstance = WindowSystem.FindOpened<WindowBase>((item) => item != null && item.preferences.IsHistoryActive() == true && (item.GetState() == WindowObjectState.Shown || item.GetState() == WindowObjectState.Showing), last: true);
+			lastInstance = WindowSystem.FindOpened<WindowBase>((item) => item != null /*&& item.preferences.IsHistoryActive() == true*/ && (item.GetState() == WindowObjectState.Shown || item.GetState() == WindowObjectState.Showing), last: true);
 
 			WindowSystem.instance.lastInstance = lastInstance;
 			if (WindowSystem.instance.lastInstance == null) WindowSystem.instance.lastInstance = null;
 
 		}
 
-		public static void UpdateTopInstance() {
+		internal static void UpdateTopInstance() {
 
 			if (WindowSystem.instance == null) return;
 
@@ -977,6 +918,8 @@ namespace UnityEngine.UI.Windows {
 			for (int i = 0, count = WindowSystem.instance.currentWindows.Count; i < count; ++i) {
 
 				var window = WindowSystem.instance.currentWindows[i];
+				if (window == null) continue;
+
 				if (window.preferences.IsHistoryActive() == true && (window.preferences.layer > layer || (window.preferences.layer == layer && window.GetDepth() > depth))) {
 
 					topWindow = window;
@@ -992,6 +935,48 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		internal void CreatePoolForWindowSource(WindowBase window) {
+
+			if (window.preferences.createPool == false) return;
+
+			if (window.preferences.preallocatedCount > 0) {
+
+				window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source, null, null, null, false); });
+
+			} else {
+
+				window.CreatePool(this.settings.preallocatedWindowsPoolSize);
+
+			}
+
+		}
+
+		internal static void RegisterFunctionCallback(WindowBase instance, System.Action<int> onFunctionEnds) {
+
+			WindowSystem.instance.functions.Register(instance, onFunctionEnds);
+
+		}
+
+		internal static void DisableCallEvents() {
+
+			WindowSystem.instance.disabledCallEvents = true;
+
+		}
+
+		internal static void RestoreCallEvents() {
+
+			WindowSystem.instance.disabledCallEvents = false;
+
+		}
+
+		internal static bool IsCallEventsEnabled() {
+
+			return WindowSystem.instance.disabledCallEvents == false;
+
+		}
+		#endregion
+
+		#region Initialization
 		/// <summary>
 		/// Init this instance.
 		/// </summary>
@@ -1013,9 +998,9 @@ namespace UnityEngine.UI.Windows {
 
 			foreach (var window in this.windows) {
 
-				if (window == null) {
+				if (window == null || window.IsEmpty() == true) {
 
-					Debug.LogWarning("Some windows was not setup correctly. Be sure all windows have their screens.");
+					Debug.LogWarning("Some windows was not setup properly. Be sure all windows have their screens.");
 					continue;
 
 				}
@@ -1026,116 +1011,57 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void SetAsyncLoaderState(bool state) {
+		internal static void ApplyToSettingsInstance(Camera camera, Canvas canvas, WindowBase window) {
 
-			WindowSystem.instance.asyncLoaderState = state;
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
 
-		}
-
-		private bool asyncLoaderState = true;
-		private WindowBase asyncLoaderSource;
-		private WindowBase asyncLoader;
-		internal static void ShowAsyncLoader() {
-
-			if (WindowSystem.instance.asyncLoaderState == true && WindowSystem.instance.asyncLoaderSource != null) {
-
-				WindowSystem.instance.asyncLoader = WindowSystem.Show(WindowSystem.instance.asyncLoaderSource);
-
-			}
-
-		}
-
-		internal static void HideAsyncLoader() {
-
-			if (WindowSystem.instance.asyncLoader != null) {
-				
-				WindowSystem.instance.asyncLoader.Hide();
-
-			}
-
-		}
-
-		internal void CreatePoolForWindowSource(WindowBase window) {
-
-			if (window.preferences.createPool == false) return;
-
-			if (window.preferences.preallocatedCount > 0) {
-
-				window.CreatePool(window.preferences.preallocatedCount, (source) => { return WindowSystem.instance.Create_INTERNAL(source, null, null, null, false); });
+				// no settings file
 
 			} else {
 
-				window.CreatePool(this.settings.preallocatedWindowsPoolSize);
+				WindowSystem.instance.settings.file.ApplyEveryInstance(camera, canvas, window);
 
 			}
-
-		}
-
-		internal static void WaitCoroutine(System.Collections.Generic.IEnumerator<byte> routine) {
-
-			WindowSystem.instance.StartCoroutine(routine);
-
-		}
-		
-		public static void RegisterFunctionCallback(WindowBase instance, System.Action<int> onFunctionEnds) {
-
-			WindowSystem.instance.functions.Register(instance, onFunctionEnds);
-
-		}
-		
-		public static void CallFunction(WindowRoutes routes) {
-
-			throw new UnityException("Routes can't call a function");
-
-		}
-		
-		public static void CallFunction(WindowBase instance, bool reusable) {
-			
-			WindowSystem.instance.functions.Call(instance, reusable);
-			
-		}
-		
-		public static void RemoveFunction(WindowBase instance) {
-			
-			WindowSystem.instance.functions.Remove(instance);
-			
-		}
-
-		public static T GetByType<T>() where T : WindowBase {
-
-			return WindowSystem.instance.windows.FirstOrDefault((w) => w.IsType<T>()).Load<T>();
-
-		}
-
-		public static void DisableCallEvents() {
-
-			WindowSystem.instance.disabledCallEvents = true;
-
-		}
-
-		public static void RestoreCallEvents() {
-			
-			WindowSystem.instance.disabledCallEvents = false;
-
-		}
-
-		public static bool IsCallEventsEnabled() {
-
-			return WindowSystem.instance.disabledCallEvents == false;
 
 		}
 
 		/// <summary>
-		/// Determines if is user interface hovered.
+		/// Applies settings file (or default) to camera.
 		/// </summary>
-		/// <returns><c>true</c> if is user interface hovered; otherwise, <c>false</c>.</returns>
-		public static bool IsUIHovered() {
+		/// <param name="camera">Camera.</param>
+		internal static void ApplyToSettings(Camera camera, WindowSystemSettings.Camera.Mode mode = WindowSystemSettings.Camera.Mode.Auto) {
 
-			return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+
+				// no settings file
+
+			} else {
+
+				WindowSystem.instance.settings.file.Apply(camera: camera, mode: mode);
+
+			}
 
 		}
 
-		public static bool IsCameraRenderDisableOnWindowTurnOff() {
+		/// <summary>
+		/// Applies settings file (or default) to canvas.
+		/// </summary>
+		/// <param name="canvas">Canvas.</param>
+		internal static void ApplyToSettings(Canvas canvas) {
+
+			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+
+				// no settings file
+
+			} else {
+
+				WindowSystem.instance.settings.file.Apply(canvas: canvas);
+
+			}
+
+		}
+
+		internal static bool IsCameraRenderDisableOnWindowTurnOff() {
 
 			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
 
@@ -1151,72 +1077,461 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static string GetSortingLayerName() {
-			
+		internal static string GetSortingLayerName() {
+
 			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
-				
+
 				// no settings file
-				
+
 			} else {
-				
+
 				return WindowSystem.instance.settings.file.canvas.sortingLayerName;
-				
+
 			}
-				
+
 			return string.Empty;
-				
+
 		}
 
-		public static void ApplyToSettingsInstance(Camera camera, Canvas canvas) {
+		/// <summary>
+		/// Refreshes the history.
+		/// </summary>
+		internal static void RefreshHistory() {
 
-			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+			if (WindowSystem.instance.historyEnabled == true) {
 
-				// no settings file
+				WindowSystem.instance.history.RemoveAll((item) => item.window == null);
 
-			} else {
+			}
 
-				WindowSystem.instance.settings.file.ApplyEveryInstance(camera, canvas);
+			WindowSystem.UpdateLastInstance();
+			WindowSystem.UpdateTopInstance();
+
+		}
+
+		internal static void ResetDepth() {
+
+			var items = System.Enum.GetValues(typeof(DepthLayer));
+			var instance = WindowSystem.instance;
+
+			for (int i = 0; i < items.Length; ++i) {
+
+				var item = (int)items.GetValue(i);
+				instance.currentDepth[item] = instance.settings.GetMinDepth(item);
+				instance.currentZDepth[item] = instance.settings.GetMinZDepth(item);
+
+			}
+
+		}
+
+		internal static void Recycle(WindowBase window, bool setInactive) {
+
+			if (window.skipRecycle == false) {
+
+				//Debug.Log("Recycle: " + window + " :: " + setInactive);
+				if (window.preferences.createPool == false ||
+					ObjectPool.IsRegisteredInPool(window.GetSource()) == false) {
+
+					WindowSystem.CleanWindow(window, removeFromList: true, callback: () => {
+
+						window.Recycle(setInactive);
+
+					});
+
+				} else {
+
+					window.Recycle(setInactive);
+
+				}
 
 			}
 
 		}
 
 		/// <summary>
-		/// Applies settings file (or default) to camera.
+		/// Create the specified parameters.
 		/// </summary>
-		/// <param name="camera">Camera.</param>
-		public static void ApplyToSettings(Camera camera) {
-			
-			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+		/// <param name="parameters">Parameters.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		internal static T Create<T>(Preferences prefs, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) where T : WindowBase {
 
-				// no settings file
+			ignoreActions = false;
 
-			} else {
-				
-				WindowSystem.instance.settings.file.Apply(camera: camera);
-				
+			var source = WindowSystem.GetSource<T>();
+			if (source == null) return null;
+
+			return WindowSystem.CreateWithIgnore_INTERNAL(source, prefs, onParametersPassCall, onInitialized, out ignoreActions, async, parameters) as T;
+
+		}
+
+		internal WindowBase Create_INTERNAL(WindowBase source, Preferences customPreferences, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, bool async, params object[] parameters) {
+
+			bool ignoreActions;
+			return WindowSystem.CreateWithIgnore_INTERNAL(source, customPreferences, onParametersPassCall, onInitialized, out ignoreActions, async, parameters);
+
+		}
+
+		internal static WindowBase CreateWithIgnore_INTERNAL(WindowBase source, Preferences customPreferences, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) {
+
+			ignoreActions = false;
+
+			WindowBase instance = null;
+			if (source.preferences.forceSingleInstance == true) {
+
+				instance = WindowSystem.instance.currentWindows.FirstOrDefault(w => w.windowId == source.windowId);
+				if (instance != null) ignoreActions = source.preferences.singleInstanceIgnoreActions;
+
 			}
-			
+
+			if (instance == null) {
+
+				#if UNITY_EDITOR
+				var inPool = false;
+				if (ObjectPool.IsRegisteredInPool(source) == true && ObjectPool.Count(source) > 0) {
+
+					inPool = true;
+
+				}	
+				#endif
+
+				instance = source.Spawn();
+				instance.transform.SetParent(null);
+				instance.transform.localPosition = Vector3.zero;
+				instance.transform.localRotation = Quaternion.identity;
+				instance.transform.localScale = Vector3.one;
+
+				#if UNITY_EDITOR
+				if (inPool == false) instance.gameObject.name = string.Format("[Screen] {0} ({1})", source.GetType().Name, ++WindowSystem.counter);
+				#endif
+
+			}
+
+			if (customPreferences != null) {
+
+				instance.preferences = customPreferences;
+
+			}
+
+			if (WindowSystem.instance.currentWindows.Contains(instance) == false) {
+
+				WindowSystem.instance.currentWindows.Add(instance);
+
+			}
+
+			if (ignoreActions == false) {
+
+				instance.SetParameters(onParametersPassCall, parameters);
+				instance.Init(
+					source,
+					WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth),
+					WindowSystem.instance.GetNextZDepth(instance.preferences),
+					WindowSystem.instance.GetNextRaycastPriority(),
+					WindowSystem.instance.GetNextOrderInLayer(),
+					onInitialized: () => {
+
+						if (onInitialized != null) onInitialized.Invoke(instance);
+
+					},
+					async: async
+				);
+
+			}
+
+			return instance;
+
 		}
 
 		/// <summary>
-		/// Applies settings file (or default) to canvas.
+		/// Shows window of T type.
+		/// Returns null if window not registered.
 		/// </summary>
-		/// <param name="canvas">Canvas.</param>
-		public static void ApplyToSettings(Canvas canvas) {
+		/// <param name="afterGetInstance">On create predicate.</param>
+		/// <param name="transition">Transition.</param>
+		/// <param name="source">Source.</param>
+		/// <param name="parameters">OnParametersPass() values.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		internal static T ShowWithParameters<T>(
+			System.Action<T> afterGetInstance,
+			System.Action onInitialized,
+			AttachItem transitionItem,
+			T source,
+			System.Action<T> onParametersPassCall,
+			System.Action<T> onReady,
+			bool async,
+			params object[] parameters
+			) where T : WindowBase {
 
-			if (WindowSystem.instance == null || WindowSystem.instance.settings.file == null) {
+			var p = new WindowSystemShowParameters<T>() {
+				afterGetInstance = afterGetInstance,
+				onInitialized = onInitialized,
+				transitionItem = transitionItem,
+				source = source,
+				onParametersPassCall = onParametersPassCall,
+				onReady = onReady,
+				@async = async,
+				parameters = parameters,
+			};
+			return WindowSystem.ShowWithParameters<T>(p);
 
-				// no settings file
-
-			} else {
-				
-				WindowSystem.instance.settings.file.Apply(canvas: canvas);
-				
-			}
-			
 		}
 
+		internal static T ShowWithParameters<T>(WindowSystemShowParameters<T> parameters) where T : WindowBase {
+
+			System.Action<WindowBase> parametersPassCall = null;
+			if (parameters.onParametersPassCall != null) {
+
+				parametersPassCall = (WindowBase window) => {
+
+					if (parameters.onParametersPassCall != null) {
+
+						parameters.onParametersPassCall.Invoke(window as T);
+
+					}
+
+				};
+
+			}
+
+			T instance = default(T);
+
+			var ignoreActions = false;
+			System.Action<WindowBase> onInitializedInner = (WindowBase windowInstance) => {
+
+				if (parameters.onInitialized != null) {
+
+					parameters.onInitialized.Invoke();
+
+				}
+
+				if (parameters.onReady != null) {
+
+					parameters.onReady.Invoke(windowInstance as T);
+
+				}
+
+
+				if (parameters.afterGetInstance != null) {
+
+					parameters.afterGetInstance.Invoke(windowInstance as T);
+
+				}
+
+				if (ignoreActions == false) {
+
+					System.Action showInstance = () => {
+
+						if (parameters.transitionItem != null && parameters.transitionItem.transition != null && parameters.transitionItem.transitionParameters != null) {
+
+							windowInstance.Show(parameters.transitionItem);
+
+						} else {
+
+							windowInstance.Show();
+
+						}
+
+						if (WindowSystem.onWindowOpened != null) {
+
+							WindowSystem.onWindowOpened.Invoke(windowInstance);
+
+						}
+
+					};
+
+					if (windowInstance.preferences.showInSequence == true) {
+
+						var openedInstance = WindowSystem.FindOpened<T>(x => x != windowInstance /*&& x.IsVisible() == true*/, last: true);
+						if (openedInstance != null) {
+
+							UnityAction action = null;
+							action = () => {
+
+								openedInstance.events.onEveryInstance.Unregister(WindowEventType.OnHideEnd, action);
+
+								showInstance.Invoke();
+
+							};
+							openedInstance.events.onEveryInstance.Register(WindowEventType.OnHideEnd, action);
+
+						} else {
+
+							showInstance.Invoke();
+
+						}
+
+					} else {
+
+						showInstance.Invoke();
+
+					}
+
+				}
+
+			};
+
+			if (WindowSystem.onShowValidation == null || WindowSystem.onShowValidation.Invoke(parameters.source != null ? parameters.source as WindowBase : WindowSystem.GetSource<T>() as WindowBase) == true) {
+
+				instance = (parameters.source != null) ?
+					WindowSystem.CreateWithIgnore_INTERNAL(parameters.source, parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters.parameters) as T : 
+					WindowSystem.Create<T>(parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters.parameters);
+
+			}
+
+			return instance;
+
+		}
+
+		internal int GetNextOrderInLayer() {
+
+			return ++this.currentOrderInLayer;
+
+		}
+
+		internal int GetNextRaycastPriority() {
+
+			return ++this.currentRaycastPriority;
+
+		}
+
+		internal float GetNextZDepth(Preferences preferences) {
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) return 0f;
+			#endif
+
+			var layer = (int)preferences.layer;
+
+			var depth = 0f;
+			this.currentZDepth[layer] += this.zDepthStep;
+			depth = this.currentZDepth[layer];
+
+			return depth;
+
+		}
+
+		internal float GetNextDepth(Preferences preferences, float windowDepth) {
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) return 0f;
+			#endif
+
+			var layer = (int)preferences.layer;
+
+			var depth = 0f;
+			this.currentDepth[layer] += this.depthStep;
+			depth = this.currentDepth[layer];
+
+			return depth;
+
+		}
+
+		private Dictionary<string, MethodInfo> methodsCache = new Dictionary<string, MethodInfo>();
+		internal static bool InvokeMethodWithParameters(out MethodInfo methodInfo, WindowBase window, string methodName, params object[] inputParameters) {
+
+			var instance = WindowSystem.instance;
+
+			const string comma = ",";
+			var key = new StringBuilder();
+
+			foreach (var input in inputParameters) {
+
+				key.Append(input == null ?  null : input.GetType().Name);
+				key.Append(comma);
+
+			}
+
+			key.Append(methodName);
+			key.Append(comma);
+			key.Append(window.GetType().Name);
+
+			var keyStr = key.ToString();
+
+			if (instance.methodsCache.TryGetValue(keyStr, out methodInfo) == false) {
+
+				instance.methodsCache.Clear();
+
+				var methods = window.GetType().GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+				foreach (var method in methods) {
+
+					if (method.Name == methodName) {
+
+						var count = 0;
+						var parameters = method.GetParameters();
+
+						if (inputParameters.Length != parameters.Length) continue;
+
+						for (int i = 0; i < parameters.Length; ++i) {
+
+							var parameter = parameters[i];
+							var par = inputParameters[i];
+
+							var equal = par == null || par.GetType() == parameter.ParameterType || par.GetType().IsSubclassOf(parameter.ParameterType);
+							if (equal == true) {
+
+								++count;
+
+							}
+
+						}
+
+						if (count == parameters.Length) {
+
+							// Invoke and break
+							methodInfo = method;
+
+							instance.methodsCache.Add(keyStr, methodInfo);
+
+							return true;
+
+						}
+
+					}
+
+				}
+
+			} else {
+
+				return true;
+
+			}
+
+			return false;
+
+		}
+		#endregion
+
+		#region Layout API
+		public static void SetCustomLayoutPreferences(WindowLayoutPreferences preferences) {
+
+			WindowSystem.instance.customLayoutPreferences = preferences;
+
+			WindowSystem.ForEachWindow(w => {
+
+				var window = w as LayoutWindowType;
+				if (window != null) {
+
+					window.GetCurrentLayout().SetCustomLayoutPreferences(WindowSystem.instance.customLayoutPreferences);
+
+				}
+
+			}, includeInactive: false);
+
+		}
+
+		public static WindowLayoutPreferences GetCustomLayoutPreferences() {
+
+			return WindowSystem.instance.customLayoutPreferences;
+
+		}
+
+		public static Orientation GetOrientation() {
+
+			return Screen.width > Screen.height ? Orientation.Horizontal : Orientation.Vertical;
+
+		}
+		#endregion
+
+		#region History API
 		/// <summary>
 		/// Adds to history.
 		/// </summary>
@@ -1275,20 +1590,113 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.RefreshHistory();
 
 		}
+		#endregion
 
-		/// <summary>
-		/// Refreshes the history.
-		/// </summary>
-		public static void RefreshHistory() {
+		#region Windows API
+		public static Events GetEvents() {
 
-			if (WindowSystem.instance.historyEnabled == true) {
+			if (WindowSystem.instance == null) return new Events();
 
-				WindowSystem.instance.history.RemoveAll((item) => item.window == null);
+			return WindowSystem.instance.events;
+
+		}
+
+		public static void RegisterWindow(WindowBase window) {
+
+			WindowSystem.instance.windows.Add(new WindowItem() { loaded = window });
+
+		}
+
+		public static void DestroyWindow(WindowBase window) {
+
+			if (WindowSystem.instance == null) return;
+
+			WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, null);
+
+		}
+
+		public static void SendManualEvent<T>(T data, bool includeInactive) where T : IManualEvent {
+
+			WindowSystem.ForEachWindow(w => w.OnManualEvent<T>(data), includeInactive);
+
+		}
+
+		public static void ForEachWindow(System.Action<WindowBase> onEach, bool includeInactive) {
+
+			for (int i = 0; i < WindowSystem.instance.currentWindows.Count; ++i) {
+
+				var window = WindowSystem.instance.currentWindows[i];
+				if (includeInactive == true || 
+					(window.GetState() == WindowObjectState.Showing ||
+						window.GetState() == WindowObjectState.Shown)) {
+
+					onEach.Invoke(window);
+
+				}
 
 			}
 
-			WindowSystem.UpdateLastInstance();
-			WindowSystem.UpdateTopInstance();
+		}
+
+		private bool asyncLoaderState = true;
+		private WindowBase asyncLoaderSource;
+		private WindowBase asyncLoader;
+		public static void SetAsyncLoaderState(bool state) {
+
+			WindowSystem.instance.asyncLoaderState = state;
+
+		}
+
+		public static void ShowAsyncLoader() {
+
+			if (WindowSystem.instance.asyncLoaderState == true && WindowSystem.instance.asyncLoaderSource != null) {
+
+				if (WindowSystem.instance.asyncLoader == null) {
+
+					WindowSystem.instance.asyncLoader = WindowSystem.Show(WindowSystem.instance.asyncLoaderSource);
+
+				}
+
+			}
+
+		}
+
+		public static void HideAsyncLoader() {
+
+			if (WindowSystem.instance.asyncLoader != null) {
+
+				WindowSystem.instance.asyncLoader.Hide();
+				WindowSystem.instance.asyncLoader = null;
+
+			}
+
+		}
+
+		public static void CallFunction(WindowRoutes routes) {
+
+			throw new FunctionCallException("Routes can't call a function");
+
+		}
+
+		public static void CallFunction(WindowBase instance, bool reusable) {
+
+			WindowSystem.instance.functions.Call(instance, reusable);
+
+		}
+
+		public static void RemoveFunction(WindowBase instance) {
+
+			WindowSystem.instance.functions.Remove(instance);
+
+		}
+
+		/// <summary>
+		/// Determines if is user interface hovered.
+		/// </summary>
+		/// <returns><c>true</c> if is user interface hovered; otherwise, <c>false</c>.</returns>
+		public static bool IsUIHovered() {
+
+			return UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
 
 		}
 
@@ -1321,9 +1729,9 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <returns>The previous window.</returns>
 		public static WindowBase GetPreviousWindow() {
-			
+
 			return WindowSystem.GetPreviousWindow(WindowSystem.GetCurrentWindow());//WindowSystem.instance.previousInstance;
-			
+
 		}
 
 		/// <summary>
@@ -1332,7 +1740,7 @@ namespace UnityEngine.UI.Windows {
 		/// <returns>The previous window.</returns>
 		/// <param name="current">Current.</param>
 		public static WindowBase GetPreviousWindow(WindowBase current, System.Func<HistoryItem, bool> predicate = null) {
-			
+
 			WindowBase prev = null;
 			foreach (var item in WindowSystem.instance.history) {
 
@@ -1349,7 +1757,7 @@ namespace UnityEngine.UI.Windows {
 			return WindowSystem.FindOpened<WindowBase>(x => x.GetSource() == prev);
 
 		}
-		
+
 		/// <summary>
 		/// Gets the last window in history.
 		/// </summary>
@@ -1420,6 +1828,11 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		/// <summary>
+		/// Shows the default list windows.
+		/// </summary>
+		/// <param name="onReady">Fires when sequence completed.</param>
+		/// <param name="parameters">Parameters.</param>
 		public static void ShowDefault(System.Action onReady, params object[] parameters) {
 
 			WindowSystem.instance.ShowDefault_INTERNAL(onReady, parameters);
@@ -1472,47 +1885,6 @@ namespace UnityEngine.UI.Windows {
 
 			var root = WindowSystem.instance.rootScreen;
 			if (root != null) WindowSystem.Show(root, parameters);
-
-		}
-
-		internal static void ResetDepth() {
-
-			var items = System.Enum.GetValues(typeof(DepthLayer));
-			var instance = WindowSystem.instance;
-
-			for (int i = 0; i < items.Length; ++i) {
-				
-				var item = (int)items.GetValue(i);
-				instance.currentDepth[item] = instance.settings.GetMinDepth(item);
-				instance.currentZDepth[item] = instance.settings.GetMinZDepth(item);
-
-			}
-
-		}
-
-		internal static void WaitEndOfFrame(System.Action callback) {
-
-			WindowSystem.WaitCoroutine(WindowSystem.instance.EndOfFrame_INTERNAL(callback));
-
-		}
-
-		private System.Collections.Generic.IEnumerator<byte> EndOfFrame_INTERNAL(System.Action callback) {
-
-			//Debug.Log("Wait for 1");
-
-			//yield return new WaitForEndOfFrame();
-			//yield return new WaitForEndOfFrame();
-
-			//Debug.Log("Wait for 2");
-
-			yield return 0;
-			yield return 0;
-
-			if (callback != null) {
-
-				callback.Invoke();
-
-			}
 
 		}
 
@@ -1571,21 +1943,14 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="callback">Callback.</param>
 		public static void HideAllAndClean(WindowBase except, System.Action callback, bool forceAll, bool immediately) {
 
-			//Debug.Log("HideAllAndClean: " + (except != null ? except.name : "null"));
+			Debug.Log("HideAllAndClean: " + (except != null ? except.name : "null"));
 
 			WindowSystem.HideAll(except, () => {
 
-				//WindowSystem.WaitEndOfFrame(() => {
-					
-					WindowSystem.Clean(except, forceAll);
+				Debug.Log("Clean");
+				WindowSystem.Clean(except, forceAll);
 
-					//WindowSystem.WaitEndOfFrame(() => {
-
-						if (callback != null) callback();
-						
-					//});
-
-				//});
+				if (callback != null) callback();
 
 			}, forceAll, immediately);
 			
@@ -1672,7 +2037,7 @@ namespace UnityEngine.UI.Windows {
 				if (result == true) {
 					
 					if (window != null) {
-
+						
 						WindowSystem.CleanWindow(window, removeFromList: false);
 
 					}
@@ -1760,9 +2125,10 @@ namespace UnityEngine.UI.Windows {
 
 				if (removeFromList == true) WindowSystem.instance.currentWindows.Remove(window);
 				(window as IWindowEventsController).DoWindowUnload();
+				//Debug.Log("DoDestroy: " + window, window);
 				window.DoDestroy(() => {
 
-					//window.Recycle();
+					//Debug.Log("DoDestroyed: " + window, window);
 					ObjectPool.ClearPool(window.GetSource());
 					WindowSystem.instance.CreatePoolForWindowSource(window.GetSource());
 
@@ -1802,32 +2168,94 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static List<WindowBase> GetCurrentList() {
+		/// <summary>
+		/// Hides all.
+		/// </summary>
+		/// <param name="except">Except.</param>
+		/// <param name="callback">Callback.</param>
+		public static void HideAll(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) {
 
-			return WindowSystem.instance.currentWindows;
+			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
+
+			var list = WindowSystem.instance.currentWindows.Where((w) => {
+
+				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
+
+			}).ToList();
+			Debug.Log("CallInSequence: " + list.Count + ", immediately: " + immediately + ", forced: " + forceAll);
+			ME.Utilities.CallInSequence(callback, list, (window, wait) => {
+
+				if (window.Hide(onHideEnd: null, immediately: immediately, forced: forceAll) == false) {
+
+					Debug.Log("HIDE FAILED: " + window.name + " :: " + window.GetState());
+
+				}
+
+				Debug.Log(window.name + " :: " + window.GetState());
+				if (window.GetState() == WindowObjectState.Hiding ||
+					window.GetState() == WindowObjectState.Showing ||
+					window.GetState() == WindowObjectState.Shown) {
+
+					Debug.Log(window.name + " :: " + window.GetState());
+					UnityAction action = null;
+					action = () => {
+
+						Debug.Log(window.name + " :: " + window.GetState());
+						window.events.onEveryInstance.Unregister(WindowEventType.OnHideEndLate, action);
+						wait.Invoke();
+
+					};
+					window.events.onEveryInstance.Register(WindowEventType.OnHideEndLate, action);
+
+				} else {
+
+					wait.Invoke();
+
+				}
+
+			});
 
 		}
 
-		public static void Recycle(WindowBase window, bool setInactive) {
-			
-			if (window.skipRecycle == false) {
+		/// <summary>
+		/// Hides all.
+		/// </summary>
+		/// <param name="except">Except.</param>
+		/// <param name="callback">Callback.</param>
+		public static void HideAll(List<WindowBase> exceptList, System.Action callback, bool forceAll = false, bool immediately = false) {
 
-				if (window.preferences.createPool == false ||
-				    ObjectPool.IsRegisteredInPool(window.GetSource()) == false) {
-					
-					WindowSystem.CleanWindow(window, removeFromList: true, callback: () => {
-						
-						window.Recycle(setInactive);
-						
-					});
-					
+			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
+
+			var list = WindowSystem.instance.currentWindows.Where((w) => {
+
+				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, exceptList, null, forceAll);
+
+			}).ToList();
+			ME.Utilities.CallInSequence(callback, list, (window, wait) => {
+
+				window.Hide(onHideEnd: null, immediately: immediately);
+				if (window.GetState() == WindowObjectState.Hiding ||
+					window.GetState() == WindowObjectState.Showing ||
+					window.GetState() == WindowObjectState.Shown) {
+
+					//Debug.Log(window.name + " :: " + window.GetState());
+					UnityAction action = null;
+					action = () => {
+
+						//Debug.Log(window.name + " :: " + window.GetState());
+						window.events.onEveryInstance.Unregister(WindowEventType.OnHideEndLate, action);
+						wait.Invoke();
+
+					};
+					window.events.onEveryInstance.Register(WindowEventType.OnHideEndLate, action);
+
 				} else {
-					
-					window.Recycle(setInactive);
+
+					wait.Invoke();
 
 				}
-				
-			}
+
+			});
 
 		}
 
@@ -1862,176 +2290,28 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		/// <summary>
-		/// Hides all.
-		/// </summary>
-		/// <param name="except">Except.</param>
-		/// <param name="callback">Callback.</param>
-		public static void HideAll(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) {
-			
-			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
+		public static List<WindowBase> GetCurrentList() {
 
-			var list = WindowSystem.instance.currentWindows.Where((w) => {
-
-				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
-
-			}).ToList();
-			ME.Utilities.CallInSequence(callback, list, (window, wait) => {
-				
-				window.Hide(onHideEnd: null, immediately: immediately);
-				//Debug.Log(window.name);
-				if (window.GetState() != WindowObjectState.Hidden) {
-					
-					//Debug.Log(window.name + " :: " + window.GetState());
-					UnityAction action = null;
-					action = () => {
-						
-						//Debug.Log(window.name + " :: " + window.GetState());
-						window.events.onEveryInstance.Unregister(WindowEventType.OnHideEndLate, action);
-						wait.Invoke();
-						
-					};
-					window.events.onEveryInstance.Register(WindowEventType.OnHideEndLate, action);
-					
-				} else {
-					
-					wait.Invoke();
-					
-				}
-				
-			});
+			return WindowSystem.instance.currentWindows;
 
 		}
 
 		/// <summary>
-		/// Hides all.
+		/// Get window source by the type T
 		/// </summary>
-		/// <param name="except">Except.</param>
-		/// <param name="callback">Callback.</param>
-		public static void HideAll(List<WindowBase> exceptList, System.Action callback, bool forceAll = false, bool immediately = false) {
-			
-			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
-			
-			var list = WindowSystem.instance.currentWindows.Where((w) => {
-
-				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, exceptList, null, forceAll);
-
-			}).ToList();
-			ME.Utilities.CallInSequence(callback, list, (window, wait) => {
-				
-				window.Hide(onHideEnd: null, immediately: immediately);
-				if (window.GetState() != WindowObjectState.Hidden) {
-					
-					//Debug.Log(window.name + " :: " + window.GetState());
-					UnityAction action = null;
-					action = () => {
-						
-						//Debug.Log(window.name + " :: " + window.GetState());
-						window.events.onEveryInstance.Unregister(WindowEventType.OnHideEndLate, action);
-						wait.Invoke();
-
-					};
-					window.events.onEveryInstance.Register(WindowEventType.OnHideEndLate, action);
-					
-				} else {
-					
-					wait.Invoke();
-					
-				}
-				
-			});
-			
-		}
-
+		/// <returns>Window source.</returns>
+		/// <typeparam name="T">Window Type.</typeparam>
 		public static T GetSource<T>() where T : WindowBase {
 
-			var source = WindowSystem.instance.windows.FirstOrDefault(w => w.IsType<T>() == true).Load<T>();
-			return source;
+			var source = WindowSystem.instance.windows.FirstOrDefault(w => w.IsType<T>() == true);
+			if (source == null) {
 
-		}
-
-		/// <summary>
-		/// Create the specified parameters.
-		/// </summary>
-		/// <param name="parameters">Parameters.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T Create<T>(Preferences prefs, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) where T : WindowBase {
-
-			ignoreActions = false;
-			
-			var source = WindowSystem.GetSource<T>();
-			if (source == null) return null;
-
-			return WindowSystem.CreateWithIgnore_INTERNAL(source, prefs, onParametersPassCall, onInitialized, out ignoreActions, async, parameters) as T;
-
-		}
-		
-		internal WindowBase Create_INTERNAL(WindowBase source, Preferences customPreferences, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, bool async, params object[] parameters) {
-
-			bool ignoreActions;
-			return WindowSystem.CreateWithIgnore_INTERNAL(source, customPreferences, onParametersPassCall, onInitialized, out ignoreActions, async, parameters);
-
-		}
-
-		internal static WindowBase CreateWithIgnore_INTERNAL(WindowBase source, Preferences customPreferences, System.Action<WindowBase> onParametersPassCall, System.Action<WindowBase> onInitialized, out bool ignoreActions, bool async, params object[] parameters) {
-
-			ignoreActions = false;
-			
-			WindowBase instance = null;
-			if (source.preferences.forceSingleInstance == true) {
-				
-				instance = WindowSystem.instance.currentWindows.FirstOrDefault(w => w.windowId == source.windowId);
-				if (instance != null) ignoreActions = source.preferences.singleInstanceIgnoreActions;
-				
-			}
-			
-			if (instance == null) {
-				
-				instance = source.Spawn();
-				instance.transform.SetParent(null);
-				instance.transform.localPosition = Vector3.zero;
-				instance.transform.localRotation = Quaternion.identity;
-				instance.transform.localScale = Vector3.one;
-				
-				#if UNITY_EDITOR
-				instance.gameObject.name = string.Format("[Screen] {0}", source.GetType().Name);
-				#endif
-				
-			}
-
-			if (customPreferences != null) {
-
-				instance.preferences = customPreferences;
+				throw new SourceNotFoundException(string.Format("[ WindowSystem ] Window source with type `{0}` was not found. Be sure your windows setup properly.", typeof(T)));
 
 			}
 
-			if (WindowSystem.instance.currentWindows.Contains(instance) == false) {
-				
-				WindowSystem.instance.currentWindows.Add(instance);
-				
-			}
-			
-			if (ignoreActions == false) {
-				
-				instance.SetParameters(onParametersPassCall, parameters);
-				instance.Init(
-					source,
-					WindowSystem.instance.GetNextDepth(instance.preferences, instance.workCamera.depth),
-					WindowSystem.instance.GetNextZDepth(instance.preferences),
-					WindowSystem.instance.GetNextRaycastPriority(),
-					WindowSystem.instance.GetNextOrderInLayer(),
-					onInitialized: () => {
-						
-						if (onInitialized != null) onInitialized.Invoke(instance);
-						
-					},
-					async: async
-				);
-				
-			}
-			
-			return instance;
-			
+			return source.Load<T>();
+
 		}
 
 		public static T ShowAsync<T>(System.Action<T> onReady) where T : WindowBase {
@@ -2185,164 +2465,6 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		/// <summary>
-		/// Shows window of T type.
-		/// Returns null if window not registered.
-		/// </summary>
-		/// <param name="afterGetInstance">On create predicate.</param>
-		/// <param name="transition">Transition.</param>
-		/// <param name="source">Source.</param>
-		/// <param name="parameters">OnParametersPass() values.</param>
-		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static T ShowWithParameters<T>(
-			System.Action<T> afterGetInstance,
-			System.Action onInitialized,
-			AttachItem transitionItem,
-			T source,
-			System.Action<T> onParametersPassCall,
-			System.Action<T> onReady,
-			bool async,
-			params object[] parameters
-			) where T : WindowBase {
-
-			var p = new WindowSystemShowParameters<T>() {
-				afterGetInstance = afterGetInstance,
-				onInitialized = onInitialized,
-				transitionItem = transitionItem,
-				source = source,
-				onParametersPassCall = onParametersPassCall,
-				onReady = onReady,
-				@async = async,
-				parameters = parameters,
-			};
-			return WindowSystem.ShowWithParameters<T>(p);
-
-		}
-
-		public static T ShowWithParameters<T>(WindowSystemShowParameters<T> parameters) where T : WindowBase {
-
-			System.Action<WindowBase> parametersPassCall = null;
-			if (parameters.onParametersPassCall != null) {
-
-				parametersPassCall = (WindowBase window) => {
-
-					if (parameters.onParametersPassCall != null) {
-						
-						parameters.onParametersPassCall.Invoke(window as T);
-						
-					}
-
-				};
-
-			}
-
-			T instance = default(T);
-
-			var ignoreActions = false;
-			System.Action<WindowBase> onInitializedInner = (WindowBase windowInstance) => {
-
-				if (parameters.onInitialized != null) {
-
-					parameters.onInitialized.Invoke();
-
-				}
-
-				if (parameters.onReady != null) {
-
-					parameters.onReady.Invoke(windowInstance as T);
-
-				}
-
-
-				if (parameters.afterGetInstance != null) {
-
-					parameters.afterGetInstance.Invoke(windowInstance as T);
-
-				}
-
-				if (ignoreActions == false) {
-					
-					System.Action showInstance = () => {
-						
-						if (parameters.transitionItem != null && parameters.transitionItem.transition != null && parameters.transitionItem.transitionParameters != null) {
-							
-							windowInstance.Show(parameters.transitionItem);
-							
-						} else {
-							
-							windowInstance.Show();
-							
-						}
-						
-					};
-					
-					if (windowInstance.preferences.showInSequence == true) {
-						
-						var openedInstance = WindowSystem.FindOpened<T>(x => x != instance && x.IsVisible() == true, last: true);
-						if (openedInstance != null) {
-							
-							UnityAction action = null;
-							action = () => {
-								
-								showInstance.Invoke();
-								
-								openedInstance.events.onEveryInstance.Unregister(WindowEventType.OnHideEnd, action);
-								
-							};
-							openedInstance.events.onEveryInstance.Register(WindowEventType.OnHideEnd, action);
-							
-						} else {
-							
-							showInstance.Invoke();
-							
-						}
-						
-					} else {
-						
-						showInstance.Invoke();
-						
-					}
-					
-				}
-
-			};
-
-			instance = (parameters.source != null) ?
-				WindowSystem.CreateWithIgnore_INTERNAL(parameters.source, parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters.parameters) as T : 
-				WindowSystem.Create<T>(parameters.GetPreferences(), parametersPassCall, onInitializedInner, out ignoreActions, parameters.async, parameters.parameters);
-			
-			return instance;
-
-		}
-
-		private int GetNextOrderInLayer() {
-			
-			return ++this.currentOrderInLayer;
-
-		}
-		
-		private int GetNextRaycastPriority() {
-
-			return ++this.currentRaycastPriority;
-
-		}
-		
-		private float GetNextZDepth(Preferences preferences) {
-			
-			#if UNITY_EDITOR
-			if (Application.isPlaying == false) return 0f;
-			#endif
-
-			var layer = (int)preferences.layer;
-
-			var depth = 0f;
-			this.currentZDepth[layer] += this.zDepthStep;
-			depth = this.currentZDepth[layer];
-
-			return depth;
-			
-		}
-
-		/// <summary>
 		/// Gets the depth step.
 		/// </summary>
 		/// <returns>The depth step.</returns>
@@ -2352,138 +2474,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		private float GetNextDepth(Preferences preferences, float windowDepth) {
+		#endregion
 
-			#if UNITY_EDITOR
-			if (Application.isPlaying == false) return 0f;
-			#endif
-
-			var layer = (int)preferences.layer;
-			
-			var depth = 0f;
-			this.currentDepth[layer] += this.depthStep;
-			depth = this.currentDepth[layer];
-
-			return depth;
-
-		}
-
-		public static void CollectCallVariations(WindowBase screen, System.Action<System.Type[], string[]> onEveryVariation) {
-			
-			if (screen != null) {
-				
-				var methods = screen.GetType().GetMethods().Where((info) => info.IsVirtual == false && info.Name == "OnParametersPass").ToList();
-				for (int i = 0; i < methods.Count; ++i) {
-
-					var notValid = false;
-					var attrs = methods[i].GetCustomAttributes(true);
-					foreach (var attr in attrs) {
-
-						if (attr is CompilerIgnore) {
-
-							notValid = true;
-							break;
-
-						}
-
-					}
-
-					if (notValid == true) continue;
-
-					var method = methods[i];
-					var parameters = method.GetParameters();
-					
-					var listTypes = new List<System.Type>();
-					var listNames = new List<string>();
-					foreach (var p in parameters) {
-						
-						listTypes.Add(p.ParameterType);
-						listNames.Add(p.Name);
-						
-					}
-					
-					onEveryVariation(listTypes.ToArray(), listNames.ToArray());
-					
-				}
-				
-			}
-			
-		}
-
-		private Dictionary<string, MethodInfo> methodsCache = new Dictionary<string, MethodInfo>();
-		internal static bool InvokeMethodWithParameters(out MethodInfo methodInfo, WindowBase window, string methodName, params object[] inputParameters) {
-
-			var instance = WindowSystem.instance;
-			
-			const string comma = ",";
-			var key = new StringBuilder();
-			
-			foreach (var input in inputParameters) {
-				
-				key.Append(input == null ?  null : input.GetType().Name);
-				key.Append(comma);
-				
-			}
-			
-			key.Append(methodName);
-			key.Append(comma);
-			key.Append(window.GetType().Name);
-			
-			var keyStr = key.ToString();
-
-			if (instance.methodsCache.TryGetValue(keyStr, out methodInfo) == false) {
-				
-				instance.methodsCache.Clear();
-				
-				var methods = window.GetType().GetMethods(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-				foreach (var method in methods) {
-					
-					if (method.Name == methodName) {
-						
-						var count = 0;
-						var parameters = method.GetParameters();
-						
-						if (inputParameters.Length != parameters.Length) continue;
-						
-						for (int i = 0; i < parameters.Length; ++i) {
-							
-							var parameter = parameters[i];
-							var par = inputParameters[i];
-
-							var equal = par == null || par.GetType() == parameter.ParameterType || par.GetType().IsSubclassOf(parameter.ParameterType);
-							if (equal == true) {
-								
-								++count;
-								
-							}
-
-						}
-						
-						if (count == parameters.Length) {
-							
-							// Invoke and break
-							methodInfo = method;
-							
-							instance.methodsCache.Add(keyStr, methodInfo);
-							
-							return true;
-							
-						}
-						
-					}
-					
-				}
-				
-			} else {
-				
-				return true;
-				
-			}
-			
-			return false;
-			
-		}
-		
+		#region Utilities
 		public static Rect GetScreenRect() {
 			
 			var size = new Vector2(Screen.width, Screen.height);
@@ -2563,6 +2556,7 @@ namespace UnityEngine.UI.Windows {
 			return new Vector2(p.x, p.y);
 
 		}
+		#endregion
 
 	}
 

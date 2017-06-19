@@ -80,7 +80,7 @@ namespace UnityEngine.UI.Windows.Types {
 			this.layouts.ApplyOrientationIndex(index);
 			// Reinit
 			this.setup = false;
-			this.Init(this.initializeParameters, () => {
+			this.Init(this.initialParameters, () => {
 
 				this.Show();
 
@@ -659,7 +659,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 						if (this.stopped == true) return;
 
-						if (instance != null) instance.gameObject.SetActive(true);
+						//if (instance != null) instance.gameObject.SetActive(true);
 						if (callback != null) callback.Invoke(this.instance as WindowComponent);
 
 					});

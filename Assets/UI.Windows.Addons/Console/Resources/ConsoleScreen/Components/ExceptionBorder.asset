@@ -78,7 +78,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   image: {fileID: 11486252}
   rawImage: {fileID: 0}
@@ -97,7 +96,6 @@ MonoBehaviour:
   imageResourceWait: 0
   imageResource:
     async: 1
-    controlType: 0
     assetPath: 
     assetBundleName: 
     resourcesPath: 
@@ -111,6 +109,7 @@ MonoBehaviour:
     multiObjectsAssetBundle: 0
     objectIndexAssetBundle: 0
     customResourcePath: 
+    readableTexture: 0
     id: 0
     cacheVersion: 0
     streamingAssetsPathStandalone: 
@@ -125,19 +124,17 @@ MonoBehaviour:
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
-    isMovie: 0
+    streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathIOSIsMovie: 0
+    streamingAssetsPathAndroidIsMovie: 0
+    streamingAssetsPathPS4IsMovie: 0
+    streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    controlType: 0
     tempObject: {fileID: 0}
   imageCrossFadeModule:
     enabled: 0
-    image: {fileID: 11440684}
-    sourceImage: {fileID: 0}
-    copyImage: {fileID: 0}
-    copyFlippableImage: {fileID: 0}
-    sourceRawImage: {fileID: 0}
-    copyRawImage: {fileID: 0}
-    copyFlippableRawImage: {fileID: 0}
-    copyPreserveAspectRawImage: {fileID: 0}
     duration: 0.5
     fadeIfWasNull: 0
     fadeOutSource: 0

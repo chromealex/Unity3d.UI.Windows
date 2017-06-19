@@ -109,6 +109,8 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		[HideInInspector]
 		public FlowView flowView = FlowView.Layout | FlowView.Transitions;
 		[HideInInspector]
+		public bool flowDrawTags = false;
+		[HideInInspector]
 		public float flowWindowWithLayoutScaleFactor = 0f;
 
 		[ReadOnly]

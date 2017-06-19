@@ -69,6 +69,8 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Events {
 
 		private void OnPointerUp(int id) {
 
+			if (this.currentData == null || EventSystem.current == null) return;
+
 			var position = WindowSystemInput.GetPointerPosition();
 			this.currentData.pointerPress = EventSystem.current.currentSelectedGameObject;
 			this.currentData.position = new Vector2(position.x, position.y);

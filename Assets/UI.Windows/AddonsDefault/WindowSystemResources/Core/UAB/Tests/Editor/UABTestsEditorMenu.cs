@@ -32,6 +32,18 @@ namespace ME.UAB.Editor {
 			UABTests.OneSelectionUnpack();
 
 		}
+
+		[UnityEditor.MenuItem("Tools/ME.UAB/Tests/Build Unity AssetBundles", false, 24)]
+		public static void BuildUnityAssetBundles() {
+
+			var dir = UnityEditor.EditorUtility.OpenFolderPanel("Choose Directory", "Directory to Save Unity AssetBundles", "UAB");
+			if (string.IsNullOrEmpty(dir) == false) {
+
+				UABTests.BuildUnityAssetBundles(dir);
+
+			}
+
+		}
 		#endregion
 
 	}

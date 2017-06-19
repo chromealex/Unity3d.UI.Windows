@@ -34,6 +34,56 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public ResourceBase(ResourceBase other) {
+
+			this.async = other.async;
+
+			this.assetPath = other.assetPath;
+			this.assetBundleName = other.assetBundleName;
+			this.resourcesPath = other.resourcesPath;
+			this.webPath = other.webPath;
+
+			this.loadableWeb = other.loadableWeb;
+			this.loadableResource = other.loadableResource;
+			this.loadableStream = other.loadableStream;
+			this.loadableAssetBundle = other.loadableAssetBundle;
+
+			this.multiObjects = other.multiObjects;
+			this.objectIndex = other.objectIndex;
+
+			this.multiObjectsAssetBundle = other.multiObjectsAssetBundle;
+			this.objectIndexAssetBundle = other.objectIndexAssetBundle;
+
+			this.customResourcePath = other.customResourcePath;
+			this.readableTexture = other.readableTexture;
+			this.id = other.id;
+			this.cacheVersion = other.cacheVersion;
+
+			this.streamingAssetsPathStandalone = other.streamingAssetsPathStandalone;
+			this.streamingAssetsPathIOS = other.streamingAssetsPathIOS;
+			this.streamingAssetsPathAndroid = other.streamingAssetsPathAndroid;
+			this.streamingAssetsPathPS4 = other.streamingAssetsPathPS4;
+			this.streamingAssetsPathXBOXONE = other.streamingAssetsPathXBOXONE;
+			this.streamingAssetsPathCommon = other.streamingAssetsPathCommon;
+
+			this.streamingAssetsPathStandaloneMovieAudio = other.streamingAssetsPathStandaloneMovieAudio;
+			this.streamingAssetsPathIOSMovieAudio = other.streamingAssetsPathIOSMovieAudio;
+			this.streamingAssetsPathAndroidMovieAudio = other.streamingAssetsPathAndroidMovieAudio;
+			this.streamingAssetsPathPS4MovieAudio = other.streamingAssetsPathPS4MovieAudio;
+			this.streamingAssetsPathXBOXONEMovieAudio = other.streamingAssetsPathXBOXONEMovieAudio;
+			this.streamingAssetsPathCommonMovieAudio = other.streamingAssetsPathCommonMovieAudio;
+
+			this.streamingAssetsPathStandaloneIsMovie = other.streamingAssetsPathStandaloneIsMovie;
+			this.streamingAssetsPathIOSIsMovie = other.streamingAssetsPathIOSIsMovie;
+			this.streamingAssetsPathAndroidIsMovie = other.streamingAssetsPathAndroidIsMovie;
+			this.streamingAssetsPathPS4IsMovie = other.streamingAssetsPathPS4IsMovie;
+			this.streamingAssetsPathXBOXONEIsMovie = other.streamingAssetsPathXBOXONEIsMovie;
+			this.streamingAssetsPathCommonIsMovie = other.streamingAssetsPathCommonIsMovie;
+
+			this.canBeUnloaded = other.canBeUnloaded;
+
+		}
+
 		[ReadOnly("loadableStream", state: true)]
 		public bool async = true;
 
@@ -65,26 +115,6 @@ namespace UnityEngine.UI.Windows {
 
 		[ReadOnly] public int cacheVersion;
 
-		public object loadedObject {
-
-			get {
-
-				return WindowSystemResources.GetResourceObjectById(this);
-
-			}
-
-		}
-
-		public bool loaded {
-
-			get {
-
-				return WindowSystemResources.IsResourceObjectLoaded(this);
-
-			}
-
-		}
-
 		[ReadOnly] public string streamingAssetsPathStandalone;
 		[ReadOnly] public string streamingAssetsPathIOS;
 		[ReadOnly] public string streamingAssetsPathAndroid;
@@ -112,6 +142,26 @@ namespace UnityEngine.UI.Windows {
 		//private static Dictionary<Graphic, Color> colorCache = null;
 
 		//private ResourceAsyncOperation task;
+
+		public object loadedObject {
+
+			get {
+
+				return WindowSystemResources.GetResourceObjectById(this);
+
+			}
+
+		}
+
+		public bool loaded {
+
+			get {
+
+				return WindowSystemResources.IsResourceObjectLoaded(this);
+
+			}
+
+		}
 
 		public bool IsValid() {
 
@@ -669,10 +719,24 @@ namespace UnityEngine.UI.Windows {
 			}
 			#endregion
 
-			string uniquePath = (this.multiObjects == true) ? (string.Format("{0}#{1}", this.assetPath, this.objectIndex)) : this.assetPath;
+			var uniquePath = (this.multiObjects == true) ? (string.Format("{0}#{1}", this.GetAssetPath(), this.objectIndex)) : this.GetAssetPath();
 			ME.EditorUtilities.SetValueIfDirty(ref this.id, ResourceBase.GetJavaHash(uniquePath));
 
 			ME.EditorUtilities.SetValueIfDirty(ref this.canBeUnloaded, ((item is GameObject) == false && (item is Component) == false));
+
+		}
+		
+		private string GetAssetPath() {
+
+			var path = this.streamingAssetsPathIOS;
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathAndroid;
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathStandalone;
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathPS4;
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathXBOXONE;
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathCommon;
+			if (string.IsNullOrEmpty(path) == true) path = this.assetPath;
+
+			return path;
 
 		}
 

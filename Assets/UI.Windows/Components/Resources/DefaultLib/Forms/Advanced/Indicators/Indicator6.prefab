@@ -94,6 +94,8 @@ MonoBehaviour:
   canvas: {fileID: 22308928}
   raycaster: {fileID: 0}
   orderDelta: 0
+  overridePixelPerfect: 0
+  pixelPrefect: 1
   raycasterSource: {fileID: 0}
 --- !u!114 &11472900
 MonoBehaviour:
@@ -149,7 +151,6 @@ MonoBehaviour:
   childsHideMode: 0
   animationInputParams: []
   manualShowHideControl: 0
-  animationRefresh: 0
   lastAnimation: {fileID: 0}
   sfxOnClick:
     flowData: {fileID: 0}

@@ -837,11 +837,11 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 				if (string.IsNullOrEmpty(result) == false) {
 					
 					this.screen.AddLine(string.Format("<color=red>{0}</color>", result));
-					return false;
+					if (module.PassCommandRewrite(ref args) == false) return false;
 					
 				} else {
 
-					return true;
+					if (module.PassCommandRewrite(ref args) == false) return true;
 
 				}
 

@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using FD = UnityEngine.UI.Windows.Plugins.Flow.Data;
 using System.Collections;
 using UnityEngine.UI.Windows.Plugins.Flow.Data;
+using UnityEditor.UI.Windows.Plugins.Flow;
 
 namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
@@ -210,7 +211,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 						classNameWithNamespace = Tpl.GetNamespace(defaultWindow) + "." + Tpl.GetDerivedClassName(defaultWindow);
 
 						result += TemplateGenerator.GenerateWindowLayoutTransitionMethod(window, each, className, classNameWithNamespace);
-						WindowSystem.CollectCallVariations(each.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
+						FlowEditorUtilities.CollectCallVariations(each.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
 
 							result += TemplateGenerator.GenerateWindowLayoutTransitionTypedMethod(window, each, className, classNameWithNamespace, listTypes, listNames);
 
@@ -227,7 +228,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				}
 
 				result += TemplateGenerator.GenerateWindowLayoutTransitionMethod(window, each, className, classNameWithNamespace);
-				WindowSystem.CollectCallVariations(each.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
+				FlowEditorUtilities.CollectCallVariations(each.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
 					
 					result += TemplateGenerator.GenerateWindowLayoutTransitionTypedMethod(window, each, className, classNameWithNamespace, listTypes, listNames);
 
@@ -262,7 +263,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 						var defaultWindow = FlowSystem.GetWindow(defaultWindowId);
 
 						result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(window, defaultWindow, everyPlatformHasUniqueName);
-						WindowSystem.CollectCallVariations(attachedWindow.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
+						FlowEditorUtilities.CollectCallVariations(attachedWindow.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
 
 							result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionTypedAttachedGeneration(window, defaultWindow, everyPlatformHasUniqueName, listTypes, listNames);
 
@@ -292,7 +293,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				}*/
 
 				result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionAttachedGeneration(window, attachedWindow, everyPlatformHasUniqueName);
-				WindowSystem.CollectCallVariations(attachedWindow.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
+				FlowEditorUtilities.CollectCallVariations(attachedWindow.GetScreen().Load<WindowBase>(), (listTypes, listNames) => {
 					
 					result += UnityEditor.UI.Windows.Plugins.Flow.Flow.OnCompilerTransitionTypedAttachedGeneration(window, attachedWindow, everyPlatformHasUniqueName, listTypes, listNames);
 					

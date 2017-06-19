@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Components;
 using UnityEngine.UI.Windows.Types;
+using ME;
+using UnityEngine.Extensions;
 
 namespace UnityEngine.UI.Windows.Animations {
 
@@ -19,6 +21,7 @@ namespace UnityEngine.UI.Windows.Animations {
 				Scale = 0x8,
 				Rotation = 0x10,
 				Size = 0x20,
+				Pivot = 0x40,
 				
 			};
 
@@ -40,6 +43,8 @@ namespace UnityEngine.UI.Windows.Animations {
 				public Vector3 rotation;
 				[ReadOnly("<stateApply", state: (byte)ApplyTo.Size, bitMask: true)]
 				public Vector2 size;
+				[ReadOnly("<stateApply", state: (byte)ApplyTo.Pivot, bitMask: true)]
+				public Vector2 pivot;
 
 				public State() {
 				}
@@ -49,9 +54,10 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.anchorMin = rect.anchorMin;
 					this.anchorMax = rect.anchorMax;
 					this.to = rect.anchoredPosition;
-					this.scale = rect.localScale;
+					this.scale = rect.localScale.XY();
 					this.rotation = rect.localRotation.eulerAngles;
 					this.size = rect.sizeDelta;
+					this.pivot = rect.pivot;
 
 				}
 
@@ -63,6 +69,7 @@ namespace UnityEngine.UI.Windows.Animations {
 					this.scale = source.scale;
 					this.rotation = source.rotation;
 					this.size = source.size;
+					this.pivot = source.pivot;
 
 				}
 
@@ -134,6 +141,12 @@ namespace UnityEngine.UI.Windows.Animations {
 
 				}
 
+				if ((this.stateApply & ApplyTo.Pivot) != 0) {
+					
+					rect.SetPivot(Vector2.Lerp(startState.pivot, resultState.pivot, value));
+
+				}
+
 			}
 			
 			public void Apply(RectTransform rect, State state) {
@@ -151,8 +164,8 @@ namespace UnityEngine.UI.Windows.Animations {
 				}
 				
 				if ((this.stateApply & ApplyTo.Scale) != 0) {
-					
-					rect.localScale = state.scale;
+
+					rect.localScale = new Vector3(state.scale.x, state.scale.y, 1f);
 					
 				}
 				
@@ -171,6 +184,12 @@ namespace UnityEngine.UI.Windows.Animations {
 				if ((this.stateApply & ApplyTo.Size) != 0) {
 
 					rect.sizeDelta = state.size;
+
+				}
+
+				if ((this.stateApply & ApplyTo.Pivot) != 0) {
+
+					rect.SetPivot(state.pivot);
 
 				}
 
@@ -237,6 +256,13 @@ namespace UnityEngine.UI.Windows.Animations {
 			if (component != null && parameters == null) return component.transform as RectTransform;
 			if (component == null || (parameters != null && parameters.moveRoot == true)) {
 
+				if (root == null) {
+
+					Debug.LogWarning(string.Format("Root is null, GetRoot() returns {0}, {1}.", root, component));
+					return null;
+
+				}
+
 				return root.transform as RectTransform;
 
 			}
@@ -251,10 +277,11 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		}
 		
-		public override void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
+		public override void OnPlay(WindowBase window, ME.Tweener.MultiTag tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {
 
 			var param = this.GetParams<Parameters>(parameters);
-			if (param == null || root == null) {
+			var rect = this.GetRoot(param, root);
+			if (param == null || root == null || rect == null) {
 
 				if (callback != null) callback();
 				return;
@@ -264,7 +291,6 @@ namespace UnityEngine.UI.Windows.Animations {
 			var duration = this.GetDuration(parameters, forward);
 			var resultState = param.GetResult(forward);
 
-			var rect = this.GetRoot(param, root);
 			var state = new Parameters.State(rect);
 
 			if (TweenerGlobal.instance != null) {

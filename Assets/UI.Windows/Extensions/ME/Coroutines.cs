@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ME {
 
@@ -87,6 +88,30 @@ namespace ME {
 
 			}
 
+			// run accumulate next frame
+			var frame = Time.frameCount;
+			if (Coroutines.nextFrameDelegateList != null) {
+
+				foreach (var item in Coroutines.nextFrameDelegateList) {
+
+					var values = item.Value;
+					for (int i = 0; i < values.Count; ++i) {
+
+						var val = values[i];
+						if (frame > val.frame) {
+
+							values[i].Call();
+							values.RemoveAt(i);
+							--i;
+
+						}
+
+					}
+
+				}
+
+			}
+
 		}
 
 		/*
@@ -101,6 +126,73 @@ namespace ME {
 				yield return 0;
 
 			}
+
+		}
+
+		public class DelegateItem {
+
+			public int frame;
+			public System.Delegate del;
+			public object[] parameters;
+
+			public void Call() {
+
+				this.del.DynamicInvoke(this.parameters);
+
+			}
+
+		}
+
+		private static Dictionary<object, List<DelegateItem>> nextFrameDelegateList = new Dictionary<object, List<DelegateItem>>();
+		public static void AccumulateRunNextFrame(object tag, System.Delegate[] delegates, params object[] parameters) {
+
+			var frame = Time.frameCount;
+
+			List<DelegateItem> list;
+			if (nextFrameDelegateList.TryGetValue(tag, out list) == true) {
+
+				for (int i = 0; i < delegates.Length; ++i) {
+
+					var del = delegates[i];
+					if (list.Any(x => x.frame == frame && x.del == del) == false) {
+
+						list.Add(new DelegateItem() { frame = frame, del = del, parameters = parameters });
+
+					}
+
+				}
+
+			} else {
+
+				list = new List<DelegateItem>();
+				for (int i = 0; i < delegates.Length; ++i) {
+
+					var del = delegates[i];
+					if (list.Any(x => x.frame == frame && x.del == del) == false) {
+
+						list.Add(new DelegateItem() { frame = frame, del = del, parameters = parameters });
+
+					}
+
+				}
+
+				nextFrameDelegateList.Add(tag, list);
+
+			}
+
+		}
+
+		public static IEnumerator<byte> WaitForNextFrame(System.Action callback) {
+
+			yield return 0;
+
+			if (callback != null) callback.Invoke();
+
+		}
+
+		public static System.Collections.Generic.IEnumerator<byte> RunNextFrame(System.Action callback) {
+
+			return Coroutines.Run(Coroutines.WaitForNextFrame(callback));
 
 		}
 

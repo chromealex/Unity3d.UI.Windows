@@ -30,7 +30,10 @@ namespace UnityEngine.UI {
 		}
 
 		protected void OnValidate() {
-			this.GetComponent<Graphic>().SetVerticesDirty();
+
+			var g = this.GetComponent<Graphic>();
+			if (g != null) g.SetVerticesDirty();
+
 		}
 
 		public void ModifyMesh(VertexHelper verts) {

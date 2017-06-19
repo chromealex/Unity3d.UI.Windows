@@ -334,24 +334,28 @@ namespace UnityEngine.UI.Windows {
 
 					}, onParametersPassCall: onParametersPassCall);
 
-				UnityEngine.Events.UnityAction action = null;
-				action = () => {
+				if (newWindow != null) {
 
-					newWindow.events.onEveryInstance.Unregister(WindowEventType.OnShowEnd, action);
-					if (async == true) {
+					UnityEngine.Events.UnityAction action = null;
+					action = () => {
 
-						WindowSystem.HideAsyncLoader();
+						newWindow.events.onEveryInstance.Unregister(WindowEventType.OnShowEnd, action);
+						if (async == true) {
+
+							WindowSystem.HideAsyncLoader();
+
+						}
+
+					};
+					newWindow.events.onEveryInstance.Register(WindowEventType.OnShowEnd, action);
+
+					WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);
+
+					if (hide == true) {
+
+						screen.Hide(item);
 
 					}
-
-				};
-				newWindow.events.onEveryInstance.Register(WindowEventType.OnShowEnd, action);
-
-				WindowSystemFlow.OnDoTransition((item == null) ? 0 : item.index, screen.GetWindow(), (item == null) ? newWindow.windowId : item.targetId, hide);
-
-				if (hide == true) {
-
-					screen.Hide(item);
 
 				}
 
@@ -396,6 +400,30 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			WindowSystemFlow.RefreshAll();
+
+		}
+
+		public static void SetEmulatedRuntimePlatform(RuntimePlatform? platform = null) {
+
+			WindowSystemFlow instance = Object.FindObjectOfType<WindowSystemFlow>();
+			if (instance == null) {
+
+				Debug.LogWarning("`WindowSystemFlow` was not found on the scene.");
+				return;
+
+			}
+
+			if (platform != null) {
+
+				instance.currentRuntimePlatform = platform.Value;
+				instance.emulateRuntimePlatform = true;
+				instance.emulateRuntimePlatformEditorOnly = false;
+
+			} else {
+
+				instance.emulateRuntimePlatformEditorOnly = true;
+
+			}
 
 		}
 

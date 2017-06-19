@@ -149,12 +149,24 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (current == (this.label as Component).gameObject) return;
 			if (current == null || current.GetComponentsInParent<CanvasGroup>().Contains(this.canvasGroup) == false) {
-				
-				// Close
-				this.SetState(opened: false, immediately: false);
-				
+
+				this.StartCoroutine(this.OnPressDown_YIELD());
+
 			}
 			
+		}
+
+		private System.Collections.IEnumerator OnPressDown_YIELD() {
+
+			yield return false;
+			yield return false;
+			yield return false;
+
+			if (this.opened == false) yield break;
+
+			// Close
+			this.SetState(opened: false, immediately: false);
+
 		}
 
 		public void SetState(bool opened, bool immediately) {

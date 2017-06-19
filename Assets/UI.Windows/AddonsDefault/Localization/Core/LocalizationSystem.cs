@@ -19,7 +19,9 @@ using UnityEngine.Profiling;
 namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 	public class LocalizationSystem : ServiceManager<LocalizationSystem> {
-		
+
+		public const string NO_KEY_STRING = "~NO KEY: {0}~";
+
 		public override string GetServiceName() {
 			
 			return LocalizationSystem.GetName();
@@ -196,7 +198,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				w.OnLocalizationChanged();
 
-			}, includeInactive: false);
+			}, includeInactive: true);
 
 		}
 
@@ -256,7 +258,13 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 			}
 
-			return string.Empty;
+			if (string.IsNullOrEmpty(key) == true) {
+
+				return string.Empty;
+
+			}
+
+			return string.Format(LocalizationSystem.NO_KEY_STRING, key);
 
 		}
 

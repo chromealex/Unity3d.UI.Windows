@@ -39,6 +39,7 @@ namespace UnityEngine.UI.Windows {
 			#endif
 
 			public int id;
+			public System.Type type;
 			public System.Action<Item> onObjectLoaded;
             public System.Action<Item> onObjectFailed;
 
@@ -90,7 +91,7 @@ namespace UnityEngine.UI.Windows {
 			#if UNITY_EDITOR
 			private void UpdateName() {
 
-				if (this._loadedObject != null) this.name = string.Format("[{0}] {1}", this._referencesCount, this._loadedObject is Object ? (this._loadedObject as Object).name : this._loadedObject.ToString());
+				if (this._loadedObject != null) this.name = string.Format("[{0}] {1} ({2})", this._referencesCount, (this._loadedObject != null) ? (this._loadedObject is Object ? (this._loadedObject as Object).name : this._loadedObject.ToString()) : "Null", (this.type == null ? "Null" : this.type.ToString()));
 
 			}
 			#endif
@@ -105,6 +106,7 @@ namespace UnityEngine.UI.Windows {
 				this.references = null;
 
 				this.id = 0;
+				this.type = null;
 				this.loaded = false;
 
 				#if UNITY_EDITOR
@@ -283,7 +285,7 @@ namespace UnityEngine.UI.Windows {
             item.Dispose(resource);
             WindowSystemResources.instance.loaded.RemoveAll(x => {
 
-                if (x.id == item.id) {
+				if (x.id == item.id && x.type == item.type) {
 
                     return true;
 
@@ -373,13 +375,13 @@ namespace UnityEngine.UI.Windows {
 				this.LoadRefCounter_INTERNAL<Material>(resourceController, (data) => {
 
 					setup.Invoke(data);
+					if (onDataLoaded != null) onDataLoaded.Invoke();
+
 					image.SetMaterial(data, callback: () => {
 
 						if (onComplete != null) onComplete.Invoke();
 
 					});
-
-					if (onDataLoaded != null) onDataLoaded.Invoke();
 
 				}, onFailed, async, customResourcePath);
 
@@ -390,13 +392,13 @@ namespace UnityEngine.UI.Windows {
 					this.LoadRefCounter_INTERNAL<Sprite>(resourceController, (data) => {
 
 						setup.Invoke(data);
+						if (onDataLoaded != null) onDataLoaded.Invoke();
+
 						image.SetImage(data, () => {
 
 							if (onComplete != null) onComplete.Invoke();
 
 						});
-
-						if (onDataLoaded != null) onDataLoaded.Invoke();
 
 					}, onFailed, async, customResourcePath);
 
@@ -405,6 +407,8 @@ namespace UnityEngine.UI.Windows {
 					this.LoadRefCounter_INTERNAL<Texture>(resourceController, (data) => {
 
 						setup.Invoke(data);
+						if (onDataLoaded != null) onDataLoaded.Invoke();
+
 						image.SetImage(data, () => {
 
 							if (onComplete != null) onComplete.Invoke();
@@ -412,8 +416,6 @@ namespace UnityEngine.UI.Windows {
 						});
 
 						if (isMaterial == true) MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
-
-						if (onDataLoaded != null) onDataLoaded.Invoke();
 
 					}, onFailed, async, customResourcePath);
 
@@ -475,6 +477,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (resource.IsLoadable() == true) {
 
+				//Debug.Log("Check: " + resource.assetPath + ", typeof: " + typeof(T).ToString());
 				Item item;
 				if (this.IsLoaded<T>(reference, resource, out item, callbackOnLoad, callbackOnFailed) == false) {
 
@@ -543,7 +546,8 @@ namespace UnityEngine.UI.Windows {
         
         private bool IsLoaded<T>(IResourceReference reference, ResourceBase resource, out Item item, System.Action<T> callbackLoaded, System.Action callbackFailed) /*where T : Object*/ {
 
-			var itemInner = this.loaded.FirstOrDefault(x => x.id == resource.GetId()/*(x.@object == null || x.@object is T)*/);
+			var typeOf = typeof(T);
+			var itemInner = this.loaded.FirstOrDefault(x => x.id == resource.GetId() && x.type == typeOf/*(x.@object == null || x.@object is T)*/);
 			if (itemInner != null) {
 				
 				item = itemInner;
@@ -583,7 +587,7 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			item = new Item() { id = resource.GetId(), loadedObject = null, loaded = false, references = new List<IResourceReference>() { reference } };
+			item = new Item() { id = resource.GetId(), type = typeOf, loadedObject = null, loaded = false, references = new List<IResourceReference>() { reference } };
 			#if UNITY_EDITOR
 			item.referencesCount = 1;
 			#endif
@@ -857,7 +861,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (task.resource.IsMovie() == true) {
 
-					Debug.Log("LoadMovie: " + task.component);
+					//Debug.Log("LoadMovie: " + task.component);
 					task.task = MovieSystem.LoadTexture(task.component as IImageComponent);
 					var startTime = Time.realtimeSinceStartup;
 					var timer = 0f;

@@ -45,9 +45,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override T AddItem<T>() {
+		public override T AddItem<T>(bool autoRefresh = true) {
 
-			var instance = base.AddItem<T>();
+			var instance = base.AddItem<T>(autoRefresh);
 			this.Setup(instance as ToggleItemComponent);
 
 			return instance;

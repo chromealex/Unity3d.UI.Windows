@@ -395,7 +395,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
 				
-				//Debug.LogWarning("Resource was not loaded yet. Stop interrupted.", component as MonoBehaviour);
+				Debug.LogWarning("Resource was not loaded yet. Stop interrupted.", component as MonoBehaviour);
 				return;
 				
 			}
@@ -462,12 +462,12 @@ namespace UnityEngine.UI.Windows.Movies {
 
 				//if (item.components.Count == 0) {
 
-					if (item.state != MovieItem.State.Paused) {
-						
-						item.state = MovieItem.State.Paused;
-						this.OnPause(resource, movie);
-						
-					}
+				if (item.state != MovieItem.State.Paused) {
+					
+					item.state = MovieItem.State.Paused;
+					this.OnPause(resource, movie);
+					
+				}
 					
 				//}
 
@@ -483,7 +483,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
 
-				Debug.LogWarning("Resource was not loaded yet. IsPlaying returns false.", component as MonoBehaviour);
+				//Debug.LogWarning("Resource was not loaded yet. IsPlaying returns false.", component as MonoBehaviour);
 				return false;
 
 			}

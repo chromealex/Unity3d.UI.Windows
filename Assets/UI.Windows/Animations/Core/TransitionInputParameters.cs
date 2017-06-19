@@ -21,6 +21,11 @@ namespace UnityEngine.UI.Windows.Animations {
 			
 		}
 
+		#if UNITY_EDITOR
+		public virtual void OnValidate() {
+		}
+		#endif
+
 	}
 
 }

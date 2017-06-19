@@ -82,31 +82,69 @@ namespace UnityEditor.UI.Windows {
 			var controlTypeRect = new Rect(asyncRect.x + asyncRect.width, position.y, controlTypeSizeX, asyncSizeY);
 
 			var tempObject = property.FindPropertyRelative("tempObject");
-			var oldObj = tempObject.objectReferenceValue;
-			var newObj = EditorGUI.ObjectField(propertyPosition, label, oldObj, typeof(Object), allowSceneObjects: false);
-			if (oldObj != newObj) {
 
-				var obj = PropertyExtensions.GetTargetObjectOfProperty(property);
-				var res = obj as ResourceAuto;
+			/*var _obj = PropertyExtensions.GetTargetObjectOfProperty(property);
+			var _res = _obj as ResourceAuto;
+			if (_res != null) {
+
+				if (tempObject.objectReferenceValue == null) {
+
+					_res.ResetToDefault();
+
+				} else {
+
+					_res.Validate(tempObject.objectReferenceValue);
+
+				}
+
+			}*/
+
+			/*PropertyExtensions.GetTargetObjectsOfProperty<ResourceAuto>(property, (res) => {
+
 				if (res != null) {
-						
-					if (newObj == null) {
+
+					if (tempObject.objectReferenceValue == null) {
 
 						res.ResetToDefault();
 
 					} else {
 
-						res.Validate(newObj);
+						res.Validate(tempObject.objectReferenceValue);
 
 					}
 
-					property.serializedObject.ApplyModifiedProperties();
-
-				} else {
-
-					Debug.LogWarning("ResourceBase cannot be found");
-
 				}
+
+			});*/
+
+			var oldObj = tempObject.objectReferenceValue;
+			var newObj = EditorGUI.ObjectField(propertyPosition, label, oldObj, typeof(Object), allowSceneObjects: false);
+			if (oldObj != newObj) {
+
+				tempObject.objectReferenceValue = newObj;
+				property.serializedObject.ApplyModifiedProperties();
+
+				PropertyExtensions.GetTargetObjectsOfProperty<ResourceAuto>(property, (res) => {
+					
+					if (res != null) {
+							
+						if (newObj == null) {
+
+							res.ResetToDefault();
+
+						} else {
+
+							res.Validate(newObj);
+
+						}
+
+					} else {
+
+						Debug.LogWarning("ResourceBase cannot be found");
+
+					}
+
+				});
 
 			}
 

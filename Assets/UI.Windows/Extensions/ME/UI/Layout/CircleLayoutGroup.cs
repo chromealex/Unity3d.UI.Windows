@@ -15,6 +15,7 @@ namespace UnityEngine.UI.Extensions {
 	public class CircleLayoutGroup : LayoutGroup {
 
 		public bool bothSided = false;
+		[ReadOnly("bothSided", false)] public bool bothSidedSorted = false;
 		public float startAngle = 0f;
 		public float maxAnglePerElement = 360f;
 		public float angle = 360f;
@@ -84,7 +85,7 @@ namespace UnityEngine.UI.Extensions {
 				var item = items[i];
 				if (item == null) continue;
 
-				item.anchoredPosition3D = this.GetPosition((this.reverse == true ? count - i - 1 : i), count, item.anchoredPosition3D.z, rX, rY, this.bothSided, this.startAngle, this.maxAnglePerElement, this.angle) + center.XY();
+				item.anchoredPosition3D = this.GetPosition((this.reverse == true ? count - i - 1 : i), count, item.anchoredPosition3D.z, rX, rY, this.bothSided, this.bothSidedSorted, this.startAngle, this.maxAnglePerElement, this.angle) + center.XY();
 				#if UNITY_EDITOR
 				if (Application.isPlaying == false) {
 
@@ -125,7 +126,7 @@ namespace UnityEngine.UI.Extensions {
 		}
 
 		private int lastIndex = 0;
-		private Vector3 GetPosition(int index, int count, float depth, float radiusX, float radiusY, bool bothSided, float startAngle, float maxAnglePerElement, float angle) {
+		private Vector3 GetPosition(int index, int count, float depth, float radiusX, float radiusY, bool bothSided, bool bothSidedSorted, float startAngle, float maxAnglePerElement, float angle) {
 
 			if (count <= 0) {
 
@@ -185,20 +186,28 @@ namespace UnityEngine.UI.Extensions {
 			offset = (elementAngle >= maxAnglePerElement);
 			
 			if (bothSided == true) {
-				
-				if (index % 2 == 0) {
-					
-					index = this.lastIndex - index;
-					
+
+				if (bothSidedSorted == true) {
+
+					_startAngle -= elementAngle * count * 0.5f - elementAngle * 0.5f;
+
 				} else {
+
+					if (index % 2 == 0) {
+						
+						index = this.lastIndex - index;
+						
+					} else {
+						
+						index = this.lastIndex + index;
+						
+					}
 					
-					index = this.lastIndex + index;
-					
+					var elementAngleWithOffset = (offset == true ? maxAnglePerElement : elementAngle);
+					if (count % 2 == 0) _startAngle -= elementAngleWithOffset * 0.5f;
+
 				}
-				
-				var elementAngleWithOffset = offset == true ? maxAnglePerElement : elementAngle;
-				if (count % 2 == 0) _startAngle -= elementAngleWithOffset * 0.5f;
-				
+
 			} else {
 				
 				if (non360 == true) --count;
@@ -284,16 +293,16 @@ namespace UnityEngine.UI.Extensions {
 
 			UnityEditor.Handles.DrawSolidDisc(this.transform.position + center.XY(), Vector3.back, pointRadius * scale);
 
-			var prevPos = this.transform.position + this.GetPosition(0, smooth, 0f, rX * scale, rY * scale, bothSided: false, startAngle: 0f, maxAnglePerElement: 360f, angle: 360f) + center.XY();
+			var prevPos = this.transform.position + this.GetPosition(0, smooth, 0f, rX * scale, rY * scale, bothSided: false, bothSidedSorted: false, startAngle: 0f, maxAnglePerElement: 360f, angle: 360f) + center.XY();
 			for (int i = 0; i <= smooth; ++i) {
 
-				var curPos = this.transform.position + this.GetPosition(i, smooth, 0f, rX * scale, rY * scale, bothSided: false, startAngle: 0f, maxAnglePerElement: 360f, angle: 360f) + center.XY();
+				var curPos = this.transform.position + this.GetPosition(i, smooth, 0f, rX * scale, rY * scale, bothSided: false, bothSidedSorted: false, startAngle: 0f, maxAnglePerElement: 360f, angle: 360f) + center.XY();
 				UnityEditor.Handles.DrawLine(prevPos, curPos);
 				prevPos = curPos;
 
 			}
 
-			UnityEditor.Handles.DrawLine(this.transform.position + center.XY(), this.transform.position + this.GetPosition(0, 2, 0f, rX * scale, rY * scale, bothSided: false, startAngle: this.startAngle, maxAnglePerElement: this.maxAnglePerElement, angle: this.angle) + center.XY());
+			UnityEditor.Handles.DrawLine(this.transform.position + center.XY(), this.transform.position + this.GetPosition(0, 2, 0f, rX * scale, rY * scale, bothSided: false, bothSidedSorted: false, startAngle: this.startAngle, maxAnglePerElement: this.maxAnglePerElement, angle: this.angle) + center.XY());
 			
 			color = Color.gray;
 			color.a = 0.5f;
@@ -302,7 +311,7 @@ namespace UnityEngine.UI.Extensions {
 			var items = this.rectChildren;
 			for (int i = 0; i < items.Count; ++i) {
 				
-				var pos = this.GetPosition(i, items.Count, items[i].anchoredPosition3D.z, rX * scale, rY * scale, this.bothSided, this.startAngle, this.maxAnglePerElement, this.angle) + center.XY();
+				var pos = this.GetPosition(i, items.Count, items[i].anchoredPosition3D.z, rX * scale, rY * scale, this.bothSided, this.bothSidedSorted, this.startAngle, this.maxAnglePerElement, this.angle) + center.XY();
 				
 				UnityEditor.Handles.DrawLine(this.transform.position + center.XY(), this.transform.position + pos);
 				UnityEditor.Handles.DrawSolidDisc(this.transform.position + pos, Vector3.back, pointRadius * scale);

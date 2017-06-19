@@ -38,6 +38,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public ResourceAuto(ResourceAuto other) : base(other) {
+
+			this.controlType = other.controlType;
+
+		}
+
 		public static ResourceAuto CreateResourceRequest(string path, bool readable = false) {
 
 			var item = new ResourceAuto();

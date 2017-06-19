@@ -27,10 +27,10 @@ namespace UnityEngine.UI.Windows.Plugins.Resources {
 			if (resource == null) {
 
 				var path = Utilities.GetCachePath(groupName, filename);
-				//Debug.Log("CCH: " + path);
 				if (File.Exists(path) == true) {
 
-					resource = ResourceAuto.CreateWebRequest(path, readable: true);
+					//Debug.Log("CCH: " + path);
+					resource = ResourceAuto.CreateWebRequest(path, readable: readable);
 
 				}
 
@@ -41,8 +41,8 @@ namespace UnityEngine.UI.Windows.Plugins.Resources {
 
 				var path = (string.IsNullOrEmpty(webPath) == false ? webPath : string.Format(webPathMask, filename));
 				//Debug.Log("WEB: " + path);
-				resource = ResourceAuto.CreateWebRequest(path, readable: true);
-
+				resource = ResourceAuto.CreateWebRequest(path, readable: readable);
+				
 			}
 
 			return resource;

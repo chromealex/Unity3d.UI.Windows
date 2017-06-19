@@ -17,6 +17,74 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		private bool isMoving = false;
 
+		private Bounds viewBounds;
+		private Bounds contentBounds;
+		private Vector3[] corners;
+
+		protected ScrollRect() : base() {
+
+			this.corners = new Vector3[4];
+
+		}
+
+		public override void SetLayoutVertical() {
+
+			base.SetLayoutVertical();
+
+			this.viewBounds = new Bounds(this.viewRect.rect.center, this.viewRect.rect.size);
+			this.contentBounds = this.GetBounds();
+
+		}
+
+		public override void SetLayoutHorizontal() {
+
+			base.SetLayoutHorizontal();
+
+			this.viewBounds = new Bounds(this.viewRect.rect.center, this.viewRect.rect.size);
+			this.contentBounds = this.GetBounds();
+
+		}
+
+		private Bounds GetBounds() {
+			
+			if (this.content == null) {
+				
+				return default(Bounds);
+
+			}
+
+			Vector3 vector = new Vector3(3.402823E+38f, 3.402823E+38f, 3.402823E+38f);
+			Vector3 vector2 = new Vector3(-3.402823E+38f, -3.402823E+38f, -3.402823E+38f);
+			Matrix4x4 worldToLocalMatrix = this.viewRect.worldToLocalMatrix;
+			this.content.GetWorldCorners(this.corners);
+
+			for (int i = 0; i < 4; ++i) {
+				
+				Vector3 vector3 = worldToLocalMatrix.MultiplyPoint3x4(this.corners[i]);
+				vector = Vector3.Min(vector3, vector);
+				vector2 = Vector3.Max(vector3, vector2);
+
+			}
+
+			Bounds result = new Bounds(vector, Vector3.zero);
+			result.Encapsulate(vector2);
+
+			return result;
+
+		}
+
+		public bool vScrollingNeeded {
+			get {
+				return !Application.isPlaying || this.contentBounds.size.y > this.viewBounds.size.y + 0.01f;
+			}
+		}
+
+		public bool hScrollingNeeded {
+			get {
+				return !Application.isPlaying || this.contentBounds.size.x > this.viewBounds.size.x + 0.01f;
+			}
+		}
+
 		protected override void Start() {
 
 			base.Start();
@@ -110,6 +178,34 @@ namespace UnityEngine.UI.Windows.Extensions {
 			}
 
 			return Vector2.zero;
+
+		}
+
+		public void MoveTo(Vector2 position) {
+
+			this.content.anchoredPosition = position;
+
+		}
+
+		public void ScrollReposition(RectTransform obj) {
+
+			var padding = new Rect(0f, 0f, 0f, 0f);
+			var objPosition = (Vector2)this.transform.InverseTransformPoint(obj.position);
+			var scrollHeight = this.content.rect.height;//this.GetComponent<RectTransform>().rect.height;
+			var objHeight = obj.rect.height;
+			var contentPanel = this.content;
+
+			if (objPosition.y > scrollHeight * 0.5f) {
+				
+				contentPanel.localPosition = new Vector2(contentPanel.localPosition.x, contentPanel.localPosition.y - objHeight - padding.yMin);
+				
+			}
+
+			if (objPosition.y < -scrollHeight * 0.5f) {
+				
+				contentPanel.localPosition = new Vector2(contentPanel.localPosition.x, contentPanel.localPosition.y + objHeight + padding.yMax);
+				
+			}
 
 		}
 

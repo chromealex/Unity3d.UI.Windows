@@ -192,7 +192,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 				}).onCancel((obj) => {
 
-					if (callback != null) callback();
+					if (callback != null) callback.Invoke();
 
 				});
 
@@ -214,7 +214,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 		public virtual void OnInit() {}
 
-		public virtual void OnPlay(WindowBase window, object tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {}
+		public virtual void OnPlay(WindowBase window, ME.Tweener.MultiTag tag, TransitionInputParameters parameters, WindowComponentBase root, bool forward, System.Action callback) {}
 
 		public virtual float GetDelay(TransitionInputParameters parameters, bool forward) {
 			
