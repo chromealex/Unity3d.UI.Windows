@@ -148,8 +148,8 @@ namespace UnityEngine.UI.Windows.Components {
 				this.InitInstance(c => base.DoLoad(async, onItem, callback), async);
 
 			} else {
-				
-				if (callback != null) callback.Invoke();
+
+				base.DoLoad(@async, onItem, callback);
 
 			}
 
