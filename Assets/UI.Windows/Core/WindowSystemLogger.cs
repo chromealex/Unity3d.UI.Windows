@@ -24,7 +24,7 @@ namespace UnityEngine.UI.Windows {
 			public void Log(string @object, string data) {
 				
 				if (this.enabled == false) return;
-				
+
 				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", @object, data));
 				
 			}
@@ -100,11 +100,15 @@ namespace UnityEngine.UI.Windows {
 
 		};
 		
+		[Header("UI.Windows Logs")]
 		[BitMask(typeof(ActiveType))]
 		public ActiveType textLogs;
-		
 		[BitMask(typeof(ActiveType))]
 		public ActiveType componentsLogs;
+
+		[Header("Unity Logs")]
+		public LogType filterLogType;
+		public bool loggerEnabled;
 
 		private static WindowSystemLogger _instance;
 		private static WindowSystemLogger instance {
@@ -119,7 +123,8 @@ namespace UnityEngine.UI.Windows {
 						WindowSystemLogger._instance = Object.FindObjectOfType<WindowSystemLogger>();
 						if (WindowSystemLogger._instance == null) {
 
-							WindowSystemLogger._instance = GameObject.Find("Logger").GetComponent<WindowSystemLogger>();
+							var logger = GameObject.Find("Logger");
+							if (logger != null) WindowSystemLogger._instance = logger.GetComponent<WindowSystemLogger>();
 
 						}
 
@@ -157,6 +162,9 @@ namespace UnityEngine.UI.Windows {
 					(Application.isEditor == true && (this.textLogs & ActiveType.InEditor) != 0) ||
 					(Application.isEditor == false && (this.textLogs & ActiveType.InBuild) != 0)
 			};
+
+			Debug.logger.filterLogType = this.filterLogType;
+			Debug.logger.logEnabled = this.loggerEnabled;
 
 			WindowSystemLogger.instance = this;
 

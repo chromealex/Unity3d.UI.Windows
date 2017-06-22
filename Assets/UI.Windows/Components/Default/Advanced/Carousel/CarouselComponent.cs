@@ -537,7 +537,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
 
-					obj.localScale = Vector3.one;
+					if (obj.localScale != Vector3.one) {
+
+						obj.localScale = Vector3.one;
+						(component as IWindowEventsController).DoWindowActive();
+						var canvas = obj.GetComponent<Canvas>();
+						if (canvas != null) canvas.enabled = true;
+
+					}
 
 				}
 
@@ -549,7 +556,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
 
-					obj.localScale = Vector3.zero;
+					if (obj.localScale != Vector3.zero) {
+						
+						var canvas = obj.GetComponent<Canvas>();
+						if (canvas != null) canvas.enabled = false;
+						(component as IWindowEventsController).DoWindowInactive();
+						obj.localScale = Vector3.zero;
+
+					}
 
 				}
 

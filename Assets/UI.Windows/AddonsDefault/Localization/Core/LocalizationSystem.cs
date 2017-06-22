@@ -20,7 +20,8 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 	public class LocalizationSystem : ServiceManager<LocalizationSystem> {
 
-		public const string NO_KEY_STRING = "~NO KEY: {0}~";
+		//public const string NO_KEY_STRING = "~NO KEY: {0}~";
+		public const string NO_KEY_STRING = "{0}";
 
 		public override string GetServiceName() {
 			

@@ -9,7 +9,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 	public class GoogleServiceV4 : AnalyticsService {
 
 		#if GOOGLE_ANALYTICS_V4
-		public GoogleAnalyticsV4 googleAnalytics;
+		public GoogleAnalyticsV4 nativeService;
 		#endif
 
 		public override string GetServiceName() {
@@ -45,9 +45,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public void OnApplicationQuit() {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) return;
+			if (this.nativeService == null) return;
 
-			this.googleAnalytics.StopSession();
+			this.nativeService.StopSession();
 			#endif
 
 		}
@@ -55,9 +55,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.StartSession();
+			this.nativeService.StartSession();
 			#endif
 			yield return 0;
 
@@ -66,9 +66,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> SetUserId(long id) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.SetUserIDOverride(id.ToString());
+			this.nativeService.SetUserIDOverride(id.ToString());
 			#endif
 			yield return 0;
 
@@ -77,9 +77,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> SetUserId(string id) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.SetUserIDOverride(id.ToString());
+			this.nativeService.SetUserIDOverride(id.ToString());
 			#endif
 			yield return 0;
 
@@ -88,9 +88,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnEvent(int screenId, string group1, string group2, string group3, int weight) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.LogEvent(string.Format("Screen: {0} (ID: {1}) - {2}", FlowSystem.GetWindow(screenId).title, screenId, group1), group2, group3, weight);
+			this.nativeService.LogEvent(string.Format("Screen: {0} (ID: {1}) - {2}", FlowSystem.GetWindow(screenId).title, screenId, group1), group2, group3, weight);
 			#endif
 			yield return 0;
 
@@ -99,9 +99,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnEvent(string eventName, string group1, string group2, string group3, int weight) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.LogEvent(string.Format("{0}: {1}", eventName, group1), group2, group3, weight);
+			this.nativeService.LogEvent(string.Format("{0}: {1}", eventName, group1), group2, group3, weight);
 			#endif
 			yield return 0;
 
@@ -110,9 +110,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnScreenTransition(int index, int screenId, int toScreenId, bool popup) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.LogScreen(string.Format("{0} (ID: {1}) to {2} (ID: {3})", FlowSystem.GetWindow(screenId).title, screenId, FlowSystem.GetWindow(toScreenId).title, toScreenId));
+			this.nativeService.LogScreen(string.Format("{0} (ID: {1}) to {2} (ID: {3})", FlowSystem.GetWindow(screenId).title, screenId, FlowSystem.GetWindow(toScreenId).title, toScreenId));
 			#endif
 			yield return 0;
 
@@ -121,9 +121,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.LogTransaction(string.Format("Screen: {0} (ID: {1})", FlowSystem.GetWindow(screenId).title, screenId), productId, (double)price, 0d, 0d, currency);
+			this.nativeService.LogTransaction(string.Format("Screen: {0} (ID: {1})", FlowSystem.GetWindow(screenId).title, screenId), productId, (double)price, 0d, 0d, currency);
 			#endif
 			yield return 0;
 
@@ -132,9 +132,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnTransaction(string eventName, string productId, decimal price, string currency, string receipt, string signature) {
 
 			#if GOOGLE_ANALYTICS_V4
-			if (this.googleAnalytics == null) yield break;
+			if (this.nativeService == null) yield break;
 
-			this.googleAnalytics.LogTransaction(eventName, productId, (double)price, 0d, 0d, currency);
+			this.nativeService.LogTransaction(eventName, productId, (double)price, 0d, 0d, currency);
 			#endif
 			yield return 0;
 
