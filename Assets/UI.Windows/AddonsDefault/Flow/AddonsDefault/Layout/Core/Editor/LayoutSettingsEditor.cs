@@ -194,14 +194,29 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 				var nRect = rect;
 				var buttonWidth = 30f;
 				nRect.width -= buttonWidth;
-				if (draw == true) EditorGUI.PropertyField(nRect, component, new GUIContent(title), true);
-				
+				//if (draw == true) 
+				EditorGUI.PropertyField(nRect, component, new GUIContent(title), true);
+
+				//Debug.Log(oldComponent + " == " + component.objectReferenceValue + " :: " + (oldComponent == component.objectReferenceValue));
 				var newComponent = component.objectReferenceValue;
 				if (oldComponent != newComponent) {
-					
+
+					//Debug.Log("NEW COMP: " + newComponent);
 					parameters.objectReferenceValue = components[index].OnComponentChanged(window, newComponent as WindowComponent);
+					//Debug.Log("NEW COMP: " + parameters.objectReferenceValue);
 					components[index].componentParametersEditor = null;
+					item.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 					
+					UnityEditor.EditorUtility.SetDirty(window);
+
+				}
+
+				if (newComponent == null && components[index].componentResource.id != 0) {
+
+					components[index].OnComponentChanged(window, null);
+					components[index].componentParametersEditor = null;
+					item.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+
 					UnityEditor.EditorUtility.SetDirty(window);
 
 				}
