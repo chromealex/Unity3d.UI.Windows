@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows.Plugins.Services;
 using System.Collections.Generic;
+using ME;
 using UnityEngine.UI.Windows.Utilities;
 
 namespace UnityEngine.UI.Windows.Plugins.GameData {
