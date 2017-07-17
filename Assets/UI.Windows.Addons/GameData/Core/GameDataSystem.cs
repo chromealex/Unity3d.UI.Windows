@@ -28,7 +28,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 		public static Version DEFAULT_EDITOR_VERSION {
 
 			get {
-
+				
 				return GameDataSystem.defaultVersion;
 
 			}
@@ -289,7 +289,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 			var dir = string.Format("{0}/UI.Windows/Cache/Services", storagePath);
 			var path = string.Format("{0}/{1}.uiws", dir, GameDataSystem.GetName());
-			#if !STORAGE_NOT_SUPPORTED
+			#if !STORAGE_NOT_SUPPORTED && (UNITY_ANDROID || UNITY_EDITOR)
 			if (System.IO.Directory.Exists(dir) == false) {
 
 				System.IO.Directory.CreateDirectory(dir);
@@ -330,6 +330,9 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 			} else {
 			#endif
 				
+				#if UNITY_ANDROID
+				Coroutines.Run(GameDataSystem.LoadByWWW(GameDataSystem.GetCachePath(), GameDataSystem.GetBuiltinCachePath()));
+				#else
 				var path = GameDataSystem.GetCachePath();
 				#if STORAGE_NOT_SUPPORTED
 				if (PlayerPrefs.HasKey(path) == false) return;
@@ -344,10 +347,30 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				#endif
 
 				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
+				#endif
 
 			#if UNITY_EDITOR
 			}
 			#endif
+
+		}
+
+		private static IEnumerator<byte> LoadByWWW(string cachePath, string builtinCachePath) {
+
+			var www = new WWW(cachePath);
+			while (www.isDone == false) yield return 0;
+
+			if (string.IsNullOrEmpty(www.error) == false) {
+
+				www.Dispose();
+				www = null;
+
+				www = new WWW(builtinCachePath);
+				while (www.isDone == false) yield return 0;
+
+			}
+
+			GameDataSystem.TryToSaveCSV(www.text, loadCacheOnFail: false);
 
 		}
 

@@ -1647,7 +1647,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public static void ShowAsyncLoader() {
+		public static void ShowAsyncLoader(System.Action onShown = null) {
 
 			if (WindowSystem.instance.asyncLoaderState == true && WindowSystem.instance.asyncLoaderSource != null) {
 
@@ -1656,6 +1656,32 @@ namespace UnityEngine.UI.Windows {
 					WindowSystem.instance.asyncLoader = WindowSystem.Show(WindowSystem.instance.asyncLoaderSource);
 
 				}
+
+				if (onShown != null) {
+
+					UnityAction onAction = null;
+					onAction = () => {
+
+						WindowSystem.instance.asyncLoader.events.onEveryInstance.Unregister(WindowEventType.OnShowEnd, onAction);
+						if (onShown != null) onShown.Invoke();
+
+					};
+
+					if (WindowSystem.instance.asyncLoader.GetState() == WindowObjectState.Shown) {
+
+						onAction.Invoke();
+
+					} else {
+
+						WindowSystem.instance.asyncLoader.events.onEveryInstance.Register(WindowEventType.OnShowEnd, onAction);
+
+					}
+
+				}
+
+			} else {
+
+				if (onShown != null) onShown.Invoke();
 
 			}
 

@@ -398,7 +398,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			
 			var dir = string.Format("{0}/UI.Windows/Cache/Services", storagePath);
 			var path = string.Format("{0}/{1}.uiws", dir, LocalizationSystem.GetName());
-			#if !STORAGE_NOT_SUPPORTED
+			#if !STORAGE_NOT_SUPPORTED && (UNITY_ANDROID || UNITY_EDITOR)
 			if (System.IO.Directory.Exists(dir) == false) {
 
 				System.IO.Directory.CreateDirectory(dir);

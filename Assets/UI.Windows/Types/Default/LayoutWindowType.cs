@@ -481,11 +481,11 @@ namespace UnityEngine.UI.Windows.Types {
 			#if UNITY_EDITOR
 			public WindowComponentParametersBase OnComponentChanged(WindowBase window, WindowComponent newComponent) {
 
-				var hasChanged = (newComponent != this.component);
+				//var hasChanged = (newComponent != this.component);
 				this.component = newComponent;
 
 				WindowComponentParametersBase instance = null;
-				if (hasChanged == true) {
+				//if (hasChanged == true) {
 
 					if (newComponent == null) {
 
@@ -509,11 +509,11 @@ namespace UnityEngine.UI.Windows.Types {
 
 					this.OnValidate();
 
-				} else {
+				//} else {
 
-					instance = this.componentParameters;
+				//	instance = this.componentParameters;
 
-				}
+				//}
 
 				return instance;
 
