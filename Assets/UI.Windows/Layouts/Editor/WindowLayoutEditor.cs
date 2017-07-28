@@ -456,7 +456,7 @@ namespace UnityEditor.UI.Windows {
 			if (_target.root == null) {
 				
 				// Trying to find root
-				var root = _target.transform.FindChild("Root");
+				var root = _target.transform.Find("Root");
 				if (root != null) {
 
 					_target.root = root.GetComponent<WindowLayoutRoot>() as WindowLayoutRoot;

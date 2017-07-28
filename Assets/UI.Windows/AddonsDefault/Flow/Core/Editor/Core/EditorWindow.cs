@@ -154,6 +154,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				EditorApplication.delayCall += () => {
 
+					EditorApplication.delayCall = null;
+
 					// Cache
 					ME.EditorUtilities.GetAssetsOfType<FlowData>(useCache: false);
 					ME.EditorUtilities.GetPrefabsOfType<FlowWindowLayoutTemplate>(useCache: false);
@@ -266,12 +268,16 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							this.tempAttaches.Clear();
 							foreach (var window in windows) {
 
+								//if (this.IsVisible(window) == false) continue;
+
 								var attaches = window.attachItems;
 								foreach (var attachItem in attaches) {
 
 									var attachId = attachItem.targetId;
 
 									var curWindow = FlowSystem.GetWindow(attachId);
+									//if (this.IsVisible(curWindow) == false) continue;
+
 									if (curWindow.IsContainer() == true &&
 									    curWindow.IsFunction() == false) continue;
 
@@ -554,6 +560,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 							foreach (var container in containers) {
 
+								if (this.IsVisible(container) == false) continue;
+
 								var attaches = container.attachItems;
 								foreach (var attachItem in attaches) {
 
@@ -565,13 +573,17 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 							}
 
 							foreach (var window in windows) {
-								
+
+								if (this.IsVisible(window) == false) continue;
+
 								var attaches = window.attachItems;
 								foreach (var attachItem in attaches) {
 									
 									var attachId = attachItem.targetId;
 									
 									var curWindow = FlowSystem.GetWindow(attachId);
+									if (this.IsVisible(curWindow) == false) continue;
+
 									if (curWindow.IsContainer() == true &&
 									    curWindow.IsFunction() == false) continue;
 									
@@ -652,7 +664,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			}
 
-			return window.isVisibleState = this.ContainsRect(window.rect);
+			window.isVisibleState = this.ContainsRect(window.rect);
+			return window.isVisibleState;
 
 		}
 		
@@ -2031,7 +2044,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			});
 
 			var window = FlowSystem.GetWindow(id);
-			
+
 			GUILayout.BeginHorizontal(EditorStyles.toolbar, GUILayout.ExpandWidth(true));
 			{
 				

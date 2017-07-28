@@ -5,13 +5,13 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22434046}
-  - 114: {fileID: 11434048}
-  - 222: {fileID: 22249994}
-  - 114: {fileID: 11449994}
-  - 114: {fileID: 11486382}
+  - component: {fileID: 22434046}
+  - component: {fileID: 11434048}
+  - component: {fileID: 22249994}
+  - component: {fileID: 11449994}
+  - component: {fileID: 11486382}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -30,7 +30,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b9d6c44b51acf4bad7a9a1bbb12a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windowId: 0
+  _windowId: 0
   navigationGroup:
     enabled: 0
     navigationComponents: []
@@ -164,10 +164,10 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}

@@ -11,7 +11,9 @@ using UnityEngine.Advertisements;
 namespace UnityEngine.UI.Windows.Plugins.Ads.Services {
 
 	public class UnityAdsService : AdsService {
-		
+
+		private bool isPlaying = false;
+
 		public override string GetAuthKey(ServiceItem item) {
 
 			#pragma warning disable
@@ -87,11 +89,12 @@ namespace UnityEngine.UI.Windows.Plugins.Ads.Services {
 		public override System.Collections.Generic.IEnumerator<byte> Show(string name, Dictionary<object, object> options = null, System.Action onFinish = null, System.Action onFailed = null, System.Action onSkipped = null) {
 
 			#if UNITY_ADS
-			if (Advertisement.IsReady() == true) {
-				
+			if (Advertisement.IsReady() == true && this.isPlaying == false) {
+
+				this.isPlaying = true;
 				Advertisement.Show(name, new ShowOptions() {
 					resultCallback = (result) => {
-
+						
 						switch (result) {
 
 							case ShowResult.Failed:
@@ -107,6 +110,8 @@ namespace UnityEngine.UI.Windows.Plugins.Ads.Services {
 								break;
 
 						}
+
+						this.isPlaying = false;
 
 					}
 				});

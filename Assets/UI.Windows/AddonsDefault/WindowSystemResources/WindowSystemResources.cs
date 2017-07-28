@@ -129,6 +129,7 @@ namespace UnityEngine.UI.Windows {
 
 		public List<ObjectEntity> registered = new List<ObjectEntity>();
 
+		public bool forceAsyncOff = true;
 		public float resourceAsyncLoadFadeTime = 0.5f;
 		public WindowSystemResourcesMap resourcesMap;
 		public List<Item> loaded = new List<Item>();
@@ -725,6 +726,15 @@ namespace UnityEngine.UI.Windows {
 
 			var task = new TaskItem();
 			task.id = resource.GetId();
+
+			if (this.forceAsyncOff == true) {
+
+				// Disabling async resource loading on Android, because for some reason Resources.LoadAsync() is terribly slow
+				// as of Unity 5.6.2p2 (takes ~2 minutes to load some resources).
+				async = false;
+
+			}
+
 			task.async = async;
 			task.resource = resource;
 			task.component = component;

@@ -840,10 +840,14 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
+			if (WindowSystemInput.CanClickOnElement(this) == false) return;
+
 			this.sfxOnClick.Play();
 
 			if (this.callback != null) this.callback.Invoke();
 			if (this.callbackButton != null) this.callbackButton.Invoke(this);
+
+			WindowSystemInput.RaiseWaitForClickOnElement(this);
 
 		}
 		#endregion

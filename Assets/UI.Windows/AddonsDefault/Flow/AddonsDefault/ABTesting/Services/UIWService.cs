@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI.Windows.Extensions;
 using UnityEngine.UI.Windows.Extensions.Tiny;
-using UnityEngine.UI.Windows.Plugins.ABTesting.Net;
+using UnityEngine.UI.Windows.Extensions.Net;
 using UnityEngine.UI.Windows.Plugins.ABTesting.Net.Api;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Services;

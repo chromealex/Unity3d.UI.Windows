@@ -622,7 +622,7 @@ namespace ME {
 			UnityEditor.Handles.color = color;
 
 			UnityEditor.Handles.DrawLine(point, target);
-			UnityEditor.Handles.ArrowCap(EditorUtilities._controlId, target - (target - point).normalized * (size + offset), Quaternion.LookRotation(target - point), size);
+			UnityEditor.Handles.ArrowHandleCap(EditorUtilities._controlId, target - (target - point).normalized * (size + offset), Quaternion.LookRotation(target - point), size, EventType.Repaint);
 
 			UnityEditor.Handles.color = oldColor;
 

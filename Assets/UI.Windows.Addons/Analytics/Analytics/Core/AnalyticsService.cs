@@ -2,6 +2,7 @@
 using UnityEngine.UI.Windows.Plugins.Heatmap.Core;
 using UnityEngine.UI.Windows.Plugins.Flow;
 using UnityEngine.UI.Windows.Plugins.Services;
+using UnityEngine.UI.Windows.Extensions.Net;
 using UnityEngine.UI.Windows.UserInfo;
 
 namespace UnityEngine.UI.Windows.Plugins.Analytics {
@@ -19,6 +20,9 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 		System.Collections.Generic.IEnumerator<byte> SetUserId(string id);
 		System.Collections.Generic.IEnumerator<byte> SetUserGender(Gender gender);
 		System.Collections.Generic.IEnumerator<byte> SetUserBirthYear(int birthYear);
+
+		System.Collections.Generic.IEnumerator<byte> SendLoadingProgress(string text, string date, string customParameter);
+		System.Collections.Generic.IEnumerator<byte> SendBugReport(string text, string customParameter);
 
 		bool IsConnected();
 
@@ -81,6 +85,18 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 		public virtual System.Collections.Generic.IEnumerator<byte> OnScreenPoint(int screenId, int screenWidth, int screenHeight, byte tag, float x, float y) {
 			
 			yield return 0;
+
+		}
+
+		public virtual System.Collections.Generic.IEnumerator<byte> SendLoadingProgress(string text, string date, string customParameter) {
+
+            yield return 0;
+
+        }
+
+		public virtual System.Collections.Generic.IEnumerator<byte> SendBugReport(string text, string customParameter) {
+
+            yield return 0;
 
 		}
 

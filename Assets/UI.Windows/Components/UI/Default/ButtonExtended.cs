@@ -318,12 +318,14 @@ namespace UnityEngine.UI {
 		}
 
 		private void StartColorTween(Color targetColor, bool instant) {
-			
+
+			if (this == null || this.IsDestroyed() == true) return;
+
 			if (this.m_TargetGraphics != null) {
 
 				for (int i = 0; i < this.m_TargetGraphics.Length; ++i) {
 
-					this.m_TargetGraphics[i].CrossFadeColor(targetColor, instant ? 0f : this.colors.fadeDuration, true, true);
+					if (this.m_TargetGraphics[i] != null) this.m_TargetGraphics[i].CrossFadeColor(targetColor, instant ? 0f : this.colors.fadeDuration, true, true);
 
 				}
 
@@ -331,7 +333,7 @@ namespace UnityEngine.UI {
 
 			if (this.targetGraphic == null) return;
 			
-			this.targetGraphic.CrossFadeColor(targetColor, instant ? 0f : this.colors.fadeDuration, true, true);
+			if (this.targetGraphic != null) this.targetGraphic.CrossFadeColor(targetColor, instant ? 0f : this.colors.fadeDuration, true, true);
 
 		}
 

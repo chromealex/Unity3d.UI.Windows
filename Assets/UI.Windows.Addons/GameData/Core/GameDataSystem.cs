@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows.Plugins.Services;
 using System.Collections.Generic;
+using ME;
 using UnityEngine.UI.Windows.Utilities;
 
 namespace UnityEngine.UI.Windows.Plugins.GameData {
@@ -272,25 +273,30 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 		public static string GetCachePath() {
 
 			#if UNITY_TVOS
-			return GameDataSystem.GetCachePath(Application.temporaryCachePath);
+			return GameDataSystem.GetCachePath(Application.temporaryCachePath, forceDirectoryCreation: true);
 			#else
-			return GameDataSystem.GetCachePath(Application.persistentDataPath);
+			return GameDataSystem.GetCachePath(Application.persistentDataPath, forceDirectoryCreation: true);
 			#endif
 
 		}
 
 		public static string GetBuiltinCachePath() {
 
-			return GameDataSystem.GetCachePath(Application.streamingAssetsPath);
+			#if UNITY_EDITOR
+			bool forceDirectoryCreation = true;
+			#else
+			bool forceDirectoryCreation = false;
+			#endif
+			return GameDataSystem.GetCachePath(Application.streamingAssetsPath, forceDirectoryCreation);
 
 		}
 
-		public static string GetCachePath(string storagePath) {
+		public static string GetCachePath(string storagePath, bool forceDirectoryCreation) {
 
 			var dir = string.Format("{0}/UI.Windows/Cache/Services", storagePath);
 			var path = string.Format("{0}/{1}.uiws", dir, GameDataSystem.GetName());
-			#if !STORAGE_NOT_SUPPORTED && (UNITY_ANDROID || UNITY_EDITOR)
-			if (System.IO.Directory.Exists(dir) == false) {
+			#if !STORAGE_NOT_SUPPORTED
+			if (forceDirectoryCreation == true && System.IO.Directory.Exists(dir) == false) {
 
 				System.IO.Directory.CreateDirectory(dir);
 
@@ -329,7 +335,6 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 			} else {
 			#endif
-				
 				#if UNITY_ANDROID
 				Coroutines.Run(GameDataSystem.LoadByWWW(GameDataSystem.GetCachePath(), GameDataSystem.GetBuiltinCachePath()));
 				#else

@@ -5,12 +5,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22494840}
-  - 222: {fileID: 22294840}
-  - 114: {fileID: 11494842}
-  - 114: {fileID: 11494840}
+  - component: {fileID: 22494840}
+  - component: {fileID: 22294840}
+  - component: {fileID: 11494842}
+  - component: {fileID: 11494840}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -23,16 +23,16 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22494842}
-  - 114: {fileID: 11494848}
-  - 222: {fileID: 22294842}
-  - 114: {fileID: 11494846}
-  - 114: {fileID: 11494844}
-  - 225: {fileID: 22538790}
-  - 114: {fileID: 11420996}
-  - 114: {fileID: 11414938}
+  - component: {fileID: 22494842}
+  - component: {fileID: 11494848}
+  - component: {fileID: 22294842}
+  - component: {fileID: 11494846}
+  - component: {fileID: 11494844}
+  - component: {fileID: 22538790}
+  - component: {fileID: 11420996}
+  - component: {fileID: 11414938}
   m_Layer: 5
   m_Name: PopupItem
   m_TagString: Untagged
@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a99a01f98e98d4c55aacf53b199642f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windowId: 0
+  _windowId: 0
   navigationGroup:
     enabled: 0
     navigationComponents: []
@@ -407,10 +407,10 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 22494842}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -15, y: 0}
@@ -425,11 +425,11 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22494840}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}

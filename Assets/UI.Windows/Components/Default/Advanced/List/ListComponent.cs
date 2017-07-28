@@ -529,6 +529,19 @@ namespace UnityEngine.UI.Windows.Components {
 			
 		}
 
+		public virtual T FindItem<T>() where T : IComponent {
+
+			var items = this.GetItems();
+			for (int i = 0; i < items.Count; ++i) {
+
+				if (items[i] is T) return (T)(items[i] as IComponent);
+
+			}
+
+			return default(T);
+
+		}
+
 		public virtual T GetItem<T>(int index) where T : IComponent {
 
 			return (T)(this.GetItem(index, typeof(T) != typeof(LinkerComponent)) as IComponent);

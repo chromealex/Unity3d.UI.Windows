@@ -82,7 +82,7 @@ public class HUDItem : MonoBehaviour {
 
 	    if (this.pointAligned == true) return;
 
-		if ((this.alignTo != null || this.pointAligned) && this.uiCamera != null && this.gameCamera != null) {
+		if ((this.alignTo != null || this.pointAligned == true) && this.uiCamera != null && this.gameCamera != null) {
 
 			this.Reposition();
 
@@ -92,7 +92,7 @@ public class HUDItem : MonoBehaviour {
 
 	public void Reposition() {
 		
-		if (this.alignTo != null || this.pointAligned)  {
+		if (this.alignTo != null || this.pointAligned == true)  {
 			
 			var position = this.pointAligned == true ? (this.alignToPoint + this.offset) : (this.alignTo.transform.position + this.offset);
 			var pos = this.gameCamera.WorldToViewportPoint(position);

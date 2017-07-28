@@ -3,6 +3,9 @@ using UnityEngine.UI.Windows.Components.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI.Windows.Components;
 using UnityEngine.Events;
+using UnityEngine.UI.Windows.Plugins.Flow.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace UnityEngine.UI.Windows {
 
@@ -13,9 +16,15 @@ namespace UnityEngine.UI.Windows {
 
 	};
 
+	public interface IWaitForClickOnElementWindow : IWindow {
+
+		void OnParametersPass(IInteractableComponent component, object paramObject);
+
+	};
+
 	public class WindowSystemInput : WindowSystemInputModule {
 		
-		public const string SCROLL_AXIS = "Mouse ScrollWheel";
+		public string scrollAxis = "Mouse ScrollWheel";
 		
 		public float scrollSensitivityPC = 100f;
 		public float scrollSensitivityMac = 10f;
@@ -27,7 +36,15 @@ namespace UnityEngine.UI.Windows {
 		public static PointerEvent onAnyPointerDown = new PointerEvent();
 		public static PointerEvent onAnyKeyDown = new PointerEvent();
 
+		public FlowWindow waitForClickWindow;
+		private IWaitForClickOnElementWindow waitForClickWindowSource;
+		private WindowBase waitForClickWindowInstance;
+
 		private static PointerEventData scrollEvent;
+		private static IInteractableComponent waitForClickOnElement;
+		private static System.Action waitForClickOnElementCallback;
+		private static List<IInteractableComponent> waitForClickOnElementExceptList;
+		private static System.Type[] waitForClickOnElementWindows;
 
 		private static WindowSystemInput instance;
 
@@ -59,6 +76,12 @@ namespace UnityEngine.UI.Windows {
 			UnityEngine.Apple.TV.Remote.touchesEnabled = true;
 			#endif
 
+			if (this.waitForClickWindow != null) {
+
+				this.waitForClickWindowSource = this.waitForClickWindow.GetScreen(runtime: true).Load<WindowBase>() as IWaitForClickOnElementWindow;
+
+			}
+
 		}
 
 		public override bool IsModuleSupported() {
@@ -74,12 +97,12 @@ namespace UnityEngine.UI.Windows {
 		public override void UpdateModule() {
 			
 			#if UNITY_STANDALONE || UNITY_TVOS || UNITY_WEBPLAYER || UNITY_WEBGL || UNITY_EDITOR
-			if (Input.GetMouseButtonDown(0) == true) { WindowSystemInput.onPointerDown.Invoke(0); WindowSystemInput.onAnyPointerDown.Invoke(); }
-			if (Input.GetMouseButtonUp(0) == true) { WindowSystemInput.onPointerUp.Invoke(0); }
-			if (Input.GetMouseButtonDown(1) == true) { WindowSystemInput.onPointerDown.Invoke(1); WindowSystemInput.onAnyPointerDown.Invoke(); }
-			if (Input.GetMouseButtonUp(1) == true) { WindowSystemInput.onPointerUp.Invoke(1); }
-			if (Input.GetMouseButtonDown(2) == true) { WindowSystemInput.onPointerDown.Invoke(2); WindowSystemInput.onAnyPointerDown.Invoke(); }
-			if (Input.GetMouseButtonUp(2) == true) { WindowSystemInput.onPointerUp.Invoke(2); }
+			if (Input.GetMouseButtonDown(0) == true) { WindowSystemInput.onPointerDown.Invoke(-1); WindowSystemInput.onAnyPointerDown.Invoke(); }
+			if (Input.GetMouseButtonUp(0) == true) { WindowSystemInput.onPointerUp.Invoke(-1); }
+			if (Input.GetMouseButtonDown(1) == true) { WindowSystemInput.onPointerDown.Invoke(-2); WindowSystemInput.onAnyPointerDown.Invoke(); }
+			if (Input.GetMouseButtonUp(1) == true) { WindowSystemInput.onPointerUp.Invoke(-2); }
+			if (Input.GetMouseButtonDown(2) == true) { WindowSystemInput.onPointerDown.Invoke(-3); WindowSystemInput.onAnyPointerDown.Invoke(); }
+			if (Input.GetMouseButtonUp(2) == true) { WindowSystemInput.onPointerUp.Invoke(-3); }
 			#endif
 
 			#if UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8
@@ -133,6 +156,114 @@ namespace UnityEngine.UI.Windows {
 
 				}
 				
+			}
+
+		}
+
+		public static bool CanMoveBack(WindowBase window) {
+			
+			var hasElement = (WindowSystemInput.waitForClickOnElement != null);
+			if (window != null && WindowSystemInput.waitForClickOnElementWindows != null) {
+
+				var isTargetWindow = WindowSystemInput.waitForClickOnElementWindows.Contains(window.GetType());
+				if (isTargetWindow == false) return true;
+
+			}
+
+			if (hasElement == true && window != null) {
+
+				return WindowSystemInput.waitForClickOnElement.GetWindow() != window;
+
+			}
+
+			return (hasElement == false);
+
+		}
+
+		public static bool CanClickOnElement(IInteractableComponent button) {
+
+			if (WindowSystemInput.waitForClickOnElementWindows != null) {
+
+				var isTargetWindow = WindowSystemInput.waitForClickOnElementWindows.Contains(button.GetWindow().GetType());
+				if (isTargetWindow == false) return true;
+
+			}
+
+			if (WindowSystemInput.waitForClickOnElementExceptList != null) {
+
+				if (WindowSystemInput.waitForClickOnElementExceptList.Contains(button) == true) return true;
+
+			}
+
+			return WindowSystemInput.waitForClickOnElement == null || WindowSystemInput.waitForClickOnElement == button;
+
+		}
+
+		public static bool HasWaitForClickOnElement() {
+
+			return WindowSystemInput.waitForClickOnElement != null;
+
+		}
+
+		public static void WaitForClickOnElement(IInteractableComponent button, List<IInteractableComponent> except, System.Action onClick = null, object paramObject = null) {
+			
+			WindowSystemInput.waitForClickOnElementCallback = onClick;
+			WindowSystemInput.waitForClickOnElement = button;
+			WindowSystemInput.waitForClickOnElementExceptList = except;
+
+			if (WindowSystemInput.instance.waitForClickWindowSource != null) {
+
+				WindowSystemInput.instance.waitForClickWindowInstance = WindowSystem.Show(WindowSystemInput.instance.waitForClickWindowSource as WindowBase, x => (x as IWaitForClickOnElementWindow).OnParametersPass(button, paramObject));
+
+			}
+
+		}
+
+		public static void WaitForClickOnElement(IInteractableComponent button, System.Action onClick = null, object paramObject = null) {
+
+			WindowSystemInput.WaitForClickOnElement(button, null, onClick, paramObject);
+
+		}
+
+		public static void RegisterWindowsWaitingForClicks(params System.Type[] windowTypes) {
+
+			WindowSystemInput.waitForClickOnElementWindows = windowTypes;
+
+		}
+
+		public static void ResetWindowsWaitingForClicks() {
+
+			WindowSystemInput.waitForClickOnElementWindows = null;
+
+		}
+
+		public static void ResetWaitForClickOnElement() {
+
+			WindowSystemInput.waitForClickOnElementCallback = null;
+			WindowSystemInput.waitForClickOnElement = null;
+			WindowSystemInput.waitForClickOnElementExceptList = null;
+
+			if (WindowSystemInput.instance.waitForClickWindowInstance != null) {
+
+				WindowSystemInput.instance.waitForClickWindowInstance.Hide();
+				WindowSystemInput.instance.waitForClickWindowInstance = null;
+
+			}
+
+		}
+
+		public static void RaiseWaitForClickOnElement(IInteractableComponent button) {
+
+			if (WindowSystemInput.CanClickOnElement(button) == true) {
+
+				if (WindowSystemInput.waitForClickOnElement == null || WindowSystemInput.waitForClickOnElement == button) {
+
+					var callback = WindowSystemInput.waitForClickOnElementCallback;
+					WindowSystemInput.ResetWaitForClickOnElement();
+					if (callback != null) callback.Invoke();
+
+				}
+
 			}
 
 		}
@@ -219,7 +350,7 @@ namespace UnityEngine.UI.Windows {
 			var scrollEvent = WindowSystemInput.scrollEvent;
 
 			#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
-			scrollEvent.scrollDelta = new Vector2(0f, Input.GetAxisRaw(WindowSystemInput.SCROLL_AXIS));
+			scrollEvent.scrollDelta = new Vector2(0f, Input.GetAxisRaw(WindowSystemInput.instance.scrollAxis));
 			#endif
 
 			return scrollEvent;

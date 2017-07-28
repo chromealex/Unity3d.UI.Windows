@@ -144,12 +144,12 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 		private static IEnumerable<FD.FlowWindow> GetParentContainers(FD.FlowWindow window, IEnumerable<FD.FlowWindow> containers) {
 			
-			var parent = containers.FirstOrDefault(where => where.attachItems.Any((item) => item.targetId == window.id));
+			var parent = containers.FirstOrDefault(where => (where != null && where.attachItems != null ? where.attachItems.Any((item) => item != null && item.targetId == window.id) : false));
 			
 			while (parent != null) {
 				
 				yield return parent;
-				parent = containers.FirstOrDefault(where => where.attachItems.Any((item) => item.targetId == parent.id));
+				parent = containers.FirstOrDefault(where => (where != null && where.attachItems != null ? where.attachItems.Any((item) => item != null && item.targetId == parent.id) : false));
 				
 			}
 			

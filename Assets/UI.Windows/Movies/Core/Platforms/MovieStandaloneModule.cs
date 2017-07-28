@@ -1,116 +1,223 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI.Windows.Movies;
-using UnityEngine.UI.Windows;
+﻿using UnityEngine.Extensions;
 using UnityEngine.UI.Windows.Components;
+using UnityEngine.Video;
+using System.Collections.Generic;
 
 namespace UnityEngine.UI.Windows.Movies {
 
-	#if UNITY_STANDALONE || UNITY_EDITOR
-	[System.Serializable]
-	public class MovieStandaloneModule : MovieModuleBase {
+    #if UNITY_STANDALONE || UNITY_EDITOR || UNITY_ANDROID
+    [System.Serializable]
+    public class MovieStandaloneModule : MovieModuleBase {
 
-		protected override System.Collections.IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
+        public class Item {
 
-			var filePath = resource.GetStreamPath();
+            private readonly VideoPlayer videoPlayer;
+            private bool isError;
 
-			var task = new WWW(filePath);
-			while (task.isDone == false) {
+            public Item(VideoPlayer videoPlayerProto, string path) {
 
-				asyncOperation.SetValues(isDone: false, progress: task.progress, asset: null);
-				yield return 0;
+                this.videoPlayer = videoPlayerProto.Spawn();
+                this.videoPlayer.errorReceived += this.OnError;
+                this.videoPlayer.url = path;
+                this.videoPlayer.Prepare();
 
-			}
+            }
 
-			#if UNITY_5_6_OR_NEWER
-			var movie = task.GetMovieTexture();
-			#else
-			var movie = task.movie;
-			#endif
-			
-			asyncOperation.SetValues(isDone: false, progress: 1f, asset: movie);
+            public void Destroy() {
 
-			task.Dispose();
-			task = null;
-			System.GC.Collect();
+                this.videoPlayer.Stop();
+                this.videoPlayer.isLooping = false;
+                this.videoPlayer.errorReceived -= this.OnError;
+                this.videoPlayer.Recycle();
 
-			//Debug.LogWarning("GetTexture_YIELD: " + filePath + " :: " + movie.isReadyToPlay);
+            }
 
-			while (movie.isReadyToPlay == false) {
+            private void OnError(VideoPlayer source, string message) {
 
-				yield return 0;
+                Debug.LogErrorFormat("Video player error: {0}", message);
+                this.isError = true;
 
-			}
+            }
 
-			asyncOperation.SetValues(isDone: true, progress: 1f, asset: movie);
+            public bool IsReady() {
 
-		}
+                return this.videoPlayer.isPrepared;
 
-		public override bool IsMovie(Texture texture) {
+            }
 
-			return texture is MovieTexture;
+            public bool IsError() {
 
-		}
+                return this.isError;
 
-		protected override void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
+            }
 
-			var m = movie as MovieTexture;
-			if (m != null) {
+            public bool IsPlaying() {
 
-				m.Play();
+                return this.videoPlayer.isPlaying;
 
-			}
+            }
 
-		}
+            public Texture GetTexture() {
 
-		protected override void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
+                return this.videoPlayer.texture;
 
-			var m = movie as MovieTexture;
-			if (m != null) {
+            }
 
-				m.loop = loop;
-				m.Play();
+            public void SetLoop(bool loop) {
 
-			}
+                this.videoPlayer.isLooping = loop;
 
-		}
+            }
 
-		protected override void OnPause(ResourceBase resource, Texture movie) {
+            public void Play() {
 
-			var m = movie as MovieTexture;
-			if (m != null) {
+                this.videoPlayer.Play();
 
-				m.Pause();
+            }
 
-			}
+            public void Pause() {
 
-		}
+                this.videoPlayer.Pause();
 
-		protected override void OnStop(ResourceBase resource, Texture movie) {
+            }
 
-			var m = movie as MovieTexture;
-			if (m != null) {
+            public void Stop() {
 
-				m.Stop();
+                this.videoPlayer.Stop();
 
-			}
+            }
 
-		}
+        }
 
-		protected override bool IsPlaying(ResourceBase resource, Texture movie) {
+        private const int initialCapacity = 20;
 
-			var m = movie as MovieTexture;
-			if (m != null) {
+        private readonly VideoPlayer videoPlayerProto;
+        private readonly Dictionary<int, Item> itemsByResourceId = new Dictionary<int, Item>(MovieStandaloneModule.initialCapacity);
 
-				return m.isPlaying;
+        public MovieStandaloneModule(VideoPlayer videoPlayerProto) {
 
-			}
+            this.videoPlayerProto = videoPlayerProto;
+            this.videoPlayerProto.CreatePool(MovieStandaloneModule.initialCapacity);
 
-			return false;
+        }
 
-		}
+        protected override System.Collections.IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
 
-	}
-	#endif
+            var resourceId = resource.GetId();
+
+            Item item;
+            if (this.itemsByResourceId.TryGetValue(resourceId, out item) == false) {
+
+                asyncOperation.SetValues(isDone: false, progress: 0.0f, asset: null);
+
+                var resourcePath = resource.GetStreamPath(withFile: true);
+                item = new Item(this.videoPlayerProto, resourcePath);
+                this.itemsByResourceId[resourceId] = item;
+
+            }
+
+            while (item.IsReady() == false) {
+
+                if (item.IsError() == true) {
+
+                    asyncOperation.SetValues(isDone: true, progress: 1f, asset: null);
+                    yield break;
+
+                }
+
+                yield return 0;
+
+            }
+
+            asyncOperation.SetValues(isDone: true, progress: 1f, asset: item.GetTexture());
+
+        }
+
+        public override bool IsMovie(Texture texture) {
+
+            return true;
+
+        }
+
+        protected override void OnUnload(ResourceBase resource) {
+
+            var resourceId = resource.GetId();
+            Item item;
+            if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
+
+                this.itemsByResourceId.Remove(resourceId);
+                item.Destroy();
+
+            }
+
+        }
+
+        protected override void OnPlay(ResourceBase resource, Texture movie, System.Action onComplete) {
+
+            var resourceId = resource.GetId();
+            Item item;
+            if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
+
+                item.Play();
+
+            }
+
+        }
+
+        protected override void OnPlay(ResourceBase resource, Texture movie, bool loop, System.Action onComplete) {
+
+            var resourceId = resource.GetId();
+            Item item;
+            if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
+
+                item.SetLoop(loop);
+                item.Play();
+
+            }
+
+        }
+
+        protected override void OnPause(ResourceBase resource, Texture movie) {
+
+            var resourceId = resource.GetId();
+            Item item;
+            if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
+
+                item.Pause();
+
+            }
+
+        }
+
+        protected override void OnStop(ResourceBase resource, Texture movie) {
+
+            var resourceId = resource.GetId();
+            Item item;
+            if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
+
+                item.Stop();
+
+            }
+
+        }
+
+        protected override bool IsPlaying(ResourceBase resource, Texture movie) {
+
+            var resourceId = resource.GetId();
+            Item item;
+            if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
+
+                return item.IsPlaying();
+
+            } else {
+
+                return false;
+
+            }
+
+        }
+
+    }
+    #endif
 
 }

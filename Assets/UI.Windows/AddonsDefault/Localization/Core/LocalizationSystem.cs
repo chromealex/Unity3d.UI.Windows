@@ -381,25 +381,30 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		public static string GetCachePath() {
 
 			#if UNITY_TVOS
-			return LocalizationSystem.GetCachePath(Application.temporaryCachePath);
+			return LocalizationSystem.GetCachePath(Application.temporaryCachePath, forceDirectoryCreation: true);
 			#else
-			return LocalizationSystem.GetCachePath(Application.persistentDataPath);
+			return LocalizationSystem.GetCachePath(Application.persistentDataPath, forceDirectoryCreation: true);
 			#endif
 
 		}
 
 		public static string GetBuiltinCachePath() {
 
-			return LocalizationSystem.GetCachePath(Application.streamingAssetsPath);
+			#if UNITY_EDITOR
+			bool forceDirectoryCreation = true;
+			#else
+			bool forceDirectoryCreation = false;
+			#endif
+			return LocalizationSystem.GetCachePath(Application.streamingAssetsPath, forceDirectoryCreation);
 
 		}
 
-		public static string GetCachePath(string storagePath) {
+		public static string GetCachePath(string storagePath, bool forceDirectoryCreation) {
 			
 			var dir = string.Format("{0}/UI.Windows/Cache/Services", storagePath);
 			var path = string.Format("{0}/{1}.uiws", dir, LocalizationSystem.GetName());
-			#if !STORAGE_NOT_SUPPORTED && (UNITY_ANDROID || UNITY_EDITOR)
-			if (System.IO.Directory.Exists(dir) == false) {
+			#if !STORAGE_NOT_SUPPORTED
+			if (forceDirectoryCreation == true && System.IO.Directory.Exists(dir) == false) {
 
 				System.IO.Directory.CreateDirectory(dir);
 
@@ -488,7 +493,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			try {
 
 				#if UNITY_EDITOR
-				var monoMemorySize = Profiler.GetMonoUsedSize();
+				var monoMemorySize = Profiler.GetMonoUsedSizeLong();
 				#endif
 
 				var parsed = CSVParser.ReadCSV(data);
@@ -616,7 +621,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				LocalizationSystem.isReady = true;
 
 				#if UNITY_EDITOR
-				var monoMemorySizeAfter = Profiler.GetMonoUsedSize();
+				var monoMemorySizeAfter = Profiler.GetMonoUsedSizeLong();
 				var deltaMemory = monoMemorySizeAfter - monoMemorySize;
 				WindowSystemLogger.Warning(LocalizationSystem.GetName(), string.Format("Allocated: {0} bytes ({1}MB)", deltaMemory, (deltaMemory / 1024f / 1024f)));
 				#endif

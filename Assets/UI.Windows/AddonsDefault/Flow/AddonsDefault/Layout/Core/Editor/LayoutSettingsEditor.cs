@@ -194,8 +194,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 				var nRect = rect;
 				var buttonWidth = 30f;
 				nRect.width -= buttonWidth;
-				//if (draw == true) 
-				EditorGUI.PropertyField(nRect, component, new GUIContent(title), true);
+				if (draw == true) EditorGUI.PropertyField(nRect, component, new GUIContent(title), true);
 
 				//Debug.Log(oldComponent + " == " + component.objectReferenceValue + " :: " + (oldComponent == component.objectReferenceValue));
 				var newComponent = component.objectReferenceValue;

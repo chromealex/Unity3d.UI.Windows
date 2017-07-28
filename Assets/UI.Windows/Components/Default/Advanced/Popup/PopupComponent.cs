@@ -261,12 +261,6 @@ namespace UnityEngine.UI.Windows.Components {
 			return (T)(this.items.GetItem<IComponent>(index) as ITextComponent);
 			
 		}
-		
-		public void SetItems(int capacity, System.Action<IComponent, int> onItem = null) {
-			
-			this.SetItems(capacity, onItem);
-			
-		}
 
 		public void Clear() {
 

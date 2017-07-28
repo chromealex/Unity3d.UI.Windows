@@ -263,7 +263,7 @@ public class HeatmapMeshRenderer : MonoBehaviour, IHeatmapRenderer
                 // Dispose of excess submaps
                 for (var a = neededSubmaps; a < currentSubmaps; a++)
                 {
-                    Transform trans = gameObject.transform.FindChild("Submap" + a);
+                    Transform trans = gameObject.transform.Find("Submap" + a);
                     if (trans != null)
                     {
                         trans.parent = null;

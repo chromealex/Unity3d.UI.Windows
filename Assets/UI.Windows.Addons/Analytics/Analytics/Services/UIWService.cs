@@ -22,6 +22,10 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		#region Transport
 		private NetClient net = new NetClient();
 		public bool logTcp = true;
+        private HttpClient netHttp = new HttpClient() {
+            log = true,
+            logPrefix = "statHttp "
+        };
 		[System.NonSerialized]
 		#if PRODUCTION
 		public string host = "services.unity3dwindows.com";
@@ -371,6 +375,38 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			yield return 0;
 		}
 		#endregion
+
+        #region Client API HTTP
+		public override System.Collections.Generic.IEnumerator<byte> SendLoadingProgress(string text, string date, string customParameter) {
+            
+			var to = new BugReportTO() { uid = User.instance.id, uid2 = User.instance.id2, text = text, dt = date, version = customParameter, device = SystemInfo.deviceModel, os = SystemInfo.operatingSystem };
+
+			var json = SerializeT(to);
+            StartCoroutine(netHttp.JsonPost(host, "/v/loadingProgress", json, response => {
+				// ignore
+            }, errorText => { // Transport errors
+                Debug.Log("StatHttp error: " + errorText);
+            }));
+
+            yield return 0;
+
+        }
+
+		public override System.Collections.Generic.IEnumerator<byte> SendBugReport(string text, string customParameter) {
+			
+			var to = new BugReportTO() { uid = User.instance.id, uid2 = User.instance.id2, text = text, version = customParameter, device = SystemInfo.deviceModel, os = SystemInfo.operatingSystem };
+
+            var json = SerializeT(to);
+            StartCoroutine(netHttp.JsonPost(host, "/v/bugReport", json, response => {
+				// ignore
+            }, errorText => { // Transport errors
+                Debug.Log("StatHttp error: " + errorText);
+            }));
+
+            yield return 0;
+
+        }
+        #endregion
 
 		#region Editor API Events
 		#if UNITY_EDITOR

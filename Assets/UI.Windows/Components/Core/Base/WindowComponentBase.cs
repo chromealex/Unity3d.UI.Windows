@@ -383,6 +383,15 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+			if (this.GetComponentState() == WindowObjectState.NotInitialized ||
+				this.GetComponentState() == WindowObjectState.Initializing ||
+				this.GetComponentState() == WindowObjectState.Initialized) {
+
+				//parameters.Call();
+				return;
+
+			}
+
 			if (this.manualShowHideControl == true) {
 
 				this.DoHideEndManualControl(parameters);
@@ -401,6 +410,15 @@ namespace UnityEngine.UI.Windows {
 		public override void DoHideBegin(AppearanceParameters parameters) {
 
 			if (this == null) {
+
+				parameters.Call();
+				return;
+
+			}
+
+			if (this.GetComponentState() == WindowObjectState.NotInitialized ||
+				this.GetComponentState() == WindowObjectState.Initializing ||
+				this.GetComponentState() == WindowObjectState.Initialized) {
 
 				parameters.Call();
 				return;

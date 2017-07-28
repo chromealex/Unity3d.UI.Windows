@@ -65,6 +65,8 @@ namespace UnityEngine.UI.Windows.Components {
 		public SwitchBehaviour switchBehaviour = SwitchBehaviour.ScaleContent;
 		public Axis axis;
 		public bool cyclical = false;
+		public bool draggable = true;
+		public bool scrollable = true;
 		public float maxVisualCount = 1f;
 		public float maxAngle = 0f;
 		public Vector3 rotationAxis = new Vector3(1f, 1f, -0.5f);
@@ -206,6 +208,25 @@ namespace UnityEngine.UI.Windows.Components {
 				carouselItem.OnSelect(index, this.MoveTo);
 
 			}
+
+			if (this.dots != null) this.dots.Refresh(this);
+			if (this.arrows != null) this.arrows.Refresh(this);
+
+			this.ArrangeItems();
+
+		}
+
+		public override void RemoveItem(WindowComponent instance) {
+
+			base.RemoveItem(instance);
+
+			if (this.lastCurrentIndex >= this.list.Count) {
+
+				this.MoveTo(this.lastCurrentIndex - 1);
+
+			}
+
+			this.lastCurrentIndex = Mathf.Clamp(this.lastCurrentIndex, 0, this.list.Count - 1);
 
 			if (this.dots != null) this.dots.Refresh(this);
 			if (this.arrows != null) this.arrows.Refresh(this);
@@ -575,6 +596,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public void OnBeginDrag(PointerEventData eventData) {
 
 			if (this.interactable == false) return;
+			if (this.draggable == false) return;
 
 			this.dragStartTime = Time.time;
 			this.lastDragSide = 0f;
@@ -617,6 +639,7 @@ namespace UnityEngine.UI.Windows.Components {
 		public void OnScroll(PointerEventData eventData) {
 
 			if (this.interactable == false) return;
+			if (this.scrollable == false) return;
 
 			this.Move(eventData.scrollDelta.y * this.scrollSpeed, minValue: 1f);
 

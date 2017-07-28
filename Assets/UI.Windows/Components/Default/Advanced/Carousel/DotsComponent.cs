@@ -26,8 +26,13 @@ namespace UnityEngine.UI.Windows.Components {
 			this.sourceList = sourceList;
 
 			var items = this.sourceList.GetItems();
-			if (items.Count <= this.minCount) return;
-			
+			if (items.Count <= this.minCount) {
+
+				this.Hide();
+				return;
+
+			}
+
 			this.SetItems<IButtonComponent>(items.Count, (item, index) => {
 
 				item.SetCallback(() => this.OnClickElement(index));

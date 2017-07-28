@@ -886,7 +886,7 @@ namespace UnityEngine.UI.Windows.Types {
 		public void StopCreate() {
 
 			//Debug.Log("StopCreate: " + this.window + " :: " + this.window.GetLastState() + " :: " + this.window.preferences.createPool);
-			if ((this.window.GetLastState() == WindowObjectState.NotInitialized || this.window.GetLastState() == WindowObjectState.Initializing) && this.window.preferences.createPool == false) {
+			if (this.window != null && (this.window.GetLastState() == WindowObjectState.NotInitialized || this.window.GetLastState() == WindowObjectState.Initializing) && this.window.preferences.createPool == false) {
 
 				this.stopped = true;
 

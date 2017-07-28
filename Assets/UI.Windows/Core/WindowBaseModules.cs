@@ -461,9 +461,8 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			public void Call() {
-
+				
 				if (this.currentWindow != null) this.currentWindow.OnBackButtonAction();
-
 				if (this.callback != null) {
 
 					this.callback.Invoke();
@@ -483,6 +482,8 @@ namespace UnityEngine.UI.Windows {
 				if (WindowSystem.GetCurrentWindow() == window) {
 
 					if (UnityEngine.Input.GetKeyDown(KeyCode.Escape) == true) {
+
+						if (WindowSystemInput.CanMoveBack(this.currentWindow) == false) return;
 
 						this.Call();
 
@@ -923,6 +924,39 @@ namespace UnityEngine.UI.Windows {
 				this.onEveryInstance.RaiseEvents(eventType);
 			
 			});
+
+		}
+
+		public void RegisterOnce(WindowEventType eventType, UnityAction action) {
+
+			UnityAction _action = null;
+			_action = () => {
+
+				if (eventType == WindowEventType.OnInit ||
+					eventType == WindowEventType.OnDeinit) {
+
+					this.once.Unregister(eventType, _action);
+
+				} else {
+
+					this.onEveryInstance.Unregister(eventType, _action);
+
+				}
+
+				if (action != null) action.Invoke();
+
+			};
+
+			if (eventType == WindowEventType.OnInit ||
+			    eventType == WindowEventType.OnDeinit) {
+
+				this.once.Register(eventType, _action);
+
+			} else {
+
+				this.onEveryInstance.Register(eventType, _action);
+
+			}
 
 		}
 

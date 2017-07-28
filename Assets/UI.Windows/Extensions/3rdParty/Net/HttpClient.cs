@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using UnityEngine.UI.Windows.Plugins.ABTesting.Net.Api;
 
-namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net {
+namespace UnityEngine.UI.Windows.Extensions.Net {
 	public class HttpClient {
 		public bool log;
 		public string logPrefix = "Http ";

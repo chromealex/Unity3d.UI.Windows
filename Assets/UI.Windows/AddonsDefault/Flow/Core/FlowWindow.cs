@@ -1204,9 +1204,31 @@ namespace UnityEngine.UI.Windows.Plugins.Flow.Data {
 #endif
 
 	    public void FilterRuntimeScreens() {
-			
+
+			//Debug.Log("FilterRuntimeScreens: " + this);
 	        var screens = this.runtimeScreens.Where(x => x != null);
-			var screen = screens.FirstOrDefault(x => x.Load<WindowBase>().targetPreferences.IsValid() == true) ?? screens.FirstOrDefault(x => x.Load<WindowBase>().targetPreferences.GetRunOnAnyTarget() == true);
+			var screen = screens.FirstOrDefault(x => {
+
+				var loaded = x.Load<WindowBase>();
+				//Debug.Log("FilterRuntimeScreens: " + x + " :: " + loaded);
+				if (loaded.targetPreferences.IsValid() == true) return true;
+
+				return false;
+
+			});
+			if (screen == null) {
+
+				screen = screens.FirstOrDefault(x => {
+
+					var loaded = x.Load<WindowBase>();
+					//Debug.Log("FilterRuntimeScreens: " + x + " :: " + loaded);
+					if (loaded.targetPreferences.GetRunOnAnyTarget() == true) return true;
+
+					return false;
+
+				});
+
+			}
             this.runtimeScreens = new List<WindowItem>();
 	        if (screen != null) {
 

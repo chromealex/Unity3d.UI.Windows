@@ -132,6 +132,18 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 		}
 
+		public static void SendLoadingProgress(string text, string date, string customParameter = null) {
+
+			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.SendLoadingProgress(text, date, customParameter)));
+
+        }
+
+		public static void SendBugReport(string text, string customParameter = null) {
+
+			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.SendBugReport(text, customParameter)));
+
+        }
+
 	}
 
 }

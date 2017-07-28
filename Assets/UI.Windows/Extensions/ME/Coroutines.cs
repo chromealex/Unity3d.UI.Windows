@@ -231,6 +231,8 @@ namespace ME {
 
 		public static void Stop(System.Collections.Generic.IEnumerator<byte> coroutine) {
 
+			if (Coroutines.instance == null) return;
+
 			for (int i = 0; i < Coroutines.instance.list.Count; ++i) {
 
 				var item = Coroutines.instance.list[i];
@@ -246,6 +248,8 @@ namespace ME {
 		}
 
 		public static void StopAll(Object tag) {
+
+			if (Coroutines.instance == null) return;
 
 			if (tag != null) {
 

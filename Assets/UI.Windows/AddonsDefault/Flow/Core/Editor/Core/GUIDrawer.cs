@@ -494,9 +494,9 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			GUI.color = oldColor;*/
 			
 			Handles.color = shadowColor;
-			Handles.ConeCap(-1, pos + shadowOffset, rot, 15f);
+			Handles.ConeHandleCap(-1, pos + shadowOffset, rot, 15f, EventType.Repaint);
 			Handles.color = lineColor;
-			Handles.ConeCap(-1, pos, rot, 15f);
+			Handles.ConeHandleCap(-1, pos, rot, 15f, EventType.Repaint);
 			
 		}
 		#endif

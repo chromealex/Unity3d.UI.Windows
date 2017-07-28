@@ -1,4 +1,4 @@
-namespace UnityEngine.UI.Windows.Plugins.ABTesting.Net.Api {
+namespace UnityEngine.UI.Windows.Extensions.Net {
 
 	public interface IResponse {
 

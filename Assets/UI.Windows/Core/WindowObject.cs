@@ -12,9 +12,12 @@ namespace UnityEngine.UI.Windows {
 		WindowBase GetWindow();
 		void HideCurrentWindow();
 
+		int windowId { get; set; }
+
 	};
 
 	public interface IWindow : IWindowObject {
+		
 	};
 
 	public abstract class WindowObject : MonoBehaviour, IWindowObject {
@@ -23,8 +26,9 @@ namespace UnityEngine.UI.Windows {
 		private WindowBase window;
 		
 		//[HideInInspector]
-		[ReadOnly]
-		public int windowId;
+		[ReadOnly][SerializeField]
+		private int _windowId;
+		public int windowId { get { return this._windowId; } set { this._windowId = value; } }
 
 		//[Header("Navigation")]
 		public NavigationGroup navigationGroup = new NavigationGroup();

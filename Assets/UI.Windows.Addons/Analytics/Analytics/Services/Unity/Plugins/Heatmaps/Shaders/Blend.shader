@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 
 Shader "Heatmaps/Particles/AlphaBlend" {
     Properties {
@@ -19,7 +21,7 @@ Shader "Heatmaps/Particles/AlphaBlend" {
 
         v2f vert(appdata_full v) {
             v2f o;
-            o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+            o.pos = UnityObjectToClipPos (v.vertex);
             o.uv.xy = v.texcoord.xy;
             return o; 
         }

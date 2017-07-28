@@ -54,7 +54,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 		private RectTransform caret;
 		private void CorrectCaret() {
 
-			if (this.caret == null && this.textComponent != null) this.caret = this.transform.FindChild(this.gameObject.name + " Input Caret") as RectTransform;
+			if (this.caret == null && this.textComponent != null) this.caret = this.transform.Find(this.gameObject.name + " Input Caret") as RectTransform;
 
 			if (this.caret != null && this.textComponent != null) {
 

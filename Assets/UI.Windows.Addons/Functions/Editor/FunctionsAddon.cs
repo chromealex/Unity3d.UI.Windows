@@ -85,6 +85,13 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			// Get function root window
 			var root = data.GetWindow(functionContainer.functionRootId);
 			//var exit = data.GetWindow(functionContainer.functionExitId);
+
+			if (root == null) {
+
+				Debug.LogWarning(string.Format("[ GenerateTransitionMethod ] Function Container `{0}` doesn't have root with id `{1}`", functionContainer.name, functionContainer.functionRootId));
+				return string.Empty;
+
+			}
 			
 			var functionName = functionContainer.title;
 			var functionCallName = functionContainer.directory;

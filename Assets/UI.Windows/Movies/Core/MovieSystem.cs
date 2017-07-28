@@ -2,6 +2,7 @@
 using UnityEngine.UI.Windows.Components;
 using System.Linq;
 using UnityEngine.UI.Windows.Movies;
+using UnityEngine.Video;
 
 namespace UnityEngine.UI.Windows {
 
@@ -24,6 +25,7 @@ namespace UnityEngine.UI.Windows {
 
 		};
 
+		public VideoPlayer videoPlayer;
 		public float delayToPause = 0.1f;
 		public bool defaultPlayingState = true;
 		public QualityItem[] quality;
@@ -37,11 +39,15 @@ namespace UnityEngine.UI.Windows {
 
 			MovieSystem.instance = this;
 
-			this.InitializeModule_INTERNAL();
-
 		}
 
-	    protected void OnDestory() {
+        public void Start() {
+
+            this.InitializeModule_INTERNAL();
+
+        }
+
+        protected void OnDestory() {
 
             MovieSystem.instance = null;
 
@@ -276,8 +282,8 @@ namespace UnityEngine.UI.Windows {
 
 		protected virtual void InitializeModule_INTERNAL() {
 
-			#if UNITY_STANDALONE || UNITY_EDITOR
-			this.movieModule = new MovieStandaloneModule();
+			#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_ANDROID
+			this.movieModule = new MovieStandaloneModule(this.videoPlayer);
 			#elif UNITY_IOS || UNITY_TVOS
 			this.movieModule = new MovieIOSModule();
 			#elif UNITY_PS4
