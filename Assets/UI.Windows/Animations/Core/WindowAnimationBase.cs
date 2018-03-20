@@ -77,7 +77,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 			if (this.transitions.Count != parameters.Count) {
 				
-				Debug.LogError("Animation: Parameters mismatch Transition [Window " + window.gameObject.name + "] ", this);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Animation: Parameters mismatch Transition [Window " + (window != null ? window.gameObject.name : "null") + "] ", this);
 				return false;
 				
 			}

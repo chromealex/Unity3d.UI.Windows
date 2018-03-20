@@ -2,7 +2,13 @@
 using System.Collections;
 
 namespace UnityEditor.UI.Windows.Plugins.DevicePreview.Output.Apple {
-	
+
+	public class IphoneX : DeviceOutputBase {
+
+		public override string GetMainImage() { return "Apple/iphonex"; }
+
+	}
+
 	public class Mac : DeviceOutputBase {
 		
 		public override string GetMainImage() { return "Apple/imac"; }

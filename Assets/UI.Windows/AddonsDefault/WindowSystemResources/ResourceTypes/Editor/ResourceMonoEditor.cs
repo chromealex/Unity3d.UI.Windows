@@ -53,7 +53,7 @@ namespace UnityEditor.UI.Windows {
 
 				} else {
 
-					Debug.LogWarning("ResourceBase couldn't be found");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("ResourceBase couldn't be found");
 
 				}
 

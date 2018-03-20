@@ -21,7 +21,7 @@ namespace UnityEditor.UI.Windows.Plugins.ABTesting {
 			var file = UnityEngine.Resources.Load("UI.Windows/ABTesting/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("ABTesting Template Loading Error: Could not load template 'TemplateTransitionMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("ABTesting Template Loading Error: Could not load template 'TemplateTransitionMethod'");
 				
 				return string.Empty;
 				

@@ -56,6 +56,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 			base.Prepare(source);
 
 			this.source = this.image.GetGraphicSource();
+			if (this.source == null) return;
 
 			if (this.source.mainTexture == null || this.source.mainTexture == Texture2D.whiteTexture) {
 
@@ -96,7 +97,14 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 		}
 
 		private void FadeTo<T>(IImageComponent imageSource, Object to, float duration, bool fadeIfWasNull, System.Action callback, DataType dataType) where T : Graphic {
-			
+
+			if (this.source == null) {
+
+				if (callback != null) callback.Invoke();
+				return;
+
+			}
+
 			var isSprite = (dataType == DataType.Sprite);
 			var isTexture = (dataType == DataType.Texture);
 			var isMaterial = (dataType == DataType.Material);
@@ -151,6 +159,7 @@ namespace UnityEngine.UI.Windows.Components.Modules {
 
 				copyImage.material = (this.source.defaultMaterial == this.source.material ? null : this.source.material);
 				copyImage.sprite = to as Sprite;
+				copyImage.type = sourceImage.type;
 				copyImage.preserveAspect = sourceImage.preserveAspect;
 				copyImage.fillAmount = sourceImage.fillAmount;
 				copyImage.fillCenter = sourceImage.fillCenter;

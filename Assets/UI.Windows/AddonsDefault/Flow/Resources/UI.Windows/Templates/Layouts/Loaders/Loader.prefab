@@ -190,7 +190,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11421212}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -244,7 +243,6 @@ MonoBehaviour:
   rootComponent: {fileID: 11421216}
   subComponents:
   - {fileID: 11421210}
-  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
@@ -333,7 +331,6 @@ MonoBehaviour:
   rootComponent: {fileID: 0}
   subComponents:
   - {fileID: 11421212}
-  currentState: 0
   canvasScaler: {fileID: 11442514}
   root: {fileID: 11421214}
   elements:

@@ -1,18 +1,15 @@
-﻿//#if UNITY_TVOS
-//#define STORAGE_NOT_SUPPORTED
-//#endif
-using UnityEngine;
-using System.Collections;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows.Plugins.Services;
 using System.Collections.Generic;
+using ME.FS.Core;
 using ME;
 using UnityEngine.UI.Windows.Utilities;
 
 namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 	public class GameDataSystem : ServiceManager<GameDataSystem> {
+
+		private const string PLAYER_PREFS_CACHE_KEY = "GameDataSystem.Cache";
 
 		public override string GetServiceName() {
 
@@ -163,7 +160,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 			if (GameDataSystem.IsReady() == true) {
 
-				var crc = new VersionCrc(version);
+				var crc = version.crc;
 
 				float[] values;
 				if (GameDataSystem.valuesByVersion.TryGetValue(crc, out values) == true) {
@@ -182,13 +179,13 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 				}
 
-				//Debug.LogWarningFormat("[ GameData ] Key was not found: {0}", key);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ GameData ] Key was not found: {0}", key);
 
 			} else {
 
 				if (Application.isPlaying == true) {
 
-					Debug.LogWarningFormat("[ GameData ] System not ready. Do not use `GameData.Get()` method while/before system starting. You can check it's state by `GameData.IsReady()` call. Key: `{0}`.", key);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ GameData ] System not ready. Do not use `GameData.Get()` method while/before system starting. You can check it's state by `GameData.IsReady()` call. Key: `{0}`.", key);
 
 				}
 
@@ -272,11 +269,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 		public static string GetCachePath() {
 
-			#if UNITY_TVOS
-			return GameDataSystem.GetCachePath(Application.temporaryCachePath, forceDirectoryCreation: true);
-			#else
-			return GameDataSystem.GetCachePath(Application.persistentDataPath, forceDirectoryCreation: true);
-			#endif
+			return GameDataSystem.GetCachePath(FileSystem.instance.GetCachePath(), forceDirectoryCreation: true);
 
 		}
 
@@ -294,14 +287,15 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 		public static string GetCachePath(string storagePath, bool forceDirectoryCreation) {
 
 			var dir = string.Format("{0}/UI.Windows/Cache/Services", storagePath);
+			#if UNITY_ANDROID && UNITY_EDITOR
+			dir = string.Format("file://{0}", dir);
+			#endif
 			var path = string.Format("{0}/{1}.uiws", dir, GameDataSystem.GetName());
-			#if !STORAGE_NOT_SUPPORTED
-			if (forceDirectoryCreation == true && System.IO.Directory.Exists(dir) == false) {
+			if (FileSystem.instance.IsCacheSupported() == true && forceDirectoryCreation == true && System.IO.Directory.Exists(dir) == false) {
 
 				System.IO.Directory.CreateDirectory(dir);
 
 			}
-			#endif
 
 			return path;
 
@@ -319,37 +313,48 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				GameDataSystem.cacheLoaded = true;
 
 				var path = GameDataSystem.GetCachePath();
-				#if STORAGE_NOT_SUPPORTED
-				if (PlayerPrefs.HasKey(path) == false) return;
-				var text = PlayerPrefs.GetString(path, string.Empty);
-				#else
-				if (System.IO.File.Exists(path) == false) {
-					
-					path = GameDataSystem.GetBuiltinCachePath();
-					
+				string text = null;
+				if (PlayerPrefs.HasKey(path) == true) {
+
+					text = PlayerPrefs.GetString(path, string.Empty);
+
+				} else {
+
+					if (System.IO.File.Exists(path) == false) {
+
+						path = GameDataSystem.GetBuiltinCachePath();
+
+					}
+
+					text = System.IO.File.ReadAllText(path);
+
 				}
-				var text = System.IO.File.ReadAllText(path);
-				#endif
-				
+
 				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
-				#if UNITY_ANDROID
+				#if UNITY_ANDROID && !UNITY_EDITOR
 				Coroutines.Run(GameDataSystem.LoadByWWW(GameDataSystem.GetCachePath(), GameDataSystem.GetBuiltinCachePath()));
 				#else
-				var path = GameDataSystem.GetCachePath();
-				#if STORAGE_NOT_SUPPORTED
-				if (PlayerPrefs.HasKey(path) == false) return;
-				var text = PlayerPrefs.GetString(path, string.Empty);
-				#else
-				if (System.IO.File.Exists(path) == false) {
-					
-					path = GameDataSystem.GetBuiltinCachePath();
-					
+				bool isCacheSupported = FileSystem.instance.IsCacheSupported();
+				string text = null;
+				if (isCacheSupported == false && PlayerPrefs.HasKey(GameDataSystem.PLAYER_PREFS_CACHE_KEY) == true) {
+
+					text = ME.UAB.Zipper.UnzipToString(PlayerPrefs.GetString(GameDataSystem.PLAYER_PREFS_CACHE_KEY, string.Empty));
+
+				} else {
+
+					var path = GameDataSystem.GetCachePath();
+					if (isCacheSupported == false || System.IO.File.Exists(path) == false) {
+
+						path = GameDataSystem.GetBuiltinCachePath();
+
+					}
+
+					text = System.IO.File.ReadAllText(path);
+
 				}
-				var text = System.IO.File.ReadAllText(path);
-				#endif
 
 				GameDataSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 				#endif
@@ -384,6 +389,11 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 			try {
 
 				var parsed = CSVParser.ReadCSV(data);
+				if (parsed.Count < 2) {
+
+					throw new UnityException("ReadCSV Failed");
+
+				}
 
 				if (GameDataSystem.currentVersion == default(Version)) {
 
@@ -472,7 +482,7 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 
 						value = value.Replace(",", ".").Replace(" ", string.Empty);
 
-						var col = float.Parse(value);
+						var col = float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
 						output.Add(col);
 
 					}
@@ -484,12 +494,17 @@ namespace UnityEngine.UI.Windows.Plugins.GameData {
 				GameDataSystem.valuesByVersion = values;
 				#endregion
 
-				var path = GameDataSystem.GetCachePath();
-				#if STORAGE_NOT_SUPPORTED
-				PlayerPrefs.SetString(path, data);
-				#else
-				System.IO.File.WriteAllText(path, data);
-				#endif
+				string path = "";
+				if (FileSystem.instance.IsCacheSupported() == true) {
+
+					path = GameDataSystem.GetCachePath();
+					System.IO.File.WriteAllText(path, data);
+
+				} else {
+
+					PlayerPrefs.SetString(GameDataSystem.PLAYER_PREFS_CACHE_KEY, ME.UAB.Zipper.ZipToString(data));
+
+				}
 
 				#if UNITY_EDITOR
 				path = GameDataSystem.GetBuiltinCachePath();

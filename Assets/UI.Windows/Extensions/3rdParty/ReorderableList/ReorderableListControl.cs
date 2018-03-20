@@ -1280,7 +1280,7 @@ namespace UnityEditor.UI.Windows.Internal.ReorderableList {
 				if (drawEmpty != null)
 					drawEmpty();
 				else
-					Debug.LogError("Unexpected call to 'DrawLayoutEmptyList'");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Unexpected call to 'DrawLayoutEmptyList'");
 
 				s_CurrentListStack.Push(new ListInfo(_controlID, position));
 				try {
@@ -1635,7 +1635,7 @@ namespace UnityEditor.UI.Windows.Internal.ReorderableList {
 		/// </returns>
 		public bool DoCommand(string commandName, int itemIndex, IReorderableListAdaptor adaptor) {
 			if (!HandleCommand(s_ContextCommandName, itemIndex, adaptor)) {
-				Debug.LogWarning("Unknown context command.");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Unknown context command.");
 				return false;
 			}
 			return true;

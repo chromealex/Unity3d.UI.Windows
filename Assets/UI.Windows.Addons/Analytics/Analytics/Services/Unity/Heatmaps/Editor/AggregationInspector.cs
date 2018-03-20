@@ -211,7 +211,7 @@ namespace UnityAnalyticsHeatmap
         {
             if (fileList.Count == 0)
             {
-                Debug.LogWarning("No matching data found.");
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("No matching data found.");
             }
             else
             {

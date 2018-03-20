@@ -100,12 +100,14 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview.Output {
 		}
 
 		public virtual void OnPreGUI() {
+			
+		}
+
+		public virtual void OnPostGUI() {
 
 			if (this.sprite != null) GUI.DrawTexture(this.deviceRect, this.sprite.texture, ScaleMode.StretchToFill);
 
 		}
-
-		public virtual void OnPostGUI() {}
 
 		private Matrix4x4 guiMatrix;
 		private void ApplyOrientation() {

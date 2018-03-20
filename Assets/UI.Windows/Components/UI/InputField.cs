@@ -7,7 +7,9 @@ using System.Linq;
 namespace UnityEngine.UI.Windows.Extensions {
 
 	public class InputField : UnityEngine.UI.InputField {
-		
+
+		public bool correctCaret = false;
+
 		public override void OnSelect(BaseEventData eventData) {
 
 			base.OnSelect(eventData);
@@ -54,12 +56,14 @@ namespace UnityEngine.UI.Windows.Extensions {
 		private RectTransform caret;
 		private void CorrectCaret() {
 
+			if (this.correctCaret == false) return;
+
 			if (this.caret == null && this.textComponent != null) this.caret = this.transform.Find(this.gameObject.name + " Input Caret") as RectTransform;
 
 			if (this.caret != null && this.textComponent != null) {
 
 				var alignment = this.textComponent.alignment;
-				var offset = this.textComponent.rectTransform.anchoredPosition + Vector2.up * 2f;
+				var offset = this.textComponent.rectTransform.anchoredPosition;
 				var pivot = new Vector2(0.5f, 0.5f);
 
 				if (alignment == TextAnchor.MiddleLeft ||

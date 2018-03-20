@@ -14,7 +14,7 @@ public class MacrosSourceTest : MonoBehaviour {
 		var a = 260;
 		--a;
 		++a;
-		Debug.Log(a);
+		if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(a);
 		#endregion
 
 	}

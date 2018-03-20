@@ -69,7 +69,7 @@ namespace ME.Macros {
 
 			}
 
-			if (defCount > 0) Debug.Log("[MACROS] Definitions processed: " + defCount.ToString() + "\n" + output);
+			if (defCount > 0) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("[MACROS] Definitions processed: " + defCount.ToString() + "\n" + output);
 
 			output = string.Empty;
 			var pCount = 0;
@@ -86,7 +86,7 @@ namespace ME.Macros {
 
 			}
 
-			if (pCount > 0) Debug.Log("[MACROS] Processed: " + pCount.ToString() + "\n" + output);
+			if (pCount > 0) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("[MACROS] Processed: " + pCount.ToString() + "\n" + output);
 
 		}
 

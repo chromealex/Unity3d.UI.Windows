@@ -414,6 +414,12 @@ namespace UnityEngine.UI {
 			Sprite newSprite;
 			string triggername;
 
+			if (this.interactable == false) {
+
+				state = SelectionState.Disabled;
+
+			}
+
 			switch (state) {
 
 				case Selectable.SelectionState.Normal:

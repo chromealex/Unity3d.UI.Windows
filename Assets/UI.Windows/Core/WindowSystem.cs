@@ -119,6 +119,7 @@ namespace UnityEngine.UI.Windows {
 
 	}
 
+	[DefaultExecutionOrder(-1000)]
 	public class WindowSystem : MonoBehaviour {
 		
 		public class OnDoTransitionEvent : ME.Events.SimpleEvent<int, int, int, bool> {}
@@ -592,6 +593,7 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR
 		public virtual void OnValidate() {
 
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == true) return;
 			if (UnityEditor.EditorApplication.isUpdating == true) return;
 			
@@ -610,18 +612,24 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.objectPool == null) {
 
-				Debug.LogError("WindowSystem need `ObjectPool` reference", this);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("WindowSystem need `ObjectPool` reference", this);
 				return;
 
 			}
 
 			this.objectPool.Init();
 
-			Debug.LogFormat("[ WindowSystem ] Initialized with platform `{0}`", WindowSystem.GetCurrentRuntimePlatform());
-
 			GameObject.DontDestroyOnLoad(this.gameObject);
 
+		}
+
+		private void Start() {
+
 			this.Init();
+
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogFormat("[ WindowSystem ] Initialized with platform `{0}`", WindowSystem.GetCurrentRuntimePlatform());
+
+			this.InitLate();
 
 		}
 
@@ -648,7 +656,7 @@ namespace UnityEngine.UI.Windows {
 
 			} catch (System.Exception ex) {
 
-				Debug.LogError(string.Format("RunSafe Exception: {0}\nStack: {1}", ex.Message, ex.StackTrace));
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(string.Format("RunSafe Exception: {0}\nStack: {1}", ex.Message, ex.StackTrace));
 
 			}
 
@@ -662,7 +670,7 @@ namespace UnityEngine.UI.Windows {
 
 			} catch (System.Exception ex) {
 
-				Debug.LogError(string.Format("RunSafe Exception: {0}\nStack: {1}", ex.Message, ex.StackTrace));
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(string.Format("RunSafe Exception: {0}\nStack: {1}", ex.Message, ex.StackTrace));
 
 			}
 
@@ -725,7 +733,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (WindowSystem.instance == null) return;
 
-			//Debug.Log("STOP: " + id);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("STOP: " + id);
 			Audio.Manager.Stop(window, WindowSystem.instance.audio, clipType, id);
 
 		}
@@ -734,7 +742,7 @@ namespace UnityEngine.UI.Windows {
 			
 			if (WindowSystem.instance == null) return;
 			
-			//Debug.Log("PLAY: " + id + ", " + replaceOnEquals);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("PLAY: " + id + ", " + replaceOnEquals);
 			Audio.Manager.Play(window, WindowSystem.instance.audio, clipType, id, replaceOnEquals);
 			
 		}
@@ -743,7 +751,7 @@ namespace UnityEngine.UI.Windows {
 			
 			if (WindowSystem.instance == null) return;
 
-			//Debug.Log("CHANGE: " + id + " :: " + audioSettings.volume);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("CHANGE: " + id + " :: " + audioSettings.volume);
 			Audio.Manager.Change(window, WindowSystem.instance.audio, clipType, id, audioSettings);
 			
 		}
@@ -767,8 +775,9 @@ namespace UnityEngine.UI.Windows {
 		internal static void SendInactiveStateByWindow(WindowBase newWindow) {
 
 			if (WindowSystem.instance == null) return;
+		    if (newWindow.GetActiveState() == ActiveState.Active) return;
 
-			//Debug.Log("SendInactiveStateByWindow: " + newWindow);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("SendInactiveStateByWindow: " + newWindow);
 
 			var layer = newWindow.preferences.layer;
 			var depth = newWindow.GetDepth();
@@ -781,7 +790,7 @@ namespace UnityEngine.UI.Windows {
 				if (window.IsVisible() == false) continue;
 				if (window.preferences.layer < layer || (window.preferences.layer == layer && window.GetDepth() < depth)) {
 
-					//Debug.Log("SetInactive: " + window);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("SetInactive: " + window);
 					window.SetInactive(newWindow);
 
 				}
@@ -793,11 +802,12 @@ namespace UnityEngine.UI.Windows {
 		internal static void SendActiveStateByWindow(WindowBase closingWindow) {
 
 			if (WindowSystem.instance == null) return;
+            if (closingWindow.GetActiveState() == ActiveState.Inactive) return;
 
-			var layer = closingWindow.preferences.layer;
+            var layer = closingWindow.preferences.layer;
 			var depth = closingWindow.GetDepth();
 
-			//Debug.Log("SendActiveStateByWindow: " + closingWindow);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("SendActiveStateByWindow: " + closingWindow);
 
 			var allWindows = WindowSystem.instance.currentWindows;
 			for (int i = 0; i < allWindows.Count; ++i) {
@@ -820,7 +830,7 @@ namespace UnityEngine.UI.Windows {
 			var layer = targetWindow.preferences.layer;
 			var depth = targetWindow.GetDepth();
 
-			//Debug.Log("GetWindowsInFrontCount: " + targetWindow);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("GetWindowsInFrontCount: " + targetWindow);
 
 			var count = 0;
 			var allWindows = WindowSystem.instance.currentWindows;
@@ -831,7 +841,7 @@ namespace UnityEngine.UI.Windows {
 				if (window.IsVisible() == false) continue;
 				if (/*window.preferences.fullCoverage == true &&*/ (window.preferences.layer > layer || (window.preferences.layer == layer && window.GetDepth() > depth))) {
 
-					//Debug.Log("++count: " + window);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("++count: " + window);
 					++count;
 
 				}
@@ -900,7 +910,7 @@ namespace UnityEngine.UI.Windows {
 			if (WindowSystem.instance == null) return;
 
 			WindowBase lastInstance = null;
-			lastInstance = WindowSystem.FindOpened<WindowBase>((item) => item != null /*&& item.preferences.IsHistoryActive() == true*/ && (item.GetState() == WindowObjectState.Shown || item.GetState() == WindowObjectState.Showing), last: true);
+			lastInstance = WindowSystem.FindOpened<WindowBase>((item) => item != null && item.IsVisible() == true && item.preferences.IsHistoryActive() == true, last: true);
 
 			WindowSystem.instance.lastInstance = lastInstance;
 			if (WindowSystem.instance.lastInstance == null) WindowSystem.instance.lastInstance = null;
@@ -918,7 +928,7 @@ namespace UnityEngine.UI.Windows {
 			for (int i = 0, count = WindowSystem.instance.currentWindows.Count; i < count; ++i) {
 
 				var window = WindowSystem.instance.currentWindows[i];
-				if (window == null) continue;
+				if (window == null || window.IsVisible() == false) continue;
 
 				if (window.preferences.IsHistoryActive() == true && (window.preferences.layer > layer || (window.preferences.layer == layer && window.GetDepth() > depth))) {
 
@@ -1000,7 +1010,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (window == null || window.IsEmpty() == true) {
 
-					Debug.LogWarning("Some windows was not setup properly. Be sure all windows have their screens.");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Some windows was not setup properly. Be sure all windows have their screens.");
 					continue;
 
 				}
@@ -1010,6 +1020,8 @@ namespace UnityEngine.UI.Windows {
 			}
 
 		}
+
+		protected virtual void InitLate() {}
 
 		internal static void ApplyToSettingsInstance(Camera camera, Canvas canvas, WindowBase window) {
 
@@ -1128,7 +1140,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (window.skipRecycle == false) {
 
-				//Debug.Log("Recycle: " + window + " :: " + setInactive);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Recycle: " + window + " :: " + setInactive);
 				if (window.preferences.createPool == false ||
 					ObjectPool.IsRegisteredInPool(window.GetSource()) == false) {
 
@@ -1201,7 +1213,7 @@ namespace UnityEngine.UI.Windows {
 				instance.transform.localScale = Vector3.one;
 
 				#if UNITY_EDITOR
-				if (inPool == false) instance.gameObject.name = string.Format("[Screen] {0} ({1})", source.GetType().Name, ++WindowSystem.counter);
+				if (inPool == false) instance.UpdateGameObjectCaption_EDITOR(++WindowSystem.counter);
 				#endif
 
 			}
@@ -1214,6 +1226,11 @@ namespace UnityEngine.UI.Windows {
 
 			if (WindowSystem.instance.currentWindows.Contains(instance) == false) {
 
+				WindowSystem.instance.currentWindows.Add(instance);
+
+			} else {
+
+				WindowSystem.instance.currentWindows.Remove(instance);
 				WindowSystem.instance.currentWindows.Add(instance);
 
 			}
@@ -1884,6 +1901,8 @@ namespace UnityEngine.UI.Windows {
 			var list = new List<WindowItem>();
 			for (int i = 0; i < windows.Length; ++i) {
 
+				if (windows[i] == null) continue;
+
 				var type = windows[i].GetType();
 				var window = WindowSystem.instance.windows.FirstOrDefault(x => {
 					
@@ -1969,11 +1988,11 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="callback">Callback.</param>
 		public static void HideAllAndClean(WindowBase except, System.Action callback, bool forceAll, bool immediately) {
 
-			Debug.Log("HideAllAndClean: " + (except != null ? except.name : "null"));
+			if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("HideAllAndClean: " + (except != null ? except.name : "null"));
 
 			WindowSystem.HideAll(except, () => {
 
-				Debug.Log("Clean");
+				if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Clean");
 				WindowSystem.Clean(except, forceAll);
 
 				if (callback != null) callback();
@@ -1989,7 +2008,7 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="callback">Callback.</param>
 		public static void HideAllAndClean(List<WindowBase> exceptList, System.Action callback, bool forceAll, bool immediately) {
 
-			//Debug.Log("HideAllAndClean: " + (exceptList != null ? exceptList.Count : 0));
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("HideAllAndClean: " + (exceptList != null ? exceptList.Count : 0));
 
 			WindowSystem.HideAll(exceptList, () => {
 
@@ -2055,11 +2074,11 @@ namespace UnityEngine.UI.Windows {
 		/// <param name="forceAll">If set to <c>true</c> force all.</param>
 		public static void Clean(WindowBase except, bool forceAll) {
 
-			//Debug.LogWarning("Clean!");
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Clean!");
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
 				
 				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, null, except, forceAll);
-				//Debug.LogWarning("Try: " + window.name + " :: " + result);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Try: " + window.name + " :: " + result);
 				if (result == true) {
 					
 					if (window != null) {
@@ -2096,11 +2115,11 @@ namespace UnityEngine.UI.Windows {
         /// <param name="except">Except.</param>
         public static void Clean(List<WindowBase> exceptList, bool forceAll) {
 
-			//Debug.LogWarning("Clean!");
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Clean!");
 			WindowSystem.instance.currentWindows.RemoveAll((window) => {
 
 				var result = WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(window, exceptList, null, forceAll);
-				//Debug.LogWarning("Try: " + window.name + " :: " + result);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Try: " + window.name + " :: " + result);
 				if (result == true) {
 
 					if (window != null) {
@@ -2151,10 +2170,10 @@ namespace UnityEngine.UI.Windows {
 
 				if (removeFromList == true) WindowSystem.instance.currentWindows.Remove(window);
 				(window as IWindowEventsController).DoWindowUnload();
-				//Debug.Log("DoDestroy: " + window, window);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("DoDestroy: " + window, window);
 				window.DoDestroy(() => {
 
-					//Debug.Log("DoDestroyed: " + window, window);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("DoDestroyed: " + window, window);
 					ObjectPool.ClearPool(window.GetSource());
 					WindowSystem.instance.CreatePoolForWindowSource(window.GetSource());
 
@@ -2195,38 +2214,40 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		/// <summary>
-		/// Hides all.
+		/// Hides the group.
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAll(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) {
+		/// <param name="forceAll">If set to <c>true</c> force all.</param>
+		/// <param name="immediately">If set to <c>true</c> immediately.</param>
+		public static void HideAll<T>(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) where T : WindowBase {
 
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
 			var list = WindowSystem.instance.currentWindows.Where((w) => {
 
-				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
+				return w is T && WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, null, except, forceAll);
 
 			}).ToList();
-			Debug.Log("CallInSequence: " + list.Count + ", immediately: " + immediately + ", forced: " + forceAll);
+			if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("CallInSequence: " + list.Count + ", immediately: " + immediately + ", forced: " + forceAll);
 			ME.Utilities.CallInSequence(callback, list, (window, wait) => {
 
 				if (window.Hide(onHideEnd: null, immediately: immediately, forced: forceAll) == false) {
 
-					Debug.Log("HIDE FAILED: " + window.name + " :: " + window.GetState());
+					if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("HIDE FAILED: " + window.name + " :: " + window.GetState());
 
 				}
 
-				Debug.Log(window.name + " :: " + window.GetState());
+				if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(window.name + " :: " + window.GetState());
 				if (window.GetState() == WindowObjectState.Hiding ||
 					window.GetState() == WindowObjectState.Showing ||
 					window.GetState() == WindowObjectState.Shown) {
 
-					Debug.Log(window.name + " :: " + window.GetState());
+					if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(window.name + " :: " + window.GetState());
 					UnityAction action = null;
 					action = () => {
 
-						Debug.Log(window.name + " :: " + window.GetState());
+						if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(window.name + " :: " + window.GetState());
 						window.events.onEveryInstance.Unregister(WindowEventType.OnHideEndLate, action);
 						wait.Invoke();
 
@@ -2248,13 +2269,29 @@ namespace UnityEngine.UI.Windows {
 		/// </summary>
 		/// <param name="except">Except.</param>
 		/// <param name="callback">Callback.</param>
-		public static void HideAll(List<WindowBase> exceptList, System.Action callback, bool forceAll = false, bool immediately = false) {
+		/// <param name="forceAll">If set to <c>true</c> force all.</param>
+		/// <param name="immediately">If set to <c>true</c> immediately.</param>
+		public static void HideAll(WindowBase except = null, System.Action callback = null, bool forceAll = false, bool immediately = false) {
+
+			WindowSystem.HideAll<WindowBase>(except, callback, forceAll, immediately);
+
+		}
+
+		/// <summary>
+		/// Hides the group.
+		/// </summary>
+		/// <param name="exceptList">Except list.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="forceAll">If set to <c>true</c> force all.</param>
+		/// <param name="immediately">If set to <c>true</c> immediately.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static void HideAll<T>(List<WindowBase> exceptList, System.Action callback, bool forceAll = false, bool immediately = false) where T : WindowBase {
 
 			WindowSystem.instance.currentWindows.RemoveAll((window) => window == null);
 
 			var list = WindowSystem.instance.currentWindows.Where((w) => {
 
-				return WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, exceptList, null, forceAll);
+				return w is T && WindowSystem.instance.DestroyWindowCheckOnClean_INTERNAL(w, exceptList, null, forceAll);
 
 			}).ToList();
 			ME.Utilities.CallInSequence(callback, list, (window, wait) => {
@@ -2264,11 +2301,11 @@ namespace UnityEngine.UI.Windows {
 					window.GetState() == WindowObjectState.Showing ||
 					window.GetState() == WindowObjectState.Shown) {
 
-					//Debug.Log(window.name + " :: " + window.GetState());
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(window.name + " :: " + window.GetState());
 					UnityAction action = null;
 					action = () => {
 
-						//Debug.Log(window.name + " :: " + window.GetState());
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(window.name + " :: " + window.GetState());
 						window.events.onEveryInstance.Unregister(WindowEventType.OnHideEndLate, action);
 						wait.Invoke();
 
@@ -2282,6 +2319,19 @@ namespace UnityEngine.UI.Windows {
 				}
 
 			});
+
+		}
+
+		/// <summary>
+		/// Hides all.
+		/// </summary>
+		/// <param name="exceptList">Except list.</param>
+		/// <param name="callback">Callback.</param>
+		/// <param name="forceAll">If set to <c>true</c> force all.</param>
+		/// <param name="immediately">If set to <c>true</c> immediately.</param>
+		public static void HideAll(List<WindowBase> exceptList, System.Action callback, bool forceAll = false, bool immediately = false) {
+
+			WindowSystem.HideAll<WindowBase>(exceptList, callback, forceAll, immediately);
 
 		}
 

@@ -756,7 +756,7 @@ namespace ME {
             System.GC.Collect();
             System.GC.WaitForPendingFinalizers();
 
-            UnityEngine.Debug.Log("Callbacks count: " + ME.CallbackTable.Count);
+            if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Callbacks count: " + ME.CallbackTable.Count);
 
         }
 

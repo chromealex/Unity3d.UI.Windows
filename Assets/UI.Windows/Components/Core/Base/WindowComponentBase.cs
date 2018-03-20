@@ -203,11 +203,18 @@ namespace UnityEngine.UI.Windows {
 			if (this.IsStateReadyToShow() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
 
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 
 			}
 
+			this.Show_INTERNAL(parameters);
+
+		}
+
+		private void Show_INTERNAL(AppearanceParameters parameters) {
+			
 			WindowSystem.GetHistoryTracker().Add(this, parameters, HistoryTrackerEventType.ShowManual);
 
 			this.manualShowHideControl = true;
@@ -239,10 +246,17 @@ namespace UnityEngine.UI.Windows {
 			if (this.IsStateReadyToHide() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
 
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 				
 			}
+
+			this.Hide_INTERNAL(parameters);
+
+		}
+
+		private void Hide_INTERNAL(AppearanceParameters parameters) {
 
 			WindowSystem.GetHistoryTracker().Add(this, parameters, HistoryTrackerEventType.HideManual);
 
@@ -305,6 +319,7 @@ namespace UnityEngine.UI.Windows {
 			
 			WindowSystem.GetHistoryTracker().Add(this, parameters, HistoryTrackerEventType.ShowBegin);
 
+			parameters = parameters.ReplaceResetAnimation(resetAnimation: true);
 			this.DoShowBegin_INTERNAL(parameters);
 
 		}
@@ -315,6 +330,7 @@ namespace UnityEngine.UI.Windows {
 				this.GetComponentState() == WindowObjectState.Initializing ||
 				this.GetComponentState() == WindowObjectState.Initialized) {
 
+				this.RefreshComponentState();
 				//parameters.Call();
 				return;
 
@@ -323,6 +339,7 @@ namespace UnityEngine.UI.Windows {
 			if (this.IsStateReadyToShow() == false &&
 				parameters.GetForced(defaultValue: false) == false) {
 
+				this.RefreshComponentState();
 				//parameters.Call();
 				return;
 
@@ -335,8 +352,9 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			WindowSystem.RunSafe(this.OnShowEnd);
-			WindowSystem.RunSafe(this.OnShowEnd, parameters);
+			this.RefreshComponentState();
+			//WindowSystem.RunSafe(this.OnShowEnd);
+			//WindowSystem.RunSafe(this.OnShowEnd, parameters);
 
 			//parameters.Call();
 
@@ -348,6 +366,7 @@ namespace UnityEngine.UI.Windows {
 				this.GetComponentState() == WindowObjectState.Initializing ||
 				this.GetComponentState() == WindowObjectState.Initialized) {
 
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 
@@ -356,6 +375,7 @@ namespace UnityEngine.UI.Windows {
 			if (this.IsStateReadyToShow() == false &&
 				parameters.GetForced(defaultValue: false) == false) {
 
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 
@@ -368,9 +388,10 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			WindowSystem.RunSafe(this.OnShowBegin);
-			WindowSystem.RunSafe(this.OnShowBegin, parameters);
+			//WindowSystem.RunSafe(this.OnShowBegin);
+			//WindowSystem.RunSafe(this.OnShowBegin, parameters);
 
+			this.RefreshComponentState();
 			parameters.Call();
 
 		}
@@ -420,6 +441,7 @@ namespace UnityEngine.UI.Windows {
 				this.GetComponentState() == WindowObjectState.Initializing ||
 				this.GetComponentState() == WindowObjectState.Initialized) {
 
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 
@@ -462,8 +484,8 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			WindowSystem.RunSafe(this.OnHideEnd);
-			WindowSystem.RunSafe(this.OnHideEnd, parameters);
+			//WindowSystem.RunSafe(this.OnHideEnd);
+			//WindowSystem.RunSafe(this.OnHideEnd, parameters);
 
 			//parameters.Call();
 
@@ -474,6 +496,7 @@ namespace UnityEngine.UI.Windows {
 			if (this.IsStateReadyToHide() == false &&
 				parameters.GetForced(defaultValue: false) == false) {
 
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 
@@ -486,9 +509,10 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			WindowSystem.RunSafe(this.OnHideBegin);
-			WindowSystem.RunSafe(this.OnHideBegin, parameters);
+			//WindowSystem.RunSafe(this.OnHideBegin);
+			//WindowSystem.RunSafe(this.OnHideBegin, parameters);
 
+			this.RefreshComponentState();
 			parameters.Call();
 
 		}
@@ -498,7 +522,8 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.IsStateReadyToShow() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
-				
+
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 				
@@ -631,7 +656,8 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.IsStateReadyToHide() == false &&
 			    parameters.GetForced(defaultValue: false) == false) {
-				
+
+				this.RefreshComponentState();
 				parameters.Call();
 				return;
 				
@@ -994,14 +1020,6 @@ namespace UnityEngine.UI.Windows {
 
 			base.OnValidateEditor();
 
-			//this.Update_EDITOR();
-
-		}
-
-		public override void OnValidate() {
-
-			base.OnValidate();
-
 			this.Update_EDITOR();
 
 		}
@@ -1014,7 +1032,13 @@ namespace UnityEngine.UI.Windows {
 		private void Update_EDITOR() {
 
 			this.animationInputParams = this.animationInputParams.Where((i) => i != null).ToList();
-			
+
+			if (Application.isPlaying == false) {
+
+				this.manualShowHideControl = false;
+
+			}
+
 			//this.canvas = this.GetComponent<CanvasGroup>();
 
 			//if (ME.EditorUtilities.IsPrefab(this.gameObject) == true) return;

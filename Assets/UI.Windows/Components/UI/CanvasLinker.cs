@@ -26,7 +26,8 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 			var window = this.windowObject.GetWindow();
 			if (window != null) {
-				
+
+				this.canvas.overrideSorting = true;
 				this.canvas.sortingOrder = window.GetSortingOrder() + this.orderDelta;
 
 			}
@@ -66,13 +67,13 @@ namespace UnityEngine.UI.Windows.Extensions {
 				if (window == null) {
 
 					#if UNITY_EDITOR
-					Debug.LogWarning("[ CanvasLinker ] WindowObject::GetWindow() is null", this);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("[ CanvasLinker ] WindowObject::GetWindow() is null", this);
 					#endif
 					return;
 
 				}
 
-				//Debug.Log("[ CanvasLinker ] Initialized", this);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("[ CanvasLinker ] Initialized", this);
 
 				this.canvas.overrideSorting = true;
 				this.canvas.sortingLayerName = window.GetSortingLayerName();

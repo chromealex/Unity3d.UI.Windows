@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 4f60eec1179184d5ca3a18bd735bcc83
-timeCreated: 1501067269
+timeCreated: 1501594060
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -59,7 +59,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
   - buildTarget: tvOS
-    maxTextureSize: 1024
+    maxTextureSize: 32
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -67,13 +67,37 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 1
   - buildTarget: Android
-    maxTextureSize: 128
+    maxTextureSize: 32
     textureFormat: 47
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 1
+  - buildTarget: Standalone
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: iPhone
+    maxTextureSize: 32
+    textureFormat: 3
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+  - buildTarget: WebGL
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites: []

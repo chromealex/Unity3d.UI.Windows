@@ -25,7 +25,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateReplaceRules") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Template Loading Error: Could not load template 'TemplateReplaceRules'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: Could not load template 'TemplateReplaceRules'");
 				
 				return text;
 
@@ -63,7 +63,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateContainerBaseClass") as TextAsset;
 			if (file == null) {
 
-				Debug.LogError("Template Loading Error: Could not load template 'TemplateContainerBaseClass'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: Could not load template 'TemplateContainerBaseClass'");
 
 				return null;
 			}
@@ -79,7 +79,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateBaseClass") as TextAsset;
 			if (file == null) {
 
-				Debug.LogError("Template Loading Error: Could not load template 'TemplateBaseClass'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: Could not load template 'TemplateBaseClass'");
 
 				return null;
 			}
@@ -96,7 +96,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateDerivedClass") as TextAsset;
 			if (file == null) {
 
-				Debug.LogError("Template Loading Error: Could not load template 'TemplateDerivedClass'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: Could not load template 'TemplateDerivedClass'");
 
 				return null;
 			}
@@ -112,7 +112,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Template Loading Error: Could not load template 'TemplateTransitionMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: Could not load template 'TemplateTransitionMethod'");
 				
 				return null;
 				
@@ -130,7 +130,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateTransitionTypedMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Template Loading Error: Could not load template 'TemplateTransitionTypedMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: Could not load template 'TemplateTransitionTypedMethod'");
 				
 				return null;
 				
@@ -156,7 +156,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			var file = UnityEngine.Resources.Load("UI.Windows/Templates/TemplateDefaultTransitionMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Template Loading Error: Could not load template 'TemplateDefaultTransitionMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: Could not load template 'TemplateDefaultTransitionMethod'");
 				
 				return null;
 			}

@@ -20,6 +20,7 @@ namespace UnityEngine.UI.Windows.Modules {
 				var workCamera = this.GetWindow().workCamera;
 				this.blurCamera.depth = workCamera.depth - WindowSystem.GetDepthStep() * 0.1f;
 				this.blur.enabled = true;
+				this.blurCamera.enabled = true;
 
 			}
 
@@ -30,8 +31,9 @@ namespace UnityEngine.UI.Windows.Modules {
 			base.OnHideEnd();
 
 			if (this.blurCamera != null) {
-				
-				this.blur.enabled = true;
+
+				this.blur.enabled = false;
+				this.blurCamera.enabled = false;
 
 			}
 

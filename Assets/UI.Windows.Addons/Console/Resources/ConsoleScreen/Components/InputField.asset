@@ -142,6 +142,7 @@ MonoBehaviour:
   m_CaretBlinkRate: 1.7
   m_CaretWidth: 1
   m_ReadOnly: 0
+  correctCaret: 0
 --- !u!114 &11456348
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -196,7 +197,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 0}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 1

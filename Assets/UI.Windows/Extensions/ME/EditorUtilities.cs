@@ -166,20 +166,20 @@ namespace ME {
 			return false;
 
 		}
-		
+
 		public static T CreatePrefab<T>() where T : MonoBehaviour {
 
 			var go = new GameObject();
 			var asset = go.AddComponent<T>();
 
-			string path = AssetDatabase.GetAssetPath( Selection.activeObject );
-			if ( path == "" ) {
+			string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+			if (path == "") {
 				path = "Assets";
-			} else if ( Path.GetExtension( path ) != "" ) {
-				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( Selection.activeObject ) ), "" );
-			}
+			} else if (Path.GetExtension(path) != "") {
+					path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+				}
 			
-			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath( path + "/New " + typeof( T ).ToString() + ".prefab" );
+			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/New " + typeof(T).ToString() + ".prefab");
 
 			PrefabUtility.CreatePrefab(assetPathAndName, go, ReplacePrefabOptions.ConnectToPrefab);
 
@@ -201,12 +201,12 @@ namespace ME {
 
 			var selectedObject = pathWithObject ?? Selection.activeObject;
 
-			string path = AssetDatabase.GetAssetPath( selectedObject );
-			if ( path == "" ) {
+			string path = AssetDatabase.GetAssetPath(selectedObject);
+			if (path == "") {
 				path = "Assets";
-			} else if ( Path.GetExtension( path ) != "" ) {
-				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( selectedObject ) ), "" );
-			}
+			} else if (Path.GetExtension(path) != "") {
+					path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(selectedObject)), "");
+				}
 
 			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(string.Format("{0}/{1}", path, (name != null ? name : "New " + typeof(T).ToString() + ".asset")));
 
@@ -242,10 +242,10 @@ namespace ME {
 			}
 
 			string path = filepath;
-			if ( path == "" ) {
+			if (path == "") {
 				path = "Assets";
-			} else if ( Path.GetExtension( path ) != "" ) {
-				path = path.Replace( Path.GetFileName( filepath ), "" );
+			} else if (Path.GetExtension(path) != "") {
+				path = path.Replace(Path.GetFileName(filepath), "");
 			}
 
 			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(string.Format("{0}/{1}", path, (name != null ? name : "New " + typeof(T).ToString() + ".asset")));
@@ -317,19 +317,19 @@ namespace ME {
 			return AssetDatabase.LoadAssetAtPath(assetPathAndName, typeof(T)) as T;
 			
 		}
-		
-		public static Object CreateAsset( System.Type type ) {
+
+		public static Object CreateAsset(System.Type type) {
 			
-			var asset = ScriptableObject.CreateInstance( type ) as Object;
+			var asset = ScriptableObject.CreateInstance(type) as Object;
 			
-			string path = AssetDatabase.GetAssetPath( Selection.activeObject );
-			if ( path == "" ) {
+			string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+			if (path == "") {
 				path = "Assets";
-			} else if ( Path.GetExtension( path ) != "" ) {
-				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( Selection.activeObject ) ), "" );
-			}
+			} else if (Path.GetExtension(path) != "") {
+					path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+				}
 			
-			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath( path + "/New " + type.ToString() + ".asset" );
+			string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/New " + type.ToString() + ".asset");
 
 			AssetDatabase.CreateAsset(asset, assetPathAndName);
 			AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(asset));
@@ -341,16 +341,16 @@ namespace ME {
 			return asset;
 			
 		}
-		
+
 		public static Object CreateAsset(System.Type type, string path, string filename) {
 			
 			var asset = ScriptableObject.CreateInstance(type) as Object;
 
-			if ( path == "" ) {
+			if (path == "") {
 				path = "Assets";
-			} else if ( Path.GetExtension( path ) != "" ) {
-				path = path.Replace( Path.GetFileName( AssetDatabase.GetAssetPath( Selection.activeObject ) ), "" );
-			}
+			} else if (Path.GetExtension(path) != "") {
+					path = path.Replace(Path.GetFileName(AssetDatabase.GetAssetPath(Selection.activeObject)), "");
+				}
 			
 			string assetPathAndName = path + "/" + filename + ".asset";
 
@@ -364,13 +364,19 @@ namespace ME {
 
 		public static T[] GetPrefabsOfType<T>(bool strongType = true, string directory = null, bool useCache = true, System.Func<T, bool> predicate = null) where T : Component {
 			
-			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory, useCache, (p) => { if (predicate != null && p is T) { return predicate(p as T); } else { return true; } }).Cast<T>().ToArray();
+			return ME.EditorUtilities.GetPrefabsOfTypeRaw<T>(strongType, directory, useCache, (p) => {
+				if (predicate != null && p is T) {
+					return predicate(p as T);
+				} else {
+					return true;
+				}
+			}).Cast<T>().ToArray();
 			
 		}
 
 		public static Component[] GetPrefabsOfTypeRaw<T>(bool strongType, string directory = null, bool useCache = true, System.Func<T, bool> predicate = null) where T : Component {
 
-			if (directory != null && System.IO.Directory.Exists(directory) == false) return new Component[0] {};
+			if (directory != null && System.IO.Directory.Exists(directory) == false) return new Component[0] { };
 
 			System.Func<T[]> action = () => {
 				
@@ -417,16 +423,22 @@ namespace ME {
 			return action();
 
 		}
-		
+
 		public static T[] GetAssetsOfType<T>(string directory = null, System.Func<T, bool> predicate = null, bool useCache = true) where T : ScriptableObject {
 
-			return ME.EditorUtilities.GetAssetsOfTypeRaw<T>(directory, (p) => { if (predicate != null && p is T) { return predicate(p as T); } else { return true; } }, useCache).Cast<T>().ToArray();
+			return ME.EditorUtilities.GetAssetsOfTypeRaw<T>(directory, (p) => {
+				if (predicate != null && p is T) {
+					return predicate(p as T);
+				} else {
+					return true;
+				}
+			}, useCache).Cast<T>().ToArray();
 
 		}
 
 		public static ScriptableObject[] GetAssetsOfTypeRaw<T>(string directory = null, System.Func<ScriptableObject, bool> predicate = null, bool useCache = true) where T : ScriptableObject {
 
-			if (directory != null && System.IO.Directory.Exists(directory) == false) return new ScriptableObject[0] {};
+			if (directory != null && System.IO.Directory.Exists(directory) == false) return new ScriptableObject[0] { };
 
 			System.Func<T[]> action = () => {
 
@@ -476,7 +488,7 @@ namespace ME {
 			return action();
 
 		}
-		
+
 		public static T[] GetObjectsOfType<T>(string filepath = null, string inFolder = null, System.Func<T, bool> predicate = null, bool useCache = true) where T : Object {
 			
 			System.Func<T[]> action = () => {
@@ -600,6 +612,7 @@ namespace ME {
 		}
 
 		private static int _controlId;
+
 		public static void BeginDraw() {
 
 			EditorUtilities._controlId = 0;

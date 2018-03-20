@@ -41,8 +41,8 @@ public class TweenerGlobal : MonoBehaviour {
 
     public static void Count() {
 
-        Debug.Log("~~~ TweenerGlobal.instance = " + TweenerGlobal.instance.Count);
-        Debug.Log("~~~ TweenerGlobal.gameTimeInstance = " + TweenerGlobal.gameTimeInstance.Count);
+        if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("~~~ TweenerGlobal.instance = " + TweenerGlobal.instance.Count);
+        if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("~~~ TweenerGlobal.gameTimeInstance = " + TweenerGlobal.gameTimeInstance.Count);
 
     }
 

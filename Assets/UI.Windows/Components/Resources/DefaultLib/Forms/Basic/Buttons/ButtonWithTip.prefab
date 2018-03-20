@@ -58,7 +58,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 0}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -147,24 +146,39 @@ MonoBehaviour:
     id: 0
     cacheVersion: 0
     streamingAssetsPathStandalone: 
+    streamingAssetsPathStandaloneWindows: 
+    streamingAssetsPathStandaloneLinux: 
+    streamingAssetsPathStandaloneOSX: 
     streamingAssetsPathIOS: 
     streamingAssetsPathAndroid: 
     streamingAssetsPathPS4: 
     streamingAssetsPathXBOXONE: 
+    streamingAssetsPathSwitch: 
     streamingAssetsPathCommon: 
     streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathStandaloneWindowsMovieAudio: 
+    streamingAssetsPathStandaloneLinuxMovieAudio: 
+    streamingAssetsPathStandaloneOSXMovieAudio: 
     streamingAssetsPathIOSMovieAudio: 
     streamingAssetsPathAndroidMovieAudio: 
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathSwitchMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
     streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathStandaloneWindowsIsMovie: 0
+    streamingAssetsPathStandaloneLinuxIsMovie: 0
+    streamingAssetsPathStandaloneOSXIsMovie: 0
     streamingAssetsPathIOSIsMovie: 0
     streamingAssetsPathAndroidIsMovie: 0
     streamingAssetsPathPS4IsMovie: 0
     streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathSwitchIsMovie: 0
     streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    directRef: {fileID: 0}
+    directRefTexture: {fileID: 0}
+    directRefSprite: {fileID: 0}
     controlType: 0
     tempObject: {fileID: 0}
   imageCrossFadeModule:

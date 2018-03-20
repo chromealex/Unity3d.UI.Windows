@@ -65,7 +65,6 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
-  m_StereoMirrorMode: 0
 --- !u!114 &11406856
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -251,24 +250,39 @@ MonoBehaviour:
         id: -2114129100
         cacheVersion: 0
         streamingAssetsPathStandalone: 
+        streamingAssetsPathStandaloneWindows: 
+        streamingAssetsPathStandaloneLinux: 
+        streamingAssetsPathStandaloneOSX: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathSwitch: 
         streamingAssetsPathCommon: 
         streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathStandaloneWindowsMovieAudio: 
+        streamingAssetsPathStandaloneLinuxMovieAudio: 
+        streamingAssetsPathStandaloneOSXMovieAudio: 
         streamingAssetsPathIOSMovieAudio: 
         streamingAssetsPathAndroidMovieAudio: 
         streamingAssetsPathPS4MovieAudio: 
         streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathSwitchMovieAudio: 
         streamingAssetsPathCommonMovieAudio: 
         streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathStandaloneWindowsIsMovie: 0
+        streamingAssetsPathStandaloneLinuxIsMovie: 0
+        streamingAssetsPathStandaloneOSXIsMovie: 0
         streamingAssetsPathIOSIsMovie: 0
         streamingAssetsPathAndroidIsMovie: 0
         streamingAssetsPathPS4IsMovie: 0
         streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathSwitchIsMovie: 0
         streamingAssetsPathCommonIsMovie: 0
         canBeUnloaded: 0
+        directRef: {fileID: 0}
+        directRefTexture: {fileID: 0}
+        directRefSprite: {fileID: 0}
         controlType: 0
         tempObject: {fileID: 11450648, guid: ac1895e43ebf4428b961faae98f5dc17, type: 2}
       components:
@@ -294,24 +308,39 @@ MonoBehaviour:
           id: -1311585706
           cacheVersion: 0
           streamingAssetsPathStandalone: 
+          streamingAssetsPathStandaloneWindows: 
+          streamingAssetsPathStandaloneLinux: 
+          streamingAssetsPathStandaloneOSX: 
           streamingAssetsPathIOS: 
           streamingAssetsPathAndroid: 
           streamingAssetsPathPS4: 
           streamingAssetsPathXBOXONE: 
+          streamingAssetsPathSwitch: 
           streamingAssetsPathCommon: 
           streamingAssetsPathStandaloneMovieAudio: 
+          streamingAssetsPathStandaloneWindowsMovieAudio: 
+          streamingAssetsPathStandaloneLinuxMovieAudio: 
+          streamingAssetsPathStandaloneOSXMovieAudio: 
           streamingAssetsPathIOSMovieAudio: 
           streamingAssetsPathAndroidMovieAudio: 
           streamingAssetsPathPS4MovieAudio: 
           streamingAssetsPathXBOXONEMovieAudio: 
+          streamingAssetsPathSwitchMovieAudio: 
           streamingAssetsPathCommonMovieAudio: 
           streamingAssetsPathStandaloneIsMovie: 0
+          streamingAssetsPathStandaloneWindowsIsMovie: 0
+          streamingAssetsPathStandaloneLinuxIsMovie: 0
+          streamingAssetsPathStandaloneOSXIsMovie: 0
           streamingAssetsPathIOSIsMovie: 0
           streamingAssetsPathAndroidIsMovie: 0
           streamingAssetsPathPS4IsMovie: 0
           streamingAssetsPathXBOXONEIsMovie: 0
+          streamingAssetsPathSwitchIsMovie: 0
           streamingAssetsPathCommonIsMovie: 0
           canBeUnloaded: 0
+          directRef: {fileID: 0}
+          directRefTexture: {fileID: 0}
+          directRefSprite: {fileID: 0}
           tempResource: {fileID: 11476878, guid: 5b08b3d5db8c1455f86b23370ad389d4,
             type: 2}
         componentNoResource: {fileID: 0}
@@ -345,24 +374,39 @@ MonoBehaviour:
         id: 0
         cacheVersion: 0
         streamingAssetsPathStandalone: 
+        streamingAssetsPathStandaloneWindows: 
+        streamingAssetsPathStandaloneLinux: 
+        streamingAssetsPathStandaloneOSX: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathSwitch: 
         streamingAssetsPathCommon: 
         streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathStandaloneWindowsMovieAudio: 
+        streamingAssetsPathStandaloneLinuxMovieAudio: 
+        streamingAssetsPathStandaloneOSXMovieAudio: 
         streamingAssetsPathIOSMovieAudio: 
         streamingAssetsPathAndroidMovieAudio: 
         streamingAssetsPathPS4MovieAudio: 
         streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathSwitchMovieAudio: 
         streamingAssetsPathCommonMovieAudio: 
         streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathStandaloneWindowsIsMovie: 0
+        streamingAssetsPathStandaloneLinuxIsMovie: 0
+        streamingAssetsPathStandaloneOSXIsMovie: 0
         streamingAssetsPathIOSIsMovie: 0
         streamingAssetsPathAndroidIsMovie: 0
         streamingAssetsPathPS4IsMovie: 0
         streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathSwitchIsMovie: 0
         streamingAssetsPathCommonIsMovie: 0
         canBeUnloaded: 0
+        directRef: {fileID: 0}
+        directRefTexture: {fileID: 0}
+        directRefSprite: {fileID: 0}
         controlType: 0
         tempObject: {fileID: 0}
       components: []
@@ -395,24 +439,39 @@ MonoBehaviour:
       id: -1607562268
       cacheVersion: 0
       streamingAssetsPathStandalone: 
+      streamingAssetsPathStandaloneWindows: 
+      streamingAssetsPathStandaloneLinux: 
+      streamingAssetsPathStandaloneOSX: 
       streamingAssetsPathIOS: 
       streamingAssetsPathAndroid: 
       streamingAssetsPathPS4: 
       streamingAssetsPathXBOXONE: 
+      streamingAssetsPathSwitch: 
       streamingAssetsPathCommon: 
       streamingAssetsPathStandaloneMovieAudio: 
+      streamingAssetsPathStandaloneWindowsMovieAudio: 
+      streamingAssetsPathStandaloneLinuxMovieAudio: 
+      streamingAssetsPathStandaloneOSXMovieAudio: 
       streamingAssetsPathIOSMovieAudio: 
       streamingAssetsPathAndroidMovieAudio: 
       streamingAssetsPathPS4MovieAudio: 
       streamingAssetsPathXBOXONEMovieAudio: 
+      streamingAssetsPathSwitchMovieAudio: 
       streamingAssetsPathCommonMovieAudio: 
       streamingAssetsPathStandaloneIsMovie: 0
+      streamingAssetsPathStandaloneWindowsIsMovie: 0
+      streamingAssetsPathStandaloneLinuxIsMovie: 0
+      streamingAssetsPathStandaloneOSXIsMovie: 0
       streamingAssetsPathIOSIsMovie: 0
       streamingAssetsPathAndroidIsMovie: 0
       streamingAssetsPathPS4IsMovie: 0
       streamingAssetsPathXBOXONEIsMovie: 0
+      streamingAssetsPathSwitchIsMovie: 0
       streamingAssetsPathCommonIsMovie: 0
       canBeUnloaded: 0
+      directRef: {fileID: 0}
+      directRefTexture: {fileID: 0}
+      directRefSprite: {fileID: 0}
       controlType: 0
       tempObject: {fileID: 11450648, guid: ac1895e43ebf4428b961faae98f5dc17, type: 2}
     components:
@@ -438,24 +497,39 @@ MonoBehaviour:
         id: -55984218
         cacheVersion: 0
         streamingAssetsPathStandalone: 
+        streamingAssetsPathStandaloneWindows: 
+        streamingAssetsPathStandaloneLinux: 
+        streamingAssetsPathStandaloneOSX: 
         streamingAssetsPathIOS: 
         streamingAssetsPathAndroid: 
         streamingAssetsPathPS4: 
         streamingAssetsPathXBOXONE: 
+        streamingAssetsPathSwitch: 
         streamingAssetsPathCommon: 
         streamingAssetsPathStandaloneMovieAudio: 
+        streamingAssetsPathStandaloneWindowsMovieAudio: 
+        streamingAssetsPathStandaloneLinuxMovieAudio: 
+        streamingAssetsPathStandaloneOSXMovieAudio: 
         streamingAssetsPathIOSMovieAudio: 
         streamingAssetsPathAndroidMovieAudio: 
         streamingAssetsPathPS4MovieAudio: 
         streamingAssetsPathXBOXONEMovieAudio: 
+        streamingAssetsPathSwitchMovieAudio: 
         streamingAssetsPathCommonMovieAudio: 
         streamingAssetsPathStandaloneIsMovie: 0
+        streamingAssetsPathStandaloneWindowsIsMovie: 0
+        streamingAssetsPathStandaloneLinuxIsMovie: 0
+        streamingAssetsPathStandaloneOSXIsMovie: 0
         streamingAssetsPathIOSIsMovie: 0
         streamingAssetsPathAndroidIsMovie: 0
         streamingAssetsPathPS4IsMovie: 0
         streamingAssetsPathXBOXONEIsMovie: 0
+        streamingAssetsPathSwitchIsMovie: 0
         streamingAssetsPathCommonIsMovie: 0
         canBeUnloaded: 0
+        directRef: {fileID: 0}
+        directRefTexture: {fileID: 0}
+        directRefSprite: {fileID: 0}
         tempResource: {fileID: 11476878, guid: 5b08b3d5db8c1455f86b23370ad389d4, type: 2}
       componentNoResource: {fileID: 0}
       sortingOrder: 0

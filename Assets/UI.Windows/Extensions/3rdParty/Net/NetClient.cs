@@ -48,7 +48,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
             timerConnecting.Elapsed += new System.Timers.ElapsedEventHandler(this.OnConnectTimeout);
             timerConnecting.Start();
 
-            Debug.Log("Connecting " + name + ": " + host + ":" + port);
+            if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Connecting " + name + ": " + host + ":" + port);
 			BeginConnectThread(host, port);
 //			BeginConnectNative(host, port);
 
@@ -60,7 +60,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 				client.BeginConnect(host, port, new AsyncCallback(this.DoСonnect), client);
 
 			} catch(Exception e) {
-                Debug.LogError(e);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(e);
                 //Stop and dispose timer
                 timerConnecting.Dispose();
                 timerConnecting = null;
@@ -77,7 +77,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 
         private void BeginConnectThread(string host, int port) {
             if (thread != null) {
-                Debug.LogError(name + " C: connect try, active: " + active + ", thread:" + thread != null + ")");
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(name + " C: connect try, active: " + active + ", thread:" + thread != null + ")");
                 CloseThread();
             }
 
@@ -95,7 +95,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 
                 stream = client.GetStream();
                 active = true;
-                Debug.Log("Connected " + name);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Connected " + name);
 
                 ExecOnMainThread(() => {
                     if (this.onResult != null) this.onResult.Invoke(true);
@@ -108,7 +108,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
                 timerConnecting = null;
 
                 ExecOnMainThread(() => {
-                    Debug.LogError(e);
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(e);
                     if (this.onResult != null) this.onResult.Invoke(false);
                     this.onResult = null;
                 });
@@ -123,7 +123,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		private void DoСonnect(IAsyncResult ar) {
             try {
                 if (client != ar.AsyncState) {
-                    Debug.LogWarning("Connecting " +  name + " changed. Double-connect call?");
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Connecting " +  name + " changed. Double-connect call?");
 					((TcpClient)ar.AsyncState).Close();
                     return;
                 }
@@ -136,7 +136,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
                 client.EndConnect(ar);
 				stream = client.GetStream();
 				active = true;
-                Debug.Log("Connected " + name);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Connected " + name);
 
                 ExecOnMainThread(() => {
                     if (this.onResult != null) this.onResult.Invoke(true);
@@ -145,7 +145,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 
             } catch(Exception e) {
                 ExecOnMainThread(() => {
-                    Debug.LogError(e);
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(e);
                     if (this.onResult != null) this.onResult.Invoke(false);
                     this.onResult = null;
                 });
@@ -158,7 +158,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
             timerConnecting = null;
 
             //The connection timed out
-            Debug.LogWarning("Сonnection " + name + " timed out!");
+            if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Сonnection " + name + " timed out!");
 
             //Close the socket
             Close();
@@ -185,7 +185,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
                 for (int n = 0; n < array.Length; n++) {
                     var tcp = array[n];
                     if (tcp.LocalEndPoint.Equals(localEP) && tcp.RemoteEndPoint.Equals(remoteEP))  {
-                        Debug.Log("Found: " + tcp.State);
+                        if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Found: " + tcp.State);
                         return tcp.State;
                     }
                 }
@@ -195,7 +195,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
         public bool IsConnectedDeep() {
 /*
-            Debug.Log("ConnectedDeep"
+            if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("ConnectedDeep"
             + " 1: " + IsConnectedDeep1()
             + " 2: " + IsConnectedDeep2()
             + " 3: " + IsConnectedDeep3()
@@ -237,7 +237,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 //                    Still Connected, but the Send would block
                     return true;
                 } else {
-                    Debug.LogError("Disconnected: error code " + e.NativeErrorCode);
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Disconnected: error code " + e.NativeErrorCode);
                     return false;
                 }
             } finally {
@@ -261,7 +261,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 //                    Still Connected, but the Send would block
                     return true;
                 } else {
-                    Debug.LogError("Disconnected: error code " + e.NativeErrorCode);
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Disconnected: error code " + e.NativeErrorCode);
                     return false;
                 }
             } finally {
@@ -278,7 +278,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		public void SendMsg(short type, byte[] msg) {
 
 			if (this.Connected() == false) {
-                Debug.LogError("SendMsg On Disconnected " + name);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("SendMsg On Disconnected " + name);
                 return;
             }
 
@@ -291,7 +291,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 	//			stream.Flush();
 
 			} catch (Exception e) {
-                Debug.LogError(e);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(e);
 			}
 
         }
@@ -305,7 +305,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
                 handler.EndWrite(ar);
 
             } catch (Exception e) {
-                Debug.LogError(e);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(e);
             }
         }
 
@@ -315,7 +315,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
             try {
                 ReceiveMsg2();
             } catch (Exception e) {
-                Debug.LogException(e);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogException(e);
             }
         }
 
@@ -334,7 +334,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
             }
             if (((++i & 0x1F) == 0) && !IsConnectedDeep()) {
                 active = false;
-                Debug.Log(name + " Deep Detected: closed");
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(name + " Deep Detected: closed");
                 return;
             }
             // Read the length of the message body
@@ -383,7 +383,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
         }
 
         public void Close() {
-            Debug.Log(name + " C: close, active: " + active + ", thread: " + (thread != null));
+            if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(name + " C: close, active: " + active + ", thread: " + (thread != null));
 
             if (thread != null) CloseThread();
 
@@ -405,7 +405,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		 */
 		public void Log() {
 			//var client = this.client;
-            //Debug.Log(name + " C: " + client.GetHashCode() + "(" + client.Connected + ")"
+            //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(name + " C: " + client.GetHashCode() + "(" + client.Connected + ")"
             //    + " S: " + stream.GetHashCode() + "(" + stream.CanRead + "/" + stream.CanWrite + ")"
             //    + " So: " + client.Client.GetHashCode() + "(" + client.Client.Connected + ")");
 		}
@@ -427,9 +427,9 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		}
 
 		protected override void Dispose(bool disposing) {
-//			Debug.Log(name + " TcpDisposed1");
+//			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(name + " TcpDisposed1");
 			base.Dispose(disposing);
-			Debug.Log(name + " TcpDisposed2");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(name + " TcpDisposed2");
 		}
 		private void initialize2() {
             if (Client != null) {
@@ -448,9 +448,9 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 		}
 
 		protected override void Dispose(bool disposing) {
-//			Debug.Log(name + " SoDisposed1");
+//			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(name + " SoDisposed1");
 			base.Dispose(disposing);
-			Debug.Log(name + " SoDisposed2: " + new StackTrace().ToString());
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(name + " SoDisposed2: " + new StackTrace().ToString());
 		}
 	}
 }

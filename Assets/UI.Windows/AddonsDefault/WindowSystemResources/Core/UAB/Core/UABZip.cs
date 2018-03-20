@@ -8,6 +8,20 @@ namespace ME.UAB {
 	[System.Serializable]
 	public static class Zipper {
 
+		public static string ZipToString(string str) {
+
+			var bytes = Encoding.UTF8.GetBytes(str);
+			return System.Convert.ToBase64String(Zipper.ZipBytes(bytes));
+
+		}
+
+		public static string UnzipToString(string str) {
+
+			var bytes = System.Convert.FromBase64String(str);
+			return Encoding.UTF8.GetString(Zipper.UnzipBytes(bytes));
+
+		}
+
 		public static byte[] ZipBytes(byte[] sBuffer) {
 			MemoryStream m_msBZip2 = null;
 			BZip2OutputStream m_osBZip2 = null;

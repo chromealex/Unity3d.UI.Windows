@@ -75,7 +75,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11488866}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -105,24 +104,39 @@ MonoBehaviour:
     id: -906190820
     cacheVersion: 0
     streamingAssetsPathStandalone: 
+    streamingAssetsPathStandaloneWindows: 
+    streamingAssetsPathStandaloneLinux: 
+    streamingAssetsPathStandaloneOSX: 
     streamingAssetsPathIOS: 
     streamingAssetsPathAndroid: 
     streamingAssetsPathPS4: 
     streamingAssetsPathXBOXONE: 
+    streamingAssetsPathSwitch: 
     streamingAssetsPathCommon: 
     streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathStandaloneWindowsMovieAudio: 
+    streamingAssetsPathStandaloneLinuxMovieAudio: 
+    streamingAssetsPathStandaloneOSXMovieAudio: 
     streamingAssetsPathIOSMovieAudio: 
     streamingAssetsPathAndroidMovieAudio: 
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathSwitchMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
     streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathStandaloneWindowsIsMovie: 0
+    streamingAssetsPathStandaloneLinuxIsMovie: 0
+    streamingAssetsPathStandaloneOSXIsMovie: 0
     streamingAssetsPathIOSIsMovie: 0
     streamingAssetsPathAndroidIsMovie: 0
     streamingAssetsPathPS4IsMovie: 0
     streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathSwitchIsMovie: 0
     streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    directRef: {fileID: 0}
+    directRefTexture: {fileID: 0}
+    directRefSprite: {fileID: 0}
     controlType: 0
     tempObject: {fileID: 11409546, guid: ceee67989766d46b39e3e72ccc364825, type: 2}
   prefabParameters: {fileID: 0}
@@ -150,7 +164,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11488866}
   subComponents: []
-  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
@@ -182,24 +195,39 @@ MonoBehaviour:
     id: 369686992
     cacheVersion: 0
     streamingAssetsPathStandalone: 
+    streamingAssetsPathStandaloneWindows: 
+    streamingAssetsPathStandaloneLinux: 
+    streamingAssetsPathStandaloneOSX: 
     streamingAssetsPathIOS: 
     streamingAssetsPathAndroid: 
     streamingAssetsPathPS4: 
     streamingAssetsPathXBOXONE: 
+    streamingAssetsPathSwitch: 
     streamingAssetsPathCommon: 
     streamingAssetsPathStandaloneMovieAudio: 
+    streamingAssetsPathStandaloneWindowsMovieAudio: 
+    streamingAssetsPathStandaloneLinuxMovieAudio: 
+    streamingAssetsPathStandaloneOSXMovieAudio: 
     streamingAssetsPathIOSMovieAudio: 
     streamingAssetsPathAndroidMovieAudio: 
     streamingAssetsPathPS4MovieAudio: 
     streamingAssetsPathXBOXONEMovieAudio: 
+    streamingAssetsPathSwitchMovieAudio: 
     streamingAssetsPathCommonMovieAudio: 
     streamingAssetsPathStandaloneIsMovie: 0
+    streamingAssetsPathStandaloneWindowsIsMovie: 0
+    streamingAssetsPathStandaloneLinuxIsMovie: 0
+    streamingAssetsPathStandaloneOSXIsMovie: 0
     streamingAssetsPathIOSIsMovie: 0
     streamingAssetsPathAndroidIsMovie: 0
     streamingAssetsPathPS4IsMovie: 0
     streamingAssetsPathXBOXONEIsMovie: 0
+    streamingAssetsPathSwitchIsMovie: 0
     streamingAssetsPathCommonIsMovie: 0
     canBeUnloaded: 0
+    directRef: {fileID: 0}
+    directRefTexture: {fileID: 0}
+    directRefSprite: {fileID: 0}
     controlType: 0
     tempObject: {fileID: 11473206, guid: 5451f45ea8b9e4f2d963a8f5498f5123, type: 2}
   prefabParameters: {fileID: 0}
@@ -331,7 +359,6 @@ MonoBehaviour:
   subComponents:
   - {fileID: 11416514}
   - {fileID: 11416516}
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0

@@ -1,5 +1,4 @@
-﻿using ME.UAB.Tests;
-
+﻿
 namespace ME.UAB.Editor {
 
 	public static class UABEditorMenu {

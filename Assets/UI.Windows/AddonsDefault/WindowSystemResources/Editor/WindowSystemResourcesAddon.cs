@@ -170,7 +170,7 @@ namespace UnityEditor.UI.Windows.Plugins.Resources {
 			}
 			catch (System.Exception ex)
 			{
-				Debug.LogError(ex.Message);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(ex.Message);
 			}
 			finally
 			{
@@ -191,7 +191,7 @@ namespace UnityEditor.UI.Windows.Plugins.Resources {
 
 			if (map == null)
 			{
-				Debug.LogError("Missing WindowSystemAssetBundlesMap!!!");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Missing WindowSystemAssetBundlesMap!!!");
 				return;
 			}
 

@@ -125,7 +125,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 				
 			} catch (UnityException e) {
 
-				Debug.LogException(e);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogException(e);
 
 			}
 			--UnityEditor.EditorGUI.indentLevel;
@@ -136,6 +136,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 		
 		public virtual void OnValidate() {
 
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == true) return;
 			#if UNITY_EDITOR
 			if (UnityEditor.EditorApplication.isUpdating == true) return;

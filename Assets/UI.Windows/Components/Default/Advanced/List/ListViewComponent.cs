@@ -109,57 +109,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override IListComponent ListMoveUp(int count = 1) {
-
-			var newValue = this.scrollY;
-			newValue -= (this.GetRowHeight(0) + this.GetRowSpacing()) * count;
-			if (newValue < 0f) newValue = 0f;
-
-			this.scrollY = newValue;
-
-			return this;
-
-		}
-
-		public override IListComponent ListMoveDown(int count = 1) {
-
-			var newValue = this.scrollY;
-			newValue += (this.GetRowHeight(0) + this.GetRowSpacing()) * count;
-			var maxHeight = this.scrollableHeight;
-			if (newValue >= maxHeight) newValue = maxHeight;
-
-			this.scrollY = newValue;
-
-			return this;
-
-		}
-
-		public override IListComponent ListMoveRight(int count = 1) {
-
-			var newValue = this.scrollX;
-			newValue -= (this.GetRowWidth(0) + this.GetRowSpacing()) * count;
-			//var maxWidth = this.scrollableWidth;
-			if (newValue < 0f) newValue = 0f;
-
-			this.scrollX = newValue;
-
-			return this;
-
-		}
-
-		public override IListComponent ListMoveLeft(int count = 1) {
-
-			var newValue = this.scrollX;
-			newValue += (this.GetRowWidth(0) + this.GetRowSpacing()) * count;
-			var maxWidth = this.scrollableWidth;
-			if (newValue >= maxWidth) newValue = maxWidth;
-
-			this.scrollX = newValue;
-
-			return this;
-
-		}
-
 		public override float GetRowWidth(int row) {
 
 			var index = row;
@@ -553,7 +502,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.scrollY = relativeScroll * scrollableHeight;
 			this.requiresRefresh = true;
 			this.RefreshVisibleRows();
-			//Debug.Log(this.scrollY.ToString(("0.00")));
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(this.scrollY.ToString(("0.00")));
 
 		}
 
@@ -898,7 +847,7 @@ namespace UnityEngine.UI.Windows.Components {
 			while (this.cleanCumulativeIndex < row) {
 
 				++this.cleanCumulativeIndex;
-				//Debug.Log("Cumulative index : " + this.cleanCumulativeIndex.ToString());
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Cumulative index : " + this.cleanCumulativeIndex.ToString());
 				this.cumulativeRowHeights[this.cleanCumulativeIndex] = this.rowHeights[this.cleanCumulativeIndex];
 				if (this.cleanCumulativeIndex > 0) {
 

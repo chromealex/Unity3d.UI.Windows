@@ -145,7 +145,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			} else {
 				
-				Debug.LogError("Template Loading Error: " + tplName);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: " + tplName);
 				
 			}
 			
@@ -210,7 +210,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			} else {
 				
-				Debug.LogError("Template Loading Error: " + tplName);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Template Loading Error: " + tplName);
 				
 			}
 			

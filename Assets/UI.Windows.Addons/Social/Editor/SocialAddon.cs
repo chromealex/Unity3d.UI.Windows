@@ -22,7 +22,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			var file = UnityEngine.Resources.Load("UI.Windows/Social/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Social Template Loading Error: Could not load template 'TemplateTransitionMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Social Template Loading Error: Could not load template 'TemplateTransitionMethod'");
 				
 				return string.Empty;
 
@@ -65,7 +65,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			if (Social.settings == null) {
 				
 				Social.settings = this.GetSettingsFile();
-				if (Social.settings == null) Social.settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(useCache: false).FirstOrDefault();
+				if (Social.settings == null) Social.settings = ME.EditorUtilities.GetAssetsOfType<SocialSettings>(useCache: true).FirstOrDefault();
 				
 			}
 

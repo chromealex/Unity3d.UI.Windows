@@ -28,7 +28,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public T Get<T>() where T : WindowComponent {
+		public T Get<T>() where T : IComponent {
 			
 			var linker = this.component as LinkerComponent;
 			if (linker != null) {
@@ -37,7 +37,13 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-			return this.component as T;
+			if ((this.component is T) == false) {
+
+				Debug.LogWarningFormat("LinkerComponentProxy: Cast will fail because of wrong type. Requested type: {0}, Source component: {1}, Source type: {2} ({3})", typeof(T), this.component, (linker == null ? null : linker.GetType()), linker);
+
+			}
+
+			return (T)(this.component as IComponent);
 
 		}
 

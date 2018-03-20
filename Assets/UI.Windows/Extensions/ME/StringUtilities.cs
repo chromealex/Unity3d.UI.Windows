@@ -154,13 +154,15 @@ namespace ME {
 		}
 		
 		public static string ToSentenceCase(this string str) {
-			
+
+			if (str == null) return string.Empty;
 			return Regex.Replace(str, "[a-z][A-Z]", m => m.Value[0] + " " + char.ToLower(m.Value[1]));
 			
 		}
 		
 		public static string ToPopupSentenceCase(this string str) {
 
+			if (str == null) return string.Empty;
 			var k = 0;
 			return Regex.Replace(str, "[a-z][A-Z]", m => {
 

@@ -34,7 +34,7 @@ namespace UnityEngine.UI {
 			if (this.foundtext && this.foundtext.resizeTextForBestFit) {
 
 				best_fit_adjustment = (float)this.foundtext.cachedTextGenerator.fontSizeUsedForBestFit / (this.foundtext.resizeTextMaxSize - 1); //max size seems to be exclusive 
-				//Debug.Log("best_fit_adjustment:"+best_fit_adjustment);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("best_fit_adjustment:"+best_fit_adjustment);
 			
 			}
 			

@@ -83,7 +83,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public virtual IHoverableComponent SetCallbackHover(System.Action<bool> onHover) {
 
-			this.onHover.AddListenerDistinct(onHover);
+			this.onHover.RemoveAllListeners();
+			this.onHover.AddListener(onHover);
 
 			return this;
 

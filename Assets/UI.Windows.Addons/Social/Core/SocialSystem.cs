@@ -120,7 +120,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Core {
 
 			} else {
 
-				Debug.LogWarningFormat("[SOCIAL] Module `{0}` not found. Skipped.", moduleType);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[SOCIAL] Module `{0}` not found. Skipped.", moduleType);
 
 			}
 

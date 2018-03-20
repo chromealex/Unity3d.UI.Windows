@@ -278,7 +278,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 		public List<AnalyticsServiceItem> items = new List<AnalyticsServiceItem>();
 
 		public override void AddService(ServiceItem item) {
-
+			
 			this.items.Add(item as AnalyticsServiceItem);
 
 		}

@@ -70,7 +70,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		#endif
 		[HideInInspector]
 		public string buildAuthKey;
-		[HideInInspector]
+		//[HideInInspector]
 		public AuthKeyPermissions authKeyPermissions = AuthKeyPermissions.None;
 
 		[Header("Compiler Plugin")]
@@ -288,7 +288,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 		}
 
 		public List<WindowItem> GetAllScreens(System.Func<Data.FlowWindow, bool> predicate = null, bool runtime = false) {
-			
+
 			var list = new List<WindowItem>();
 			foreach (var window in this.windowAssets) {
 
@@ -307,7 +307,7 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 				list.Add(screen);
 				
 			}
-			
+
 			return list;
 			
 		}
@@ -725,21 +725,32 @@ namespace UnityEngine.UI.Windows.Plugins.Flow {
 
 			if (window == null) return null;
 
-			return this.windowAssets.FirstOrDefault((w) => {
+			for (int i = 0; i < this.windowAssets.Count; ++i) {
 
+				var w = this.windowAssets[i];
 				if (w.GetScreen(runtime) != null) {
 
-					return w.GetScreen(runtime).Load<WindowBase>().SourceEquals(window);
+					if (w.GetScreen(runtime).Load<WindowBase>().SourceEquals(window) == true) {
+
+						return w;
+
+					}
 
 				}
 
-				return window.SourceEquals(null);
+				if (window.SourceEquals(null) == true) {
 
-			});
+					return w;
+
+				}
+
+			}
+
+			return null;
 
 		}
 
-		private Cache windowsCache = new Cache();
+		private UnityEngine.UI.Windows.Extensions.Cache windowsCache = new UnityEngine.UI.Windows.Extensions.Cache();
 		public Data.FlowWindow GetWindow(int id) {
 
 			if (id == 0) return null;

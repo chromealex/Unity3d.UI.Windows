@@ -27,18 +27,25 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 			System.Action<string> callback,
 			System.Action<string> callbackFail) {
 
+			if (Application.internetReachability == NetworkReachability.NotReachable) {
+
+				callbackFail.Invoke("No Connection");
+				yield break;
+
+			}
+
 			var url = string.Format("http://{0}{1}", host, func);
-			if (log == true) Debug.Log(logPrefix + url);
+			if (log == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(logPrefix + url);
 
 			var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
 
 			var postHeader = new Dictionary<string, string>();
 			postHeader.Add("Content-Type", "application/json; charset=utf-8");
 			postHeader.Add("Accept", "application/json, text/javascript, text/json, */*");
-			postHeader.Add("Content-Length", bytes.Length.ToString());
+			//postHeader.Add("Content-Length", bytes.Length.ToString());
 			foreach (var h in extraHeaders)
 				postHeader.Add(h.Key, h.Value);
-
+			
 			var www = new WWW(url,
 				bytes,
 				postHeader);
@@ -49,11 +56,11 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 
 			// check for errors
 			if (www.error != null) {
-				//Debug.LogError("WWW Error: " + www.error);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("WWW Error: " + www.error);
 				callbackFail(www.error);
 
 			} else {
-				//Debug.Log(System.Text.Encoding.UTF8.GetString(www.bytes));
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(System.Text.Encoding.UTF8.GetString(www.bytes));
 				callback(www.text);
 			}
 
@@ -65,8 +72,15 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 			System.Action<string> callback,
 			System.Action<string> callbackFail) {
 
+			if (Application.internetReachability == NetworkReachability.NotReachable) {
+
+				callbackFail.Invoke("No Connection");
+				yield break;
+
+			}
+
 			var url = string.Format("http://{0}{1}", host, func);
-			if (log == true) Debug.Log(logPrefix + url);
+			if (log == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(logPrefix + url);
 
 			var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
 
@@ -97,7 +111,7 @@ namespace UnityEngine.UI.Windows.Extensions.Net {
 				// check for errors
 			} catch (Exception e) {
 				var text = e.Message;
-				Debug.LogError("WWW Error: " + text);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("WWW Error: " + text);
 				callbackFail(text);
 			}
 		}

@@ -18,7 +18,7 @@ namespace UnityEditor.UI.Windows {
 
 			public Styles() {
 
-				this.skin = Resources.Load<GUISkin>("UI.Windows/Core/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
+				this.skin = UnityEngine.UI.Windows.WindowSystemResources.Load<GUISkin>("UI.Windows/Core/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
 				this.box1 = this.skin.FindStyle("StyledBox1");
 				this.box2 = this.skin.FindStyle("StyledBox2");
 				this.itemButton = new GUIStyle(this.skin.FindStyle("LayoutBox"));
@@ -276,7 +276,7 @@ namespace UnityEditor.UI.Windows {
 					if (GUILayout.Button(dir) == true) {
 
 						this.currentDirectory = string.Join("/", splitted, 0, level + 1).Split('/');
-						Debug.Log(string.Join("/", this.currentDirectory));
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Join("/", this.currentDirectory));
 
 					}
 

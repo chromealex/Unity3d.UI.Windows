@@ -32,7 +32,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 			public Styles() {
 
-				this.skin = UnityEngine.Resources.Load<GUISkin>("UI.Windows/DevicePreview/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"));
+				this.skin = UnityEngine.UI.Windows.WindowSystemResources.Load<GUISkin>("UI.Windows/DevicePreview/Styles/Skin" + (EditorGUIUtility.isProSkin == true ? "Dark" : "Light"));
 				if (this.skin != null) {
 
 					this.leftPanel = this.skin.FindStyle("LeftPanel");
@@ -358,7 +358,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 			var editor = DevicePreviewWindow.CreateInstance<DevicePreviewWindow>();
 			var title = "UIW Preview";
 			#if !UNITY_4
-			editor.titleContent = new GUIContent(title, UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
+			editor.titleContent = new GUIContent(title, UnityEngine.UI.Windows.WindowSystemResources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
 			#else
 			editor.title = title;
 			#endif
@@ -600,7 +600,7 @@ namespace UnityEditor.UI.Windows.Plugins.DevicePreview {
 
 									} else {
 
-										Debug.LogWarning("Class not found: " + type);
+										if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Class not found: " + type);
 
 									}
 

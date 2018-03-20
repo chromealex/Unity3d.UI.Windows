@@ -15,7 +15,7 @@ namespace UnityEditor.UI.Windows.Plugins.Services {
 			
 			var output = new List<IService>();
 
-			//Debug.Log("Get: " + @namespace);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Get: " + @namespace);
 			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 			foreach (var assembly in assemblies) {
 				
@@ -30,7 +30,8 @@ namespace UnityEditor.UI.Windows.Plugins.Services {
 
 					var instance = go.AddComponent(System.Type.GetType(string.Format("{0}.{1}, {2}", @namespace, element, assembly.FullName), throwOnError: false, ignoreCase: true)) as IService;
 					if (instance != null) output.Add(instance);
-					//Debug.Log(string.Format("{0}.{1}, {2}", @namespace, element, assembly.FullName));
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("{0}.{1}, {2}", @namespace, element, assembly.FullName));
+
 				}
 				
 			}
@@ -50,12 +51,37 @@ namespace UnityEditor.UI.Windows.Plugins.Services {
 		public abstract string GetNamespace();
 		public abstract string GetServiceName();
 
-		public void Init() {
+		public void Init<TService>() where TService : ServiceItem, new() {
 
 			//EditorApplication.delayCall += () => {
 
-				this.services = Services.GetList(this.GetNamespace());
-				
+			var target = this.target as ServiceSettings;
+			var items = target.GetItems();
+			this.services = Services.GetList(this.GetNamespace());
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("Services found: {0}, Current count: {1}", this.services.Count, items == null ? 0 : items.Count));
+			var count = this.services.Count;
+			if (items == null || count != items.Count) {
+
+				var newServices = new List<IService>();
+				for (int i = 0; i < count; ++i) {
+
+					if (target.HasService(this.services[i].GetServiceName()) == false) {
+
+						newServices.Add(this.services[i]);
+
+					}
+
+				}
+
+				for (int i = 0; i < newServices.Count; ++i) {
+
+					//target.AddService(newServices[i] as ServiceItem);
+					target.AddService<TService>(newServices[i]);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("ServiceSettings: New service added with the name `{0}`", newServices[i].GetServiceName()));
+
+				}
+
+			}
 				//this.Repaint();
 				
 			//};
@@ -76,34 +102,14 @@ namespace UnityEditor.UI.Windows.Plugins.Services {
 			if (count == 0) {
 
 				GUILayout.Label("No Services Found");
-				this.Init();
+				this.Init<TService>();
 				return;
 				
 			}
+
+			if (GUILayout.Button("Refresh") == true) this.Init<TService>();
 
 			var items = target.GetItems();
-			if (items == null || count != items.Count) {
-				
-				var newServices = new List<IService>();
-				for (int i = 0; i < this.services.Count; ++i) {
-					
-					if (target.HasService(this.services[i].GetServiceName()) == false) {
-						
-						newServices.Add(this.services[i]);
-						
-					}
-					
-				}
-				
-				for (int i = 0; i < newServices.Count; ++i) {
-					
-					target.AddService<TService>(newServices[i]);
-					
-				}
-
-				return;
-				
-			}
 			
 			GUILayout.Label("Services", EditorStyles.boldLabel);
 			if (items.Count == 0) {
@@ -118,7 +124,7 @@ namespace UnityEditor.UI.Windows.Plugins.Services {
 					GUILayout.BeginVertical(EditorStyles.helpBox);
 					{
 						
-						var newEnabled = EditorGUILayout.ToggleLeft(this.services[i].GetServiceName().ToSentenceCase().UppercaseWords(), item.enabled, EditorStyles.boldLabel);
+						var newEnabled = EditorGUILayout.ToggleLeft(item.serviceName.ToSentenceCase().UppercaseWords(), item.enabled, EditorStyles.boldLabel);
 						if (newEnabled != item.enabled) {
 							
 							item.enabled = newEnabled;
@@ -128,7 +134,8 @@ namespace UnityEditor.UI.Windows.Plugins.Services {
 						
 						if (item.enabled == true) {
 							
-							this.services[i].DrawInspectorGUI(target, item, this.onReset, FlowSystemEditorWindow.defaultSkin);
+                            var service = this.services.FirstOrDefault(x => x.GetServiceName() == item.serviceName);
+							if (service != null) service.DrawInspectorGUI(target, item, this.onReset, FlowSystemEditorWindow.defaultSkin);
 							
 						}
 						

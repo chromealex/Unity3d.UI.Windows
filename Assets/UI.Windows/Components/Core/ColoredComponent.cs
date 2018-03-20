@@ -6,7 +6,7 @@ namespace UnityEngine.UI.Windows.Components {
 	public class ColoredComponent : HoveredComponent {
 
 		[Header("Colored Sprites")]
-		public Image[] images;
+		public Graphic[] images;
 
 		private Color color = new Color(1f, 1f, 1f, 1f);
 		

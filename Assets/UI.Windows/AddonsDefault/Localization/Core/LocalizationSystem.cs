@@ -1,6 +1,3 @@
-//#if UNITY_TVOS
-//#define STORAGE_NOT_SUPPORTED
-//#endif
 using System;
 using UnityEngine;
 using System.Collections;
@@ -8,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine.UI.Windows.Plugins.Services;
 using System.Collections.Generic;
+using ME.FS.Core;
 using UnityEngine.UI.Windows.Utilities;
 using ME;
 
@@ -22,6 +20,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		//public const string NO_KEY_STRING = "~NO KEY: {0}~";
 		public const string NO_KEY_STRING = "{0}";
+		private const string PLAYER_PREFS_CACHE_KEY = "LocalizationSystem.Cache";
 
 		public override string GetServiceName() {
 			
@@ -37,8 +36,9 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		public const UnityEngine.SystemLanguage DEFAULT_EDITOR_LANGUAGE = UnityEngine.SystemLanguage.Russian;
 
-		private static Dictionary<UnityEngine.SystemLanguage, string[]> valuesByLanguage = new Dictionary<UnityEngine.SystemLanguage, string[]>();
+		private static Dictionary<int, string[]> valuesByLanguage = new Dictionary<int, string[]>();
 		private static string[] keys = new string[0];
+		private static int[] keyHashes = new int[0];
 		private static UnityEngine.SystemLanguage[] languages = new UnityEngine.SystemLanguage[0];
 
 		private static UnityEngine.SystemLanguage defaultLanguage;
@@ -194,6 +194,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		public static void SetLanguageIndex(int index) {
 			
 			LocalizationSystem.currentLanguage = LocalizationSystem.GetLanguagesList()[index];
+			Debug.Log(string.Format("LS::SetLanguageIndex: {0}", index));
 
 			WindowSystem.ForEachWindow((w) => {
 
@@ -206,6 +207,12 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		public static string[] GetKeys() {
 
 			return LocalizationSystem.keys;
+
+		}
+
+		public static int[] GetKeyHashes() {
+
+			return LocalizationSystem.keyHashes;
 
 		}
 
@@ -233,14 +240,16 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 			if (LocalizationSystem.IsReady() == true || forced == true) {
 
 				string[] values;
-				if (LocalizationSystem.valuesByLanguage.TryGetValue(language, out values) == true) {
+				if (string.IsNullOrEmpty(key) == false && LocalizationSystem.valuesByLanguage.TryGetValue((int)language, out values) == true) {
 
-					var keys = LocalizationSystem.GetKeys();
-					if (keys != null && key != null) {
-						
-						var index = System.Array.IndexOf(keys, key.ToLower());
+					var keyHash = ResourceBase.GetJavaHash(key.ToLower());
+					var keyHashes = LocalizationSystem.GetKeyHashes();
+					//Debug.Log("lang: " + language + ", keyHash: " + keyHash + " << " + key);
+					if (keyHashes != null) {
+
+						var index = System.Array.IndexOf(keyHashes, keyHash);
 						if (index >= 0 && index < values.Length) {
-							
+
 							return values[index];
 
 						}
@@ -317,7 +326,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		public static Sprite GetSprite(LocalizationKey key, params object[] parameters) {
 
-			var sprite = UnityEngine.Resources.Load<Sprite>(LocalizationSystem.GetSpritePath(key, parameters));
+			var sprite = UnityEngine.UI.Windows.WindowSystemResources.Load<Sprite>(LocalizationSystem.GetSpritePath(key, parameters));
 			return sprite as Sprite;
 
 		}
@@ -380,11 +389,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 		public static string GetCachePath() {
 
-			#if UNITY_TVOS
-			return LocalizationSystem.GetCachePath(Application.temporaryCachePath, forceDirectoryCreation: true);
-			#else
-			return LocalizationSystem.GetCachePath(Application.persistentDataPath, forceDirectoryCreation: true);
-			#endif
+			return LocalizationSystem.GetCachePath(FileSystem.instance.GetCachePath(), forceDirectoryCreation: true);
 
 		}
 
@@ -402,14 +407,15 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 		public static string GetCachePath(string storagePath, bool forceDirectoryCreation) {
 			
 			var dir = string.Format("{0}/UI.Windows/Cache/Services", storagePath);
+			#if UNITY_ANDROID && UNITY_EDITOR
+			dir = string.Format("file://{0}", dir);
+			#endif
 			var path = string.Format("{0}/{1}.uiws", dir, LocalizationSystem.GetName());
-			#if !STORAGE_NOT_SUPPORTED
-			if (forceDirectoryCreation == true && System.IO.Directory.Exists(dir) == false) {
+			if (FileSystem.instance.IsCacheSupported() == true && forceDirectoryCreation == true && System.IO.Directory.Exists(dir) == false) {
 
 				System.IO.Directory.CreateDirectory(dir);
 
 			}
-			#endif
 
 			return path;
 
@@ -427,38 +433,49 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				LocalizationSystem.cacheLoaded = true;
 
 				var path = LocalizationSystem.GetCachePath();
-				#if STORAGE_NOT_SUPPORTED
-				if (PlayerPrefs.HasKey(path) == false) return;
-				var text = PlayerPrefs.GetString(path, string.Empty);
-				#else
-				if (System.IO.File.Exists(path) == false) {
-					
-					path = LocalizationSystem.GetBuiltinCachePath();
-					
+				string text = null;
+				if (PlayerPrefs.HasKey(path) == true) {
+
+					text = PlayerPrefs.GetString(path, string.Empty);
+
+				} else {
+
+					if (System.IO.File.Exists(path) == false) {
+
+						path = LocalizationSystem.GetBuiltinCachePath();
+
+					}
+
+					text = System.IO.File.ReadAllText(path);
+
 				}
-				var text = System.IO.File.ReadAllText(path);
-				#endif
-				
+
 				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 
 			} else {
 			#endif
 				
-				#if UNITY_ANDROID
+				#if UNITY_ANDROID && !UNITY_EDITOR
 				Coroutines.Run(LocalizationSystem.LoadByWWW(LocalizationSystem.GetCachePath(), LocalizationSystem.GetBuiltinCachePath()));
 				#else
-				var path = LocalizationSystem.GetCachePath();
-				#if STORAGE_NOT_SUPPORTED
-				if (PlayerPrefs.HasKey(path) == false) return;
-				var text = PlayerPrefs.GetString(path, string.Empty);
-				#else
-				if (System.IO.File.Exists(path) == false) {
-					
-					path = LocalizationSystem.GetBuiltinCachePath();
-					
+				bool isCacheSupported = FileSystem.instance.IsCacheSupported();
+				string text = null;
+				if (isCacheSupported == false && PlayerPrefs.HasKey(LocalizationSystem.PLAYER_PREFS_CACHE_KEY) == true) {
+
+					text = ME.UAB.Zipper.UnzipToString(PlayerPrefs.GetString(LocalizationSystem.PLAYER_PREFS_CACHE_KEY, string.Empty));
+
+				} else {
+
+					var path = LocalizationSystem.GetCachePath();
+					if (isCacheSupported == false || System.IO.File.Exists(path) == false) {
+
+						path = LocalizationSystem.GetBuiltinCachePath();
+
+					}
+
+					text = System.IO.File.ReadAllText(path);
+
 				}
-				var text = System.IO.File.ReadAllText(path);
-				#endif
 
 				LocalizationSystem.TryToSaveCSV(text, loadCacheOnFail: false);
 				#endif
@@ -497,6 +514,11 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				#endif
 
 				var parsed = CSVParser.ReadCSV(data);
+				if (parsed.Count < 2) {
+
+					throw new UnityException("ReadCSV Failed");
+
+				}
 
 				var defaultLanguage = parsed[0][0];
 				LocalizationSystem.defaultLanguage = (UnityEngine.SystemLanguage)System.Enum.Parse(typeof(UnityEngine.SystemLanguage), defaultLanguage);
@@ -505,6 +527,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				#region KEYS
 				var keys = new List<string>();
+				var keyHashes = new List<int>();
 				for (int i = 0; i < parsed.Count; ++i) {
 
 					if (i == 0) continue;
@@ -513,12 +536,14 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 					if (string.IsNullOrEmpty(row[0].Trim()) == true) continue;
 
 					keys.Add(row[0].ToLower());
+					keyHashes.Add(ResourceBase.GetJavaHash(row[0].ToLower()));
 
 					++keysCount;
 
 				}
 
 				LocalizationSystem.keys = keys.ToArray();
+				LocalizationSystem.keyHashes = keyHashes.ToArray();
 				#endregion
 
 				var langCount = 0;
@@ -555,7 +580,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				#endregion
 
 				#region VALUES
-				var values = new Dictionary<UnityEngine.SystemLanguage, string[]>();
+				var values = new Dictionary<int, string[]>();
 				for (int j = 0; j < languages.Count; ++j) {
 
 					var lang = languages[j];
@@ -572,7 +597,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 					}
 
-					values.Add(lang, output.ToArray());
+					values.Add((int)lang, output.ToArray());
 
 				}
 
@@ -584,11 +609,11 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 					var val = LocalizationSystem.Get("Last", lang, forced: true);
 					if (val != "Last") {
 
-						Debug.Log("Last Key: " + keys.Last());
-						Debug.Log("Value: " + val);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Last Key: " + keys.Last());
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Value: " + val);
 						foreach (var key in keys) {
 
-							Debug.Log(key + " :: " + LocalizationSystem.Get(key, lang, forced: true));
+							if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(key + " :: " + LocalizationSystem.Get(key, lang, forced: true));
 
 						}
 
@@ -598,19 +623,29 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 				}
 
-				var path = LocalizationSystem.GetCachePath();
-				#if STORAGE_NOT_SUPPORTED
-				PlayerPrefs.SetString(path, data);
-				#else
-				System.IO.File.WriteAllText(path, data);
-				#endif
+				string path = "";
+				if (FileSystem.instance.IsCacheSupported() == true) {
+
+					path = LocalizationSystem.GetCachePath();
+					System.IO.File.WriteAllText(path, data);
+
+				} else {
+
+					PlayerPrefs.SetString(LocalizationSystem.PLAYER_PREFS_CACHE_KEY, ME.UAB.Zipper.ZipToString(data));
+
+				}
 
 				#if UNITY_EDITOR
 				path = LocalizationSystem.GetBuiltinCachePath();
 				System.IO.File.WriteAllText(path, data);
 				#endif
 
-				LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
+				if (LocalizationSystem.isReady == false) {
+
+					LocalizationSystem.currentLanguage = LocalizationSystem.defaultLanguage;
+					Debug.Log(string.Format("LocalizationSystem: Set default language `{0}`", LocalizationSystem.currentLanguage));
+
+				}
 
 				if (LocalizationSystem.instance == null || LocalizationSystem.instance.logEnabled == true) {
 					
@@ -628,7 +663,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 
 			} catch(System.Exception ex) {
 
-				Debug.LogError("LocalizationSystem parse failed");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("LocalizationSystem parse failed");
 
 				if (LocalizationSystem.instance == null || LocalizationSystem.instance.logEnabled == true) {
 					
@@ -644,6 +679,127 @@ namespace UnityEngine.UI.Windows.Plugins.Localization {
 				}
 
 			}
+
+		}
+
+		public static UnityEngine.SystemLanguage GetSteamLanguage(string lang) {
+
+			lang = lang.ToLower();
+
+			UnityEngine.SystemLanguage output = UnityEngine.SystemLanguage.English;
+			switch (lang) {
+
+				case "brazilian":
+					output = SystemLanguage.Portuguese;
+					break;
+
+				case "bulgarian":
+					output = SystemLanguage.Bulgarian;
+					break;
+
+				case "czech":
+					output = SystemLanguage.Czech;
+					break;
+
+				case "danish":
+					output = SystemLanguage.Danish;
+					break;
+
+				case "dutch":
+					output = SystemLanguage.Dutch;
+					break;
+
+				case "english":
+					output = SystemLanguage.English;
+					break;
+
+				case "finnish":
+					output = SystemLanguage.Finnish;
+					break;
+
+				case "french":
+					output = SystemLanguage.French;
+					break;
+
+				case "german":
+					output = SystemLanguage.German;
+					break;
+
+				case "greek":
+					output = SystemLanguage.Greek;
+					break;
+
+				case "hungarian":
+					output = SystemLanguage.Hungarian;
+					break;
+
+				case "italian":
+					output = SystemLanguage.Italian;
+					break;
+
+				case "japanese":
+					output = SystemLanguage.Japanese;
+					break;
+
+				case "koreana":
+					output = SystemLanguage.Korean;
+					break;
+
+				case "norwegian":
+					output = SystemLanguage.Norwegian;
+					break;
+
+				case "polish":
+					output = SystemLanguage.Polish;
+					break;
+
+				case "portuguese":
+					output = SystemLanguage.Portuguese;
+					break;
+
+				case "romanian":
+					output = SystemLanguage.Romanian;
+					break;
+
+				case "russian":
+					output = SystemLanguage.Russian;
+					break;
+
+				case "schinese":
+					output = SystemLanguage.ChineseSimplified;
+					break;
+
+				case "spanish":
+					output = SystemLanguage.Spanish;
+					break;
+
+				case "tchinese":
+					output = SystemLanguage.ChineseTraditional;
+					break;
+
+				case "swedish":
+					output = SystemLanguage.Swedish;
+					break;
+
+				case "thai":
+					output = SystemLanguage.Thai;
+					break;
+
+				case "turkish":
+					output = SystemLanguage.Turkish;
+					break;
+
+				case "ukrainian":
+					output = SystemLanguage.Ukrainian;
+					break;
+
+				case "arabic":
+					output = SystemLanguage.Arabic;
+					break;
+
+			}
+
+			return output;
 
 		}
 

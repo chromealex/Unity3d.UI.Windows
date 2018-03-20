@@ -253,7 +253,7 @@ namespace ME {
 
 		public void Release(T element) {
 			
-			if (this.stack.Count > 0 && ObjectPool<T>.ReferenceEquals(this.stack.Peek(), element) == true) Debug.LogError("Internal error. Trying to destroy object that is already released to pool.");
+			if (this.stack.Count > 0 && ObjectPool<T>.ReferenceEquals(this.stack.Peek(), element) == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Internal error. Trying to destroy object that is already released to pool.");
 
 			if (this.actionOnRelease != null) this.actionOnRelease.Invoke(element);
 			this.stack.Push(element);
@@ -275,6 +275,14 @@ namespace ME {
 			}
 			return hash;
 			
+		}
+
+		public static long GetHash(int v1, int v2) {
+
+			var c = (long)v2;
+			long key = ((long)v1 << 32 | c);
+			return key;
+
 		}
 
 		public static string FormatParameter(System.Type type) {

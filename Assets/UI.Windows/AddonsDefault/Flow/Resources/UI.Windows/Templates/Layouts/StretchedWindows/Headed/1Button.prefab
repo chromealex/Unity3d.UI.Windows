@@ -283,6 +283,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11464936
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -304,7 +305,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11493880}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -380,7 +380,6 @@ MonoBehaviour:
   rootComponent: {fileID: 11493884}
   subComponents:
   - {fileID: 11493880}
-  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
@@ -432,6 +431,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11493856
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -450,6 +450,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11493858
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -493,7 +494,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11493862}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -547,7 +547,6 @@ MonoBehaviour:
   rootComponent: {fileID: 11493880}
   subComponents:
   - {fileID: 11493860}
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -632,6 +631,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11493872
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -669,7 +669,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11493880}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -725,7 +724,6 @@ MonoBehaviour:
   - {fileID: 11493878}
   - {fileID: 11464936}
   - {fileID: 11493862}
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -812,7 +810,6 @@ MonoBehaviour:
   rootComponent: {fileID: 0}
   subComponents:
   - {fileID: 11469404}
-  currentState: 0
   canvasScaler: {fileID: 11442514}
   root: {fileID: 11493882}
   elements:
@@ -849,6 +846,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11493888
 MonoBehaviour:
   m_ObjectHideFlags: 1

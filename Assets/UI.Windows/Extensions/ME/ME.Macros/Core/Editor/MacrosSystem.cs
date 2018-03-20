@@ -52,14 +52,14 @@ namespace ME.Macros {
 				string text;
 				if (MacrosSystem.cacheMacros.TryGetValue(macrosName, out text) == false) {
 
-					Debug.LogWarningFormat("[MACROS] Macros `{0}` doesn't exists in file `{1}`. Skipped.", macrosName, path);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[MACROS] Macros `{0}` doesn't exists in file `{1}`. Skipped.", macrosName, path);
 
 				} else {
 
 					var newText = oldText.RefreshMacros(macrosName, text);
 					if (newText != oldText) {
 
-						//Debug.Log("UPD:" + newText + " => " + oldText);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("UPD:" + newText + " => " + oldText);
 						updated = true;
 						oldText = newText;
 
@@ -73,7 +73,7 @@ namespace ME.Macros {
 
 				File.WriteAllText(path, oldText);
 				// Updated
-				Debug.Log("[MACROS] Updated: " + path);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("[MACROS] Updated: " + path);
 
 			}
 
@@ -117,11 +117,11 @@ namespace ME.Macros {
 				var macrosName = keyValue.Key;
 				var macrosText = keyValue.Value;
 
-				//Debug.Log("Macros: " + macrosName + " :: " + macrosText);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Macros: " + macrosName + " :: " + macrosText);
 
 				if (MacrosSystem.cacheMacros.ContainsKey(macrosName) == true) {
 
-					Debug.LogWarningFormat("[MACROS] Duplicate macros with name `{0}` ({1}). Skipped.", macrosName, path);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[MACROS] Duplicate macros with name `{0}` ({1}). Skipped.", macrosName, path);
 
 				} else {
 

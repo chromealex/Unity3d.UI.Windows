@@ -126,7 +126,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public override void Validate(Object item) {
-
+			
 			if (item == null) {
 
 				this.ResetToDefault();

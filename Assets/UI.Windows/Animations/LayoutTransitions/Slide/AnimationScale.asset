@@ -32,6 +32,7 @@ MonoBehaviour:
       scale: {x: 0.7, y: 0.7}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     inState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -39,6 +40,7 @@ MonoBehaviour:
       scale: {x: 1, y: 1}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}
     outState:
       anchorMin: {x: 0, y: 0}
       anchorMax: {x: 0, y: 0}
@@ -46,3 +48,4 @@ MonoBehaviour:
       scale: {x: 0.7, y: 0.7}
       rotation: {x: 0, y: 0, z: 0}
       size: {x: 0, y: 0}
+      pivot: {x: 0, y: 0}

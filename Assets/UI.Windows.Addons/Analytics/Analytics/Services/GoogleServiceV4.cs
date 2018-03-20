@@ -141,11 +141,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 
 		#if UNITY_EDITOR
-		private bool foundType = false;
+		private static bool foundType = false;
 		protected override void OnInspectorGUI(UnityEngine.UI.Windows.Plugins.Heatmap.Core.HeatmapSettings settings, AnalyticsServiceItem item, System.Action onReset, GUISkin skin) {
 
 			var found = false;
-			if (this.foundType == false) {
+			if (foundType == false) {
 
 				var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
 				foreach (var ass in assemblies) {
@@ -154,7 +154,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 					if (type != null) {
 						
 						found = true;
-						this.foundType = true;
+						foundType = true;
 						break;
 
 					}
@@ -163,7 +163,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			} else {
 
-				found = this.foundType;
+				found = foundType;
 
 			}
 

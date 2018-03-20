@@ -9,7 +9,7 @@ namespace ME {
 
 		/*public override void ModifyMesh(Mesh mesh) {
 			
-			Debug.Log("MOD");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("MOD");
 
 			if (this.IsActive() == false) {
 

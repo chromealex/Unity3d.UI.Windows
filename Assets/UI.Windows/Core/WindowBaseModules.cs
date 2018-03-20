@@ -114,7 +114,7 @@ namespace UnityEngine.UI.Windows {
 			public void DoWindowActive() {
 
 				if (this.instance != null) {
-
+					
 					if (this.instanceModule.IsInstantiate() == false) this.instanceModule.Setup(this.windowContext);
 					this.instance.DoWindowActive();
 
@@ -287,7 +287,7 @@ namespace UnityEngine.UI.Windows {
 
 				var element = this.elements[i];
 				if (element.IsSupported() == true) {
-
+					
 					element.Create(window, modulesRoot);
 					if (window.GetActiveState() == ActiveState.Active) {
 
@@ -522,7 +522,7 @@ namespace UnityEngine.UI.Windows {
 							} else {
 								
 								#if UNITY_EDITOR || DEBUGBUILD
-								Debug.LogWarning("Previous HistoryItem is null. Make sure your history was not cleared.");
+								if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Previous HistoryItem is null. Make sure your history was not cleared.");
 								#endif
 								
 							}
@@ -1099,6 +1099,8 @@ namespace UnityEngine.UI.Windows {
 			public Vector2 aspectFrom;
 			[ReadOnly("aspect", state: false)]
 			public Vector2 aspectTo;
+			[ReadOnly("aspect", state: false)]
+			public bool aspectNot;
 
 			public bool IsValid() {
 
@@ -1127,8 +1129,9 @@ namespace UnityEngine.UI.Windows {
 					var checkTo = this.aspectFrom.x / this.aspectFrom.y;
 					var checkFrom = this.aspectTo.x / this.aspectTo.y;
 
-					//Debug.LogError("---------- CHECK: " + aspectSize + " :: " + Screen.width + " :: " + Screen.height + " // " + checkFrom + " // " + checkTo);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("---------- CHECK: " + aspectSize + " :: " + Screen.width + " :: " + Screen.height + " // " + checkFrom + " // " + checkTo);
 					result = ((aspectSize >= checkFrom - delta) && (aspectSize <= checkTo + delta));
+					if (this.aspectNot == true) result = !result;
 
 				}
 

@@ -136,7 +136,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			//CustomGUI.Splitter(new Color(0.7f, 0.7f, 0.7f, 0.2f));
 
 			var key = "UI.Windows.Addons." + caption + ":foldout";
-			var show = EditorPrefs.GetBool(key, true);
+			var show = EditorPrefs.GetBool(key, false);
 
 			GUILayout.BeginHorizontal();
 			{
@@ -155,7 +155,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				var newShow = GUILayout.Toggle(show, caption.ToSentenceCase().UppercaseWords(), show == true ? styleSelected : style);
 				var rect = GUILayoutUtility.GetLastRect();
 				if (GUI.enabled == true) EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
-				if (rect.Contains(Event.current.mousePosition) == true) FlowSystemEditorWindow.GetWindow<FlowSystemEditorWindow>().Repaint();
+				//if (rect.Contains(Event.current.mousePosition) == true) FlowSystemEditorWindow.GetWindow<FlowSystemEditorWindow>().Repaint();
 				if (newShow != show) {
 					
 					show = newShow;
@@ -254,7 +254,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		public static FlowData FindProjectForPath(string root, string path) {
 
 			var topPath = path.Split('/')[0];
-			var datas = ME.EditorUtilities.GetAssetsOfType<FlowData>(root + "/" + topPath, useCache: false);
+			var datas = ME.EditorUtilities.GetAssetsOfType<FlowData>(root + "/" + topPath, useCache: true);
 
 			if (datas.Length > 0) return datas[0];
 
@@ -330,7 +330,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 			var flowAddons = CoreUtilities.GetAddons<FlowAddon>((name, item) => item.name = name);
 			if (flowAddons.Count == 0) {
 
-				GUILayout.Label("No Modules Have Been Installed.");
+				GUILayout.Label("No Modules Has Been Installed.");
 
 			} else {
 

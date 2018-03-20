@@ -54,17 +54,17 @@ namespace ME.UAB {
 				.OrderBy(x => x.Name)
 				.ToArray();
 
-			/*Debug.Log(fieldsSource.Length + " :: " + fieldsTarget.Length + " :: " + typeof(T2));
+			/*if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(fieldsSource.Length + " :: " + fieldsTarget.Length + " :: " + typeof(T2));
 
 			for (int i = 0; i < fieldsSource.Length; ++i) {
 
-				Debug.Log("S: " + fieldsSource[i].Name);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("S: " + fieldsSource[i].Name);
 
 			}
 
 			for (int i = 0; i < fieldsTarget.Length; ++i) {
 
-				Debug.Log("T: " + fieldsTarget[i].Name);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("T: " + fieldsTarget[i].Name);
 
 			}*/
 

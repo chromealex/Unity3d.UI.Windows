@@ -183,7 +183,22 @@ namespace UnityEngine.UI.Windows.Extensions {
 
 		public void MoveTo(Vector2 position) {
 
-			this.content.anchoredPosition = position;
+			var offset = (this.viewRect != null ? this.viewRect.sizeDelta : Vector2.zero) * 0.5f;
+			var target = position - offset;
+
+			if (this.vertical == false) {
+
+				target.y = 0f;
+
+			}
+
+			if (this.horizontal == false) {
+
+				target.x = 0f;
+
+			}
+
+			this.content.anchoredPosition = target;
 
 		}
 
@@ -348,6 +363,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == true) return;
 			#if UNITY_EDITOR
 			if (UnityEditor.EditorApplication.isUpdating == true) return;

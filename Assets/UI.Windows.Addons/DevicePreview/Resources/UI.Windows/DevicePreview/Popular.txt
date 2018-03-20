@@ -28,6 +28,7 @@ Apple, iPhone 5/5S, 1136x640, 4, Apple.Iphone5
 Apple, iPhone 5C, 1136x640, 4, Apple.Iphone5C
 Apple, iPhone 6/6S, 1334x750, 4.7, Apple.Iphone6
 Apple, iPhone 6/6S Plus, 1920x1080, 5.5, Apple.Iphone6plus
+Apple, iPhone X, 2436x1125, 5.8, Apple.IphoneX
 Acer, Iconia Tab, 1280x800, 10.1
 Amazon, Kindle Fire, 1024x600, 7
 Amazon, Kindle Fire 2, 1024x600, 7

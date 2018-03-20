@@ -31,6 +31,8 @@ public class FlowDataPopupAttributeDrawer : PropertyDrawer {
 	
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
 
+		if (EditorApplication.isUpdating == true || EditorApplication.isCompiling == true) return;
+
 		var files = ME.EditorUtilities.GetAssetsOfType<FlowData>();
 		if (files != null && files.Length > 0) {
 			

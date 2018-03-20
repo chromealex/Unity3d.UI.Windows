@@ -56,7 +56,8 @@ namespace UnityEngine.UI.Windows.Audio {
 		#if UNITY_EDITOR
 		[Header("Source")]
 		//[HideInInspector]
-		[ME.UAB.BundleIgnore][FlowDataPopup]
+		[ME.UAB.BundleIgnore]
+		//[FlowDataPopup]
 		public FlowData flowData;
 		#endif
 

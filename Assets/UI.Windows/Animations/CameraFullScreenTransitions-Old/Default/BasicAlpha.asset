@@ -16,7 +16,12 @@ MonoBehaviour:
     outDelay: 0
     inDuration: 1
     outDuration: 1
+    inEase: 0
+    outEase: 0
     material: {fileID: 2100000, guid: c89adb8b4dc544c51bd14beb25714c2c, type: 2}
+    materialStrengthName: 
+    materialLerpA: 0
+    materialLerpB: 0
     resetState:
       to: 1
     inState:

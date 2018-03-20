@@ -122,12 +122,17 @@ namespace UnityEngine.UI.Windows {
 		[Header("Start Settings")]
 		public bool showRootOnStart = true;
 
+		[Header("Editor Properties")]
+		public bool refreshAllScreenEditorOnly = false;
+
 		private FlowData currentFlow;
 
 		protected override void Init() {
 			
 			#region FLOW DEFAULT
+
 			{
+				
 				var customDefaults = false;
 				List<WindowItem> defaults = new List<WindowItem>();
 				FlowData flow = null;
@@ -158,7 +163,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (flow == null) {
 
-					Debug.LogErrorFormat("Flow data was not found for current platform: {0}.", Application.platform);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogErrorFormat("Flow data was not found for current platform: {0}.", Application.platform);
 					return;
 
 				}
@@ -166,12 +171,12 @@ namespace UnityEngine.UI.Windows {
 				this.currentFlow = flow;
 
                 #if UNITY_EDITOR
-                flow.RefreshAllScreens();
+				if (this.refreshAllScreenEditorOnly == true) flow.RefreshAllScreens();
                 #endif
 
                 FlowSystem.SetData(flow);
 				Audio.Manager.InitAndAdd(flow.audio);
-                
+
 				if (customDefaults == false) {
 
 					this.defaults.AddRange(flow.GetDefaultScreens(runtime: true));
@@ -183,13 +188,13 @@ namespace UnityEngine.UI.Windows {
 				}
 
 				this.windows.AddRange(flow.GetAllScreens(runtime: true));
-
 				this.rootScreen = flow.GetRootScreen(runtime: true);
 
 			}
 			#endregion
 
 			#region FLOW ADDITIONAL
+
 			{
 
 				for (int i = 0; i < this.flowAdditive.Length; ++i) {
@@ -201,7 +206,7 @@ namespace UnityEngine.UI.Windows {
 					var loadType = item.loadType;
 
                     #if UNITY_EDITOR
-                    additionalFlow.RefreshAllScreens();
+					if (this.refreshAllScreenEditorOnly == true) additionalFlow.RefreshAllScreens();
                     #endif
 
                     var screens = additionalFlow.GetAllScreens((w) => ((loadType & LoadType.Function) != 0 && (w.IsFunction() == true || w.GetFunctionContainer() != null)) || ((loadType & LoadType.Window) != 0 && w.IsFunction() == false), runtime: true);
@@ -215,6 +220,19 @@ namespace UnityEngine.UI.Windows {
 			#endregion
 
 			base.Init();
+
+		}
+
+		protected override void InitLate() {
+
+			base.InitLate();
+
+			if (this.showRootOnStart == true) {
+
+				var root = this.currentFlow.GetRootScreen(runtime: true);
+				if (root != null) WindowSystem.Show(root);
+
+			}
 
 		}
 
@@ -232,23 +250,6 @@ namespace UnityEngine.UI.Windows {
 
 			return flow;
 
-		}
-
-		public void Start() {
-			
-			this.OnStart();
-
-		}
-		
-		public void OnStart() {
-
-			if (this.showRootOnStart == true) {
-
-				var root = this.currentFlow.GetRootScreen(runtime: true);
-				if (root != null) WindowSystem.Show(root);
-
-			}
-			
 		}
 
 		public static T DoFlow<T>(IFunctionIteration screen, int from, int to, bool hide, System.Action<T> onParametersPassCall, System.Action<T> onInstance = null, bool async = false) where T : WindowBase {
@@ -374,6 +375,7 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR
 		public override void OnValidate() {
 
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == true) return;
 			if (UnityEditor.EditorApplication.isUpdating == true) return;
 			
@@ -408,7 +410,7 @@ namespace UnityEngine.UI.Windows {
 			WindowSystemFlow instance = Object.FindObjectOfType<WindowSystemFlow>();
 			if (instance == null) {
 
-				Debug.LogWarning("`WindowSystemFlow` was not found on the scene.");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("`WindowSystemFlow` was not found on the scene.");
 				return;
 
 			}
@@ -438,17 +440,17 @@ namespace UnityEngine.UI.Windows {
 
 					flow.Setup();
 					flow.RefreshAllScreens();
-					Debug.Log("Done.");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Done.");
 
 				} else {
 
-					Debug.LogWarning("`WindowSystemFlow` FlowData was not set.");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("`WindowSystemFlow` FlowData was not set.");
 
 				}
 
 			} else {
 
-				Debug.LogWarning("`WindowSystemFlow` was not found on the scene.");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("`WindowSystemFlow` was not found on the scene.");
 
 			}
 

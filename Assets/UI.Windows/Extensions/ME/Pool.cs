@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI.Windows;
 
 namespace MW2.Extensions {
 
@@ -144,7 +145,7 @@ namespace MW2.Extensions {
 				
 				Pool.objectLookup.Add(prefab, new List<IPoolItem>());
 				Pool.objectLookupCounters.Add(prefab, 0);
-				Debug.LogWarning("ADD POOL[" + capacity + "]: " + prefab);
+				if (WindowSystemLogger.IsLogEnabled() == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("ADD POOL[" + capacity + "]: " + prefab);
 
 				var preAllocated = new List<IPoolItem>();
 				for (int i = 0; i < capacity; ++i) {

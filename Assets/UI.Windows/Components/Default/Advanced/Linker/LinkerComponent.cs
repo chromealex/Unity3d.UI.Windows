@@ -95,6 +95,18 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public bool Is<T>() where T : IComponent {
+
+			if (this.instance == null) {
+
+				this.InitInstance();
+
+			}
+
+			return (this.instance as IComponent) is T;
+
+		}
+
 		public T Get<T>(ref T instance) where T : IComponent {
 			
 			instance = this.Get<T>();
@@ -198,7 +210,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 						}, () => {
 
-							Debug.LogError(string.Format("[LinkerComponent] Failed to load prefab at path `{0}`", this.prefabResource.assetPath), this);
+							if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(string.Format("[LinkerComponent] Failed to load prefab at path `{0}`", this.prefabResource.assetPath), this);
 							if (callback != null) callback.Invoke(null);
 
 						}, this.prefabResource.async || async);
@@ -251,9 +263,9 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			if (this.editorPreload == false) {
 					

@@ -235,6 +235,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
+		public override UnityEngine.UI.ScrollRect NavigationScrollRect() {
+
+			return null;
+
+		}
+
 		public override bool IsNavigationPreventChildEvents(NavigationSide side) {
 			/*
 			if (this.axis == Axis.Horizontal) {
@@ -253,7 +259,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override bool IsNavigationControlledSide(NavigationSide side) {
+		public override bool IsNavigationControlSide(NavigationSide side) {
 
 			if (this.axis == Axis.Horizontal) {
 
@@ -277,7 +283,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.axis == Axis.Vertical) {
 
-				this.MovePrev();
+				this.MoveNext();
 
 			}
 
@@ -289,7 +295,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.axis == Axis.Vertical) {
 
-				this.MoveNext();
+				this.MovePrev();
 
 			}
 
@@ -317,10 +323,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 			}
 
-		}
-
-		public override void OnNavigate(WindowComponentNavigation source, NavigationSide side) {
-			
 		}
 
 		public override void Clear() {
@@ -558,7 +560,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
 
-					if (obj.localScale != Vector3.one) {
+					if ((obj.localScale - Vector3.one).sqrMagnitude > 0.01f) {
 
 						obj.localScale = Vector3.one;
 						(component as IWindowEventsController).DoWindowActive();
@@ -577,7 +579,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				} else if (this.switchBehaviour == SwitchBehaviour.ScaleContent) {
 
-					if (obj.localScale != Vector3.zero) {
+					if ((obj.localScale - Vector3.zero).sqrMagnitude > 0.01f) {
 						
 						var canvas = obj.GetComponent<Canvas>();
 						if (canvas != null) canvas.enabled = false;

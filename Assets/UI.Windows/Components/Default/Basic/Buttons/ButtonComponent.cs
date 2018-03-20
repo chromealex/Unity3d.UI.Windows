@@ -314,7 +314,7 @@ namespace UnityEngine.UI.Windows.Components {
 	 */
 	{
 					
-					if (this.imageResourceWait == true && this.imageResource.IsValid() == true) {
+					if (this.imageResourceWait == true && this.imageResource.IsLoadable() == true) {
 						
 						WindowSystemResources.LoadAuto(this, onDataLoaded: () => {
 	
@@ -831,10 +831,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.GetWindow() != null &&
 				this.GetWindow().GetState() != WindowObjectState.Shown &&
-			    this.GetWindow().GetState() != WindowObjectState.Showing) {
+			    this.GetWindow().GetState() != WindowObjectState.Showing &&
+				this.GetWindow().GetActiveState() != ActiveState.Active) {
 
 				#if UNITY_EDITOR || DEBUGBUILD
-				Debug.LogWarningFormat("Can't send click on `{0}` state. Be sure `{1}` window has the `Shown` or `Showing` state.", this.GetWindow().GetState(), this.GetWindow().name);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("Can't send click on `{0}` state. Be sure `{1}` window has the `Shown` or `Showing` state and is active.", this.GetWindow().GetState(), this.GetWindow().name);
 				#endif
 				return;
 
@@ -974,7 +975,7 @@ namespace UnityEngine.UI.Windows.Components {
 					},
 					onComplete: () => {
 	
-						//Debug.Log("SetMovieTexture: " + this.name);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("SetMovieTexture: " + this.name);
 						MovieSystem.UnregisterOnUpdateTexture(this.ValidateTexture);
 						MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
 						if (onComplete != null) onComplete.Invoke();
@@ -988,7 +989,7 @@ namespace UnityEngine.UI.Windows.Components {
 	
 			private void ValidateTexture(IImageComponent component, Texture texture) {
 	
-				//Debug.Log("ValidateTexture: " + (component as MonoBehaviour) + ", tex: " + texture, component as MonoBehaviour);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("ValidateTexture: " + (component as MonoBehaviour) + ", tex: " + texture, component as MonoBehaviour);
 				if (this as IImageComponent == component) {
 					
 					if (this.rawImage != null) {
@@ -1193,15 +1194,15 @@ namespace UnityEngine.UI.Windows.Components {
 				var newResource = resource;
 				this.imageResource = resource;
 	
-				// Debug.Log("Loading resource: " + this.imageResource.GetId());
+				// if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Loading resource: " + this.imageResource.GetId());
 				WindowSystemResources.Load(this,
 					onDataLoaded: onDataLoaded,
 					onComplete: () => {
 	
-						//Debug.Log("Resource loaded: " + newResource.GetId() + " :: " + this.name, this);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Resource loaded: " + newResource.GetId() + " :: " + this.name, this);
 						if (newResource.GetId() != oldResource.GetId()) {
 	
-							// Debug.Log("Unloading: " + newResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
+							// if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Unloading: " + newResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
 							WindowSystemResources.Unload(this, oldResource, resetController: false);
 	
 						}
@@ -1212,10 +1213,10 @@ namespace UnityEngine.UI.Windows.Components {
 					},
 					onFailed: () => {
 	
-						//Debug.Log("Resource loading failed: " + newResource.GetId() + " :: " + this.name, this);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Resource loading failed: " + newResource.GetId() + " :: " + this.name, this);
 						if (newResource.GetId() != oldResource.GetId()) {
 	
-							//Debug.Log("Failed, Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
+							//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Failed, Unloading: " + this.imageResource.GetId() + " != " + oldResource.GetId() + " :: " + this.name, this);
 							WindowSystemResources.Unload(this, oldResource, resetController: false);
 	
 						}
@@ -1548,7 +1549,7 @@ namespace UnityEngine.UI.Windows.Components {
 						this.imageCrossFadeModule.ValidateMaterial(material);
 	
 					}
-					//Debug.Log("MATERIAL DIRTY: " + this.rawImage.texture, this);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("MATERIAL DIRTY: " + this.rawImage.texture, this);
 	
 				}
 	

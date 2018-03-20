@@ -36,7 +36,7 @@ namespace UnityEngine.UI.Windows.Types {
 			base.ApplyOrientationIndex(index);
 
 			// Is new orientation supported?
-			if (this.layouts.IsSupported() == true && this.layouts.IsValid(index) == true) {
+			if (this.layouts.currentLayoutIndex != index && this.layouts.IsSupported() == true && this.layouts.IsValid(index) == true) {
 
 				// Reload window
 				if (this.GetState() == WindowObjectState.Shown) {
@@ -64,7 +64,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 				} else {
 
-					Debug.LogWarning(string.Format("Window `{0}` is not in `Shown` state, this behaviour currently unsupported.", this.name));
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("Window `{0}` is not in `Shown` state, this behaviour currently unsupported.", this.name));
 					
 				}
 
@@ -537,10 +537,6 @@ namespace UnityEngine.UI.Windows.Types {
 
 			public void OnValidate() {
 
-				#if UNITY_EDITOR
-				if (UnityEditor.EditorApplication.isUpdating == true) return;
-				#endif
-
 				/*
 				if (this.componentParameters != null) {
 
@@ -623,7 +619,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 					}
 
-					//Debug.Log("Unpack component: " + component.name);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Unpack component: " + component.name);
 					var instance = component.Spawn(activeByDefault: false);
 					//instance.SetComponentState(WindowObjectState.NotInitialized);
 					instance.SetParent(root, setTransformAsSource: false, worldPositionStays: false);
@@ -679,7 +675,7 @@ namespace UnityEngine.UI.Windows.Types {
 					}, () => {
 						
 						#if UNITY_EDITOR
-						Debug.LogWarningFormat("[ Layout ] Resource request failed {0} [{1}].", UnityEditor.AssetDatabase.GetAssetPath(this.component.GetInstanceID()), window.name);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ Layout ] Resource request failed {0} [{1}].", UnityEditor.AssetDatabase.GetAssetPath(this.component.GetInstanceID()), window.name);
 						#endif
 
 					}, async);
@@ -689,7 +685,11 @@ namespace UnityEngine.UI.Windows.Types {
 
 					loadedComponent = this.componentNoResource;
 					#if UNITY_EDITOR
-					if (loadedComponent != null) Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", loadedComponent.name, UnityEditor.AssetDatabase.GetAssetPath(loadedComponent.GetInstanceID()), window.name);
+					if (WindowSystemLogger.IsLogEnabled() == true) {
+
+						if (loadedComponent != null) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", loadedComponent.name, UnityEditor.AssetDatabase.GetAssetPath(loadedComponent.GetInstanceID()), window.name);
+
+					}
 					#endif
 
 				}
@@ -706,7 +706,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 			public void Unload() {
 
-				//Debug.Log("Unload: " + this.componentResource.GetId() + " :: " + this.componentResource.assetPath);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Unload: " + this.componentResource.GetId() + " :: " + this.componentResource.assetPath);
 
 				WindowSystemResources.UnloadResource_INTERNAL(this.GetReference(), this.componentResource);
 
@@ -840,7 +840,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 					if (this.stopped == true) return;
 
-					instance.gameObject.SetActive(true);
+					if (instance.gameObject.activeSelf == false) instance.gameObject.SetActive(true);
 					callback.Invoke();
 
 				}, this.components, (component, c) => {
@@ -864,7 +864,7 @@ namespace UnityEngine.UI.Windows.Types {
 				}, () => {
 
 					#if UNITY_EDITOR
-					Debug.LogWarningFormat("[ Layout ] Resource request failed {0} [{1}].", UnityEditor.AssetDatabase.GetAssetPath(this.layout.GetInstanceID()), window.name);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ Layout ] Resource request failed {0} [{1}].", UnityEditor.AssetDatabase.GetAssetPath(this.layout.GetInstanceID()), window.name);
 					#endif
 
 				}, async);
@@ -874,7 +874,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 				loadedComponent = this.layoutNoResource;
 				#if UNITY_EDITOR
-				if (loadedComponent != null) Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", loadedComponent.name, UnityEditor.AssetDatabase.GetAssetPath(loadedComponent.GetInstanceID()), window.name);
+				if (loadedComponent != null) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ Layout ] Resource `{0}` [{1}] should be placed in `Resources` folder to be loaded/unloaded automaticaly. Window `{2}` requested this resource. This warning shown in editor only.", loadedComponent.name, UnityEditor.AssetDatabase.GetAssetPath(loadedComponent.GetInstanceID()), window.name);
 				#endif
 
 			}
@@ -885,7 +885,7 @@ namespace UnityEngine.UI.Windows.Types {
 
 		public void StopCreate() {
 
-			//Debug.Log("StopCreate: " + this.window + " :: " + this.window.GetLastState() + " :: " + this.window.preferences.createPool);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("StopCreate: " + this.window + " :: " + this.window.GetLastState() + " :: " + this.window.preferences.createPool);
 			if (this.window != null && (this.window.GetLastState() == WindowObjectState.NotInitialized || this.window.GetLastState() == WindowObjectState.Initializing) && this.window.preferences.createPool == false) {
 
 				this.stopped = true;

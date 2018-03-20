@@ -85,7 +85,7 @@ namespace ME.Macros {
 			var pt = @"(\s?)#region\s+macros\s+" + macrosName + "\\s+(.*?)#endregion";
 
 			rgx = new Regex(pt, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-			//Debug.Log(macrosName + ": " + sourceText + " => " + macrosText);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(macrosName + ": " + sourceText + " => " + macrosText);
 			sourceText = rgx.Replace(sourceText, spaces + macrosText);
 
 			foreach (var item in vars) {
@@ -146,7 +146,7 @@ namespace ME.Macros {
 					var p = pair.Split(new string[] {":"}, System.StringSplitOptions.None);
 					if (p.Length < 2) {
 
-						Debug.LogWarning("Wrong args format");
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Wrong args format");
 						continue;
 
 					}

@@ -74,7 +74,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 0}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0

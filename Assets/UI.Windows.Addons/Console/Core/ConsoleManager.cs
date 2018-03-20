@@ -10,6 +10,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 	public class ConsoleManager : ServiceManager<ConsoleManager> {
 
 		public const int TOUCH_COUNT_TO_OPEN = 7;
+		public const int TOUCH_COUNT_TO_OPEN_IF_PRIVATE = 5;
 		public const int TOUCH_COUNT_TO_CLOSE = 3;
 
 		public override string GetServiceName() {
@@ -93,7 +94,8 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 					if (failed == false) {
 
-						if (UnityEngine.Input.touchCount == ConsoleManager.TOUCH_COUNT_TO_OPEN) {
+						if (UnityEngine.Input.touchCount == ConsoleManager.TOUCH_COUNT_TO_OPEN ||
+							(this.accessMode == AccessGroup.Private && UnityEngine.Input.touchCount == ConsoleManager.TOUCH_COUNT_TO_OPEN_IF_PRIVATE)) {
 
 							if (this.state == false) {
 
@@ -227,7 +229,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 						if (this.loadedModules.Contains(module) == true) {
 
-							Debug.LogWarningFormat("[ Console ] Module import warning: Module `{0}` can't be loaded because it already in list.", element);
+							if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ Console ] Module import warning: Module `{0}` can't be loaded because it already in list.", element);
 							continue;
 
 						}
@@ -246,7 +248,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 								
 							} else {
 								
-								Debug.LogWarningFormat("[ Console ] Alias warning: Module already contains alias with name `{0}`.", alias);
+								if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ Console ] Alias warning: Module already contains alias with name `{0}`.", alias);
 								
 							}
 
@@ -293,7 +295,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 			var variants = new List<string>();
 			var variantsConcat = new List<string>();
 
-			//Debug.Log(args.Length);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(args.Length);
 
 			if (args.Length == 1) {
 
@@ -402,7 +404,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 			}
 
-			//Debug.Log("Complete: " + this.screen.GetInputText());
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Complete: " + this.screen.GetInputText());
 
 		}
 
@@ -608,7 +610,7 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 
 					    } catch (System.Exception exception) {
 					        
-							Debug.LogWarning(string.Format("Execute console command exception: {0}", exception.Message));
+							if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("Execute console command exception: {0}", exception.Message));
 
 					    }
 
@@ -816,9 +818,17 @@ namespace UnityEngine.UI.Windows.Plugins.Console {
 			
 			var methods = module.GetType().GetMethods();
 			foreach (var method in methods) {
-				
-				var executable = method.GetCustomAttributes(typeof(ExecutableAttribute), false);
+
+				var executable = method.GetCustomAttributes(typeof(ExecutableAttribute), inherit: false);
 				if (executable == null || executable.Length == 0) continue;
+
+				var accessGroups = method.GetCustomAttributes(typeof(AccessLevelAttribute), inherit: false);
+				if (accessGroups != null && accessGroups.Length > 0) {
+
+					var accessGroup = accessGroups[0] as AccessLevelAttribute;
+					if (accessGroup.group == AccessGroup.Private && ConsoleManager.instance.accessMode != AccessGroup.Private) continue;
+
+				}
 
 				list.Add(method);
 

@@ -42,6 +42,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		DateUniversalFromMilliseconds,	// Universal
 
+		TimeDHMSFromSeconds,			// 12d 00:00:00
+
 	};
 
 	public enum FullTextFormat : byte {
@@ -134,12 +136,7 @@ namespace UnityEngine.UI.Windows.Components {
 	}
 
 	public interface IListComponent : IWindowNavigation {
-
-		IListComponent ListMoveUp(int count = 1);
-		IListComponent ListMoveDown(int count = 1);
-		IListComponent ListMoveLeft(int count = 1);
-		IListComponent ListMoveRight(int count = 1);
-
+		
 	}
 
 	public interface ITextComponent : IComponent {

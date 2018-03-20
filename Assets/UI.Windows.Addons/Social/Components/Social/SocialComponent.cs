@@ -18,11 +18,11 @@ namespace UnityEngine.UI.Windows.Components.Social {
 			var vk = social.GetModule<VKModule>();
 			if (vk != null) vk.Authenticate(this.vkToken, (result) => {
 
-				Debug.Log(vk.profile.user);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(vk.profile.user);
 
 				vk.profile.user.LoadFriends((fResult) => {
 
-					Debug.Log("Friends: " + fResult);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Friends: " + fResult);
 
 				});
 
@@ -31,11 +31,11 @@ namespace UnityEngine.UI.Windows.Components.Social {
 			var fb = social.GetModule<FBModule>();
 			if (fb != null) fb.Authenticate(this.fbToken, (result) => {
 				
-				Debug.Log(fb.profile.user);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(fb.profile.user);
 				
 				fb.profile.user.LoadFriends((fResult) => {
 					
-					Debug.Log("Friends: " + fResult);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Friends: " + fResult);
 					
 				});
 				

@@ -212,7 +212,7 @@ namespace UnityEngine.UI.Windows.Movies {
             var instance = this.FindInstance(resource);
             if (instance != null) {
 
-                Debug.LogError("[MediaMovieModule] Already playing " + streamPath);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("[MediaMovieModule] Already playing " + streamPath);
 
             } else {
 

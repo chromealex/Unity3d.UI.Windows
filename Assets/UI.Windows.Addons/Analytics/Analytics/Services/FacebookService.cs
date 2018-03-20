@@ -29,7 +29,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		public override bool IsSupported() {
 
-			#if FACEBOOK_ANALYTICS_API && !UNITY_EDITOR
+			#if FACEBOOK_ANALYTICS_API// && !UNITY_EDITOR
 			if (Application.systemLanguage == SystemLanguage.Chinese ||
 				Application.systemLanguage == SystemLanguage.ChineseSimplified ||
 				Application.systemLanguage == SystemLanguage.ChineseTraditional) {
@@ -38,7 +38,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			}
 
+			#if UNITY_IPHONE || UNITY_ANDROID || UNITY_FACEBOOK || UNITY_WEBGL
 			return true;
+			#else
+			return false;
+			#endif
 			#else
 			return false;
 			#endif
@@ -56,40 +60,46 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 
 		public override System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
-
+			
 			#if FACEBOOK_ANALYTICS_API
-			var connected = false;
+			System.Action onInited = () => {
+
+				var rootScreenId = FlowSystem.GetRootWindow();
+				var eventName = "Application Start";
+				FB.LogAppEvent(eventName, 1f, new Dictionary<string, object>() {
+
+					{ "Root Screen", rootScreenId },
+					{ "Platform", Application.platform.ToString() }
+
+				});
+
+				Debug.LogWarning("Facebook Analytics Application Start");
+
+			};
 
 			if (FB.IsInitialized == true) {
 				
 				FB.ActivateApp();
-				connected = true;
+				onInited.Invoke();
 
 			} else {
 
 				FB.Init(() => {
 
-					FB.ActivateApp();
-					connected = true;
+					if (FB.IsInitialized == true) {
+						
+						FB.ActivateApp();
+						onInited.Invoke();
+
+					} else {
+						
+						Debug.LogError("Failed to Initialize the Facebook SDK");
+
+					}
 
 				});
 
 			}
-
-			while (connected == false) {
-
-				yield return 0;
-
-			}
-
-			var rootScreenId = FlowSystem.GetRootWindow();
-			var eventName = "Application Start";
-			FB.LogAppEvent(eventName, 1f, new Dictionary<string, object>() {
-
-				{ "Root Screen", rootScreenId },
-				{ "Platform", Application.platform.ToString() }
-
-			});
 			#endif
 
 			yield return 0;
@@ -127,11 +137,13 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnEvent(int screenId, string group1, string group2, string group3, int weight) {
 
 			#if FACEBOOK_ANALYTICS_API
+			if (FB.IsInitialized == false) yield break;
+
 			if (screenId >= 0) {
 
 				var eventName = string.Format("{0}({1})", FlowSystem.GetWindow(screenId).title, screenId);
-
-				FB.LogAppEvent(eventName, 1f, new Dictionary<string, object>() {
+			    //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("FB::OnEvent: " + eventName + " >> " + group1 + " >> " + group2 + " >> " + group3 + " >> " + weight);
+                FB.LogAppEvent(eventName, 1f, new Dictionary<string, object>() {
 
 					{ "Group1", group1 },
 					{ "Group2", group2 },
@@ -150,8 +162,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		public override System.Collections.Generic.IEnumerator<byte> OnEvent(string eventName, string group1, string group2, string group3, int weight) {
 
-			#if FACEBOOK_ANALYTICS_API
-			FB.LogAppEvent(eventName, 1f, new Dictionary<string, object>() {
+            #if FACEBOOK_ANALYTICS_API
+			if (FB.IsInitialized == false) yield break;
+
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("FB::OnEvent: " + eventName + " >> " + group1 + " >> " + group2 + " >> " + group3 + " >> " + weight);
+            FB.LogAppEvent(eventName, 1f, new Dictionary<string, object>() {
 
 				{ "Group1", group1 },
 				{ "Group2", group2 },
@@ -169,8 +184,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnScreenTransition(int index, int screenId, int toScreenId, bool popup) {
 
 			#if FACEBOOK_ANALYTICS_API
+			if (FB.IsInitialized == false) yield break;
+
 			if (screenId >= 0 && toScreenId >= 0) {
 				
+                //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("FB::OnScreenTransition: " + screenId + " >> " + toScreenId);
 				var eventName = "Screen Transition";
 				FB.LogAppEvent(eventName, 1f, new Dictionary<string, object>() {
 
@@ -192,13 +210,19 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature) {
 
 			#if FACEBOOK_ANALYTICS_API
-			FB.LogPurchase((float)price, currency, new Dictionary<string, object>() {
+			if (FB.IsInitialized == false) yield break;
 
-				{ "Window", string.Format("{0} (ID: {1}), product: {2}", FlowSystem.GetWindow(screenId).title, screenId, productId) },
-				{ "Receipt", receipt },
-				{ "CustomParameter", User.instance.customParameter },
+			if (screenId >= 0) {
+				
+				FB.LogPurchase((float)price, currency, new Dictionary<string, object>() {
 
-			});
+					{ "Window", string.Format("{0} (ID: {1}), product: {2}", FlowSystem.GetWindow(screenId).title, screenId, productId) },
+					{ "Receipt", receipt },
+					{ "CustomParameter", User.instance.customParameter },
+
+				});
+
+			}
 			#endif
 
 			yield return 0;
@@ -208,6 +232,8 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnTransaction(string eventName, string productId, decimal price, string currency, string receipt, string signature) {
 
 			#if FACEBOOK_ANALYTICS_API
+			if (FB.IsInitialized == false) yield break;
+
 			FB.LogPurchase((float)price, currency, new Dictionary<string, object>() {
 
 				{ "Event", string.Format("{0}, product: {2}", eventName, productId) },
@@ -233,11 +259,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 		}
 
-		private bool foundType = false;
+		private static bool foundType = false;
 		protected override void OnInspectorGUI(UnityEngine.UI.Windows.Plugins.Heatmap.Core.HeatmapSettings settings, AnalyticsServiceItem item, System.Action onReset, GUISkin skin) {
 
 			var found = false;
-			if (this.foundType == false) {
+			if (foundType == false) {
 
 				var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
 				foreach (var ass in assemblies) {
@@ -246,7 +272,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 					if (type != null) {
 
 						found = true;
-						this.foundType = true;
+						foundType = true;
 						break;
 
 					}
@@ -255,7 +281,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			} else {
 
-				found = this.foundType;
+				found = foundType;
 
 			}
 

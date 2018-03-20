@@ -53,7 +53,7 @@ namespace Tacticsoft.Examples
 
         //Will be called by the TableView when a cell's visibility changed
         public void TableViewCellVisibilityChanged(int row, bool isVisible) {
-            //Debug.Log(string.Format("Row {0} visibility changed to {1}", row, isVisible));
+            //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("Row {0} visibility changed to {1}", row, isVisible));
             if (isVisible) {
                 VisibleCounterCell cell = (VisibleCounterCell)m_tableView.GetCellAtRow(row);
                 cell.NotifyBecameVisible();

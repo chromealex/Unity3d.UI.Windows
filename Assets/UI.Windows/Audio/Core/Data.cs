@@ -48,7 +48,7 @@ namespace UnityEngine.UI.Windows.Audio {
 			
 			this.musicCache.Fill(this.music, (item, index) => item.key, (item, index) => item);
 			this.fxCache.Fill(this.fx, (item, index) => item.key, (item, index) => item);
-			
+
 		}
 
 		public List<State> GetStates(ClipType clipType) {

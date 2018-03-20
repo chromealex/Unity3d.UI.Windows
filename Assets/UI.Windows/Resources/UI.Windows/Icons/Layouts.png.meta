@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: daee94013679e4cd7a8f2fbd83ecdba8
-timeCreated: 1501067335
+timeCreated: 1501594134
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName: {}
@@ -67,13 +67,13 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 1
   - buildTarget: Android
-    maxTextureSize: 1024
+    maxTextureSize: 32
     textureFormat: 47
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 1
+    overridden: 0
   spriteSheet:
     serializedVersion: 2
     sprites: []

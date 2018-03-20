@@ -18,6 +18,7 @@ namespace UnityEngine.UI {
 
 		protected void OnValidate() {
 
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == true) return;
 			#if UNITY_EDITOR
 			if (UnityEditor.EditorApplication.isUpdating == true) return;

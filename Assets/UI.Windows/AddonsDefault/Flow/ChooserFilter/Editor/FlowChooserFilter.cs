@@ -331,13 +331,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						} else {
 
-							Debug.Log("No Attribute: " + baseName, element);
+							if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("No Attribute: " + baseName, element);
 
 						}
 
 					} else {
 
-						Debug.Log("No type: " + baseName);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("No type: " + baseName);
 
 					}
 

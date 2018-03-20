@@ -1,6 +1,7 @@
 ﻿
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace ME {
@@ -419,6 +420,23 @@ namespace ME {
 
             this.keys.Clear();
             this.values.Clear();
+
+        }
+
+    }
+
+    public static class SimpleDictionaryUtil {
+
+        public static SimpleDictionary<K, V> ToSimpleDictionary<K, V, T>(this IEnumerable<T> src, System.Func<T, K> keySelector, System.Func<T, V> valueSelector) {
+
+            var res = new SimpleDictionary<K, V>();
+            foreach (var source in src) {
+
+                res.Add(keySelector(source), valueSelector(source));
+
+            }
+
+            return res;
 
         }
 

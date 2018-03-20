@@ -25,7 +25,7 @@ namespace ME.UAB {
 
 			}
 			#else
-			var config = Resources.Load<UABConfig>("UAB/Config");
+			var config = UnityEngine.UI.Windows.WindowSystemResources.Load<UABConfig>("UAB/Config");
 			if (config != null) return config;
 			#endif
 
@@ -134,7 +134,7 @@ namespace ME.UAB {
 
 					}
 
-					Debug.Log(string.Format("Built to `{0}`, size: {1} bytes, version: {2}.", assetBuildPath, zipped.Length, version));
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("Built to `{0}`, size: {1} bytes, version: {2}.", assetBuildPath, zipped.Length, version));
 
 					if (version > 0) {
 
@@ -300,11 +300,11 @@ namespace ME.UAB {
 			var importer = UnityEditor.AssetImporter.GetAtPath(assetPath);
 			if (importer != null && string.IsNullOrEmpty(importer.assetBundleName) == false) {
 
-				//Debug.LogWarning(assetPath + " :: " + importer.assetBundleName + " == " + this.currentBundleName);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(assetPath + " :: " + importer.assetBundleName + " == " + this.currentBundleName);
 				dataInBundle = (importer.assetBundleName == bundleName);
 
 			}
-			//Debug.Log(assetPath + " :: " + (obj is Mesh) + " :: " + (obj is Texture) + " :: " + obj + " :: " + dataInBundle);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(assetPath + " :: " + (obj is Mesh) + " :: " + (obj is Texture) + " :: " + obj + " :: " + dataInBundle);
 			#endif
 
 			return

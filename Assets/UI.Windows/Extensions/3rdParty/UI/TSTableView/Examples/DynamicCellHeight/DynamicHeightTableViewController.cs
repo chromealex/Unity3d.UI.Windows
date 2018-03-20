@@ -66,7 +66,7 @@ namespace Tacticsoft.Examples
             if (GetHeightOfRow(row) == newHeight) {
                 return;
             }
-            //Debug.Log(string.Format("Cell {0} height changed to {1}", row, newHeight));
+            //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("Cell {0} height changed to {1}", row, newHeight));
             m_customRowHeights[row] = newHeight;
             m_tableView.NotifyCellDimensionsChanged(row);
         }

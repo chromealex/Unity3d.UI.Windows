@@ -54,16 +54,16 @@ namespace UnityAnalyticsHeatmap.MiniJSON
     //
     //          var dict = Json.Deserialize(jsonString) as Dictionary<string,object>;
     //
-    //          Debug.Log("deserialized: " + dict.GetType());
-    //          Debug.Log("dict['array'][0]: " + ((List<object>) dict["array"])[0]);
-    //          Debug.Log("dict['string']: " + (string) dict["string"]);
-    //          Debug.Log("dict['float']: " + (double) dict["float"]); // floats come out as doubles
-    //          Debug.Log("dict['int']: " + (long) dict["int"]); // ints come out as longs
-    //          Debug.Log("dict['unicode']: " + (string) dict["unicode"]);
+    //          if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("deserialized: " + dict.GetType());
+    //          if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("dict['array'][0]: " + ((List<object>) dict["array"])[0]);
+    //          if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("dict['string']: " + (string) dict["string"]);
+    //          if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("dict['float']: " + (double) dict["float"]); // floats come out as doubles
+    //          if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("dict['int']: " + (long) dict["int"]); // ints come out as longs
+    //          if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("dict['unicode']: " + (string) dict["unicode"]);
     //
     //          var str = Json.Serialize(dict);
     //
-    //          Debug.Log("serialized: " + str);
+    //          if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("serialized: " + str);
     //      }
     //  }
 

@@ -176,7 +176,7 @@ namespace ME.UAB {
 				var fields = component.GetType().GetAllProperties()
 					.Where(x => x.GetCustomAttributes(true).Any(a => a is System.ObsoleteAttribute) == false && x.CanWrite == true && UABSerializer.FilterProperties(x) == true).ToArray();
 				//var fields = component.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.SetProperty | System.Reflection.BindingFlags.Instance);
-				//Debug.Log(component + " :: " + UABSerializer.HasProperties(component) + " :: " + fields.Length);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(component + " :: " + UABSerializer.HasProperties(component) + " :: " + fields.Length);
 				for (int i = 0; i < data.Length; ++i) {
 
 					var fieldInfo = fields.FirstOrDefault(x => x.Name == data[i].name);
@@ -186,7 +186,7 @@ namespace ME.UAB {
 
 					} else {
 
-						Debug.LogWarningFormat("Property with the name `{0}` was not found on property deserialization stage. Be sure you have no per-platform #ifdef directives in your scripts. Skipped.", data[i].name);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("Property with the name `{0}` was not found on property deserialization stage. Be sure you have no per-platform #ifdef directives in your scripts. Skipped.", data[i].name);
 
 					}
 
@@ -204,7 +204,7 @@ namespace ME.UAB {
 
 					} else {
 
-						Debug.LogWarningFormat("Field with the name `{0}` was not found on field deserialization stage. Be sure you have no per-platform #ifdef directives in your scripts. Skipped.", data[i].name);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("Field with the name `{0}` was not found on field deserialization stage. Be sure you have no per-platform #ifdef directives in your scripts. Skipped.", data[i].name);
 
 					}
 
@@ -303,7 +303,7 @@ namespace ME.UAB {
 
 			} else if (fieldData.fieldType == FieldType.ValueType) {
 
-				//Debug.Log(obj + " :: " + fieldInfo.Name + " = " + fieldData.data + " << " + fieldData.serializatorId);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(obj + " :: " + fieldInfo.Name + " = " + fieldData.data + " << " + fieldData.serializatorId);
 
 				object value = null;
 
@@ -341,7 +341,7 @@ namespace ME.UAB {
 
 					} catch (System.Exception) {
 
-						//Debug.LogException(ex);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogException(ex);
 						value = UABSerializer.DeserializeValueType(fieldData.data, fieldType);
 
 					}
@@ -354,7 +354,7 @@ namespace ME.UAB {
 			} else if (fieldData.fieldType == FieldType.ReferenceType) {
 
 				// Unpack ref type
-				//Debug.Log("Unpack ref type: " + fieldData.data);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Unpack ref type: " + fieldData.data);
 
 				//UAB.Builder.RegisterReferenceUnpack(fieldData, fieldInfo, obj, contextCallback);
 
@@ -363,16 +363,16 @@ namespace ME.UAB {
 
 					if (data.isLocal == false) {
 
-						var rf = UnityEngine.Resources.Load<ObjectReference>(data.instanceId);
+						var rf = UnityEngine.UI.Windows.WindowSystemResources.Load<ObjectReference>(data.instanceId);
 						if (rf != null) {
 
-							//Debug.LogWarning("Resources.Load: " + rf + " :: " + data.instanceId + " :: " + container);
+							//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Resources.Load: " + rf + " :: " + data.instanceId + " :: " + container);
 							//fieldInfo.SetValue(container, rf.reference);
 							result = rf.reference;
 
 						} else {
 
-							Debug.LogWarning(string.Format("Resource Reference was not found `{0}`.", data.instanceId));
+							if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("Resource Reference was not found `{0}`.", data.instanceId));
 
 						}
 

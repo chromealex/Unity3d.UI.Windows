@@ -134,6 +134,138 @@ namespace UnityEngine.UI.Windows {
 		public WindowSystemResourcesMap resourcesMap;
 		public List<Item> loaded = new List<Item>();
 
+		[System.Serializable]
+		public struct ResourceEntity {
+
+			public Object resource;
+
+		};
+
+		[System.Serializable]
+		public class PreloadedResourceEntity {
+
+			public long key;
+			public Object resource;
+
+		};
+
+		public List<PreloadedResourceEntity> preloadedResources = new List<PreloadedResourceEntity>();
+			
+		public Dictionary<long, ResourceEntity> resources = new Dictionary<long, ResourceEntity>();
+
+		public override void OnInitialized() {
+
+			base.OnInitialized();
+
+			this.StartCoroutine(this.CachePreloaded());
+
+		}
+
+		private IEnumerator CachePreloaded() {
+			
+			var lr = new ME.LongrunTimer();
+
+			for (int i = 0; i < this.preloadedResources.Count; ++i) {
+				
+				var resourceKey = this.preloadedResources[i].key;
+				this.resources.Add(resourceKey, new ResourceEntity() { resource = this.preloadedResources[i].resource });
+
+				if (lr.ShouldPause() == true) {
+
+					yield return 0;
+					lr.Reset();
+
+				}
+
+			}
+
+			this.preloadedResources.Clear();
+
+		}
+
+		public static T Load<T>(string path) where T : Object {
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+
+				return Resources.Load<T>(path);
+
+			}
+			#endif
+
+			return WindowSystemResources.instance.Load_INTERNAL(path, typeof(T)) as T;
+
+		}
+
+		public static Object Load(string path, System.Type type) {
+
+			#if UNITY_EDITOR
+			if (Application.isPlaying == false) {
+
+				return Resources.Load(path, type);
+
+			}
+			#endif
+
+			return WindowSystemResources.instance.Load_INTERNAL(path, type);
+
+		}
+
+		private Object Load_INTERNAL(string path, System.Type type) {
+
+			//var watch = new System.Diagnostics.Stopwatch();
+			//watch.Start();
+
+			var pathHash = ResourceBase.GetJavaHash(path);
+			var typeHash = ResourceBase.GetJavaHash(type.FullName);
+			var resourceKey = ResourceBase.GetKey(pathHash, typeHash);
+
+			Object output = null;
+			if (output == null) {
+
+				ResourceEntity entity;
+				if (this.resources.TryGetValue(resourceKey, out entity) == true) {
+
+					output = entity.resource;
+
+				}
+
+			}
+
+			if (output == null) {
+
+				var key = ResourceBase.GetKey(pathHash, 0);
+				ResourceEntity entity;
+				if (this.resources.TryGetValue(key, out entity) == true) {
+
+					if (entity.resource is GameObject && type != typeof(GameObject)) {
+
+						output = (entity.resource as GameObject).GetComponent(type);
+
+					} else {
+						
+						output = entity.resource;
+
+					}
+
+				}
+
+			}
+
+			if (output == null) {
+
+				output = Resources.Load(path, type);
+				//this.resources.Add(resourceKey, new ResourceEntity() { resource = output });
+
+			}
+
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) Debug.Log(string.Format("Resource `{0}` got in {1}ms ({2} ticks)", path, watch.ElapsedMilliseconds, watch.ElapsedTicks));
+			//watch.Stop();
+
+			return output;
+
+		}
+
 		public static void RegisterObject(WindowObject obj) {
 
 			if (WindowSystem.IsDebugWeakReferences() == false) return;
@@ -141,12 +273,12 @@ namespace UnityEngine.UI.Windows {
 
 			//if ((obj.GetWindow() is MW2.UI.EditorTools.Console.ConsoleScreen) == false/*obj.GetComponentsInParent<MW2.UI.EditorTools.Console.ConsoleScreen>(true).Length == 0*/) {
 
-				//Debug.Log("ADD: " + obj.name + " :: " + obj.GetInstanceID());
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("ADD: " + obj.name + " :: " + obj.GetInstanceID());
 
 				var item = WindowSystemResources.instance.registered.FirstOrDefault(x => x.instanceId == obj.GetInstanceID());
 				if (item != null) {
 
-					Debug.LogError("Object is already in list: " + item.name + " :: " + item.instanceId);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Object is already in list: " + item.name + " :: " + item.instanceId);
 
 				}
 				WindowSystemResources.instance.registered.Add(new ObjectEntity() { name = string.Format("{0} ({1})", obj.name, obj.GetInstanceID()), instanceId = obj.GetInstanceID(), reference = obj, window = obj.GetWindow() });
@@ -163,7 +295,7 @@ namespace UnityEngine.UI.Windows {
 
 			//if ((obj.GetWindow() is MW2.UI.EditorTools.Console.ConsoleScreen) == false) {
 
-				//Debug.Log("DEL: " + obj.name + " :: " + obj.GetInstanceID());
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("DEL: " + obj.name + " :: " + obj.GetInstanceID());
 
 				var item = WindowSystemResources.instance.registered.FirstOrDefault(x => x.instanceId == obj.GetInstanceID());
 				if (item != null) {
@@ -172,7 +304,7 @@ namespace UnityEngine.UI.Windows {
 
 				} else {
 
-					Debug.LogWarning(string.Format("Trying to unregister reference that doesn't exists: {0} ({1})", obj.name, obj.GetInstanceID()), obj);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("Trying to unregister reference that doesn't exists: {0} ({1})", obj.name, obj.GetInstanceID()), obj);
 
 				}
 
@@ -215,7 +347,7 @@ namespace UnityEngine.UI.Windows {
 
 					} else {
 
-						Debug.LogError("No settings `WindowSystemResourcesSettings` found");
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("No settings `WindowSystemResourcesSettings` found");
 
 					}
 
@@ -253,14 +385,14 @@ namespace UnityEngine.UI.Windows {
 
 			if (item == null) {
 
-				//Debug.LogWarning("[WindowSystemResources] Trying to remove failed with null in `item`.");
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("[WindowSystemResources] Trying to remove failed with null in `item`.");
 				return false;
 
 			}
 
 			if (item.references == null) {
 
-				//Debug.LogWarning("[WindowSystemResources] Trying to remove failed with null in `references`.");
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("[WindowSystemResources] Trying to remove failed with null in `references`.");
 				return false;
 
 			}
@@ -416,8 +548,6 @@ namespace UnityEngine.UI.Windows {
 
 						});
 
-						if (isMaterial == true) MovieSystem.RegisterOnUpdateTexture(this.ValidateTexture);
-
 					}, onFailed, async, customResourcePath);
 
 				}
@@ -478,17 +608,17 @@ namespace UnityEngine.UI.Windows {
 
 			if (resource.IsLoadable() == true) {
 
-				//Debug.Log("Check: " + resource.assetPath + ", typeof: " + typeof(T).ToString());
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Check: " + resource.assetPath + ", typeof: " + typeof(T).ToString());
 				Item item;
 				if (this.IsLoaded<T>(reference, resource, out item, callbackOnLoad, callbackOnFailed) == false) {
 
-					//Debug.Log("Loading: " + resource.assetPath);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Loading: " + resource.assetPath);
 					Coroutines.Run(resource.Load<T>(reference, customResourcePath, (data) => {
 
-						//Debug.Log("Loaded: " + resource.assetPath + " >> " + data);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Loaded: " + resource.assetPath + " >> " + data);
 						if (data == null) {
 
-							//Debug.LogWarning(string.Format("Failed to load resource in {0}", resource.assetPath));
+							//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("Failed to load resource in {0}", resource.assetPath));
 
                             item.loadingResult = false;
 						    if (item.onObjectFailed != null) {
@@ -562,7 +692,7 @@ namespace UnityEngine.UI.Windows {
 
 				} else {
 					
-					//Debug.LogError("IsLoaded returns `true` but reference already in list.", reference);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("IsLoaded returns `true` but reference already in list.", reference);
 
 				}
 
@@ -662,7 +792,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		[System.Serializable]
-		public class TaskItem {
+		public struct TaskItem {
 
 			public int id;
 			public ResourceBase resource;
@@ -672,7 +802,7 @@ namespace UnityEngine.UI.Windows {
 			public string customResourcePath;
 			public System.Action<object> onSuccess;
 			public System.Action onFailed;
-			public IEnumerator coroutine;
+			//public IEnumerator coroutine;
 
 			public ResourceAsyncOperation task;
 
@@ -708,8 +838,10 @@ namespace UnityEngine.UI.Windows {
 
 		};
 
+		#if UNITY_EDITOR
 		public List<TaskItem> tasks;
-		
+		#endif
+
 		public static void LoadResource<T>(ResourceBase resource, System.Action<T> callback, bool async) /*where T : Object*/ {
 
 			Coroutines.Run(WindowSystemResources.instance.LoadResource_INTERNAL<T>(resource, component: null, customResourcePath: null, callback: callback, async: async));
@@ -724,8 +856,12 @@ namespace UnityEngine.UI.Windows {
 
 		private System.Collections.Generic.IEnumerator<byte> LoadResource_INTERNAL<T>(ResourceBase resource, IResourceReference component, string customResourcePath, System.Action<T> callback, bool async) /*where T : Object*/ {
 
-			var task = new TaskItem();
-			task.id = resource.GetId();
+			if (resource.HasDirectRef() == true) {
+
+				callback.Invoke(resource.GetDirectRef<T>());
+				yield break;
+
+			}
 
 			if (this.forceAsyncOff == true) {
 
@@ -735,6 +871,8 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
+			var task = new TaskItem();
+			task.id = resource.GetId();
 			task.async = async;
 			task.resource = resource;
 			task.component = component;
@@ -749,7 +887,7 @@ namespace UnityEngine.UI.Windows {
 
 				} else {
 
-					//Debug.Log(typeof(T) + " << " + obj);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(typeof(T) + " << " + obj);
 					resultObj = (T)obj;
 
 				}
@@ -763,19 +901,24 @@ namespace UnityEngine.UI.Windows {
 
 			};
 
+			#if UNITY_EDITOR
 			this.tasks.Add(task);
+			#endif
 
-			//Debug.Log("Resource Task: " + task.resource.assetPath);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Resource Task: " + task.resource.assetPath);
 
-			task.coroutine = this.StartTask<T>(task);
-			while (task.coroutine.MoveNext() == true) {
+			var coroutine = this.StartTask<T>(task);
+			while (coroutine.MoveNext() == true) {
 				
 				yield return 0;
 
 			}
 
 			task.Dispose();
-			this.tasks.Remove(task);
+
+			#if UNITY_EDITOR
+			this.tasks.RemoveAll(x => x.id == task.id);
+			#endif
 
 		}
 
@@ -785,10 +928,17 @@ namespace UnityEngine.UI.Windows {
 
 			#region Load Resource
 			if (task.resource.loadableWeb == true) {
-
+				
 				if (task.resource.webPath.Contains("://") == false) {
 
 					task.resource.webPath = string.Format("file://{0}", task.resource.webPath);
+
+				}
+
+				if (task.resource.webPath.Contains("file://") == false && Application.internetReachability == NetworkReachability.NotReachable) {
+
+					task.RaiseFailed();
+					yield break;
 
 				}
 
@@ -821,7 +971,7 @@ namespace UnityEngine.UI.Windows {
 
 				} else {
 
-					Debug.LogError(string.Format("Task WebRequest [{0}] error: {1}", www.url, www.error));
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(string.Format("Task WebRequest [{0}] error: {1}", www.url, www.error));
 					task.RaiseFailed();
 
 				}
@@ -855,12 +1005,12 @@ namespace UnityEngine.UI.Windows {
 
 					if (isBytesOutput == true) {
 
-						if (data == null) data = Resources.Load<TextAsset>(resourcePath);
+						if (data == null) data = UnityEngine.UI.Windows.WindowSystemResources.Load<TextAsset>(resourcePath);
 						task.RaiseSuccess(((data as TextAsset).bytes));
 
 					} else {
 
-						if (data == null) data = Resources.Load(resourcePath, typeof(T));
+						if (data == null) data = UnityEngine.UI.Windows.WindowSystemResources.Load(resourcePath, typeof(T));
 						task.RaiseSuccess(data);
 
 					}
@@ -871,7 +1021,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (task.resource.IsMovie() == true) {
 
-					//Debug.Log("LoadMovie: " + task.component);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("LoadMovie: " + task.component);
 					task.task = MovieSystem.LoadTexture(task.component as IImageComponent);
 					var startTime = Time.realtimeSinceStartup;
 					var timer = 0f;
@@ -879,7 +1029,7 @@ namespace UnityEngine.UI.Windows {
 
 						timer = Time.realtimeSinceStartup - startTime;
 
-						if (timer >= 3f) {
+						if (timer >= 20f) {
 
 							break;
 
@@ -889,9 +1039,10 @@ namespace UnityEngine.UI.Windows {
 
 					}
 
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(task.task + " >> " + task.task.isDone);
 					if (task.task != null && task.task.isDone == true) {
 
-						//Debug.Log("Loaded: " + component.GetResource().GetStreamPath() + ", iter: " + iteration + ", type: " + typeof(T).ToString() + ", asset: " + task.asset, graphic);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Loaded: " + task.task.asset);
 						task.RaiseSuccess(task.task.asset);
 
 					} else {
@@ -918,7 +1069,7 @@ namespace UnityEngine.UI.Windows {
 					if (string.IsNullOrEmpty(www.error) == true) {
 
 						var type = typeof(T);
-						//Debug.Log("LOADED: " + type.ToString() + " :: " + task.resource.GetStreamPath(withFile: true));
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("LOADED: " + type.ToString() + " :: " + task.resource.GetStreamPath(withFile: true));
 						if (type == typeof(Texture) ||
 							type == typeof(Texture2D)) {
 
@@ -941,7 +1092,7 @@ namespace UnityEngine.UI.Windows {
 
 					} else {
 
-						//Debug.Log("NOT LOADED: " + task.resource.GetStreamPath(withFile: true) + " :: " + www.error);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("NOT LOADED: " + task.resource.GetStreamPath(withFile: true) + " :: " + www.error);
 						task.RaiseFailed();
 
 					}
@@ -1004,84 +1155,170 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		#if UNITY_EDITOR
-		public static void Validate(ILoadableResource resourceController) {
+		public static void Validate(IImageComponent resourceController) {
 
 			if (Application.isPlaying == true) return;
 
-			var image = resourceController as IImageComponent;
+			var image = resourceController;
 			image.GetResource().Validate();
 
-			//var mapInstance = WindowSystemResourcesMap.FindFirst();
-			//if (mapInstance == null) return;
+		}
 
-			/*if (resourceController.GetResource().controlType != ResourceAuto.ControlType.None) {
+		public Object[] preloadedResourcesEditor;
+		public Object[] prevResourcesEditor;
+		public void OnValidate() {
 
-				var image = resourceController as IImageComponent;
-				//mapInstance.Register(image);
+			if (GUI.changed == false) return;
+			if (this.preloadedResourcesEditor == null) return;
 
-				var source = image.GetImageSource();
-				if (source != null) {
+			var changed = true;
+			if (this.prevResourcesEditor != null) {
+
+				changed = false;
+				if (this.prevResourcesEditor.Length == this.preloadedResourcesEditor.Length) {
+
+					for (int i = 0; i < this.preloadedResourcesEditor.Length; ++i) {
+
+						if (this.preloadedResourcesEditor[i] != this.preloadedResourcesEditor[i]) {
+
+							changed = true;
+							break;
+
+						}
+
+					}
+
+				} else {
+
+					changed = true;
+
+				}
+
+			}
+
+			if (changed == false) return;
+
+			var objects = ME.ListPool<Object>.Get();
+			var objectPaths = ME.ListPool<string>.Get();
+			var objectTypes = ME.ListPool<string>.Get();
+			for (int i = 0; i < this.preloadedResourcesEditor.Length; ++i) {
+
+				var dir = UnityEditor.AssetDatabase.GetAssetPath(this.preloadedResourcesEditor[i]);
+				string[] guids = null;
+				if (System.IO.Directory.Exists(dir) == true) {
+
+					guids = UnityEditor.AssetDatabase.FindAssets("t:Object", new string[] { dir });
+
+				} else {
+
+					guids = new string[] { UnityEditor.AssetDatabase.AssetPathToGUID(dir) };
+
+				}
+
+				for (int j = 0; j < guids.Length; ++j) {
+
+					var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[j]);
+					var isGo = false;
+					if (UnityEditor.AssetDatabase.LoadAssetAtPath<Object>(path) is GameObject) {
+
+						isGo = true;
+
+					}
+
+					var allAssets = (isGo == true ? new Object[] { UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(path) } : UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path));
+
+					for (int k = 0; k < allAssets.Length; ++k) {
+						
+						path = UnityEditor.AssetDatabase.GetAssetPath(allAssets[k]);
+						var type = allAssets[k].GetType().FullName;
+						objectTypes.Add(type);
+						objectPaths.Add(path);
+						objects.Add(allAssets[k]);
+
+					}
+
+				}
+
+			}
+
+			this.preloadedResources.Clear();
+			for (int i = 0; i < objects.Count; ++i) {
+
+				var item = objects[i];
+				if (item is TextAsset) {
+
+					continue;
+
+				}
+
+				if (item is Sprite) {
+
+					continue;
+
+				}
+
+				if (item is Animator) {
+
+					continue;
+
+				}
+
+				var path = ResourceBase.GetResourcePathFromAssetPath(objectPaths[i]);
+				var pathHash = ResourceBase.GetJavaHash(path);
+				var typeHash = (string.IsNullOrEmpty(objectTypes[i]) == false ? ResourceBase.GetJavaHash(objectTypes[i]) : 0);
+				var resourceKey = ResourceBase.GetKey(pathHash, typeHash);
+
+				if (string.IsNullOrEmpty(path) == false && this.preloadedResources.Any(x => x.key == resourceKey) == false) {
 					
-					resourceController.GetResource().Validate(source.sprite);
-					image.ResetImage();
-					//image.SetImage(resourceController.GetResource().tempSprite);
+					this.preloadedResources.Add(new PreloadedResourceEntity() {
+						
+						resource = item,
+						key = resourceKey,
+
+					});
 
 				} else {
 					
-					var sourceRaw = image.GetRawImageSource();
-					if (sourceRaw != null) {
-						
-						resourceController.GetResource().Validate(sourceRaw.texture);
-						image.ResetImage();
-
-					}
-					
-				}
-
-				resourceController.GetResource().Validate((resourceController.GetResource() as IResourceValidationObject).GetValidationObject());
-
-			} else {
-
-				if (resourceController.GetResource().loadableResource == true) {
-					
-					var image = resourceController as IImageComponent;
-					//mapInstance.Unregister(image);
-
-					image.SetImage((resourceController.GetResource() as IResourceValidationObject).GetValidationObject() as Sprite);
-					image.SetImage((resourceController.GetResource() as IResourceValidationObject).GetValidationObject() as Texture);
-					
-					resourceController.GetResource().ResetToDefault();
+					//if (Constants.LOGS_ENABLED == true) Debug.LogWarning(string.Format("Duplicated entity at path: {0} ({1})", path, objectTypes[i]));
 
 				}
 
-			}*/
+			}
+
+			this.prevResourcesEditor = this.preloadedResourcesEditor;
+
+			ME.ListPool<Object>.Release(objects);
+			ME.ListPool<string>.Release(objectPaths);
+			ME.ListPool<string>.Release(objectTypes);
 
 		}
-		
+
 		public static readonly Dictionary<UnityEditor.BuildTarget, string> ALL_TARGETS = new Dictionary<UnityEditor.BuildTarget, string>() {
+			
 			{ UnityEditor.BuildTarget.Android, "Android" },
 			{ UnityEditor.BuildTarget.iOS, "iOS" },
 
 			{ UnityEditor.BuildTarget.PS4, "PS4" },
 			{ UnityEditor.BuildTarget.XboxOne, "XboxOne" },
 			{ UnityEditor.BuildTarget.tvOS, "tvOS" },
+			{ UnityEditor.BuildTarget.Switch, "Switch" },
 
 			{ UnityEditor.BuildTarget.StandaloneLinuxUniversal, "Linux" },
 			{ UnityEditor.BuildTarget.StandaloneOSXUniversal, "Mac" },
 			{ UnityEditor.BuildTarget.StandaloneWindows, "Windows" },
-		};
 
+		};
+		/*
 		public static string GetAssetBundlePath(UnityEditor.BuildTarget target) {
+			
 			var directory = WindowSystemResources.ALL_TARGETS[target];
 			var settings = WindowSystemResources.GetSettings();
-			var outputPath = settings != null && settings.loadFromStreamingAssets == true ? 
-					Application.streamingAssetsPath :
-				System.IO.Path.Combine(System.Environment.CurrentDirectory, WindowSystemResources.BUNDLES_ROOT_PATH);
+			var outputPath = settings != null && settings.loadFromStreamingAssets == true ? Application.streamingAssetsPath : System.IO.Path.Combine(System.Environment.CurrentDirectory, WindowSystemResources.BUNDLES_ROOT_PATH);
 			outputPath = System.IO.Path.Combine(outputPath, directory);
 
 			return outputPath;
 
-		}
+		}*/
 		#endif
 
 	}

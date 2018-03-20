@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI.Windows.Plugins.Services;
+using System.Diagnostics;
 
 namespace UnityEngine.UI.Windows {
 
@@ -19,13 +20,28 @@ namespace UnityEngine.UI.Windows {
 		public class Logger {
 
 			public bool enabled;
-			
+
+			private Stopwatch stopwatch = null;
+
+			private string GetTimestamp() {
+
+				if (this.stopwatch == null) {
+
+					this.stopwatch = new Stopwatch();
+					this.stopwatch.Start();
+
+				}
+
+				return string.Format("{0}ms", this.stopwatch.ElapsedMilliseconds);
+
+			}
+
 			#region String
 			public void Log(string @object, string data) {
 				
 				if (this.enabled == false) return;
 
-				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", @object, data));
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("{2} [ <b>{0}</b> ] {1}", @object, data, this.GetTimestamp()));
 				
 			}
 
@@ -33,7 +49,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (this.enabled == false) return;
 
-				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", @object, data));
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("{2} [ <b>{0}</b> ] {1}", @object, data, this.GetTimestamp()));
 
 			}
 
@@ -41,7 +57,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (this.enabled == false) return;
 
-				Debug.LogError(string.Format("[ <b>{0}</b> ] {1}", @object, data));
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(string.Format("{2} [ <b>{0}</b> ] {1}", @object, data, this.GetTimestamp()));
 
 			}
 			#endregion
@@ -51,7 +67,7 @@ namespace UnityEngine.UI.Windows {
 				
 				if (this.enabled == false) return;
 				
-				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("{2} [ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data, this.GetTimestamp()), @object as MonoBehaviour);
 				
 			}
 
@@ -59,7 +75,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (this.enabled == false) return;
 
-				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("{2} [ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data, this.GetTimestamp()), @object as MonoBehaviour);
 
 			}
 
@@ -67,7 +83,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (this.enabled == false) return;
 
-				Debug.LogError(string.Format("[ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data), @object as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(string.Format("{2} [ <b>{0}</b> ] {1}", (@object as MonoBehaviour).name, data, this.GetTimestamp()), @object as MonoBehaviour);
 
 			}
 			#endregion
@@ -77,7 +93,7 @@ namespace UnityEngine.UI.Windows {
 				
 				if (this.enabled == false) return;
 				
-				Debug.Log(string.Format("[ <b>{0}</b> ] {1}", @object.GetServiceName(), data), @object as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("{2} [ <b>{0}</b> ] {1}", @object.GetServiceName(), data, this.GetTimestamp()), @object as MonoBehaviour);
 				
 			}
 
@@ -85,7 +101,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (this.enabled == false) return;
 
-				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", @object.GetServiceName(), data), @object as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("{2} [ <b>{0}</b> ] {1}", @object.GetServiceName(), data, this.GetTimestamp()), @object as MonoBehaviour);
 
 			}
 
@@ -93,7 +109,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (this.enabled == false) return;
 
-				Debug.LogWarning(string.Format("[ <b>{0}</b> ] {1}", @object.GetServiceName(), data), @object as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("{2} [ <b>{0}</b> ] {1}", @object.GetServiceName(), data, this.GetTimestamp()), @object as MonoBehaviour);
 
 			}
 			#endregion
@@ -163,10 +179,23 @@ namespace UnityEngine.UI.Windows {
 					(Application.isEditor == false && (this.textLogs & ActiveType.InBuild) != 0)
 			};
 
-			Debug.logger.filterLogType = this.filterLogType;
-			Debug.logger.logEnabled = this.loggerEnabled;
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.unityLogger.filterLogType = this.filterLogType;
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.unityLogger.logEnabled = this.loggerEnabled;
 
 			WindowSystemLogger.instance = this;
+
+		}
+
+		public static bool IsLogEnabled() {
+
+			return Debug.unityLogger.logEnabled;
+
+		}
+
+		public static void SetState(bool state, LogType filterLogType) {
+
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.unityLogger.filterLogType = filterLogType;
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.unityLogger.logEnabled = state;
 
 		}
 

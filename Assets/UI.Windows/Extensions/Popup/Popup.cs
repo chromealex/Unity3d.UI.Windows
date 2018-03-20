@@ -138,7 +138,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 				Popup popup = null;
 				if (layout == true) {
 
-					Debug.Log(rect);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(rect);
 					popup = new Popup() { title = (label == null ? string.Empty : label.text), screenRect = new Rect(rect.x, rect.y + rect.height, rect.width, 200f) };
 					
 				} else {

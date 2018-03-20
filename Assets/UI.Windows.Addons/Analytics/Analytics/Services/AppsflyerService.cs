@@ -11,12 +11,13 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 	public class AppsflyerService : AnalyticsService {
 
 		public bool isDebug;
+		public string key;
 		[Tooltip("You should enter the number only and not the \"ID\" prefix")]
 		public string iosAppId;
 		[Tooltip("Set your Android package name")]
 		public string androidAppId;
 		public string androidDevKey;
-		public string androidGCMProjectNumber;
+		//public string androidGCMProjectNumber;
 
 		private bool tokenSent;
 
@@ -59,16 +60,16 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			
 			#if APPSFLYER_ANALYTICS_API
 			AppsFlyer.setIsDebug(this.isDebug);
-			AppsFlyer.setAppsFlyerKey(key);
+			AppsFlyer.setAppsFlyerKey(this.key);
 			#if UNITY_IOS
 			AppsFlyer.setAppID(this.iosAppId);
 			AppsFlyer.trackAppLaunch();
-			AppsFlyer.getConversionData();
-			UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert | UnityEngine.iOS.NotificationType.Badge | UnityEngine.iOS.NotificationType.Sound);
+			//AppsFlyer.getConversionData();
+			//UnityEngine.iOS.NotificationServices.RegisterForNotifications(UnityEngine.iOS.NotificationType.Alert | UnityEngine.iOS.NotificationType.Badge | UnityEngine.iOS.NotificationType.Sound);
 			#elif UNITY_ANDROID
 			AppsFlyer.setAppID(this.androidAppId);
 			AppsFlyer.init(this.androidDevKey);
-			AppsFlyer.setGCMProjectNumber(this.androidGCMProjectNumber);
+			//AppsFlyer.setGCMProjectNumber(this.androidGCMProjectNumber);
 			#endif
 			#endif
 			yield return 0;
@@ -96,15 +97,19 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnEvent(int screenId, string group1, string group2, string group3, int weight) {
 
 			#if APPSFLYER_ANALYTICS_API
-			AppsFlyer.trackRichEvent(string.Format("Screen: {0} (ID: {1}) - {2}", FlowSystem.GetWindow(screenId).title, screenId, group1), new Dictionary<string, string>() {
+			if (screenId >= 0) {
+				
+				AppsFlyer.trackRichEvent(string.Format("Screen: {0} (ID: {1}) - {2}", FlowSystem.GetWindow(screenId).title, screenId, group1), new Dictionary<string, string>() {
 
-				{ "Group1", group1 },
-				{ "Group2", group2 },
-				{ "Group3", group3 },
-				{ "Weight", weight.ToString() },
-				{ "CustomParameter", User.instance.customParameter },
+					{ "Group1", group1 },
+					{ "Group2", group2 },
+					{ "Group3", group3 },
+					{ "Weight", weight.ToString() },
+					{ "CustomParameter", User.instance.customParameter },
 
-			});
+				});
+
+			}
 			#endif
 			yield return 0;
 
@@ -130,7 +135,11 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnScreenTransition(int index, int screenId, int toScreenId, bool popup) {
 
 			#if APPSFLYER_ANALYTICS_API
-			AppsFlyer.trackEvent("ScreenTransition", string.Format("{0} (ID: {1}) to {2} (ID: {3})", FlowSystem.GetWindow(screenId).title, screenId, FlowSystem.GetWindow(toScreenId).title, toScreenId));
+			if (screenId >= 0 && toScreenId >= 0) {
+					
+				AppsFlyer.trackEvent("ScreenTransition", string.Format("{0} (ID: {1}) to {2} (ID: {3})", FlowSystem.GetWindow(screenId).title, screenId, FlowSystem.GetWindow(toScreenId).title, toScreenId));
+
+			}
 			#endif
 			yield return 0;
 
@@ -139,17 +148,21 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		public override System.Collections.Generic.IEnumerator<byte> OnTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature) {
 
 			#if APPSFLYER_ANALYTICS_API
-			AppsFlyer.setCurrencyCode(currency);
-			AppsFlyer.trackRichEvent(AFInAppEvents.PURCHASE, new Dictionary<string, string>() {
+			if (screenId >= 0) {
+				
+				AppsFlyer.setCurrencyCode(currency);
+				AppsFlyer.trackRichEvent(AFInAppEvents.PURCHASE, new Dictionary<string, string>() {
 
-				{ AFInAppEvents.CURRENCY, currency },
-				{ AFInAppEvents.REVENUE, price.ToString() },
-				{ AFInAppEvents.QUANTITY, "1" },
-				{ AFInAppEvents.CONTENT_ID, productId },
-				{ "Screen", screenId.ToString() },
-				{ "CustomParameter", User.instance.customParameter },
+					{ AFInAppEvents.CURRENCY, currency },
+					{ AFInAppEvents.REVENUE, price.ToString() },
+					{ AFInAppEvents.QUANTITY, "1" },
+					{ AFInAppEvents.CONTENT_ID, productId },
+					{ "Screen", screenId.ToString() },
+					{ "CustomParameter", User.instance.customParameter },
 
-			});
+				});
+
+			}
 			#endif
 			yield return 0;
 
@@ -193,20 +206,20 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 
 		#if UNITY_EDITOR
-		private bool foundType = false;
+		private static bool foundType = false;
 		protected override void OnInspectorGUI(UnityEngine.UI.Windows.Plugins.Heatmap.Core.HeatmapSettings settings, AnalyticsServiceItem item, System.Action onReset, GUISkin skin) {
 
 			var found = false;
-			if (this.foundType == false) {
+			if (foundType == false) {
 
 				var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
 				foreach (var ass in assemblies) {
 
-					var type = ass.GetTypes().FirstOrDefault(x => x.Name == "ApssflyerAnalytics");
+					var type = ass.GetTypes().FirstOrDefault(x => x.Name == "AppsFlyer");
 					if (type != null) {
 						
 						found = true;
-						this.foundType = true;
+						foundType = true;
 						break;
 
 					}
@@ -215,7 +228,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			} else {
 
-				found = this.foundType;
+				found = foundType;
 
 			}
 

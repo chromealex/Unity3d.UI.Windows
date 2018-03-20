@@ -4,7 +4,7 @@
 
 #include <OpenGLES/ES3/glext.h>
 
-#include "Unity/GLESHelper.h"
+#define GLES_CHK(expr) expr
 
 @implementation VideoPlayerToTexture
 {

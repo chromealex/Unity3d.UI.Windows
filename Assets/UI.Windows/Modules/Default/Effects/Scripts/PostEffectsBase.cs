@@ -15,7 +15,7 @@ namespace UnityEngine.UI.Windows.Modules.ImageEffects {
 
 		protected Material CheckShaderAndCreateMaterial(Shader s, Material m2Create) {
 			if (!s) {
-				Debug.Log("Missing shader in " + ToString());
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Missing shader in " + ToString());
 				enabled = false;
 				return null;
 			}
@@ -25,7 +25,7 @@ namespace UnityEngine.UI.Windows.Modules.ImageEffects {
 
 			if (!s.isSupported) {
 				NotSupported();
-				Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not supported on this platform!");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not supported on this platform!");
 				return null;
 			}
 
@@ -39,7 +39,7 @@ namespace UnityEngine.UI.Windows.Modules.ImageEffects {
 
 		protected Material CreateMaterial(Shader s, Material m2Create) {
 			if (!s) {
-				Debug.Log("Missing shader in " + ToString());
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Missing shader in " + ToString());
 				return null;
 			}
 
@@ -83,7 +83,7 @@ namespace UnityEngine.UI.Windows.Modules.ImageEffects {
 
 
 		public virtual bool CheckResources() {
-			Debug.LogWarning("CheckResources () for " + ToString() + " should be overwritten.");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("CheckResources () for " + ToString() + " should be overwritten.");
 			return isSupported;
 		}
 
@@ -132,12 +132,12 @@ namespace UnityEngine.UI.Windows.Modules.ImageEffects {
 
 
 		protected void ReportAutoDisable() {
-			Debug.LogWarning("The image effect " + ToString() + " has been disabled as it's not supported on the current platform.");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("The image effect " + ToString() + " has been disabled as it's not supported on the current platform.");
 		}
 
 		// deprecated but needed for old effects to survive upgrading
 		bool CheckShader(Shader s) {
-			Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not part of the Unity 3.2+ effects suite anymore. For best performance and quality, please ensure you are using the latest Standard Assets Image Effects (Pro only) package.");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not part of the Unity 3.2+ effects suite anymore. For best performance and quality, please ensure you are using the latest Standard Assets Image Effects (Pro only) package.");
 			if (!s.isSupported) {
 				NotSupported();
 				return false;

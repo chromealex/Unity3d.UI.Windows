@@ -12,7 +12,9 @@ namespace UnityEngine.UI.Windows.Plugins.Ads.Services {
 
 	public class UnityAdsService : AdsService {
 
+		#if UNITY_ADS
 		private bool isPlaying = false;
+		#endif
 
 		public override string GetAuthKey(ServiceItem item) {
 
@@ -63,11 +65,11 @@ namespace UnityEngine.UI.Windows.Plugins.Ads.Services {
 
 				Advertisement.Initialize(key, testMode: (serviceItem as AdsServiceItem).testMode);
 
-				while (Advertisement.isInitialized == false) {
+				/*while (Advertisement.isInitialized == false) {
 
 					yield return 0;
 
-				}
+				}*/
 
 			}
 			#endif

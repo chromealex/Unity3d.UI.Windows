@@ -12,7 +12,6 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public Transform container;
 		public CircleLayoutGroup circeLayoutGroup;
-		public UIPolygon uiPolygon;
 
 		public bool interactable = true;
 		public bool draggable = true;
@@ -96,7 +95,7 @@ namespace UnityEngine.UI.Windows.Components {
 		[ContextMenu("Arrange")]
 		public void Arrange() {
 
-			if (this.container == null || this.uiPolygon == null || this.circeLayoutGroup == null) return;
+			if (this.container == null || this.circeLayoutGroup == null) return;
 
 			//this.circeLayoutGroup.Arrange();
 

@@ -25,7 +25,9 @@ namespace UnityEngine.UI.Windows {
 
 		};
 
+		#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_TVOS
 		public VideoPlayer videoPlayer;
+		#endif
 		public float delayToPause = 0.1f;
 		public bool defaultPlayingState = true;
 		public QualityItem[] quality;
@@ -109,7 +111,7 @@ namespace UnityEngine.UI.Windows {
 
 		public static void Unload(IImageComponent resourceController, ResourceBase resource) {
 
-			MovieSystem.instance.movieModule.Unload(resourceController, resource);
+			if (MovieSystem.instance != null) MovieSystem.instance.movieModule.Unload(resourceController, resource);
 
 		}
 
@@ -232,12 +234,14 @@ namespace UnityEngine.UI.Windows {
 
 		private void Play_INTERNAL(IImageComponent component, bool loop, bool pause, System.Action onComplete) {
 
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Play_INTERNAL: " + loop + " :: " + component, component as MonoBehaviour);
 			this.movieModule.Play(component, loop, pause, onComplete);
 
 		}
 
 		private void Stop_INTERNAL(IImageComponent component, int instanceId) {
 
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Stop_INTERNAL: " + instanceId + " :: " + component, component as MonoBehaviour);
 			if (component.IsMovie() == true && component.IsPlaying() == true) this.movieModule.Stop(component, instanceId);
 
 		}
@@ -282,12 +286,14 @@ namespace UnityEngine.UI.Windows {
 
 		protected virtual void InitializeModule_INTERNAL() {
 
-			#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_ANDROID
+			#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_TVOS
 			this.movieModule = new MovieStandaloneModule(this.videoPlayer);
 			#elif UNITY_IOS || UNITY_TVOS
 			this.movieModule = new MovieIOSModule();
 			#elif UNITY_PS4
 			this.movieModule = new MoviePS4Module();
+			#elif UNITY_SWITCH
+			this.movieModule = new MovieSwitchModule();
 			#else
 			this.movieModule = new MovieNoSupportModule();
 			#endif

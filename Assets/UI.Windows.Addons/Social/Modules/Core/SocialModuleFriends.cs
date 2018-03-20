@@ -57,7 +57,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Core {
 				query.method,
 				(data, result) => {
 				
-				Debug.Log(result + " :: " + data);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(result + " :: " + data);
 				
 				this.socialModule.profile.user.ParseFriendsData(this.socialModule, data);
 

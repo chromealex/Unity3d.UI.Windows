@@ -263,7 +263,7 @@ namespace ME.UAB {
 				var isGameObject = (value is GameObject);
 				var postInstanceId = string.Empty;
 
-				//Debug.Log(Builder.GetRoot(value) + " :: " + root);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(Builder.GetRoot(value) + " :: " + root);
 
 				var resultInstanceId = string.Empty;
 
@@ -589,7 +589,7 @@ namespace ME.UAB {
 
 			} else if (uField.fieldType == FieldType.ReferenceType) {
 
-				//Debug.Log("Pack ref type: " + value);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Pack ref type: " + value);
 
 				this.RegisterReferencePack(uField, value);
 
@@ -607,7 +607,7 @@ namespace ME.UAB {
 
 				}
 
-				//Debug.Log("Pack arr type: " + count);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Pack arr type: " + count);
 				if (count > 0) {
 
 					enumerator.Reset();

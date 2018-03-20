@@ -191,28 +191,28 @@ namespace UnityEngine.UI.Windows.Types {
 
 				if (sourceRect.Contains(bottomLeft) == false) {
 					
-					//Debug.Log("Failed bottom left: " + sourceRect + " << " + bottomLeft);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Failed bottom left: " + sourceRect + " << " + bottomLeft);
 					continue;
 					
 				}
 				
 				if (sourceRect.Contains(topLeft) == false) {
 					
-					//Debug.Log("Failed top left: " + sourceRect + " << " + topLeft);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Failed top left: " + sourceRect + " << " + topLeft);
 					continue;
 					
 				}
 				
 				if (sourceRect.Contains(topRight) == false) {
 					
-					//Debug.Log("Failed top right: " + sourceRect + " << " + topRight);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Failed top right: " + sourceRect + " << " + topRight);
 					continue;
 					
 				}
 				
 				if (sourceRect.Contains(bottomRight) == false) {
 					
-					//Debug.Log("Failed bottom right: " + sourceRect + " << " + bottomRight);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Failed bottom right: " + sourceRect + " << " + bottomRight);
 					continue;
 					
 				}

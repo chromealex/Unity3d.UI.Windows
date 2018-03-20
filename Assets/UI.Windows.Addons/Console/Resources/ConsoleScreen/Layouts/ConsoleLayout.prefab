@@ -161,7 +161,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11479802}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -246,7 +245,6 @@ MonoBehaviour:
   subComponents:
   - {fileID: 11479792}
   - {fileID: 11424996}
-  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
@@ -301,7 +299,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11422862}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -437,7 +434,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11422862}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -493,7 +489,6 @@ MonoBehaviour:
   - {fileID: 11405016}
   - {fileID: 11489722}
   - {fileID: 11422862}
-  currentState: 0
   canvasScaler: {fileID: 11442514}
   root: {fileID: 11440508}
   elements:
@@ -581,7 +576,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11479802}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0

@@ -104,7 +104,7 @@ namespace CodeEditor.Text.UI.Unity.Editor.Implementation
 			var editorAssembly = typeof(EditorWindow).Assembly;
 			inspectorStateType = editorAssembly.GetType("UnityEditor.InspectorState");
 			if (inspectorStateType == null)
-				Debug.LogError("Could not get type: UnityEditor.InspectorWindow");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Could not get type: UnityEditor.InspectorWindow");
 
 		}
 		

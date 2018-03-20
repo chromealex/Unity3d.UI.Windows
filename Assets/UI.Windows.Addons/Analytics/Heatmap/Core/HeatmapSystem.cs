@@ -82,7 +82,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 					localNormalizedPoint = new Vector2(localPoint.x / elementRect.width, localPoint.y / elementRect.height);
 
-					//Debug.Log(elementRect, component as ButtonComponent);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(elementRect, component as ButtonComponent);
 
 				}
 
@@ -107,7 +107,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 
 			}
 			
-			//Debug.Log(fullScreen + " :: " + localNormalizedPoint + " :: " + localPoint);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(fullScreen + " :: " + localNormalizedPoint + " :: " + localPoint);
 
 			// Send point to server
 			HeatmapSystem.Send(tag, screen, component as WindowComponent, localNormalizedPoint);
@@ -129,7 +129,7 @@ namespace UnityEngine.UI.Windows.Plugins.Heatmap.Core {
 			var flowWindow = Flow.FlowSystem.GetWindow(window, runtime: true);
 			if (flowWindow == null) {
 				
-				Debug.LogWarningFormat("[ Heatmap ] FlowWindow not found. Source {0} used ({1}).", window, tag);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("[ Heatmap ] FlowWindow not found. Source {0} used ({1}).", window, tag);
 				return;
 
 			}

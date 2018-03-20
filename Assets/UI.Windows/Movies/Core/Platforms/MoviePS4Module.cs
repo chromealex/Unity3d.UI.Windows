@@ -63,7 +63,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			var filePath = resource.GetStreamPath();
 
-			//Debug.Log("LOADING: " + filePath);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("LOADING: " + filePath);
 
 			Item item = null;
 			var instance = this.FindInstance(resource);
@@ -78,7 +78,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			}
 
-			//Debug.Log ("DONE: " + item.material);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log ("DONE: " + item.material);
 			asyncOperation.SetValues(isDone: true, progress: 1f, asset: item.material);
 
 			yield return 0;
@@ -144,7 +144,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			var path = resource.GetStreamPath();
 			var instance = this.FindInstance(resource);
-			//Debug.Log ("-----------------------OnPlay: " + path + " :: " + (instance != null));
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log ("-----------------------OnPlay: " + path + " :: " + (instance != null));
 			if (instance != null) {
 
 				instance.player.Play(path, loop == true ? PS4VideoPlayer.Looping.Continuous : PS4VideoPlayer.Looping.None);

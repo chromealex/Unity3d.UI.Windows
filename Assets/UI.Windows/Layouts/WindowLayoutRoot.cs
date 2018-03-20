@@ -49,46 +49,7 @@ namespace UnityEngine.UI.Windows {
 		public float maxWidth = 1920f;
 		public float margin = 100f;
 
-		/*public void Start() {
-
-			this.rectTransform.sizeDelta = new Vector2(2f, 2f) * 2f;
-
-		}*/
-
 		private bool reseted = false;
-
-		#if UNITY_EDITOR
-		//[HideInInspector]
-		public Rect editorRectLocal;
-		
-		//[HideInInspector]
-		public Rect editorRect;
-
-		public override void OnValidateEditor() {
-
-			base.OnValidateEditor();
-
-			this._rectTransform = this.transform as RectTransform;
-
-			if (this.canvasGroup == null) {
-				
-				this.canvasGroup = this.GetComponent<CanvasGroup>();
-				if (this.canvasGroup == null) this.gameObject.AddComponent<CanvasGroup>();
-				this.canvasGroup = this.GetComponent<CanvasGroup>();
-				
-			}
-
-		}
-		#endif
-		/*
-		new private Camera camera;
-		internal override void Setup(WindowBase window) {
-
-			base.Setup(window);
-
-			this.camera = this.GetWindow().workCamera;
-
-		}*/
 
 		public void SetPosition(Vector2 position) {
 
@@ -138,7 +99,7 @@ namespace UnityEngine.UI.Windows {
 		}
 
 		public void Rebuild() {
-
+			
 			if (this.mode == Mode.None) return;
 
 			var rect = this.rectTransform;
@@ -151,6 +112,27 @@ namespace UnityEngine.UI.Windows {
 			rect.sizeDelta = size;
 
 		}
+
+		#if UNITY_EDITOR
+		public Rect editorRectLocal;
+		public Rect editorRect;
+
+		public override void OnValidateEditor() {
+
+			base.OnValidateEditor();
+
+			this._rectTransform = this.transform as RectTransform;
+
+			if (this.canvasGroup == null) {
+
+				this.canvasGroup = this.GetComponent<CanvasGroup>();
+				if (this.canvasGroup == null) this.gameObject.AddComponent<CanvasGroup>();
+				this.canvasGroup = this.GetComponent<CanvasGroup>();
+
+			}
+
+		}
+		#endif
 
 	}
 

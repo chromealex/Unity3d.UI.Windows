@@ -90,7 +90,14 @@ namespace ME {
 
 			static Styles() {
 
+
 				Styles.label = new GUIStyle((GUIStyle)"ChannelStripAttenuationBar");
+				Styles.label.normal.textColor = Color.white;
+				if (EditorGUIUtility.isProSkin == false) {
+
+					Styles.label.normal.textColor = Color.black;
+
+				}
 
 				Styles.progressBar = new GUIStyle((GUIStyle)"MeLivePlayBar");
 				Styles.progressBar.fixedHeight = 0f;

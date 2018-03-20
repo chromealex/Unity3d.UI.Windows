@@ -85,7 +85,7 @@ namespace ME {
 
 		}
 
-		public void OnValidate() {
+		/*public void OnValidate() {
 
 			if (Application.isPlaying == true) return;
 			#if UNITY_EDITOR
@@ -94,7 +94,7 @@ namespace ME {
 			
 			this.Setup();
 
-		}
+		}*/
 		#endif
 
 		#if PARTICLESYSTEM_LEGACY
@@ -257,7 +257,7 @@ namespace ME {
 
 		public void Play() {
 
-			this.particleSystem.Play(withChildren: false);
+            this.particleSystem.Play(withChildren: false);
 
 		}
 

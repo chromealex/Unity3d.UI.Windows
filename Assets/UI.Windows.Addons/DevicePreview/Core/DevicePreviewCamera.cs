@@ -144,7 +144,7 @@ namespace UnityEngine.UI.Windows.Plugins.DevicePreview {
 
 				} else {
 
-					Debug.LogWarning("Out of sync: " + currentIteration + "/" + this.currentIteration);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Out of sync: " + currentIteration + "/" + this.currentIteration);
 
 				}
 
@@ -185,7 +185,7 @@ namespace UnityEngine.UI.Windows.Plugins.DevicePreview {
 
 			} else {
 				
-				Debug.LogWarning("Out of sync: " + currentIteration + "/" + this.currentIteration);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Out of sync: " + currentIteration + "/" + this.currentIteration);
 
 			}
 

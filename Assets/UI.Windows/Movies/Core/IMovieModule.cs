@@ -302,7 +302,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			/*if (resource.loaded == false) {
 
-				Debug.LogWarning("Resource was not loaded yet. Unload interrupted.", component as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Resource was not loaded yet. Unload interrupted.", component as MonoBehaviour);
 				return;
 
 			}*/
@@ -316,7 +316,7 @@ namespace UnityEngine.UI.Windows.Movies {
 		private MovieItem GetMovieItem(IImageComponent component, ResourceBase resource) {
 
 			var item = this.current.FirstOrDefault(x => x.id == resource.GetId());
-			//Debug.Log("GetMovieItem: " + (item != null) + " :: " + resource.GetId() + " :: " + component, component as MonoBehaviour);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("GetMovieItem: " + (item != null) + " :: " + resource.GetId() + " :: " + component, component as MonoBehaviour);
 			if (item != null) {
 
 				var c = component as IResourceReference;
@@ -328,7 +328,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			} else {
 
-				//Debug.Log("new MOVIE ITEM: " + resource.GetId());
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("new MOVIE ITEM: " + resource.GetId());
 				item = new MovieItem() {
 
 					resource = WindowSystemResources.GetItem(resource),
@@ -349,7 +349,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
 
-				Debug.LogWarning("Resource was not loaded yet. Rewind interrupted.", component as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Resource was not loaded yet. Rewind interrupted.", component as MonoBehaviour);
 				return;
 
 			}
@@ -367,7 +367,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
 
-				Debug.LogWarning("Resource was not loaded yet. Play interrupted.", component as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Resource was not loaded yet. Play interrupted.", component as MonoBehaviour);
 				return;
 
 			}
@@ -395,7 +395,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
 				
-				Debug.LogWarning("Resource was not loaded yet. Stop interrupted.", component as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Resource was not loaded yet. Stop interrupted.", component as MonoBehaviour);
 				return;
 				
 			}
@@ -416,7 +416,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
 			if (item != null) {
 
-				//Debug.Log("Stop: " + item.id + " :: " + instanceId + " :: " + item.components.Count + " :: " + (component as MonoBehaviour), component as MonoBehaviour);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stop: " + item.id + " :: " + instanceId + " :: " + item.components.Count + " :: " + (component as MonoBehaviour), component as MonoBehaviour);
 				//if (WindowSystemResources.Remove(item.resource, component as WindowComponent) == true) {
 
 				if (item.components != null && item.components.Count == 0) {
@@ -448,7 +448,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
 				
-				Debug.LogWarning("Resource was not loaded yet. Pause interrupted.", component as MonoBehaviour);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Resource was not loaded yet. Pause interrupted.", component as MonoBehaviour);
 				return;
 				
 			}
@@ -483,7 +483,7 @@ namespace UnityEngine.UI.Windows.Movies {
 			var resource = component.GetResource();
 			if (resource.loaded == false) {
 
-				//Debug.LogWarning("Resource was not loaded yet. IsPlaying returns false.", component as MonoBehaviour);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Resource was not loaded yet. IsPlaying returns false.", component as MonoBehaviour);
 				return false;
 
 			}

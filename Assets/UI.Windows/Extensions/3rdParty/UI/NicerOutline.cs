@@ -92,7 +92,7 @@ namespace UnityEngine.UI
 		//
 		protected void ApplyShadow (List<UIVertex> verts, Color32 color, int start, int end, float x, float y)
 		{
-			//Debug.Log("verts count: "+verts.Count);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("verts count: "+verts.Count);
 			int num = verts.Count * 2;
 			if (verts.Capacity < num)
 			{
@@ -104,7 +104,7 @@ namespace UnityEngine.UI
 				verts.Add (uIVertex);
 
 				Vector3 position = uIVertex.position;
-				//Debug.Log("vertex pos: "+position);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("vertex pos: "+position);
 				position.x += x;
 				position.y += y;
 				uIVertex.position = position;

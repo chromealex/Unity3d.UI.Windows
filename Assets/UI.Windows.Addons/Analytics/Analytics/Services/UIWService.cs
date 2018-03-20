@@ -32,6 +32,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		#else
 		public string host = "test.unity3dwindows.com";
 		#endif
+
 //		public string host = "localhost";
 		[System.NonSerialized]
 		public int port = 9997;
@@ -86,18 +87,18 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		private void Connect(string key, System.Action<bool> onResult = null) {
 
 			if (this.net.Connected() == true) {
-                Debug.Log("Stat, Is already connected");
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stat, Is already connected");
                 if (onResult != null) onResult.Invoke(true);
 
             } else if (connecting == true) {
-                Debug.LogError("Stat, Is already connecting");
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Stat, Is already connecting");
 
             } else {
 				this.connectDT = System.DateTime.UtcNow;
 				this.connecting = true;
 				this.net.Connect(host, port, (b) => {
                     var seconds = (System.DateTime.UtcNow - connectDT).TotalSeconds;
-                    Debug.Log(string.Format("Stat connect to host: {0} r: {1} s: {2}", host, b, seconds));
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("Stat connect to host: {0} r: {1} s: {2}", host, b, seconds));
                     reconnectDelay = b ? minDelay : System.Math.Min(reconnectDelay * 2, maxDelay);
 
 					if (b == true) {
@@ -114,7 +115,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 
 		private void Disconnect(System.Action<bool> onResult = null) {
-			//Debug.Log("Closing stat");
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Closing stat");
 
 			this.authTO = null;
 			this.net.Close();
@@ -133,12 +134,12 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
             if (this.logTcp == true) {
 #if UNITY_EDITOR
                 if (to is StatReqTO) {
-                    Debug.Log("Stat> " + to.GetTypeTO() + ":" + (to as StatReqTO).idx);
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stat> " + to.GetTypeTO() + ":" + (to as StatReqTO).idx);
                 } else {
-                    Debug.Log("Stat> " + to.GetTypeTO());
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stat> " + to.GetTypeTO());
                 }
 #else
-                Debug.Log("Stat> " + to.GetTypeTO());
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stat> " + to.GetTypeTO());
 #endif
             }
 
@@ -148,7 +149,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
         public void SendMsg<T>(T to) where T : StatTO {
             if (this.authTO == null) {
 				
-				if (this.logTcp == true) Debug.LogError("Sending Msg in Non-Auth Mode: " + to.GetTypeTO());
+				if (this.logTcp == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Sending Msg in Non-Auth Mode: " + to.GetTypeTO());
 
             } else if (!net.Connected()) {
                 if (needReconnect == true) {
@@ -157,7 +158,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
                 if (connecting)  {
 //                    outQueue.Add(to);
                 } else {
-                    Debug.LogError("SendMsg On Disconnected: " + to.GetTypeTO());
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("SendMsg On Disconnected: " + to.GetTypeTO());
                 }
 
             } else {
@@ -177,7 +178,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			} else {
 
-				Debug.LogWarning("Callback " + resTO.idx + " not found");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Callback " + resTO.idx + " not found");
 
 			}
 			
@@ -206,7 +207,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			var typeByte = (byte)typeShort;
 			if (System.Enum.IsDefined(typeof(StatType), typeByte) == false) {
 
-				Debug.LogWarning("Unknown request: " + typeShort);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Unknown request: " + typeShort);
 				return;
 
 			}
@@ -228,19 +229,19 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 			} else {
 
-				Debug.LogWarning("Unknown request: " + type);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Unknown request: " + type);
 
 			}
 
 			if (this.logTcp == true && to != null) {
 
-				Debug.Log("Stat." + to.GetTypeTO() + ":" + to.idx + " " + to.GetResult().ToString());
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stat." + to.GetTypeTO() + ":" + to.idx + " " + to.GetResult().ToString());
 
 			}
 
 			this.OnResponse(to);
 			#else
-			Debug.LogWarning("Unknown request: " + typeShort);
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Unknown request: " + typeShort);
 			#endif
 
 		}
@@ -254,30 +255,33 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		}
 
 		public override System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
+			
 			net.SetName("stat");
 			this.needReconnect = true;
 
 			var hasError = false;
-			this.Connect(key, (resultOk) => hasError = !resultOk);
+			this.Connect(key, (resultOk) => {
 
-			while (this.net.Connected() == false && hasError == false) {
+				hasError = !resultOk;
 
-				yield return 0;
+				var seconds = (System.DateTime.UtcNow - connectDT).TotalSeconds;
+				if (hasError == false) {
+					
+					WindowSystemLogger.Warning(this, string.Format("Stat connected: {0} in {1} s", host, seconds));
 
-			}
+					foreach (var identityMsg in this.userMap.Values) {
+						
+						this.SendMsg(identityMsg);
 
-			var seconds = (System.DateTime.UtcNow - connectDT).TotalSeconds;
+					}
 
-			if (hasError == false) {
-				WindowSystemLogger.Warning(this, string.Format("Stat connected: {0} in {1} s", host, seconds));
+				} else {
+					
+					WindowSystemLogger.Warning(this, string.Format("Stat connecting error to host: {0} in {1} s", host, seconds));
 
-				foreach (var identityMsg in this.userMap.Values) {
-					this.SendMsg(identityMsg);
 				}
 
-			} else {
-				WindowSystemLogger.Warning(this, string.Format("Stat connecting error to host: {0} in {1} s", host, seconds));
-			}
+			});
 
 			yield return 0;
 
@@ -286,13 +290,13 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 		private void Reconnect() {
             var sinceLastConnect = (System.DateTime.UtcNow - this.connectDT).TotalSeconds;
 			// if previous successful connection disconnected in 20s
-			if (this.connecting == false &&  this.reconnectDelay == this.minDelay && sinceLastConnect < 20) {
+			if (this.connecting == false &&  this.reconnectDelay == this.minDelay && sinceLastConnect < 20d) {
 				this.reconnectDelay = this.maxDelay;
 			}
 
 			// this.authTO != null -> had a successful connection
 			if (this.connecting == false && this.authTO != null && sinceLastConnect > this.reconnectDelay) {
-				Debug.Log(string.Format("Stat reconnecting to host: {0} ...", host));
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("Stat reconnecting to host: {0} ...", host));
 
 				Connect(authTO.key, (success) => {
 					if (success) {
@@ -307,7 +311,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 					}
 				});
 			} else {
-                Debug.Log(string.Format("Stat not-reconnecting to host: {0} connecting: {1} auth: {2} since: {3} delay: {4}", host, this.connecting, this.authTO, sinceLastConnect, this.reconnectDelay));
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(string.Format("Stat not-reconnecting to host: {0} connecting: {1} auth: {2} since: {3} delay: {4}", host, this.connecting, this.authTO, sinceLastConnect, this.reconnectDelay));
             }
 		}
 
@@ -385,7 +389,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
             StartCoroutine(netHttp.JsonPost(host, "/v/loadingProgress", json, response => {
 				// ignore
             }, errorText => { // Transport errors
-                Debug.Log("StatHttp error: " + errorText);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("StatHttp error: " + errorText);
             }));
 
             yield return 0;
@@ -400,7 +404,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
             StartCoroutine(netHttp.JsonPost(host, "/v/bugReport", json, response => {
 				// ignore
             }, errorText => { // Transport errors
-                Debug.Log("StatHttp error: " + errorText);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("StatHttp error: " + errorText);
             }));
 
             yield return 0;
@@ -417,7 +421,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 			net.SetName("statEditor");
 			this.needReconnect = true;
 			this.Connect(key, (b) => {
-				Debug.Log("Stat Editor connected: " + host);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stat Editor connected: " + host);
 				onResult(b);
 			});
 
@@ -504,7 +508,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics.Services {
 
 							UnityEditor.EditorApplication.delayCall += () => {
 								
-								Debug.Log("Stat Editor Connected!");
+								if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Stat Editor Connected!");
 								item.show = result;
 								item.processing = false;
 

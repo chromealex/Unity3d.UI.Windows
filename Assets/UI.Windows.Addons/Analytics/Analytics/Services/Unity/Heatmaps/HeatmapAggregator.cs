@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using ME.FS.Core;
 
 namespace UnityAnalyticsHeatmap
 {
@@ -21,7 +22,7 @@ namespace UnityAnalyticsHeatmap
         Dictionary<Tuplish, Dictionary<string, float>> m_PointDict;
 
         // Stored because we need to apply it at non-main-thread time
-        string m_PersistentDataPath = Application.persistentDataPath;
+        string m_PersistentDataPath = FileSystem.instance.GetCachePath();
 
         public delegate void CompletionHandler(string jsonPath);
 
@@ -85,13 +86,13 @@ namespace UnityAnalyticsHeatmap
                 report += "Total of " + reportList.Count + " groups numbering [" + string.Join(",", reportArray) + "]\n";
                 report += "Total rows: " + m_ReportRows + "\n";
                 report += "Total points analyzed: " + m_ReportLegalPoints;
-                Debug.Log(report);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(report);
 
                 SaveFile(outputFileName, outputData);
             }
             else
             {
-                Debug.LogWarning("The aggregation process yielded no results.");
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("The aggregation process yielded no results.");
             }
         }
 
@@ -116,7 +117,7 @@ namespace UnityAnalyticsHeatmap
                     if (string.IsNullOrEmpty(rowData[0]) || string.IsNullOrEmpty(rowData[2]) || string.IsNullOrEmpty(rowData[3]))
                     {
                         // Re-enable this log if you want to see empty lines
-                        //Debug.Log ("Empty Line...skipping");
+                        //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log ("Empty Line...skipping");
                         continue;
                     }
 
@@ -141,7 +142,7 @@ namespace UnityAnalyticsHeatmap
                     if (!datum.ContainsKey("x") || !datum.ContainsKey("y"))
                     {
                         // Re-enable this log line if you want to be see events that aren't valid for heatmapping
-                        //Debug.Log ("Unable to find x/y in: " + datum.ToString () + ". Skipping...");
+                        //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log ("Unable to find x/y in: " + datum.ToString () + ". Skipping...");
                         continue;
                     }
 

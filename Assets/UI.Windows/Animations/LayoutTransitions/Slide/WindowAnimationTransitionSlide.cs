@@ -258,7 +258,7 @@ namespace UnityEngine.UI.Windows.Animations {
 
 				if (root == null) {
 
-					Debug.LogWarning(string.Format("Root is null, GetRoot() returns {0}, {1}.", root, component));
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("Root is null, GetRoot() returns {0}, {1}.", root, component));
 					return null;
 
 				}

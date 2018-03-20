@@ -317,11 +317,7 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnInit();
 
 			this.inputField.onValidateInput = this.OnValidateChar;
-			#if UNITY_5_2
-			this.inputField.onValueChange.AddListener(this.OnChange);
-			#else
 			this.inputField.onValueChanged.AddListener(this.OnChange);
-			#endif
 			this.inputField.onEndEdit.AddListener(this.OnEditEnd);
 
 			this.lastFocusValue = this.HasFocus();
@@ -333,11 +329,7 @@ namespace UnityEngine.UI.Windows.Components {
 			base.OnDeinit(callback);
 
 			this.inputField.onValidateInput = null;
-			#if UNITY_5_2
-			this.inputField.onValueChange.RemoveListener(this.OnChange);
-			#else
 			this.inputField.onValueChanged.RemoveListener(this.OnChange);
-			#endif
 			this.inputField.onEndEdit.RemoveListener(this.OnEditEnd);
 
 			this.onChange.RemoveAllListeners();

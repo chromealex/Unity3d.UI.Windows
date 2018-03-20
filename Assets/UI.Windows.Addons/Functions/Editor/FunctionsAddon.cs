@@ -18,7 +18,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var file = UnityEngine.Resources.Load("UI.Windows/Functions/Templates/TemplateReturnMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateReturnMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateReturnMethod'");
 				
 				return string.Empty;
 				
@@ -58,7 +58,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var file = UnityEngine.Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateTransitionMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateTransitionMethod'");
 				
 				return string.Empty;
 				
@@ -88,7 +88,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 
 			if (root == null) {
 
-				Debug.LogWarning(string.Format("[ GenerateTransitionMethod ] Function Container `{0}` doesn't have root with id `{1}`", functionContainer.name, functionContainer.functionRootId));
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("[ GenerateTransitionMethod ] Function Container `{0}` doesn't have root with id `{1}`", functionContainer.name, functionContainer.functionRootId));
 				return string.Empty;
 
 			}
@@ -117,7 +117,7 @@ namespace UnityEditor.UI.Windows.Plugins.Functions {
 			var file = UnityEngine.Resources.Load("UI.Windows/Functions/Templates/TemplateTransitionTypedMethod") as TextAsset;
 			if (file == null) {
 				
-				Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateTransitionTypedMethod'");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Functions Template Loading Error: Could not load template 'TemplateTransitionTypedMethod'");
 				
 				return string.Empty;
 				

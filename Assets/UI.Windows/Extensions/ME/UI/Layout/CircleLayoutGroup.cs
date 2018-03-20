@@ -20,7 +20,7 @@ namespace UnityEngine.UI.Extensions {
 		public float maxAnglePerElement = 360f;
 		public float angle = 360f;
 		public bool reverse = false;
-		public float multiplier = 1f;
+		public bool alignRotation = false;
 
 		public bool manualSize = false;
 		[ReadOnly("manualSize", false)] public float radiusX = 100f;
@@ -166,6 +166,19 @@ namespace UnityEngine.UI.Extensions {
 				if (item == null) continue;
 
 				item.anchoredPosition3D = this.GetPosition((this.reverse == true ? count - i - 1 : i), count, item.anchoredPosition3D.z, rX, rY, this.bothSided, this.bothSidedSorted, this.startAngle, this.maxAnglePerElement, this.angle) + center.XY();
+				if (this.alignRotation == true) {
+
+					var n = item.localPosition.normalized;
+					item.localRotation = Quaternion.Inverse(Quaternion.FromToRotation(n, Vector3.down));
+					item.localScale = Vector3.one;
+					if (n == Vector3.up) {
+
+						item.localScale = new Vector3(-1f, 1f, 1f);
+
+					}
+
+				}
+				
 				#if UNITY_EDITOR
 				if (Application.isPlaying == false) {
 
@@ -343,9 +356,8 @@ namespace UnityEngine.UI.Extensions {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
-			#if UNITY_EDITOR
+			if (GUI.changed == false) return;
 			if (UnityEditor.EditorApplication.isUpdating == true) return;
-			#endif
 			
 			base.OnValidate();
 			

@@ -13,7 +13,7 @@ public class MacrosInjectionTest2 : MonoBehaviour {
 	 * Do not change anything
 	 */
 	var a = "Source Test 2" + "test";
-	Debug.Log(a);
+	if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(a);
 	#endregion
 	#region macros TEST3 (aa:"test",bb:"bb-test")
 
@@ -22,8 +22,8 @@ public class MacrosInjectionTest2 : MonoBehaviour {
 	 * Do not change anything
 	 */
 	var b = "Source Test 3" + "test";
-	Debug.Log(b);
-	Debug.Log("bb-test");
+	if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(b);
+	if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("bb-test");
 	#endregion
 	#region macros TEST4 
 	/*
@@ -31,7 +31,7 @@ public class MacrosInjectionTest2 : MonoBehaviour {
 	 * Do not change anything
 	 */
 	var c = "Source Test 4";
-	Debug.Log(c);
+	if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(c);
 	#endregion
 	#region macros TEST5 (x:abc,code:var abc="test";)
 
@@ -40,7 +40,7 @@ public class MacrosInjectionTest2 : MonoBehaviour {
 	 * Do not change anything
 	 */
 	var abc="test";
-	Debug.Log(abc);
+	if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(abc);
 	#endregion
 	}
 	

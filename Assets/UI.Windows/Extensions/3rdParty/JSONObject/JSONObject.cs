@@ -154,9 +154,9 @@ namespace UnityEngine.UI.Windows.Extensions {
 	#if DEV
 				//The following cases should NEVER HAPPEN (but they do...)
 				if(result == null)
-					Debug.Log("wtf " + releaseQueue.Count);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("wtf " + releaseQueue.Count);
 				else if(result.list != null)
-					Debug.Log("wtflist " + result.list.Count);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("wtflist " + result.list.Count);
 	#endif
 			}
 			if(result != null)
@@ -252,7 +252,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 				if(strict) {
 					if(str[0] != '[' && str[0] != '{') {
 						type = Type.NULL;
-						Debug.LogWarning("Improper (strict) JSON formatting.  First character must be [ or {");
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Improper (strict) JSON formatting.  First character must be [ or {");
 						return;
 					}
 				}
@@ -321,7 +321,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 									type = Type.NUMBER;
 								} catch(System.FormatException) {
 									type = Type.NULL;
-									Debug.LogWarning("improper JSON formatting:" + str);
+									if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("improper JSON formatting:" + str);
 								}
 								return;
 						}
@@ -594,7 +594,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 				}
 			} else if(left.type == Type.ARRAY && right.type == Type.ARRAY) {
 				if(right.Count > left.Count) {
-					Debug.LogError("Cannot merge arrays when right object has more elements");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Cannot merge arrays when right object has more elements");
 					return;
 				}
 				for(int i = 0; i < right.list.Count; i++) {
@@ -648,7 +648,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 		IEnumerable StringifyAsync(int depth, StringBuilder builder, bool pretty = false) {	//Convert the JSONObject into a string
 			//Profiler.BeginSample("JSONprint");
 			if(depth++ > MAX_DEPTH) {
-				Debug.Log("reached max depth!");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("reached max depth!");
 				yield break;
 			}
 			if(printWatch.Elapsed.TotalSeconds > maxFrameTime) {
@@ -785,7 +785,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 		void Stringify(int depth, StringBuilder builder, bool pretty = false) {	//Convert the JSONObject into a string
 			//Profiler.BeginSample("JSONprint");
 			if(depth++ > MAX_DEPTH) {
-				Debug.Log("reached max depth!");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("reached max depth!");
 				return;
 			}
 			switch(type) {
@@ -952,12 +952,12 @@ namespace UnityEngine.UI.Windows.Extensions {
 						case Type.STRING: result.Add(keys[i], val.str); break;
 						case Type.NUMBER: result.Add(keys[i], val.n + ""); break;
 						case Type.BOOL: result.Add(keys[i], val.b + ""); break;
-						default: Debug.LogWarning("Omitting object: " + keys[i] + " in dictionary conversion"); break;
+						default: if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Omitting object: " + keys[i] + " in dictionary conversion"); break;
 					}
 				}
 				return result;
 			}
-			Debug.LogWarning("Tried to turn non-Object JSONObject into a dictionary");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Tried to turn non-Object JSONObject into a dictionary");
 			return null;
 		}
 		public static implicit operator bool(JSONObject o) {

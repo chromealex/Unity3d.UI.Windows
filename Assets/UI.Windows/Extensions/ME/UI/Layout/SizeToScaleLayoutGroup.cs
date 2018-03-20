@@ -45,9 +45,8 @@ namespace UnityEngine.UI.Extensions {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
-			#if UNITY_EDITOR
+			if (GUI.changed == false) return;
 			if (UnityEditor.EditorApplication.isUpdating == true) return;
-			#endif
 			
 			base.OnValidate();
 			

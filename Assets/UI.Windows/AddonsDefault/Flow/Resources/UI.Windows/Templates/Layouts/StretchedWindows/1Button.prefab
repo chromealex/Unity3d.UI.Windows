@@ -154,7 +154,6 @@ MonoBehaviour:
   rootComponent: {fileID: 11449122}
   subComponents:
   - {fileID: 11449118}
-  currentState: 0
   animation: {fileID: 11400000, guid: 27c682eaedbe74bdea85cfcdf84e1989, type: 2}
   childsShowMode: 0
   childsHideMode: 0
@@ -246,7 +245,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11449118}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -301,7 +299,6 @@ MonoBehaviour:
   subComponents:
   - {fileID: 11449116}
   - {fileID: 11453426}
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -388,7 +385,6 @@ MonoBehaviour:
   rootComponent: {fileID: 0}
   subComponents:
   - {fileID: 11404854}
-  currentState: 0
   canvasScaler: {fileID: 11442514}
   root: {fileID: 11449120}
   elements:
@@ -424,6 +420,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11453418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -442,6 +439,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11453420
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -485,7 +483,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 11453426}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -539,7 +536,6 @@ MonoBehaviour:
   rootComponent: {fileID: 11449118}
   subComponents:
   - {fileID: 11453424}
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -624,6 +620,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11456108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -685,6 +682,7 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11487558
 MonoBehaviour:
   m_ObjectHideFlags: 1

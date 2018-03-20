@@ -31,7 +31,7 @@ namespace UnityEngine.UI
 				if (gradientDir == GradientDir.DiagonalLeftToRight || gradientDir == GradientDir.DiagonalRightToLeft)
 				{
 					#if UNITY_EDITOR
-					Debug.LogWarning("Diagonal dir is not supported in Global mode");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Diagonal dir is not supported in Global mode");
 					#endif
 					gradientDir = GradientDir.Vertical;
 				}

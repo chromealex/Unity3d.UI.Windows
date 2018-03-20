@@ -43,11 +43,11 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 						}
 
-						Debug.Log("[UPGRADE] Invoked: `" + methodName + "`, version " + nextVersion);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("[UPGRADE] Invoked: `" + methodName + "`, version " + nextVersion);
 
 					} else {
 						
-						Debug.Log("[UPGRADE] Method `" + methodName + "` was not found: version " + nextVersion + " skipped");
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("[UPGRADE] Method `" + methodName + "` was not found: version " + nextVersion + " skipped");
 						
 					}
 

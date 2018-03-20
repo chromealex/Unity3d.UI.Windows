@@ -68,6 +68,8 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			var settings = this.settings;
 			if (settings == null) {
 
+				WindowSystemLogger.Warning(this, "Settings is null");
+
 				if (onComplete != null) onComplete.Invoke();
 
 				yield break;
@@ -90,9 +92,9 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 							var isSupported = service.IsSupported();
 							service.isActive = (item.enabled == true && isSupported == true);
 							if (service.isActive == true && isSupported == true) {
-								
-								yield return this.StartCoroutine(service.Auth(service.GetAuthKey(item), item));
-								yield return this.StartCoroutine(this.OnAfterAuth(service));
+
+								//Debug.Log("ServiceManager::Auth (" + service.GetServiceName() + ")");
+								this.StartCoroutine(this.InitializeService(service, item));
 
 							}
 
@@ -111,6 +113,13 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			}
 
 			if (onComplete != null) onComplete.Invoke();
+
+		}
+
+		private IEnumerator InitializeService(IService service, ServiceItem item) {
+			
+			yield return this.StartCoroutine(service.Auth(service.GetAuthKey(item), item));
+			yield return this.StartCoroutine(this.OnAfterAuth(service));
 
 		}
 
@@ -239,7 +248,7 @@ namespace UnityEngine.UI.Windows.Plugins.Services {
 			foreach (var serviceBase in list) {
 
 				if ((activeOnly == false || serviceBase.isActive == true) && serviceBase is TService) {
-
+					
 					onService.Invoke((TService)serviceBase);
 					
 				}

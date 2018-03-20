@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using ME.FS.Core;
 using UnityEngine;
 using UnityAnalyticsHeatmap.MiniJSON;
 
@@ -93,7 +94,7 @@ namespace UnityAnalyticsHeatmap
 
                 if (foundItems == 0)
                 {
-                    Debug.LogWarning("No data found within specified dates.");
+                    if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("No data found within specified dates.");
                 }
                 else
                 {
@@ -170,7 +171,7 @@ namespace UnityAnalyticsHeatmap
             }
             catch (WebException ex)
             {
-                Debug.LogWarning("No web connection. Will proceed with local data if possible.\n" + ex.ToString());
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("No web connection. Will proceed with local data if possible.\n" + ex.ToString());
                 return null;
             }
         }
@@ -208,7 +209,7 @@ namespace UnityAnalyticsHeatmap
             m_DownloadedCount++;
 
             string report = "Downloaded " + m_DownloadedCount + "/" + m_FilesToFetch.Count + ". Note: " + reason;
-            Debug.Log(report);
+            if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(report);
 
             if (m_DownloadedCount == m_FilesToFetch.Count)
             {
@@ -218,7 +219,7 @@ namespace UnityAnalyticsHeatmap
 
         string GetSavePath()
         {
-            string savePath = System.IO.Path.Combine(Application.persistentDataPath, "HeatmapData");
+            string savePath = System.IO.Path.Combine(FileSystem.instance.GetCachePath(), "HeatmapData");
             return savePath;
         }
     }

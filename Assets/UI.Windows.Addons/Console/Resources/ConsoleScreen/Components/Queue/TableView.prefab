@@ -172,7 +172,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 0}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0
@@ -228,6 +227,8 @@ MonoBehaviour:
   noElements: {fileID: 0}
   loading: {fileID: 0}
   loader: {fileID: 0}
+  navigateVertical: 1
+  navigateHorizontal: 1
   top: {fileID: 0}
   bottom: {fileID: 0}
   left: {fileID: 0}

@@ -48,13 +48,17 @@ namespace UnityEngine.UI.Windows {
 				
 				//WindowObject.Destroy(this);
 				//WindowObject.Destroy(this.gameObject);
-				//Debug.LogWarning("RECYCLE: " + this.name);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("RECYCLE: " + this.name);
 				this.Recycle();
 
 			}
 
-			WindowSystemResources.UnregisterObject(this);
-			WindowSystem.RemoveDebugWeakReference(this);
+			if (WindowSystem.IsDebugWeakReferences() == true) {
+
+				WindowSystemResources.UnregisterObject(this);
+				WindowSystem.RemoveDebugWeakReference(this);
+
+			}
 
 			callback.Invoke();
 
@@ -68,11 +72,15 @@ namespace UnityEngine.UI.Windows {
 
 				var flowWindow = UnityEngine.UI.Windows.Plugins.Flow.FlowSystem.GetWindow(this.window, runtime: true);
 				this.windowId = (flowWindow != null ? flowWindow.id : -1);
-				
-				if ((this is WindowModule) == false || (this as WindowModule).IsInstantiate() == true) {
 
-					WindowSystemResources.RegisterObject(this);
-					WindowSystem.AddDebugWeakReference(this);
+				if (WindowSystem.IsDebugWeakReferences() == true) {
+					
+					if ((this is WindowModule) == false || (this as WindowModule).IsInstantiate() == true) {
+						
+						WindowSystemResources.RegisterObject(this);
+						WindowSystem.AddDebugWeakReference(this);
+
+					}
 
 				}
 
@@ -110,10 +118,10 @@ namespace UnityEngine.UI.Windows {
 		/// <summary>
 		/// Raises the validate event. Editor Only.
 		/// </summary>
-		public virtual void OnValidate() {
+		public void OnValidate() {
 
 			if (Application.isPlaying == true) return;
-			if (UnityEditor.EditorApplication.isUpdating == true) return;
+			if (UnityEditor.EditorApplication.isUpdating == true || UnityEditor.EditorApplication.isCompiling == true) return;
 
 			this.OnValidateEditor();
 

@@ -169,6 +169,25 @@ namespace UnityEngine.UI.Windows.UserInfo {
 
 		}
 
+		private string _version;
+		public string version {
+
+			set {
+
+				this._version = value;
+
+			}
+
+			get {
+
+				if (this._version == null) return string.Empty;
+
+				return this._version;
+
+			}
+
+		}
+
 		private static User _instance = new User();
 		public static User instance {
 			

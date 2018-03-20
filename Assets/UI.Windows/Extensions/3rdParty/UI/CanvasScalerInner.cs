@@ -127,9 +127,10 @@ namespace ME {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
-			base.OnValidate();
-
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == false) return;
+
+			base.OnValidate();
 
 			if (this.windowObject == null) this.windowObject = this.GetComponent<WindowObject>();
 

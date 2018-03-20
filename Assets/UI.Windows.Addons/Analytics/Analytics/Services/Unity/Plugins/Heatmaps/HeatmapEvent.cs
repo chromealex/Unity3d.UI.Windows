@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_ANALYTICS_API
+
 using analyticsResultNamespace = UnityEngine.Analytics;
 using analyticsEventNamespace = UnityEngine.Analytics.Analytics;
 
@@ -144,3 +146,5 @@ namespace UnityAnalyticsHeatmap
         }
     }
 }
+
+#endif

@@ -26,7 +26,7 @@ namespace UnityEngine.UI.Windows.Components {
 			this.sourceList = sourceList;
 
 			var items = this.sourceList.GetItems();
-			if (items.Count <= this.minCount) {
+			if (items.Count < this.minCount) {
 
 				this.Hide();
 				return;

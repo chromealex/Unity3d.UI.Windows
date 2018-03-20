@@ -82,7 +82,7 @@ namespace UnityEngine.UI.Windows.Extensions
 
 			for (int index = 0; index < verts.Count; index++) {
 				var uiVertex = verts [index];
-				//Debug.Log ();
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log ();
 				uiVertex.position.y += curveForText.Evaluate (rectTrans.rect.width * rectTrans.pivot.x + uiVertex.position.x) * curveMultiplier;
 				verts [index] = uiVertex;
 			}

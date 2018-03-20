@@ -46,7 +46,7 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 				} else {
 
-					Debug.LogError(string.Format("[ Localization.GoogleService ] CSV GetData error: {0}", result.errorText));
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(string.Format("[ Localization.GoogleService ] CSV GetData error: {0}", result.errorText));
 					LocalizationSystem.TryToLoadCache();
 
 				}
@@ -57,6 +57,13 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 		#region Client API Events
 		public override System.Collections.Generic.IEnumerator<byte> GetData(LocalizationSettings settings, System.Action<LocalizationResult> onResult) {
+
+			if (Application.internetReachability == NetworkReachability.NotReachable) {
+
+				onResult.Invoke(new LocalizationResult() { hasError = true, errorText = "No Connection", data = string.Empty });
+				yield break;
+
+			}
 
 			#if !UNITY_EDITOR
 			if (this.serviceManager.logEnabled == true) {
@@ -76,15 +83,26 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 			}
 
+#if !UNITY_SWITCH
 			var www = UnityWebRequest.Get(settings.url);
 			www.SetRequestHeader("ETag", eTag);
-			www.Send();
-			#if UNITY_EDITOR
+			www.SendWebRequest();
+#else
+			var form = new WWWForm();
+			form.AddField("ETag", eTag);
+			var www = new WWW(settings.url, form);
+#endif
+#if UNITY_EDITOR
 			if (Application.isPlaying == false) {
 				
 				while (www.isDone == false) {
 
-					if (UnityEditor.EditorUtility.DisplayCancelableProgressBar("Wait a while", "...", www.downloadProgress) == true) {
+#if !UNITY_SWITCH
+					var progress = www.downloadProgress;
+#else
+					var progress = www.progress;
+#endif
+					if (UnityEditor.EditorUtility.DisplayCancelableProgressBar("Wait a while", "...", progress) == true) {
 
 						break;
 
@@ -94,7 +112,11 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 				UnityEditor.EditorUtility.ClearProgressBar();
 
+#if !UNITY_SWITCH
 				eTag = www.GetResponseHeader("ETag");
+#else
+				www.responseHeaders.TryGetValue("ETag", out eTag);
+#endif
 				if (eTag != null) {
 
 					settings.eTag = eTag;
@@ -111,7 +133,11 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 
 				}
 
+#if !UNITY_SWITCH
 				eTag = www.GetResponseHeader("ETag");
+#else
+				www.responseHeaders.TryGetValue("ETag", out eTag);
+#endif
 				if (eTag != null) {
 
 					PlayerPrefs.SetString(eTagPrefsKey, eTag);
@@ -121,8 +147,13 @@ namespace UnityEngine.UI.Windows.Plugins.Localization.Services {
 			#if UNITY_EDITOR
 			}
 			#endif
+#if !UNITY_SWITCH
+			var data = www.downloadHandler.text;
+#else
+			 var data = www.text;
+#endif
 
-			onResult.Invoke(new LocalizationResult() { hasError = !string.IsNullOrEmpty(www.error), data = www.downloadHandler.text, errorText = www.error });
+			onResult.Invoke(new LocalizationResult() { hasError = !string.IsNullOrEmpty(www.error), data = data, errorText = www.error });
 
 			www.Dispose();
 			www = null;

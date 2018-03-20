@@ -16,7 +16,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 		}
 
-		public static bool IsConnected() {
+		public static bool IsAllConnected() {
 
 			var services = Analytics.GetServices<IAnalyticsService>();
 			var result = true;
@@ -57,7 +57,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 			if (window != null) {
 
-				Analytics.SendEvent(window.windowId, "WindowSystem", "OnScreenOpened");
+				Analytics.OnScreenTransition(0, window.windowId, window.windowId, hide: false);
 
 			}
 
@@ -89,7 +89,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 		public static void OnScreenTransition(int index, int screenId, int toScreenId, bool hide) {
 
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.OnScreenTransition(index, screenId, toScreenId, !hide)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true && s.sendScreenTransitions == true) ME.Coroutines.Run(s.OnScreenTransition(index, screenId, toScreenId, !hide)); });
 
 		}
 
@@ -99,7 +99,7 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 			if (group2 == null) group2 = string.Empty;
 			if (group3 == null) group3 = string.Empty;
 
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.OnEvent(screenId, group1, group2, group3, weight)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true && s.sendEvents == true) ME.Coroutines.Run(s.OnEvent(screenId, group1, group2, group3, weight)); });
 
 		}
 
@@ -110,37 +110,37 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 			if (group2 == null) group2 = string.Empty;
 			if (group3 == null) group3 = string.Empty;
 
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.OnEvent(eventName, group1, group2, group3, weight)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true && s.sendEvents == true) ME.Coroutines.Run(s.OnEvent(eventName, group1, group2, group3, weight)); });
 
 		}
 
 		public static void SendTransaction(int screenId, string productId, decimal price, string currency, string receipt, string signature) {
 
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.OnTransaction(screenId, productId, price, currency, receipt, signature)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true && s.sendTransactions == true) ME.Coroutines.Run(s.OnTransaction(screenId, productId, price, currency, receipt, signature)); });
 
 		}
 
 		public static void SendTransaction(string eventName, string productId, decimal price, string currency, string receipt, string signature) {
 
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.OnTransaction(eventName, productId, price, currency, receipt, signature)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true && s.sendTransactions == true) ME.Coroutines.Run(s.OnTransaction(eventName, productId, price, currency, receipt, signature)); });
 
 		}
 
 		public static void SendScreenPoint(int screenId, int screenWidth, int screenHeight, byte tag, float x, float y) {
 			
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.OnScreenPoint(screenId, screenWidth, screenHeight, tag, x, y)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true) ME.Coroutines.Run(s.OnScreenPoint(screenId, screenWidth, screenHeight, tag, x, y)); });
 
 		}
 
 		public static void SendLoadingProgress(string text, string date, string customParameter = null) {
 
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.SendLoadingProgress(text, date, customParameter)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true) ME.Coroutines.Run(s.SendLoadingProgress(text, date, customParameter)); });
 
         }
 
 		public static void SendBugReport(string text, string customParameter = null) {
 
-			Analytics.ForEachService<IAnalyticsService>(s => ME.Coroutines.Run(s.SendBugReport(text, customParameter)));
+			Analytics.ForEachService<IAnalyticsService>(s => { if (s.IsConnected() == true) ME.Coroutines.Run(s.SendBugReport(text, customParameter)); });
 
         }
 

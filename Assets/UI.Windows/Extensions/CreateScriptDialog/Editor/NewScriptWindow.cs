@@ -262,7 +262,7 @@ namespace UnityEditor.UI.Windows.Extensions.Utilities {
 						
 						functionList.Add(function);
 					} catch (Exception e) {
-						Debug.LogWarning("Malformed function line: \"" + functionLineWhole + "\"\n  at " + functionDataFilePath + ":" + lineNr + "\n" + e);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Malformed function line: \"" + functionLineWhole + "\"\n  at " + functionDataFilePath + ":" + lineNr + "\n" + e);
 					}
 					lineNr++;
 				}

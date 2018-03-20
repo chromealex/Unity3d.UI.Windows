@@ -41,7 +41,7 @@ namespace UnityEngine.UI.Windows {
 			{
 				if (this.items[i].name.Equals(assetBundleName))
 				{
-					Debug.LogError("items already contains " + assetBundleName);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("items already contains " + assetBundleName);
 					return;
 				}
 			}
@@ -66,7 +66,7 @@ namespace UnityEngine.UI.Windows {
 					result = System.Array.IndexOf(this.items[i].assetIndexMap, assetPath);
 					if (result == -1)
 					{
-						Debug.LogError("Asset name: " + assetPath + " not found in " + assetBundleName);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Asset name: " + assetPath + " not found in " + assetBundleName);
 					}
 					break;
 				}

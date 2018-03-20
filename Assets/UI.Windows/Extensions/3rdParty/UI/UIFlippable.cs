@@ -54,6 +54,9 @@ namespace UnityEngine.UI {
 
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
+
+			if (GUI.changed == false) return;
+
 			var components = gameObject.GetComponents(typeof(BaseMeshEffect));
 			foreach (var comp in components) {
 				if (comp.GetType() != typeof(UIFlippable)) {

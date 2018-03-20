@@ -79,22 +79,52 @@ namespace UnityEditor.UI.Windows.Extensions {
 							state = true;
 							if (inverseCondition == true) {
 								
-								if (result != 0)
-									state = false;
+								if (result != 0) state = false;
 								
 							} else {
 								
-								if (result == 0)
-									state = false;
+								if (result == 0) state = false;
 								
 							}
 							
 						} else {
+
+							var isInt = false;
+							var result = false;
+							if (needState is byte) {
+
+								var val = (KeyValuePair<int, string>)value;
+								result = ((int)val.Key == (byte)needState);
+								isInt = true;
+
+							} else if (needState is int) {
+								
+								var val = (KeyValuePair<int, string>)value;
+								result = ((int)val.Key == (int)needState);
+								isInt = true;
+
+							}
+
+							if (isInt == true) {
+
+								state = true;
+								if (inverseCondition == true) {
+
+									if (result == false) state = false;
+
+								} else {
+
+									if (result == true) state = false;
+
+								}
+
+							} else {
+								
+								state = true;
+								if (object.Equals(needState, value) == !inverseCondition) state = false;
 							
-							state = true;
-							if (object.Equals(needState, value) == !inverseCondition)
-								state = false;
-							
+							}
+
 						}
 
 					}

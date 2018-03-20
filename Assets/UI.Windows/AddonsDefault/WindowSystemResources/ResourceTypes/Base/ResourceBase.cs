@@ -4,6 +4,7 @@ using UnityEngine.UI.Windows.Components;
 using System.Collections.Generic;
 using ME;
 using UnityEngine.UI.Windows.Plugins.Resources;
+using System.Linq;
 
 namespace UnityEngine.UI.Windows {
 
@@ -19,10 +20,14 @@ namespace UnityEngine.UI.Windows {
 
 			Common,
 			Standalone,
+			StandaloneWindows,
+			StandaloneLinux,
+			StandaloneOSX,
 			iOS,
 			Android,
 			PS4,
 			XBOXONE,
+			Switch,
 
 		};
 
@@ -59,25 +64,39 @@ namespace UnityEngine.UI.Windows {
 			this.id = other.id;
 			this.cacheVersion = other.cacheVersion;
 
+			this.directRef = other.directRef;
+
 			this.streamingAssetsPathStandalone = other.streamingAssetsPathStandalone;
+			this.streamingAssetsPathStandaloneWindows = other.streamingAssetsPathStandaloneWindows;
+			this.streamingAssetsPathStandaloneLinux = other.streamingAssetsPathStandaloneLinux;
+			this.streamingAssetsPathStandaloneOSX = other.streamingAssetsPathStandaloneOSX;
 			this.streamingAssetsPathIOS = other.streamingAssetsPathIOS;
 			this.streamingAssetsPathAndroid = other.streamingAssetsPathAndroid;
 			this.streamingAssetsPathPS4 = other.streamingAssetsPathPS4;
 			this.streamingAssetsPathXBOXONE = other.streamingAssetsPathXBOXONE;
+			this.streamingAssetsPathSwitch = other.streamingAssetsPathSwitch;
 			this.streamingAssetsPathCommon = other.streamingAssetsPathCommon;
 
 			this.streamingAssetsPathStandaloneMovieAudio = other.streamingAssetsPathStandaloneMovieAudio;
+			this.streamingAssetsPathStandaloneWindowsMovieAudio = other.streamingAssetsPathStandaloneWindowsMovieAudio;
+			this.streamingAssetsPathStandaloneLinuxMovieAudio = other.streamingAssetsPathStandaloneLinuxMovieAudio;
+			this.streamingAssetsPathStandaloneOSXMovieAudio = other.streamingAssetsPathStandaloneOSXMovieAudio;
 			this.streamingAssetsPathIOSMovieAudio = other.streamingAssetsPathIOSMovieAudio;
 			this.streamingAssetsPathAndroidMovieAudio = other.streamingAssetsPathAndroidMovieAudio;
 			this.streamingAssetsPathPS4MovieAudio = other.streamingAssetsPathPS4MovieAudio;
 			this.streamingAssetsPathXBOXONEMovieAudio = other.streamingAssetsPathXBOXONEMovieAudio;
+			this.streamingAssetsPathSwitchMovieAudio = other.streamingAssetsPathSwitchMovieAudio;
 			this.streamingAssetsPathCommonMovieAudio = other.streamingAssetsPathCommonMovieAudio;
 
 			this.streamingAssetsPathStandaloneIsMovie = other.streamingAssetsPathStandaloneIsMovie;
+			this.streamingAssetsPathStandaloneWindowsIsMovie = other.streamingAssetsPathStandaloneWindowsIsMovie;
+			this.streamingAssetsPathStandaloneLinuxIsMovie = other.streamingAssetsPathStandaloneLinuxIsMovie;
+			this.streamingAssetsPathStandaloneOSXIsMovie = other.streamingAssetsPathStandaloneOSXIsMovie;
 			this.streamingAssetsPathIOSIsMovie = other.streamingAssetsPathIOSIsMovie;
 			this.streamingAssetsPathAndroidIsMovie = other.streamingAssetsPathAndroidIsMovie;
 			this.streamingAssetsPathPS4IsMovie = other.streamingAssetsPathPS4IsMovie;
 			this.streamingAssetsPathXBOXONEIsMovie = other.streamingAssetsPathXBOXONEIsMovie;
+			this.streamingAssetsPathSwitchIsMovie = other.streamingAssetsPathSwitchIsMovie;
 			this.streamingAssetsPathCommonIsMovie = other.streamingAssetsPathCommonIsMovie;
 
 			this.canBeUnloaded = other.canBeUnloaded;
@@ -116,24 +135,36 @@ namespace UnityEngine.UI.Windows {
 		[ReadOnly] public int cacheVersion;
 
 		[ReadOnly] public string streamingAssetsPathStandalone;
+		[ReadOnly] public string streamingAssetsPathStandaloneWindows;
+		[ReadOnly] public string streamingAssetsPathStandaloneLinux;
+		[ReadOnly] public string streamingAssetsPathStandaloneOSX;
 		[ReadOnly] public string streamingAssetsPathIOS;
 		[ReadOnly] public string streamingAssetsPathAndroid;
 		[ReadOnly] public string streamingAssetsPathPS4;
 		[ReadOnly] public string streamingAssetsPathXBOXONE;
+		[ReadOnly] public string streamingAssetsPathSwitch;
 		[ReadOnly] public string streamingAssetsPathCommon;
 
 		[ReadOnly] public string streamingAssetsPathStandaloneMovieAudio;
+		[ReadOnly] public string streamingAssetsPathStandaloneWindowsMovieAudio;
+		[ReadOnly] public string streamingAssetsPathStandaloneLinuxMovieAudio;
+		[ReadOnly] public string streamingAssetsPathStandaloneOSXMovieAudio;
 		[ReadOnly] public string streamingAssetsPathIOSMovieAudio;
 		[ReadOnly] public string streamingAssetsPathAndroidMovieAudio;
 		[ReadOnly] public string streamingAssetsPathPS4MovieAudio;
 		[ReadOnly] public string streamingAssetsPathXBOXONEMovieAudio;
+		[ReadOnly] public string streamingAssetsPathSwitchMovieAudio;
 		[ReadOnly] public string streamingAssetsPathCommonMovieAudio;
 
 		[ReadOnly] public bool streamingAssetsPathStandaloneIsMovie;
+		[ReadOnly] public bool streamingAssetsPathStandaloneWindowsIsMovie;
+		[ReadOnly] public bool streamingAssetsPathStandaloneLinuxIsMovie;
+		[ReadOnly] public bool streamingAssetsPathStandaloneOSXIsMovie;
 		[ReadOnly] public bool streamingAssetsPathIOSIsMovie;
 		[ReadOnly] public bool streamingAssetsPathAndroidIsMovie;
 		[ReadOnly] public bool streamingAssetsPathPS4IsMovie;
 		[ReadOnly] public bool streamingAssetsPathXBOXONEIsMovie;
+		[ReadOnly] public bool streamingAssetsPathSwitchIsMovie;
 		[ReadOnly] public bool streamingAssetsPathCommonIsMovie;
 
 		[ReadOnly] public bool canBeUnloaded;
@@ -142,6 +173,10 @@ namespace UnityEngine.UI.Windows {
 		//private static Dictionary<Graphic, Color> colorCache = null;
 
 		//private ResourceAsyncOperation task;
+
+		public Object directRef;
+		public Texture2D directRefTexture;
+		public Sprite directRefSprite;
 
 		public object loadedObject {
 
@@ -163,13 +198,50 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public bool IsValid() {
+		public bool IsLoadable(bool checkDirectRef = true) {
 
-			return 
+			return
+				this.loadableAssetBundle == true ||
 				this.loadableResource == true ||
 				this.loadableStream == true ||
 				this.loadableWeb == true ||
-				this.loadableAssetBundle == true;
+				(checkDirectRef == true && this.directRef != null);
+
+		}
+
+		public bool HasDirectRef() {
+
+			return this.directRef != null;
+
+		}
+
+		public T GetDirectRef<T>() {
+
+			if (this.directRef != null) {
+
+				if (typeof(T) == typeof(Sprite) && this.directRef is Texture2D) {
+
+					return (T)(object)this.directRefSprite;
+
+				}
+
+				if (typeof(T) == typeof(Texture2D) && this.directRef is Sprite) {
+
+					return (T)(object)this.directRefTexture;
+
+				}
+
+				if (this.directRef is GameObject) {
+
+					return (T)(object)((this.directRef as GameObject).GetComponent(typeof(T)));
+
+				}
+
+				return (T)(object)this.directRef;
+
+			}
+
+			return default(T);
 
 		}
 
@@ -222,7 +294,7 @@ namespace UnityEngine.UI.Windows {
 			#region Load Resource
 			if (this.loadableResource == true) {
 
-				this.loadedObject = Resources.Load<T>(this.resourcesPath);
+				this.loadedObject = UnityEngine.UI.Windows.WindowSystemResources.Load<T>(this.resourcesPath);
 				if (this.loadedObject != null) {
 
 					return this.loadedObject as T;
@@ -235,16 +307,6 @@ namespace UnityEngine.UI.Windows {
 			return null;
 
 		}*/
-
-		public bool IsLoadable() {
-
-			return
-				this.loadableAssetBundle == true ||
-				this.loadableResource == true ||
-				this.loadableStream == true ||
-				this.loadableWeb == true;
-
-		}
 
 		public System.Collections.Generic.IEnumerator<byte> LoadAudioClip(System.Action<AudioClip> callback) {
 
@@ -264,7 +326,7 @@ namespace UnityEngine.UI.Windows {
 
 				} else {
 
-					callback.Invoke(Resources.Load<AudioClip>(this.resourcesPath));
+					callback.Invoke(UnityEngine.UI.Windows.WindowSystemResources.Load<AudioClip>(this.resourcesPath));
 
 				}
 
@@ -277,7 +339,7 @@ namespace UnityEngine.UI.Windows {
 			if (this.loadableStream == true) {
 
 				var path = this.GetStreamPath(withFile: true);
-				//Debug.Log("Loading: " + path);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Loading: " + path);
 				var www = new WWW(path);
 				while (www.isDone == false) {
 
@@ -291,12 +353,12 @@ namespace UnityEngine.UI.Windows {
 #else
 					var clip = www.audioClip;
 #endif
-					//Debug.Log("Callback!");
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Callback!");
 					callback.Invoke(clip);
 
 				} else {
 
-					//Debug.Log("Callback!");
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Callback!");
 					callback.Invoke(null);
 
 				}
@@ -350,23 +412,25 @@ namespace UnityEngine.UI.Windows {
 			var isRemoteBundle = (settings != null && settings.loadFromStreamingAssets == false && string.IsNullOrEmpty(settings.url) == false);
 
 			var platformPath = string.Empty;
-#if UNITY_EDITOR
-			platformPath = UnityEngine.UI.Windows.WindowSystemResources.ALL_TARGETS[UnityEditor.EditorUserBuildSettings.activeBuildTarget] + "/";
-#elif UNITY_ANDROID
+			#if UNITY_EDITOR
+			platformPath = string.Format("{0}/", UnityEngine.UI.Windows.WindowSystemResources.ALL_TARGETS[UnityEditor.EditorUserBuildSettings.activeBuildTarget]);
+			#elif UNITY_ANDROID
 			platformPath = "Android/";
 			#elif UNITY_IOS || UNITY_TVOS
 			platformPath = "iOS/";
-#elif UNITY_PS4
+			#elif UNITY_PS4
 			platformPath = "PS4/";
-#elif UNITY_XBOXONE
+			#elif UNITY_SWTICH
+			platformPath = "Switch/";
+			#elif UNITY_XBOXONE
 			platformPath = "XboxOne/";
-#elif UNITY_STANDALONE_LINUX
+			#elif UNITY_STANDALONE_LINUX
 			platformPath = "Linux/";
-#elif UNITY_STANDALONE_OSX
+			#elif UNITY_STANDALONE_OSX
 			platformPath = "Mac/";
-#elif UNITY_STANDALONE_WIN
+			#elif UNITY_STANDALONE_WIN
 			platformPath = "Windows/";
-#endif
+			#endif
 
 			platformPath = string.Format("0.6.6b/{0}", platformPath);
 
@@ -383,7 +447,22 @@ namespace UnityEngine.UI.Windows {
 			var prefixPath = string.Empty;
 			var path = string.Empty;
 			#if UNITY_STANDALONE || UNITY_EDITOR
-			path = this.streamingAssetsPathStandaloneMovieAudio;
+			{
+				#if UNITY_STANDALONE_OSX
+				path = this.streamingAssetsPathStandaloneOSXMovieAudio;
+				#endif
+			}
+			{
+				#if UNITY_STANDALONE_LINUX
+				path = this.streamingAssetsPathStandaloneLinuxMovieAudio;
+				#endif
+			}
+			{
+				#if UNITY_STANDALONE_WIN
+				path = this.streamingAssetsPathStandaloneWindowsMovieAudio;
+				#endif
+			}
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathStandaloneMovieAudio;
 			#elif UNITY_IPHONE || UNITY_TVOS
 			path = this.streamingAssetsPathIOSMovieAudio;
 			combine = true;
@@ -399,6 +478,8 @@ namespace UnityEngine.UI.Windows {
 			prefix = "streamingAssets/";
 			#elif UNITY_XBOXONE
 			path = this.streamingAssetsPathXBOXONEMovieAudio;
+			#elif UNITY_SWITCH
+			path = this.streamingAssetsPathSwitchMovieAudio;
 			#else
 			path = this.streamingAssetsPathStandalone;
 			if (path.Contains("://") == false) {
@@ -449,8 +530,30 @@ namespace UnityEngine.UI.Windows {
 			var result = false;
 			var path = string.Empty;
 			#if UNITY_STANDALONE || UNITY_EDITOR
-			result = this.streamingAssetsPathStandaloneIsMovie;
-			path = this.streamingAssetsPathStandalone;
+			{
+				#if UNITY_STANDALONE_OSX
+				path = this.streamingAssetsPathStandaloneOSX;
+				result = this.streamingAssetsPathStandaloneOSXIsMovie;
+				#endif
+			}
+			{
+				#if UNITY_STANDALONE_LINUX
+				path = this.streamingAssetsPathStandaloneLinux;
+				result = this.streamingAssetsPathStandaloneLinuxIsMovie;
+				#endif
+			}
+			{
+				#if UNITY_STANDALONE_WIN
+				path = this.streamingAssetsPathStandaloneWindows;
+				result = this.streamingAssetsPathStandaloneWindowsIsMovie;
+				#endif
+			}
+			if (string.IsNullOrEmpty(path) == true) {
+				
+				path = this.streamingAssetsPathStandalone;
+				result = this.streamingAssetsPathStandaloneIsMovie;
+				
+			}
 			#elif UNITY_IPHONE || UNITY_TVOS
 			result = this.streamingAssetsPathIOSIsMovie;
 			path = this.streamingAssetsPathIOS;
@@ -463,6 +566,9 @@ namespace UnityEngine.UI.Windows {
 			#elif UNITY_XBOXONE
 			result = this.streamingAssetsPathXBOXONEIsMovie;
 			path = this.streamingAssetsPathXBOXONE;
+			#elif UNITY_SWITCH
+			result = this.streamingAssetsPathSwitchIsMovie;
+			path = this.streamingAssetsPathSwitch;
 			#else
 			result = this.streamingAssetsPathCommonIsMovie;
 			path = this.streamingAssetsPathCommon;
@@ -481,7 +587,7 @@ namespace UnityEngine.UI.Windows {
 		public bool IsMovie(string streamingPath) {
 
 			var fileExt = System.IO.Path.GetExtension(streamingPath).Trim('.').ToLower();
-			return (fileExt == "avi" || fileExt == "mp4" || fileExt == "ogv" || fileExt == "mov");
+			return (fileExt == "avi" || fileExt == "mp4" || fileExt == "ogv" || fileExt == "mov" || fileExt == "webm");
 
 		}
 
@@ -493,7 +599,22 @@ namespace UnityEngine.UI.Windows {
 			var prefixPath = string.Empty;
 			var result = string.Empty;
 			#if UNITY_STANDALONE || UNITY_EDITOR
-			path = this.streamingAssetsPathStandalone;
+			{
+				#if UNITY_STANDALONE_OSX
+				path = this.streamingAssetsPathStandaloneOSX;
+				#endif
+			}
+			{
+				#if UNITY_STANDALONE_LINUX
+				path = this.streamingAssetsPathStandaloneLinux;
+				#endif
+			}
+			{
+				#if UNITY_STANDALONE_WIN
+				path = this.streamingAssetsPathStandaloneWindows;
+				#endif
+			}
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathStandalone;
 			/*if (path.Contains("://") == false) {
 
 				prefix = "file:///";
@@ -515,6 +636,8 @@ namespace UnityEngine.UI.Windows {
 			prefix = "streamingAssets/";
 			#elif UNITY_XBOXONE
 			path = this.streamingAssetsPathXBOXONE;
+			#elif UNITY_SWITCH
+			path = this.streamingAssetsPathSwitch;
 			#else
 			path = this.streamingAssetsPathCommon;
 			if (path.Contains("://") == false) {
@@ -560,7 +683,9 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		protected static int GetJavaHash(string s) {
+		public static int GetJavaHash(string s) {
+
+			if (string.IsNullOrEmpty(s) == true) return 0;
 
 			int hash = 0;
 			foreach (char c in s) {
@@ -570,6 +695,12 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			return hash;
+
+		}
+		
+		public static long GetKey(int val1, int val2) {
+
+			return (long)(((long)val1 << 32) | ((long)val2 & 0xffffffff));
 
 		}
 
@@ -657,22 +788,34 @@ namespace UnityEngine.UI.Windows {
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathIOS, this.GetPlatformDirectory(Platform.iOS, localDir, filenameWithoutExt));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathAndroid, this.GetPlatformDirectory(Platform.Android, localDir, filenameWithoutExt));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandalone, this.GetPlatformDirectory(Platform.Standalone, localDir, filenameWithoutExt));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneWindows, this.GetPlatformDirectory(Platform.StandaloneWindows, localDir, filenameWithoutExt));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneLinux, this.GetPlatformDirectory(Platform.StandaloneLinux, localDir, filenameWithoutExt));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneOSX, this.GetPlatformDirectory(Platform.StandaloneOSX, localDir, filenameWithoutExt));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathPS4, this.GetPlatformDirectory(Platform.PS4, localDir, filenameWithoutExt));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathXBOXONE, this.GetPlatformDirectory(Platform.XBOXONE, localDir, filenameWithoutExt));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathSwitch, this.GetPlatformDirectory(Platform.Switch, localDir, filenameWithoutExt));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathCommon, this.GetPlatformDirectory(Platform.Common, localDir, filenameWithoutExt));
 					
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathIOSMovieAudio, this.GetMovieAudio(this.streamingAssetsPathIOS));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathAndroidMovieAudio, this.GetMovieAudio(this.streamingAssetsPathAndroid));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneMovieAudio, this.GetMovieAudio(this.streamingAssetsPathStandalone));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneWindowsMovieAudio, this.GetMovieAudio(this.streamingAssetsPathStandaloneWindows));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneLinuxMovieAudio, this.GetMovieAudio(this.streamingAssetsPathStandaloneLinux));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneOSXMovieAudio, this.GetMovieAudio(this.streamingAssetsPathStandaloneOSX));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathPS4MovieAudio, this.GetMovieAudio(this.streamingAssetsPathPS4));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathXBOXONEMovieAudio, this.GetMovieAudio(this.streamingAssetsPathXBOXONE));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathSwitchMovieAudio, this.GetMovieAudio(this.streamingAssetsPathSwitch));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathCommonMovieAudio, this.GetMovieAudio(this.streamingAssetsPathCommon));
 					
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathIOSIsMovie, this.IsMovie(this.streamingAssetsPathIOS));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathAndroidIsMovie, this.IsMovie(this.streamingAssetsPathAndroid));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneIsMovie, this.IsMovie(this.streamingAssetsPathStandalone));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneWindowsIsMovie, this.IsMovie(this.streamingAssetsPathStandaloneWindows));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneLinuxIsMovie, this.IsMovie(this.streamingAssetsPathStandaloneLinux));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathStandaloneOSXIsMovie, this.IsMovie(this.streamingAssetsPathStandaloneOSX));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathPS4IsMovie, this.IsMovie(this.streamingAssetsPathPS4));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathXBOXONEIsMovie, this.IsMovie(this.streamingAssetsPathXBOXONE));
+					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathSwitchIsMovie, this.IsMovie(this.streamingAssetsPathSwitch));
 					ME.EditorUtilities.SetValueIfDirty(ref this.streamingAssetsPathCommonIsMovie, this.IsMovie(this.streamingAssetsPathCommon));
 					
 				}
@@ -708,7 +851,7 @@ namespace UnityEngine.UI.Windows {
 				
 				if (map == null) {
 					
-					Debug.LogError("Missing WindowSystemAssetBundlesMap!");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Missing WindowSystemAssetBundlesMap!");
 					
 				} else {
 					
@@ -724,6 +867,36 @@ namespace UnityEngine.UI.Windows {
 
 			ME.EditorUtilities.SetValueIfDirty(ref this.canBeUnloaded, ((item is GameObject) == false && (item is Component) == false));
 
+			#region directRef
+			if (this.IsLoadable(checkDirectRef: false) == false) {
+
+				ME.EditorUtilities.SetObjectIfDirty(ref this.directRef, item);
+				this.directRefTexture = item as Texture2D;
+				this.directRefSprite = item as Sprite;
+				
+				if (item is Texture) {
+					
+					this.directRefSprite = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(this.assetPath).OfType<Sprite>().FirstOrDefault<Sprite>();
+
+				}
+				
+				if (item is Sprite) {
+				
+					this.directRefTexture = (item as Sprite).texture;
+
+				}
+
+			} else {
+
+				ME.EditorUtilities.SetObjectIfDirty(ref this.directRef, null);
+				var obj = (Object)this.directRefSprite;
+				ME.EditorUtilities.SetObjectIfDirty(ref obj, null);
+				obj = (Object)this.directRefTexture;
+				ME.EditorUtilities.SetObjectIfDirty(ref obj, null);
+
+			}
+			#endregion
+
 		}
 		
 		private string GetAssetPath() {
@@ -733,6 +906,7 @@ namespace UnityEngine.UI.Windows {
 			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathStandalone;
 			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathPS4;
 			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathXBOXONE;
+			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathSwitch;
 			if (string.IsNullOrEmpty(path) == true) path = this.streamingAssetsPathCommon;
 			if (string.IsNullOrEmpty(path) == true) path = this.assetPath;
 

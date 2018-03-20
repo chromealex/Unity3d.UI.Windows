@@ -11,6 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba612a82f73a5b2479915a4c7c3c3677, type: 3}
   m_Name: SocialSettings
   m_EditorClassIdentifier: 
+  uniqueTag: 256
   activePlatforms:
   - active: 1
     settings: {fileID: 11400000, guid: b83979c06724bf748b69cee1e1a608ec, type: 2}

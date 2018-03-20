@@ -23,7 +23,8 @@ namespace UnityEngine.UI.Windows {
         [SerializeField][ReadOnly]
 		protected List<WindowObjectElement> subComponents = new List<WindowObjectElement>();
 
-		[SerializeField][HideInInspector]
+		//[SerializeField]
+		[HideInInspector]
 		private WindowObjectState currentState = WindowObjectState.NotInitialized;
 
 		private RectTransform _rectTransform;
@@ -48,6 +49,7 @@ namespace UnityEngine.UI.Windows {
 		protected bool IsStateReadyToHide() {
 
 			return
+				//this.GetComponentState() != WindowObjectState.NotInitialized &&
 				this.GetComponentState() != WindowObjectState.Initialized &&
 				this.GetComponentState() != WindowObjectState.Hiding &&
 				this.GetComponentState() != WindowObjectState.Hidden;
@@ -118,6 +120,12 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
+		public void RefreshComponentState() {
+
+			this.SetComponentState(this.currentState);
+
+		}
+
 		public virtual void SetComponentState(WindowObjectState state, bool dontInactivate = false) {
 			
 			if (this == null) return;
@@ -130,14 +138,7 @@ namespace UnityEngine.UI.Windows {
 				this.currentState == WindowObjectState.Showing ||
 				this.currentState == WindowObjectState.Shown) {
 
-				if (go != null) go.SetActive(true);
-				/*if (go != null) {
-
-					//var r = go.GetComponent<CanvasRenderer>();
-					//if (r != null) r.EnableRectClipping(new Rect(0f, 0f, 0f, 0f));
-					go.transform.localScale = Vector3.one;
-
-				}*/
+				if (go != null && go.activeSelf == false) go.SetActive(true);
 
 			} else if (
 				this.currentState == WindowObjectState.Hidden ||
@@ -148,17 +149,23 @@ namespace UnityEngine.UI.Windows {
 				
 				if (go != null && this.NeedToInactive() == true && dontInactivate == false) {
 
-					//var r = go.GetComponent<CanvasRenderer>();
-					//if (r != null) r.DisableRectClipping();
-					//go.transform.localScale = Vector3.zero;
-					go.SetActive(false);
+					var window = this.GetWindow();
+					if (window != null && window.GetState() == WindowObjectState.Hiding) {
+
+						// Actually we don't need to do anything because the whole window will be hidden
+
+					} else {
+
+						if (go.activeSelf == true) go.SetActive(false);
+
+					}
 
 				}
 
 			}
 
 		}
-		
+
 		public virtual bool NeedToInactive() {
 
 			return this.setInactiveOnHiddenState;
@@ -258,6 +265,8 @@ namespace UnityEngine.UI.Windows {
 
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowActive();
 
+			this.RefreshComponentState();
+
 		}
 
 		void IWindowEventsController.DoWindowInactive() {
@@ -282,7 +291,9 @@ namespace UnityEngine.UI.Windows {
 			WindowSystem.RunSafe(this.OnWindowOpen);
 			
 			for (int i = 0; i < this.subComponents.Count; ++i) (this.subComponents[i] as IWindowEventsController).DoWindowOpen();
-			
+
+			this.RefreshComponentState();
+
 		}
 		
 		void IWindowEventsController.DoWindowClose() {
@@ -467,7 +478,7 @@ namespace UnityEngine.UI.Windows {
         /// <param name="subComponent">Sub component.</param>
 		public virtual void RegisterSubComponent(WindowObjectElement subComponent) {
 			
-			//Debug.Log("TRY REGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState(), this);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("TRY REGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState(), this);
 			if (this.subComponents.Contains(subComponent) == false) {
 
 				subComponent.rootComponent = this;
@@ -495,7 +506,8 @@ namespace UnityEngine.UI.Windows {
 
 							controller.DoInit();
 							WindowSystem.RunSafe(subComponent.OnWindowActive);
-							
+							WindowSystem.RunSafe(subComponent.OnWindowOpen);
+
 						}
 
 						subComponent.SetComponentState(this.GetComponentState());
@@ -508,7 +520,8 @@ namespace UnityEngine.UI.Windows {
 							
 							controller.DoInit();
 							WindowSystem.RunSafe(subComponent.OnWindowActive);
-							
+							WindowSystem.RunSafe(subComponent.OnWindowOpen);
+
 						}
 
 						subComponent.SetComponentState(this.GetComponentState());
@@ -522,7 +535,8 @@ namespace UnityEngine.UI.Windows {
 							
 							controller.DoInit();
 							WindowSystem.RunSafe(subComponent.OnWindowActive);
-							
+							WindowSystem.RunSafe(subComponent.OnWindowOpen);
+
 						}
 
 						break;
@@ -535,6 +549,7 @@ namespace UnityEngine.UI.Windows {
 							
 							controller.DoInit();
 							WindowSystem.RunSafe(subComponent.OnWindowActive);
+							WindowSystem.RunSafe(subComponent.OnWindowOpen);
 							
 						}
 
@@ -554,7 +569,8 @@ namespace UnityEngine.UI.Windows {
 							
 							controller.DoInit();
 							WindowSystem.RunSafe(subComponent.OnWindowActive);
-							
+							WindowSystem.RunSafe(subComponent.OnWindowOpen);
+
 						}
 
 						if (subComponent.showOnStart == true) {
@@ -594,7 +610,7 @@ namespace UnityEngine.UI.Windows {
 
 			var sendCallback = true;
 
-			//Debug.Log("UNREGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState());
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("UNREGISTER: " + subComponent + " :: " + this.GetComponentState() + "/" + subComponent.GetComponentState());
 
 			subComponent.rootComponent = null;
 			this.subComponents.Remove(subComponent);
@@ -656,9 +672,9 @@ namespace UnityEngine.UI.Windows {
 		}*/
 
 		#if UNITY_EDITOR
-		public override void OnValidate() {
+		public override void OnValidateEditor() {
 
-			base.OnValidate();
+			base.OnValidateEditor();
 
 			this.Update_EDITOR();
 

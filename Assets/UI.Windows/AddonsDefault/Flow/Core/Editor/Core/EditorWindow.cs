@@ -75,7 +75,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			var title = "UIW Flow";
 			#if !UNITY_4
-			editor.titleContent = new GUIContent(title, UnityEngine.Resources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
+			editor.titleContent = new GUIContent(title, UnityEngine.UI.Windows.WindowSystemResources.Load<Texture2D>("UI.Windows/Icons/FlowIcon"));
 			#else
 			editor.title = title;
 			#endif
@@ -656,6 +656,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 		public bool IsVisible(FD.FlowWindow window) {
 
+			if (window.manualVisible == false) return false;
+			if (window.IsContainer() == false && window.GetParentContainer() != null && window.GetParentContainer().manualVisible == false) return false;
 			if (window.isMovingState == true) return true;
 
 			if (this.zoomDrawer.GetZoom() < 1f) {
@@ -710,7 +712,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				fromWindow.IsABTest() == true) {
 
 				// is ABTest
-				//Debug.Log(fromWindow.id + " => " + toWindow.id + " :: " + attach.index + " :: " + doubleSided);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(fromWindow.id + " => " + toWindow.id + " :: " + attach.index + " :: " + doubleSided);
 				transitionsContainer = FlowSystem.GetWindow(fromWindow.abTests.sourceWindowId);
 				if (transitionsContainer == null) return;
 
@@ -1407,7 +1409,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 				#region FLOW
 				Flow.DrawModuleSettingsGUI(null, "Flow Settings", null, () => {
-
+					
 					GUILayout.Label("Filters:", EditorStyles.boldLabel);
 
 					var filter = FlowSystem.GetData().flowView;
@@ -1444,7 +1446,24 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 						this.Repaint();
 						
 					}
-					
+
+					{ // Containers
+
+						var containers = FlowSystem.GetData().GetContainers();
+						foreach (var container in containers) {
+
+							var newState = GUILayout.Toggle(container.manualVisible, string.Format("{0} ({1})", container.title, container.directory));
+							if (newState != container.manualVisible) {
+
+								container.manualVisible = newState;
+								UnityEditor.EditorUtility.SetDirty(container);
+
+							}
+
+						}
+
+					}
+
 					GUILayout.Label("Settings:", EditorStyles.boldLabel);
 					var anySettings = false;
 
@@ -1691,7 +1710,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 		private AnimatedValues.AnimFloat selectionRectAnimation;
 		public void DrawBackground() {
 			
-			if (this._background == null) this._background = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Flow/Background");
+			if (this._background == null) this._background = UnityEngine.UI.Windows.WindowSystemResources.Load<Texture2D>("UI.Windows/Flow/Background");
 			
 			FlowSystem.grid = new Vector2(this._background.width / 20f, this._background.height / 20f).PixelPerfect();
 			

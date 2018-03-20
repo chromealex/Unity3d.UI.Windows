@@ -8,7 +8,13 @@ using System.Collections;
 using ME;
 
 namespace UnityEngine.UI.Windows.Components {
-	
+
+	public interface IListLoadingProgressValue : IComponent {
+
+		void SetValue(int value);
+
+	};
+
 	public class ListComponent : WindowComponentNavigation, IListComponent {
 
 		public enum ScrollbarVisibility : byte {
@@ -27,6 +33,8 @@ namespace UnityEngine.UI.Windows.Components {
 		public GameObject noElements;
 		public GameObject loading;
 		public WindowComponent loader;
+		public bool navigateVertical = true;
+		public bool navigateHorizontal = true;
 
 		[Header("Faders")]
 		public WindowComponent top;
@@ -184,6 +192,11 @@ namespace UnityEngine.UI.Windows.Components {
 				if (this.horizontalScrollbar != null) this.horizontalScrollbar.Show();
 				if (this.verticalScrollbar != null) this.verticalScrollbar.Show();
 
+			} else if (this.scrollbarVisibility == ScrollbarVisibility.AlwaysVisible) {
+
+				if (this.horizontalScrollbar != null) this.horizontalScrollbar.Show();
+				if (this.verticalScrollbar != null) this.verticalScrollbar.Show();
+
 			}
 
 		}
@@ -194,6 +207,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 				if (this.horizontalScrollbar != null) this.horizontalScrollbar.Hide();
 				if (this.verticalScrollbar != null) this.verticalScrollbar.Hide();
+
+			} else if (this.scrollbarVisibility == ScrollbarVisibility.AlwaysVisible) {
+
+				if (this.horizontalScrollbar != null) this.horizontalScrollbar.Show();
+				if (this.verticalScrollbar != null) this.verticalScrollbar.Show();
 
 			}
 
@@ -216,11 +234,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}*/
 
-		public override bool IsNavigationControlledSide(NavigationSide side) {
+		public override bool IsNavigationControlSide(NavigationSide side) {
 
 			if (this.scrollRect != null) {
 
-				if (this.scrollRect.vertical == true) {
+				if (this.scrollRect.vertical == true || this.navigateVertical == true) {
 
 					if (side == NavigationSide.Down ||
 					    side == NavigationSide.Up) {
@@ -231,7 +249,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 				}
 
-				if (this.scrollRect.horizontal == true) {
+				if (this.scrollRect.horizontal == true || this.navigateHorizontal == true) {
 
 					if (side == NavigationSide.Left ||
 						side == NavigationSide.Right) {
@@ -248,91 +266,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public override void OnNavigate(WindowComponentNavigation source, NavigationSide side) {
+		public override UnityEngine.UI.ScrollRect NavigationScrollRect() {
 
-			switch (side) {
-
-				case NavigationSide.Up:
-					this.ListMoveUp();
-					break;
-
-				case NavigationSide.Down:
-					this.ListMoveDown();
-					break;
-
-				case NavigationSide.Right:
-					this.ListMoveRight();
-					break;
-
-				case NavigationSide.Left:
-					this.ListMoveLeft();
-					break;
-
-			}
-
-		}
-
-		public virtual IListComponent ListMoveUp(int count = 1) {
-
-			if (this.scrollRect == null) return this;
-
-			count = Mathf.Clamp(count, 1, count);
-			var size = this.GetRowHeight(0) * count;
-			var allSize = this.GetContentHeight();
-
-			var pos = this.scrollRect.verticalNormalizedPosition * allSize;
-			pos += size;
-			this.scrollRect.verticalNormalizedPosition = pos / allSize;
-
-			return this;
-
-		}
-
-		public virtual IListComponent ListMoveDown(int count = 1) {
-
-			if (this.scrollRect == null) return this;
-
-			count = Mathf.Clamp(count, 1, count);
-			var size = this.GetRowHeight(0) * count;
-			var allSize = this.GetContentHeight();
-
-			var pos = this.scrollRect.verticalNormalizedPosition * allSize;
-			pos -= size;
-			this.scrollRect.verticalNormalizedPosition = pos / allSize;
-
-			return this;
-
-		}
-
-		public virtual IListComponent ListMoveRight(int count = 1) {
-
-			if (this.scrollRect == null) return this;
-
-			count = Mathf.Clamp(count, 1, count);
-			var size = this.GetRowWidth(0) * count;
-			var allSize = this.GetContentWidth();
-
-			var pos = this.scrollRect.horizontalNormalizedPosition * allSize;
-			pos += size;
-			this.scrollRect.horizontalNormalizedPosition = pos / allSize;
-
-			return this;
-
-		}
-
-		public virtual IListComponent ListMoveLeft(int count = 1) {
-
-			if (this.scrollRect == null) return this;
-
-			count = Mathf.Clamp(count, 1, count);
-			var size = this.GetRowWidth(0) * count;
-			var allSize = this.GetContentWidth();
-
-			var pos = this.scrollRect.horizontalNormalizedPosition * allSize;
-			pos -= size;
-			this.scrollRect.horizontalNormalizedPosition = pos / allSize;
-
-			return this;
+			return this.scrollRect;
 
 		}
 
@@ -516,7 +452,7 @@ namespace UnityEngine.UI.Windows.Components {
 			}
 
 			if (linkerLookup == true) {
-
+				
 				if (this.list[index] is LinkerComponent) {
 					
 					return (this.list[index] as LinkerComponent).Get<WindowComponent>();
@@ -550,7 +486,7 @@ namespace UnityEngine.UI.Windows.Components {
 		
 		public void ForEach<T>(System.Action<T, int> onItem = null) where T : IComponent {
 
-			this.ForEach((element, index) => {
+			this.ForEach_INTERNAL<T>((element, index) => {
 
 				if (onItem != null) onItem.Invoke((T)element, index);
 
@@ -558,11 +494,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 		}
 
-		public void ForEach(System.Action<IComponent, int> onItem = null) {
+		private void ForEach_INTERNAL<T>(System.Action<T, int> onItem = null) where T : IComponent {
 
 			for (int i = 0, capacity = this.Count(); i < capacity; ++i) {
 
-				var instance = this.GetItem(i);
+				var instance = this.GetItem<T>(i);
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 
 			}
@@ -571,6 +507,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public System.Collections.Generic.IEnumerator<byte> ForEachAsync<T>(System.Action onComplete, System.Action<T, int> onItem = null) where T : IComponent {
 
+			var lr = new ME.LongrunTimer();
+
 			for (int i = 0, capacity = this.Count(); i < capacity; ++i) {
 
 				if (this == null) yield break;
@@ -578,7 +516,12 @@ namespace UnityEngine.UI.Windows.Components {
 				var instance = this.GetItem<T>(i);
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 
-				yield return 0;
+				if (lr.ShouldPause() == true) {
+
+					yield return 0;
+					lr.Reset();
+
+				}
 
 			}
 
@@ -629,7 +572,18 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (capacity == this.Count() && capacity > 0) {
 
-				Coroutines.Run(this.ForEachAsync<T>(onComplete, onItem), this);
+				Coroutines.Run(this.ForEachAsync<T>(() => {
+
+					this.ForEach<T>((item, idx) => {
+
+						if (item is WindowComponent) (item as WindowComponent).Show();
+
+					});
+
+					if (onComplete != null) onComplete.Invoke();
+
+				}, onItem), this);
+
 				return;
 
 			}
@@ -641,25 +595,32 @@ namespace UnityEngine.UI.Windows.Components {
 		}
 
 		private System.Collections.Generic.IEnumerator<byte> SetItemsAsync_INTERNAL<T>(int capacity, System.Action onComplete, System.Action<T, int> onItem = null) where T : IComponent {
-			
-			var timer = ME.Utilities.StartWatch();
+
+			var lr = new ME.LongrunTimer();
+
 			for (int i = 0; i < capacity; ++i) {
-
-				ME.Utilities.ResetWatch(timer);
-
+				
 				var instance = this.AddItem<T>(autoRefresh: false);
+				if (instance is WindowComponent) (instance as WindowComponent).showOnStart = false;
 				if (instance != null && onItem != null) onItem.Invoke(instance, i);
 
-				if (ME.Utilities.StopWatch(timer) == true) {
+				if (lr.ShouldPause() == true) {
 
 					yield return 0;
+					lr.Reset();
 
 				}
 
 			}
 
 			if (onComplete != null) onComplete.Invoke();
-			
+
+			this.ForEach<T>((item, idx) => {
+
+				if (item is WindowComponent) (item as WindowComponent).Show();
+
+			});
+
 			this.Refresh(withNoElements: true);
 
 		}
@@ -689,6 +650,39 @@ namespace UnityEngine.UI.Windows.Components {
 			if (this.loading != null) this.loading.SetActive(true);
 			if (this.loader != null) this.loader.Show(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
 
+			if (this.verticalScrollbar != null) this.verticalScrollbar.Hide(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
+			if (this.horizontalScrollbar != null) this.horizontalScrollbar.Hide(AppearanceParameters.Default().ReplaceForced(forced: true).ReplaceResetAnimation(resetAnimation: true));
+
+			this.SetLoadProgress(0);
+
+		}
+
+		public virtual void SetLoadProgress(int value) {
+
+			if (this.loader != null) {
+
+				if (this.loader is LinkerComponent) {
+
+					var linker = (this.loader as LinkerComponent);
+					if (linker.Is<IListLoadingProgressValue>() == true) {
+						
+						var loader = linker.Get<IListLoadingProgressValue>();
+						if (loader != null) loader.SetValue(value);
+
+					}
+
+				} else {
+
+					if (this.loader is IListLoadingProgressValue) {
+
+						(this.loader as IListLoadingProgressValue).SetValue(value);
+
+					}
+
+				}
+
+			}
+
 		}
 
 		public virtual void EndLoad() {
@@ -698,6 +692,10 @@ namespace UnityEngine.UI.Windows.Components {
 
 			if (this.noElements != null) this.noElements.SetActive(this.IsEmpty() == true);
 			if (this.content != null) this.content.SetActive(this.IsEmpty() == false);
+
+			this.TryToHideScrollbars();
+
+			this.SetLoadProgress(100);
 
 		}
 

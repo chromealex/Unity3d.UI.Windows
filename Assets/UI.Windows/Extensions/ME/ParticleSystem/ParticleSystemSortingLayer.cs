@@ -47,7 +47,7 @@ namespace ME {
 				renderer.sortingLayerName = window.GetSortingLayerName();
 				renderer.sortingOrder = window.GetSortingOrder() + this.orderDelta;
 
-				//Debug.Log("Layer `" + window.GetSortingLayerName() + "` updated: " + this.particleSystem.renderer.sortingOrder);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Layer `" + window.GetSortingLayerName() + "` updated: " + this.particleSystem.renderer.sortingOrder);
 
 			}
 
@@ -66,6 +66,7 @@ namespace ME {
 
 		public void OnValidate() {
 
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == true) return;
 			#if UNITY_EDITOR
 			if (UnityEditor.EditorApplication.isUpdating == true) return;
@@ -74,7 +75,6 @@ namespace ME {
 			if (this.particleSystem == null) this.particleSystem = this.GetComponent<ParticleSystem>();
 
 			this.FindRootWindowObject();
-			this.UpdateLayer();
 
 		}
 		#endif

@@ -106,7 +106,6 @@ public class HUDItem : MonoBehaviour {
 			}
 
 			var rPos = this.uiCamera.ViewportToWorldPoint(pos);
-
 			if (rPos != this.transform.position) {
 
 				this.transform.position = rPos;

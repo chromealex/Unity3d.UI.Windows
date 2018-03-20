@@ -76,7 +76,7 @@ namespace ME {
 
 								} else {
 
-									Debug.LogWarning("TextureImporter was not found at path: " + assetPath);
+									if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("TextureImporter was not found at path: " + assetPath);
 
 								}
 
@@ -86,7 +86,7 @@ namespace ME {
 
 					} catch (Exception ex) {
 
-						Debug.LogException(ex);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogException(ex);
 
 					} finally {
 

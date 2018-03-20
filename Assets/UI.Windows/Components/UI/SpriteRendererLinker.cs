@@ -28,7 +28,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 				var window = this.windowObject.GetWindow();
 				if (window == null) {
 
-					Debug.LogWarning("[ SpriteRendererLinker ] WindowObject::GetWindow() is null", this);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("[ SpriteRendererLinker ] WindowObject::GetWindow() is null", this);
 					return;
 
 				}

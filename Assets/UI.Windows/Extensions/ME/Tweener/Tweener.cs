@@ -24,9 +24,9 @@ namespace ME {
 
 				if (TweenerGlobal.instance.debug == true) {
 
-					Debug.Log(mt1.tag1 + " == " + mt2.tag1);
-					Debug.Log(mt1.tag2 + " == " + mt2.tag2);
-					Debug.Log(mt1.tag3 + " == " + mt2.tag3);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(mt1.tag1 + " == " + mt2.tag1);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(mt1.tag2 + " == " + mt2.tag2);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(mt1.tag3 + " == " + mt2.tag3);
 
 				}
 
@@ -95,7 +95,7 @@ namespace ME {
 			Game,
 		}
 
-		public class Tween<T>: ITween {
+		public class Tween<T> : ITween {
 
 			public bool isDirty {
 				get;
@@ -249,7 +249,7 @@ namespace ME {
             public void update(float dt, bool debug = false) {
 
 				var target = _targets[_currentTarget];
-				//if (debug == true) Debug.Log(_currentTarget + " " + _elapsed + " " + target.duration);
+				//if (debug == true) if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(_currentTarget + " " + _elapsed + " " + target.duration);
 				
 				target.currentDelay += dt;
 				if (target.currentDelay <= target.delay) return;
@@ -456,10 +456,10 @@ namespace ME {
 		public Tween<T> addTween<T>(T obj, float duration, float start, float end) {
 			
 			var tween = new Tween<T>(obj, duration, start, end);
-			if (repeatByDefault)
-				tween.repeat();
+			if (this.repeatByDefault == true) tween.repeat();
 			
 			_tweens.Add(tween);
+
 			return tween;
 			
 		}
@@ -511,7 +511,7 @@ namespace ME {
 
 	    public void ClearAll() {
 
-	        for (var i = 0; i < this._tweens.Count; ++i) {
+			for (int i = 0, count = this._tweens.Count; i < count; ++i) {
 
                 this._tweens[i].ClearAll();
 
@@ -533,21 +533,15 @@ namespace ME {
 
         }
 
-		public void removeTweensByMultiTag(MultiTag multiTag, bool immediately) {
-
-			Mark(tween => tween.hasMultiTag() == true && tween.getMultiTag() == multiTag, immediately);
-
-		}
-
         public void removeTweens(string tweenerTag) {
 			
 			this.removeTweens(tweenerTag, immediately: false);
 			
 		}
 		
-		public void removeTweens(object tweenerTag) {
+		public int removeTweens(object tweenerTag) {
 			
-			this.removeTweens(tweenerTag, immediately: false);
+			return this.removeTweens(tweenerTag, immediately: false);
 			
 		}
 		
@@ -557,23 +551,100 @@ namespace ME {
 			
 		}
 
-        public void removeTweens(string tweenerTag, bool immediately) {
+		public void removeTweensByMultiTag(MultiTag multiTag, bool immediately) {
 
-			Mark(tween => tween.getTag() != null && tween.getTag().ToString() == tweenerTag, immediately);
-			
+			for (int i = 0, count = this._tweens.Count; i < count; ++i) {
+
+				var tween = this._tweens[i];
+				if ((tween.hasMultiTag() == true && tween.getMultiTag() == multiTag) == false) continue;
+				tween.isDirty = true;
+
+			}
+
+			if (immediately == true) {
+
+				this.ApplyCurrentDirty();
+
+			}
+
 		}
 
-		public void removeTweens(object tweenerTag, bool immediately) {
+        public void removeTweens(string tweenerTag, bool immediately) {
 
-			Mark(tween => tween.getTag() == tweenerTag, immediately);
-			
+			for (int i = 0, count = this._tweens.Count; i < count; ++i) {
+
+				var tween = this._tweens[i];
+				if ((tween.getTag() != null && tween.getTag().ToString() == tweenerTag) == false) continue;
+				tween.isDirty = true;
+
+			}
+
+			if (immediately == true) {
+
+				this.ApplyCurrentDirty();
+
+			}
+
+		}
+
+		public int removeTweens(object tweenerTag, bool immediately) {
+
+			var found = 0;
+			for (int i = 0, count = this._tweens.Count; i < count; ++i) {
+
+				var tween = this._tweens[i];
+				if ((tween.getTag() == tweenerTag) == false) continue;
+				tween.isDirty = true;
+				++found;
+
+			}
+
+			if (immediately == true) {
+
+				this.ApplyCurrentDirty();
+
+			}
+
+			return found;
+
 		}
 
 		public void removeGroup(object tweenerGroup, bool immediately) {
+			
+			for (int i = 0, count = this._tweens.Count; i < count; ++i) {
 
-			Mark(tween => tween.getGroup() == tweenerGroup, immediately);
+				var tween = this._tweens[i];
+				if ((tween.getGroup() == tweenerGroup) == false) continue;
+				tween.isDirty = true;
+
+			}
+
+			if (immediately == true) {
+
+				this.ApplyCurrentDirty();
+
+			}
 
 	    }
+
+		private void ApplyCurrentDirty() {
+			
+			/*for (int i = 0, count = this._tweens.Count; i < count; ++i) {
+
+				var each = this._tweens[i];
+				if (each.isCompleted() == true || each.isDirty == true) {
+
+					if (each.isDirty == true && each.isCompleted() == false) each.RaiseCancel();
+
+					this._tweens.RemoveAt(i);
+					--count;
+					--i;
+
+				}
+
+			}*/
+
+		}
 
 		public virtual void Update() {
 
@@ -599,14 +670,15 @@ namespace ME {
 		
 		void _update(float dt, bool debug = false) {
 
-			for (var i = 0; i < this._tweens.Count; ++i) {
-
+			for (int i = 0, count = this._tweens.Count; i < count; ++i) {
+				
 				var each = this._tweens[i];
-				if (each.isCompleted() || each.isDirty == true) {
+				if (each.isCompleted() == true || each.isDirty == true) {
 
 					if (each.isDirty == true && each.isCompleted() == false) each.RaiseCancel();
 
-					_tweens.RemoveAt(i);
+					this._tweens.RemoveAt(i);
+					--count;
 					--i;
 
 				} else {
@@ -639,7 +711,7 @@ namespace ME {
 			}*/
 
 		}
-
+		/*
 		void Mark(System.Func<ITween, bool> predicate, bool immediately = false) {
 
 			for (var i = 0; i < this._tweens.Count; ++i) {
@@ -649,14 +721,6 @@ namespace ME {
 				tween.isDirty = true;
 
 		    }
-
-            /*
-            foreach (var each in _tweens.Where( predicate )) {
-
-				each.isDirty = true;
-
-			}
-            */
 
 			if (immediately == true) {
 
@@ -676,7 +740,7 @@ namespace ME {
 
 			}
 
-		}
+		}*/
 	
 	}
 	

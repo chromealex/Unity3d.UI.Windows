@@ -196,13 +196,13 @@ namespace UnityEditor.UI.Windows.Plugins.Flow.Layout {
 				nRect.width -= buttonWidth;
 				if (draw == true) EditorGUI.PropertyField(nRect, component, new GUIContent(title), true);
 
-				//Debug.Log(oldComponent + " == " + component.objectReferenceValue + " :: " + (oldComponent == component.objectReferenceValue));
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(oldComponent + " == " + component.objectReferenceValue + " :: " + (oldComponent == component.objectReferenceValue));
 				var newComponent = component.objectReferenceValue;
 				if (oldComponent != newComponent) {
 
-					//Debug.Log("NEW COMP: " + newComponent);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("NEW COMP: " + newComponent);
 					parameters.objectReferenceValue = components[index].OnComponentChanged(window, newComponent as WindowComponent);
-					//Debug.Log("NEW COMP: " + parameters.objectReferenceValue);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("NEW COMP: " + parameters.objectReferenceValue);
 					components[index].componentParametersEditor = null;
 					item.serializedObject.ApplyModifiedPropertiesWithoutUndo();
 					

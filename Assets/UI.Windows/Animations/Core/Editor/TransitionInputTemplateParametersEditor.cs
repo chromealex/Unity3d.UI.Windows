@@ -26,7 +26,7 @@ namespace UnityEditor.UI.Windows.Animations {
 			
 			public Styles() {
 				
-				this.skin = Resources.Load<GUISkin>("UI.Windows/Core/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
+				this.skin = UnityEngine.UI.Windows.WindowSystemResources.Load<GUISkin>("UI.Windows/Core/Styles/" + (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
 				this.transitionA = this.skin.FindStyle("TransitionA");
 				this.transitionB = this.skin.FindStyle("TransitionB");
 
@@ -150,7 +150,7 @@ namespace UnityEditor.UI.Windows.Animations {
 				this.sceneTestContainer = new GameObject("Transition-Temp");
 				this.sceneTestContainer.hideFlags = HideFlags.DontSave;//HideFlags.HideAndDontSave;
 				
-				var screenSource = Resources.Load<GameObject>("UI.Windows/Core/Transitions/TransitionScreen");
+				var screenSource = UnityEngine.UI.Windows.WindowSystemResources.Load<GameObject>("UI.Windows/Core/Transitions/TransitionScreen");
 				var windowSource = screenSource.GetComponent<LayoutWindowType>();
 				
 				ImageComponent image = null;

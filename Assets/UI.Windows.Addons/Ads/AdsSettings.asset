@@ -15,3 +15,6 @@ MonoBehaviour:
   - enabled: 0
     serviceName: UnityAds
     authKey: 
+    iosKey: 
+    androidKey: 
+    testMode: 0

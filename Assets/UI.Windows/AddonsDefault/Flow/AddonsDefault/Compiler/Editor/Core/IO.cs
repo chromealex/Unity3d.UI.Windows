@@ -22,7 +22,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			oldPath = oldPath.Trim('/');
 			newPath = newPath.Trim('/');
 			
-			//Debug.Log("MoveAsset: " + oldPath + " => " + newPath);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("MoveAsset: " + oldPath + " => " + newPath);
 			AssetDatabase.MoveAsset(oldPath, newPath);
 			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 			
@@ -33,8 +33,8 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			oldFile = oldFile.Replace("//", "/");
 			newFile = newFile.Replace("//", "/");
 			
-			//Debug.Log("RenameAsset: " + oldFile + " => " + newFile);
-			//Debug.Log(AssetDatabase.RenameAsset(oldFile, newFile));
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("RenameAsset: " + oldFile + " => " + newFile);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(AssetDatabase.RenameAsset(oldFile, newFile));
 			System.IO.File.Move(oldFile, newFile);
 			AssetDatabase.ImportAsset(newFile);
 			AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
@@ -76,7 +76,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				
 			} catch (Exception e) {
 				
-				Debug.LogException(e);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogException(e);
 				
 			}
 			#endif
@@ -121,7 +121,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 				var filesCount = Directory.GetFiles(path).Count(x => Path.GetFileName(x) != ".dummy" && Path.GetFileNameWithoutExtension(x) != string.Empty && x.EndsWith(".meta") == false);
 				if (filesCount > 0 || dirs.Length > 0) {
 
-					//Debug.Log("D: " + filesCount + " :: " + string.Join("|", Directory.GetFiles(path)) + " :: " + dummyFile);
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("D: " + filesCount + " :: " + string.Join("|", Directory.GetFiles(path)) + " :: " + dummyFile);
 					File.Delete(dummyFile);
 
 				} else {

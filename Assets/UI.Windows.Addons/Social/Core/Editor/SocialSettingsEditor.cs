@@ -19,7 +19,7 @@ namespace UnityEditor.UI.Windows.Plugins.Social {
 			var directory = System.IO.Path.GetDirectoryName(dataPath);
 
 			// Scan for the installed socials
-			SocialSettingsEditor.socials = ME.EditorUtilities.GetAssetsOfType<ModuleSettings>(directory, useCache: false);
+			SocialSettingsEditor.socials = ME.EditorUtilities.GetAssetsOfType<ModuleSettings>(directory, useCache: true);
 
 		}
 

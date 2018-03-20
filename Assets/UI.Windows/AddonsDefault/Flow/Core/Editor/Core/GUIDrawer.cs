@@ -461,7 +461,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			if (FlowSystem.GetZoom() < 1f) return;
 
-			//if (this.arrow == null) this.arrow = UnityEngine.Resources.Load<Texture2D>("UI.Windows/Flow/Arrow");
+			//if (this.arrow == null) this.arrow = UnityEngine.UI.Windows.WindowSystemResources.Load<Texture2D>("UI.Windows/Flow/Arrow");
 			
 			var size = 12f;
 			size /= FlowSystem.GetZoom();

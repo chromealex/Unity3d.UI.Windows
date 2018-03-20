@@ -72,7 +72,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Queries {
 
 				if (string.IsNullOrEmpty(this.www.error) == false) {
 
-					Debug.LogError(this.www.error);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(this.www.error);
 
 					// error
 					onCompleted(null, false);
@@ -118,7 +118,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Queries {
 
 				if (string.IsNullOrEmpty(this.www.error) == false) {
 					
-					Debug.LogError(this.www.error);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(this.www.error);
 
 					// error
 					onCompleted(this.www.error, false);
@@ -178,7 +178,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Queries {
 			}
 			#endif
 			
-			Debug.Log(url);
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(url);
 
 		}
 

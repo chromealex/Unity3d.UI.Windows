@@ -19,7 +19,7 @@ namespace UnityEngine.UI.Windows.Styles {
 			public Styles() {
 
 				#if UNITY_EDITOR
-				this.skin = Resources.Load<GUISkin>("UI.Windows/Core/Styles/Boxes/" + (UnityEditor.EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
+				this.skin = UnityEngine.UI.Windows.WindowSystemResources.Load<GUISkin>("UI.Windows/Core/Styles/Boxes/" + (UnityEditor.EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight"));
 				this.boxes = new GUIStyle[WindowLayoutStyles.MAX_DEPTH] {
 					
 					this.skin.FindStyle("flow node 0"),

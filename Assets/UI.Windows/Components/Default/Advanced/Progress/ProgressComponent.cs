@@ -193,7 +193,9 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnInit();
 
-			this.currentValue = (this.bar != null) ? this.bar.value : 0f;
+			if (this.bar == null) return;
+
+			this.currentValue = this.bar.value;
 			this.bar.continuousAngleStep = this.continiousAngleStep;
 
 			this.bar.onValueChanged.RemoveListener(this.OnValueChanged_INTERNAL);
@@ -207,6 +209,8 @@ namespace UnityEngine.UI.Windows.Components {
 
 	        base.OnDeinit(callback);
 
+			if (this.bar == null) return;
+
 			this.BreakAnimation();
 
             this.bar.onValueChanged.RemoveListener(this.OnValueChanged_INTERNAL);
@@ -219,6 +223,8 @@ namespace UnityEngine.UI.Windows.Components {
         public override void OnShowBegin() {
 
 			base.OnShowBegin();
+
+			if (this.bar == null) return;
 
 			if (this.continious == false) {
 
@@ -238,13 +244,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 			base.OnHideEnd();
 
+			if (this.bar == null) return;
+
 			this.BreakAnimation();
 
 			this.getValueActive = false;
 
 		}
 
-		public override bool IsNavigationControlledSide(NavigationSide side) {
+		public override bool IsNavigationControlSide(NavigationSide side) {
 
 			var slider = this.GetSelectable() as Slider;
 			var horizontal = (slider.direction == Slider.Direction.LeftToRight || slider.direction == Slider.Direction.RightToLeft);
@@ -278,6 +286,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			var slider = this.GetSelectable() as Slider;
 			var horizontal = (slider.direction == Slider.Direction.LeftToRight || slider.direction == Slider.Direction.RightToLeft);
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("OnNavigate: " + side + " :: " + horizontal + " :: " + slider.direction);
 			if (horizontal == true) {
 
 				if (side == NavigationSide.Left) this.MovePrev();
@@ -470,6 +479,12 @@ namespace UnityEngine.UI.Windows.Components {
 
 		public IProgressComponent SetValue(float value, bool immediately = false, System.Action callback = null) {
 
+			if (this.currentValue == value) {
+
+				return this;
+
+			}
+
 			if (this.continious == true && immediately == false) {
 
 				if (callback != null) callback.Invoke();
@@ -547,7 +562,7 @@ namespace UnityEngine.UI.Windows.Components {
 
 			this.SetValue(this.currentValueNormalized, immediately: true);
 
-			ME.Utilities.FindReference<Extensions.Slider>(this, ref this.bar);
+			//ME.Utilities.FindReference<Extensions.Slider>(this, ref this.bar);
 
 		}
 #endif

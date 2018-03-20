@@ -35,7 +35,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 					if(val) {
 						if(val.type != JSONObject.Type.NULL)
 							result.AddField(fi.Name, val);
-						else Debug.LogWarning("Null for this non-null object, property " + fi.Name + " of class " + obj.GetType().Name + ". Object type is " + fi.FieldType.Name);
+						else if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Null for this non-null object, property " + fi.Name + " of class " + obj.GetType().Name + ". Object type is " + fi.FieldType.Name);
 					}
 				}
 				//Properties
@@ -57,12 +57,12 @@ namespace UnityEngine.UI.Windows.Extensions {
 					if(val) {
 						if(val.type != JSONObject.Type.NULL)
 							result.AddField(pi.Name, val);
-						else Debug.LogWarning("Null for this non-null object, property " + pi.Name + " of class " + obj.GetType().Name + ". Object type is " + pi.PropertyType.Name);
+						else if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Null for this non-null object, property " + pi.Name + " of class " + obj.GetType().Name + ". Object type is " + pi.PropertyType.Name);
 					}
 				}
 				return result;
 			} 
-			Debug.LogWarning("trying to save the same data twice");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("trying to save the same data twice");
 			return JSONObject.nullJO;
 		}
 	}

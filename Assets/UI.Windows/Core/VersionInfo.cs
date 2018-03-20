@@ -20,7 +20,9 @@ using System.Text.RegularExpressions;namespace UnityEngine.UI.Windows {
 
 		}
 
-		public VersionCrc(string version) : this(new Version(version)) {
+		public VersionCrc(string version) {
+
+			this.crc = (int)ME.Utilities.GetHash(version);
 
 		}
 
@@ -129,7 +131,8 @@ using System.Text.RegularExpressions;namespace UnityEngine.UI.Windows {
 			}
 
 		}
-		
+
+		public VersionCrc crc;
 		public int major;
 		public int minor;
 		public int release;
@@ -141,6 +144,7 @@ using System.Text.RegularExpressions;namespace UnityEngine.UI.Windows {
 			this.minor = minor;
 			this.release = release;
 			this.type = type;
+			this.crc = new VersionCrc(string.Format("{0}.{1}.{2}{3}", this.major, this.minor, this.release, this.type));
 
 		}
 
@@ -164,6 +168,8 @@ using System.Text.RegularExpressions;namespace UnityEngine.UI.Windows {
 				this.type = string.Empty;
 
 			}
+
+			this.crc = new VersionCrc(string.Format("{0}.{1}.{2}{3}", this.major, this.minor, this.release, this.type));
 
 		}
 		

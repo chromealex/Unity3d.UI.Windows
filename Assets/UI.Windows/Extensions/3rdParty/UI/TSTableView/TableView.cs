@@ -244,7 +244,7 @@ namespace Tacticsoft
             float relativeScroll = 1 - newScrollValue.y;
             m_scrollY = relativeScroll * scrollableHeight;
             m_requiresRefresh = true;
-            //Debug.Log(m_scrollY.ToString(("0.00")));
+            //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(m_scrollY.ToString(("0.00")));
         }
 
         private void RecalculateVisibleRowsFromScratch() {
@@ -397,7 +397,7 @@ namespace Tacticsoft
 
         private void HideRow(bool last)
         {
-            //Debug.Log("Hiding row at scroll y " + m_scrollY.ToString("0.00"));
+            //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Hiding row at scroll y " + m_scrollY.ToString("0.00"));
 
             int row = last ? m_visibleRowRange.Last() : m_visibleRowRange.from;
             WindowComponent removedCell = m_visibleCells[row];
@@ -437,7 +437,7 @@ namespace Tacticsoft
         private float GetCumulativeRowHeight(int row) {
             while (m_cleanCumulativeIndex < row) {
                 m_cleanCumulativeIndex++;
-                //Debug.Log("Cumulative index : " + m_cleanCumulativeIndex.ToString());
+                //if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Cumulative index : " + m_cleanCumulativeIndex.ToString());
                 m_cumulativeRowHeights[m_cleanCumulativeIndex] = m_rowHeights[m_cleanCumulativeIndex];
                 if (m_cleanCumulativeIndex > 0) {
                     m_cumulativeRowHeights[m_cleanCumulativeIndex] += m_cumulativeRowHeights[m_cleanCumulativeIndex - 1];

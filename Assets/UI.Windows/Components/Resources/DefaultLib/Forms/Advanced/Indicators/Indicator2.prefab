@@ -142,6 +142,7 @@ MonoBehaviour:
   m_PreferredHeight: 30
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11475670
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -163,7 +164,6 @@ MonoBehaviour:
   showOnStart: 1
   rootComponent: {fileID: 0}
   subComponents: []
-  currentState: 0
   animation: {fileID: 0}
   childsShowMode: 0
   childsHideMode: 0

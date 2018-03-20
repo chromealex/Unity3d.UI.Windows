@@ -38,20 +38,20 @@ namespace ME {
 
 		private IEnumerator<byte> Test() {
 
-			Debug.Log("Test start");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Test start");
 			yield return 0;
 
 			var c = this.TestInner();
 			while (c.MoveNext() == true) yield return 0;
-			Debug.Log("Test end");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Test end");
 
 		}
 
 		private IEnumerator<byte> TestInner() {
 
-			Debug.Log("Inner start");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Inner start");
 			yield return 0;
-			Debug.Log("Inner end");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Inner end");
 			yield return 0;
 
 		}*/

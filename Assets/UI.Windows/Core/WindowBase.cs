@@ -76,6 +76,9 @@ namespace UnityEngine.UI.Windows {
 
 				this.lastState = this._currentState;
 				this._currentState = value;
+				#if UNITY_EDITOR
+				this.UpdateGameObjectCaption_EDITOR();
+				#endif
 
 			}
 
@@ -260,7 +263,7 @@ namespace UnityEngine.UI.Windows {
 				
 				this.currentState = WindowObjectState.NotInitialized;
 
-				Debug.LogError("Can't initialize window instance because of some components were not installed properly.", this);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Can't initialize window instance because of some components were not installed properly.", this);
 				return;
 
 			}
@@ -294,7 +297,7 @@ namespace UnityEngine.UI.Windows {
 						// Method not found
 						var prs = new string[this.parameters.Length];
 						for (int i = 0; i < prs.Length; ++i) prs[i] = this.parameters[i].ToString();
-						Debug.LogWarning(string.Format("Method `OnParametersPass` was not found with input parameters: {0}, Parameters: {1}", this.parameters.Length, string.Join(", ", prs)), this);
+						if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning(string.Format("Method `OnParametersPass` was not found with input parameters: {0}, Parameters: {1}", this.parameters.Length, string.Join(", ", prs)), this);
 
 					}
 
@@ -318,7 +321,7 @@ namespace UnityEngine.UI.Windows {
 
 				this.setup = true;
 
-				//Debug.Log("INIT: " + this.activeIteration + " :: " + this);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("INIT: " + this.activeIteration + " :: " + this);
 
 				this.currentState = WindowObjectState.Initialized;
 
@@ -379,7 +382,7 @@ namespace UnityEngine.UI.Windows {
 
 		void IWindowEventsController.DoWindowUnload() {
 
-			//Debug.LogWarningFormat("Unloading window `{0}` with state `{1}`", this.name, this.GetState());
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarningFormat("Unloading window `{0}` with state `{1}`", this.name, this.GetState());
 
 			this.DoLayoutUnload();
 			this.modules.DoWindowUnload();
@@ -393,13 +396,14 @@ namespace UnityEngine.UI.Windows {
 
 		public void ApplyActiveState() {
 
-			this.activeIteration = -WindowSystem.GetWindowsInFrontCount(this) - 1;
-			this.SetActive();
-			if (this.preferences.sendActiveState == true) {
+            this.activeIteration = -WindowSystem.GetWindowsInFrontCount(this) - 1;
+            if (this.preferences.sendActiveState == true) {
 
-				WindowSystem.SendInactiveStateByWindow(this);
+                WindowSystem.SendInactiveStateByWindow(this);
 
-			}
+            }
+            this.activeState = ActiveState.None;
+            this.SetActive();
 
 		}
 
@@ -552,15 +556,25 @@ namespace UnityEngine.UI.Windows {
 
 		public void SetActive() {
 
-			//Debug.Log("SetActive: " + this);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("SetActive: " + this + " :: " + this.activeIteration + " :: " + this.activeState);
 
 			++this.activeIteration;
+			var absoluteIteration = -WindowSystem.GetWindowsInFrontCount(this);
+			if (absoluteIteration != this.activeIteration) {
+
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) Debug.LogWarning(string.Format("SetActive: absoluteIteration != this.activeIteration: {0} != {1}. Fixed.", absoluteIteration, this.activeIteration));
+				this.activeIteration = absoluteIteration;
+
+			}
 
 			if (this.activeIteration == 0) {
 
 				if (this.activeState != ActiveState.Active) {
 
 					this.activeState = ActiveState.Active;
+					#if UNITY_EDITOR
+					this.UpdateGameObjectCaption_EDITOR();
+					#endif
 
 					this.TurnOnRender();
 
@@ -589,7 +603,7 @@ namespace UnityEngine.UI.Windows {
 
 		public void SetInactive(WindowBase newWindow) {
 
-			//Debug.Log("SetInactive: " + this);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("SetInactive: " + this + " << " + newWindow);
 
 			if (newWindow != null && newWindow.preferences.fullCoverage == true) {
 
@@ -598,12 +612,26 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			--this.activeIteration;
+			if (newWindow != null) {
+				
+				var absoluteIteration = -WindowSystem.GetWindowsInFrontCount(this);
+				if (absoluteIteration != this.activeIteration) {
+
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) Debug.LogWarning(string.Format("SetInactive: absoluteIteration != this.activeIteration: {0} != {1}. Fixed.", absoluteIteration, this.activeIteration));
+					this.activeIteration = absoluteIteration;
+
+				}
+
+			}
 
 			if (this.activeIteration == -1) {
 				
 				if (this.activeState != ActiveState.Inactive) {
 
 					this.activeState = ActiveState.Inactive;
+					#if UNITY_EDITOR
+					this.UpdateGameObjectCaption_EDITOR();
+					#endif
 
 					this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.WindowInactive);
 
@@ -858,11 +886,12 @@ namespace UnityEngine.UI.Windows {
 			var result = false;
 			if (WindowSystem.IsCameraRenderDisableOnWindowTurnOff() == true) {
 
-				if (this.workCamera != null) this.workCamera.enabled = false;
+				/*if (this.workCamera != null) this.workCamera.enabled = false;
 				var canvas = this.GetCanvas();
 				if (canvas != null) canvas.enabled = false;
 				var scaler = this.GetCanvasScaler();
-				if (scaler != null) scaler.enabled = false;
+				if (scaler != null) scaler.enabled = false;*/
+				this.TurnOffRender();
 				result = false;
 
 			} else {
@@ -890,11 +919,12 @@ namespace UnityEngine.UI.Windows {
 
 			if (WindowSystem.IsCameraRenderDisableOnWindowTurnOff() == true) {
 				
-				if (this.workCamera != null) this.workCamera.enabled = true;
+				/*if (this.workCamera != null) this.workCamera.enabled = true;
 				var canvas = this.GetCanvas();
 				if (canvas != null) canvas.enabled = true;
 				var scaler = this.GetCanvasScaler();
-				if (scaler != null) scaler.enabled = true;
+				if (scaler != null) scaler.enabled = true;*/
+				this.TurnOnRender();
 
 			} else {
 
@@ -1078,6 +1108,8 @@ namespace UnityEngine.UI.Windows {
 				Profiler.EndSample();
 				#endif
 
+				if (this.currentState != WindowObjectState.Showing) return;
+
 				this.currentState = WindowObjectState.Shown;
 				this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.ShowEnd);
 
@@ -1247,14 +1279,14 @@ namespace UnityEngine.UI.Windows {
 
 			}
 
-			this.activeIteration = 0;
+            if (this.preferences.sendActiveState == true) {
+
+                WindowSystem.SendActiveStateByWindow(this);
+
+            }
+
+            this.activeIteration = 0;
 			this.SetInactive(null);
-
-			if (this.preferences.sendActiveState == true) {
-
-				WindowSystem.SendActiveStateByWindow(this);
-
-			}
 
 			//var parameters = AppearanceParameters.Default();
 
@@ -1287,6 +1319,8 @@ namespace UnityEngine.UI.Windows {
 				#if DEBUGBUILD
 				Profiler.EndSample();
 				#endif
+
+				if (this.currentState != WindowObjectState.Hiding) return;
 
 				this.currentState = WindowObjectState.Hidden;
 				this.eventsHistoryTracker.Add(this, HistoryTrackerEventType.HideEnd);
@@ -1464,10 +1498,10 @@ namespace UnityEngine.UI.Windows {
 		/// Example: OnParametersPass(T1 param1, T2 param2, etc.)
 		/// You can use any types in any order and call window with them.
 		/// </summary>
-		[CompilerIgnore]
+		[CompilerIgnore][System.Obsolete("OnParametersPass can't be empty - it will never be called.")]
 		public virtual void OnParametersPass() {}
 
-		[CompilerIgnore]
+		[CompilerIgnore][System.Obsolete("OnParametersPass is Obsolete because of exception while usage. Use your own implementation. May be you need to do UI.Flow recompile call.")]
 		public void OnParametersPass(params object[] objects) {
 
 			throw new UnityException(string.Format("OnParametersPass is not valid for screen `{0}`", this.name));
@@ -1598,6 +1632,20 @@ namespace UnityEngine.UI.Windows {
 		public virtual void OnHideEndLate() {}
 
 		#if UNITY_EDITOR
+		private int windowCounterId = -1;
+		public void UpdateGameObjectCaption_EDITOR(int counter) {
+
+			this.windowCounterId = counter;
+			this.UpdateGameObjectCaption_EDITOR();
+
+		}
+
+		public void UpdateGameObjectCaption_EDITOR() {
+
+			this.gameObject.name = string.Format("[{1}] {0} [{2} - {3}]", this.GetType().Name, this.windowCounterId, this.GetState(), this.GetActiveState());
+			
+		}
+
 		public override void OnValidateEditor() {
 
 			base.OnValidateEditor();
@@ -1705,7 +1753,7 @@ namespace UnityEngine.UI.Windows {
 					
 				} else {
 					
-					Debug.LogError("Create window on scene failed. May be WindowSystem is not exist on scene.");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Create window on scene failed. May be WindowSystem is not exist on scene.");
 					
 				}
 

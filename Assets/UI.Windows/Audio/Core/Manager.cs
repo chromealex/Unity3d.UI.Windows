@@ -13,7 +13,7 @@ namespace UnityEngine.UI.Windows.Audio {
 		public static void InitAndAdd(Data data, bool overrideValues = false) {
 
 			data.SetupCache();
-			
+
 			Manager.currentData.Add(ClipType.Music, data, overrideValues);
 			Manager.currentData.Add(ClipType.SFX, data, overrideValues);
 

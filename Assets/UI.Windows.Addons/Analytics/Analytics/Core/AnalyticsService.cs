@@ -9,6 +9,10 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 
 	public interface IAnalyticsService : IService {
 
+		bool sendScreenTransitions { get; }
+		bool sendTransactions { get; }
+		bool sendEvents { get; }
+
 		System.Collections.Generic.IEnumerator<byte> OnEvent(int screenId, string group1, string group2 = null, string group3 = null, int weight = 1);
 		System.Collections.Generic.IEnumerator<byte> OnEvent(string eventName, string group1, string group2 = null, string group3 = null, int weight = 1);
 		System.Collections.Generic.IEnumerator<byte> OnScreenTransition(int index, int screenId, int toScreenId, bool popup);
@@ -68,6 +72,16 @@ namespace UnityEngine.UI.Windows.Plugins.Analytics {
 	};
 
 	public abstract class AnalyticsService : ServiceBase, IAnalyticsService {
+
+		[SerializeField]
+		private bool _sendScreenTransitions = true;
+		[SerializeField]
+		private bool _sendTransactions = true;
+		[SerializeField]
+		private bool _sendEvents = true;
+		public bool sendScreenTransitions { get { return this._sendScreenTransitions; } }
+		public bool sendTransactions { get { return this._sendTransactions; } }
+		public bool sendEvents { get { return this._sendEvents; } }
 
 		public virtual System.Collections.Generic.IEnumerator<byte> SetUserId(long id) { yield return 0; }
 		public virtual System.Collections.Generic.IEnumerator<byte> SetUserId(string id) { yield return 0; }

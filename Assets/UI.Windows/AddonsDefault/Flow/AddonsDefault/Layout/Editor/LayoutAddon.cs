@@ -116,7 +116,7 @@ namespace UnityEditor.UI.Windows.Plugins.Layout {
 						
 						System.Action<WindowComponent> onChange = (WindowComponent component) => {
 
-							//Debug.Log(component + "!=" + this.component.component);
+							//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(component + "!=" + this.component.component);
 							if (component != this.component.component) {
 
 								this.component.componentParametersEditor = null;

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace UnityEngine.UI.Windows.Movies {
 
-    #if UNITY_STANDALONE || UNITY_EDITOR || UNITY_ANDROID
+	#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS || UNITY_TVOS
     [System.Serializable]
     public class MovieStandaloneModule : MovieModuleBase {
 
@@ -14,9 +14,12 @@ namespace UnityEngine.UI.Windows.Movies {
             private readonly VideoPlayer videoPlayer;
             private bool isError;
 
+			private System.Action onComplete;
+
             public Item(VideoPlayer videoPlayerProto, string path) {
 
                 this.videoPlayer = videoPlayerProto.Spawn();
+				this.isError = false;
                 this.videoPlayer.errorReceived += this.OnError;
                 this.videoPlayer.url = path;
                 this.videoPlayer.Prepare();
@@ -34,7 +37,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
             private void OnError(VideoPlayer source, string message) {
 
-                Debug.LogErrorFormat("Video player error: {0}", message);
+                if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogErrorFormat("Video player error: {0}", message);
                 this.isError = true;
 
             }
@@ -69,11 +72,34 @@ namespace UnityEngine.UI.Windows.Movies {
 
             }
 
-            public void Play() {
+			public void Play(System.Action onComplete) {
 
                 this.videoPlayer.Play();
+				this.onComplete = onComplete;
+				if (onComplete != null) this.videoPlayer.loopPointReached += this.OnLoopPointReached;
+
+				//ME.Coroutines.Run(this.WaitForMovieEnd, this.videoPlayer);
 
             }
+
+			private void OnLoopPointReached(VideoPlayer player) {
+
+				this.videoPlayer.loopPointReached -= this.OnLoopPointReached;
+				if (this.onComplete != null) this.onComplete.Invoke();
+
+			}
+
+			/*private IEnumerator<byte> WaitForMovieEnd() {
+
+				while (this.videoPlayer.isPlaying == true) {
+
+					yield return 0;
+
+				}
+
+				if (this.onComplete != null) this.onComplete.Invoke();
+
+			}*/
 
             public void Pause() {
 
@@ -83,6 +109,9 @@ namespace UnityEngine.UI.Windows.Movies {
 
             public void Stop() {
 
+				//ME.Coroutines.StopAll(this.videoPlayer);
+				this.onComplete = null;
+				this.videoPlayer.loopPointReached -= this.OnLoopPointReached;
                 this.videoPlayer.Stop();
 
             }
@@ -104,13 +133,18 @@ namespace UnityEngine.UI.Windows.Movies {
         protected override System.Collections.IEnumerator LoadTexture_YIELD(ResourceAsyncOperation asyncOperation, IImageComponent component, MovieItem movieItem, ResourceBase resource) {
 
             var resourceId = resource.GetId();
-
-            Item item;
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("LoadTexture_YIELD: " + resourceId);
+			Item item;
             if (this.itemsByResourceId.TryGetValue(resourceId, out item) == false) {
 
                 asyncOperation.SetValues(isDone: false, progress: 0.0f, asset: null);
 
-                var resourcePath = resource.GetStreamPath(withFile: true);
+                bool withFile = true;
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_LINUX
+                withFile = false;
+#endif
+				var resourcePath = resource.GetStreamPath(withFile);
+				//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("NEW LoadTexture_YIELD PATH: " + resourcePath);
                 item = new Item(this.videoPlayerProto, resourcePath);
                 this.itemsByResourceId[resourceId] = item;
 
@@ -120,6 +154,7 @@ namespace UnityEngine.UI.Windows.Movies {
 
                 if (item.IsError() == true) {
 
+					//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("NEW LoadTexture_YIELD ERROR: " + item.GetTexture());
                     asyncOperation.SetValues(isDone: true, progress: 1f, asset: null);
                     yield break;
 
@@ -129,6 +164,8 @@ namespace UnityEngine.UI.Windows.Movies {
 
             }
 
+			yield return 0;
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("NEW LoadTexture_YIELD LOAD: " + item.IsError() + " :: " + item.GetTexture());
             asyncOperation.SetValues(isDone: true, progress: 1f, asset: item.GetTexture());
 
         }
@@ -158,7 +195,7 @@ namespace UnityEngine.UI.Windows.Movies {
             Item item;
             if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
 
-                item.Play();
+				item.Play(onComplete);
 
             }
 
@@ -171,7 +208,7 @@ namespace UnityEngine.UI.Windows.Movies {
             if (this.itemsByResourceId.TryGetValue(resourceId, out item) == true) {
 
                 item.SetLoop(loop);
-                item.Play();
+				item.Play(onComplete);
 
             }
 

@@ -19,7 +19,7 @@ namespace ME {
 		public int count;
 		public bool resetOnStop;
 
-		public WindowComponent windowObject;
+		public WindowObject windowObject;
 		public int orderDelta = 0;
 
 		[SerializeField][Range(0f, 1f)]
@@ -88,6 +88,22 @@ namespace ME {
 			}
 
 		}
+
+	    public bool isPlaying {
+
+	        get {
+
+	            for (var i = 0; i < this.particleSystemItems.Length; ++i) {
+
+	                if (this.particleSystemItems[i].particleSystem.isPlaying == true) return true;
+
+	            }
+
+	            return false;
+
+	        }
+
+	    }
 
 		public Color32 startColor {
 
@@ -484,7 +500,7 @@ namespace ME {
 			
 		}
 
-		protected override void OnValidate() {
+		/*protected override void OnValidate() {
 			
 			if (Application.isPlaying == true) return;
 			#if UNITY_EDITOR
@@ -494,7 +510,7 @@ namespace ME {
 			this.Setup();
 			this.LateUpdate();
 			
-		}
+		}*/
 		#endif
 
 	}

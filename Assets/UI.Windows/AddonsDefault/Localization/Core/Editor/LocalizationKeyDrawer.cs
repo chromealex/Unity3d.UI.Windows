@@ -23,11 +23,11 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 
 		public static void Draw(Rect position, SerializedProperty property, GUIContent label) {
 
-			if (Application.isPlaying == false) {
+			/*if (Application.isPlaying == false) {
 
 				LocalizationSystem.TryToLoadCache();
 
-			}
+			}*/
 
 			//property.serializedObject.Update();
 
@@ -49,7 +49,7 @@ namespace UnityEditor.UI.Windows.Plugins.Localization {
 					var buttonRect = new Rect(position.x + labelWidth, position.y, position.width - labelWidth, position.height);
 
 					var keyValue = keyProperty.stringValue;
-					var keyFull = string.Format("[{0}] {1} ({2})", parametersCountProperty.intValue, keyValue, LocalizationSystem.Get(keyValue, LocalizationSystem.DEFAULT_EDITOR_LANGUAGE));
+					var keyFull = (string.IsNullOrEmpty(keyValue) == true ? string.Empty : string.Format("[{0}] {1} ({2})", parametersCountProperty.intValue, keyValue, LocalizationSystem.Get(keyValue, LocalizationSystem.DEFAULT_EDITOR_LANGUAGE)));
 					if (GUI.Button(buttonRect, keyFull, EditorStyles.textField) == true) {
 
 						var rect = position;

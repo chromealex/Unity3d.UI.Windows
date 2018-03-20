@@ -38,8 +38,8 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			this.editor = editor;
 
-			if (this.skin == null) this.skin = UnityEngine.Resources.Load<GUISkin>(string.Format("UI.Windows/Flow/Styles/{0}", (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight")));
-			if (this.splash == null) this.splash = UnityEngine.Resources.Load<Texture>(EditorGUIUtility.isProSkin == true ? "UI.Windows/Flow/Splash_Pro" : "UI.Windows/Flow/Splash");
+			if (this.skin == null) this.skin = UnityEngine.UI.Windows.WindowSystemResources.Load<GUISkin>(string.Format("UI.Windows/Flow/Styles/{0}", (EditorGUIUtility.isProSkin == true ? "SkinDark" : "SkinLight")));
+			if (this.splash == null) this.splash = UnityEngine.UI.Windows.WindowSystemResources.Load<Texture>(EditorGUIUtility.isProSkin == true ? "UI.Windows/Flow/Splash_Pro" : "UI.Windows/Flow/Splash");
 
 		}
 
@@ -407,7 +407,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 				
 				GUI.skin = skin;
 
-				this.scannedData = EditorUtilities.GetAssetsOfType<FlowData>(useCache: false);
+				this.scannedData = EditorUtilities.GetAssetsOfType<FlowData>(useCache: true);
 
 				if (this.scannedData.Length == 0) {
 					

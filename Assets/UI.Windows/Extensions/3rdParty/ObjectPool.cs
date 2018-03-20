@@ -1,4 +1,5 @@
-﻿//Object Pool ( http://unitypatterns.com/resource/objectpool/ ) is licensed under:
+﻿//#define STACK_TRACE
+//Object Pool ( http://unitypatterns.com/resource/objectpool/ ) is licensed under:
 /* The MIT License (MIT)
 Copyright (c) 2013 UnityPatterns
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -58,7 +59,9 @@ namespace UnityEngine.Extensions {
                 this.weakReference = new System.WeakReference(component);
                 this.typeName = component.GetType().FullName;
                 this.name = component.name;
+				#if STACK_TRACE
                 this.stackTrace = (new System.Diagnostics.StackTrace()).ToString();
+				#endif
 
             }
 
@@ -460,7 +463,7 @@ namespace UnityEngine.Extensions {
 							obj.SetTransformAs(prefab);
 							obj.transform.localPosition = position;
 							obj.transform.localRotation = rotation;
-							obj.gameObject.SetActive(activeByDefault);
+							if (obj.gameObject.activeSelf != activeByDefault) obj.gameObject.SetActive(activeByDefault);
 							
 							instance.prefabLookup[obj] = prefab;
 	                        instance.sceneLookup.Add(obj, prefab);
@@ -512,7 +515,7 @@ namespace UnityEngine.Extensions {
 				obj.gameObject.hideFlags = HideFlags.None;
 				obj.gameObject.SetActive(activeByDefault);
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR && STACK_TRACE
                 var stackTrace = new System.Diagnostics.StackTrace();
 				instance.nonPoolComponents[obj] = stackTrace.ToString() + " :: " + (obj != null ? (obj.name + " :: " + ((obj is UnityEngine.UI.Windows.WindowObject) ? ((obj as UnityEngine.UI.Windows.WindowObject).GetWindow() != null ? (obj as UnityEngine.UI.Windows.WindowObject).GetWindow().name : "Window is NULL") : "Not WindowObject")) : "Null");
 #else
@@ -539,7 +542,7 @@ namespace UnityEngine.Extensions {
 				if (ME.EditorUtilities.IsPrefab(source.gameObject) == true) {
 
 #if UNITY_5_3_0
-					Debug.LogWarning("Unity 5.3.0 bug: Creating through editor-mode from prefabs causes hidden gameobjects. You must create it manual: Screen first, Layout the second and components at last.");
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("Unity 5.3.0 bug: Creating through editor-mode from prefabs causes hidden gameobjects. You must create it manual: Screen first, Layout the second and components at last.");
 #endif
 					
 #if UNITY_5_2
@@ -583,8 +586,8 @@ namespace UnityEngine.Extensions {
 		        instance.sceneLookup.Remove(obj);
 				if (setInactive == true) {
 
-					obj.transform.SetParent(null);
 					obj.gameObject.SetActive(false);
+					obj.transform.SetParent(null);
 
 				}
 

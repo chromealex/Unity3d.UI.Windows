@@ -69,7 +69,7 @@ namespace UnityEngine.UI.Windows.Plugins.Social.Modules.Core {
 				(data, result) => {
 				
 				// TODO: Parse token here
-				Debug.Log(result + " :: " + data);
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(result + " :: " + data);
 				
 				// Add call auth with token
 				// this.Authenticate(token, callback);

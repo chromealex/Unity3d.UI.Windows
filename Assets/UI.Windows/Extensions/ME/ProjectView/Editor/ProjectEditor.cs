@@ -1,4 +1,4 @@
-﻿#define TURN_ON
+﻿//#define TURN_ON
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -109,7 +109,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 
 		private static void Draw(IProjectDependency forObject, bool selected) {
 
-			//Debug.LogWarning("BEGIN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("BEGIN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 			var deps = forObject.GetProjectDependencies();
 			if (deps == null || deps.Length == 0) return;
@@ -125,7 +125,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 					Rect toRect;
 					if (list.TryGetValue(dep, out toRect) == true) {
 
-						//Debug.Log("Draw Arrow: " + fromRect + " >> " + toRect);
+						//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Draw Arrow: " + fromRect + " >> " + toRect);
 						// Draw arrow
 						ProjectEditor.DrawNavigationArrow(selected, Vector2.left, fromRect, toRect);
 
@@ -135,7 +135,7 @@ namespace UnityEditor.UI.Windows.Extensions {
 
 			}
 
-			//Debug.LogWarning("END~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("END~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 		}
 

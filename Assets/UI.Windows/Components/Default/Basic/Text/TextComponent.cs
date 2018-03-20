@@ -346,7 +346,11 @@ namespace UnityEngine.UI.Windows.Components {
 
 				var duration = this.valueAnimateDuration;
 				if (Mathf.Abs(this.valueAnimateLastValue - value) < 2) duration = 0.2f;
-				TweenerGlobal.instance.addTweenCount(this, duration, this.valueAnimateLastValue, value, format, (v) => { this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true); }).tag(tag);
+				TweenerGlobal.instance.addTweenCount(this, duration, this.valueAnimateLastValue, value, format, (v) => {
+
+					this.SetValue_INTERNAL(v, format, animate: false, fromTweener: true);
+
+				}).tag(tag);
 				
 			} else {
 
@@ -686,6 +690,15 @@ namespace UnityEngine.UI.Windows.Components {
 
 					break;
 
+				}
+
+				case TextValueFormat.TimeDHMSFromSeconds: {
+					
+					var t = TimeSpan.FromSeconds(value);
+					output = string.Format("{0}d {1:D2}:{2:D2}:{3:D2}", Mathf.FloorToInt((float)t.TotalDays), t.Hours, t.Minutes, t.Seconds);
+					
+					break;
+					
 				}
 
 				case TextValueFormat.DateUniversalFromMilliseconds: {

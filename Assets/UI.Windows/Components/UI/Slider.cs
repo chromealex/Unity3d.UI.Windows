@@ -57,6 +57,16 @@ namespace UnityEngine.UI.Windows.Extensions {
 			
 		}
 
+		private int lastFrameChange;
+		protected override void OnRectTransformDimensionsChange() {
+
+			if (this.lastFrameChange == Time.frameCount) return;
+			this.lastFrameChange = Time.frameCount;
+
+			base.OnRectTransformDimensionsChange();
+
+		}
+
 		private void UpdateValues() {
 			
 			var value = this.normalizedValue;
@@ -259,6 +269,7 @@ namespace UnityEngine.UI.Windows.Extensions {
 		#if UNITY_EDITOR
 		protected override void OnValidate() {
 
+			if (GUI.changed == false) return;
 			if (Application.isPlaying == true) return;
 			#if UNITY_EDITOR
 			if (UnityEditor.EditorApplication.isUpdating == true) return;

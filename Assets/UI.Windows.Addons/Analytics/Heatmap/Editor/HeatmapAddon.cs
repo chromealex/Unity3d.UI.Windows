@@ -73,7 +73,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 		
 		public override string GetName() {
 			
-			return "Analytics (pre-alpha)";
+			return "Analytics";
 			
 		}
 		
@@ -146,7 +146,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 								if (toScreenId == -1) {
 
 /*
-									Debug.Log("Screen Request");
+									if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Screen Request");
 */
 									service.GetScreen(fromScreenId, filter, (_result) => {
 										
@@ -158,7 +158,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 								} else {
 									
 /*
-									Debug.Log("Screen Transition Request");
+									if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("Screen Transition Request");
 */
 									service.GetScreenTransition(index, fromScreenId, toScreenId, filter, (_result) => {
 
@@ -280,7 +280,7 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			
 			if (Heatmap.settings == null) Heatmap.settings = Heatmap.GetSettingsFile();
 
-			if (this.noDataTexture == null) this.noDataTexture = UnityEngine.Resources.Load<Texture>("UI.Windows/Heatmap/NoData");
+			if (this.noDataTexture == null) this.noDataTexture = UnityEngine.UI.Windows.WindowSystemResources.Load<Texture>("UI.Windows/Heatmap/NoData");
 
 			var settings = Heatmap.settings;
 			if (settings == null) {
@@ -560,6 +560,17 @@ namespace UnityEditor.UI.Windows.Plugins.Heatmap {
 			
 			if (menu == null) menu = new GenericMenu();
 			menu.AddItem(new GUIContent("Reinstall"), false, () => { this.Reinstall(); });
+			menu.AddItem(new GUIContent("Refresh Services"), false, () => {
+
+				var settings = Heatmap.settings;
+				if (settings != null) {
+
+					var editor = Editor.CreateEditor(settings) as UnityEditor.UI.Windows.Plugins.Services.ServiceSettingsEditor;
+					if (editor != null) editor.Init<AnalyticsServiceItem>();
+
+				}
+
+			});
 			
 			return menu;
 			

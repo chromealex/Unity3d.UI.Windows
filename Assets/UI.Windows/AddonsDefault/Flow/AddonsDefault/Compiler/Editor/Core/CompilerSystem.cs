@@ -66,7 +66,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 			}
 
 			// Rebuild without rename
-			//Debug.Log(window.title + " :: REBUILD BASE :: " + path);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(window.title + " :: REBUILD BASE :: " + path);
 
 			string baseClassTemplate = null;
 
@@ -82,7 +82,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 			var derivedClassTemplate = TemplateGenerator.GenerateWindowLayoutDerivedClass(newInfo.classname, newInfo.baseClassname, newInfo.baseNamespace);
 
-			//Debug.Log(newPath + " :: " + newInfo.containerClassName + " :: " + baseClassTemplate);
+			//if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(newPath + " :: " + newInfo.containerClassName + " :: " + baseClassTemplate);
 			//return;
 
 			if (minimalScriptsSize == true) {
@@ -200,7 +200,7 @@ namespace UnityEngine.UI.Windows.Plugins.FlowCompiler {
 
 				} catch (Exception e) {
 					
-					Debug.LogException(e);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogException(e);
 
 				}
 

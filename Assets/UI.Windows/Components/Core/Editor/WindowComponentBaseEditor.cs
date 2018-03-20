@@ -110,10 +110,10 @@ namespace UnityEditor.UI.Windows {
 				
 			});
 
-			var state = so.FindProperty("currentState");
+			var state = comp.GetComponentState();//.FindProperty("currentState");
 			var manualShowHideControl = so.FindProperty("manualShowHideControl");
 
-			if (state != null && manualShowHideControl != null) {
+			if (manualShowHideControl != null) {
 				
 				GUILayout.BeginHorizontal(backStyle);
 				{
@@ -121,7 +121,7 @@ namespace UnityEditor.UI.Windows {
 					GUILayout.BeginVertical();
 					{
 						GUILayout.Label("State", miniLabelStyle, GUILayout.ExpandWidth(false), GUILayout.ExpandHeight(false));
-						GUILayout.Label(state.enumNames[state.enumValueIndex], isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
+						GUILayout.Label(state.ToString(), isPrefab == true ? EditorStyles.label : EditorStyles.boldLabel, GUILayout.ExpandWidth(false));
 					}
 					GUILayout.EndVertical();
 					

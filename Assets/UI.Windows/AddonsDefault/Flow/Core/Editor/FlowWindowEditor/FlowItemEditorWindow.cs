@@ -745,7 +745,7 @@ namespace UnityEditor.UI.Windows.Plugins.Flow {
 
 			} else {
 
-				Debug.LogWarning("No Addon Found: DevicePreview");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogWarning("No Addon Found: DevicePreview");
 
 			}
 

@@ -95,7 +95,7 @@ namespace UnityEngine.UI.Windows {
 			
 			if (this.initialized == false) {
 				
-				Debug.LogError("Can't initialize window instance because of some components was not installed properly.");
+				if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError("Can't initialize window instance because of some components was not installed properly.");
 				return;
 				
 			}
@@ -130,7 +130,7 @@ namespace UnityEngine.UI.Windows {
 
 			if (scaleMode == ScaleMode.Preferences) {
 
-				var fixedScale = layoutPreferences.fixedScale;
+				var fixedScale = layoutPreferences.IsFixedScale();
 				if (fixedScale == true) {
 
 					scaleMode = ScaleMode.Fixed;
@@ -141,8 +141,8 @@ namespace UnityEngine.UI.Windows {
 
 				}
 
-				fixedScaleResolution = layoutPreferences.fixedScaleResolution;
-				matchWidthOrHeight = layoutPreferences.matchWidthOrHeight;
+				fixedScaleResolution = layoutPreferences.GetFixedScaleResolution();
+				matchWidthOrHeight = layoutPreferences.GetMatchWidthOrHeight();
 
 			}
 

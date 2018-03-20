@@ -62,16 +62,16 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 		public override System.Collections.Generic.IEnumerator<byte> Auth(string key, ServiceItem serviceItem) {
 
 			var request = "{\"key\": \"" + key + "\"}";
-			Debug.Log(this.GetServiceName() + " :: " + host);
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log(this.GetServiceName() + " :: " + host);
 			return net.JsonPost(host, "/v/auth", request, response => {
 				var to = DeserializeT<ResponseData<string>>(response);
 
 				if (!to.WithError()) {
 					net.extraHeaders[H_TOKEN] = to.GetData();
-					Debug.Log("AbTest connected: " + host);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("AbTest connected: " + host);
 
 				} else {
-					Debug.LogError(GetServiceName() + " Auth Error: " + to.error.text);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(GetServiceName() + " Auth Error: " + to.error.text);
 					net.extraHeaders.Remove(H_TOKEN);
 				}
 
@@ -85,7 +85,7 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 		#if UNITY_EDITOR
 		public override void OnEditorAuth(string key, System.Action<bool> onResult) {
 
-			Debug.Log("AbTest Editor connecting...");
+			if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("AbTest Editor connecting...");
 
 			var request = "{\"key\": \"" + key + "\"}";
 
@@ -95,12 +95,12 @@ namespace UnityEngine.UI.Windows.Plugins.ABTesting.Services {
 
 				if (!to.WithError()) {
 					net.extraHeaders[H_TOKEN] = to.GetData();
-					Debug.Log("AbTest Editor connected: " + host);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.Log("AbTest Editor connected: " + host);
 					onResult(true);
 
 				} else {
 
-					Debug.LogError(GetServiceName() + " Auth Error: " + to.error.text);
+					if (UnityEngine.UI.Windows.Constants.LOGS_ENABLED == true) UnityEngine.Debug.LogError(GetServiceName() + " Auth Error: " + to.error.text);
 					net.extraHeaders.Remove(H_TOKEN);
 					onResult(false);
 				}

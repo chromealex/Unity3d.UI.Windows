@@ -32,7 +32,7 @@ namespace UnityEngine.UI.Windows {
 		bool IsNavigationPreventChildEvents(NavigationSide side);
 		bool NavigateSendEvents(WindowComponentNavigation source, NavigationSide side);
 
-		bool IsNavigationControlledSide(NavigationSide side);
+		bool IsNavigationControlSide(NavigationSide side);
 		void OnNavigate(NavigationSide side);
 		void OnNavigate(WindowComponentNavigation source, NavigationSide side);
 		void OnNavigateLeft();
@@ -40,8 +40,8 @@ namespace UnityEngine.UI.Windows {
 		void OnNavigateUp();
 		void OnNavigateDown();
 
-		void NavigationSetList(IListComponent listContainer);
-		void NavigationUnsetList();
+		void NavigationSetCustomContainer(IWindowNavigation container);
+		void NavigationUnsetCustomContainer();
 
 	}
 
@@ -120,11 +120,6 @@ namespace UnityEngine.UI.Windows {
 		#if UNITY_EDITOR
 		public void OnValidate() {
 
-			if (Application.isPlaying == true) return;
-			#if UNITY_EDITOR
-			if (UnityEditor.EditorApplication.isUpdating == true) return;
-			#endif
-			
 			this.navigationComponents = this.navigationComponents.Where(x => x != null).ToList();
 
 		}
@@ -149,7 +144,7 @@ namespace UnityEngine.UI.Windows {
 		[EndGroup()]
 		public NavigationSideInfo navigateDownInfo;
 
-		public IListComponent listContainer;
+		public IWindowNavigation customContainer;
 
 		private ComponentEvent onNavigationEnter = new ComponentEvent();
 		private ComponentEvent onNavigationLeave = new ComponentEvent();
@@ -205,15 +200,21 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public void NavigationSetList(IListComponent listContainer) {
+		public IWindowNavigation NavigationGetCustomContainer() {
 
-			this.listContainer = listContainer;
+			return this.customContainer;
 
 		}
 
-		public void NavigationUnsetList() {
+		public void NavigationSetCustomContainer(IWindowNavigation container) {
 
-			this.listContainer = null;
+			this.customContainer = container;
+
+		}
+
+		public void NavigationUnsetCustomContainer() {
+
+			this.customContainer = null;
 
 		}
 
@@ -296,7 +297,7 @@ namespace UnityEngine.UI.Windows {
 
 				if (this is IListComponent) {
 					
-					nav.NavigationSetList(this as IListComponent);
+					nav.NavigationSetCustomContainer(this as IListComponent);
 
 				}
 
@@ -313,7 +314,7 @@ namespace UnityEngine.UI.Windows {
 				
 				if (this is IListComponent) {
 
-					nav.NavigationUnsetList();
+					nav.NavigationUnsetCustomContainer();
 
 				}
 
@@ -509,8 +510,36 @@ namespace UnityEngine.UI.Windows {
 			}
 
 			if (sideInfo.@explicit == true) {
-				
-				return sideInfo.next;
+
+				if (sideInfo.next != null) {
+
+					var selInteractable = sideInfo.next as IInteractableStateComponent;
+					if (selInteractable != null) {
+
+						if (selInteractable.GetNavigationType() == NavigationType.None ||
+						    (
+						        selInteractable.IsNavigateOnDisabled() == false &&
+						        selInteractable.IsVisible() == false
+						    ) ||
+						    (
+						        selInteractable.IsNavigateOnDisabled() == false &&
+						        selInteractable.IsInteractable() == false
+						    ))
+							return null;
+
+					} else {
+
+						if (sideInfo.next.GetNavigationType() == NavigationType.None ||
+						    sideInfo.next.IsVisible() == false)
+							return null;
+
+					}
+
+					return sideInfo.next;
+
+				}
+
+				return null;
 
 			}
 
@@ -526,7 +555,7 @@ namespace UnityEngine.UI.Windows {
 
 		}
 
-		public virtual bool IsNavigationControlledSide(NavigationSide side) {
+		public virtual bool IsNavigationControlSide(NavigationSide side) {
 
 			return false;
 
@@ -546,11 +575,11 @@ namespace UnityEngine.UI.Windows {
 
 		public bool NavigateSendEvents(WindowComponentNavigation source, NavigationSide side) {
 			
-			if (this.listContainer != null) {
+			if (this.customContainer != null) {
 
-				this.listContainer.NavigateSendEvents(this, side);
+				this.customContainer.NavigateSendEvents(this, side);
 
-				if (this.listContainer.IsNavigationPreventChildEvents(side) == true) {
+				if (this.customContainer.IsNavigationPreventChildEvents(side) == true) {
 
 					return false;
 
@@ -575,10 +604,11 @@ namespace UnityEngine.UI.Windows {
 
 			if (this.IsNavigationPreventEvents(side) == false) {
 
-				if (this.IsNavigationControlledSide(side) == true) {
+				if (this.IsNavigationControlSide(side) == true) {
 
 					this.OnNavigate(side);
 					this.OnNavigate(source, side);
+					this.NavigationScrollRect_INTERNAL(source, side);
 
 					switch (side) {
 
@@ -621,11 +651,111 @@ namespace UnityEngine.UI.Windows {
 
 			this.onNavigationEnter.Invoke();
 
+			this.SendOnNavigationEnter();
+
+		}
+
+		public virtual void OnNavigationEnterChild() {
+			
+		}
+
+		private void SendOnNavigationEnter() {
+
+			var root = this.rootComponent.GetSubComponentInParent<WindowComponentNavigation>();
+			if (root != null) {
+				
+				var nav = root as WindowComponentNavigation;
+				nav.SendOnNavigationEnter();
+				nav.OnNavigationEnterChild();
+
+			}
+
 		}
 
 		public virtual void OnNavigationLeave() {
 
 			this.onNavigationLeave.Invoke();
+
+			this.SendOnNavigationLeave();
+
+		}
+
+		public virtual void OnNavigationLeaveChild() {
+
+		}
+
+		private void SendOnNavigationLeave() {
+
+			var root = this.rootComponent.GetSubComponentInParent<WindowComponentNavigation>();
+			if (root != null) {
+
+				var nav = root as WindowComponentNavigation;
+				nav.SendOnNavigationLeave();
+				nav.OnNavigationLeaveChild();
+
+			}
+
+		}
+
+		public virtual ScrollRect NavigationScrollRect() {
+
+			return null;
+
+		}
+
+		private void NavigationScrollRect_INTERNAL(WindowComponentNavigation source, NavigationSide side) {
+
+			var scrollRect = this.NavigationScrollRect();
+			if (scrollRect == null) return;
+
+			var next = source.GetNavigation(side);
+			if (next == null) {
+
+				if (side == NavigationSide.Up) {
+
+					scrollRect.verticalNormalizedPosition = 1f;
+
+				} else if (side == NavigationSide.Down) {
+
+					scrollRect.verticalNormalizedPosition = 0f;
+
+				} else if (side == NavigationSide.Left) {
+
+					scrollRect.horizontalNormalizedPosition = 0f;
+
+				} else if (side == NavigationSide.Right) {
+
+					scrollRect.horizontalNormalizedPosition = 1f;
+
+				}
+				return;
+
+			}
+
+			var containerRect = (scrollRect.transform as RectTransform).rect;
+			var from = RectTransformUtility.CalculateRelativeRectTransformBounds(this.GetRectTransform(), source.GetRectTransform());
+			var to = RectTransformUtility.CalculateRelativeRectTransformBounds(this.GetRectTransform(), next.GetRectTransform());
+			var nextRect = new Rect(to.center.XY(), to.size.XY());
+			if (containerRect.Overlaps(nextRect) == true) {
+
+				return;
+
+			}
+
+			var delta = (to.center - from.center).XY();
+			if (side == NavigationSide.Left || side == NavigationSide.Right) {
+
+				delta.y = 0f;
+
+			} else {
+
+				delta.x = 0f;
+
+			}
+
+			scrollRect.content.anchoredPosition -= delta;
+			scrollRect.horizontalNormalizedPosition = Mathf.Clamp01(scrollRect.horizontalNormalizedPosition);
+			scrollRect.verticalNormalizedPosition = Mathf.Clamp01(scrollRect.verticalNormalizedPosition);
 
 		}
 
