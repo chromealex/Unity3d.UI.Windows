@@ -1,4 +1,4 @@
-New version is out: https://github.com/chromealex/UI.Windows-submodule
+## New version is out: https://github.com/chromealex/UI.Windows-submodule
 > Note! This version will be no longer supported!
 
 Quick start and full doc here: https://docs.google.com/document/d/1U1We9b9x6UR5U6ZKktigeX8wxMVvp0fxML-t2B3nIRY
